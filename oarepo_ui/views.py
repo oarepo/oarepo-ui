@@ -9,7 +9,7 @@ blueprint = Blueprint(
 )
 
 
-@blueprint.route('/indices')
+@blueprint.route('/indices/')
 def list_indices():
     indices = {
         index: current_oarepo_ui.get_index(index)

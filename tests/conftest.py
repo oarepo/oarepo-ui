@@ -30,7 +30,7 @@ def app(request):
     assert subprocess.call([
         'pybabel', 'compile', '-d', 'tests/translations/'
     ]) == 0
-    
+
 
     instance_path = tempfile.mkdtemp()
     app = Flask('testapp', instance_path=instance_path)

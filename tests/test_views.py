@@ -1,5 +1,5 @@
 def test_views(app, client):
-    resp = client.get('/oarepo/indices')
+    resp = client.get('/oarepo/indices/')
     assert resp.status_code == 200
     assert resp.json == {
         'default-facets': {'facets': {'category': {'label': 'oarepo.facets.default-facets.category.label'}},
@@ -23,7 +23,7 @@ def test_views(app, client):
         'translate-filter': {'facets': {},
                              'filters': {'category': {'label': 'my.own.filter.label'}}}}
 
-    resp = client.get('/oarepo/indices?ln=cs')
+    resp = client.get('/oarepo/indices/?ln=cs')
     assert resp.status_code == 200
     assert resp.json == {
         'default-facets': {'facets': {'category': {'label': 'defaultní.kategorie'}},
@@ -66,7 +66,7 @@ def test_view(app, client):
 
 def test_perms(app, client):
     # special permission handler that returns only facets for indices starting with translate-*
-    resp = client.get('/oarepo/indices?perms=1')
+    resp = client.get('/oarepo/indices/?perms=1')
     assert resp.status_code == 200
     assert resp.json == {
         'default-facets': {'facets': {'category': {'label': 'oarepo.facets.default-facets.category.label'}},

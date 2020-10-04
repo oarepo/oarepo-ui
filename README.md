@@ -16,7 +16,7 @@ API for UI in OAREPO
 
 This library provides a set of APIs for writing oarepo javascript UI client.
 
-### ``https://localhost:5000/api/oarepo/indices?ln=<lang>``
+### ``https://localhost:5000/api/oarepo/indices/?ln=<lang>``
 
 Returns known facets of all mappings registered in ``RECORDS_REST_FACETS``
 
