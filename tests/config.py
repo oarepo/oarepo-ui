@@ -1,8 +1,16 @@
 from flask import request
 from invenio_records_rest.facets import terms_filter
 
-from oarepo_ui import translate_facets, translate_filters, translate_facet, translate_filter, keep_filters, keep_filter, \
-    keep_facet, keep_facets
+from oarepo_ui import (
+    keep_facet,
+    keep_facets,
+    keep_filter,
+    keep_filters,
+    translate_facet,
+    translate_facets,
+    translate_filter,
+    translate_filters,
+)
 
 FACETS = {
     'category': {

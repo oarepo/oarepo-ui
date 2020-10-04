@@ -3,7 +3,7 @@ from werkzeug.utils import cached_property
 
 from oarepo_ui import no_translation
 from oarepo_ui.facets import TranslatedFacet
-from oarepo_ui.filters import get_filter_oarepo, TranslatedFilter
+from oarepo_ui.filters import TranslatedFilter, get_filter_oarepo
 from oarepo_ui.utils import partial_format
 
 
