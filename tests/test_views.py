@@ -21,7 +21,7 @@ def test_views(app, client):
         'translate-facets-filters-translator': {'facets': {'category': {'label': 'my.own.facet.category'}},
                                                 'filters': {'category': {'label': 'my.own.filter.category'}}},
         'translate-filter': {'facets': {},
-                             'filters': {'category': {'label': 'my.own.filter.label'}}},
+                             'filters': {'category': {'label': 'my.own.filter.label', 'type': 'number'}}},
         'func': {'facets': {'category': {'label': 'my.own.facet.label'}},
                  'filters': {}},
     }
@@ -48,7 +48,7 @@ def test_views(app, client):
         'translate-facets-filters-translator': {'facets': {'category': {'label': 'můj.vlastní.facet.kategorie'}},
                                                 'filters': {'category': {'label': 'můj.vlastní.filter.kategorie'}}},
         'translate-filter': {'facets': {},
-                             'filters': {'category': {'label': 'můj.vlastní.filter.label'}}},
+                             'filters': {'category': {'label': 'můj.vlastní.filter.label', 'type': 'number'}}},
         'func': {'facets': {'category': {'label': 'můj.vlastní.facet.label'}},
                  'filters': {}},
     }
@@ -94,7 +94,7 @@ def test_perms(app, client):
         'translate-facets-filters-translator': {'facets': {'category': {'label': 'my.own.facet.category'}},
                                                 'filters': {'category': {'label': 'my.own.filter.category'}}},
         'translate-filter': {'facets': {},
-                             'filters': {'category': {'label': 'my.own.filter.label'}}},
+                             'filters': {'category': {'label': 'my.own.filter.label', 'type': 'number'}}},
         'func': {'facets': {},
                  'filters': {}}
     }

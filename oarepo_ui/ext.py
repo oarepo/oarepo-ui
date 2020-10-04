@@ -76,10 +76,13 @@ class OARepoUIState:
         def _translate(k, filter):
             translation: TranslatedFilter = get_oarepo_attr(filter).get('translation')
             if translation:
-                return {
+                ret = {
                     'label': self.translate_filter_label(translation.label, k, translation.translator, **kwargs)
                     if translation.label is not no_translation else k
                 }
+                if translation.type is not None:
+                    ret['type'] = translation.type
+                return ret
             else:
                 return {
                     'label': self.translate_filter_label(f'oarepo.filters.{index_name}.{{filter_key}}.label',

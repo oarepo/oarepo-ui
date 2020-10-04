@@ -3,9 +3,10 @@ from oarepo_ui.utils import get_oarepo_attr, partial_format
 
 
 class TranslatedFilter:
-    def __init__(self, label, translator):
+    def __init__(self, label, translator, type=None):
         self.label = label
         self.translator = translator
+        self.type = type
 
 
 def translate_filters(filters, label=None, translator=None):
@@ -18,11 +19,11 @@ def translate_filters(filters, label=None, translator=None):
     return filters
 
 
-def translate_filter(filter, label=None, translator=None):
+def translate_filter(filter, label=None, translator=None, type=None):
     if not hasattr(filter, '_oarepo_ui'):
         setattr(filter, '_oarepo_ui', {})
     getattr(filter, '_oarepo_ui')['translation'] = TranslatedFilter(
-        label, translator)
+        label, translator, type=type)
     return filter
 
 

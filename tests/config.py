@@ -107,7 +107,7 @@ RECORDS_REST_FACETS = {
     },
     'translate-filter': {
         'filters': {
-            'category': translate_filter(terms_filter('category'), label='my.own.filter.label')
+            'category': translate_filter(terms_filter('category'), label='my.own.filter.label', type='number')
         }
     },
     'func': {
