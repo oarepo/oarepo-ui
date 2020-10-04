@@ -1,0 +1,102 @@
+from invenio_base.utils import obj_or_import_string
+from werkzeug.utils import cached_property
+
+from oarepo_ui import no_translation
+from oarepo_ui.facets import TranslatedFacet
+from oarepo_ui.filters import get_filter_oarepo, TranslatedFilter
+from oarepo_ui.utils import partial_format
+
+
+class OARepoUIState:
+    def __init__(self, app):
+        self.app = app
+
+    @cached_property
+    def translator(self):
+        return obj_or_import_string(
+            self.app.config.get('OAREPO_UI_TRANSLATOR',
+                                'oarepo_ui.translation.default_translator'))
+
+    @cached_property
+    def permission_factory(self):
+        return obj_or_import_string(
+            self.app.config.get('OAREPO_UI_FACET_PERMISSION_FACTORY',
+                                'oarepo_ui.translation.default_permission_factory'))
+
+    @property
+    def facets(self):
+        return self.app.config.get('RECORDS_REST_FACETS', {})
+
+    @cached_property
+    def indices(self):
+        return list(self.facets.keys())
+
+    def get_index(self, index_name):
+        index = self.facets[index_name]
+        return {
+            'facets': self._translate_facets(index.get('aggs', {}), index_name=index_name, index=index),
+            'filters': self._translate_filters(index.get('filters', {}), index_name=index_name, index=index)
+        }
+
+    def _translate_facets(self, facets, index_name, **kwargs):
+        if facets is None:
+            return None
+
+        ret = {}
+        for k, facet in facets.items():
+            if isinstance(facet, TranslatedFacet):
+                if not (facet.permissions or self.permission_factory)(
+                        facets=facets, facet_name=k,
+                        facet=facet, index_name=index_name, **kwargs).can():
+                    continue
+                ret[k] = {
+                    'label': self.translate_facet_label(facet.label, k, facet.translator, **kwargs)
+                    if facet.label is not no_translation else k
+                }
+            else:
+                if not self.permission_factory(facets=facets, facet_name=k, facet=facet,
+                                               index_name=index_name, **kwargs).can():
+                    continue
+                ret[k] = {
+                    'label': self.translate_facet_label(f'oarepo.facets.{index_name}.{{facet_key}}.label',
+                                                        k, self.translator, **kwargs)
+                }
+        return ret
+
+    def _translate_filters(self, filters, index_name, **kwargs):
+        if filters is None:
+            return None
+
+        def _translate(k, filter):
+            translation: TranslatedFilter = get_filter_oarepo(filter).get('translation')
+            if translation:
+                return {
+                    'label': self.translate_filter_label(translation.label, k, translation.translator, **kwargs)
+                    if translation.label is not no_translation else k
+                }
+            else:
+                return {
+                    'label': self.translate_filter_label(f'oarepo.filters.{index_name}.{{filter_key}}.label',
+                                                         k, self.translator, **kwargs)
+                }
+
+        return {
+            k: _translate(k, v) for k, v in filters.items()
+        }
+
+    def translate_facet_label(self, label, facet_key, translator, **kwargs):
+        translator = translator or self.translator
+        return translator(key=partial_format(label, facet_key=facet_key), **kwargs)
+
+    def translate_filter_label(self, label, filter_key, translator, **kwargs):
+        translator = translator or self.translator
+        return translator(key=partial_format(label, filter_key=filter_key), **kwargs)
+
+    def translate_facet_value(self, value, facet_key, value_key, translator, **kwargs):
+        translator = translator or self.translator
+        return translator(key=partial_format(value, facet_key=facet_key, value_key=value_key), **kwargs)
+
+
+class OARepoUIExt:
+    def __init__(self, app, db=None):
+        app.extensions['oarepo-ui'] = OARepoUIState(app)
