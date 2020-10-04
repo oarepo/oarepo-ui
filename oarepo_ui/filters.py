@@ -1,5 +1,5 @@
 from oarepo_ui.constants import no_translation
-from oarepo_ui.utils import partial_format
+from oarepo_ui.utils import partial_format, get_oarepo_attr
 
 
 class TranslatedFilter:
@@ -8,20 +8,10 @@ class TranslatedFilter:
         self.translator = translator
 
 
-def get_filter_oarepo(filter):
-    ret = getattr(filter, '_oarepo_ui', None)
-    if ret is None:
-        n = {}
-        setattr(filter, '_oarepo_ui', n)
-        return n
-    else:
-        return ret
-
-
 def translate_filters(filters, label=None, translator=None):
     for filter_key, filter_val in list(filters.items()):
-        oarepo = get_filter_oarepo(filter_val)
-        if 'translation' not in get_filter_oarepo(filter_val):
+        oarepo = get_oarepo_attr(filter_val)
+        if 'translation' not in get_oarepo_attr(filter_val):
             oarepo['translation'] = TranslatedFilter(
                 partial_format(label, filter_key=filter_key) if label and label is not no_translation else label,
                 translator)

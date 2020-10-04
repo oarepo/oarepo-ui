@@ -3,7 +3,7 @@ from werkzeug.utils import cached_property
 
 from oarepo_ui import no_translation
 from oarepo_ui.facets import TranslatedFacet
-from oarepo_ui.filters import TranslatedFilter, get_filter_oarepo
+from oarepo_ui.filters import TranslatedFilter, get_oarepo_attr
 from oarepo_ui.utils import partial_format
 
 
@@ -44,14 +44,20 @@ class OARepoUIState:
 
         ret = {}
         for k, facet in facets.items():
+            translation = None
             if isinstance(facet, TranslatedFacet):
-                if not (facet.permissions or self.permission_factory)(
+                translation = facet
+            elif callable(facet):
+                translation = get_oarepo_attr(facet).get('translation', None)
+
+            if translation:
+                if not (translation.permissions or self.permission_factory)(
                         facets=facets, facet_name=k,
                         facet=facet, index_name=index_name, **kwargs).can():
                     continue
                 ret[k] = {
-                    'label': self.translate_facet_label(facet.label, k, facet.translator, **kwargs)
-                    if facet.label is not no_translation else k
+                    'label': self.translate_facet_label(translation.label, k, translation.translator, **kwargs)
+                    if translation.label is not no_translation else k
                 }
             else:
                 if not self.permission_factory(facets=facets, facet_name=k, facet=facet,
@@ -68,7 +74,7 @@ class OARepoUIState:
             return None
 
         def _translate(k, filter):
-            translation: TranslatedFilter = get_filter_oarepo(filter).get('translation')
+            translation: TranslatedFilter = get_oarepo_attr(filter).get('translation')
             if translation:
                 return {
                     'label': self.translate_filter_label(translation.label, k, translation.translator, **kwargs)
