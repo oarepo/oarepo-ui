@@ -25,7 +25,7 @@ def make_translated_facet(facet_val, label, value, translator, permissions):
 def translate_facets(facets, label=None, value=None, translator=None, permissions=None):
     for facet_key, facet_val in list(facets.items()):
         if not isinstance(facet_val, TranslatedFacet):
-            facets[facet_key] = TranslatedFacet(
+            facets[facet_key] = make_translated_facet(
                 facet_val,
                 label=partial_format(label, facet_key=facet_key) if label and label is not no_translation else label,
                 value=partial_format(value, facet_key=facet_key) if value is not no_translation else value,
@@ -36,7 +36,7 @@ def translate_facets(facets, label=None, value=None, translator=None, permission
 
 
 def translate_facet(facet, label=None, value=None, translator=None, permissions=None):
-    return TranslatedFacet(
+    return make_translated_facet(
         facet,
         label=label,
         value=value,
