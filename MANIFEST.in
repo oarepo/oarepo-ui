@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 include LICENSE
-recursive-exclude tests *.py
 exclude .coveragerc
 exclude .pydocstyle
 exclude Dockerfile
@@ -14,5 +13,7 @@ include *.rst
 include *.md
 
 recursive-include oarepo_ui *.py
-recursive-include oarepo_ui *.json
-recursive-include tests *.json
+
+recursive-exclude tests *.py
+recursive-exclude tests *.po
+recursive-exclude tests *.pot
