@@ -11,6 +11,7 @@ from __future__ import absolute_import, print_function
 
 import os
 import shutil
+import subprocess
 import tempfile
 
 import pytest
@@ -26,6 +27,11 @@ from tests.config import RECORDS_REST_FACETS
 @pytest.yield_fixture(scope="function")
 def app(request):
     """Test mdcobject."""
+    assert subprocess.call([
+        'pybabel', 'compile', '-d', 'tests/translations/'
+    ]) == 0
+    
+
     instance_path = tempfile.mkdtemp()
     app = Flask('testapp', instance_path=instance_path)
 
