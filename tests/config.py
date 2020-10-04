@@ -26,6 +26,7 @@ FILTERS = {
 
 def permission_factory(index_name, **kwargs):
     check_perms = request.args.get('perms', False)
+
     class Inner:
         def can(self):
             return not check_perms or index_name.startswith('translate-')
@@ -107,6 +108,16 @@ RECORDS_REST_FACETS = {
     'translate-filter': {
         'filters': {
             'category': translate_filter(terms_filter('category'), label='my.own.filter.label')
+        }
+    },
+    'func': {
+        'aggs': {
+            'category': translate_facet(lambda: ({
+                'terms': {
+                    'field': 'category',
+                },
+            }), label='my.own.facet.label',
+            permissions=permission_factory)
         }
     }
 }

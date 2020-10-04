@@ -50,7 +50,7 @@ class OARepoUIState:
             elif callable(facet):
                 translation = get_oarepo_attr(facet).get('translation', None)
 
-            if translation:
+            if translation is not None:
                 if not (translation.permissions or self.permission_factory)(
                         facets=facets, facet_name=k,
                         facet=facet, index_name=index_name, **kwargs).can():

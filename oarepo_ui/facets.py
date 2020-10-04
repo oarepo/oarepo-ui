@@ -1,5 +1,5 @@
 from oarepo_ui.constants import no_translation
-from oarepo_ui.utils import partial_format, get_oarepo_attr
+from oarepo_ui.utils import get_oarepo_attr, partial_format
 
 
 class TranslatedFacet(dict):
@@ -19,12 +19,23 @@ def make_translated_facet(facet_val, label, value, translator, permissions):
     if callable(facet_val):
         oarepo = get_oarepo_attr(facet_val)
         oarepo['translation'] = TranslatedFacet({}, label, value, translator, permissions)
+        return facet_val
     else:
         return TranslatedFacet(facet_val, label, value, translator, permissions)
 
+
+def is_translated_facet(facet_val):
+    if callable(facet_val):
+        oarepo = get_oarepo_attr(facet_val)
+        translation = oarepo.get('translation', None)
+        return translation is not None and isinstance(translation, TranslatedFacet)
+    else:
+        return isinstance(facet_val, TranslatedFacet)
+
+
 def translate_facets(facets, label=None, value=None, translator=None, permissions=None):
     for facet_key, facet_val in list(facets.items()):
-        if not isinstance(facet_val, TranslatedFacet):
+        if not is_translated_facet(facet_val):
             facets[facet_key] = make_translated_facet(
                 facet_val,
                 label=partial_format(label, facet_key=facet_key) if label and label is not no_translation else label,
@@ -36,12 +47,14 @@ def translate_facets(facets, label=None, value=None, translator=None, permission
 
 
 def translate_facet(facet, label=None, value=None, translator=None, permissions=None):
-    return make_translated_facet(
-        facet,
-        label=label,
-        value=value,
-        translator=translator,
-        permissions=permissions)
+    if not is_translated_facet(facet):
+        return make_translated_facet(
+            facet,
+            label=label,
+            value=value,
+            translator=translator,
+            permissions=permissions)
+    return facet
 
 
 def keep_facets(facets, **kwargs):

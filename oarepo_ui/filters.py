@@ -1,5 +1,5 @@
 from oarepo_ui.constants import no_translation
-from oarepo_ui.utils import partial_format, get_oarepo_attr
+from oarepo_ui.utils import get_oarepo_attr, partial_format
 
 
 class TranslatedFilter:
