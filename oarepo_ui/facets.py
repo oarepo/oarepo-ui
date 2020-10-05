@@ -4,10 +4,7 @@ from oarepo_ui.utils import get_oarepo_attr, partial_format
 
 class TranslatedFacet(dict):
     def __init__(self, facet_val, label, value, translator, permissions):
-        if not isinstance(facet_val, dict):
-            import traceback
-            traceback.print_stack()
-            print(facet_val)
+        assert isinstance(facet_val, dict)
         super().__init__(facet_val)
         self.label = label
         self.value = value
