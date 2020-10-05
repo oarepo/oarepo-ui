@@ -36,6 +36,12 @@ Response:
                     "type": "one of string, number, date, time, datetime"
                 }
             },
+            "endpoints": {
+                 "endpoint-key": {
+                     "url": "http://localhost:5000/list/route",
+                     "pid_type": "tstpid"
+                 }
+            },
             "sorts": {
                 // TODO
             }
@@ -63,6 +69,12 @@ Response:
             "label": "translated filter label",
             "type": "one of string, number, date, time, datetime"
         }
+    },
+    "endpoints": {
+         "endpoint-key": {
+             "url": "http://localhost:5000/list/route",
+             "pid_type": "tstpid"
+         }
     },
     "sorts": {
         // TODO

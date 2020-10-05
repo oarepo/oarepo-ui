@@ -15,10 +15,15 @@ import subprocess
 import tempfile
 
 import pytest
+from config import RECORDS_REST_ENDPOINTS
 from flask import Flask
 from invenio_base.signals import app_loaded
 from invenio_i18n import InvenioI18N
-
+from invenio_pidstore import InvenioPIDStore
+from invenio_records_rest import InvenioRecordsREST
+from invenio_records_rest.utils import PIDConverter
+from invenio_records_rest.views import create_blueprint_from_app
+from invenio_search import InvenioSearch
 from oarepo_ui.ext import OARepoUIExt
 from oarepo_ui.views import blueprint as oarepo_ui_blueprint
 from tests.config import RECORDS_REST_FACETS
@@ -31,14 +36,12 @@ def app(request):
         'pybabel', 'compile', '-d', 'tests/translations/'
     ]) == 0
 
-
     instance_path = tempfile.mkdtemp()
     app = Flask('testapp', instance_path=instance_path)
 
     app.config.update(
         ACCOUNTS_JWT_ENABLE=False,
         INDEXER_DEFAULT_DOC_TYPE='record-v1.0.0',
-        RECORDS_REST_ENDPOINTS={},
         RECORDS_REST_DEFAULT_CREATE_PERMISSION_FACTORY=None,
         RECORDS_REST_DEFAULT_DELETE_PERMISSION_FACTORY=None,
         RECORDS_REST_DEFAULT_READ_PERMISSION_FACTORY=None,
@@ -64,6 +67,7 @@ def app(request):
             }
         },
         RECORDS_REST_FACETS=RECORDS_REST_FACETS,
+        RECORDS_REST_ENDPOINTS=RECORDS_REST_ENDPOINTS,
         I18N_LANGUAGES=(
             ("cs", "Czech"),
         )
@@ -73,9 +77,14 @@ def app(request):
 
     InvenioI18N(app)
     OARepoUIExt(app)
+    InvenioSearch(app)
+    InvenioRecordsREST(app)
+    InvenioPIDStore(app)
+    app.url_map.converters['pid'] = PIDConverter
     #
     app_loaded.send(app, app=app)
     app.register_blueprint(oarepo_ui_blueprint)
+    app.register_blueprint(create_blueprint_from_app(app))
 
     with app.app_context():
         yield app

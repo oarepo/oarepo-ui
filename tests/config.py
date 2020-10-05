@@ -117,7 +117,22 @@ RECORDS_REST_FACETS = {
                     'field': 'category',
                 },
             }), label='my.own.facet.label',
-            permissions=permission_factory)
+                                        permissions=permission_factory)
+        }
+    }
+}
+
+RECORDS_REST_ENDPOINTS = {
+    'test': {
+        'search_index': 'func',
+        'list_route': '/test/list/route',
+        'item_route': '/test/list/route/<pid(tstpid):pid_value>',
+        'pid_type': 'tstpid',
+        'search_serializers': {
+            'application/json': 'json.dumps'
+        },
+        'record_serializers': {
+            'application/json': 'json.dumps'
         }
     }
 }

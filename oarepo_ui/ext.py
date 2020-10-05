@@ -1,4 +1,6 @@
+from flask import url_for
 from invenio_base.utils import obj_or_import_string
+from invenio_search import current_search
 from werkzeug.utils import cached_property
 
 from oarepo_ui import no_translation
@@ -35,8 +37,20 @@ class OARepoUIState:
         index = self.facets[index_name]
         return {
             'facets': self._translate_facets(index.get('aggs', {}), index_name=index_name, index=index),
-            'filters': self._translate_filters(index.get('filters', {}), index_name=index_name, index=index)
+            'filters': self._translate_filters(index.get('filters', {}), index_name=index_name, index=index),
+            'endpoints': self._generate_endpoints(index_name)
         }
+
+    def _generate_endpoints(self, index_name):
+        endpoints = {}
+        for name, config in self.app.config.get('RECORDS_REST_ENDPOINTS', {}).items():
+            search_index = config.get('search_index', None)
+            if search_index == index_name:
+                endpoints[name] = {
+                    'url': url_for('invenio_records_rest.{0}_list'.format(name), _external=True),
+                    'pid_type': config.get('pid_type', None)
+                }
+        return endpoints
 
     def _translate_facets(self, facets, index_name, **kwargs):
         if facets is None:
