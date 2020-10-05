@@ -24,6 +24,7 @@ from invenio_records_rest import InvenioRecordsREST
 from invenio_records_rest.utils import PIDConverter
 from invenio_records_rest.views import create_blueprint_from_app
 from invenio_search import InvenioSearch
+
 from oarepo_ui.ext import OARepoUIExt
 from oarepo_ui.views import blueprint as oarepo_ui_blueprint
 from tests.config import RECORDS_REST_FACETS
