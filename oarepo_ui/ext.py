@@ -56,7 +56,7 @@ class OARepoUIState:
         if facets is None:
             return None
 
-        ret = {}
+        ret = []
         for k, facet in facets.items():
             translation = None
             if isinstance(facet, TranslatedFacet):
@@ -69,18 +69,24 @@ class OARepoUIState:
                         facets=facets, facet_name=k,
                         facet=facet, index_name=index_name, **kwargs).can():
                     continue
-                ret[k] = {
-                    'label': self.translate_facet_label(translation.label, k, translation.translator, **kwargs)
-                    if translation.label is not no_translation else k
-                }
+                ret.append({
+                    'code': 'k',
+                    'facet': {
+                        'label': self.translate_facet_label(translation.label, k, translation.translator, **kwargs)
+                        if translation.label is not no_translation else k
+                    }
+                })
             else:
                 if not self.permission_factory(facets=facets, facet_name=k, facet=facet,
                                                index_name=index_name, **kwargs).can():
                     continue
-                ret[k] = {
-                    'label': self.translate_facet_label(f'oarepo.facets.{index_name}.{{facet_key}}.label',
-                                                        k, self.translator, **kwargs)
-                }
+                ret.append({
+                    'code': 'k',
+                    'facet': {
+                        'label': self.translate_facet_label(f'oarepo.facets.{index_name}.{{facet_key}}.label',
+                                                            k, self.translator, **kwargs)
+                    }
+                })
         return ret
 
     def _translate_filters(self, filters, index_name, **kwargs):
@@ -103,9 +109,12 @@ class OARepoUIState:
                                                          k, self.translator, **kwargs)
                 }
 
-        return {
-            k: _translate(k, v) for k, v in filters.items()
-        }
+        return [
+            {
+                'code': k,
+                'filter': _translate(k, v)
+            } for k, v in filters.items()
+        ]
 
     def translate_facet_label(self, label, facet_key, translator, **kwargs):
         translator = translator or self.translator
