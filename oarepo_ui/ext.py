@@ -70,7 +70,7 @@ class OARepoUIState:
                         facet=facet, index_name=index_name, **kwargs).can():
                     continue
                 ret.append({
-                    'code': 'k',
+                    'code': k,
                     'facet': {
                         'label': self.translate_facet_label(translation.label, k, translation.translator, **kwargs)
                         if translation.label is not no_translation else k
@@ -81,7 +81,7 @@ class OARepoUIState:
                                                index_name=index_name, **kwargs).can():
                     continue
                 ret.append({
-                    'code': 'k',
+                    'code': k,
                     'facet': {
                         'label': self.translate_facet_label(f'oarepo.facets.{index_name}.{{facet_key}}.label',
                                                             k, self.translator, **kwargs)
