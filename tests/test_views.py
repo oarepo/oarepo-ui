@@ -44,10 +44,10 @@ def test_views(app, client):
                          'translate-facets-filters-translator': {'endpoints': {},
                                                                  'facets': [{'code': 'category',
                                                                              'facet': {
-                                                                                 'label': 'my.own.facet.category'}}],
+                                                                                 'label': 'test-my.own.facet.category'}}],
                                                                  'filters': [{'code': 'category',
                                                                               'filter': {
-                                                                                  'label': 'my.own.filter.category'}}]},
+                                                                                  'label': 'test-my.own.filter.category'}}]},
                          'translate-filter': {'endpoints': {},
                                               'facets': [],
                                               'filters': [{'code': 'category',
@@ -98,10 +98,10 @@ def test_views(app, client):
                          'translate-facets-filters-translator': {'endpoints': {},
                                                                  'facets': [{'code': 'category',
                                                                              'facet': {
-                                                                                 'label': 'můj.vlastní.facet.kategorie'}}],
+                                                                                 'label': 'test-my.own.facet.category'}}],
                                                                  'filters': [{'code': 'category',
                                                                               'filter': {
-                                                                                  'label': 'můj.vlastní.filter.kategorie'}}]},
+                                                                                  'label': 'test-my.own.filter.category'}}]},
                          'translate-filter': {'endpoints': {},
                                               'facets': [],
                                               'filters': [{'code': 'category',
@@ -165,9 +165,9 @@ def test_perms(app, client):
                                                   'filter': {'label': 'my.own.filter.category'}}]},
         'translate-facets-filters-translator': {'endpoints': {},
                                                 'facets': [{'code': 'category',
-                                                            'facet': {'label': 'my.own.facet.category'}}],
+                                                            'facet': {'label': 'test-my.own.facet.category'}}],
                                                 'filters': [{'code': 'category',
-                                                             'filter': {'label': 'my.own.filter.category'}}]},
+                                                             'filter': {'label': 'test-my.own.filter.category'}}]},
         'translate-filter': {'endpoints': {},
                              'facets': [],
                              'filters': [{'code': 'category',

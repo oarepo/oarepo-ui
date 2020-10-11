@@ -19,9 +19,11 @@ FACETS = {
         },
     }
 }
-FILTERS = {
-    'category': terms_filter('category')
-}
+
+def make_filters():
+    return {
+        'category': terms_filter('category')
+    }
 
 
 def permission_factory(index_name, **kwargs):
@@ -40,7 +42,7 @@ RECORDS_REST_FACETS = {
                                  label='my.own.facet.{facet_key}',
                                  value='my.own.facet.{facet_key}.{value_key}',
                                  permissions=permission_factory),
-        'filters': translate_filters(FILTERS, label='my.own.filter.{filter_key}')
+        'filters': translate_filters(make_filters(), label='my.own.filter.{filter_key}')
     },
     'translate-facets-filters-translator': {
         'aggs': translate_facets(FACETS,
@@ -48,7 +50,7 @@ RECORDS_REST_FACETS = {
                                  value='my.own.facet.{facet_key}.{value_key}',
                                  translator=lambda key, **kwargs: f'test-{key}',
                                  permissions=permission_factory),
-        'filters': translate_filters(FILTERS, label='my.own.filter.{filter_key}',
+        'filters': translate_filters(make_filters(), label='my.own.filter.{filter_key}',
                                      translator=lambda key, **kwargs: f'test-{key}')
     },
     'default-facets': {

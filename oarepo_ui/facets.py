@@ -40,6 +40,7 @@ def get_translated_facet(facet):
 
 
 def translate_facets(facets, label=None, value=None, translator=None, permissions=None, possible_values=None):
+    facets = {**facets}
     possible_values = possible_values or {}
     for facet_key, facet_val in list(facets.items()):
         facets[facet_key] = translate_facet(
