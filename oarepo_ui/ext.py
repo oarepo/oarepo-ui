@@ -4,7 +4,7 @@ from invenio_search import current_search
 from werkzeug.utils import cached_property
 
 from oarepo_ui import no_translation
-from oarepo_ui.facets import TranslatedFacet
+from oarepo_ui.facets import TranslatedFacet, get_translated_facet
 from oarepo_ui.filters import TranslatedFilter, get_oarepo_attr
 from oarepo_ui.utils import partial_format
 
@@ -58,24 +58,29 @@ class OARepoUIState:
 
         ret = []
         for k, facet in facets.items():
-            translation = None
-            if isinstance(facet, TranslatedFacet):
-                translation = facet
-            elif callable(facet):
-                translation = get_oarepo_attr(facet).get('translation', None)
+            translation: TranslatedFacet = get_translated_facet(facet)
 
             if translation is not None:
                 if not (translation.permissions or self.permission_factory)(
                         facets=facets, facet_name=k,
                         facet=facet, index_name=index_name, **kwargs).can():
                     continue
-                ret.append({
+                translated = {
                     'code': k,
                     'facet': {
                         'label': self.translate_facet_label(translation.label, k, translation.translator, **kwargs)
                         if translation.label is not no_translation else k
                     }
-                })
+                }
+                if translation.possible_values:
+                    translated['facet']['values'] = [
+                        {
+                            'value': x,
+                            'label': self.translate_facet_value(translation.value, k, x, translation.translator,
+                                                                **kwargs)
+                        } for x in translation.possible_values
+                    ]
+                ret.append(translated)
             else:
                 if not self.permission_factory(facets=facets, facet_name=k, facet=facet,
                                                index_name=index_name, **kwargs).can():

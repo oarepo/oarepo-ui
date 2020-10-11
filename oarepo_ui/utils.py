@@ -6,6 +6,14 @@ def partial_format(s, **kwargs):
     return s
 
 
+def array_partial_format(arr, **kwargs):
+    if arr is None:
+        return None
+    return [
+        partial_format(x, **kwargs) for x in arr
+    ]
+
+
 def get_oarepo_attr(filter):
     ret = getattr(filter, '_oarepo_ui', None)
     if ret is None:
