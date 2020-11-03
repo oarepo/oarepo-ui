@@ -29,7 +29,7 @@ extras_require = {
 }
 
 setup_requires = [
-    'pytest-runner>=2.7',
+    # 'pytest-runner>=3,<5',
 ]
 
 g = {}
