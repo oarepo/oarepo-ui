@@ -26,7 +26,7 @@ from invenio_records_rest.views import create_blueprint_from_app
 from invenio_search import InvenioSearch
 
 from oarepo_ui.ext import OARepoUIExt
-from oarepo_ui.views import blueprint as oarepo_ui_blueprint
+from oarepo_ui.views import  create_blueprint_from_app as ui_blueprint_from_app
 from tests.config import RECORDS_REST_FACETS
 
 
@@ -84,7 +84,7 @@ def app(request):
     app.url_map.converters['pid'] = PIDConverter
     #
     app_loaded.send(app, app=app)
-    app.register_blueprint(oarepo_ui_blueprint)
+    app.register_blueprint(ui_blueprint_from_app(app))
     app.register_blueprint(create_blueprint_from_app(app))
 
     with app.app_context():

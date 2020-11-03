@@ -16,47 +16,11 @@ API for UI in OAREPO
 
 This library provides a set of APIs for writing oarepo javascript UI client.
 
-### ``https://localhost:5000/api/oarepo/indices/?ln=<lang>``
+### ``OPTIONS https://localhost:5000/api/<record list endpoint>/?ln=<lang>``
 
 Returns known facets of all mappings registered in ``RECORDS_REST_FACETS``
 
 Response:
-```json5
-{
-    "indices": {
-        "index-name": {
-            "facets": {
-                "facet-key": {
-                    "label": "translated facet label",
-                }
-            },
-            "filters": {
-                "filter-key": {
-                    "label": "translated filter label",
-                    "type": "one of string, number, date, time, datetime"
-                }
-            },
-            "endpoints": {
-                 "endpoint-key": {
-                     "url": "http://localhost:5000/list/route",
-                     "pid_type": "tstpid"
-                 }
-            },
-            "sorts": {
-                // TODO
-            }
-        }
-    }
-}
-```
-
-
-### ``https://localhost:5000/api/oarepo/indices/<index-name>?ln=<lang>``
-
-As above, but restricted to single index name
-
-Response:
-
 ```json5
 {
     "facets": {
@@ -69,15 +33,6 @@ Response:
             "label": "translated filter label",
             "type": "one of string, number, date, time, datetime"
         }
-    },
-    "endpoints": {
-         "endpoint-key": {
-             "url": "http://localhost:5000/list/route",
-             "pid_type": "tstpid"
-         }
-    },
-    "sorts": {
-        // TODO
     }
 }
 ```

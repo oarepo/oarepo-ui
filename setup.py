@@ -52,7 +52,7 @@ setup(
     packages=['oarepo_ui'],
     entry_points={
         'invenio_base.api_blueprints': [
-            'oarepo_ui = oarepo_ui.views:blueprint'
+            'oarepo_ui = oarepo_ui.views:create_blueprint_from_app'
         ],
         'invenio_base.api_apps': [
             'oarepo_ui = oarepo_ui.ext:OARepoUIExt',

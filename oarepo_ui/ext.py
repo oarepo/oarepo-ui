@@ -1,5 +1,9 @@
+from pprint import pprint
+
 from flask import url_for
+from flask.views import View
 from invenio_base.utils import obj_or_import_string
+from invenio_rest import ContentNegotiatedMethodView
 from invenio_search import current_search
 from werkzeug.utils import cached_property
 
@@ -12,6 +16,19 @@ from oarepo_ui.utils import partial_format
 class OARepoUIState:
     def __init__(self, app):
         self.app = app
+
+    @cached_property
+    def endpoints(self):
+        endpoints = []
+        for name, config in self.app.config.get('RECORDS_REST_ENDPOINTS', {}).items():
+            if not config.get('list_route'):
+                continue
+            endpoints.append({
+                'list_route': config.get('list_route'),
+                'name': name,
+                'config': config
+            })
+        return endpoints
 
     @cached_property
     def translator(self):
@@ -73,13 +90,18 @@ class OARepoUIState:
                     }
                 }
                 if translation.possible_values:
-                    translated['facet']['values'] = [
-                        {
-                            'value': x,
-                            'label': self.translate_facet_value(translation.value, k, x, translation.translator,
-                                                                **kwargs)
-                        } for x in translation.possible_values
-                    ]
+                    if isinstance(translation.possible_values, list):
+                        translated['facet']['values'] = {
+                            x: self.translate_facet_value(translation.value, k, x, translation.translator,
+                                                          **kwargs)
+                            for x in translation.possible_values
+                        }
+                    else:
+                        translated['facet']['values'] = {
+                            value_key: value_translation
+                            for value_key, value_translation in translation.possible_values.items()
+                        }
+
                 ret.append(translated)
             else:
                 if not self.permission_factory(facets=facets, facet_name=k, facet=facet,
@@ -136,4 +158,6 @@ class OARepoUIState:
 
 class OARepoUIExt:
     def __init__(self, app, db=None):
+        # disable automatic options because we provide our own
+        ContentNegotiatedMethodView.provide_automatic_options = False
         app.extensions['oarepo-ui'] = OARepoUIState(app)
