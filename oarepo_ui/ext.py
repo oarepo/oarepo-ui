@@ -1,10 +1,6 @@
-from pprint import pprint
-
 from flask import url_for
-from flask.views import View
 from invenio_base.utils import obj_or_import_string
-from invenio_rest import ContentNegotiatedMethodView
-from invenio_search import current_search
+from invenio_records_rest.views import RecordsListResource
 from werkzeug.utils import cached_property
 
 from oarepo_ui import no_translation
@@ -159,5 +155,5 @@ class OARepoUIState:
 class OARepoUIExt:
     def __init__(self, app, db=None):
         # disable automatic options because we provide our own
-        ContentNegotiatedMethodView.provide_automatic_options = False
+        RecordsListResource.provide_automatic_options = False
         app.extensions['oarepo-ui'] = OARepoUIState(app)
