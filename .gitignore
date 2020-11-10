@@ -58,7 +58,7 @@ target/
 # Vim swapfiles
 .*.sw?
 venv/
-
+.envrc
 .venv/
 messages.mo
 
