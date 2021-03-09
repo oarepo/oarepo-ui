@@ -7,4 +7,4 @@ def default_translator(key, **kwargs):
 
 
 def default_permission_factory(**kwargs):
-    return allow_all()
+    return allow_all()  # pragma: no cover
