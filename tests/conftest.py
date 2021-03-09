@@ -16,7 +16,10 @@ import tempfile
 
 import pytest
 from config import RECORDS_REST_ENDPOINTS
-from flask import Flask
+from flask import Flask, make_response
+from flask_login import LoginManager, login_user
+from helpers import set_identity
+from invenio_accounts.models import User
 from invenio_base.signals import app_loaded
 from invenio_i18n import InvenioI18N
 from invenio_pidstore import InvenioPIDStore
@@ -82,6 +85,28 @@ def app(request):
     InvenioRecordsREST(app)
     InvenioPIDStore(app)
     app.url_map.converters['pid'] = PIDConverter
+
+    # Login
+    login_manager = LoginManager()
+    login_manager.init_app(app)
+    login_manager.login_view = 'login'
+
+    @login_manager.user_loader
+    def basic_user_loader(user_id):
+        user_obj = User.query.get(int(user_id))
+        return user_obj
+
+    # app.register_blueprint(create_blueprint_from_app(app))
+
+    @app.route('/test/login/<int:id>', methods=['GET', 'POST'])
+    def test_login(id):
+        print("test: logging user with id", id)
+        response = make_response()
+        user = User.query.get(id)
+        login_user(user)
+        set_identity(user)
+        return response
+
     #
     app_loaded.send(app, app=app)
     app.register_blueprint(ui_blueprint_from_app(app))
