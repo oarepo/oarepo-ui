@@ -15,7 +15,6 @@ import subprocess
 import tempfile
 
 import pytest
-from config import RECORDS_REST_ENDPOINTS
 from flask import Flask
 from invenio_base.signals import app_loaded
 from invenio_i18n import InvenioI18N
@@ -28,6 +27,8 @@ from invenio_search import InvenioSearch
 from oarepo_ui.ext import OARepoUIExt
 from oarepo_ui.views import create_blueprint_from_app as ui_blueprint_from_app
 from tests.config import RECORDS_REST_FACETS
+
+from .config import RECORDS_REST_ENDPOINTS
 
 
 @pytest.yield_fixture(scope="function")

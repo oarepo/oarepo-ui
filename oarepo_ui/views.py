@@ -10,7 +10,7 @@ class EndpointOptionsView(MethodView):
     def __init__(self, endpoint):
         self.endpoint = endpoint
 
-    def options(self):
+    def options(self, *args, **kwargs):
         ret = {}
         index_name = self.endpoint['config'].get('search_index')
         if index_name:
