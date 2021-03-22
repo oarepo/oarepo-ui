@@ -17,12 +17,13 @@ class EndpointOptionsView(MethodView):
         if index_name:
             index = current_oarepo_ui.facets[index_name]
             index = {**index}
-            before_facet_options.send(self, index=index, request=request, view_args=args, view_kwargs=kwargs)
+            before_facet_options.send(self, index_name=index_name, index=index, request=request, view_args=args,
+                                      view_kwargs=kwargs)
 
-            ret['facets'] = current_oarepo_ui._translate_facets(index.get('aggs', {}), index_name=index_name,
-                                                                index=index)
-            ret['filters'] = current_oarepo_ui._translate_filters(index.get('filters', {}), index_name=index_name,
-                                                                  index=index)
+            ret['facets'] = current_oarepo_ui._translate_facets(
+                index.get('aggs', {}), index_name=index_name, index=index)
+            ret['filters'] = current_oarepo_ui._translate_filters(
+                index.get('filters', {}), index_name=index_name, index=index)
         return jsonify(ret)
 
 
