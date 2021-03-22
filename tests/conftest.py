@@ -32,6 +32,8 @@ from oarepo_ui.ext import OARepoUIExt
 from oarepo_ui.views import create_blueprint_from_app as ui_blueprint_from_app
 from tests.config import RECORDS_REST_FACETS
 
+from .config import RECORDS_REST_ENDPOINTS
+
 
 @pytest.yield_fixture(scope="function")
 def app(request):

@@ -1,7 +1,8 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from flask.views import MethodView
 
 from oarepo_ui.proxy import current_oarepo_ui
+from oarepo_ui.signals import before_facet_options
 
 
 class EndpointOptionsView(MethodView):
@@ -10,15 +11,19 @@ class EndpointOptionsView(MethodView):
     def __init__(self, endpoint):
         self.endpoint = endpoint
 
-    def options(self):
+    def options(self, *args, **kwargs):
         ret = {}
         index_name = self.endpoint['config'].get('search_index')
         if index_name:
             index = current_oarepo_ui.facets[index_name]
-            ret['facets'] = current_oarepo_ui._translate_facets(index.get('aggs', {}), index_name=index_name,
-                                                                index=index)
-            ret['filters'] = current_oarepo_ui._translate_filters(index.get('filters', {}), index_name=index_name,
-                                                                  index=index)
+            index = {**index}
+            before_facet_options.send(self, index_name=index_name, index=index, request=request, view_args=args,
+                                      view_kwargs=kwargs)
+
+            ret['facets'] = current_oarepo_ui._translate_facets(
+                index.get('aggs', {}), index_name=index_name, index=index)
+            ret['filters'] = current_oarepo_ui._translate_filters(
+                index.get('filters', {}), index_name=index_name, index=index)
         return jsonify(ret)
 
 
