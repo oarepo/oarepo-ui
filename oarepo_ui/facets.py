@@ -1,7 +1,38 @@
+from flask_login import current_user
+
 from oarepo_ui.constants import no_translation
 from oarepo_ui.utils import get_oarepo_attr, partial_format
 
+# COMMON FACETS
 
+def term_facet(field, order='desc', size=100, missing=None):
+    ret = {
+        'terms': {
+            'field': field,
+            'size': size,
+            "order": {"_count": order}
+        },
+    }
+    if missing is not None:
+        ret['terms']['missing'] = missing
+    return ret
+
+
+# ROLE FACETS
+class RoleFacets:
+    def __init__(self, **kwargs):
+        self.data = kwargs
+
+    def current_role(self):
+        if current_user.is_anonymous:
+            return 'anonymous'  # pragma: no cover
+        return 'authenticated'
+
+    def get(self, key, default=None):
+        return self.data.get(self.current_role(), {}).get(key, default)
+
+
+# TRANSLATED FACETS
 class TranslatedFacet(dict):
     def __init__(self, facet_val, label, value, translator, permissions, possible_values):
         assert isinstance(facet_val, dict)
@@ -16,7 +47,8 @@ class TranslatedFacet(dict):
 def make_translated_facet(facet_val, label, value, translator, permissions, possible_values=None):
     if callable(facet_val):
         oarepo = get_oarepo_attr(facet_val)
-        oarepo['translation'] = TranslatedFacet({}, label, value, translator, permissions, possible_values)
+        oarepo['translation'] = TranslatedFacet({}, label, value, translator, permissions,
+                                                possible_values)
         return facet_val
     else:
         return TranslatedFacet(facet_val, label, value, translator, permissions, possible_values)
@@ -39,14 +71,18 @@ def get_translated_facet(facet):
     return None
 
 
-def translate_facets(facets, label=None, value=None, translator=None, permissions=None, possible_values=None):
+def translate_facets(facets, label=None, value=None, translator=None, permissions=None,
+                     possible_values=None):
     facets = {**facets}
     possible_values = possible_values or {}
     for facet_key, facet_val in list(facets.items()):
         facets[facet_key] = translate_facet(
             facet_val,
-            label=partial_format(label, facet_key=facet_key) if label and label is not no_translation else label,
-            value=partial_format(value, facet_key=facet_key) if value is not no_translation else value,
+            label=partial_format(label,
+                                 facet_key=facet_key) if label and label is not no_translation
+            else label,
+            value=partial_format(value,
+                                 facet_key=facet_key) if value is not no_translation else value,
             translator=translator,
             permissions=permissions,
             possible_values=possible_values.get(facet_key, None))
@@ -54,7 +90,8 @@ def translate_facets(facets, label=None, value=None, translator=None, permission
     return facets
 
 
-def translate_facet(facet, label=None, value=None, translator=None, permissions=None, possible_values=None):
+def translate_facet(facet, label=None, value=None, translator=None, permissions=None,
+                    possible_values=None):
     if not is_translated_facet(facet):
         return make_translated_facet(
             facet,
@@ -63,7 +100,7 @@ def translate_facet(facet, label=None, value=None, translator=None, permissions=
             translator=translator,
             permissions=permissions,
             possible_values=possible_values)
-    else:
+    else:  # pragma: no cover
         translation = get_translated_facet(facet)
         if translation:
             translation.label = translation.label or label

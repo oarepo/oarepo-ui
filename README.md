@@ -153,6 +153,28 @@ RECORDS_REST_FACETS = {
 }
 ```
 
+### Facets and filters library
+
+#### Filters
+
+``exclude_filter``: Takes one argument, which is facet function and invert search query using bool must_not query.
+```python
+f = exclude_filter(terms_filter('test'))
+res = f(['a', 'b']).to_dict()
+res == {
+  "bool": {
+    "must_not": [
+      {
+        "terms": {
+          "test": ["a", "b"]
+        }
+      }
+    ]
+  }
+}
+```
+  
+
 
   [image]: https://img.shields.io/github/license/oarepo/oarepo-ui.svg
   [1]: https://github.com/oarepo/oarepo-ui/blob/master/LICENSE
