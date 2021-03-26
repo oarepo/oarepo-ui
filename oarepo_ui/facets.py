@@ -3,6 +3,7 @@ from flask_login import current_user
 from oarepo_ui.constants import no_translation
 from oarepo_ui.utils import get_oarepo_attr, partial_format
 
+
 # COMMON FACETS
 
 def term_facet(field, order='desc', size=100, missing=None):
@@ -15,6 +16,26 @@ def term_facet(field, order='desc', size=100, missing=None):
     }
     if missing is not None:
         ret['terms']['missing'] = missing
+    return ret
+
+
+def date_histogram_facet(field, calendar_interval="year", format="yyyy"):
+    """
+    ES Date histogram aggregation
+
+    :param field: address of field in the source
+    :param calendar_interval:
+    :param format:
+    :return:
+    :rtype:
+    """
+    ret = {
+        "date_histogram": {
+            "field": field,
+            "calendar_interval": calendar_interval,
+            "format": format
+        }
+    }
     return ret
 
 
