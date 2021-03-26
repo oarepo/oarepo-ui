@@ -26,6 +26,46 @@ def date_year_range(field, start_date_math=None, end_date_math=None, **kwargs):
 
     return inner
 
+
+def group_by_terms_filter(field, mapping: dict):
+    """
+    Group terms in group.
+    Example:
+
+    .. code-block:: python
+
+        group_by_terms_filter('accessRights.title.en.raw', {
+        "true": "open access",
+        1: "open access",
+        True: "open access",
+        "1": "open access",
+        False: ["embargoed access", "restricted access", "metadata only access"],
+        0: ["embargoed access", "restricted access", "metadata only access"],
+        "false": ["embargoed access", "restricted access", "metadata only access"],
+        "0": ["embargoed access", "restricted access", "metadata only access"],
+        })
+
+
+    :param mapping: Dict that map value to another
+    :param field: Field name.
+    :returns: Function that returns the Terms query.
+    """
+
+    def inner(values):
+        terms = []
+        for value in values:
+            term = mapping.get(value, [])
+            if isinstance(term, list):
+                terms.extend(term)
+            elif isinstance(term, (str, int, bool)):
+                terms.append(term)
+            else:
+                raise NotImplementedError
+        return Q('terms', **{field: terms})
+
+    return inner
+
+
 # TODO: If necessary, uncomment it. Don't know if it is general enough.
 # def state_terms_filter(field):
 #     def inner(values):
