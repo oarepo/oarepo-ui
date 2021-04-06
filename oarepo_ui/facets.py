@@ -18,6 +18,26 @@ def term_facet(field, order='desc', size=100, missing=None):
     return ret
 
 
+def date_histogram_facet(field, calendar_interval="year", format="yyyy"):
+    """
+    ES Date histogram aggregation
+
+    :param field: address of field in the source
+    :param calendar_interval:
+    :param format:
+    :return:
+    :rtype:
+    """
+    ret = {
+        "date_histogram": {
+            "field": field,
+            "calendar_interval": calendar_interval,
+            "format": format
+        }
+    }
+    return ret
+
+
 # ROLE FACETS
 class RoleFacets:
     def __init__(self, **kwargs):
