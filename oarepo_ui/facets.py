@@ -3,7 +3,6 @@ from flask_login import current_user
 from oarepo_ui.constants import no_translation
 from oarepo_ui.utils import get_oarepo_attr, partial_format
 
-
 # COMMON FACETS
 
 def term_facet(field, order='desc', size=100, missing=None):
