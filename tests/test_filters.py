@@ -4,7 +4,12 @@ import pytest
 from elasticsearch_dsl.query import Terms
 from invenio_records_rest.facets import terms_filter
 
-from oarepo_ui.filters import boolean_filter, date_year_range, exclude_filter, nested_filter
+from oarepo_ui.filters import (
+    boolean_filter,
+    date_year_range,
+    exclude_filter,
+    nested_filter,
+)
 
 
 def test_exclude_filter():

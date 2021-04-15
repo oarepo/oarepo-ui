@@ -156,15 +156,3 @@ def test_nested_facet():
             }
         }
     }
-
-
-# def test_nested_facet_2(app):
-#     f = nested_facet('resourceType', language_aware_text_term_facet('resourceType.title'))
-#     res = f(['a', 'b']).to_dict()
-#     assert res == {
-#         'nested': {
-#             'path': 'accessRights',
-#             'query': {'terms': {'accessRights.title.en.raw': ['a', 'b']}}
-#         }
-#     }
-#     pprint(res)
