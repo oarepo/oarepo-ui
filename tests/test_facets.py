@@ -7,6 +7,7 @@ from oarepo_ui.facets import (
     RoleFacets,
     TranslatedFacet,
     get_translated_facet,
+    nested_facet,
     term_facet,
     translate_facets,
 )
@@ -17,7 +18,7 @@ def test_term_facet():
     assert res == {'terms': {'field': 'test', 'size': 100, 'order': {'_count': 'desc'}}}
 
 
-def test_term_facet():
+def test_term_facet_2():
     res = term_facet('test', missing="missing_field")
     assert res == {
         'terms': {
@@ -76,7 +77,7 @@ def test_translate_facets(app):
     assert aggs == {'category': {'terms': {'field': 'category'}}}
 
 
-def test_translate_facets(app):
+def test_translate_facets_2(app):
     FACETS = {
         'category': {
             'terms': {
@@ -143,3 +144,14 @@ def test_get_translated_facet():
     facet = TranslatedFacet(facet, None, None, None, None, None)
     res2 = get_translated_facet(facet)
     assert res2 == {'terms': {'field': 'category'}}
+
+
+def test_nested_facet():
+    facet = nested_facet("test", term_facet('test.path.bla'))
+    assert facet == {
+        'nested': {'path': 'test'}, 'aggs': {
+            'inner_facet': {
+                'terms': {'field': 'test.path.bla', 'size': 100, 'order': {'_count': 'desc'}}
+            }
+        }
+    }
