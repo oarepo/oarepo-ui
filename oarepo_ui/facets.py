@@ -1,3 +1,4 @@
+from flask import current_app
 from flask_login import current_user
 
 from oarepo_ui.constants import no_translation
@@ -6,14 +7,27 @@ from oarepo_ui.utils import get_oarepo_attr, partial_format
 
 # COMMON FACETS
 def nested_facet(path, inner_facet):
-    return {
-      "nested": {
-        "path": path
-      },
-      "aggs": {
-        "inner_facet": inner_facet
-      }
-    }
+    if callable(inner_facet):
+        def inner():
+            return {
+                "nested": {
+                    "path": path
+                },
+                "aggs": {
+                    "inner_facet": inner_facet()
+                }
+            }
+
+        return inner
+    else:
+        return {
+          "nested": {
+            "path": path
+          },
+          "aggs": {
+            "inner_facet": inner_facet
+          }
+        }
 
 def term_facet(field: str, order: str = 'desc', size: int = 100, missing: str = None) -> dict:
     ret: dict = {

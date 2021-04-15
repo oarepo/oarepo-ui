@@ -1,6 +1,7 @@
 from flask import current_app
 from invenio_records_rest.facets import default_facets_factory, terms_filter
 from invenio_search import RecordsSearch
+from oarepo_multilingual import language_aware_text_term_facet
 
 from oarepo_ui import translate_facet, translate_filters
 from oarepo_ui.facets import (
@@ -155,3 +156,15 @@ def test_nested_facet():
             }
         }
     }
+
+
+# def test_nested_facet_2(app):
+#     f = nested_facet('resourceType', language_aware_text_term_facet('resourceType.title'))
+#     res = f(['a', 'b']).to_dict()
+#     assert res == {
+#         'nested': {
+#             'path': 'accessRights',
+#             'query': {'terms': {'accessRights.title.en.raw': ['a', 'b']}}
+#         }
+#     }
+#     pprint(res)
