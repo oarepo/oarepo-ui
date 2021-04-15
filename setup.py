@@ -14,7 +14,8 @@ install_requires = [
 
 tests_require = [
     'invenio-i18n',
-    'oarepo[tests]'
+    'oarepo[tests]',
+    'oarepo-multilingual'
 ]
 
 extras_require = {

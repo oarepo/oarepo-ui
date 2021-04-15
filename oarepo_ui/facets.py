@@ -3,10 +3,33 @@ from flask_login import current_user
 from oarepo_ui.constants import no_translation
 from oarepo_ui.utils import get_oarepo_attr, partial_format
 
-# COMMON FACETS
 
-def term_facet(field, order='desc', size=100, missing=None):
-    ret = {
+# COMMON FACETS
+def nested_facet(path, inner_facet):
+    if callable(inner_facet):
+        def inner():
+            return {
+                "nested": {
+                    "path": path
+                },
+                "aggs": {
+                    "inner_facet": inner_facet()
+                }
+            }
+
+        return inner
+    else:
+        return {
+          "nested": {
+            "path": path
+          },
+          "aggs": {
+            "inner_facet": inner_facet
+          }
+        }
+
+def term_facet(field: str, order: str = 'desc', size: int = 100, missing: str = None) -> dict:
+    ret: dict = {
         'terms': {
             'field': field,
             'size': size,
@@ -18,7 +41,7 @@ def term_facet(field, order='desc', size=100, missing=None):
     return ret
 
 
-def date_histogram_facet(field, calendar_interval="year", format="yyyy"):
+def date_histogram_facet(field: str, calendar_interval: str = "year", format: str = "yyyy") -> dict:
     """
     ES Date histogram aggregation
 
@@ -28,7 +51,7 @@ def date_histogram_facet(field, calendar_interval="year", format="yyyy"):
     :return:
     :rtype:
     """
-    ret = {
+    ret: dict = {
         "date_histogram": {
             "field": field,
             "calendar_interval": calendar_interval,

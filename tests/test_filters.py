@@ -4,13 +4,30 @@ import pytest
 from elasticsearch_dsl.query import Terms
 from invenio_records_rest.facets import terms_filter
 
-from oarepo_ui.filters import boolean_filter, date_year_range, exclude_filter
+from oarepo_ui.filters import (
+    boolean_filter,
+    date_year_range,
+    exclude_filter,
+    nested_filter,
+)
 
 
 def test_exclude_filter():
     f = exclude_filter(terms_filter('test'))
     res = f(['a', 'b']).to_dict()
     assert res == {'bool': {'must_not': [{'terms': {'test': ['a', 'b']}}]}}
+    pprint(res)
+
+
+def test_nested_filter():
+    f = nested_filter("accessRights", terms_filter('accessRights.title.en.raw'))
+    res = f(['a', 'b']).to_dict()
+    assert res == {
+        'nested': {
+            'path': 'accessRights',
+            'query': {'terms': {'accessRights.title.en.raw': ['a', 'b']}}
+        }
+    }
     pprint(res)
 
 
@@ -25,6 +42,7 @@ def test_boolean_filter(value, result):
     res = f([value]).to_dict()
     assert res == result
 
+
 def test_date_year_range():
     f = date_year_range(
         'test_field',
@@ -33,4 +51,6 @@ def test_date_year_range():
         end_date_math='/y'
     )
     res = f(["2008"]).to_dict()
-    assert res == {'range': {'test_field': {'format': 'yyyy-mm', 'gte': '2008-01||/y', 'lte': '2008-12||/y'}}}
+    assert res == {
+        'range': {'test_field': {'format': 'yyyy-mm', 'gte': '2008-01||/y', 'lte': '2008-12||/y'}}
+    }

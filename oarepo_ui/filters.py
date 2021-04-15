@@ -1,5 +1,5 @@
 from elasticsearch_dsl import Q
-from elasticsearch_dsl.query import Bool
+from elasticsearch_dsl.query import Nested
 from invenio_records_rest.facets import range_filter
 
 from oarepo_ui.constants import no_translation
@@ -7,6 +7,22 @@ from oarepo_ui.utils import get_oarepo_attr, partial_format
 
 
 # COMMON FILTERS
+def nested_filter(path, query):
+    def inner(values):
+        return Q("nested", path=path, query=query(values).to_dict())
+
+    return inner
+
+# {
+#             "query": {
+#                 "nested": {
+#                     "path": path,
+#                     "query": query(values).to_dict()
+#                 }
+#             }
+#         }
+
+
 def boolean_filter(field):
     def val2bool(x):
         if x == '1' or x == 'true' or x is True:
