@@ -16,7 +16,6 @@ class EndpointOptionsView(MethodView):
         index_name = self.endpoint['config'].get('search_index')
         if index_name and index_name in current_oarepo_ui.facets:
             index = current_oarepo_ui.facets[index_name]
-            index = {**index}
             before_facet_options.send(self, index_name=index_name, index=index, request=request, view_args=args,
                                       view_kwargs=kwargs)
 

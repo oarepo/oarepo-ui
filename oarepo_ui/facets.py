@@ -62,7 +62,7 @@ def date_histogram_facet(field: str, calendar_interval: str = "year", format: st
 
 
 # ROLE FACETS
-class RoleFacets:
+class RoleFacets(dict):
     def __init__(self, **kwargs):
         self.data = kwargs
 
