@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "oarepo-ui"
+version = "3.0.0"
+description = "Frontend for serving UI metadata collected by a oarepo-model-builder"
+authors = []
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+invenio-base = ">=1.2.5"
+
+[tool.poetry.dependencies.invenio-records-resources]
+version = ">=0.18.3"
+allow-prereleases = true
+
+[tool.poetry.plugins.'invenio_base.api_blueprints']
+oarepo_ui = "oarepo_ui.views:blueprint"
+
+[tool.poetry.plugins.'invenio_base.api_apps']
+oarepo_ui = "oarepo_ui.ext:OARepoUIExt"
