@@ -8,4 +8,5 @@ class SourceParam(ParamInterpreter):
                          'uuid', 'version_id', 'created', 'updated', 'pid', 'id'
                      ] + params['source']
             return search.source(source)
+        # TODO: get the search params from the current ui context listing params
         return search
