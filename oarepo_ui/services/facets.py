@@ -1,6 +1,8 @@
 from invenio_records_resources.services.records.facets import FacetsResponse
 from invenio_records_resources.services.records.params.facets import FacetsParam
 
+from oarepo_ui.services.mixins import ContextMixin
+
 
 class SelectableFacetsResponse(FacetsResponse):
     def _iter_facets(self):
@@ -10,13 +12,14 @@ class SelectableFacetsResponse(FacetsResponse):
                       self._facets_param.selected_values.get(name, [])
 
 
-class SelectableFacetsParam(FacetsParam):
+class SelectableFacetsParam(ContextMixin, FacetsParam):
 
-    def aggregate(self, search, selected_facets):
-        if selected_facets is None:
-            return super().aggregate(search)
+    def aggregate(self, search, selected_facets, params):
+        context_facets = self.get_context(params, 'listing', 'facets') or self.facets.keys()
+        if selected_facets:
+            context_facets = set(context_facets) & set(selected_facets)
 
-        for names in (selected_facets or self.facets.keys()):
+        for names in context_facets:
             names = [x.strip() for x in names.split(',')]
             for name in names:
                 if name not in self.facets:
@@ -40,10 +43,24 @@ class SelectableFacetsParam(FacetsParam):
             SelectableFacetsResponse.create_response_cls(self))
 
         # Build search
-        search = self.aggregate(search, aggs)
+        search = self.aggregate(search, aggs, params)
         search = self.filter(search)
 
         # Update params
         params.update(self.selected_values)
 
         return search
+
+    # AND functionality, not OR
+    def filter(self, search):
+        """Apply a post filter on the search."""
+        if not self._filters:
+            return search
+
+        filters = list(self._filters.values())
+
+        post_filter = filters[0]
+        for f in filters[1:]:
+            post_filter &= f
+
+        return search.filter(post_filter)

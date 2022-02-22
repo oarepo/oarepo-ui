@@ -1,12 +1,16 @@
-from invenio_records_resources.services.records.params.base import ParamInterpreter
+from oarepo_ui.proxy import current_oarepo_ui
+from .mixins import ContextMixin
 
 
-class SourceParam(ParamInterpreter):
-    def apply(self, identity, search, params):
-        if params.get('source'):
-            source = [
-                         'uuid', 'version_id', 'created', 'updated', 'pid', 'id'
-                     ] + params['source']
-            return search.source(source)
-        # TODO: get the search params from the current ui context listing params
-        return search
+class SourceComponent(ContextMixin):
+    def __init__(self, service):
+        self.service = service
+        self.config = service.config
+
+    def search(self, identity, search, params):
+        listing_fields = self.get_context(params, 'listing', 'fields')
+        if not listing_fields:
+            return search
+        return search.source([
+                                 'uuid', 'version_id', 'created', 'updated', 'pid', 'id'
+                             ] + listing_fields)

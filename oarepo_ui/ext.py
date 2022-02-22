@@ -9,20 +9,28 @@ class OARepoUIState:
     def __init__(self, app):
         self.app = app
 
+    # TODO: change to cached_property
     @property
     def contexts(self):
         # iterate all the models and get their oarepo:ui sections
         ret = defaultdict(dict)
         for model_ep in pkg_resources.iter_entry_points('oarepo_ui.models'):
-            uidata = model_ep.load().uidata
-            self.load_model_uidata(ret, model_ep.module_name, model_ep.name, uidata)
-            print(uidata)
+            self.load_model_uidata(ret, model_ep.module_name, model_ep.name, model_ep.load().uidata)
         return ret
 
+    @cached_property
+    def context_check_callbacks(self):
+        ret = []
+        for model_ep in pkg_resources.iter_entry_points('oarepo_ui.context_check'):
+            ret.append(model_ep.load())
+        return ret
+
+    def check_oarepo_context(self, context_name: str, identity):
+        for callback in self.context_check_callbacks:
+            callback(context_name, identity)
+
     def get_context(self, context_id):
-        return self.contexts.get(context_id, {
-            'error': "No context with this id"
-        })
+        return self.contexts.get(context_id, None)
 
     def load_model_uidata(self, contexts, module_name, model_name, uidata):
         for context_name in uidata['context_names']:

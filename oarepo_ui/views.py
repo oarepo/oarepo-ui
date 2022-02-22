@@ -12,4 +12,6 @@ blueprint = Blueprint(
 
 @blueprint.route('/<context_id>')
 def serve_ui_context(context_id):
-    return jsonify(current_oarepo_ui.get_context(context_id))
+    return jsonify(current_oarepo_ui.get_context(context_id) or {
+        'error': "No context with this id"
+    })
