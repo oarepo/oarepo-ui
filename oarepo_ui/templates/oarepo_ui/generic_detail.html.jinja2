@@ -1,0 +1,23 @@
+{% import_macros %}
+<html>
+<head>
+    <style>
+        .flex-row {
+            display: flex;
+            flex-direction: row;
+        }
+        .component-column {
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        .debug-block {
+            background-color: rgba(100, 200, 200, 0.2);
+        }
+    </style>
+</head>
+<body>
+    {{ oarepo_ui.render_layout(layout=layout, data=record.metadata, record=record) }}
+</body>
+</html>
+

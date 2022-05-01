@@ -1,0 +1,59 @@
+{# render columns - that is a flex row #}
+{% macro render_columns(layout=layout, data=data, record=record) %}
+    <div class="flex-row component-columns debug-block">
+        {% for it in layout|item('items', []) %}
+            {{ oarepo_ui.render_layout(layout=it, data=data, record=record) }}
+        {% endfor %}
+    </div>
+{% endmacro %}
+
+{# render column #}
+{% macro render_column(layout=layout, data=data, record=record) %}
+    <div class="column component-column  debug-block">
+        {% for it in layout|item('items', []) %}
+            {{ oarepo_ui.render_layout(layout=it, data=data, record=record) }}
+        {% endfor %}
+    </div>
+{% endmacro %}
+
+{# render row #}
+{% macro render_row(layout=layout, data=data, record=record) %}
+    <div class="flex-row component-row  debug-block">
+        {% for it in layout|item('items', []) %}
+            {{ oarepo_ui.render_layout(layout=it, data=data, record=record) }}
+        {% endfor %}
+    </div>
+{% endmacro %}
+
+{# render data-based icon #}
+{% macro render_icon(layout=layout, data=data, record=record) %}
+    <pre class="debug-block">{{ layout|pprint }}</pre>
+{% endmacro %}
+
+{# render header #}
+{% macro render_header(layout=layout, data=data, record=record) %}
+    <h1>{{ data }}</h1>
+{% endmacro %}
+
+{# render inline block #}
+{% macro render_inline(layout=layout, data=data, record=record) %}
+    inline {{ oarepo_ui.render_layout(layout=layout.props.item, data=data, record=record) }}
+    {{ oarepo_ui.render_value(layout, data, record) }}
+{% endmacro %}
+
+{# render label #}
+{% macro render_label(layout=layout, data=data, record=record) %}
+    label <pre class="debug-block">{{ layout|pprint }}</pre>
+    {{ oarepo_ui.render_value(layout, data, record) }}
+{% endmacro %}
+
+{# render shortened-text #}
+{% macro render_shortened_text(layout=layout, data=data, record=record) %}
+    <pre class="debug-block">{{ layout|pprint }}</pre>
+    {{ oarepo_ui.render_value(layout, data, record) }}
+{% endmacro %}
+
+{# render unknown component #}
+{% macro render_unknown(layout=layout, data=data, record=record) %}
+    <div style="color: red">Unknown component {{ layout|pprint }}</div>
+{% endmacro %}

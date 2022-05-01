@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "oarepo-ui"
+version = "3.5.0"
+description = "UI module for invenio 3.5+"
+authors = ["Mirek Simek <miroslav.simek@vscht.cz>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+Flask = "^2.1.2"
+invenio-records-resources = "^0.19.11"
+
+[tool.poetry.dev-dependencies]
+invenio = {version = ">=3.5.0a4", extras = ["db", "elasticsearch7"]}
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

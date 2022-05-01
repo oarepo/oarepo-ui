@@ -1,0 +1,20 @@
+{% macro render_layout(layout, data, record) -%}
+    {% if layout is list %}
+        {% for l in layout %}
+            {{ render_layout(layout=l, data=data, record=record) }}
+        {% endfor %}
+    {% else %}
+        {% set render_component = get_component(layout.component) %}
+        {% if layout.data %}
+            {% if data[layout.data] %}
+                {{ render_component(layout=layout, data=data[layout.data], record=record) }}
+            {% endif %}
+        {% elif data %}
+            {{ render_component(layout=layout, data=data, record=record) }}
+        {% endif %}
+    {% endif %}
+{%- endmacro %}
+
+{% macro render_value(layout, data, record) -%}
+    {{ data }}
+{%- endmacro %}
