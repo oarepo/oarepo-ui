@@ -8,8 +8,8 @@ sidebar_position: 1
 
 :::note Implementation state:
 
-- jinja2: Not implemented yet
-- react: Not implemented yet
+- **jinja2**: Not implemented yet
+- **react**: Not implemented yet
 
 :::
 
