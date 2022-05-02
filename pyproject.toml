@@ -21,3 +21,6 @@ oarepo_ui = "oarepo_ui.views:blueprint"
 
 [tool.poetry.plugins.'invenio_base.api_apps']
 oarepo_ui = "oarepo_ui.ext:OARepoUIExt"
+
+[tool.poetry.plugins.'invenio_base.apps']
+oarepo_ui = "oarepo_ui.ext:OARepoUIExt"
