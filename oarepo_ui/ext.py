@@ -44,7 +44,7 @@ class OARepoUIState:
             for kk in dir(val):
                 if kk.startswith('render_'):
                     component_name = kk[len('render_'):]
-                    ret[component_name] = getattr(val, kk)
+                    ret[component_name] = (name, kk)
         return ret
 
 

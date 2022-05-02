@@ -1,0 +1,27 @@
+{% import_macros %}<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"
+            integrity="sha512-dqw6X88iGgZlTsONxZK9ePmJEFrmHwpuMrsUChjAw1mRUhUITE5QU9pkcSox+ynfLhL15Sv2al5A0LVyDCmtUw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css"/>
+    <style>
+        .placeholder {
+            max-width: initial !important;
+        }
+        .demo {
+            border: 1px dotted green;
+        }
+    </style>
+</head>
+<body>
+<div class="ui container" style="margin-top: 20px">
+    {% for layout_name, layout in layouts.items() %}
+        <h2>{{ layout_name }}</h2>
+        {{ oarepo_ui.render_layout(layout=layout, data=record.metadata, record=record) }}
+    {% endfor %}
+</div>
+</body>
+</html>
+

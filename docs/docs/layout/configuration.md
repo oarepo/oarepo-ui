@@ -31,6 +31,8 @@ be nested at multiple levels:
     "props": {
       "className": "list of html classes",
       "style": "html style element, prefer 'classes'"
+      "itemClassName": "list of html classes to insert to the child element",
+      "itemStyle": "style to insert to the child element",
       // Other properties accepted by the component.
     },
     // Describes how individual list items should be rendered

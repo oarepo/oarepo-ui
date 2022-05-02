@@ -5,7 +5,7 @@ from oarepo_ui.resources.default_ui_extension import DefaultUIExtensionConfig
 from oarepo_ui.resources.templating import render_template_with_macros
 from oarepo_ui.views import blueprint
 
-app = Flask('sample_server')
+app = Flask('sample_server', template_folder='templates')
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 OARepoUIExtension(app)
 ext = app.extensions["oarepo_ui"]
@@ -59,129 +59,27 @@ def index():
               "links": {"self": "/api/nr_theses_metadata/qq28e-k8m51"}}
 
     return render_template_with_macros(
-        'oarepo_ui/generic_detail.html.jinja2',
+        'sample_server.html.jinja2',
         record=record,
         data=record['metadata'],
-        layout=layout
+        layouts={
+            'Simple grid with two columns': layout
+        }
     )
 
 
 layout = [
     {
-        "component": "columns",
+        "component": "grid",
+        "props": {
+            "className": "two column demo"
+        },
         "items": [
             {
-                "component": "column",
-                "props": {
-                    "stretched": True,
-                    "width": "3",
-                    "class": "result-item-aside"
-                },
-                "items": [
-                    {
-                        "component": "icon",
-                        "data": "access_status"
-                    },
-                    {
-                        "component": "icon",
-                        "data": "rights"
-                    }
-                ]
+                "component": "placeholder",
             },
             {
-                "component": "column",
-                "items": [
-                    {
-                        "component": "header",
-                        "data": "title",
-                        "props": {
-                            "size": "medium"
-                        }
-                    },
-                    {
-                        "component": "row",
-                        "props": {
-                            "separator": "‖"
-                        },
-                        "items": [
-                            {
-                                "component": "inline",
-                                "data": "creators",
-                                "props": {
-                                    "separator": "|",
-                                    "item": {
-                                        "component": "authority"
-                                    }
-                                }
-                            },
-                            {
-                                "component": "inline",
-                                "data": "contributors",
-                                "props": {
-                                    "separator": "|",
-                                    "item": {
-                                        "component": "authority",
-                                        "props": {
-                                            "class": "text-gray"
-                                        }
-                                    }
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "component": "row",
-                        "props": {
-                            "separator": "‖"
-                        },
-                        "items": [
-                            {
-                                "component": "label",
-                                "data": "publication_year",
-                                "props": {
-                                    "basic": True
-                                }
-                            },
-                            {
-                                "component": "label",
-                                "data": "language",
-                                "props": {
-                                    "basic": True
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "component": "row",
-                        "items": [
-                            {
-                                "component": "label",
-                                "data": "resource_type"
-                            },
-                            {
-                                "component": "label",
-                                "data": "defended"
-                            }
-                        ]
-                    },
-                    {
-                        "component": "row",
-                        "props": {
-                            "separator": "|",
-                            "data": "keywords",
-                            "item": {
-                                "component": "label"
-                            }
-                        }
-                    },
-                    {
-                        "component": "shortened-text",
-                        "props": {
-                            "data": "abstract",
-                            "length": 350
-                        }
-                    }
-                ]
+                "component": "placeholder",
             }
         ]
     }
