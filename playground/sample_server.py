@@ -72,9 +72,59 @@ layout = [
     {
         "component": "grid",
         "props": {
-            "className": "two column demo"
+            "className": "demo",
+            "columns": "2",
+            "rows": True
         },
         "items": [
+            {
+                "component": "row",
+                "items": [
+                    {
+                        "component": "placeholder",
+                    }
+                ]
+            },
+            {
+                "component": "placeholder",
+            }
+        ]
+    }
+]
+
+layout = [
+    {
+        "component": "grid",
+        "props": {
+            "className": "demo",
+        },
+        "rows": [
+            {
+                "columns": [
+                    {
+                        "component": "placeholder",
+                    }
+                ]
+            },
+            {
+                "columns": [
+                    {
+                        "component": "placeholder",
+                    }
+                ]
+            }
+        ]
+    }
+]
+
+layout = [
+    {
+        "component": "grid",
+        "props": {
+            "className": "demo",
+            "columns": 2
+        },
+        "columns": [
             {
                 "component": "placeholder",
             },

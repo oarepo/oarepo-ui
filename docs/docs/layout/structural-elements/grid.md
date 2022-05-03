@@ -17,9 +17,6 @@ A [Semantic-UI Grid](https://semantic-ui.com/collections/grid.html#/definition) 
 
 ## Properties
 
-Accepts one of the following `props`:
-
-- `rows`: number of rendered Grid rows
 - `columns`: number of rendered Grid columns
 
 :::tip Full Docs
@@ -38,23 +35,44 @@ Doesn't directly render any data referenced by `data` path.
 
 ## Example
 
+### Container grid with a fixed number of columns
+
 ```json title=layout.json5
 {
   "component": "grid",
-  "props": {
-    "columns": 2
-  },
-  "items": [
+  "columns": 2,
+  "columns": [
     {
-      "component": "column",
-      "items": [
-        // {/* CDB */}
-      ]
+        "component": "placeholder",
     },
     {
-      "component": "column"
-      "items": [
-        // {/* CDB */}
+        "component": "placeholder",
+    },
+    {
+        "component": "placeholder",
+    },
+    {
+        "component": "placeholder",
+    }
+  ]
+}
+```
+
+### Grid with rows
+
+```json title=layout.json5
+{
+  "component": "grid",
+  "rows": [
+    {
+      "className": "odd",
+      "columns": [
+        {
+          "component": "placeholder",
+        },
+        {
+          "component": "placeholder",
+        }
       ]
     }
   ]

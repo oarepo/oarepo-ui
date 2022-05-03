@@ -27,23 +27,13 @@ be nested at multiple levels:
     // (actual data is to be provided separately in the UI render context).
     "data": "<dotted_path_to_data>",
 
+    "className": "list of html classes",
+    "style": "html style element, prefer 'classes'",
+
     // Properties passed as component props.
     "props": {
-      "className": "list of html classes",
-      "style": "html style element, prefer 'classes'"
-      "itemClassName": "list of html classes to insert to the child element",
-      "itemStyle": "style to insert to the child element",
-      // Other properties accepted by the component.
+      // Extra props for the component, jinja or react specific
     },
-    // Describes how individual list items should be rendered
-    // (useful for list-based components where data needs to be rendered as list of items).
-    "item": {/* CDB */}
-    // Description of component's children (useful for container-based components).
-    "items": [
-      //{/* CDB */},
-      //{/* CDB */},
-      //...
-    ]
   }
   //{/* CDB */}
   //...
