@@ -2,9 +2,7 @@
 sidebar_position: 1
 ---
 
-# Docs Intro
-
-## Getting Started
+# Getting Started
 
 Get started by **creating a new OARepo repository site from a metadata model specification**.
 
@@ -14,7 +12,7 @@ Needs more work
 
 :::
 
-### What you'll need
+## What you'll need
 
 :::caution TODO
 
