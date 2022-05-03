@@ -1,0 +1,66 @@
+---
+sidebar_position: 1
+---
+
+# Placeholder
+
+`component: 'placeholder'`
+
+:::note Implementation state:
+
+- **Jinja2**: 🏗
+- **React**: [✅](https://link-to-react-docs)
+
+:::
+
+A [Semantic-UI Placeholder](https://semantic-ui.com/elements/placeholder.html#/definition) element
+used to reserve space for content that soon will appear in a layout. It fills the 100% width
+of a parent container by default (uses `fluid` property).
+
+## Properties
+
+| Name    | Description                                                                             |
+| ------- | --------------------------------------------------------------------------------------- |
+| `type`  | placeholder representation type (possible values: `paragraph`, `image-header`, `image`) |
+| `lines` | number of placeholder content lines (useful for `image-header` and `paragraph` types)   |
+| `props` | any extra props passed down to Placeholder component                                    |
+
+:::tip Additional Docs
+
+- [Semantic-UI Placeholder](https://semantic-ui.com/elements/placeholder.html#/definition)
+- [Semantic-UI React Placeholder](https://react.semantic-ui.com/elements/placeholder/)
+
+:::
+
+## Data
+
+:::info Data rendering
+
+Doesn't directly render any data referenced by the `data` path.
+
+:::
+
+## Example
+
+### Square image placeholder
+
+```json title=layout.json5
+{
+  "component": "placeholder",
+  "type": "image",
+  "props": {
+    "fluid": false,
+    "square": true
+  }
+}
+```
+
+### Multiline placeholder
+
+```json title=layout.json5
+{
+  "component": "placeholder",
+  "type": "paragraph",
+  "lines": 3
+}
+```
