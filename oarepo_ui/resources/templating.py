@@ -4,6 +4,7 @@ from jinja2 import nodes, pass_context
 from jinja2.ext import Extension
 
 from oarepo_ui.proxies import current_oarepo_ui
+from oarepo_ui.utils import n2w
 
 
 class ImportMacros(Extension):
@@ -70,24 +71,26 @@ def get_data(layout_data_definition, data, record):
     return list(_rec(layout_data_definition.split('.'), data))
 
 
-def get_props(props, className, style):
-    if not props:
-        props = {}
+def get_props(layout_props, className, style):
+    if not layout_props:
+        layout_props = {}
     else:
-        props = {**props}
+        layout_props = {**layout_props}
     if className:
-        if 'className' not in props:
-            props['className'] = className
+        if 'className' not in layout_props:
+            layout_props['className'] = className
         else:
-            props['className'] += ' ' + className
+            layout_props['className'] += ' ' + className
     if style:
-        if 'style' not in props:
-            props['style'] = style
+        if 'style' not in layout_props:
+            layout_props['style'] = style
         else:
-            if not props['style'].strip().endswith(';'):
-                props['style'] += '; '
-            props['style'] += style
-    return props
+            if not layout_props['style'].strip().endswith(';'):
+                layout_props['style'] += '; '
+            layout_props['style'] += style
+    layout_props.pop('data', None)  # remove already processed stuff from the props
+    layout_props.pop('component', None)
+    return layout_props
 
 
 def merge_class_name(class_name, merged):
@@ -111,11 +114,15 @@ def get_macro_environment(context):
     app.update_template_context(context)
     env = app.jinja_env.overlay(extensions=[ImportMacros])
     env.tests.update({'list': is_list})
-    env.filters.update({'item': get_item})
+    env.filters.update({
+        'item': get_item,
+        'remove_property': lambda val, prop: {k: v for k, v in val.items() if k != prop},
+    })
     env.globals.update({
         'get_component': get_component,
         'get_data': get_data,
         'get_props': get_props,
-        'merge_class_name': merge_class_name
+        'merge_class_name': merge_class_name,
+        'number_to_word': n2w,
     })
     return app, env

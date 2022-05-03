@@ -13,7 +13,8 @@ sidebar_position: 1
 
 :::
 
-A [Semantic-UI Grid](https://semantic-ui.com/collections/grid.html#/definition) container element. It expects its children items to be either `column` or `row` elements (if `props.rows` is used)
+A [Semantic-UI Grid](https://semantic-ui.com/collections/grid.html#/definition) container element. It expects its
+children items to be either `column` or `row` elements (if `props.rows` is used)
 
 ## Properties
 
@@ -65,10 +66,25 @@ Doesn't directly render any data referenced by `data` path.
   "component": "grid",
   "rows": [
     {
-      "className": "odd",
       "columns": [
         {
           "component": "placeholder",
+        },
+        {
+          "component": "placeholder",
+        }
+      ]
+    },
+    {
+      "columns": [
+        {
+          "component": "column",
+          "className": "ten wide",
+          "items": [
+            {
+              "component": "placeholder",
+            }
+          ]
         },
         {
           "component": "placeholder",

@@ -1,11 +1,26 @@
 {# render semantic-ui grid #}
-{% macro render_grid(layout, data, record, className, style, rows, itemClassName, itemStyle) %}
-    <div class="ui {{ className }} grid {{ 'container' if not rows else '' }}">
-        {% for it in layout|item('items', []) %}
-            {{ oarepo_ui.render_layout(layout=it, data=data, record=record,
-                className=merge_class_name(itemClassName, 'row' if rows else 'column'),
-                style=itemStyle) }}
-        {% endfor %}
+{% macro render_grid(layout, data, record, className, style, rows, columns, columnsPerRow) %}
+    {% set cols=number_to_word(columnsPerRow) + ' column' if columnsPerRow else '' %}
+    <div class="ui {{ className }} grid {{ 'container' if not rows else '' }} {{ cols }}">
+        {% if rows %}
+            {% for r in rows %}
+                <div class="row stretched {{ cols }}">
+                    {% for c in r.columns %}
+                        <div class="column stretched {{ c.columnClassName }}">
+                            {{ oarepo_ui.render_layout(layout=c|remove_property('columnClassName'), data=data, record=record) }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        {% elif columns %}
+            {% for c in columns %}
+                <div class="column stretched {{ c.columnClassName }}">
+                    {{ oarepo_ui.render_layout(layout=c|remove_property('columnClassName'), data=data, record=record) }}
+                </div>
+            {% endfor %}
+        {% else  %}
+            <div class="error">Error rendering grid: either row or columns expected, got {{ layout|pprint }}</div>
+        {% endif %}
     </div>
 {% endmacro %}
 

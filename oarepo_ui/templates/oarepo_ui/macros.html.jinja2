@@ -6,7 +6,7 @@
     {% else %}
         {% set render_component = get_component(layout.component) %}
         {% set rendered_data = get_data(layout.data, data, record) %}
-        {% set props = get_props(layout.props, className, style) %}
+        {% set props = get_props(layout, className, style) %}
         {{ render_component(layout=layout, data=rendered_data, record=record, **props) }}
     {% endif %}
 {%- endmacro %}

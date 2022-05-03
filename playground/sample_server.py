@@ -69,14 +69,17 @@ def index():
     )
 
 
-
 row_layout = [
     {
         "component": "grid",
         "className": "demo",
+        "columnsPerRow": 2,
         "rows": [
             {
                 "columns": [
+                    {
+                        "component": "placeholder",
+                    },
                     {
                         "component": "placeholder",
                     }
@@ -84,6 +87,15 @@ row_layout = [
             },
             {
                 "columns": [
+                    {
+                        "component": "column",
+                        "className": "ten wide",
+                        "items": [
+                            {
+                                "component": "placeholder",
+                            }
+                        ]
+                    },
                     {
                         "component": "placeholder",
                     }
