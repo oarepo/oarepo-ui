@@ -30,10 +30,8 @@ be nested at multiple levels:
     "className": "list of html classes",
     "style": "html style element, prefer 'classes'",
 
-    // Properties passed as component props.
-    "props": {
-      // Extra props for the component, jinja or react specific
-    },
+    // Extra props for the component, jinja or react specific
+    ...props
   }
   //{/* CDB */}
   //...

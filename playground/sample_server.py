@@ -63,41 +63,17 @@ def index():
         record=record,
         data=record['metadata'],
         layouts={
-            'Simple grid with two columns': layout
+            'Simple grid with two columns': column_layout,
+            'Simple grid with two rows': row_layout
         }
     )
 
 
-layout = [
-    {
-        "component": "grid",
-        "props": {
-            "className": "demo",
-            "columns": "2",
-            "rows": True
-        },
-        "items": [
-            {
-                "component": "row",
-                "items": [
-                    {
-                        "component": "placeholder",
-                    }
-                ]
-            },
-            {
-                "component": "placeholder",
-            }
-        ]
-    }
-]
 
-layout = [
+row_layout = [
     {
         "component": "grid",
-        "props": {
-            "className": "demo",
-        },
+        "className": "demo",
         "rows": [
             {
                 "columns": [
@@ -117,13 +93,11 @@ layout = [
     }
 ]
 
-layout = [
+column_layout = [
     {
         "component": "grid",
-        "props": {
-            "className": "demo",
-            "columns": 2
-        },
+        "columnsPerRow": 2,
+        "className": "demo",
         "columns": [
             {
                 "component": "placeholder",
