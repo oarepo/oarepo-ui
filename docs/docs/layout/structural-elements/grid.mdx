@@ -1,0 +1,101 @@
+---
+sidebar_position: 1
+---
+
+# Grid
+
+`component: 'grid'`
+
+:::note Implementation state:
+
+- **Jinja2**: 🏗
+- **React**: 🏗
+
+:::
+
+A [Semantic-UI Grid](https://semantic-ui.com/collections/grid.html#/definition) container element that
+renders its contents in a responsive columns and/or rows.
+
+## Properties
+
+| Name            | Description                                       |
+| --------------- | ------------------------------------------------- |
+| `columnsPerRow` | number of columns rendered per each row in a grid |
+| `columns`       | list of _CDB_ descriptions of column items        |
+| `rows`          | list of _CDB_ descriptions of grid row items      |
+
+:::tip Additional Docs
+
+- [Semantic-UI Grid](https://semantic-ui.com/collections/grid.html#/definition)
+- [Semantic-UI React Grid](https://react.semantic-ui.com/collections/grid/)
+
+:::
+
+## Data
+
+:::info Data rendering
+
+Doesn't directly render any data referenced by the `data` path.
+
+:::
+
+## Example
+
+### Container grid with a fixed number of columns
+
+```json title=layout.json5
+{
+  "component": "grid",
+  "columnsPerRow": 2,
+  "columns": [
+    {
+      "component": "placeholder"
+    },
+    {
+      "component": "placeholder"
+    },
+    {
+      "component": "placeholder"
+    },
+    {
+      "component": "placeholder"
+    }
+  ]
+}
+```
+
+### Grid with rows
+
+```json title=layout.json5
+{
+  "component": "grid",
+  "rows": [
+    {
+      "columns": [
+        {
+          "component": "placeholder"
+        },
+        {
+          "component": "placeholder"
+        }
+      ]
+    },
+    {
+      "columns": [
+        {
+          "component": "column",
+          "className": "ten wide",
+          "items": [
+            {
+              "component": "placeholder"
+            }
+          ]
+        },
+        {
+          "component": "placeholder"
+        }
+      ]
+    }
+  ]
+}
+```
