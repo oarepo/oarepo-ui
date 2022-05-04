@@ -1,0 +1,144 @@
+---
+sidebar_position: 1
+---
+
+import Tabs from '@theme/Tabs'
+import TabItem from '@theme/TabItem'
+import { GeneratedUI } from 'react-generative-ui'
+
+# Column
+
+A [Semantic-UI Grid Column](https://semantic-ui.com/collections/grid.html#columns) container element that
+renders its contents in a responsive column.
+
+```yaml
+component: 'column'
+```
+
+:::note Implementation state:
+
+- **Jinja2**: [🏗](work-in-progress)
+- **React**: [✅](https://github.com/oarepo/react-generative-ui/blob/master/src/components/Column.tsx)
+
+:::
+
+## Properties
+
+| Name    | Description                                |
+| ------- | ------------------------------------------ |
+| `items` | list of _CDB_ descriptions of column items |
+
+:::tip Additional Docs
+
+- [Semantic-UI Grid Columns](https://semantic-ui.com/collections/grid.html#columns)
+- [Semantic-UI React Grid.Column](https://react.semantic-ui.com/collections/grid/)
+
+:::
+
+## Data
+
+:::info Data rendering
+
+Doesn't directly render any data referenced by the `data` path.
+
+:::
+
+## Example
+
+### Container grid with a fixed number of columns
+
+<Tabs>
+  <TabItem value="layout" label="Layout" default>
+
+```json title=layout.json
+{[
+  {
+    "component": "column",
+    "stretched": true,
+    "items": [
+      { "component": "placeholder" },
+      { "component": "placeholder" },
+      { "component": "placeholder" },
+    ]
+  },
+]}
+```
+
+  <div className="playgroundHeader_node_modules-@docusaurus-theme-live-codeblock-lib-theme-Playground-styles-module">
+    Result
+  </div>
+  <div className="playgroundPreview_node_modules-@docusaurus-theme-live-codeblock-lib-theme-Playground-styles-module">
+    <GeneratedUI
+      layout={[
+        {
+          component: 'column',
+          stretched: true,
+          items: [
+            { component: 'placeholder' },
+            { component: 'placeholder' },
+            { component: 'placeholder' },
+          ]
+        },
+      ]}
+    />
+  </div>
+</TabItem>
+<TabItem value="react" label="React" default>
+
+```jsx live
+<GeneratedUI
+  layout={[
+    {
+      component: 'column',
+      stretched: true,
+      items: [
+        { component: 'placeholder' },
+        { component: 'placeholder' },
+        { component: 'placeholder' },
+      ],
+    },
+  ]}
+/>
+```
+
+</TabItem>
+<TabItem value="jinja" label="Jinja2" default>
+
+```django
+<div>
+  {{
+    oarepo_ui.render_layout(
+      layout=[{
+      component: 'column',
+      stretched: true,
+      items: [
+        { component: 'placeholder' },
+        { component: 'placeholder' },
+        { component: 'placeholder' },
+      ],
+    }])
+  }}
+</div>
+```
+
+<div className="playgroundHeader_node_modules-@docusaurus-theme-live-codeblock-lib-theme-Playground-styles-module">
+  Result
+</div>
+<div className="playgroundPreview_node_modules-@docusaurus-theme-live-codeblock-lib-theme-Playground-styles-module">
+  <GeneratedUI
+    layout={[
+      {
+        component: 'column',
+        stretched: true,
+        items: [
+          { component: 'placeholder' },
+          { component: 'placeholder' },
+          { component: 'placeholder' },
+        ],
+      },
+    ]}
+  />
+</div>
+
+  </TabItem>
+</Tabs>
