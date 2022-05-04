@@ -2,6 +2,11 @@
 sidebar_position: 1
 ---
 
+import Tabs from '@theme/Tabs'
+import TabItem from '@theme/TabItem'
+import Admonition from '@theme/Admonition'
+import 'semantic-ui-css/semantic.min.css'
+
 # Placeholder
 
 `component: 'placeholder'`
@@ -9,7 +14,7 @@ sidebar_position: 1
 :::note Implementation state:
 
 - **Jinja2**: 🏗
-- **React**: [✅](https://link-to-react-docs)
+- **React**: [✅](https://github.com/oarepo/react-generative-ui/blob/master/src/components/Placeholder.tsx)
 
 :::
 
@@ -44,23 +49,48 @@ Doesn't directly render any data referenced by the `data` path.
 
 ### Square image placeholder
 
-```json title=layout.json5
-{
-  "component": "placeholder",
-  "type": "image",
-  "props": {
-    "fluid": false,
-    "square": true
-  }
-}
+<Tabs>
+  <TabItem value="react" label="React" default>
+
+```jsx title=layout.json5 live
+<GeneratedUI
+  config={[
+    {
+      component: 'placeholder',
+      type: 'image',
+      props: {
+        fluid: false,
+        square: true,
+      },
+    },
+  ]}
+></GeneratedUI>
 ```
 
-### Multiline placeholder
+  </TabItem>
+  <TabItem value="jinja" label="Jinja2" default>
+    <Admonition type="note" icon="🚧" title="Not implemented yet..." />
+  </TabItem>
+</Tabs>
 
-```json title=layout.json5
-{
-  "component": "placeholder",
-  "type": "paragraph",
-  "lines": 3
-}
+### Multiline paragraph placeholder
+
+<Tabs>
+  <TabItem value="react" label="React" default>
+
+```jsx title=layout.json5 live
+<GeneratedUI
+  config={[
+    {
+      component: 'placeholder',
+      lines: 3,
+    },
+  ]}
+></GeneratedUI>
 ```
+
+</TabItem>
+  <TabItem value="jinja" label="Jinja2" default>
+    <Admonition type="note" icon="🚧" title="Not implemented yet..." />
+  </TabItem>
+</Tabs>
