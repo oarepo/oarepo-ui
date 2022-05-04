@@ -1,0 +1,80 @@
+---
+sidebar_position: 1
+---
+
+import Tabs from '@theme/Tabs'
+import TabItem from '@theme/TabItem'
+import Admonition from '@theme/Admonition'
+import 'semantic-ui-css/semantic.min.css'
+
+# Placeholder
+
+`component: '<element_name>'`
+
+:::note Implementation state:
+
+- **Jinja2**: 🏗
+- **React**: 🏗
+
+:::
+
+<!-- TODO: insert element description -->
+
+A [Semantic-UI <element_name>](https://semantic-ui.com/elements/<element_name>.html#/definition) element
+description.
+
+## Properties
+
+| Name    | Description                                                                             |
+| ------- | --------------------------------------------------------------------------------------- |
+
+:::tip Additional Docs
+
+- [Semantic-UI <element_name>](https://semantic-ui.com/elements/<element_name>.html#/definition)
+- [Semantic-UI React <element_name>](https://react.semantic-ui.com/elements/<element_name>/)
+
+:::
+
+## Data
+
+<!-- TODO: does element render any data given by `data` path? -->
+
+:::info Data rendering
+
+Doesn't directly render any data referenced by the `data` path.
+
+:::
+
+## Example
+
+<!-- TODO: insert example usages of an element -->
+
+<Tabs>
+  <TabItem value="react" label="React" default>
+
+```jsx title=layout.json5 live
+<GeneratedUI
+  layout={[
+    {
+      component: '<element_name>',
+    },
+  ]}
+></GeneratedUI>
+```
+
+  </TabItem>
+  <TabItem value="jinja" label="Jinja2" default>
+
+```django
+<div>
+  {{
+    oarepo_ui.render_layout(
+      layout=[{
+        component: '<element_name>',
+      }])
+  }}
+</div>
+```
+
+  </TabItem>
+</Tabs>
