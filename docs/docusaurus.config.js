@@ -70,6 +70,7 @@ const config = {
         copyright: `Copyright © ${new Date().getFullYear()} CESNET. Built with Docusaurus.`,
       },
       prism: {
+        additionalLanguages: ['django'],
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
       },
