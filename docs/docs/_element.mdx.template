@@ -9,7 +9,14 @@ import 'semantic-ui-css/semantic.min.css'
 
 # Placeholder
 
-`component: '<element_name>'`
+<!-- TODO: insert element description -->
+
+A [Semantic-UI <element_name>](https://semantic-ui.com/elements/<element_name>.html#/definition) element
+description.
+
+```yaml
+component: '<element_name>'
+```
 
 :::note Implementation state:
 
@@ -17,11 +24,6 @@ import 'semantic-ui-css/semantic.min.css'
 - **React**: 🏗
 
 :::
-
-<!-- TODO: insert element description -->
-
-A [Semantic-UI <element_name>](https://semantic-ui.com/elements/<element_name>.html#/definition) element
-description.
 
 ## Properties
 
