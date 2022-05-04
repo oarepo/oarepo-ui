@@ -2,6 +2,9 @@
 sidebar_position: 1
 ---
 
+import Tabs from '@theme/Tabs'
+import TabItem from '@theme/TabItem'
+
 # Grid
 
 `component: 'grid'`
@@ -43,26 +46,65 @@ Doesn't directly render any data referenced by the `data` path.
 
 ### Container grid with a fixed number of columns
 
-```json title=layout.json5
-{
-  "component": "grid",
-  "columnsPerRow": 2,
-  "columns": [
+<Tabs>
+  <TabItem value="react" label="React" default>
+
+```jsx title=layout.json5 live
+<GeneratedUI
+  layout={[
     {
-      "component": "placeholder"
+      component: 'grid',
+      columnsPerRow: 2,
+      columns: [
+        {
+          component: 'placeholder',
+        },
+        {
+          component: 'placeholder',
+        },
+        {
+          component: 'placeholder',
+        },
+        {
+          component: 'placeholder',
+        },
+      ],
     },
-    {
-      "component": "placeholder"
-    },
-    {
-      "component": "placeholder"
-    },
-    {
-      "component": "placeholder"
-    }
-  ]
-}
+  ]}
+></GeneratedUI>
 ```
+
+</TabItem>
+<TabItem value="jinja" label="Jinja2" default>
+
+```django
+<div>
+  {{
+    oarepo_ui.render_layout(
+      layout=[{
+      component: 'grid',
+      columnsPerRow: 2,
+      columns: [
+        {
+          component: 'placeholder',
+        },
+        {
+          component: 'placeholder',
+        },
+        {
+          component: 'placeholder',
+        },
+        {
+          component: 'placeholder',
+        },
+      ],
+    }])
+  }}
+</div>
+```
+
+  </TabItem>
+</Tabs>
 
 ### Grid with rows
 

@@ -28,7 +28,7 @@ of a parent container by default (uses `fluid` property).
 | ------- | --------------------------------------------------------------------------------------- |
 | `type`  | placeholder representation type (possible values: `paragraph`, `image-header`, `image`) |
 | `lines` | number of placeholder content lines (useful for `image-header` and `paragraph` types)   |
-| `props` | any extra props passed down to Placeholder component                                    |
+| `*`     | any extra props passed down to Placeholder component                                    |
 
 :::tip Additional Docs
 
@@ -58,10 +58,8 @@ Doesn't directly render any data referenced by the `data` path.
     {
       component: 'placeholder',
       type: 'image',
-      props: {
-        fluid: false,
-        square: true,
-      },
+      fluid: false,
+      square: true,
     },
   ]}
 ></GeneratedUI>
@@ -77,10 +75,8 @@ Doesn't directly render any data referenced by the `data` path.
       layout=[{
         component: 'placeholder',
         type: 'image',
-        props: {
-          fluid: false,
-          square: true
-        }
+        fluid: false,
+        square: true
       }])
   }}
 </div>
