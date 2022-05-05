@@ -2,12 +2,10 @@
 sidebar_position: 1
 ---
 
-import Tabs from '@theme/Tabs'
-import TabItem from '@theme/TabItem'
-import Admonition from '@theme/Admonition'
+import ExampleTabs from '@site/src/components/ExampleTabs'
 import 'semantic-ui-css/semantic.min.css'
 
-# Placeholder
+# <element_name>
 
 <!-- TODO: insert element description -->
 
@@ -26,6 +24,8 @@ component: '<element_name>'
 :::
 
 ## Properties
+
+<!-- TODO: describe any properties accepted by an element -->
 
 | Name    | Description                                                                             |
 | ------- | --------------------------------------------------------------------------------------- |
@@ -51,32 +51,9 @@ Doesn't directly render any data referenced by the `data` path.
 
 <!-- TODO: insert example usages of an element -->
 
-<Tabs>
-  <TabItem value="react" label="React" default>
-
-```jsx title=layout.json5 live
-<GeneratedUI
-  layout={[
+<ExampleTabs layout={[
     {
       component: '<element_name>',
     },
   ]}
-></GeneratedUI>
-```
-
-  </TabItem>
-  <TabItem value="jinja" label="Jinja2" default>
-
-```django
-<div>
-  {{
-    oarepo_ui.render_layout(
-      layout=[{
-        component: '<element_name>',
-      }])
-  }}
-</div>
-```
-
-  </TabItem>
-</Tabs>
+/>

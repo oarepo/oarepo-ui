@@ -2,9 +2,7 @@
 sidebar_position: 1
 ---
 
-import Tabs from '@theme/Tabs'
-import TabItem from '@theme/TabItem'
-import Admonition from '@theme/Admonition'
+import ExampleTabs from '@site/src/components/ExampleTabs'
 import 'semantic-ui-css/semantic.min.css'
 
 # Placeholder
@@ -51,11 +49,7 @@ Doesn't directly render any data referenced by the `data` path.
 
 ### Square image placeholder
 
-<Tabs>
-  <TabItem value="react" label="React" default>
-
-```jsx title=layout.json5 live
-<GeneratedUI
+<ExampleTabs
   layout={[
     {
       component: 'placeholder',
@@ -64,59 +58,15 @@ Doesn't directly render any data referenced by the `data` path.
       square: true,
     },
   ]}
-></GeneratedUI>
-```
-
-  </TabItem>
-  <TabItem value="jinja" label="Jinja2" default>
-
-```django
-<div>
-  {{
-    oarepo_ui.render_layout(
-      layout=[{
-        component: 'placeholder',
-        type: 'image',
-        fluid: false,
-        square: true
-      }])
-  }}
-</div>
-```
-
-  </TabItem>
-</Tabs>
+/>
 
 ### Multiline paragraph placeholder
 
-<Tabs>
-  <TabItem value="react" label="React" default>
-
-```jsx title=layout.json5 live
-<GeneratedUI
+<ExampleTabs
   layout={[
     {
       component: 'placeholder',
       lines: 3,
     },
   ]}
-></GeneratedUI>
-```
-
-  </TabItem>
-  <TabItem value="jinja" label="Jinja2" default>
-
-```django
-<div>
-  {{
-    oarepo_ui.render_layout(
-      layout=[{
-        component: 'placeholder',
-        lines: 3
-      }])
-  }}
-</div>
-```
-
-  </TabItem>
-</Tabs>
+/>

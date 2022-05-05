@@ -2,9 +2,7 @@
 sidebar_position: 1
 ---
 
-import Tabs from '@theme/Tabs'
-import TabItem from '@theme/TabItem'
-import { GeneratedUI } from 'react-generative-ui'
+import ExampleTabs from '@site/src/components/ExampleTabs'
 
 # Column
 
@@ -45,48 +43,7 @@ Doesn't directly render any data referenced by the `data` path.
 
 ## Example
 
-### Container grid with a fixed number of columns
-
-<Tabs>
-  <TabItem value="layout" label="Layout" default>
-
-```json title=layout.json
-{[
-  {
-    "component": "column",
-    "stretched": true,
-    "items": [
-      { "component": "placeholder" },
-      { "component": "placeholder" },
-      { "component": "placeholder" },
-    ]
-  },
-]}
-```
-
-  <div className="playgroundHeader_node_modules-@docusaurus-theme-live-codeblock-lib-theme-Playground-styles-module">
-    Result
-  </div>
-  <div className="playgroundPreview_node_modules-@docusaurus-theme-live-codeblock-lib-theme-Playground-styles-module">
-    <GeneratedUI
-      layout={[
-        {
-          component: 'column',
-          stretched: true,
-          items: [
-            { component: 'placeholder' },
-            { component: 'placeholder' },
-            { component: 'placeholder' },
-          ]
-        },
-      ]}
-    />
-  </div>
-</TabItem>
-<TabItem value="react" label="React" default>
-
-```jsx live
-<GeneratedUI
+<ExampleTabs
   layout={[
     {
       component: 'column',
@@ -99,46 +56,3 @@ Doesn't directly render any data referenced by the `data` path.
     },
   ]}
 />
-```
-
-</TabItem>
-<TabItem value="jinja" label="Jinja2" default>
-
-```django
-<div>
-  {{
-    oarepo_ui.render_layout(
-      layout=[{
-      component: 'column',
-      stretched: true,
-      items: [
-        { component: 'placeholder' },
-        { component: 'placeholder' },
-        { component: 'placeholder' },
-      ],
-    }])
-  }}
-</div>
-```
-
-<div className="playgroundHeader_node_modules-@docusaurus-theme-live-codeblock-lib-theme-Playground-styles-module">
-  Result
-</div>
-<div className="playgroundPreview_node_modules-@docusaurus-theme-live-codeblock-lib-theme-Playground-styles-module">
-  <GeneratedUI
-    layout={[
-      {
-        component: 'column',
-        stretched: true,
-        items: [
-          { component: 'placeholder' },
-          { component: 'placeholder' },
-          { component: 'placeholder' },
-        ],
-      },
-    ]}
-  />
-</div>
-
-  </TabItem>
-</Tabs>
