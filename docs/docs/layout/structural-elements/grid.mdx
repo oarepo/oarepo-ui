@@ -22,11 +22,22 @@ component: 'grid'
 
 ## Properties
 
-| Name            | Description                                       |
-| --------------- | ------------------------------------------------- |
-| `columnsPerRow` | number of columns rendered per each row in a grid |
-| `columns`       | list of _CDB_ descriptions of column items        |
-| `rows`          | list of _CDB_ descriptions of grid row items      |
+### Grid properties
+
+| Name            | Description                                                          |
+| --------------- | -------------------------------------------------------------------- |
+| `className`     | space-separated list of CSS classes applied to grid                  |
+| `columnsPerRow` | number of columns rendered per each row in a grid                    |
+| `columns`       | list of _CDB_ descriptions of [Columns](./column#properties)         |
+| `rows`          | list of _CDB_ descriptions of [Grid Row](#grid-row-properties) items |
+| `container`     | boolean - whether the grid should act as a container                 |
+| `*`             | any extra props passed down                                          |
+
+### Grid Row properties
+
+| Name      | Description                                                                    |
+| --------- | ------------------------------------------------------------------------------ |
+| `columns` | list of _CDB_ descriptions of [Columns](./column#properties) inside a grid row |
 
 :::tip Additional Docs
 
@@ -55,7 +66,8 @@ Doesn't directly render any data referenced by the `data` path.
       className: 'demo',
       columns: [
         {
-          component: 'placeholder',
+          className: 'two wide',
+          items: [{ component: 'placeholder' }],
         },
         {
           component: 'placeholder',

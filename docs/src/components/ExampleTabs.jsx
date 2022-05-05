@@ -10,8 +10,10 @@ import TabItem from '@theme/TabItem'
 import CodeBlock from '@theme/CodeBlock'
 import { GeneratedUI } from 'react-generative-ui'
 import _toString from 'lodash/toString'
+import _isEmpty from 'lodash/isEmpty'
 
-export const ExampleTabs = ({ layout }) => {
+export const ExampleTabs = ({ data = {}, layout }) => {
+  const formattedData = JSON.stringify(data, null, 2)
   const formattedLayout = JSON.stringify(layout, null, 2)
 
   const ResultBlock = (
@@ -24,35 +26,56 @@ export const ExampleTabs = ({ layout }) => {
       <h4 style={{ padding: '0.75rem 0 0 0.75rem' }}>RESULT</h4>
       <pre>
         <code>
-          <GeneratedUI layout={layout} />
+          <GeneratedUI data={data} layout={layout} />
         </code>
       </pre>
     </div>
   )
 
+  const tabs = [
+    {
+      title: 'Layout',
+      file: 'layout.json',
+      content: formattedLayout,
+    },
+    {
+      title: 'React',
+      lang: 'jsx',
+      live: true,
+      content: `<GeneratedUI${
+        !_isEmpty(data) ? '\ndata={' + formattedData + '}' : ''
+      }\nlayout={${formattedLayout}} />`,
+    },
+    {
+      title: 'Jinja2',
+      lang: 'django',
+      content: `<div>{{\noarepo_ui.render_layout(\n  layout=${formattedLayout},\n${
+        !_isEmpty(data) ? ',\ndata=' + formattedData : ''
+      })\n}}</div>`,
+    },
+    {
+      ...(!_isEmpty(data) && {
+        title: 'Data',
+        file: 'data.json',
+        content: formattedData,
+      }),
+    },
+  ]
+
   return (
     <Tabs>
-      <TabItem value="layout" label="Layout" default>
-        <CodeBlock language="json" title="layout.json">
-          {formattedLayout}
-        </CodeBlock>
-        {ResultBlock}
-      </TabItem>
-      <TabItem value="react" label="React" default>
-        <CodeBlock language="jsx" live>
-          {`<GeneratedUI layout={${formattedLayout}} />`}
-        </CodeBlock>
-      </TabItem>
-      <TabItem value="jinja" label="Jinja2" default>
-        <CodeBlock language="django">
-          {`<div>
-{{
-    oarepo_ui.render_layout(layout=${formattedLayout})
-}}
-</div>`}
-        </CodeBlock>
-        {ResultBlock}
-      </TabItem>
+      {tabs.map(({ title, lang = 'json', file, content, live }, index) => (
+        <TabItem key={index} value={title} label={title} default={index === 0}>
+          <CodeBlock
+            language={lang}
+            {...(file && { title: file })}
+            {...(live && { live: true })}
+          >
+            {content}
+          </CodeBlock>
+          {!live && ResultBlock}
+        </TabItem>
+      ))}
     </Tabs>
   )
 }
