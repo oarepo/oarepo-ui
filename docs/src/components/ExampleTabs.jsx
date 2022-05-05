@@ -53,29 +53,47 @@ export const ExampleTabs = ({ data = {}, layout }) => {
         !_isEmpty(data) ? ',\ndata=' + formattedData : ''
       })\n}}</div>`,
     },
-    {
-      ...(!_isEmpty(data) && {
-        title: 'Data',
-        file: 'data.json',
-        content: formattedData,
-      }),
-    },
   ]
+
+  const fullTabs = _isEmpty(data)
+    ? tabs
+    : [
+        ...tabs,
+        ...[
+          {
+            title: 'Data',
+            file: 'data.json',
+            content: formattedData,
+            hidden: _isEmpty(data),
+          },
+        ],
+      ]
+
+  console.log(fullTabs)
 
   return (
     <Tabs>
-      {tabs.map(({ title, lang = 'json', file, content, live }, index) => (
-        <TabItem key={index} value={title} label={title} default={index === 0}>
-          <CodeBlock
-            language={lang}
-            {...(file && { title: file })}
-            {...(live && { live: true })}
+      {fullTabs.map(
+        ({ title, lang = 'json', file, content, live, ...rest }, index) => (
+          <TabItem
+            key={index}
+            value={title}
+            label={title}
+            default={index === 0}
+            {...rest}
+            di
           >
-            {content}
-          </CodeBlock>
-          {!live && ResultBlock}
-        </TabItem>
-      ))}
+            <CodeBlock
+              language={lang}
+              {...(file && { title: file })}
+              {...(live && { live: true })}
+            >
+              {content}
+            </CodeBlock>
+            {!live && ResultBlock}
+          </TabItem>
+        ),
+      )}
     </Tabs>
   )
 }
