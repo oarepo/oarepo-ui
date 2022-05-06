@@ -11,9 +11,25 @@ import CodeBlock from '@theme/CodeBlock'
 import { GeneratedUI } from 'react-generative-ui'
 import _toString from 'lodash/toString'
 import _isEmpty from 'lodash/isEmpty'
+import _transform from 'lodash/transform'
+import _get from 'lodash/get'
 
 export const ExampleTabs = ({ data = {}, layout }) => {
   const formattedData = JSON.stringify(data, null, 2)
+
+  // TODO: this one is faked due to React live
+  // editor having problems with useContext()
+  const resolvedLayout = layout.map((item) =>
+    _transform(item, (result, _value, key) => {
+      if (key === 'data') {
+        delete result[key]
+        result['children'] = _get(data, _value)
+      } else {
+        result[key] = _value
+      }
+    }),
+  )
+
   const formattedLayout = JSON.stringify(layout, null, 2)
 
   const ResultBlock = (
@@ -26,7 +42,7 @@ export const ExampleTabs = ({ data = {}, layout }) => {
       <h4 style={{ padding: '0.75rem 0 0 0.75rem' }}>RESULT</h4>
       <pre>
         <code>
-          <GeneratedUI data={data} layout={layout} />
+          <GeneratedUI layout={resolvedLayout} />
         </code>
       </pre>
     </div>
@@ -41,7 +57,8 @@ export const ExampleTabs = ({ data = {}, layout }) => {
     {
       title: 'React',
       lang: 'jsx',
-      live: true,
+      // Data-enabled live editor crashes on useContext()
+      live: _isEmpty(data),
       content: `<GeneratedUI${
         !_isEmpty(data) ? '\ndata={' + formattedData + '}' : ''
       }\nlayout={${formattedLayout}} />`,
@@ -49,9 +66,9 @@ export const ExampleTabs = ({ data = {}, layout }) => {
     {
       title: 'Jinja2',
       lang: 'django',
-      content: `<div>{{\noarepo_ui.render_layout(\n  layout=${formattedLayout},\n${
-        !_isEmpty(data) ? ',\ndata=' + formattedData : ''
-      })\n}}</div>`,
+      content: `<div>{{\noarepo_ui.render_layout(  ${
+        !_isEmpty(data) ? '\ndata=' + formattedData + ',' : ''
+      }\nlayout=${formattedLayout},\n)\n}}</div>`,
     },
   ]
 
@@ -64,12 +81,9 @@ export const ExampleTabs = ({ data = {}, layout }) => {
             title: 'Data',
             file: 'data.json',
             content: formattedData,
-            hidden: _isEmpty(data),
           },
         ],
       ]
-
-  console.log(fullTabs)
 
   return (
     <Tabs>
@@ -81,7 +95,6 @@ export const ExampleTabs = ({ data = {}, layout }) => {
             label={title}
             default={index === 0}
             {...rest}
-            di
           >
             <CodeBlock
               language={lang}
