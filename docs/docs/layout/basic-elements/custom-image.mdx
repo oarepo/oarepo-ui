@@ -9,8 +9,6 @@ import TabItem from '@theme/TabItem'
 
 # Custom icon
 
-<!-- TODO: insert element description -->
-
 A customizable [Semantic-UI Icon](https://semantic-ui.com/elements/icon.html#/definition) element.
 
 A standard Semantic-UI Icon element supports rendering of provided icons only. This element
@@ -30,12 +28,11 @@ component: 'custom-icon'
 
 ## Properties
 
-<!-- TODO: describe any properties accepted by an element -->
-
-| Name    | Description                                                                                                                                                                                                                                                                  |
-| ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| name    | Icon name, referring either to [Semantic-UI Icon](https://semantic-ui.com/elements/icon.html#/definition) name, or name from provided `iconSet`                                                                                                                              |
-| iconSet | Map of custom icons this element can render. Accepts keys as icon name, values as either [Semantic-UI Icon](https://semantic-ui.com/elements/icon.html#/definition) name or an object with [Semantic-UI Image](https://semantic-ui.com/elements/image.html#image) properties |
+| Name      | Description                                                                                                                                                                                                                                                                  |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`    | icon name, referring either to [Semantic-UI Icon](https://semantic-ui.com/elements/icon.html#/definition) name, or name from provided `iconSet`                                                                                                                              |
+| `iconSet` | map of custom icons this element can render. Accepts keys as icon name, values as either [Semantic-UI Icon](https://semantic-ui.com/elements/icon.html#/definition) name or an object with [Semantic-UI Image](https://semantic-ui.com/elements/image.html#image) properties |
+| `*`       | any other props passed to icon element                                                                                                                                                                                                                                       |
 
 :::tip Additional Docs
 
@@ -105,7 +102,7 @@ Uses any data referenced by the `data` path as icon name:
   layout={[
     {
       component: 'custom-icon',
-      data: 'iconName',
+      dataField: 'iconName',
       iconSet: {
         custom: {
           src: 'https://semantic-ui.com//images/wireframe/image.png',
