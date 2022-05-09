@@ -39,7 +39,7 @@ component: '<semantic-ui-element-name>'
 
 ## Data
 
-Renders any data referenced by the `data` path as:
+Renders any data referenced by the `data` path as element's children:
 
 ```jsx
 <semantic-ui-element-name {/*...*/}>{referencedData}</semantic-ui-element-name>
@@ -48,6 +48,9 @@ Renders any data referenced by the `data` path as:
 ## Example
 
 <ExampleTabs
+  // TODO: results will be supported after migration to React 18:
+  // https://github.com/facebook/docusaurus/issues/7264
+  disableResult
   data={{
     test: {
       nested: 'Hello world',
