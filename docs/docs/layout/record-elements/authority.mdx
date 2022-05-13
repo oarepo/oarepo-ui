@@ -53,6 +53,7 @@ const {fullName, authorityIdentifiers, role} = referencedData
 ### Simple person
 
 <ExampleTabs
+  noResult
   layout={[
     {
       component: 'authority',
@@ -64,6 +65,7 @@ const {fullName, authorityIdentifiers, role} = referencedData
 ### Person with role
 
 <ExampleTabs
+  noResult
   layout={[
     {
       component: 'authority',
@@ -76,6 +78,7 @@ const {fullName, authorityIdentifiers, role} = referencedData
 ### Person with role and identifiers
 
 <ExampleTabs
+  noResult
   layout={[
     {
       component: 'authority',
@@ -118,15 +121,14 @@ const {fullName, authorityIdentifiers, role} = referencedData
 ### Customized components
 
 <ExampleTabs
+  noResult
   layout={[
     {
       component: 'authority',
       fullName: 'John Doe',
       fullNameComponent: {
-        component: 'label',
-        as: 'a',
-        tag: true,
-        color: 'blue',
+        component: 'a',
+        href: '#',
       },
     },
   ]}
