@@ -1,0 +1,133 @@
+---
+sidebar_position: 1
+---
+
+import ExampleTabs from '@site/src/components/ExampleTabs'
+import 'semantic-ui-css/semantic.min.css'
+
+# Authority
+
+<!-- TODO: insert element description -->
+
+An element that renders a personal or organizational authority information.
+
+```yaml
+component: 'authority'
+```
+
+:::note Implementation state:
+
+- **Jinja2**: 🏗
+- **React**: [✅](https://github.com/oarepo/react-generative-ui/blob/master/src/components/Authority.tsx)
+
+:::
+
+## Properties
+
+<!-- TODO: describe any properties accepted by an element -->
+
+| Name                 | Description                                                      |
+| -------------------- | ---------------------------------------------------------------- |
+| fullName             | full name of a person or an organization                         |
+| role                 | role name of a person or an organization                         |
+| authorityIdentifiers | list of [identifier](./authority-identifier)s of an authority    |
+| fullNameComponent    | _CDB_ description of component rendering a full name             |
+| identifierComponent  | _CDB_ description of component rendering an authority identifier |
+| roleComponent        | _CDB_ description of component rendering role info               |
+
+## Data
+
+Uses any data objects referenced by the `dataField` as authority props:
+
+```jsx
+const {fullName, authorityIdentifiers, role} = referencedData
+
+<Authority
+  fullName={fullName}
+  authorityIdentifiers={authorityIdentifiers}
+  role={role} ... />
+```
+
+## Example
+
+### Simple person
+
+<ExampleTabs
+  layout={[
+    {
+      component: 'authority',
+      fullName: 'John Doe',
+    },
+  ]}
+/>
+
+### Person with role
+
+<ExampleTabs
+  layout={[
+    {
+      component: 'authority',
+      fullName: 'John Doe',
+      role: 'developer',
+    },
+  ]}
+/>
+
+### Person with role and identifiers
+
+<ExampleTabs
+  layout={[
+    {
+      component: 'authority',
+      fullName: 'John Doe',
+      role: 'developer',
+      authorityIdentifiers: [
+        {
+          identifier: '1234',
+          scheme: 'orcid',
+        },
+      ],
+    },
+  ]}
+/>
+
+### Person sourced from data
+
+<ExampleTabs
+  noResult
+  data={{
+    personData: {
+      fullName: 'Datavid Datovic',
+      role: 'data analyst',
+      authorityIdentifiers: [
+        {
+          identifier: '1234',
+          scheme: 'orcid',
+        },
+      ],
+    },
+  }}
+  layout={[
+    {
+      component: 'authority',
+      dataField: 'personData',
+    },
+  ]}
+/>
+
+### Customized components
+
+<ExampleTabs
+  layout={[
+    {
+      component: 'authority',
+      fullName: 'John Doe',
+      fullNameComponent: {
+        component: 'label',
+        as: 'a',
+        tag: true,
+        color: 'blue',
+      },
+    },
+  ]}
+/>
