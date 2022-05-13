@@ -84,15 +84,13 @@ Uses any data referenced by the `dataField` as list `items` data:
   layout={[
     {
       component: 'list',
-      horizontal: true,
       items: [
-        { content: 'this is data item #1', color: 'red' },
-        { header: 'this is data item #2', color: 'green', size: 'large' },
-        { content: 'this is data item #3' },
+        { children: 'this is data item #1' },
+        { children: 'this is data item #2' },
+        { children: 'this is data item #3' },
       ],
       item: {
-        component: 'card',
-        color: 'blue',
+        component: 'h2',
       },
     },
   ]}

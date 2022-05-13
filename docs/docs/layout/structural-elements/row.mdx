@@ -58,9 +58,9 @@ Doesn't directly render any data referenced by the `dataField`.
     {
       component: 'row',
       items: [
-        { component: 'label', basic: true, content: 'this is item #1' },
-        { component: 'label', basic: true, content: 'this is item #2' },
-        { component: 'label', basic: true, content: 'this is item #3' },
+        { component: 'strong', children: 'this is item #1' },
+        { component: 'strong', children: 'this is item #2' },
+        { component: 'strong', children: 'this is item #3' },
       ],
     },
   ]}
@@ -74,9 +74,9 @@ Doesn't directly render any data referenced by the `dataField`.
       component: 'row',
       separator: ' || ',
       items: [
-        { component: 'label', basic: true, content: 'this is item #1' },
-        { component: 'label', basic: true, content: 'this is item #2' },
-        { component: 'label', basic: true, content: 'this is item #3' },
+        { component: 'strong', children: 'this is item #1' },
+        { component: 'strong', children: 'this is item #2' },
+        { component: 'strong', children: 'this is item #3' },
       ],
     },
   ]}
@@ -89,13 +89,15 @@ Doesn't directly render any data referenced by the `dataField`.
     {
       component: 'row',
       separator: {
-        component: 'icon',
-        name: 'arrow right',
+        component: 'img',
+        src: '/oarepo-ui/img/logo.png',
+        width: 20,
+        height: 20,
       },
       items: [
-        { component: 'label', basic: true, content: 'this is item #1' },
-        { component: 'label', basic: true, content: 'this is item #2' },
-        { component: 'label', basic: true, content: 'this is item #3' },
+        { component: 'span', children: 'this is item #1' },
+        { component: 'span', children: 'this is item #2' },
+        { component: 'span', children: 'this is item #3' },
       ],
     },
   ]}
