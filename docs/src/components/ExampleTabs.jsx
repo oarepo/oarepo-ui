@@ -14,7 +14,7 @@ import _isEmpty from 'lodash/isEmpty'
 import _transform from 'lodash/transform'
 import _get from 'lodash/get'
 
-export const ExampleTabs = ({ data = {}, disableResult = false, layout }) => {
+export const ExampleTabs = ({ data = {}, noResult = false, layout }) => {
   const formattedData = JSON.stringify(data, null, 2)
 
   // TODO: this one is faked due to React live
@@ -103,7 +103,7 @@ export const ExampleTabs = ({ data = {}, disableResult = false, layout }) => {
             >
               {content}
             </CodeBlock>
-            {!live && !disableResult && ResultBlock}
+            {!live && !noResult && ResultBlock}
           </TabItem>
         ),
       )}

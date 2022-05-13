@@ -39,11 +39,11 @@ component: '<element_name>'
 
 ## Data
 
-<!-- TODO: does element render any data given by `data` path? -->
+<!-- TODO: does element render any data given by `dataPath`? -->
 
 :::info Data rendering
 
-Doesn't directly render any data referenced by the `data` path.
+Doesn't directly render any data referenced by the `dataPath`.
 
 :::
 
