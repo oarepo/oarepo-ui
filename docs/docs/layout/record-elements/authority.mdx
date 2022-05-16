@@ -22,20 +22,21 @@ component: 'authority'
 
 ## Properties
 
-<!-- TODO: describe any properties accepted by an element -->
-
-| Name                 | Description                                                      |
-| -------------------- | ---------------------------------------------------------------- |
-| fullName             | full name of a person or an organization                         |
-| role                 | role name of a person or an organization                         |
-| authorityIdentifiers | list of [identifier](./authority-identifier)s of an authority    |
-| fullNameComponent    | _CDB_ description of component rendering a full name             |
-| identifierComponent  | _CDB_ description of component rendering an authority identifier |
-| roleComponent        | _CDB_ description of component rendering role info               |
+| Name                   | Description                                                           |
+| ---------------------- | --------------------------------------------------------------------- |
+| `fullName`             | full name of a person or an organization                              |
+| `role`                 | role name of a person or an organization                              |
+| `authorityIdentifiers` | list of [identifier](./authority-identifier)s of an authority         |
+| `nameType`             | type of authority, can be either `Personal` or `Organizational`       |
+| `affiliations`         | list of authority affiliations                                        |
+| `wrapperComponent`     | _CDB_ description of component wrapping the authority element parts   |
+| `fullNameComponent`    | _CDB_ description of component rendering a full name part             |
+| `identifierComponent`  | _CDB_ description of component rendering an authority identifier part |
+| `roleComponent`        | _CDB_ description of component rendering role info part               |
 
 ## Data
 
-Uses any data objects referenced by the `dataField` as authority props:
+Uses any data referenced by the `dataField` as authority props:
 
 ```jsx
 const {fullName, authorityIdentifiers, role} = referencedData
@@ -124,6 +125,9 @@ const {fullName, authorityIdentifiers, role} = referencedData
     {
       component: 'authority',
       fullName: 'John Doe',
+      wrapperComponent: {
+        component: 'card',
+      },
       fullNameComponent: {
         component: 'a',
         href: '#',

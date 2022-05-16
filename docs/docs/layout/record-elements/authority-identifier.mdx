@@ -7,7 +7,7 @@ import 'semantic-ui-css/semantic.min.css'
 
 # Authority identifier
 
-An element that renders an identifier of person or organization.
+An element that renders an identifier badge of person or organization.
 
 ```yaml
 component: 'authority-identifier'
@@ -22,17 +22,29 @@ component: 'authority-identifier'
 
 ## Properties
 
-<!-- TODO: describe any properties accepted by an element -->
-
-| Name | Description |
-| ---- | ----------- |
-
+| Name         | Description              |
+| ------------ | ------------------------ |
+| `identifier` | identifier value         |
+| `scheme`     | scheme of the identifier |
 
 ## Data
 
-Uses any data objects referenced by the `dataField` as authority props:
+Uses any data referenced by the `dataField` as authority identifier props:
 
 ```jsx
+const {identifier, scheme} = resolvedData
+
+<AuthorityIdentifier identifier={identifier} scheme={scheme}
 ```
 
 ## Example
+
+<ExampleTabs
+  layout={[
+    {
+      component: 'authority-identifier',
+      identifier: '1234',
+      scheme: 'orcid',
+    },
+  ]}
+/>
