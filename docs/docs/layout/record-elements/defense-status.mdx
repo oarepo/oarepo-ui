@@ -1,0 +1,96 @@
+---
+sidebar_position: 1
+---
+
+import ExampleTabs from '@site/src/components/ExampleTabs'
+import 'semantic-ui-css/semantic.min.css'
+
+# Defense status
+
+Shows the status of work's (typically thesis) defense.
+
+```yaml
+component: 'defense-status'
+```
+
+:::note Implementation state:
+
+- **Jinja2**: 🏗
+- **React**: [✅](https://github.com/oarepo/react-generative-ui/blob/master/src/components/record/DefenseStatus.tsx)
+
+:::
+
+## Properties
+
+| Name                   | Description                                                         |
+| ---------------------- | ------------------------------------------------------------------- |
+| `defended`             | whether the work was successfully defended or not                   |
+| `dateDefended`         | date of the thesis defence                                          |
+| `defendedComponent`    | _CDB_ description of component showing that work was defended       |
+| `notDefendedComponent` | _CDB_ description of component showing that work was _NOT_ defended |
+
+## Data
+
+Uses any data referenced by the `dataField` as defense status props:
+
+```jsx
+const {defended, dateDefended} = referencedData
+
+<DefenseStatus
+  defended={defended}
+  dateDefended={dateDefended}
+  ... />
+```
+
+## Example
+
+### Successfully defended
+
+<ExampleTabs
+  layout={[
+    {
+      component: 'defense-status',
+      defended: true,
+    },
+  ]}
+/>
+
+### Not defended (fetched from data)
+
+<ExampleTabs
+  noResult
+  data={{
+    defenseStatus: {
+      defended: false,
+    },
+  }}
+  layout={[
+    {
+      component: 'defense-status',
+      dataField: 'defenseStatus',
+    },
+  ]}
+/>
+
+### Custom components
+
+<ExampleTabs
+  layout={[
+    {
+      component: 'defense-status',
+      defended: true,
+      defendedComponent: {
+        component: 'span',
+        children: '🧑‍🎓',
+      },
+    },
+    {
+      component: 'defense-status',
+      defended: false,
+      notDefendedComponent: {
+        component: 'span',
+        children: '👎',
+      },
+    },
+  ]}
+/>
