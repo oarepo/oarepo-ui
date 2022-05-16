@@ -1,0 +1,64 @@
+---
+sidebar_position: 1
+---
+
+import ExampleTabs from '@site/src/components/ExampleTabs'
+import 'semantic-ui-css/semantic.min.css'
+
+# Separator
+
+Used to separate blocks of content in a row.
+
+```yaml
+component: 'separator'
+```
+
+:::note Implementation state:
+
+- **Jinja2**: 🏗
+- **React**: [✅](https://github.com/oarepo/react-generative-ui/blob/master/src/components/basic/Separator.tsx)
+
+:::
+
+## Properties
+
+| Name     | Description                                                     |
+| -------- | --------------------------------------------------------------- |
+| `double` | whether separator should be rendered doubled                    |
+| `color`  | specify a foreground color of a separator                       |
+| `*`      | any other properties and styles passed to wrapping span element |
+
+## Data
+
+:::info Data rendering
+
+Doesn't directly render any data referenced by the `dataField`.
+
+:::
+
+## Example
+
+### Double separator (default)
+
+<ExampleTabs
+  layout={[
+    { component: 'raw', children: 'some text' },
+    {
+      component: 'separator',
+    },
+    { component: 'raw', children: 'separate text' },
+  ]}
+/>
+
+### Single separator
+
+<ExampleTabs
+  layout={[
+    { component: 'raw', children: 'some text' },
+    {
+      component: 'separator',
+      double: false,
+    },
+    { component: 'raw', children: 'separate text' },
+  ]}
+/>
