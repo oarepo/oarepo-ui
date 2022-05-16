@@ -24,13 +24,13 @@ component: 'truncated-text'
 
 <!-- TODO: describe any properties accepted by an element -->
 
-| Name           | Description                                     |
-| -------------- | ----------------------------------------------- |
-| `lines`        | number of lines displayed in truncated state    |
-| `ellipsis`     | ellipsis character (default: `…`)               |
-| `text`         | main text content to be rendered truncated      |
-| `expandToggle` | props passed to 'Show more\|less' toggle button |
-| `*`            | any extra props passed to wrapping element      |
+| Name           | Description                                                 |
+| -------------- | ----------------------------------------------------------- |
+| `lines`        | number of lines displayed in truncated state                |
+| `ellipsis`     | ellipsis character (default: `…`)                           |
+| `text`         | main text content to be rendered truncated                  |
+| `expandToggle` | _CDB_ definition for the 'Show more\|less' toggle component |
+| `*`            | any extra props passed to wrapping element                  |
 
 :::tip Additional Docs
 
@@ -57,6 +57,23 @@ Renders any data referenced by the `dataField` path as the `text` prop:
       component: 'truncated-text',
       lines: 2,
       text: 'Tis text is rendered truncated, '.repeat(100),
+    },
+  ]}
+/>
+
+### Custom expand component
+
+<ExampleTabs
+  noResult
+  layout={[
+    {
+      component: 'truncated-text',
+      lines: 2,
+      text: 'Tis text is rendered truncated, '.repeat(100),
+      expandToggle: {
+        component: 'button',
+        children: 'Toggle',
+      },
     },
   ]}
 />
