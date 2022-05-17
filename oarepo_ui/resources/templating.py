@@ -99,6 +99,12 @@ def merge_class_name(class_name, merged):
     return class_name + ' ' + merged
 
 
+def push(dictionary, **kwargs):
+    return {
+        **dictionary,
+        **kwargs
+    }
+
 def render_template_with_macros(template_name_or_list, **context):
     """adapted from render_template, just an overlay with ImportMacros extension"""
     app, env = get_macro_environment(context)
@@ -117,6 +123,7 @@ def get_macro_environment(context):
     env.filters.update({
         'item': get_item,
         'remove_property': lambda val, prop: {k: v for k, v in val.items() if k != prop},
+        'push': push
     })
     env.globals.update({
         'get_component': get_component,
