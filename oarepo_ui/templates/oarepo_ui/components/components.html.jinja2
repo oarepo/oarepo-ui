@@ -4,35 +4,46 @@
     <div class="ui {{ className }} grid {{ 'container' if not rows else '' }} {{ cols }}">
         {% if rows %}
             {% for r in rows %}
-                <div class="row stretched {{ cols }}">
-                    {% for c in r.columns %}
-                        {% if c.component == 'column' %}
-                            {{ oarepo_ui.render_layout(layout=c, data=data, record=record) }}
-                        {% else %}
-                            <div class="column stretched">
-                                {{ oarepo_ui.render_layout(layout=c, data=data, record=record) }}
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
+                {{ oarepo_ui.render_layout(layout={'component': 'row_wrapper', 'row': r}, data=data, record=record) }}
             {% endfor %}
         {% elif columns %}
             {% for c in columns %}
-                {% if c.component == 'column' %}
-                    {{ oarepo_ui.render_layout(layout=c, data=data, record=record) }}
-                {% else %}
-                    <div class="column stretched">
-                        {{ oarepo_ui.render_layout(layout=c, data=data, record=record) }}
-                    </div>
-                {% endif %}
+                {{ oarepo_ui.render_layout(layout={'component': 'column_wrapper', 'column': c}, data=data, record=record) }}
             {% endfor %}
-        {% else  %}
+        {% else %}
             <div class="error">Error rendering grid: either row or columns expected, got {{ layout|pprint }}</div>
         {% endif %}
     </div>
 {% endmacro %}
 
-{# render semantic-ui grid #}
+
+{% macro render_row_wrapper(layout, data, record, className, style, row) %}
+    {% if row.component == 'row' or row.component is none or row.component is not defined %}
+        {{ oarepo_ui.render_layout(layout=row|push(component='row'), data=data, record=record) }}
+    {% else %}
+        {{ oarepo_ui.render_layout(
+            layout={
+                'component': 'row',
+                'className': 'stretched',
+                'columns': [row]
+            }, data=data, record=record) }}
+    {% endif %}
+{% endmacro %}
+
+{% macro render_column_wrapper(layout, data, record, className, style, column) %}
+    {% if column.component == 'column' or column.component is none or column.component is not defined %}
+        {{ oarepo_ui.render_layout(layout=column, data=data, record=record) }}
+    {% else %}
+        {{ oarepo_ui.render_layout(
+            layout={
+                'component': 'column',
+                'items': [column],
+                'className': 'stretched',
+            }, data=data, record=record) }}
+    {% endif %}
+{% endmacro %}
+
+{# render semantic-ui grid column #}
 {% macro render_column(layout, data, record, className, style, items) %}
     <div class="column {{ className }}">
         {% for it in items %}
@@ -41,6 +52,14 @@
     </div>
 {% endmacro %}
 
+{# render semantic-ui grid row #}
+{% macro render_row(layout, data, record, className, style, items, columns) %}
+    <div class="row {{ className }} {{ cols }}">
+        {% for c in columns %}
+            {{ oarepo_ui.render_layout(layout={'component': 'column_wrapper', 'column': c}, data=data, record=record) }}
+        {% endfor %}
+    </div>
+{% endmacro %}
 
 {# render unknown component #}
 {% macro render_unknown(layout, data, record, className, style) %}
