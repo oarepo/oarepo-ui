@@ -7,16 +7,17 @@ import 'semantic-ui-css/semantic.min.css'
 import Tabs from '@theme/Tabs'
 import TabItem from '@theme/TabItem'
 
-# Custom icon
+# Icon
 
-A customizable [Semantic-UI Icon](https://semantic-ui.com/elements/icon.html#/definition) element.
+A [Semantic-UI Icon](https://semantic-ui.com/elements/icon.html#/definition) element
+with support for custom icon sets.
 
-A standard Semantic-UI Icon element supports rendering of provided icons only. This element
-adds options to provide custom graphics to be rendered as an icon image or to render icons
-from provided custom icon set.
+A standard Semantic-UI Icon element supports rendering of Semantic-UI bundled icons only.
+This element adds an option to provide custom graphics to be rendered as an icon image and
+to render icons from provided custom icon set.
 
 ```yaml
-component: 'custom-icon'
+component: 'icon'
 ```
 
 :::note Implementation state:
@@ -32,7 +33,7 @@ component: 'custom-icon'
 | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `name`    | icon name, referring either to [Semantic-UI Icon](https://semantic-ui.com/elements/icon.html#/definition) name, or name from provided `iconSet`                                                                                                                              |
 | `iconSet` | map of custom icons this element can render. Accepts keys as icon name, values as either [Semantic-UI Icon](https://semantic-ui.com/elements/icon.html#/definition) name or an object with [Semantic-UI Image](https://semantic-ui.com/elements/image.html#image) properties |
-| `*`       | any other props passed to icon element                                                                                                                                                                                                                                       |
+| `*`       | any other props passed to icon wrapping element                                                                                                                                                                                                                              |
 
 :::tip Additional Docs
 
@@ -40,7 +41,7 @@ component: 'custom-icon'
 <TabItem value="Semantic-UI">
 
 - [Semantic-UI Icon](https://semantic-ui.com/elements/icon.html#/definition)
-- [Semantic-UI Iamge](https://semantic-ui.com/elements/image.html#image)
+- [Semantic-UI Image](https://semantic-ui.com/elements/image.html#image)
 
 </TabItem>
 <TabItem value="Semantic-UI React">

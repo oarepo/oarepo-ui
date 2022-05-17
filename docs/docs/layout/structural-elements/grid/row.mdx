@@ -11,7 +11,7 @@ A layout element that places its items in a flexbox row.
 Items can be separated by an optional separator.
 
 ```yaml
-component: 'list'
+component: 'row'
 ```
 
 :::note Implementation state:
@@ -23,19 +23,16 @@ component: 'list'
 
 ## Properties
 
-<!-- TODO: describe any properties accepted by an element -->
-
-| Name        | Description                                                |
-| ----------- | ---------------------------------------------------------- |
-| `items`     | list of _CDB_ items to be rendered in a row                |
-| `separator` | either a string or a _CDB_ used to separate rendered items |
-| `*`         | any other properties passed to the flexbox row             |
+| Name            | Description                                                                                                                                                   |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `columns`       | list of _CDB_ items to be rendered in a row. Assumes [Column](/column) definitions by default, any other component is wrapped in a [Column](/column) element. |
+| `columnsPerRow` | number of columns rendered in the GridRow                                                                                                                     |
+| `*`             | any other properties passed to the Grid Row                                                                                                                   |
 
 :::tip Additional Docs
 
 - [Semantic-UI Grid Row](https://semantic-ui.com/collections/grid.html#grouping)
 - [Semantic-UI React Grid.Row](https://react.semantic-ui.com/collections/grid/)
-- [CSS Flexbox](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox)
 
 :::
 
