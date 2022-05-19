@@ -1,13 +1,19 @@
 {% macro render_layout(layout, data, record, className='', style='') -%}
     {% if layout is list %}
         {% for l in layout %}
-            {{ render_layout(layout=l, data=data, record=record) }}
+            {{ render_layout(layout=l, data=(l.data or data), record=record) }}
         {% endfor %}
     {% else %}
-        {% set render_component = get_component(layout.component) %}
-        {% set rendered_data = get_data(layout.data, data, record) %}
+        {% set takes_array, render_component = get_component(layout.component) %}
+        {% set rendered_data = as_array(layout.data or get_data(layout.dataField, data, record)) %}
         {% set props = get_props(layout, className, style) %}
-        {{ render_component(layout=layout, data=rendered_data, record=record, **props) }}
+        {% if takes_array %}
+            {{ render_component(layout=layout, data=rendered_data, record=record, **props) }}
+        {% else %}
+            {% for d in rendered_data %}
+                {{ render_component(layout=layout, data=d, record=record, **props) }}
+            {% endfor %}
+        {% endif %}
     {% endif %}
 {%- endmacro %}
 

@@ -64,7 +64,12 @@ def index():
         data=record['metadata'],
         layouts={
             'Simple grid with two columns': column_layout,
-            'Simple grid with two rows': row_layout
+            'Simple grid with two rows': row_layout,
+            'Normal icon with name': icon_name_layout,
+            'Normal icon with image': icon_image_layout,
+            'Icon with iconSet': icon_iconset_layout,
+            'Normal icon with data-driven name': icon_data_name_layout,
+            'Normal icon with data-driven image': icon_data_image_layout,
         }
     )
 
@@ -118,6 +123,74 @@ column_layout = [
                 "component": "placeholder",
             }
         ]
+    }
+]
+
+icon_name_layout = [
+    {
+        'component': 'icon',
+        'name': "thumbs up",
+        "color": "green",
+        "size": "large"
+    }
+]
+
+icon_iconset_layout = [
+    {
+        'component': 'icon',
+        'name': "thup",
+        "color": "green",
+        "size": "large",
+        "iconSet": {
+            "thup": "thumbs up"
+        }
+    },
+    {
+        'component': 'icon',
+        'name': "thdn",
+        "color": "green",
+        "size": "large",
+        "iconSet": {
+            "thdn": {
+                'name': "thumbs down",
+                "color": "red"
+            }
+        }
+    }
+]
+
+
+icon_image_layout = [
+    {
+        'component': 'icon',
+        "size": "small",
+        "src": "https://semantic-ui.com//images/wireframe/image.png"
+    }
+]
+
+icon_data_name_layout = [
+    {
+        'component': 'icon',
+        'dataField': 'accessRights',
+        "color": "green",
+        "size": "large",
+        "iconSet": {
+            "otev\u0159en\u00fd p\u0159\u00edstup": "thumbs up"
+        }
+    }
+]
+
+icon_data_image_layout = [
+    {
+        'component': 'icon',
+        'dataField': 'accessRights',
+        "color": "green",
+        "size": "small",
+        "iconSet": {
+            "otev\u0159en\u00fd p\u0159\u00edstup": {
+                "src": "https://semantic-ui.com//images/wireframe/image.png"
+            }
+        }
     }
 ]
 

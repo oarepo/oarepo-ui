@@ -5,6 +5,8 @@ from jinja2.ext import Extension
 
 from oarepo_ui.proxies import current_oarepo_ui
 from oarepo_ui.utils import n2w
+from jinja2.utils import htmlsafe_json_dumps
+import markupsafe
 
 
 class ImportMacros(Extension):
@@ -36,15 +38,16 @@ def get_item(value, item, default=None):
 @pass_context
 def get_component(context, value):
     value = (value or '').replace('-', '_')
+    takes_array = value.endswith('_array')
 
     def resolve_component(name):
         (module_name, render_name) = current_oarepo_ui.get_jinja_component(name)
         return getattr(context.environment.globals[module_name], render_name)
 
     try:
-        return resolve_component(value)
+        return takes_array, resolve_component(value)
     except KeyError:
-        return resolve_component('unknown')
+        return True, resolve_component('unknown')
 
 
 def get_data(layout_data_definition, data, record):
@@ -99,11 +102,54 @@ def merge_class_name(class_name, merged):
     return class_name + ' ' + merged
 
 
-def push(dictionary, **kwargs):
+SIZES = ['mini', 'tiny', 'small', 'medium', 'large', 'big', 'huge', 'massive']
+
+
+def add_size(value, *sizes):
+    split_val = [x for x in (value or '').split() if x]
+    for s in sizes:
+        if not s:
+            continue
+        for v in split_val:
+            if v in SIZES:
+                return value
+        split_val.append(s)
+        break
+    return ' '.join(split_val)
+
+
+def update(dictionary, **kwargs):
     return {
         **dictionary,
         **kwargs
     }
+
+
+def as_attributes(*dictionaries):
+    if len(dictionaries) == 1:
+        dictionary = dictionaries[0]
+    else:
+        dictionary = {}
+        for d in dictionaries:
+            dictionary.update(d)
+
+    ret = []
+    for k, v in (dictionary or {}).items():
+        v = htmlsafe_json_dumps(v)
+        if v[0] != '"':
+            v = v.replace('"', '&quot;')
+            v = f'"{v}"'
+        ret.append(f'{k}={v}')
+    return markupsafe.Markup(' '.join(ret))
+
+
+def as_array(value):
+    if not value:
+        return []
+    if isinstance(value, (list, tuple)):
+        return value
+    return [value]
+
 
 def render_template_with_macros(template_name_or_list, **context):
     """adapted from render_template, just an overlay with ImportMacros extension"""
@@ -123,7 +169,8 @@ def get_macro_environment(context):
     env.filters.update({
         'item': get_item,
         'remove_property': lambda val, prop: {k: v for k, v in val.items() if k != prop},
-        'push': push
+        'update': update,
+        'add_size': add_size
     })
     env.globals.update({
         'get_component': get_component,
@@ -131,5 +178,7 @@ def get_macro_environment(context):
         'get_props': get_props,
         'merge_class_name': merge_class_name,
         'number_to_word': n2w,
+        'as_attributes': as_attributes,
+        'as_array': as_array
     })
     return app, env
