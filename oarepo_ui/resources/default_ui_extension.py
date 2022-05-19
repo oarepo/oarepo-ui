@@ -8,6 +8,6 @@ class DefaultUIExtensionConfig(OARepoUIExtensionConfig):
         'oarepo_ui_grid': 'oarepo_ui/components/structural/grid.html.jinja2',
         'oarepo_ui_row': 'oarepo_ui/components/structural/row.html.jinja2',
         'oarepo_ui_column': 'oarepo_ui/components/structural/column.html.jinja2',
-        'oarepo_ui_icon': 'oarepo_ui/components/icon.html.jinja2',
+        'oarepo_ui_icon': 'oarepo_ui/components/basic/icon.html.jinja2',
         'authority': 'oarepo_ui/components/authority.html.jinja2'
     }
