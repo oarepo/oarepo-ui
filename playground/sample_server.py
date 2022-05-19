@@ -78,7 +78,8 @@ def index():
             'Icon with iconSet': icon_iconset_layout,
             'Normal icon with data-driven name': icon_data_name_layout,
             'Normal icon with data-driven image': icon_data_image_layout,
-            'Simple list': list_layout
+            'Simple list': list_layout,
+            'Simple horizontal list': horizontal_list_layout
         }
     )
 
@@ -206,6 +207,14 @@ icon_data_image_layout = [
 list_layout = [
     {
         'component': 'list',
+        'dataField': 'list_of_strings'
+    }
+]
+
+horizontal_list_layout = [
+    {
+        'component': 'list',
+        'horizontal': True,
         'dataField': 'list_of_strings'
     }
 ]
