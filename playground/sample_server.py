@@ -55,7 +55,15 @@ def index():
                       "lang": "en"}],
                       "titleType": "translatedTitle"}],
                            "accessRights": "otev\u0159en\u00fd p\u0159\u00edstup",
-                           "creators": [{"fullName": "Veberov\u00e1, Kl\u00e1ra", "nameType": "Personal"}]},
+                           "creators": [{"fullName": "Veberov\u00e1, Kl\u00e1ra", "nameType": "Personal"}],
+
+            # just for debugging/demo
+            'list_of_strings': [
+                "first string",
+                "second string",
+                "third string",
+            ]
+       },
               "links": {"self": "/api/nr_theses_metadata/qq28e-k8m51"}}
 
     return render_template_with_macros(
@@ -70,6 +78,7 @@ def index():
             'Icon with iconSet': icon_iconset_layout,
             'Normal icon with data-driven name': icon_data_name_layout,
             'Normal icon with data-driven image': icon_data_image_layout,
+            'Simple list': list_layout
         }
     )
 
@@ -163,7 +172,7 @@ icon_iconset_layout = [
 icon_image_layout = [
     {
         'component': 'icon',
-        "size": "small",
+        "size": "mini",
         "src": "https://semantic-ui.com//images/wireframe/image.png"
     }
 ]
@@ -185,12 +194,19 @@ icon_data_image_layout = [
         'component': 'icon',
         'dataField': 'accessRights',
         "color": "green",
-        "size": "small",
+        "size": "mini",
         "iconSet": {
             "otev\u0159en\u00fd p\u0159\u00edstup": {
                 "src": "https://semantic-ui.com//images/wireframe/image.png"
             }
         }
+    }
+]
+
+list_layout = [
+    {
+        'component': 'list',
+        'dataField': 'list_of_strings'
     }
 ]
 

@@ -36,18 +36,40 @@ def get_item(value, item, default=None):
 
 
 @pass_context
-def get_component(context, value):
-    value = (value or '').replace('-', '_')
-    takes_array = value.endswith('_array')
+def get_component(context, component_name):
+    f"""
+    Looks up a component by name in the jinja context and returns a pair 
+    (component_accepts_array_of_values, jinja_compiled_macro). 
+    
+    If there is a context macro with name "{component_name}_array", returns that the component
+    accepts array, that is (True, jinja_compiled_macro)
+    
+    If there is a context macro with name "component_name", returns (False, jinja_compiled_macro)
+    
+    If no macro has been found, returns the special "unknown" macro that displays "undefined component"
+    message.
+    
+    :param context: jinja context
+    :param component_name:   name of the component to resolve
+    :return: tuple (accepts_array, jinja_component function)
+    """
+    component_name = (component_name or '').replace('-', '_')
 
     def resolve_component(name):
         (module_name, render_name) = current_oarepo_ui.get_jinja_component(name)
         return getattr(context.environment.globals[module_name], render_name)
 
     try:
-        return takes_array, resolve_component(value)
+        return True, resolve_component(component_name + '_array')
     except KeyError:
-        return True, resolve_component('unknown')
+        pass
+
+    try:
+        return False, resolve_component(component_name)
+    except KeyError:
+        pass
+
+    return True, resolve_component('unknown')
 
 
 def get_data(layout_data_definition, data, record):
@@ -135,6 +157,10 @@ def as_attributes(*dictionaries):
 
     ret = []
     for k, v in (dictionary or {}).items():
+        if k in (
+            'dataField'
+        ):
+            continue
         v = htmlsafe_json_dumps(v)
         if v[0] != '"':
             v = v.replace('"', '&quot;')

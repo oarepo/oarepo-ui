@@ -1,0 +1,14 @@
+{# render list; accepts array of values, hence "_array" suffix #}
+{% macro render_list_array(layout, data, record, className, style, horizontal=false, item=none) %}
+    <div class="ui {{ className }} {{ 'horizontal' if horizontal else '' }} list"  {{ as_attributes(kwargs) }}>
+        {% for d in data %}
+            <div class="item">
+                {% if item %}
+                    {{ oarepo_ui.render_layout(layout=kwargs.item, data=d, record=record) }}
+                {% else %}
+                    {{ d }}
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endmacro %}
