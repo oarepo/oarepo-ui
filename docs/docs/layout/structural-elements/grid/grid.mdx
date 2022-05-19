@@ -29,15 +29,9 @@ component: 'grid'
 | `className`     | space-separated list of CSS classes applied to grid                  |
 | `columnsPerRow` | (default: `equal`) number of columns rendered per each row in a grid |
 | `columns`       | list of _CDB_ descriptions of [Columns](grid/column#properties)      |
-| `rows`          | list of _CDB_ descriptions of [Grid Row](#grid-row-properties) items |
+| `rows`          | list of _CDB_ descriptions of [Grid Row](grid/row#properties) items  |
 | `container`     | boolean - whether the grid should act as a responsive container      |
 | `*`             | any extra props passed down                                          |
-
-### Grid Row properties
-
-| Name      | Description                                                                       |
-| --------- | --------------------------------------------------------------------------------- |
-| `columns` | list of _CDB_ descriptions of [Columns](grid/column#properties) inside a grid row |
 
 :::tip Additional Docs
 
@@ -62,18 +56,29 @@ Doesn't directly render any data referenced by the `dataField`.
   layout={[
     {
       component: 'grid',
-      columnsPerRow: 2,
+      columnsPerRow: 3,
       className: 'demo',
       columns: [
         {
-          className: 'two wide',
-          items: [{ component: 'placeholder' }],
+          component: 'column',
+          items: [
+            { component: 'h1', children: 'Column #1' },
+            { component: 'placeholder' },
+            { component: 'placeholder' },
+            { component: 'placeholder' },
+          ],
         },
         {
-          component: 'placeholder',
+          component: 'column',
+          items: [
+            { component: 'h1', children: 'Column #2' },
+            { component: 'placeholder' },
+            { component: 'placeholder' },
+          ],
         },
         {
-          component: 'placeholder',
+          component: 'h1',
+          children: 'Implicit column #3',
         },
       ],
     },
@@ -89,27 +94,19 @@ Doesn't directly render any data referenced by the `dataField`.
       rows: [
         {
           columns: [
-            {
-              component: 'placeholder',
-            },
-            {
-              component: 'placeholder',
-            },
+            { component: 'placeholder' },
+            { component: 'placeholder' },
+            { component: 'placeholder' },
           ],
         },
         {
           columns: [
             {
               className: 'ten wide',
-              items: [
-                {
-                  component: 'placeholder',
-                },
-              ],
+              items: [{ component: 'placeholder' }],
             },
-            {
-              component: 'placeholder',
-            },
+            { component: 'placeholder' },
+            { component: 'placeholder' },
           ],
         },
       ],
