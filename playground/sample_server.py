@@ -5,6 +5,8 @@ from oarepo_ui.resources.default_ui_extension import DefaultUIExtensionConfig
 from oarepo_ui.resources.templating import render_template_with_macros
 from oarepo_ui.views import blueprint
 
+from importlib_resources import files as import_files
+
 app = Flask('sample_server', template_folder='templates')
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 OARepoUIExtension(app)
@@ -66,10 +68,13 @@ def index():
        },
               "links": {"self": "/api/nr_theses_metadata/qq28e-k8m51"}}
 
+    extra_css = import_files('oarepo_ui.css').joinpath('builtin.css').read_text()
+
     return render_template_with_macros(
         'sample_server.html.jinja2',
         record=record,
         data=record['metadata'],
+        extra_css=extra_css,
         layouts={
             'Simple grid with two columns': column_layout,
             'Simple grid with two rows': row_layout,
@@ -79,7 +84,8 @@ def index():
             'Normal icon with data-driven name': icon_data_name_layout,
             'Normal icon with data-driven image': icon_data_image_layout,
             'Simple list': list_layout,
-            'Simple horizontal list': horizontal_list_layout
+            'Simple horizontal list': horizontal_list_layout,
+            'Separator': separator_layout
         }
     )
 
@@ -216,6 +222,29 @@ horizontal_list_layout = [
         'component': 'list',
         'horizontal': True,
         'dataField': 'list_of_strings'
+    }
+]
+
+separator_layout = [
+    {
+        'component': 'raw',
+        'data': "Hello",
+    },
+    {
+        'component': 'separator'
+    },
+    {
+        'component': 'raw',
+        'data': "World",
+    },
+    {
+        'component': 'separator',
+        'double': True,
+        'color': 'green'
+    },
+    {
+        'component': 'raw',
+        'data': "How are you?",
     }
 ]
 
