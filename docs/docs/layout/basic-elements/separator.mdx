@@ -4,6 +4,7 @@ sidebar_position: 1
 
 import ExampleTabs from '@site/src/components/ExampleTabs'
 import 'semantic-ui-css/semantic.min.css'
+import '../../../../oarepo_ui/css/builtin.css'
 
 # Separator
 
@@ -45,6 +46,7 @@ Doesn't directly render any data referenced by the `dataField`.
     { component: 'raw', children: 'some text' },
     {
       component: 'separator',
+      double: true,
     },
     { component: 'raw', children: 'separate text' },
   ]}
@@ -55,10 +57,34 @@ Doesn't directly render any data referenced by the `dataField`.
 <ExampleTabs
   layout={[
     { component: 'raw', children: 'some text' },
+    { component: 'separator' },
+    { component: 'raw', children: 'separate text' },
+  ]}
+/>
+
+### Combined separators
+
+<ExampleTabs
+  layout={[
+    {
+      component: 'raw',
+      children: 'Hello',
+    },
     {
       component: 'separator',
-      double: false,
     },
-    { component: 'raw', children: 'separate text' },
+    {
+      component: 'raw',
+      children: 'World',
+    },
+    {
+      component: 'separator',
+      double: true,
+      color: 'green',
+    },
+    {
+      component: 'raw',
+      children: 'How are you?',
+    },
   ]}
 />

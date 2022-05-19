@@ -50,7 +50,7 @@ Doesn't directly render any data referenced by the `dataField`.
 
 ## Example
 
-### Container grid with a fixed number of columns
+### Three column layout
 
 <ExampleTabs
   layout={[
@@ -60,32 +60,39 @@ Doesn't directly render any data referenced by the `dataField`.
       className: 'demo',
       columns: [
         {
-          component: 'column',
+          style: { border: '1px solid black' },
           items: [
             { component: 'h1', children: 'Column #1' },
-            { component: 'placeholder' },
-            { component: 'placeholder' },
-            { component: 'placeholder' },
+            { component: 'div', children: 'item' },
+            { component: 'div', children: 'item' },
+            { component: 'div', children: 'item' },
           ],
         },
         {
-          component: 'column',
+          style: { border: '1px solid black' },
           items: [
             { component: 'h1', children: 'Column #2' },
-            { component: 'placeholder' },
-            { component: 'placeholder' },
+            { component: 'div', children: 'item' },
+            { component: 'div', children: 'item' },
           ],
         },
         {
-          component: 'h1',
-          children: 'Implicit column #3',
+          style: { border: '1px solid black' },
+          component: 'column',
+          items: [
+            {
+              component: 'h1',
+              children: 'Column #3',
+            },
+            { component: 'div', children: 'item' },
+          ],
         },
       ],
     },
   ]}
 />
 
-### Grid with rows
+### Multiple rows layout
 
 <ExampleTabs
   layout={[
@@ -93,20 +100,27 @@ Doesn't directly render any data referenced by the `dataField`.
       component: 'grid',
       rows: [
         {
+          style: { border: '1px solid black' },
           columns: [
-            { component: 'placeholder' },
-            { component: 'placeholder' },
-            { component: 'placeholder' },
+            {
+              className: 'five wide',
+              items: [{ component: 'h1', children: 'Row 1' }],
+            },
+            { component: 'span', children: 'item' },
+            { component: 'span', children: 'item' },
+            { component: 'span', children: 'item' },
           ],
         },
         {
+          style: { border: '1px solid black' },
           columns: [
             {
-              className: 'ten wide',
-              items: [{ component: 'placeholder' }],
+              className: 'five wide',
+              items: [{ component: 'h1', children: 'Row 2' }],
             },
-            { component: 'placeholder' },
-            { component: 'placeholder' },
+            { component: 'span', children: 'item' },
+            { component: 'span', children: 'item' },
+            { component: 'span', children: 'item' },
           ],
         },
       ],
