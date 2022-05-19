@@ -59,7 +59,7 @@ component: 'icon'
 Uses any data referenced by the `dataField` as icon name:
 
 ```jsx
-<CustomIcon name={referencedData} {/*...*/} />
+<Icon name={referencedData} {/*...*/} />
 ```
 
 ## Example
@@ -69,7 +69,7 @@ Uses any data referenced by the `dataField` as icon name:
 <ExampleTabs
   layout={[
     {
-      component: 'custom-icon',
+      component: 'icon',
       name: 'thumbs up',
       color: 'green',
       size: 'large',
@@ -82,7 +82,7 @@ Uses any data referenced by the `dataField` as icon name:
 <ExampleTabs
   layout={[
     {
-      component: 'custom-icon',
+      component: 'icon',
       name: 'custom',
       iconSet: {
         custom: {
@@ -102,7 +102,7 @@ Uses any data referenced by the `dataField` as icon name:
   }}
   layout={[
     {
-      component: 'custom-icon',
+      component: 'icon',
       dataField: 'iconName',
       iconSet: {
         custom: {
