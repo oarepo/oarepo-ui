@@ -7,8 +7,8 @@ import 'semantic-ui-css/semantic.min.css'
 
 # Row
 
-A layout element that places its items in a flexbox row.
-Items can be separated by an optional separator.
+A layout element that places its items in a grid row width
+customizable columns.
 
 ```yaml
 component: 'row'
@@ -27,6 +27,7 @@ component: 'row'
 | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `columns`       | list of _CDB_ items to be rendered in a row. Assumes [Column](column) definitions by default, any other component is wrapped in a [Column](column) element. |
 | `columnsPerRow` | (default: `equal`) number of columns rendered in the GridRow                                                                                                |
+| `children`      | children elements passed directly to the Grid Row wrapping element                                                                                          |
 | `*`             | any other properties passed to the Grid Row                                                                                                                 |
 
 :::tip Additional Docs

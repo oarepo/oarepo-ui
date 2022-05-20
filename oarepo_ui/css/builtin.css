@@ -1,8 +1,8 @@
-.oarepo-ui-image-icon {
+.oarepo.oarepo-image-icon {
   object-fit: contain;
 }
 
-.ui.basic.label.oarepo-separator {
+.oarepo.ui.basic.label.oarepo-separator {
   border: none !important;
   display: inline-block !important;
   transform: scaleY(2.2) !important;
