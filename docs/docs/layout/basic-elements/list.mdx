@@ -23,12 +23,13 @@ component: 'list'
 
 ## Properties
 
-| Name         | Description                                                  |
-| ------------ | ------------------------------------------------------------ |
-| `item`       | _CDB_ description of how individual items should be rendered |
-| `items`      | list of items, either strings or objects with item props     |
-| `horizontal` | list should be rendered horizontally                         |
-| `*`          | any additional props passed to the wrapping list element     |
+| Name         | Description                                                             |
+| ------------ | ----------------------------------------------------------------------- |
+| `item`       | _CDB_ description of how individual items should be rendered            |
+| `items`      | list of items, either strings or objects with item props                |
+| `horizontal` | list should be rendered horizontally                                    |
+| `separator`  | _CDB_ description of an element or string used to separate list `items` |
+| `*`          | any additional props passed to the wrapping list element                |
 
 :::tip Additional Docs
 
@@ -93,6 +94,27 @@ Uses any data referenced by the `dataField` as list `items` data:
       ],
       item: {
         component: 'h2',
+      },
+    },
+  ]}
+/>
+
+### Separated list items
+
+<ExampleTabs
+  layout={[
+    {
+      component: 'list',
+      horizontal: true,
+      separator: ',',
+      items: [
+        { children: 'this is data item #1' },
+        { children: 'this is data item #2' },
+        { children: 'this is data item #3' },
+      ],
+      item: {
+        component: 'span',
+        color: 'blue',
       },
     },
   ]}
