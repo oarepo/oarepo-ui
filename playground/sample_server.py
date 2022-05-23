@@ -267,6 +267,10 @@ divided_row = [
             },
             {
                 'component': 'raw',
+                'data': " ",    # whitespace should not be rendered
+            },
+            {
+                'component': 'raw',
                 'data': "How are you?",
             }
         ]

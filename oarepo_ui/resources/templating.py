@@ -158,7 +158,7 @@ def as_attributes(*dictionaries):
     ret = []
     for k, v in (dictionary or {}).items():
         if k in (
-            'dataField'
+                'dataField'
         ):
             continue
         v = htmlsafe_json_dumps(v)
@@ -175,6 +175,34 @@ def as_array(value):
     if isinstance(value, (list, tuple)):
         return value
     return [value]
+
+
+@pass_context
+def render_macro_to_array(context, macro_name, layout=None, data=None, record=None, items=None, is_array=None):
+    if not data:
+        return ''
+
+    macro = context[macro_name]
+    ret = []
+
+    def _render(data):
+        if items is not None:
+            for it in items:
+                yield macro(layout=it, data=data, record=record)
+        else:
+            if not is_array:
+                data = [data]
+            if not isinstance(data, (tuple, list)):
+                data = [data]
+            for d in data:
+                yield macro(layout=layout, data=d, record=record)
+
+    for rendered_d in _render(data):
+        if rendered_d:
+            rendered_d = rendered_d.strip()
+        if rendered_d:
+            ret.append(markupsafe.Markup(rendered_d))
+    return ret
 
 
 def render_template_with_macros(template_name_or_list, **context):
@@ -205,6 +233,7 @@ def get_macro_environment(context):
         'merge_class_name': merge_class_name,
         'number_to_word': n2w,
         'as_attributes': as_attributes,
-        'as_array': as_array
+        'as_array': as_array,
+        'render_macro_to_array': render_macro_to_array
     })
     return app, env
