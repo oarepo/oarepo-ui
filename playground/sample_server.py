@@ -85,6 +85,8 @@ def index():
             'Normal icon with data-driven image': icon_data_image_layout,
             'Simple list': list_layout,
             'Simple horizontal list': horizontal_list_layout,
+            'Simple horizontal list with separator': horizontal_list_with_separator_layout,
+            'Simple horizontal list with separator component': horizontal_list_with_separator_component_layout,
             'Separator': separator_layout,
             'Divided row': divided_row,
         }
@@ -223,6 +225,24 @@ horizontal_list_layout = [
         'component': 'list',
         'horizontal': True,
         'dataField': 'list_of_strings'
+    }
+]
+
+horizontal_list_with_separator_layout = [
+    {
+        'component': 'list',
+        'horizontal': True,
+        'dataField': 'list_of_strings',
+        'separator': ', '
+    }
+]
+
+horizontal_list_with_separator_component_layout = [
+    {
+        'component': 'list',
+        'horizontal': True,
+        'dataField': 'list_of_strings',
+        'separator': {'component': 'separator'}
     }
 ]
 

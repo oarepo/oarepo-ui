@@ -12,3 +12,11 @@
   padding-bottom: 1em !important;
   background: none !important;
 }
+
+.ui.list > .oarepo.oarepo-separated.item {
+  margin-left: 0
+}
+
+.ui.list > .oarepo.oarepo-separated-text.item:not(:last-child) {
+  margin-right: .5em
+}
