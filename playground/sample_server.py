@@ -85,7 +85,8 @@ def index():
             'Normal icon with data-driven image': icon_data_image_layout,
             'Simple list': list_layout,
             'Simple horizontal list': horizontal_list_layout,
-            'Separator': separator_layout
+            'Separator': separator_layout,
+            'Divided row': divided_row,
         }
     )
 
@@ -245,6 +246,30 @@ separator_layout = [
     {
         'component': 'raw',
         'data': "How are you?",
+    }
+]
+
+divided_row = [
+    {
+        'component': 'divided-row',
+        'separator': {
+            'component': 'separator',
+            'color': 'green'
+        },
+        'items': [
+            {
+                'component': 'raw',
+                'data': "Hello",
+            },
+            {
+                'component': 'raw',
+                'data': "World",
+            },
+            {
+                'component': 'raw',
+                'data': "How are you?",
+            }
+        ]
     }
 ]
 

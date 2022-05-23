@@ -1,0 +1,18 @@
+
+{# render divided-row #}
+{% macro render_divided_row(layout, data, record, className, style, items=[], separator=', ') -%}
+    {%- for item in items -%}
+        {%- if loop.index > 1 -%}
+            {%- if separator is string -%}
+                {{ separator }}
+            {%- else -%}
+                {{ oarepo_ui.render_layout(layout=separator, data=data, record=record) }}
+            {%- endif -%}
+        {%- endif -%}
+        {%- if item is string -%}
+            {{ item }}
+        {%- else -%}
+            {{ oarepo_ui.render_layout(layout=item, data=data, record=record) }}
+        {%- endif -%}
+    {%- endfor -%}
+{%- endmacro %}

@@ -12,5 +12,6 @@ class DefaultUIExtensionConfig(OARepoUIExtensionConfig):
         'oarepo_ui_list': 'oarepo_ui/components/basic/list.html.jinja2',
         'oarepo_ui_raw': 'oarepo_ui/components/basic/raw.html.jinja2',
         'oarepo_ui_separator': 'oarepo_ui/components/basic/separator.html.jinja2',
+        'divided_row': 'oarepo_ui/components/structural/divided-row.html.jinja2',
         'authority': 'oarepo_ui/components/authority.html.jinja2'
     }
