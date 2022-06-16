@@ -1,0 +1,84 @@
+---
+sidebar_position: 1
+---
+
+import ExampleTabs from '@site/src/components/ExampleTabs'
+import 'semantic-ui-css/semantic.min.css'
+import Tabs from '@theme/Tabs'
+import TabItem from '@theme/TabItem'
+
+# Button
+
+A [Semantic-UI Button](https://semantic-ui.com/elements/button.html#/definition) element.
+
+```yaml
+component: 'button'
+```
+
+:::note Implementation state:
+
+- **Jinja2**: [🚧](https://github.com/oarepo/oarepo-ui/blob/master/src/oarepo_ui/templates/oarepo_ui/components/basic/button.html.jinja2)
+- **React**: [✅](https://github.com/oarepo/react-generative-ui/blob/master/src/components/basic/Button.tsx)
+
+:::
+
+## Properties
+
+| Name | Description                                        |
+| ---- | -------------------------------------------------- |
+| `*`  | any props are passed to Semantic-UI button element |
+
+:::tip Additional Docs
+
+<Tabs>
+<TabItem value="Semantic-UI">
+
+- [Semantic-UI Button](https://semantic-ui.com/elements/button.html#/definition)
+
+</TabItem>
+<TabItem value="Semantic-UI React">
+
+- [Semantic-UI React Button](https://react.semantic-ui.com/elements/button)
+
+</TabItem>
+</Tabs>
+
+:::
+
+## Data
+
+Uses any data referenced by the `dataField` as button element `children`:
+
+```jsx
+<Button {/*...*/}>
+  {children}
+</Button>
+```
+
+## Example
+
+### Semantic-UI button
+
+<ExampleTabs
+  layout={[
+    {
+      component: 'button',
+      children: 'Simple button',
+    },
+  ]}
+/>
+
+### Button using data
+
+<ExampleTabs
+  noResult
+  data={{
+    buttonText: 'Button using data',
+  }}
+  layout={[
+    {
+      component: 'button',
+      dataField: 'buttonText',
+    },
+  ]}
+/>

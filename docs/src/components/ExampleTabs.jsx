@@ -8,13 +8,13 @@ import * as React from 'react'
 import Tabs from '@theme/Tabs'
 import TabItem from '@theme/TabItem'
 import CodeBlock from '@theme/CodeBlock'
-import { GeneratedUI } from 'react-generative-ui'
+import { GeneratedLayout } from 'react-generative-ui'
 import _toString from 'lodash/toString'
 import _isEmpty from 'lodash/isEmpty'
 import _transform from 'lodash/transform'
 import _get from 'lodash/get'
 
-export const ExampleTabs = ({ data = {}, noResult = false, layout }) => {
+export const ExampleTabs = ({ data = {}, noResult = true, layout }) => {
   const formattedData = JSON.stringify(data, null, 2)
 
   // TODO: this one is faked due to React live
@@ -42,7 +42,7 @@ export const ExampleTabs = ({ data = {}, noResult = false, layout }) => {
       <h4 style={{ padding: '0.75rem 0 0 0.75rem' }}>RESULT</h4>
       <pre>
         <code>
-          <GeneratedUI layout={resolvedLayout} />
+          <GeneratedLayout layout={resolvedLayout} />
         </code>
       </pre>
     </div>
@@ -58,8 +58,7 @@ export const ExampleTabs = ({ data = {}, noResult = false, layout }) => {
       title: 'React',
       lang: 'jsx',
       // Data-enabled live editor crashes on useContext()
-      live: _isEmpty(data),
-      content: `<GeneratedUI${
+      content: `<GeneratedLayout${
         !_isEmpty(data) ? '\ndata={' + formattedData + '}' : ''
       }\nlayout={${formattedLayout}} />`,
     },

@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 import React from 'react'
-import { GeneratedUI } from 'react-generative-ui'
+import { GeneratedLayout } from 'react-generative-ui'
 // Add react-live imports you need here
 const ReactLiveScope = {
   React,
   ...React,
-  GeneratedUI,
+  GeneratedLayout,
 }
 export default ReactLiveScope
