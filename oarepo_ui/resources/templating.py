@@ -83,7 +83,7 @@ def get_data(layout_data_definition, data, record):
             yield current_data
             return
 
-        first = path.pop(0)
+        first = path[0]
         path = path[1:]
         if isinstance(current_data, dict):
             if first in current_data:
