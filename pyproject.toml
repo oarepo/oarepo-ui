@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "oarepo-ui"
-version = "3.5.0"
+version = "4.0.0"
 description = "UI module for invenio 3.5+"
 authors = ["Mirek Simek <miroslav.simek@vscht.cz>"]
 
