@@ -1,4 +1,4 @@
-from flask import g, render_template
+from flask import g
 from flask_resources import Resource, route, resource_requestctx
 from invenio_records_resources.resources import (
     RecordResourceConfig,
@@ -7,7 +7,6 @@ from invenio_records_resources.resources.records.resource import request_read_ar
 from invenio_records_resources.services import RecordService
 
 from .config import UIResourceConfig, RecordsUIResourceConfig
-
 #
 # Resource
 #
@@ -18,9 +17,10 @@ class UIResource(Resource):
     """Record resource."""
     config: UIResourceConfig
 
-    def __init__(self, config=None):
+    def __init__(self, config=None, api_resource_config=None):
         """Constructor."""
         super(UIResource, self).__init__(config)
+        self.api_resource_config = api_resource_config
 
     def as_blueprint(self, **options):
         if 'template_folder' not in options:
@@ -77,15 +77,27 @@ class RecordsUIResource(UIResource):
     @request_read_args
     @request_view_args
     def detail(self):
-        """Read an item."""
+        """Returns item detail page."""
         record = self.service.read(g.identity, resource_requestctx.view_args["pid_value"])
-
+        # TODO: handle permissions UI way - better response than generic error
+        serialized_record = self._get_ui_serializer().dump_one(record)
         layout = self.config.layouts['detail']
-        self.run_components('before_ui_detail', layout=layout, resource=self, record=record, identity=g.identity)
+        self.run_components('before_ui_detail', layout=layout, resource=self,
+                            record=serialized_record, identity=g.identity)
 
         return render_template_with_macros(
             self.config.detail_template,
-            record=record,
-            data=record['metadata'],
+            record=serialized_record,
+            data=serialized_record,
             layout=layout
         )
+
+    def _get_ui_serializer(self):
+        api_response_handler = self.api_config.response_handlers.get('application/vnd.inveniordm.v1+json')
+        if not api_response_handler:
+            api_response_handler = self.api_config.response_handlers.get('application/json')
+        if not api_response_handler:
+            raise KeyError(f'Do not have serializer for "application/vnd.inveniordm.v1+json" or '
+                           f'"application/json" on the api resource config ({type(self.api_config)}).')
+        serializer = api_response_handler.serializer
+        return serializer
