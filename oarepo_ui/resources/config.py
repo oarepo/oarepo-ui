@@ -49,5 +49,4 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
     @property
     def components(self):
-        # import here to break circular dependencies
         return current_oarepo_ui.default_components

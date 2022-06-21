@@ -1,7 +1,7 @@
 from flask import Flask
 
 from oarepo_ui.ext import OARepoUIExtension
-from oarepo_ui.resources.default_ui_extension import DefaultUIExtensionConfig
+from oarepo_ui.default_ui_extension import DefaultUIExtensionConfig
 from oarepo_ui.resources.templating import render_template_with_macros
 from oarepo_ui.views import blueprint
 

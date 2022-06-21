@@ -5,7 +5,7 @@
 
 {# render list; accepts array of values, hence "_array" suffix #}
 {% macro render_list_array(layout, data, record, className, style, horizontal=false, item=none, separator=None) %}
-    <div class="ui {{ className }} {{ 'horizontal' if horizontal else '' }} list"  {{ as_attributes(kwargs) }}>
+    <div class="oarepo oarepo-list ui {{ className }} {{ 'horizontal' if horizontal else '' }} list"  {{ as_attributes(kwargs) }}>
         {% set itemComponent = kwargs.item if item else {'component': 'raw'} %}
         {% set rendered_items = render_macro_to_array('render_list_array_component', layout=itemComponent,
                                                       data=data, record=record, is_array=true) %}

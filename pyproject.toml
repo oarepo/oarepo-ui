@@ -15,3 +15,6 @@ invenio = {version = ">=3.5.0a4", extras = ["db", "elasticsearch7"]}
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.plugins."oarepo_ui.extensions"]
+default = "oarepo_ui._components:DefaultUIExtensionConfig"

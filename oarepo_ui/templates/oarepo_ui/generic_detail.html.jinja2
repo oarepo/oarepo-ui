@@ -1,0 +1,14 @@
+{% if use_theme_basic_template|default(true) %}
+    {%- extends config.BASE_TEMPLATE %}
+{% endif %}
+{% import_macros %}
+
+{%- block page_body %}
+    <div class="ui container" style="margin-top: 20px">
+        {% for layout_name, layout in layouts.items() %}
+            <h2>{{ layout_name }}</h2>
+            {{ oarepo_ui.render_layout(layout=layout, data=record.metadata, record=record) }}
+        {% endfor %}
+    </div>
+{%- endblock %}
+

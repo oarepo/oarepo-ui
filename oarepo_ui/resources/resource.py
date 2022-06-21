@@ -86,6 +86,6 @@ class RecordsUIResource(UIResource):
         return render_template_with_macros(
             self.config.detail_template,
             record=record,
-            data = record['metadata'],
+            data=record['metadata'],
             layout=layout
         )

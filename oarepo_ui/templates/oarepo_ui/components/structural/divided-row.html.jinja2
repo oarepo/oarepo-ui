@@ -6,7 +6,7 @@
     {%- endif -%}
 {%- endmacro -%}
 
-
+{#  TODO: wrapnout pres grid-row ??? #}
 {# render divided-row #}
 {% macro render_divided_row(layout, data, record, className, style, items=[], separator=', ') -%}
     {% set rendered_items = render_macro_to_array('divided_row_render_item', items=items, data=data, record=record) %}

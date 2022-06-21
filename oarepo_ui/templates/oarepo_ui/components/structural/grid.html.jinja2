@@ -1,7 +1,7 @@
 {# render semantic-ui grid #}
 {% macro render_grid(layout, data, record, className, style, rows, columns, columnsPerRow) %}
     {% set cols=number_to_word(columnsPerRow) + ' column' if columnsPerRow else '' %}
-    <div class="ui {{ className }} grid {{ 'container' if not rows else '' }} {{ cols }}">
+    <div class="oarepo oarepo-grid ui {{ className }} grid {{ 'container' if not rows else '' }} {{ cols }}">
         {% if rows %}
             {% for r in rows %}
                 {{ oarepo_ui.render_layout(
