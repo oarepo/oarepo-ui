@@ -7,7 +7,7 @@ authors = ["Mirek Simek <miroslav.simek@vscht.cz>"]
 [tool.poetry.dependencies]
 python = "^3.9"
 Flask = "^2.1.2"
-invenio-records-resources = "^0.19.11"
+invenio-records-resources = "^0.19.1"
 
 [tool.poetry.dev-dependencies]
 invenio = {version = ">=3.5.0a4", extras = ["db", "elasticsearch7"]}

@@ -1,3 +1,6 @@
+import functools
+import json
+import os
 from functools import cached_property
 from typing import List
 
@@ -46,6 +49,21 @@ class OARepoUIState:
                     component_name = kk[len('render_'):]
                     ret[component_name] = (name, kk)
         return ret
+
+    @cached_property
+    def layout_directories(self):
+        return [
+            ep.load().__file__ for ep in entry_points().select(group='oarepo_ui.layouts')
+        ]
+
+    @functools.lru_cache
+    def get_layout(self, name):
+        for d in self.layout_directories:
+            file_path = os.path.join(d, name)
+            if os.path.exists(file_path):
+                with open(file_path) as f:
+                    return json.load(f)
+        raise KeyError(f'Layout {name} not found')
 
 
 class OARepoUIExtension:

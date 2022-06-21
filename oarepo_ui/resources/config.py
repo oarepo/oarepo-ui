@@ -37,7 +37,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
     app_contexts = None
     ui_serializer_class = None
     layouts = {
-        'detail': '*'
+        'detail': None
     }
 
     @property

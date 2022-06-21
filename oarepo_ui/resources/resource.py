@@ -11,6 +11,7 @@ from .config import UIResourceConfig, RecordsUIResourceConfig
 # Resource
 #
 from .templating import render_template_with_macros
+from ..proxies import current_oarepo_ui
 
 
 class UIResource(Resource):
@@ -81,7 +82,7 @@ class RecordsUIResource(UIResource):
         record = self.service.read(g.identity, resource_requestctx.view_args["pid_value"])
         # TODO: handle permissions UI way - better response than generic error
         serialized_record = self._get_ui_serializer().dump_one(record)
-        layout = self.config.layouts['detail']
+        layout = current_oarepo_ui.get_layout(self.config.layouts['detail'])
         self.run_components('before_ui_detail', layout=layout, resource=self,
                             record=serialized_record, identity=g.identity)
 
