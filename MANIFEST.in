@@ -1,0 +1,32 @@
+// Copyright (c) 2022 CESNET
+//
+// This software is released under the MIT License.
+// https://opensource.org/licenses/MIT
+
+include *.rst
+include *.md
+include *.sh
+include *.txt
+include .dockerignore
+include .editorconfig
+include .tx/config
+include LICENSE
+include babel.ini
+include pytest.ini
+recursive-include .github/workflows *.yml
+recursive-include docs *.bat
+recursive-include docs *.py
+recursive-include docs *.rst
+recursive-include docs Makefile
+recursive-include examples *.py
+recursive-include examples *.sh
+recursive-include examples *.xml
+recursive-include examples/data *.json
+recursive-include oarepo_ui *.html
+recursive-include oarepo_ui *.js
+recursive-include oarepo_ui *.mo
+recursive-include oarepo_ui *.po
+recursive-include oarepo_ui *.pot
+recursive-include oarepo_ui *.scss
+recursive-include tests *.html
+recursive-include tests *.py
