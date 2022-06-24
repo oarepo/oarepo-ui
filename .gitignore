@@ -63,3 +63,5 @@ venv/
 messages.mo
 
 .vscode
+# node modules
+**/*/node_modules
