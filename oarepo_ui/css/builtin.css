@@ -1,0 +1,22 @@
+.oarepo.oarepo-image-icon {
+  object-fit: contain;
+}
+
+.oarepo.ui.basic.label.oarepo-separator {
+  border: none !important;
+  display: inline-block !important;
+  transform: scaleY(2.2) !important;
+  font-size: 0.7em !important;
+  padding-left: 0.3em !important;
+  padding-right: 0.3em !important;
+  padding-bottom: 1em !important;
+  background: none !important;
+}
+
+.ui.list > .oarepo.oarepo-separated.item {
+  margin-left: 0
+}
+
+.ui.list > .oarepo.oarepo-separated-text.item:not(:last-child) {
+  margin-right: .5em
+}

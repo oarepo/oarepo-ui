@@ -1,0 +1,6 @@
+{# render container #}
+{% macro render_container(layout, data, record, className, style, children=none) %}
+    <div class="oarepo oarepo-container ui container {{ className }}" style="{{ style }}"  {{ as_attributes(kwargs) }}>
+        {{ oarepo_ui.children_or_value(layout, data, record, children) }}
+    </div>
+{% endmacro %}

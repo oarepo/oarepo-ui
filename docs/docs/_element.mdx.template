@@ -1,0 +1,59 @@
+---
+sidebar_position: 1
+---
+
+import ExampleTabs from '@site/src/components/ExampleTabs'
+import 'semantic-ui-css/semantic.min.css'
+
+# <element_name>
+
+<!-- TODO: insert element description -->
+
+A [Semantic-UI <element_name>](https://semantic-ui.com/elements/<element_name>.html#/definition) element
+description.
+
+```yaml
+component: '<element_name>'
+```
+
+:::note Implementation state:
+
+- **Jinja2**: 🏗
+- **React**: 🏗
+
+:::
+
+## Properties
+
+<!-- TODO: describe any properties accepted by an element -->
+
+| Name    | Description                                                                             |
+| ------- | --------------------------------------------------------------------------------------- |
+
+:::tip Additional Docs
+
+- [Semantic-UI <element_name>](https://semantic-ui.com/elements/<element_name>.html#/definition)
+- [Semantic-UI React <element_name>](https://react.semantic-ui.com/elements/<element_name>/)
+
+:::
+
+## Data
+
+<!-- TODO: does element render any data given by `dataField`? -->
+
+:::info Data rendering
+
+Doesn't directly render any data referenced by the `dataField`.
+
+:::
+
+## Example
+
+<!-- TODO: insert example usages of an element -->
+
+<ExampleTabs layout={[
+    {
+      component: '<element_name>',
+    },
+  ]}
+/>

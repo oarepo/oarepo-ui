@@ -1,0 +1,6 @@
+{# render link #}
+{% macro render_link(layout, data, record, className, style, children=none, content=null, href=null) %}
+    <a href="{{ href or data }}" class="oarepo oarepo-link {{ className }}" style="{{ style }}"  {{ as_attributes(kwargs) }}>
+        {{ oarepo_ui.children_or_value(layout, null, record, children, content=content) }}
+    </a>
+{% endmacro %}

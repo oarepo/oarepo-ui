@@ -1,0 +1,6 @@
+{# render button #}
+{% macro render_button(layout, data, record, className, style, children=none, content=null) %}
+    <button class="oarepo oarepo-button ui button {{ className }}" style="{{ style }}"  {{ as_attributes(kwargs) }}>
+        {{ oarepo_ui.children_or_value(layout, data, record, children, content=content) }}
+    </button>
+{% endmacro %}

@@ -1,24 +1,17 @@
-def partial_format(s, **kwargs):
-    if s is None:
-        return s
-    for k, v in kwargs.items():
-        s = s.replace('{%s}' % k, v)
-    return s
+num2words = {1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five',
+             6: 'six', 7: 'seven', 8: 'eight', 9: 'nine', 10: 'ten',
+             11: 'eleven', 12: 'twelve', 13: 'thirteen', 14: 'fourteen',
+             15: 'fifteen', 16: 'sixteen', 17: 'seventeen', 18: 'eighteen',
+             19: 'nineteen', 20: 'twenty', 30: 'thirty', 40: 'forty',
+             50: 'fifty', 60: 'sixty', 70: 'seventy', 80: 'eighty',
+             90: 'ninety', 0: 'zero'}
 
 
-def array_partial_format(arr, **kwargs):
-    if arr is None:
-        return None
-    return [
-        partial_format(x, **kwargs) for x in arr
-    ]
-
-
-def get_oarepo_attr(filter):
-    ret = getattr(filter, '_oarepo_ui', None)
-    if ret is None:
-        n = {}
-        setattr(filter, '_oarepo_ui', n)
-        return n
-    else:
-        return ret
+def n2w(n):
+    try:
+        return num2words[n]
+    except KeyError:
+        try:
+            return num2words[n - n % 10] + num2words[n % 10].lower()
+        except KeyError:
+            raise AttributeError('Number out of range')

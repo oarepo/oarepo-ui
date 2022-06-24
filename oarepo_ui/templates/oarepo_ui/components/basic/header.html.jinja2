@@ -1,0 +1,7 @@
+{# render header #}
+{% macro render_header(layout, data, record, className, style, content=none, element=None) %}
+    {% set value=(content or data) %}
+    <{{ (element or 'div')|safe }} class="oarepo oarepo-header ui header {{ className }}" style="{{ style }}"  {{ as_attributes(kwargs) }}>
+    {{ value }}
+    </{{ (element or 'div')|safe }}>
+{% endmacro %}

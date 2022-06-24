@@ -1,0 +1,9 @@
+
+{# render semantic-ui grid column #}
+{% macro render_column(layout, data, record, className, style, items) %}
+    <div class="oarepo oarepo-column column {{ className }}">
+        {% for it in items %}
+            {{ oarepo_ui.render_layout(layout=it, data=data, record=record) }}
+        {% endfor %}
+    </div>
+{% endmacro %}

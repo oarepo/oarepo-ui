@@ -1,0 +1,59 @@
+---
+sidebar_position: 1
+---
+
+import ExampleTabs from '@site/src/components/ExampleTabs'
+
+# Column
+
+A [Semantic-UI Grid Column](https://semantic-ui.com/collections/grid.html#columns) container element that
+renders its contents in a responsive column.
+
+```yaml
+component: 'column'
+```
+
+:::note Implementation state:
+
+- **Jinja2**: 🏗
+- **React**: [✅](https://github.com/oarepo/react-generative-ui/blob/master/src/components/structural/Column.tsx)
+
+:::
+
+## Properties
+
+| Name    | Description                                                   |
+| ------- | ------------------------------------------------------------- |
+| `items` | list of _CDB_ descriptions of column items                    |
+| `*`     | any extra properties applied to wrapping column element (see) |
+
+:::tip Additional Docs
+
+- [Semantic-UI Grid Columns](https://semantic-ui.com/collections/grid.html#columns)
+- [Semantic-UI React Grid.Column](https://react.semantic-ui.com/collections/grid/)
+
+:::
+
+## Data
+
+:::info Data rendering
+
+Doesn't directly render any data referenced by the `dataField`.
+
+:::
+
+## Example
+
+<ExampleTabs
+  layout={[
+    {
+      component: 'column',
+      stretched: true,
+      items: [
+        { component: 'placeholder' },
+        { component: 'placeholder' },
+        { component: 'placeholder' },
+      ],
+    },
+  ]}
+/>

@@ -1,0 +1,27 @@
+{% macro render_list_array_component(layout, data, record) %}
+    {{ oarepo_ui.render_layout(layout=layout, data=data, record=record) }}
+{% endmacro %}
+
+
+{# render list; accepts array of values, hence "_array" suffix #}
+{% macro render_list_array(layout, data, record, className, style, horizontal=false, item=none, separator=None) %}
+    <div class="oarepo oarepo-list ui {{ className }} {{ 'horizontal' if horizontal else '' }} list"  {{ as_attributes(kwargs) }}>
+        {% set itemComponent = kwargs.item if item else {'component': 'raw'} %}
+        {% set rendered_items = render_macro_to_array('render_list_array_component', layout=itemComponent,
+                                                      data=data, record=record, is_array=true) %}
+        {% for d in rendered_items -%}
+            <div class="item oarepo {{ 'oarepo-separated' if separator else '' }} {{ 'oarepo-separated-text' if separator is string and separator.endswith(' ') else '' }}">
+                {{ d }}
+                {%- if not loop.last -%}
+                    {%- if separator -%}
+                        {%- if separator is string -%}
+                            {{ oarepo_ui.render_layout(layout={'component': 'raw'}, data=separator, record=record) }}
+                        {%- else -%}
+                            {{ oarepo_ui.render_layout(layout=separator, data=true, record=record) }}
+                        {%- endif -%}
+                    {%- endif -%}
+                {%- endif -%}
+            </div>
+        {%- endfor %}
+    </div>
+{% endmacro %}

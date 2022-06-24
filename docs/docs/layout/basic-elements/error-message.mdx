@@ -1,0 +1,52 @@
+---
+sidebar_position: 1
+---
+
+import ExampleTabs from '@site/src/components/ExampleTabs'
+import 'semantic-ui-css/semantic.min.css'
+
+# Error message
+
+Displays an error message block when a certain component fails to render.
+
+:::note Implementation state:
+
+- **Jinja2**: Not applicable to jinja rendering
+- **React**: [✅](https://github.com/oarepo/react-generative-ui/blob/master/src/components/basic/ErrorMessage.tsx)
+
+:::
+
+## Properties
+
+| Name      | Description                                         |
+| --------- | --------------------------------------------------- |
+| component | Name of component which the error originates from   |
+| content   | Error message string content - shortcut to children |
+| children  | Description of an error                             |
+
+:::tip Additional Docs
+
+- [Semantic-UI Message](https://semantic-ui.com/collections/message.html#/definition)
+- [Semantic-UI React Message](https://react.semantic-ui.com/collections/message/)
+
+:::
+
+## Data
+
+:::info Data rendering
+
+Doesn't directly render any data referenced by the `dataField`.
+
+:::
+
+## Example
+
+### React
+
+```jsx title=FailingComponent.jsx
+// ...
+<ErrorMessage component="failing-component">
+  This component doesn't like showing up
+</ErrorMessage>
+// ...
+```

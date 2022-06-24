@@ -1,0 +1,6 @@
+{# render span #}
+{% macro render_span(layout, data, record, className, style, children=none, content=None) %}
+    <span class="oarepo oarepo-span {{ className }}" style="{{ style }}"  {{ as_attributes(kwargs) }}>
+        {{ oarepo_ui.children_or_value(layout, content or data, record, children) }}
+    </span>
+{% endmacro %}

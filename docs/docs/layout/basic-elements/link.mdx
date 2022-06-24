@@ -1,0 +1,66 @@
+---
+sidebar_position: 1
+---
+
+import ExampleTabs from '@site/src/components/ExampleTabs'
+import 'semantic-ui-css/semantic.min.css'
+import Tabs from '@theme/Tabs'
+import TabItem from '@theme/TabItem'
+
+# Link
+
+An element used to render simple hyperlinks.
+
+```yaml
+component: 'link'
+```
+
+:::note Implementation state:
+
+- **Jinja2**: [✅](https://github.com/oarepo/oarepo-ui/blob/master/src/oarepo_ui/templates/oarepo_ui/components/basic/link.html.jinja2)
+- **React**: [✅](https://github.com/oarepo/react-generative-ui/blob/master/src/components/basic/Link.tsx)
+
+:::
+
+## Properties
+
+| Name | Description                                        |
+| ---- | -------------------------------------------------- |
+| href | link target path / URL                             |
+| `*`  | any props are passed to the `<a></a>` html element |
+
+## Data
+
+Uses any data referenced by the `dataField` as a `href` link target:
+
+```jsx
+<a href={targetFromData} {/*...*/} />
+```
+
+## Example
+
+### Simple Link
+
+<ExampleTabs
+  layout={[
+    {
+      component: 'link',
+      children: 'This is a simple Link',
+      href: 'https://github.com/oarepo',
+    },
+  ]}
+/>
+
+### Link using data
+
+<ExampleTabs
+  data={{
+    homepage: 'https://github.com/oarepo',
+  }}
+  layout={[
+    {
+      component: 'link',
+      dataField: 'homepage',
+    },
+  ]}
+/>

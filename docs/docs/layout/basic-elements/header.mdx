@@ -1,0 +1,81 @@
+---
+sidebar_position: 1
+---
+
+import ExampleTabs from '@site/src/components/ExampleTabs'
+import 'semantic-ui-css/semantic.min.css'
+import Tabs from '@theme/Tabs'
+import TabItem from '@theme/TabItem'
+
+# Header
+
+A [Semantic-UI Header](https://semantic-ui.com/elements/header.html#/definition) element.
+
+```yaml
+component: 'header'
+```
+
+:::note Implementation state:
+
+- **Jinja2**: [✅](https://github.com/oarepo/oarepo-ui/blob/master/src/oarepo_ui/templates/oarepo_ui/components/basic/header.html.jinja2)
+- **React**: [✅](https://github.com/oarepo/react-generative-ui/blob/master/src/components/basic/Header.tsx)
+
+:::
+
+## Properties
+
+| Name | Description                                        |
+| ---- | -------------------------------------------------- |
+| `*`  | any props are passed to Semantic-UI Header element |
+
+:::tip Additional Docs
+
+<Tabs>
+<TabItem value="Semantic-UI">
+
+- [Semantic-UI Header](https://semantic-ui.com/elements/Header.html#/definition)
+
+</TabItem>
+<TabItem value="Semantic-UI React">
+
+- [Semantic-UI React Header](https://react.semantic-ui.com/elements/Header)
+
+</TabItem>
+</Tabs>
+
+:::
+
+## Data
+
+Uses any data referenced by the `dataField` as header `content`:
+
+```jsx
+<Header content={contentFromData} {/*...*/} />
+```
+
+## Example
+
+### Simple Header
+
+<ExampleTabs
+  layout={[
+    {
+      component: 'header',
+      content: 'This is a main title header',
+    },
+  ]}
+/>
+
+### Header using data
+
+<ExampleTabs
+  data={{
+    content: 'This is a title from data',
+  }}
+  layout={[
+    {
+      component: 'header',
+      dataField: 'content',
+    },
+  ]}
+/>

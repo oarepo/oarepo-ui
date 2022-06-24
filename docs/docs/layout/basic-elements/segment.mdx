@@ -1,0 +1,81 @@
+---
+sidebar_position: 1
+---
+
+import ExampleTabs from '@site/src/components/ExampleTabs'
+import 'semantic-ui-css/semantic.min.css'
+import Tabs from '@theme/Tabs'
+import TabItem from '@theme/TabItem'
+
+# Segment
+
+A [Semantic-UI Segment](https://semantic-ui.com/elements/segment.html#/definition) element.
+
+```yaml
+component: 'segment'
+```
+
+:::note Implementation state:
+
+- **Jinja2**: [✅](https://github.com/oarepo/oarepo-ui/blob/master/src/oarepo_ui/templates/oarepo_ui/components/basic/segment.html.jinja2)
+- **React**: [✅](https://github.com/oarepo/react-generative-ui/blob/master/src/components/basic/Segment.tsx)
+
+:::
+
+## Properties
+
+| Name | Description                                 |
+| ---- | ------------------------------------------- |
+| `*`  | any props are passed to the Segment element |
+
+:::tip Additional Docs
+
+<Tabs>
+<TabItem value="Semantic-UI">
+
+- [Semantic-UI Segment](https://semantic-ui.com/elements/segment.html#/definition)
+
+</TabItem>
+<TabItem value="Semantic-UI React">
+
+- [Semantic-UI React Segment](https://react.semantic-ui.com/elements/segment)
+
+</TabItem>
+</Tabs>
+
+:::
+
+## Data
+
+Uses any data referenced by the `dataField` as a Segment `children`:
+
+```jsx
+<Segment {/*...*/}>{childrenFromData}</Segment>
+```
+
+## Example
+
+### Simple Segment
+
+<ExampleTabs
+  layout={[
+    {
+      component: 'segment',
+      children: 'This is a simple semantic segment',
+    },
+  ]}
+/>
+
+### Segment using data
+
+<ExampleTabs
+  data={{
+    content: 'This will be put into a semantic segment',
+  }}
+  layout={[
+    {
+      component: 'segment',
+      dataField: 'content',
+    },
+  ]}
+/>

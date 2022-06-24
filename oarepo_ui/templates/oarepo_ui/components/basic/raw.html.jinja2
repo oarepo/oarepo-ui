@@ -1,0 +1,4 @@
+{# render raw data - just outputs them #}
+{% macro render_raw(layout, data, record, className, style, horizontal=false, item=none) %}
+    {{ data }} {% if kwargs %}<!-- {{ as_attributes(kwargs) }} -->{% endif %}
+{% endmacro %}

@@ -1,0 +1,83 @@
+---
+sidebar_position: 1
+---
+
+import ExampleTabs from '@site/src/components/ExampleTabs'
+import 'semantic-ui-css/semantic.min.css'
+import Tabs from '@theme/Tabs'
+import TabItem from '@theme/TabItem'
+
+# Container
+
+A [Semantic-UI Container](https://semantic-ui.com/elements/container.html#/definition) element.
+
+```yaml
+component: 'container'
+```
+
+:::note Implementation state:
+
+- **Jinja2**: [✅](https://github.com/oarepo/oarepo-ui/blob/master/src/oarepo_ui/templates/oarepo_ui/components/basic/container.html.jinja2)
+- **React**: [✅](https://github.com/oarepo/react-generative-ui/blob/master/src/components/basic/Container.tsx)
+
+:::
+
+## Properties
+
+| Name | Description                                           |
+| ---- | ----------------------------------------------------- |
+| `*`  | any props are passed to Semantic-UI container element |
+
+:::tip Additional Docs
+
+<Tabs>
+<TabItem value="Semantic-UI">
+
+- [Semantic-UI Container](https://semantic-ui.com/elements/container.html#/definition)
+
+</TabItem>
+<TabItem value="Semantic-UI React">
+
+- [Semantic-UI React Container](https://react.semantic-ui.com/elements/container)
+
+</TabItem>
+</Tabs>
+
+:::
+
+## Data
+
+Uses any data referenced by the `dataField` as container `children`:
+
+```jsx
+<Container {/*...*/}>
+  {children}
+</Container>
+```
+
+## Example
+
+### Simple container
+
+<ExampleTabs
+  layout={[
+    {
+      component: 'container',
+      children: 'contained content',
+    },
+  ]}
+/>
+
+### Container using data
+
+<ExampleTabs
+  data={{
+    content: 'This should be contained',
+  }}
+  layout={[
+    {
+      component: 'container',
+      dataField: 'content',
+    },
+  ]}
+/>

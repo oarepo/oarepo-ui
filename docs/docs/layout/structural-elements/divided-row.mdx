@@ -1,0 +1,81 @@
+---
+sidebar_position: 1
+---
+
+import ExampleTabs from '@site/src/components/ExampleTabs'
+import 'semantic-ui-css/semantic.min.css'
+import '../../../../oarepo_ui/css/builtin.css'
+
+# Divided row
+
+A layout element that places its items in a flexbox row.
+Items can be separated by an optional separator.
+
+```yaml
+component: 'divided-row'
+```
+
+:::note Implementation state:
+
+- **Jinja2**: [✅](https://github.com/oarepo/oarepo-ui/blob/master/src/oarepo_ui/templates/oarepo_ui/components/structural/divided-row.html.jinja2)
+- **React**: [✅](https://github.com/oarepo/react-generative-ui/blob/master/src/components/structural/DividedRow.tsx)
+
+:::
+
+## Properties
+
+| Name        | Description                                                                                                            |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `items`     | list of _CDB_ items to be rendered in a row.                                                                           |
+| `item`      | _CDB_ description of how individual items should be rendered                                                           |
+| `separator` | (default: [Separator](../basic-elements/separator)) _CDB_ description of an element or string used to separate `items` |
+| `*`         | any other properties passed to the DividedRow element                                                                  |
+
+:::tip Additional Docs
+
+- [Grid Row](grid/row)
+
+:::
+
+## Data
+
+:::info Data rendering
+
+Doesn't directly render any data referenced by the `dataField`.
+
+:::
+
+## Example
+
+### Simple row with divided items
+
+<ExampleTabs
+  noResult
+  layout={[
+    {
+      component: 'divided-row',
+      items: [
+        { component: 'strong', children: 'this is item #1' },
+        { component: 'strong', children: 'this is item #2' },
+        { component: 'strong', children: 'this is item #3' },
+      ],
+    },
+  ]}
+/>
+
+### Items divided by custom separator
+
+<ExampleTabs
+  noResult
+  layout={[
+    {
+      component: 'row',
+      separator: ' || ',
+      items: [
+        { component: 'strong', children: 'this is item #1' },
+        { component: 'strong', children: 'this is item #2' },
+        { component: 'strong', children: 'this is item #3' },
+      ],
+    },
+  ]}
+/>

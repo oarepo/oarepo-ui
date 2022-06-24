@@ -1,0 +1,82 @@
+---
+sidebar_position: 1
+---
+
+import ExampleTabs from '@site/src/components/ExampleTabs'
+import 'semantic-ui-css/semantic.min.css'
+import Tabs from '@theme/Tabs'
+import TabItem from '@theme/TabItem'
+
+# Label
+
+A [Semantic-UI Label](https://semantic-ui.com/elements/label.html#/definition) element.
+
+```yaml
+component: 'label'
+```
+
+:::note Implementation state:
+
+- **Jinja2**: [✅](https://github.com/oarepo/oarepo-ui/blob/master/src/oarepo_ui/templates/oarepo_ui/components/basic/label.html.jinja2)
+- **React**: [✅](https://github.com/oarepo/react-generative-ui/blob/master/src/components/basic/Label.tsx)
+
+:::
+
+## Properties
+
+| Name    | Description                                       |
+| ------- | ------------------------------------------------- |
+| content | contents of a label                               |
+| `*`     | any props are passed to Semantic-UI Label element |
+
+:::tip Additional Docs
+
+<Tabs>
+<TabItem value="Semantic-UI">
+
+- [Semantic-UI Label](https://semantic-ui.com/elements/label.html#/definition)
+
+</TabItem>
+<TabItem value="Semantic-UI React">
+
+- [Semantic-UI React Label](https://react.semantic-ui.com/elements/label)
+
+</TabItem>
+</Tabs>
+
+:::
+
+## Data
+
+Uses any data referenced by the `dataField` as Label `content`:
+
+```jsx
+<Label content={contentFromData} {/*...*/} />
+```
+
+## Example
+
+### Simple Label
+
+<ExampleTabs
+  layout={[
+    {
+      component: 'label',
+      content: 'This is a simple label',
+    },
+  ]}
+/>
+
+### Label using data
+
+<ExampleTabs
+  data={{
+    content: 'This is rendered from data',
+  }}
+  layout={[
+    {
+      component: 'label',
+      dataField: 'content',
+    },
+  ]}
+/>

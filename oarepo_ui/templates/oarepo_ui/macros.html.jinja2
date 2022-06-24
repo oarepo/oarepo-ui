@@ -1,0 +1,32 @@
+{% macro render_layout(layout, data, record, className='', style='') -%}
+    {% if layout is list %}
+        {% for l in layout %}
+            {{ render_layout(layout=l, data=(l.data or data), record=record) }}
+        {% endfor %}
+    {% else %}
+        {% set takes_array, render_component = get_component(layout.component) %}
+        {% set rendered_data = as_array(layout.data or get_data(layout.dataField, data, record)) %}
+        {% set props = get_props(layout, className, style) %}
+        {% if takes_array %}
+            {{ render_component(layout=layout, data=rendered_data, record=record, **props) }}
+        {% else %}
+            {% for d in rendered_data %}
+                {{ render_component(layout=layout, data=d, record=record, **props) }}
+            {% endfor %}
+        {% endif %}
+    {% endif %}
+{%- endmacro %}
+
+{% macro render_value(layout, data, record) -%}
+    {{ data }}
+{%- endmacro %}
+
+{% macro children_or_value(layout, data, record, children, content=null) -%}
+    {% if children %}
+        {% for it in children %}
+            {{ oarepo_ui.render_layout(layout=it, data=data, record=record) }}
+        {% endfor %}
+    {% else %}
+        {{ content or data }}
+    {% endif %}
+{%- endmacro %}

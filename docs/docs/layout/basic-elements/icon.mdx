@@ -1,0 +1,114 @@
+---
+sidebar_position: 1
+---
+
+import ExampleTabs from '@site/src/components/ExampleTabs'
+import 'semantic-ui-css/semantic.min.css'
+import Tabs from '@theme/Tabs'
+import TabItem from '@theme/TabItem'
+
+# Icon
+
+A [Semantic-UI Icon](https://semantic-ui.com/elements/icon.html#/definition) element
+with support for custom icon sets.
+
+A standard Semantic-UI Icon element supports rendering of Semantic-UI bundled icons only.
+This element adds an option to provide custom graphics to be rendered as an icon image and
+to render icons from provided custom icon set.
+
+```yaml
+component: 'icon'
+```
+
+:::note Implementation state:
+
+- **Jinja2**: [✅](https://github.com/oarepo/oarepo-ui/blob/master/src/oarepo_ui/templates/oarepo_ui/components/basic/icon.html.jinja2)
+- **React**: [✅](https://github.com/oarepo/react-generative-ui/blob/master/src/components/basic/Icon.tsx)
+
+:::
+
+## Properties
+
+| Name      | Description                                                                                                                                                                                                                                                                  |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`    | icon name, referring either to [Semantic-UI Icon](https://semantic-ui.com/elements/icon.html#/definition) name, or name from provided `iconSet`                                                                                                                              |
+| `iconSet` | map of custom icons this element can render. Accepts keys as icon name, values as either [Semantic-UI Icon](https://semantic-ui.com/elements/icon.html#/definition) name or an object with [Semantic-UI Image](https://semantic-ui.com/elements/image.html#image) properties |
+| `*`       | any other props passed to icon wrapping element                                                                                                                                                                                                                              |
+
+:::tip Additional Docs
+
+<Tabs>
+<TabItem value="Semantic-UI">
+
+- [Semantic-UI Icon](https://semantic-ui.com/elements/icon.html#/definition)
+- [Semantic-UI Image](https://semantic-ui.com/elements/image.html#image)
+
+</TabItem>
+<TabItem value="Semantic-UI React">
+
+- [Semantic-UI React Icon](https://react.semantic-ui.com/elements/icon/)
+- [Semantic-UI React Image](https://react.semantic-ui.com/elements/image/#types-image)
+
+</TabItem>
+</Tabs>
+
+:::
+
+## Data
+
+Uses any data referenced by the `dataField` as icon name:
+
+```jsx
+<Icon name={referencedData} {/*...*/} />
+```
+
+## Example
+
+### Semantic-UI icon
+
+<ExampleTabs
+  layout={[
+    {
+      component: 'icon',
+      name: 'thumbs up',
+      color: 'green',
+      size: 'large',
+    },
+  ]}
+/>
+
+### Custom icon from an icon set
+
+<ExampleTabs
+  layout={[
+    {
+      component: 'icon',
+      name: 'custom',
+      iconSet: {
+        custom: {
+          src: 'https://semantic-ui.com//images/wireframe/image.png',
+        },
+      },
+    },
+  ]}
+/>
+
+### Custom icon using data path
+
+<ExampleTabs
+  noResult
+  data={{
+    iconName: 'custom',
+  }}
+  layout={[
+    {
+      component: 'icon',
+      dataField: 'iconName',
+      iconSet: {
+        custom: {
+          src: 'https://semantic-ui.com//images/wireframe/image.png',
+        },
+      },
+    },
+  ]}
+/>

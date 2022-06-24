@@ -1,0 +1,201 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"mime-version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"POT-Creation-Date: 2022-03-18T17:26:12.695Z\n"
+"PO-Revision-Date: 2022-03-18T17:26:12.695Z\n"
+"Language: en\n"
+
+msgid "Basic information"
+msgstr "Basic information"
+
+msgid "Copy to clipboard"
+msgstr "Copy to clipboard"
+
+msgid "Copied!"
+msgstr "Copied!"
+
+msgid "Files"
+msgstr "Files"
+
+msgid "The record has no files."
+msgstr "The record has no files."
+
+msgid "Creators"
+msgstr "Creators"
+
+msgid "Recommended information"
+msgstr "Recommended information"
+
+msgid "Add contributor"
+msgstr "Add contributor"
+
+msgid "Contributors"
+msgstr "Contributors"
+
+msgid "Alternate identifiers"
+msgstr "Alternate identifiers"
+
+msgid "Alternate identifier(s)"
+msgstr "Alternate identifier(s)"
+
+msgid "Related works"
+msgstr "Related works"
+
+msgid "Visibility"
+msgstr "Visibility"
+
+msgid "Edit"
+msgstr "Edit"
+
+msgid "An error occurred while generating the citation."
+msgstr "An error occurred while generating the citation."
+
+msgid "Citation"
+msgstr "Citation"
+
+msgid "Style"
+msgstr "Style"
+
+msgid "Version"
+msgstr "Version"
+
+msgid "Preview"
+msgstr "Preview"
+
+msgid "Only published versions are displayed."
+msgstr "Only published versions are displayed."
+
+msgid "View all {{total}} versions"
+msgstr "View all {{total}} versions"
+
+msgid "You don't have permissions to share this record."
+msgstr "You don't have permissions to share this record."
+
+msgid "Share"
+msgstr "Share"
+
+msgid "Can view"
+msgstr "Can view"
+
+msgid "Can preview"
+msgstr "Can preview"
+
+msgid "Can edit"
+msgstr "Can edit"
+
+msgid "Get a link"
+msgstr "Get a link"
+
+msgid "Copy link"
+msgstr "Copy link"
+
+msgid "Copied"
+msgstr "Copied"
+
+msgid "No link has been created. Click on 'Get a Link' to make a new link"
+msgstr "No link has been created. Click on 'Get a Link' to make a new link"
+
+msgid "Delete link"
+msgstr "Delete link"
+
+msgid "Done"
+msgstr "Done"
+
+msgid "Anyone with this link <1>can view all versions</1> of this record & files."
+msgstr "Anyone with this link <1>can view all versions</1> of this record & files."
+
+msgid ""
+"Anyone with this link <2>can view all published and unpublished "
+"versions</2> of this record & files."
+msgstr ""
+"Anyone with this link <2>can view all published and unpublished "
+"versions</2> of this record & files."
+
+msgid ""
+"Anyone with an account and this link <2>can edit all versions</2> of this "
+"record & files."
+msgstr ""
+"Anyone with an account and this link <2>can edit all versions</2> of this "
+"record & files."
+
+msgid "Publication date"
+msgstr "Publication date"
+
+msgid "Resource type"
+msgstr "Resource type"
+
+msgid "Access status"
+msgstr "Access status"
+
+msgid "Languages"
+msgstr "Languages"
+
+msgid "Original NUSL identifier"
+msgstr "Original NUSL identifier"
+
+msgid "Creators and contributors"
+msgstr "Creators and contributors"
+
+msgid "Subjects"
+msgstr "Subjects"
+
+msgid "Search"
+msgstr "Search"
+
+msgid "Missing"
+msgstr "Missing"
+
+msgid "Search guide"
+msgstr "Search guide"
+
+msgid "filters"
+msgstr "filters"
+
+msgid "Clear selection"
+msgstr "Clear selection"
+
+msgid "Clear"
+msgstr "Clear"
+
+msgid "We couldn't find any matches for "
+msgstr "We couldn't find any matches for "
+
+msgid "your search"
+msgstr "your search"
+
+msgid "Start over"
+msgstr "Start over"
+
+msgid "ProTip"
+msgstr "ProTip"
+
+msgid "will give you all the publications from 2017 until today"
+msgstr "will give you all the publications from 2017 until today"
+
+msgid "For more tips, check out our "
+msgstr "For more tips, check out our "
+
+msgid "search guide"
+msgstr "search guide"
+
+msgid " for defining advanced search queries"
+msgstr " for defining advanced search queries"
+
+msgid "Filter..."
+msgstr "Filter..."
+
+msgid "Advanced search"
+msgstr "Advanced search"
+
+msgid "Browse {{num}} records"
+msgstr "Browse {{num}} records"
+
+msgid "ORCID profile"
+msgstr "ORCID profile"
+
+msgid "ROR profile"
+msgstr "ROR profile"

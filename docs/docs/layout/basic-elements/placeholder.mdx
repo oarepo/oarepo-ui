@@ -1,0 +1,84 @@
+---
+sidebar_position: 1
+---
+
+import ExampleTabs from '@site/src/components/ExampleTabs'
+import 'semantic-ui-css/semantic.min.css'
+
+# Placeholder
+
+A [Semantic-UI Placeholder](https://semantic-ui.com/elements/placeholder.html#/definition) element
+used to reserve space for content that soon will appear in a layout. It fills the 100% width
+of a parent container by default (uses `fluid` property).
+
+```yaml
+component: 'placeholder'
+```
+
+:::note Implementation state:
+
+- **Jinja2**: [✅](https://github.com/oarepo/oarepo-ui/blob/invenio-3.5-jinja/oarepo_ui/templates/oarepo_ui/components/components.html.jinja2#L33)
+- **React**: [✅](https://github.com/oarepo/react-generative-ui/blob/master/src/components/basic/Placeholder.tsx)
+
+:::
+
+## Properties
+
+| Name    | Description                                                                             |
+| ------- | --------------------------------------------------------------------------------------- |
+| `type`  | placeholder representation type (possible values: `paragraph`, `image-header`, `image`) |
+| `lines` | number of placeholder content lines (useful for `image-header` and `paragraph` types)   |
+| `*`     | any extra props passed down to Placeholder component                                    |
+
+:::tip Additional Docs
+
+- [Semantic-UI Placeholder](https://semantic-ui.com/elements/placeholder.html#/definition)
+- [Semantic-UI React Placeholder](https://react.semantic-ui.com/elements/placeholder/)
+
+:::
+
+## Data
+
+:::info Data rendering
+
+Doesn't directly render any data referenced by the `dataField`.
+
+:::
+
+## Example
+
+### Square image placeholder
+
+<ExampleTabs
+  layout={[
+    {
+      component: 'placeholder',
+      type: 'image',
+      fluid: false,
+      square: true,
+    },
+  ]}
+/>
+
+### Paragraph placeholder
+
+<ExampleTabs
+  layout={[
+    {
+      component: 'placeholder',
+      lines: 3,
+    },
+  ]}
+/>
+
+# Image header placeholder
+
+<ExampleTabs
+  layout={[
+    {
+      component: 'placeholder',
+      type: 'image-header',
+      lines: 3,
+    },
+  ]}
+/>
