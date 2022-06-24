@@ -85,8 +85,7 @@ def get_data(layout_data_definition, data, record):
 
         first = path[0]
         path = path[1:]
-        if isinstance(current_data, dict):
-            if first in current_data:
+        if isinstance(current_data, dict) and first in current_data:
                 yield from _rec(path, current_data[first])
             # else do not yield a value
         # else do not yield a value

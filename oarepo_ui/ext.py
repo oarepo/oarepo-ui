@@ -72,8 +72,5 @@ class OARepoUIExtension:
             self.init_app(app)
 
     def init_app(self, app):
-        self.init_config(app)
         app.extensions["oarepo_ui"] = OARepoUIState(app)
 
-    def init_config(self, app):
-        pass
