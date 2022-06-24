@@ -24,7 +24,7 @@ jobs:
 
       - name: Build package
         run: |
-          poetry install
+          poetry install -vvv --no-dev
           poetry build
 
       - name: Publish on PyPI
