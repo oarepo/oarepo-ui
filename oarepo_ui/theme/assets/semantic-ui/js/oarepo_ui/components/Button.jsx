@@ -9,15 +9,14 @@ import { Button as SemanticButton } from 'semantic-ui-react'
 /**
  * A Semantic-UI button element
  */
-const Button = ({ config, data }) => {
+const Button = ({ layout, data, record }) => {
   const { component, dataField, children, ...rest } = config
 
-  // const resolvedChildren =
-  //   dataField && data ? useDataContext(data, dataField) : children
+  const children = useChildrenOrValue(layout, data, record, children)
 
   return (
     // @ts-ignore until Semantic-UI supports React 18
-    <SemanticButton {...rest}></SemanticButton>
+    <SemanticButton {...rest}>{children}</SemanticButton>
   )
 }
 

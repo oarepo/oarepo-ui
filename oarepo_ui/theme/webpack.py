@@ -60,6 +60,7 @@ theme = WebpackThemeBundle(
                 "../../less": "less",
                 "themes/oarepo": "less/invenio_theme/theme",
                 "@less/oarepo_ui": "less/oarepo_ui",
+                '@js/oarepo_ui': 'js/oarepo_ui',
             }
         )
     },
