@@ -1,0 +1,10 @@
+
+{# render semantic-ui grid row #}
+{% macro render_row(layout, data, record, className, style, columns, columnsPerRow) %}
+    {% set cols=number_to_word(columnsPerRow) + ' column' if columnsPerRow else '' %}
+    <div class="oarepo oarepo-row row {{ className }} {{ cols }}">
+        {% for c in columns %}
+            {{ oarepo_ui.render_layout(layout={'component': 'column_wrapper', 'column': c}, data=data, record=record) }}
+        {% endfor %}
+    </div>
+{% endmacro %}

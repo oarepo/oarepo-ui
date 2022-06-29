@@ -1,0 +1,16 @@
+{# render icon #}
+{% macro render_icon(layout, data, record, className, style, name=none, size='tiny', color='', iconSet={}, src=none) %}
+    {% set value=(name or data) if not src else none %}
+    {% set iconData=iconSet[value] if iconSet and value in iconSet else value %}
+    {% if iconData is string %}
+        <i class="oarepo oarepo-icon {{ iconData }} {{ className|add_size(size, 'tiny') }} {{ color }} icon" style="{{ style }}" {{ as_attributes(kwargs) }} ></i>
+    {% elif iconData.name is defined %}
+        <i class="oarepo oarepo-icon {{ iconData.name }} {{ className|add_size(iconData.size, size, 'tiny') }} {{ iconData.color or color }} icon" style="{{ iconData.style or style }}" {{ as_attributes(kwargs, iconData) }} ></i>
+    {% elif iconData %}
+        <img class="oarepo oarepo-icon ui image {{ className|add_size(iconData.size, size, 'tiny') }} {{ color }} oarepo-ui-image-icon"
+                {{ as_attributes(kwargs, iconData) }}></img>
+    {% else %}
+        <img class="oarepo oarepo-icon ui image {{ className|add_size(iconData.size, size, 'tiny') }} {{ color }} oarepo-ui-image-icon"
+                src="{{ src }}" {{ as_attributes(kwargs) }}></img>
+    {% endif %}
+{% endmacro %}

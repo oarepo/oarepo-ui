@@ -1,0 +1,6 @@
+{# render segment #}
+{% macro render_segment(layout, data, record, className, style, children=none, content=None) %}
+    <div class="oarepo oarepo-segment ui segment {{ className }}" style="{{ style }}"  {{ as_attributes(kwargs) }}>
+        {{ oarepo_ui.children_or_value(layout, content or data, record, children) }}
+    </div>
+{% endmacro %}

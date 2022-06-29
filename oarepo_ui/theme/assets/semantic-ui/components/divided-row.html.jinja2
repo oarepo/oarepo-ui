@@ -1,0 +1,27 @@
+{% macro divided_row_render_item(layout, data, record) %}
+    {%- if layout is string -%}
+        {{ layout }}
+    {%- else -%}
+        {{ oarepo_ui.render_layout(layout=layout, data=data, record=record) }}
+    {%- endif -%}
+{%- endmacro -%}
+
+{#  TODO: wrapnout pres grid-row ??? #}
+{# render divided-row #}
+{% macro render_divided_row(layout, data, record, className, style, items=[], separator=', ') -%}
+    {% set rendered_items = render_macro_to_array('divided_row_render_item', items=items, data=data, record=record) %}
+    {%- for item in rendered_items -%}
+        {%- if loop.index > 1 -%}
+            {%- if separator is string -%}
+                {{ separator }}
+            {%- else -%}
+                {{ oarepo_ui.render_layout(layout=separator, data=data, record=record) }}
+            {%- endif -%}
+        {%- endif -%}
+        {%- if item is string -%}
+            {{ item }}
+        {%- else -%}
+            {{ oarepo_ui.render_layout(layout=item, data=data, record=record) }}
+        {%- endif -%}
+    {%- endfor -%}
+{%- endmacro %}

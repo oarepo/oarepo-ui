@@ -1,0 +1,6 @@
+{# render label #}
+{% macro render_label(layout, data, record, className, style, children=none, content=null) %}
+    <button class="oarepo oarepo-label ui label {{ className }}" style="{{ style }}"  {{ as_attributes(kwargs) }}>
+        {{ oarepo_ui.children_or_value(layout, data, record, children, content=content) }}
+    </button>
+{% endmacro %}

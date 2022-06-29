@@ -1,0 +1,21 @@
+
+{# render unknown component #}
+{% macro render_unknown(layout, data, record, className, style) %}
+    <div class="{{ className }}" style="color: red; {{ style }}">Unknown component {{ layout|pprint }}:
+        kwargs: {{ kwargs|pprint }}</div>
+{% endmacro %}
+
+{# placeholder component #}
+{% macro render_placeholder(layout, data, record, className, style) %}
+    <div class="ui {{ className }}"
+         style="{{ style }}; background-color: rgba(200, 200, 100, 0.2); border: 1px dotted lightgrey">
+        <div style="background-color: white; padding: 20px">
+            <div class="ui placeholder">
+                <div class="image header">
+                    <div class="line"></div>
+                    <div class="line"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endmacro %}

@@ -1,0 +1,51 @@
+{%- extends "invenio_theme/frontpage.html" %} {%- block page_header %} {%-
+include "nr_theses_metadata/header_frontpage.html" %} {%- endblock page_header
+%} {%- block page_body %}
+<h1>be-</h1>
+<div
+  id="frontpage-search-bar"
+  class="ui vertical masthead center aligned segment cover-page"
+>
+  <div class="ui text container">
+    <div class="ui header">
+      {%- if config.THEME_FRONTPAGE_LOGO %}
+      <img
+        class="ui medium image frontpage-logo"
+        src="{{ url_for('static', filename=config.THEME_FRONTPAGE_LOGO) }}"
+        alt="{{ _(config.THEME_SITENAME) }}"
+      />
+      {%- else %}
+      <a class="logo" href="/">{{ _(config.THEME_SITENAME) }}</a>
+      {%- endif %}
+    </div>
+    <div class="ui label purple">
+      <h1 class="ui header inverted medium">
+        {{ _(config.THEME_FRONTPAGE_TITLE) }}
+      </h1>
+    </div>
+    <div class="sixteen wide column frontpage-search">
+      {%- block frontpage_title %} {%- endblock frontpage_title %} {%- block
+      frontpage_form %}
+      <div class="ui center aligned grid" id="header-search-bar">
+        <form
+          class="form"
+          action="{{ config.THEME_SEARCH_ENDPOINT }}"
+          role="search"
+        >
+          <div class="ui action icon input">
+            <input type="text" name="q" placeholder="{{ _('Search') }}" />
+            <button
+              type="submit"
+              class="ui icon search button"
+              aria-label="{{ _('Search') }}"
+            >
+              <i class="icon search"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+      {%- endblock frontpage_form %}
+    </div>
+  </div>
+</div>
+{%- endblock page_body%}

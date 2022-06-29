@@ -1,0 +1,48 @@
+{# render semantic-ui grid #}
+{% macro render_grid(layout, data, record, className, style, rows, columns, columnsPerRow) %}
+    {% set cols=number_to_word(columnsPerRow) + ' column' if columnsPerRow else '' %}
+    <div class="oarepo oarepo-grid ui {{ className }} grid {{ 'container' if not rows else '' }} {{ cols }}">
+        {% if rows %}
+            {% for r in rows %}
+                {{ oarepo_ui.render_layout(
+                    layout={'component': 'row_wrapper', 'row': r, 'columnsPerRow': columnsPerRow},
+                    data=data, record=record)
+                }}
+            {% endfor %}
+        {% elif columns %}
+            {% for c in columns %}
+                {{ oarepo_ui.render_layout(layout={'component': 'column_wrapper', 'column': c}, data=data, record=record) }}
+            {% endfor %}
+        {% else %}
+            <div class="error">Error rendering grid: either row or columns expected, got {{ layout|pprint }}</div>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+
+{% macro render_row_wrapper(layout, data, record, className, style, row, columnsPerRow) %}
+    {% if row.component == 'row' or row.component is none or row.component is not defined %}
+        {{ oarepo_ui.render_layout(layout=row|update(component='row', columnsPerRow=columnsPerRow), data=data, record=record) }}
+    {% else %}
+        {{ oarepo_ui.render_layout(
+            layout={
+                'component': 'row',
+                'className': 'stretched',
+                'columns': [row],
+                'columnsPerRow': columnsPerRow
+            }, data=data, record=record) }}
+    {% endif %}
+{% endmacro %}
+
+{% macro render_column_wrapper(layout, data, record, className, style, column) %}
+    {% if column.component == 'column' or column.component is none or column.component is not defined %}
+        {{ oarepo_ui.render_layout(layout=column|update(component='column'), data=data, record=record) }}
+    {% else %}
+        {{ oarepo_ui.render_layout(
+            layout={
+                'component': 'column',
+                'items': [column],
+                'className': 'stretched',
+            }, data=data, record=record) }}
+    {% endif %}
+{% endmacro %}

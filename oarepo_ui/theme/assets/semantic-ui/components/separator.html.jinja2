@@ -1,0 +1,10 @@
+{# render single or double separator #}
+{% macro render_separator(layout, data, record, className, style, double=false, color=none) %}
+    <span class="oarepo oarepo-separator ui basic {{ color }} label oarepo oarepo-separator">
+    {%- if double -%}
+        ‖
+    {%- else -%}
+        ❙{# mozna volba, aby bylo stejne vysoke jako double bar ❘❙ #}
+    {%- endif -%}
+    </span>
+{% endmacro %}

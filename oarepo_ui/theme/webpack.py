@@ -25,7 +25,9 @@ theme = WebpackThemeBundle(
     default="semantic-ui",
     themes={
         "semantic-ui": dict(
-            entry={},
+            entry={
+                'oarepo-ui-generator': './js/oarepo_ui/index.js'
+            },
             dependencies={
                 "@babel/runtime": "^7.9.0",
                 "@ckeditor/ckeditor5-build-classic": "^16.0.0",
@@ -52,6 +54,7 @@ theme = WebpackThemeBundle(
                 # TODO: needed until resolution of https://github.com/inveniosoftware/invenio-search-ui/issues/130
                 "@translations/invenio_app_rdm": "translations/oarepo_ui",
                 '@translations/oarepo_ui': 'translations/oarepo_ui',
+                '@templates/oarepo_ui/components': 'components',
                 "../../theme.config$": "less/theme.config",
                 "../../less/site": "less/site",
                 "../../less": "less",
