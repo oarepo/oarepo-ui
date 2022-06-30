@@ -3,8 +3,6 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-import { useComponent } from 'react-generative-ui'
-
 // async function getComponent(componentId) {
 //   const component = await import(
 //     /* webpackInclude: /\.jsx$/ */ `./components/${componentId}.jsx`
@@ -12,4 +10,3 @@ import { useComponent } from 'react-generative-ui'
 //   return component
 // }
 // eslint-disable-next-line react-hooks/rules-of-hooks
-console.log(useComponent('Span'))
