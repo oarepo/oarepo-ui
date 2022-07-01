@@ -8,7 +8,7 @@ import PropTypes from 'prop-types'
 import Overridable from 'react-overridable'
 import { Grid } from 'semantic-ui-react'
 import { ColumnWrapper } from '../Column'
-import { ErrorMessage } from '../..'
+import { ErrorMessage } from '..'
 import { LayoutFragment } from '../../GeneratedLayout'
 import { useArrayDataContext, useDataContext, useItems } from '../../hooks'
 
