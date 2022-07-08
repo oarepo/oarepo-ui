@@ -3,75 +3,62 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-import React, { FC } from 'react'
+import * as React from 'react'
+import clsx from 'clsx'
+import Overridable from 'react-overridable'
 import { Grid as SemanticGrid } from 'semantic-ui-react'
-import { RowWrapper } from './Row'
-import { ColumnWrapper } from './Column'
 import { ErrorMessage } from '..'
-import { useArrayDataContext, useDataContext } from '../../hooks'
+import { buildUID } from '../util'
 
 /**
  * Component putting its children items into separate columns.
  * See https://react.semantic-ui.com/collections/grid/ for available props.
  */
-const Grid = ({ config, data }) => {
-  const {
-    component,
-    columnsPerRow = 'equal',
-    container = true,
-    columns,
-    dataField,
-    rows,
-    key,
-    ...rest
-  } = config
+const Grid = ({
+  layout,
+  data,
+  useGlobalData,
+  className,
+  style,
+  rows,
+  columns,
+  columnsPerRow,
+}) => {
+  const Columns = columns?.map((column) =>
+    useLayout({
+      layout: { component: 'column-wrapper' },
+      column,
+      data,
+      useGlobalData,
+    }),
+  )
 
-  const dataContext = useDataContext(data, dataField)
+  const Rows = rows?.map((row) =>
+    useLayout({
+      layout: { component: 'row-wrapper' },
+      row,
+      data,
+      useGlobalData,
+    }),
+  )
 
-  const Columns = columns?.map((column, columnIndex) => (
-    <ColumnWrapper
-      {...{
-        key: columnIndex,
-        config: column,
-        data: useArrayDataContext(dataContext, columns, columnIndex),
-      }}
-    />
-  ))
-
-  const Rows = rows?.map((row, rowIndex) => (
-    <RowWrapper
-      {...{
-        key: rowIndex,
-        config: row,
-        data: useArrayDataContext(dataContext, rows, rowIndex),
-      }}
-    />
-  ))
-
-  if (Columns?.length) {
-    return (
+  return (
+    <Overridable id={buildUID('Grid', '', 'oarepo_ui')}>
       <SemanticGrid
-        key={key}
-        container={container}
+        className={clsx('oarepo', 'oarepo-grid', className)}
+        style={style}
+        container={!rows}
         columns={columnsPerRow}
-        {...rest}
       >
-        {Columns}
+        {(Rows?.length && { Rows }) || (Columns?.length && { Columns }) || (
+          <ErrorMessage layout={{ component: 'grid' }}>
+            Error rendering grid: either row or columns expected, got
+            {JSON.stringify(layout)}
+          </ErrorMessage>
+        )}
       </SemanticGrid>
-    )
-  } else if (Rows?.length) {
-    return (
-      <SemanticGrid key={key} container={container} {...rest}>
-        {Rows}
-      </SemanticGrid>
-    )
-  } else {
-    return (
-      <ErrorMessage key={key} component="grid">
-        Expected either rows or columns
-      </ErrorMessage>
-    )
-  }
+    </Overridable>
+  )
 }
 
-export default Grid
+export default Overridable.component('Grid', Grid)

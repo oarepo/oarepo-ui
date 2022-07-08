@@ -5,15 +5,19 @@
 
 import * as React from 'react'
 import _isString from 'lodash/isString'
+import clsx from 'clsx'
+import PropTypes from 'prop-types'
+import Overridable from 'react-overridable'
+import { Grid } from 'semantic-ui-react'
+import { buildUID } from '../util'
 
 /**
  * Component rendering its children items in a flexbox row.
  * Items can optionally be separated by a separator component.
  */
 const DividedRow = ({
-  layout,
   data,
-  record,
+  useGlobalData,
   className,
   style,
   items = [],
@@ -26,11 +30,31 @@ const DividedRow = ({
     return useLayout({ layout: item, data: data, useGlobalData: useGlobalData })
   })
 
-  return rowItems.flatMap((item, index) =>
+  const separatedItems = rowItems.flatMap((item, index) =>
     index > 0 && separator ? [useSeparator(separator), item] : item,
+  )
+
+  return (
+    <Overridable id={buildUID('DividedRow', '', 'oarepo_ui')}>
+      <Grid.Row
+        className={clsx('oarepo', 'oarepo-divided-row', className)}
+        style={style}
+      >
+        {separatedItems}
+      </Grid.Row>
+    </Overridable>
   )
 }
 
 DividedRow.prototype.takesArray = true
 
-export default DividedRow
+DividedRow.propTypes = {
+  data: PropTypes.array,
+  useGlobalData: PropTypes.bool,
+  className: PropTypes.string,
+  style: PropTypes.any(PropTypes.string, PropTypes.object),
+  items: PropTypes.array,
+  separator: PropTypes.any(PropTypes.string, PropTypes.object),
+}
+
+export default Overridable.component('DividedRow', DividedRow)

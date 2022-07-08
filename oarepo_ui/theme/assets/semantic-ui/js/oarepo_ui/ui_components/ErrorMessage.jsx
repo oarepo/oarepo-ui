@@ -3,32 +3,43 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-import clsx from 'clsx'
 import * as React from 'react'
+import clsx from 'clsx'
+import PropTypes from 'prop-types'
+import Overridable from 'react-overridable'
 import { Icon, Message } from 'semantic-ui-react'
+import { buildUID } from '../util'
+import { useChildrenOrValue } from '@js/oarepo_generated_ui'
 
 /**
  * An error message to be shown.
  */
-const ErrorMessage = ({ component, content, children, className, ...rest }) => {
-  // @ts-ignore 2786 until Semantic-UI fully compatible with React 18
+const ErrorMessage = ({ layout, data, useGlobalData, children }) => {
   return (
-    <Message
-      size="tiny"
-      icon
-      negative
-      compact
-      floating
-      className={clsx(className, 'oarepo-error')}
-      {...(content && !children && { content })}
-      {...rest}
-    >
-      {/* @ts-ignore 2786 */}
-      <Icon name="warning sign" />
-      <Message.Header>Error rendering {component}:&nbsp;</Message.Header>
-      <Message.Content>{children}</Message.Content>
-    </Message>
+    <Overridable id={buildUID('ErrorMessage', '', 'oarepo_ui')}>
+      <Message
+        size="tiny"
+        icon
+        negative
+        compact
+        floating
+        className={clsx(className, 'oarepo-error')}
+      >
+        <Icon name="warning sign" />
+        <Message.Header>Error rendering {layout.component}:</Message.Header>
+        <Message.Content>
+          {useChildrenOrValue(children, data, useGlobalData)}
+        </Message.Content>
+      </Message>
+    </Overridable>
   )
 }
 
-export default ErrorMessage
+ErrorMessage.propTypes = {
+  layout: PropTypes.object.isRequired,
+  data: PropTypes.array,
+  useGlobalData: PropTypes.bool,
+  children: PropTypes.node,
+}
+
+export default Overridable.component('ErrorMessage', ErrorMessage)

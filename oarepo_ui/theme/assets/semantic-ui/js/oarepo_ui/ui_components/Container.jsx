@@ -4,19 +4,41 @@
 // https://opensource.org/licenses/MIT
 
 import * as React from 'react'
-import { useDataContext } from '../../hooks'
+import clsx from 'clsx'
+import PropTypes from 'prop-types'
+import Overridable from 'react-overridable'
 import { Container as SemanticContainer } from 'semantic-ui-react'
+import { useChildrenOrValue } from '@js/oarepo_generated_ui'
+import { buildUID } from '../util'
 
 /**
  * A Semantic-UI container
  */
-const Container = ({ config, data }) => {
-  const { component, dataField, children, ...rest } = config
-
-  const resolvedChildren =
-    dataField && data ? useDataContext(data, dataField) : children
-
-  return <SemanticContainer {...rest}>{resolvedChildren}</SemanticContainer>
+const Container = ({
+  data,
+  useGlobalData,
+  className,
+  style,
+  children = [],
+}) => {
+  return (
+    <Overridable id={buildUID('Container', '', 'oarepo_ui')}>
+      <SemanticContainer
+        className={clsx('oarepo', 'oarepo-container', className)}
+        style={style}
+      >
+        {useChildrenOrValue(children, data, useGlobalData)}
+      </SemanticContainer>
+    </Overridable>
+  )
 }
 
-export default Container
+Container.propTypes = {
+  data: PropTypes.array,
+  useGlobalData: PropTypes.bool,
+  className: PropTypes.string,
+  style: PropTypes.any(PropTypes.string, PropTypes.object),
+  children: PropTypes.array,
+}
+
+export default Overridable.component('Container', Container)
