@@ -6,7 +6,7 @@
 import * as React from 'react'
 import PropTypes from 'prop-types'
 import Overridable from 'react-overridable'
-import { useLayout } from '@js/oarepo_generative_ui'
+import { useLayout } from '@js/oarepo_generated_ui'
 import clsx from 'clsx'
 import { buildUID } from '../util'
 
