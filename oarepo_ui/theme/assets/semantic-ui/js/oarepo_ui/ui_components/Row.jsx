@@ -11,11 +11,18 @@ import { useLayout } from '@js/oarepo_generative_ui'
 import clsx from 'clsx'
 import { buildUID } from '../util'
 
+const RowColumn = ({ column, data, useGlobalData }) =>
+  useLayout({
+    layout: { component: 'column_wrapper' },
+    column: column,
+    data: data,
+    useGlobalData: useGlobalData,
+  })
+
 /**
  * Component rendering its children items in a flexbox row.
  * Items can optionally be separated by a separator component.
  */
-
 const Row = ({
   data,
   useGlobalData = false,
@@ -31,14 +38,13 @@ const Row = ({
         className={clsx('oarepo', 'oarepo-row', className)}
         {...rest}
       >
-        {columns.map((column) =>
-          useLayout({
-            layout: { component: 'column_wrapper' },
-            column: column,
-            data: data,
-            useGlobalData: useGlobalData,
-          }),
-        )}
+        {columns.map((column) => (
+          <RowColumn
+            column={column}
+            data={data}
+            useGlobalData={useGlobalData}
+          />
+        ))}
       </Grid.Row>
     </Overridable>
   )

@@ -10,6 +10,34 @@ import PropTypes from 'prop-types'
 import { buildUID } from '../util'
 import { useLayout } from '@js/oarepo_generated_ui'
 
+const ColumnComponent = ({ column, data, useGlobalData, className, style }) =>
+  useLayout({
+    layout: {
+      ...column,
+      component: 'column',
+    },
+    data,
+    useGlobalData,
+    className,
+    style,
+  })
+
+const WrappedColumnComponent = ({
+  item,
+  data,
+  useGlobalData,
+  className,
+  style,
+}) =>
+  useLayout({
+    layout: { component: 'column' },
+    items: [item],
+    data,
+    useGlobalData,
+    className: clsx('stretched', className),
+    style,
+  })
+
 /**
  * A component wrapping the layout inside a column component
  */
@@ -20,30 +48,18 @@ export const ColumnWrapper = ({
   style,
   column,
 }) => {
-  const ColumnComponent =
-    !column.component || column.component === 'column'
-      ? useLayout({
-          layout: {
-            ...column,
-            component: 'column',
-          },
-          data,
-          useGlobalData,
-          className,
-          style,
-        })
-      : useLayout({
-          layout: column,
-          items: [column],
-          data,
-          useGlobalData,
-          className: clsx('stretched', className),
-          style,
-        })
+  const wrappedColumn =
+    !column.component || column.component === 'column' ? (
+      <ColumnComponent {...{ column, data, useGlobalData, className, style }} />
+    ) : (
+      <WrappedColumnComponent
+        {...{ item: column, data, useGlobalData, className, style }}
+      />
+    )
 
   return (
     <Overridable id={buildUID('ColumnWrapper', '', 'oarepo_ui')}>
-      {ColumnComponent}
+      {wrappedColumn}
     </Overridable>
   )
 }

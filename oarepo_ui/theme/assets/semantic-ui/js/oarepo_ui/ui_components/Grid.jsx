@@ -12,6 +12,22 @@ import { ErrorMessage } from '..'
 import { buildUID } from '../util'
 import { useLayout } from '@js/oarepo_generated_ui'
 
+const GridColumnComponent = ({ column, data, useGlobalData }) =>
+  useLayout({
+    layout: { component: 'column-wrapper' },
+    column,
+    data,
+    useGlobalData,
+  })
+
+const GridRowComponent = ({ row, data, useGlobalData }) =>
+  useLayout({
+    layout: { component: 'row-wrapper' },
+    row,
+    data,
+    useGlobalData,
+  })
+
 /**
  * Component putting its children items into separate columns.
  * See https://react.semantic-ui.com/collections/grid/ for available props.
@@ -26,23 +42,17 @@ const Grid = ({
   columns,
   columnsPerRow,
 }) => {
-  const Columns = columns?.map((column) =>
-    useLayout({
-      layout: { component: 'column-wrapper' },
-      column,
-      data,
-      useGlobalData,
-    }),
-  )
+  const Columns = columns?.map((column) => (
+    <GridColumnComponent
+      column={column}
+      data={data}
+      useGlobalData={useGlobalData}
+    />
+  ))
 
-  const Rows = rows?.map((row) =>
-    useLayout({
-      layout: { component: 'row-wrapper' },
-      row,
-      data,
-      useGlobalData,
-    }),
-  )
+  const Rows = rows?.map((row) => (
+    <GridRowComponent row={row} data={data} useGlobalData={useGlobalData} />
+  ))
 
   return (
     <Overridable id={buildUID('Grid', '', 'oarepo_ui')}>

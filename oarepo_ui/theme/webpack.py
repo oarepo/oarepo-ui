@@ -50,6 +50,7 @@ theme = WebpackThemeBundle(
                 "react-invenio-deposit": "^0.19.0",
                 "react-invenio-forms": "^0.10.0",
                 "react-searchkit": "^2.0.0",
+                "react-text-truncate": "^0.19.0",
                 "yup": "^0.32.0",
             },
             devDependencies={

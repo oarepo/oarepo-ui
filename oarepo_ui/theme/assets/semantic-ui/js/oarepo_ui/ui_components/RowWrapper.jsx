@@ -6,10 +6,48 @@
 import * as React from 'react'
 import PropTypes from 'prop-types'
 import Overridable from 'react-overridable'
-import { Grid } from 'semantic-ui-react'
 import { useLayout } from '@js/oarepo_generative_ui'
 import clsx from 'clsx'
 import { buildUID } from '../util'
+
+const RowComponent = ({
+  row,
+  data,
+  useGlobalData,
+  columnsPerRow,
+  className,
+  style,
+}) =>
+  useLayout({
+    layout: {
+      ...row,
+      component: 'row',
+    },
+    columns: [row],
+    data,
+    useGlobalData,
+    columnsPerRow,
+    className: clsx('stretched', className),
+    style,
+  })
+
+const WrappedRowComponent = ({
+  item,
+  data,
+  useGlobalData,
+  columnsPerRow,
+  className,
+  style,
+}) =>
+  useLayout({
+    layout: { component: 'row' },
+    columns: [item],
+    data,
+    useGlobalData,
+    columnsPerRow,
+    className: clsx('stretched', className),
+    style,
+  })
 
 /**
  * A component wrapping the layout inside a row component
@@ -22,32 +60,19 @@ export const RowWrapper = ({
   row,
   columnsPerRow,
 }) => {
-  const RowComponent =
-    !row.component || row.component === 'row'
-      ? useLayout({
-          layout: {
-            ...row,
-            component: 'row',
-          },
-          columns: [row],
-          data,
-          useGlobalData,
-          columnsPerRow,
-          className: clsx('stretched', className),
-          style,
-        })
-      : useLayout({
-          layout: { component: 'row' },
-          columns: [row],
-          data,
-          useGlobalData,
-          columnsPerRow,
-          className: clsx('stretched', className),
-          style,
-        })
+  const wrappedRow =
+    !row.component || row.component === 'row' ? (
+      <RowComponent
+        {...{ row, data, useGlobalData, columnsPerRow, className, style }}
+      />
+    ) : (
+      <WrappedRowComponent
+        {...{ item: row, data, useGlobalData, columnsPerRow, className, style }}
+      />
+    )
   return (
     <Overridable id={buildUID('RowWrapper', '', 'oarepo_ui')}>
-      {RowComponent}
+      {wrappedRow}
     </Overridable>
   )
 }

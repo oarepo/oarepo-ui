@@ -11,6 +11,10 @@ import Overridable from 'react-overridable'
 import { Grid } from 'semantic-ui-react'
 import { buildUID } from '../util'
 import { useLayout } from '@js/oarepo_generated_ui'
+import { SeparatorComponent } from '@uijs/oarepo_generated_ui'
+
+const RowItem = ({ item, data, useGlobalData }) =>
+  useLayout({ layout: item, data: data, useGlobalData: useGlobalData })
 
 /**
  * Component rendering its children items in a flexbox row.
@@ -28,11 +32,13 @@ const DividedRow = ({
     if (_isString(item)) {
       return <React.Fragment>{item}</React.Fragment>
     }
-    return useLayout({ layout: item, data: data, useGlobalData: useGlobalData })
+    return <RowItem item={item} data={data} useGlobalData={useGlobalData} />
   })
 
   const separatedItems = rowItems.flatMap((item, index) =>
-    index > 0 && separator ? [useSeparator(separator), item] : item,
+    index > 0 && separator
+      ? [<SeparatorComponent separator={separator} />, item]
+      : item,
   )
 
   return (
