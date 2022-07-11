@@ -14,7 +14,14 @@ import { useChildrenOrValue } from '@js/oarepo_generated_ui'
 /**
  * An error message to be shown.
  */
-const ErrorMessage = ({ layout, data, useGlobalData, children }) => {
+const ErrorMessage = ({
+  layout,
+  data,
+  useGlobalData,
+  className,
+  style,
+  children,
+}) => {
   return (
     <Overridable id={buildUID('ErrorMessage', '', 'oarepo_ui')}>
       <Message
@@ -23,7 +30,8 @@ const ErrorMessage = ({ layout, data, useGlobalData, children }) => {
         negative
         compact
         floating
-        className={clsx(className, 'oarepo-error')}
+        className={clsx('oarepo', 'oarepo-error', className)}
+        style={style}
       >
         <Icon name="warning sign" />
         <Message.Header>Error rendering {layout.component}:</Message.Header>
@@ -39,6 +47,8 @@ ErrorMessage.propTypes = {
   layout: PropTypes.object.isRequired,
   data: PropTypes.array,
   useGlobalData: PropTypes.bool,
+  className: PropTypes.string,
+  style: PropTypes.any(PropTypes.string, PropTypes.object),
   children: PropTypes.node,
 }
 

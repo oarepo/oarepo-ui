@@ -17,7 +17,6 @@ import { buildUID } from '../util'
  */
 
 const Row = ({
-  layout,
   data,
   useGlobalData = false,
   className,
@@ -29,12 +28,13 @@ const Row = ({
     <Overridable id={buildUID('Row', '', 'oarepo_ui')}>
       <Grid.Row
         columns={columnsPerRow || columns?.length}
-        className={clsx(className, 'oarepo', 'oarepo-row')}
+        className={clsx('oarepo', 'oarepo-row', className)}
         {...rest}
       >
         {columns.map((column) =>
           useLayout({
-            layout: { component: 'column_wrapper', column: column },
+            layout: { component: 'column_wrapper' },
+            column: column,
             data: data,
             useGlobalData: useGlobalData,
           }),
@@ -45,7 +45,6 @@ const Row = ({
 }
 
 Row.propTypes = {
-  layout: PropTypes.object.isRequired,
   data: PropTypes.array,
   useGlobalData: PropTypes.bool,
   className: PropTypes.string,

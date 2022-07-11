@@ -10,6 +10,7 @@ import PropTypes from 'prop-types'
 import Overridable from 'react-overridable'
 import { Grid } from 'semantic-ui-react'
 import { buildUID } from '../util'
+import { useLayout } from '@js/oarepo_generated_ui'
 
 /**
  * Component rendering its children items in a flexbox row.
@@ -45,8 +46,6 @@ const DividedRow = ({
     </Overridable>
   )
 }
-
-DividedRow.prototype.takesArray = true
 
 DividedRow.propTypes = {
   data: PropTypes.array,

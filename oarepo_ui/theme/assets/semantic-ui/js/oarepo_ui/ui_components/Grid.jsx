@@ -5,10 +5,12 @@
 
 import * as React from 'react'
 import clsx from 'clsx'
+import PropTypes from 'prop-types'
 import Overridable from 'react-overridable'
 import { Grid as SemanticGrid } from 'semantic-ui-react'
 import { ErrorMessage } from '..'
 import { buildUID } from '../util'
+import { useLayout } from '@js/oarepo_generated_ui'
 
 /**
  * Component putting its children items into separate columns.
@@ -59,6 +61,17 @@ const Grid = ({
       </SemanticGrid>
     </Overridable>
   )
+}
+
+Grid.propTypes = {
+  layout: PropTypes.object,
+  data: PropTypes.array,
+  useGlobalData: PropTypes.bool,
+  className: PropTypes.string,
+  style: PropTypes.any(PropTypes.string, PropTypes.object),
+  rows: PropTypes.array,
+  columns: PropTypes.array,
+  columnsPerRow: PropTypes.any(PropTypes.string, PropTypes.number),
 }
 
 export default Overridable.component('Grid', Grid)

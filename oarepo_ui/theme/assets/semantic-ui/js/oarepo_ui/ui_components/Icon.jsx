@@ -4,37 +4,109 @@
 // https://opensource.org/licenses/MIT
 
 import * as React from 'react'
+import clsx from 'clsx'
+import PropTypes from 'prop-types'
+import Overridable from 'react-overridable'
 import { Icon as SemanticIcon, Image as SemanticImage } from 'semantic-ui-react'
-import { useDataContext } from '../../hooks'
-import { ErrorMessage } from '../ErrorMessage'
+import { buildUID } from '../util'
+import _isString from 'lodash/isString'
+import _isEmpty from 'lodash/isEmpty'
 
 /**
  * An Icon, that renders either as a custom
  * SVG graphic or as a built-in Semantic-UI Icon.
  */
-const Icon = ({ config, data }) => {
-  const { component, dataField, name, iconSet, className, ...rest } = config
+const Icon = ({
+  data,
+  className,
+  style,
+  name,
+  size = 'tiny',
+  color = '',
+  iconSet = {},
+  src,
+  ...rest
+}) => {
+  const value = src ? undefined : name || data
+  const iconData = _getIcon(value)
 
-  const _getIcon = (name) => {
-    return iconSet ? iconSet[name] : name
+  const _getIcon = (iconName) => {
+    return iconSet ? iconSet[iconName] : iconName
   }
 
-  const resolvedName =
-    dataField && data ? useDataContext(data, dataField) : name
+  const IconComponent = (icon) => {
+    const iconClass = clsx('oarepo', 'oarepo-icon', className)
 
-  const iconData = _getIcon(resolvedName)
-
-  if (iconData) {
-    if (typeof iconData === 'string') {
-      // @ts-ignore until Semantic-UI supports React 18
-      return <SemanticIcon className={className} name={iconData} {...rest} />
+    if (_isString(icon)) {
+      return (
+        <SemanticIcon
+          className={iconClass}
+          size={size}
+          color={color}
+          name={icon}
+          style={style}
+          {...rest}
+        />
+      )
+    } else if (icon.name) {
+      const {
+        size: iconSize,
+        color: iconColor,
+        name: iconName,
+        style: iconStyle,
+        ...iconArgs
+      } = icon
+      return (
+        <SemanticIcon
+          className={iconClass}
+          size={iconSize || size}
+          color={iconColor || color}
+          name={iconName}
+          style={iconStyle || style}
+          {...iconArgs}
+          {...rest}
+        />
+      )
+    } else if (!_isEmpty(icon)) {
+      const { size: iconSize, color: iconColor, ...iconArgs } = icon
+      return (
+        <SemanticImage
+          className={clsx(iconClass, 'oarepo-ui-image-icon')}
+          size={iconSize || size}
+          color={iconColor || color}
+          {...iconArgs}
+          {...rest}
+        />
+      )
     } else {
-      return <SemanticImage className={className} {...iconData} {...rest} />
+      return (
+        <SemanticImage
+          className={clsx(iconClass, 'oarepo-ui-image-icon')}
+          size={size}
+          color={color}
+          src={src}
+          {...rest}
+        />
+      )
     }
   }
+
   return (
-    <ErrorMessage component={component}>Unknown icon: {name}.</ErrorMessage>
+    <Overridable id={buildUID('Icon', '', 'oarepo_ui')}>
+      <IconComponent icon={iconData} />
+    </Overridable>
   )
 }
 
-export default Icon
+Icon.propTypes = {
+  data: PropTypes.array,
+  className: PropTypes.string,
+  style: PropTypes.any(PropTypes.string, PropTypes.object),
+  name: PropTypes.string,
+  size: PropTypes.string,
+  color: PropTypes.string,
+  iconSet: PropTypes.object,
+  src: PropTypes.string,
+}
+
+export default Overridable.component('Icon', Icon)

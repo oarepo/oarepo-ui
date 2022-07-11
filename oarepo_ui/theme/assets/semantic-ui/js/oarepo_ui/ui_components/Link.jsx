@@ -4,22 +4,45 @@
 // https://opensource.org/licenses/MIT
 
 import * as React from 'react'
-import { useDataContext } from '../../hooks'
+import clsx from 'clsx'
+import PropTypes from 'prop-types'
+import Overridable from 'react-overridable'
+import { useChildrenOrValue } from '@js/oarepo_generated_ui'
+import { buildUID } from '../util'
 
 /**
  * A a HTML element
  */
-const Link = ({ config, data }) => {
-  const { component, dataField, href, children, ...rest } = config
-
-  const dataContext = useDataContext(data, dataField)
-  const resolvedHref = dataField && dataContext != null ? dataContext : href
-
+const Link = ({
+  data,
+  useGlobalData,
+  className,
+  style,
+  children,
+  href,
+  ...rest
+}) => {
   return (
-    <a href={resolvedHref} {...rest}>
-      {children}
-    </a>
+    <Overridable id={buildUID('Link', '', 'oarepo_ui')}>
+      <a
+        href={href || data}
+        className={clsx('oarepo', 'oarepo-link')}
+        style={style}
+        {...rest}
+      >
+        {useChildrenOrValue(children, undefined, useGlobalData)}
+      </a>
+    </Overridable>
   )
 }
 
-export default Link
+Link.propTypes = {
+  data: PropTypes.array,
+  useGlobalData: PropTypes.bool,
+  className: PropTypes.string,
+  style: PropTypes.any(PropTypes.string, PropTypes.object),
+  children: PropTypes.node,
+  href: PropTypes.string,
+}
+
+export default Overridable.component('Link', Link)

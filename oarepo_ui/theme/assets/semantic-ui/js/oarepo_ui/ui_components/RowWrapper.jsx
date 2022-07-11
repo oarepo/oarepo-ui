@@ -18,6 +18,7 @@ export const RowWrapper = ({
   data,
   useGlobalData = false,
   className,
+  style,
   row,
   columnsPerRow,
 }) => {
@@ -56,6 +57,7 @@ RowWrapper.propTypes = {
   data: PropTypes.array,
   useGlobalData: PropTypes.bool,
   className: PropTypes.string,
+  style: PropTypes.any(PropTypes.string, PropTypes.object),
   row: PropTypes.object,
   columnsPerRow: PropTypes.any(PropTypes.string, PropTypes.number),
 }

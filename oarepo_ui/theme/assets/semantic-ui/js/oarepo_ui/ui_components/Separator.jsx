@@ -4,21 +4,35 @@
 // https://opensource.org/licenses/MIT
 
 import * as React from 'react'
+import PropTypes from 'prop-types'
+import Overridable from 'react-overridable'
 import { Label } from 'semantic-ui-react'
 import clsx from 'clsx'
+import { buildUID } from '../util'
 
 /**
- * Longer text that will be displayed truncated, with an option to show more.
+ * Simple item separator component.
  */
-const Separator = ({ config }) => {
-  const { component, className, color, double, ...rest } = config
-
-  // @ts-ignore until Semantic-UI fully supports newest React
+const Separator = ({ className, style, color, double, ...rest }) => {
   return (
-    <Label basic className={clsx(color, className)} {...rest}>
-      {double ? '‖' : '❙'}
-    </Label>
+    <Overridable id={buildUID('Separator', '', 'oarepo_ui')}>
+      <Label
+        basic
+        className={clsx('oarepo', 'oarepo-separator', color, className)}
+        style={style}
+        {...rest}
+      >
+        {double ? '‖' : '❙'}
+      </Label>
+    </Overridable>
   )
 }
 
-export default Separator
+Separator.propTypes = {
+  className: PropTypes.string,
+  style: PropTypes.any(PropTypes.string, PropTypes.object),
+  color: PropTypes.string,
+  double: PropTypes.bool,
+}
+
+export default Overridable.component('Separator', Separator)

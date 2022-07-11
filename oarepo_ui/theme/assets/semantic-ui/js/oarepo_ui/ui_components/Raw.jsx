@@ -4,18 +4,24 @@
 // https://opensource.org/licenses/MIT
 
 import * as React from 'react'
-import { useDataContext } from '../../hooks'
+import PropTypes from 'prop-types'
+import { useChildrenOrValue } from '@js/oarepo_generated_ui'
 
 /**
  * A Fragment component outputing raw data as its children.
  */
-const Raw = ({ config, data }) => {
-  const { component, dataField, children, ...rest } = config
+const Raw = ({ data, useGlobalData, children }) => {
+  return (
+    <React.Fragment>
+      {useChildrenOrValue(children, data, useGlobalData)}
+    </React.Fragment>
+  )
+}
 
-  const resolvedChildren =
-    dataField && data ? useDataContext(data, dataField) : children
-
-  return <React.Fragment {...rest}>{resolvedChildren}</React.Fragment>
+Raw.propTypes = {
+  data: PropTypes.array,
+  useGlobalData: PropTypes.bool,
+  children: PropTypes.node,
 }
 
 export default Raw

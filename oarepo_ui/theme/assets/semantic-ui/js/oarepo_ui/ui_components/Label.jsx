@@ -4,20 +4,44 @@
 // https://opensource.org/licenses/MIT
 
 import * as React from 'react'
+import clsx from 'clsx'
+import PropTypes from 'prop-types'
+import Overridable from 'react-overridable'
 import { Label as SemanticLabel } from 'semantic-ui-react'
-import { useDataContext } from '../../hooks'
+import { buildUID } from '../util'
+import { useChildrenOrValue } from '@js/oarepo_generated_ui'
 
 /**
  * A Semantic-UI Label.
  */
-const Label = ({ config, data }) => {
-  const { component, dataField, content, ...rest } = config
-
-  const resolvedContent =
-    dataField && data ? useDataContext(data, dataField) : content
-
-  // @ts-ignore until Semantic-UI supports React 18
-  return <SemanticLabel content={resolvedContent} {...rest} />
+const Label = ({
+  data,
+  useGlobalData,
+  className,
+  style,
+  children,
+  ...rest
+}) => {
+  return (
+    <Overridable id={buildUID('Label', '', 'oarepo_ui')}>
+      <SemanticLabel
+        as="button"
+        className={clsx('oarepo', 'oarepo-label', className)}
+        style={style}
+        {...rest}
+      >
+        {useChildrenOrValue(children, data, useGlobalData)}
+      </SemanticLabel>
+    </Overridable>
+  )
 }
 
-export default Label
+Label.propTypes = {
+  data: PropTypes.array,
+  useGlobalData: PropTypes.bool,
+  className: PropTypes.string,
+  style: PropTypes.any(PropTypes.string, PropTypes.object),
+  children: PropTypes.node,
+}
+
+export default Overridable.component('Label', Label)

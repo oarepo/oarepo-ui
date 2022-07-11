@@ -3,47 +3,67 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-import clsx from 'clsx'
 import * as React from 'react'
+import clsx from 'clsx'
+import Overridable from 'react-overridable'
+import PropTypes from 'prop-types'
 import { List as SemanticList } from 'semantic-ui-react'
-import { LayoutFragment } from '../../GeneratedLayout'
-import { useDataContext, useItems, useSeparator } from '../../hooks'
+import { useSeparator } from '../../hooks'
+import { useLayout } from '@js/oarepo_generated_ui'
 import _isString from 'lodash/isString'
+import { buildUID } from '../util'
 
 /**
  * Component putting its children items into a List.
  * See https://react.semantic-ui.com/elements/list for available props.
  */
-const List = ({ config, data }) => {
-  const {
-    component,
-    dataField,
-    items,
-    item = { component: 'span' },
-    separator,
-    ...rest
-  } = config
-
-  const dataContext = useDataContext(data, dataField)
-  const itemsData = dataField && dataContext != null ? dataContext : items
-
-  const listItems = useItems(itemsData, item)?.flatMap((listItem, index) =>
-    index > 0 && separator ? [useSeparator(separator), listItem] : listItem,
-  )
-
-  const ListItems = listItems?.map((listItem, index) => (
+const List = ({
+  data,
+  useGlobalData,
+  className,
+  style,
+  horizontal = false,
+  item = { component: 'raw' },
+  separator,
+  ...rest
+}) => {
+  const listItems = data.map((itemData, index) => (
     <SemanticList.Item
       className={clsx('oarepo', {
         'oarepo-separated': separator,
-        'oarepo-separated-text': _isString(separator),
+        'oarepo-separated-text':
+          _isString(separator) && separator?.endsWith(' '),
       })}
-      key={index}
     >
-      {LayoutFragment({ config: listItem })}
+      {index > 0 && separator && useSeparator(separator)}
+      {useLayout({ layout: item, data: itemData, useGlobalData })}
     </SemanticList.Item>
   ))
 
-  return <SemanticList {...rest}>{ListItems}</SemanticList>
+  return (
+    <Overridable id={buildUID('List', '', 'oarepo_ui')}>
+      <SemanticList
+        className={clsx('oarepo', 'oarepo-list', className)}
+        style={style}
+        horizontal={horizontal}
+        {...rest}
+      >
+        {listItems}
+      </SemanticList>
+    </Overridable>
+  )
 }
 
-export default List
+List.propTypes = {
+  data: PropTypes.array,
+  useGlobalData: PropTypes.bool,
+  className: PropTypes.string,
+  style: PropTypes.any(PropTypes.string, PropTypes.object),
+  horizontal: PropTypes.bool,
+  item: PropTypes.object,
+  separator: PropTypes.any(PropTypes.string, PropTypes.object),
+}
+
+List.prototype.takesArray = true
+
+export default Overridable.component('List', List)

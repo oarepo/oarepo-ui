@@ -4,9 +4,11 @@
 // https://opensource.org/licenses/MIT
 
 import * as React from 'react'
+import clsx from 'clsx'
 import Overridable from 'react-overridable'
 import PropTypes from 'prop-types'
 import { buildUID } from '../util'
+import { useLayout } from '@js/oarepo_generated_ui'
 
 /**
  * A component wrapping the layout inside a column component

@@ -4,26 +4,33 @@
 // https://opensource.org/licenses/MIT
 
 import * as React from 'react'
+import clsx from 'clsx'
+import Overridable from 'react-overridable'
+import PropTypes from 'prop-types'
 import { Placeholder as SemanticPlaceholder } from 'semantic-ui-react'
 import _times from 'lodash/times'
+import { buildUID } from '../util'
+
+const PlaceholderType = {
+  Paragraph: 'paragraph',
+  ImageHeader: 'image-header',
+  Image: 'image',
+}
 
 /**
  * A placeholder used to reserve space for content that soon will appear in a layout.
  */
-const Placeholder = ({ config }) => {
-  const {
-    component,
-    type = 'paragraph',
-    lines = 1,
-    fluid = true,
-    ...restInnerProps
-  } = config
-  const { square, ...rest } = restInnerProps
-
+const Placeholder = ({
+  className,
+  style,
+  type = 'paragraph',
+  lines = 1,
+  ...rest
+}) => {
   const ParagraphPlaceholder = (
     <SemanticPlaceholder.Paragraph>
       {_times(lines || 1, (num) => (
-        <SemanticPlaceholder.Line {...restInnerProps} key={num.toString()} />
+        <SemanticPlaceholder.Line key={num.toString()} />
       ))}
     </SemanticPlaceholder.Paragraph>
   )
@@ -31,12 +38,12 @@ const Placeholder = ({ config }) => {
   const ImageHeaderPlaceholder = (
     <SemanticPlaceholder.Header image>
       {_times(lines || 1, (num) => (
-        <SemanticPlaceholder.Line {...restInnerProps} key={num.toString()} />
+        <SemanticPlaceholder.Line key={num.toString()} />
       ))}
     </SemanticPlaceholder.Header>
   )
 
-  const ImagePlaceholder = <SemanticPlaceholder.Image {...restInnerProps} />
+  const ImagePlaceholder = <SemanticPlaceholder.Image />
 
   const placeholderRepresentation = (type) => {
     switch (type) {
@@ -52,10 +59,26 @@ const Placeholder = ({ config }) => {
   }
 
   return (
-    <SemanticPlaceholder {...rest}>
-      {placeholderRepresentation(type)}
-    </SemanticPlaceholder>
+    <Overridable id={buildUID('Placeholder', '', 'oarepo_ui')}>
+      <SemanticPlaceholder
+        className={clsx('oarepo', 'oarepo-placeholder', className)}
+        style={style}
+        {...rest}
+      >
+        {placeholderRepresentation(type)}
+      </SemanticPlaceholder>
+    </Overridable>
   )
 }
 
-export default Placeholder
+Placeholder.propTypes = {
+  className: PropTypes.string,
+  style: PropTypes.any(PropTypes.string, PropTypes.object),
+  type: PropTypes.oneOf([
+    PlaceholderType.Paragraph,
+    PlaceholderType.ImageHeader,
+    PlaceholderType.Image,
+  ]),
+}
+
+export default Overridable.component('Placeholder', Placeholder)
