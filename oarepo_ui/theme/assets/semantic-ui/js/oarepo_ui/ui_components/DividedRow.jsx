@@ -57,9 +57,9 @@ DividedRow.propTypes = {
   data: PropTypes.array,
   useGlobalData: PropTypes.bool,
   className: PropTypes.string,
-  style: PropTypes.any(PropTypes.string, PropTypes.object),
+  style: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   items: PropTypes.array,
-  separator: PropTypes.any(PropTypes.string, PropTypes.object),
+  separator: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
 }
 
 export default Overridable.component('DividedRow', DividedRow)

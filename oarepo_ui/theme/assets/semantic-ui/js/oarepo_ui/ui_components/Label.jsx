@@ -40,7 +40,7 @@ Label.propTypes = {
   data: PropTypes.array,
   useGlobalData: PropTypes.bool,
   className: PropTypes.string,
-  style: PropTypes.any(PropTypes.string, PropTypes.object),
+  style: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   children: PropTypes.node,
 }
 

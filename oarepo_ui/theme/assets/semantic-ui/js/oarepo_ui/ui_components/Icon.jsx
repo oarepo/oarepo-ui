@@ -101,7 +101,7 @@ const Icon = ({
 Icon.propTypes = {
   data: PropTypes.array,
   className: PropTypes.string,
-  style: PropTypes.any(PropTypes.string, PropTypes.object),
+  style: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   name: PropTypes.string,
   size: PropTypes.string,
   color: PropTypes.string,

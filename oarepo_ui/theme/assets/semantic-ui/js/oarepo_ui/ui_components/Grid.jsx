@@ -78,10 +78,10 @@ Grid.propTypes = {
   data: PropTypes.array,
   useGlobalData: PropTypes.bool,
   className: PropTypes.string,
-  style: PropTypes.any(PropTypes.string, PropTypes.object),
+  style: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   rows: PropTypes.array,
   columns: PropTypes.array,
-  columnsPerRow: PropTypes.any(PropTypes.string, PropTypes.number),
+  columnsPerRow: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 }
 
 export default Overridable.component('Grid', Grid)

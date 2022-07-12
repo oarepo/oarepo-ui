@@ -6,7 +6,7 @@
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
-"""JS/CSS bundles for oarepo-generated-ui.
+"""JS/CSS bundles for oarepo-ui.
 
 You include one of the bundles in a page like the example below (using
 ``base`` bundle as an example):

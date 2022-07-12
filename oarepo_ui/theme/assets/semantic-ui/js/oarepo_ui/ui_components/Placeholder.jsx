@@ -73,7 +73,7 @@ const Placeholder = ({
 
 Placeholder.propTypes = {
   className: PropTypes.string,
-  style: PropTypes.any(PropTypes.string, PropTypes.object),
+  style: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   type: PropTypes.oneOf([
     PlaceholderType.Paragraph,
     PlaceholderType.ImageHeader,

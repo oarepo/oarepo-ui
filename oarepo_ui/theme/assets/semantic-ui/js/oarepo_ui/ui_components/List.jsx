@@ -66,10 +66,10 @@ List.propTypes = {
   data: PropTypes.array,
   useGlobalData: PropTypes.bool,
   className: PropTypes.string,
-  style: PropTypes.any(PropTypes.string, PropTypes.object),
+  style: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   horizontal: PropTypes.bool,
   item: PropTypes.object,
-  separator: PropTypes.any(PropTypes.string, PropTypes.object),
+  separator: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
 }
 
 List.prototype.takesArray = true

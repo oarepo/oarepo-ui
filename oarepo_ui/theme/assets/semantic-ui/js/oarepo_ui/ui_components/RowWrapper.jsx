@@ -82,9 +82,9 @@ RowWrapper.propTypes = {
   data: PropTypes.array,
   useGlobalData: PropTypes.bool,
   className: PropTypes.string,
-  style: PropTypes.any(PropTypes.string, PropTypes.object),
+  style: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   row: PropTypes.object,
-  columnsPerRow: PropTypes.any(PropTypes.string, PropTypes.number),
+  columnsPerRow: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 }
 
 export default Overridable.component('RowWrapper', RowWrapper)

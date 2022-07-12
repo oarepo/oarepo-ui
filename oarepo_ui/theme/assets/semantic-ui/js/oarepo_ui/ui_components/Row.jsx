@@ -55,7 +55,7 @@ Row.propTypes = {
   useGlobalData: PropTypes.bool,
   className: PropTypes.string,
   columns: PropTypes.array,
-  columnsPerRow: PropTypes.any(PropTypes.string, PropTypes.number),
+  columnsPerRow: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 }
 
 export default Overridable.component('Row', Row)

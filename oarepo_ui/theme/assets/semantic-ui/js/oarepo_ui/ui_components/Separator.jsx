@@ -30,7 +30,7 @@ const Separator = ({ className, style, color, double, ...rest }) => {
 
 Separator.propTypes = {
   className: PropTypes.string,
-  style: PropTypes.any(PropTypes.string, PropTypes.object),
+  style: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   color: PropTypes.string,
   double: PropTypes.bool,
 }
