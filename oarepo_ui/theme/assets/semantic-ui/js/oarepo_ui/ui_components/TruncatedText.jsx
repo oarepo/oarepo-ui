@@ -74,7 +74,7 @@ TruncatedText.propTypes = {
   data: PropTypes.array,
   useGlobalData: PropTypes.bool,
   className: PropTypes.string,
-  style: PropTypes.oneOfType([propTypes.string, PropTypes.object]),
+  style: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   children: PropTypes.node,
   lines: PropTypes.number,
   ellipsis: PropTypes.string,
