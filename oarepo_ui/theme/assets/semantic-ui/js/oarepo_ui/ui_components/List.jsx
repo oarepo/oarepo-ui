@@ -72,6 +72,6 @@ List.propTypes = {
   separator: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
 }
 
-List.prototype.takesArray = true
+List.takesArray = true
 
 export default Overridable.component('List', List)
