@@ -11,7 +11,7 @@ import Overridable from 'react-overridable'
 import { Grid } from 'semantic-ui-react'
 import { buildUID } from '../util'
 import { useLayout } from '@js/oarepo_generated_ui'
-import { SeparatorComponent } from '@uijs/oarepo_generated_ui'
+import { SeparatorComponent } from '@uijs/oarepo_generated_ui/ui_components'
 
 const RowItem = ({ item, data, useGlobalData }) =>
   useLayout({ layout: item, data: data, useGlobalData: useGlobalData })

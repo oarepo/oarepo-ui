@@ -9,7 +9,7 @@ import Overridable from 'react-overridable'
 import PropTypes from 'prop-types'
 import { List as SemanticList } from 'semantic-ui-react'
 import { useLayout } from '@js/oarepo_generated_ui'
-import { SeparatorComponent } from '@uijs/oarepo_generated_ui'
+import { SeparatorComponent } from '@uijs/oarepo_generated_ui/ui_components'
 import _isString from 'lodash/isString'
 import { buildUID } from '../util'
 
