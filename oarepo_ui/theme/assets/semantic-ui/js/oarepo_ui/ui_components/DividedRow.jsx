@@ -34,10 +34,9 @@ const DividedRow = ({
     }
     return <RowItem item={item} data={data} useGlobalData={useGlobalData} />
   })
-
   const separatedItems = rowItems.flatMap((item, index) =>
     index > 0 && separator
-      ? [<SeparatorComponent separator={separator} />, item]
+      ? [<SeparatorComponent component={separator} />, item]
       : item,
   )
 
