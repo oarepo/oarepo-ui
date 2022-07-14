@@ -10,6 +10,7 @@ import Overridable from 'react-overridable'
 import { Header as SemanticHeader } from 'semantic-ui-react'
 import { buildUID } from '../util'
 import { useChildrenOrValue } from '@js/oarepo_generated_ui'
+import { withDataArray } from '@uijs/oarepo_generated_ui/ui_components'
 
 /**
  * A Semantic-UI header.
@@ -22,15 +23,20 @@ const Header = ({
   style,
   element,
 }) => {
-  return (
-    <Overridable id={buildUID('Header', '', 'oarepo_ui')}>
+  const HeaderComponent = withDataArray(
+    ({ children: _children, data: _data, useGlobalData: _useGlobalData }) => (
       <SemanticHeader
         {...(element && { as: element })}
         className={clsx('oarepo', 'oarepo-header', className)}
         style={style}
       >
-        {useChildrenOrValue(children, data, useGlobalData)}
+        {useChildrenOrValue(_children, _data, _useGlobalData)}
       </SemanticHeader>
+    ),
+  )
+  return (
+    <Overridable id={buildUID('Header', '', 'oarepo_ui')}>
+      <HeaderComponent {...{ children, data, useGlobalData }} />
     </Overridable>
   )
 }

@@ -11,6 +11,7 @@ import { buildUID } from '../util'
 import { useLayout } from '@js/oarepo_generated_ui'
 import clsx from 'clsx'
 import { useChildrenOrValue } from '@js/oarepo_generated_ui'
+import { withDataArray } from '@uijs/oarepo_generated_ui/ui_components'
 
 /**
  * Longer text that will be displayed truncated, with an option to show more.
@@ -30,42 +31,50 @@ const TruncatedText = ({
   },
   ...rest
 }) => {
-  const [expanded, setExpanded] = React.useState(false)
-
-  function toggleExpanded(e) {
-    e.preventDefault()
-    setExpanded(!expanded)
-  }
-
-  const ExpandToggle = useLayout({
-    ...expandToggle,
-    className: clsx('oarepo-expand-toggle', expandToggle.className),
-    onClick: (e) => toggleExpanded(e),
-    children: expandToggle.children(expanded),
-    data,
-    useGlobalData,
-  })
-
   const truncatedClass = clsx('oarepo', 'oarepo-truncated-text', className)
+
+  const TruncatedTextComponent = withDataArray(
+    ({ children: _children, data: _data, useGlobalData: _useGlobalData }) => {
+      const [expanded, setExpanded] = React.useState(false)
+      const toggleExpanded = (e) => {
+        e.preventDefault()
+        setExpanded(!expanded)
+      }
+      const ExpandToggle = useLayout({
+        ...expandToggle,
+        className: clsx('oarepo-expand-toggle', expandToggle.className),
+        onClick: (e) => toggleExpanded(e),
+        children: expandToggle.children(expanded),
+        data,
+        useGlobalData,
+      })
+
+      console.log('tt', useChildrenOrValue(_children, _data, _useGlobalData))
+
+      return (
+        (expanded && (
+          <p className={truncatedClass} style={style} {...rest}>
+            {_data}
+            {ExpandToggle}
+          </p>
+        )) || (
+          <TextTruncate
+            className={truncatedClass}
+            style={style}
+            line={lines}
+            truncateText={ellipsis}
+            text={_data}
+            textTruncateChild={ExpandToggle}
+            {...rest}
+          />
+        )
+      )
+    },
+  )
 
   return (
     <Overridable id={buildUID('TruncatedText', '', 'oarepo_ui')}>
-      (expanded && (
-      <p className={truncatedClass} style={style} {...rest}>
-        {useChildrenOrValue(children, data, useGlobalData)}
-        {ExpandToggle}
-      </p>
-      )) || (
-      <TextTruncate
-        className={truncatedClass}
-        style={style}
-        line={lines}
-        truncateText={ellipsis}
-        text={useChildrenOrValue(children, data, useGlobalData)}
-        textTruncateChild={ExpandToggle}
-        {...rest}
-      />
-      )
+      <TruncatedTextComponent {...{ children, data, useGlobalData }} />
     </Overridable>
   )
 }

@@ -9,20 +9,27 @@ import PropTypes from 'prop-types'
 import Overridable from 'react-overridable'
 import { buildUID } from '../util'
 import { useChildrenOrValue } from '@js/oarepo_generated_ui'
+import { withDataArray } from '@uijs/oarepo_generated_ui/ui_components'
 
 /**
  * A span HTML element
  */
 const Span = ({ data, useGlobalData, className, style, children, ...rest }) => {
-  return (
-    <Overridable id={buildUID('Span', '', 'oarepo_ui')}>
+  const SpanComponent = withDataArray(
+    ({ children: _children, data: _data, useGlobalData: _useGlobalData }) => (
       <span
         className={clsx('oarepo', 'oarepo-span', className)}
         style={style}
         {...rest}
       >
-        {useChildrenOrValue(children, data, useGlobalData)}
+        {useChildrenOrValue(_children, _data, _useGlobalData)}
       </span>
+    ),
+  )
+
+  return (
+    <Overridable id={buildUID('Span', '', 'oarepo_ui')}>
+      <SpanComponent {...{ children, data, useGlobalData }} />
     </Overridable>
   )
 }

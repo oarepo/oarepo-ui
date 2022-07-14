@@ -62,7 +62,7 @@ const Grid = ({
         container={!rows}
         columns={columnsPerRow}
       >
-        {(Rows?.length && { Rows }) || (Columns?.length && { Columns }) || (
+        {(Rows?.length && Rows) || (Columns?.length && Columns) || (
           <ErrorMessage layout={{ component: 'grid' }}>
             Error rendering grid: either row or columns expected, got
             {JSON.stringify(layout)}

@@ -38,7 +38,7 @@ const Row = ({
         className={clsx('oarepo', 'oarepo-row', className)}
         {...rest}
       >
-        {columns.map((column) => (
+        {columns?.map((column) => (
           <RowColumn
             column={column}
             data={data}

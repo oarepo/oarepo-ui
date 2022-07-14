@@ -18,6 +18,7 @@ import _isEmpty from 'lodash/isEmpty'
  */
 const Icon = ({
   data,
+  useGlobalData,
   className,
   style,
   name,
@@ -28,13 +29,12 @@ const Icon = ({
   ...rest
 }) => {
   const value = src ? undefined : name || data
-  const iconData = _getIcon(value)
-
   const _getIcon = (iconName) => {
     return iconSet ? iconSet[iconName] : iconName
   }
+  const iconData = _getIcon(value)
 
-  const IconComponent = (icon) => {
+  const IconComponent = ({ icon }) => {
     const iconClass = clsx('oarepo', 'oarepo-icon', className)
 
     if (_isString(icon)) {
@@ -69,6 +69,7 @@ const Icon = ({
       )
     } else if (!_isEmpty(icon)) {
       const { size: iconSize, color: iconColor, ...iconArgs } = icon
+      console.log(iconArgs)
       return (
         <SemanticImage
           className={clsx(iconClass, 'oarepo-ui-image-icon')}
