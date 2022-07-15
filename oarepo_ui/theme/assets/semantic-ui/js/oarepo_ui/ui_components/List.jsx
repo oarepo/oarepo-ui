@@ -31,15 +31,16 @@ const List = ({
   separator,
   ...rest
 }) => {
-  const listItems = data.map((itemData, index) => (
+  const listItems = data.map((itemData, idx) => (
     <SemanticList.Item
+      key={idx}
       className={clsx('oarepo', {
         'oarepo-separated': separator,
         'oarepo-separated-text':
           _isString(separator) && separator?.endsWith(' '),
       })}
     >
-      {index > 0 && separator && <SeparatorComponent component={separator} />}
+      {idx > 0 && separator && <SeparatorComponent component={separator} />}
       <ListItemComponent
         item={item}
         data={itemData}

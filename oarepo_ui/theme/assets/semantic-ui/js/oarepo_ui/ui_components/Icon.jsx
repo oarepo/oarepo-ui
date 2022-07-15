@@ -69,7 +69,6 @@ const Icon = ({
       )
     } else if (!_isEmpty(icon)) {
       const { size: iconSize, color: iconColor, ...iconArgs } = icon
-      console.log(iconArgs)
       return (
         <SemanticImage
           className={clsx(iconClass, 'oarepo-ui-image-icon')}

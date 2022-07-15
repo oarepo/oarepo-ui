@@ -13,8 +13,13 @@ import { buildUID } from '../util'
 import { useLayout } from '@js/oarepo_generated_ui'
 import { SeparatorComponent } from '@uijs/oarepo_generated_ui/ui_components'
 
-const RowItem = ({ item, data, useGlobalData }) =>
-  useLayout({ layout: item, data: data, useGlobalData: useGlobalData })
+const RowItem = ({ item, data, useGlobalData, ...rest }) =>
+  useLayout({
+    layout: item,
+    data: data,
+    useGlobalData: useGlobalData,
+    ...rest,
+  })
 
 /**
  * Component rendering its children items in a flexbox row.
@@ -27,16 +32,24 @@ const DividedRow = ({
   style,
   items = [],
   separator = ', ',
+  ...rest
 }) => {
-  const rowItems = items.map((item) => {
+  const rowItems = items.map((item, idx) => {
     if (_isString(item)) {
-      return <React.Fragment>{item}</React.Fragment>
+      return <React.Fragment key={idx}>{item}</React.Fragment>
     }
-    return <RowItem item={item} data={data} useGlobalData={useGlobalData} />
+    return (
+      <RowItem
+        key={idx}
+        item={item}
+        data={data}
+        useGlobalData={useGlobalData}
+      />
+    )
   })
-  const separatedItems = rowItems.flatMap((item, index) =>
-    index > 0 && separator
-      ? [<SeparatorComponent component={separator} />, item]
+  const separatedItems = rowItems.flatMap((item, idx) =>
+    idx > 0 && separator
+      ? [<SeparatorComponent key={`sep-${idx}`} component={separator} />, item]
       : item,
   )
 
@@ -45,6 +58,7 @@ const DividedRow = ({
       <Grid.Row
         className={clsx('oarepo', 'oarepo-divided-row', className)}
         style={style}
+        {...rest}
       >
         {separatedItems}
       </Grid.Row>

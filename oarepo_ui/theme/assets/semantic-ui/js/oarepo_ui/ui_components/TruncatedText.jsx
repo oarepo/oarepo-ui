@@ -49,8 +49,6 @@ const TruncatedText = ({
         useGlobalData,
       })
 
-      console.log('tt', useChildrenOrValue(_children, _data, _useGlobalData))
-
       return (
         (expanded && (
           <p className={truncatedClass} style={style} {...rest}>

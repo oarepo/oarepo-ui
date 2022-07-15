@@ -12,20 +12,22 @@ import { ErrorMessage } from '..'
 import { buildUID } from '../util'
 import { useLayout } from '@js/oarepo_generated_ui'
 
-const GridColumnComponent = ({ column, data, useGlobalData }) =>
+const GridColumnComponent = ({ column, data, useGlobalData, ...rest }) =>
   useLayout({
     layout: { component: 'column-wrapper' },
     column,
     data,
     useGlobalData,
+    ...rest,
   })
 
-const GridRowComponent = ({ row, data, useGlobalData }) =>
+const GridRowComponent = ({ row, data, useGlobalData, ...rest }) =>
   useLayout({
     layout: { component: 'row-wrapper' },
     row,
     data,
     useGlobalData,
+    ...rest,
   })
 
 /**
@@ -42,16 +44,22 @@ const Grid = ({
   columns,
   columnsPerRow,
 }) => {
-  const Columns = columns?.map((column) => (
+  const Columns = columns?.map((column, idx) => (
     <GridColumnComponent
+      key={idx}
       column={column}
       data={data}
       useGlobalData={useGlobalData}
     />
   ))
 
-  const Rows = rows?.map((row) => (
-    <GridRowComponent row={row} data={data} useGlobalData={useGlobalData} />
+  const Rows = rows?.map((row, idx) => (
+    <GridRowComponent
+      key={idx}
+      row={row}
+      data={data}
+      useGlobalData={useGlobalData}
+    />
   ))
 
   return (

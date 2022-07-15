@@ -23,8 +23,13 @@ const ColumnItem = ({ item, data, useGlobalData }) =>
  * See https://react.semantic-ui.com/collections/grid/#Grid.Column for available props.
  */
 const Column = ({ data, useGlobalData, className, style, items = [] }) => {
-  const ColumnItems = items?.map((item) => (
-    <ColumnItem item={item} data={data} useGlobalData={useGlobalData} />
+  const ColumnItems = items?.map((item, idx) => (
+    <ColumnItem
+      item={item}
+      data={data}
+      key={idx}
+      useGlobalData={useGlobalData}
+    />
   ))
 
   return (

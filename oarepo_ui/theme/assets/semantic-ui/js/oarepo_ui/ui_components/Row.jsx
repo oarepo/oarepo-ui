@@ -38,8 +38,9 @@ const Row = ({
         className={clsx('oarepo', 'oarepo-row', className)}
         {...rest}
       >
-        {columns?.map((column) => (
+        {columns?.map((column, idx) => (
           <RowColumn
+            key={idx}
             column={column}
             data={data}
             useGlobalData={useGlobalData}
