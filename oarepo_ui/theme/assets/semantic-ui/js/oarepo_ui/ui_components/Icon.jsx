@@ -18,6 +18,7 @@ import _isEmpty from 'lodash/isEmpty'
  */
 const Icon = ({
   data,
+  useGlobalData: _useGlobalData,
   className,
   style,
   name,
