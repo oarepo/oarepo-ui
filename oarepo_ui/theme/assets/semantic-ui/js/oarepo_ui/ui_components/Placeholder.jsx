@@ -45,8 +45,8 @@ const Placeholder = ({
 
   const ImagePlaceholder = <SemanticPlaceholder.Image />
 
-  const placeholderRepresentation = (type) => {
-    switch (type) {
+  const placeholderRepresentation = (placeholderType) => {
+    switch (placeholderType) {
       case PlaceholderType.Paragraph:
         return ParagraphPlaceholder
       case PlaceholderType.ImageHeader:

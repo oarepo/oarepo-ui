@@ -13,15 +13,7 @@ import { buildUID } from '../util'
 /**
  * Simple item separator component.
  */
-const Separator = ({
-  data,
-  useGlobalData,
-  className,
-  style,
-  color,
-  double,
-  ...rest
-}) => {
+const Separator = ({ className, style, color, double, ...rest }) => {
   return (
     <Overridable id={buildUID('Separator', '', 'oarepo_ui')}>
       <Label

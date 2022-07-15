@@ -10,7 +10,6 @@ import TextTruncate from 'react-text-truncate'
 import { buildUID } from '../util'
 import { useLayout } from '@js/oarepo_generated_ui'
 import clsx from 'clsx'
-import { useChildrenOrValue } from '@js/oarepo_generated_ui'
 import { withDataArray } from '@uijs/oarepo_generated_ui/ui_components'
 
 /**

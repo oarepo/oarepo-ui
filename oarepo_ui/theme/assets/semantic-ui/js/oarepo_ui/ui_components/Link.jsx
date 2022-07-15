@@ -26,7 +26,7 @@ const Link = ({
     <Overridable id={buildUID('Link', '', 'oarepo_ui')}>
       <a
         href={href || data}
-        className={clsx('oarepo', 'oarepo-link')}
+        className={clsx('oarepo', 'oarepo-link', className)}
         style={style}
         {...rest}
       >
