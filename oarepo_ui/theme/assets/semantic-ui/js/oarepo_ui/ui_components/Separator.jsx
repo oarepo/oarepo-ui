@@ -14,7 +14,7 @@ import { buildUID } from '../util'
  * Simple item separator component.
  */
 const Separator = ({
-  data,
+  data: _data,
   useGlobalData: _useGlobalData,
   className,
   style,
