@@ -38,7 +38,7 @@ const TruncatedText = ({
 
   return (
     (expanded && (
-      <p className={truncatedClass} style={style} {...rest}>
+      <p style={style} {...rest}>
         {data}
         {ExpandToggle}
       </p>
