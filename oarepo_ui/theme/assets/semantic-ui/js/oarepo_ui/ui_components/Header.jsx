@@ -12,10 +12,20 @@ import { buildUID } from '../util'
 import { useChildrenOrValue } from '@js/oarepo_generated_ui'
 import { withDataArray } from '@uijs/oarepo_generated_ui/ui_components'
 
+const Header = ({ children, data, element, useGlobalData }) => (
+  <SemanticHeader
+    {...(element && { as: element })}
+    className={clsx('oarepo', 'oarepo-header', className)}
+    style={style}
+  >
+    {useChildrenOrValue(children, data, useGlobalData)}
+  </SemanticHeader>
+)
+
 /**
  * A Semantic-UI header.
  */
-const Header = ({
+const HeaderArray = ({
   data,
   useGlobalData,
   className,
@@ -23,25 +33,17 @@ const Header = ({
   style,
   element,
 }) => {
-  const HeaderComponent = withDataArray(
-    ({ children: _children, data: _data, useGlobalData: _useGlobalData }) => (
-      <SemanticHeader
-        {...(element && { as: element })}
-        className={clsx('oarepo', 'oarepo-header', className)}
-        style={style}
-      >
-        {useChildrenOrValue(_children, _data, _useGlobalData)}
-      </SemanticHeader>
-    ),
-  )
+  const HeaderComponent = withDataArray(Header)
   return (
     <Overridable id={buildUID('Header', '', 'oarepo_ui')}>
-      <HeaderComponent {...{ children, data, useGlobalData }} />
+      <HeaderComponent
+        {...{ children, data, useGlobalData, className, style, element }}
+      />
     </Overridable>
   )
 }
 
-Header.propTypes = {
+HeaderArray.propTypes = {
   data: PropTypes.array,
   useGlobalData: PropTypes.bool,
   className: PropTypes.string,
@@ -49,4 +51,4 @@ Header.propTypes = {
   children: PropTypes.node,
 }
 
-export default Overridable.component('Header', Header)
+export default Overridable.component('Header', HeaderArray)

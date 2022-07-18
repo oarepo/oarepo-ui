@@ -8,20 +8,16 @@ import PropTypes from 'prop-types'
 import { useChildrenOrValue } from '@js/oarepo_generated_ui'
 import { withDataArray } from '@uijs/oarepo_generated_ui/ui_components'
 
+const RawValue = ({ children, data, useGlobalData }) =>
+  useChildrenOrValue(children, data, useGlobalData)
+
 /**
  * A Fragment component outputing raw data as its children.
  */
 const Raw = ({ data, useGlobalData, children }) => {
-  const ValuesArray = withDataArray(
-    ({ children: _children, data: _data, useGlobalData: _useGlobalData }) =>
-      useChildrenOrValue(_children, _data, _useGlobalData),
-  )
+  const RawComponent = withDataArray(RawValue)
 
-  return (
-    <ValuesArray data={data} useGlobalData={useGlobalData}>
-      {children}
-    </ValuesArray>
-  )
+  return <RawComponent {...{ children, data, useGlobalData }} />
 }
 
 Raw.propTypes = {
