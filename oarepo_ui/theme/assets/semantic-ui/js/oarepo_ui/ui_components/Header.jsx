@@ -12,7 +12,14 @@ import { buildUID } from '../util'
 import { useChildrenOrValue } from '@js/oarepo_generated_ui'
 import { withDataArray } from '@uijs/oarepo_generated_ui/ui_components'
 
-const Header = ({ children, data, element, useGlobalData }) => (
+const Header = ({
+  children,
+  data,
+  className,
+  style,
+  element,
+  useGlobalData,
+}) => (
   <SemanticHeader
     {...(element && { as: element })}
     className={clsx('oarepo', 'oarepo-header', className)}
