@@ -11,25 +11,34 @@ import { buildUID } from '../util'
 import { useChildrenOrValue } from '@js/oarepo_generated_ui'
 import { withDataArray } from '@uijs/oarepo_generated_ui/ui_components'
 
+const SpanValue = ({
+  children,
+  data,
+  useGlobalData,
+  className,
+  style,
+  ...rest
+}) => (
+  <span
+    className={clsx('oarepo', 'oarepo-span', className)}
+    style={style}
+    {...rest}
+  >
+    {useChildrenOrValue(children, data, useGlobalData)}
+  </span>
+)
+
 /**
  * A span HTML element
  */
 const Span = ({ data, useGlobalData, className, style, children, ...rest }) => {
-  const SpanComponent = withDataArray(
-    ({ children: _children, data: _data, useGlobalData: _useGlobalData }) => (
-      <span
-        className={clsx('oarepo', 'oarepo-span', className)}
-        style={style}
-        {...rest}
-      >
-        {useChildrenOrValue(_children, _data, _useGlobalData)}
-      </span>
-    ),
-  )
+  const SpanValues = withDataArray(SpanValue)
 
   return (
     <Overridable id={buildUID('Span', '', 'oarepo_ui')}>
-      <SpanComponent {...{ children, data, useGlobalData }} />
+      <SpanValues
+        {...{ children, data, useGlobalData, className, style, ...rest }}
+      />
     </Overridable>
   )
 }
