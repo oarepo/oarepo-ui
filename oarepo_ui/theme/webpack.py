@@ -6,7 +6,7 @@
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
-"""JS/CSS bundles for oarepo-generated-ui.
+"""JS/CSS bundles for oarepo-ui.
 
 You include one of the bundles in a page like the example below (using
 ``base`` bundle as an example):
@@ -25,16 +25,22 @@ theme = WebpackThemeBundle(
     default="semantic-ui",
     themes={
         "semantic-ui": dict(
-            entry={},
+            entry={
+                'oarepo-ui-generator': './js/oarepo_ui/index.js'
+            },
             dependencies={
                 "@babel/runtime": "^7.9.0",
                 "@ckeditor/ckeditor5-build-classic": "^16.0.0",
                 "@ckeditor/ckeditor5-react": "^2.1.0",
+                "@semantic-ui-react/css-patch": "^1.0.0",
+                "semantic-ui-css": "^2.4.1",
+                "semantic-ui-react": "^2.1.2",
                 "formik": "^2.1.0",
                 "i18next": "^20.3.0",
                 "i18next-browser-languagedetector": "^6.1.0",
                 "luxon": "^1.23.0",
                 "path": "^0.12.7",
+                "lodash": "^4.17.0",
                 "prop-types": "^15.7.2",
                 "react-copy-to-clipboard": "^5.0.0",
                 "react-dnd": "^11.1.0",
@@ -44,6 +50,7 @@ theme = WebpackThemeBundle(
                 "react-invenio-deposit": "^0.19.0",
                 "react-invenio-forms": "^0.10.0",
                 "react-searchkit": "^2.0.0",
+                "react-text-truncate": "^0.19.0",
                 "yup": "^0.32.0",
             },
             devDependencies={
@@ -52,11 +59,15 @@ theme = WebpackThemeBundle(
                 # TODO: needed until resolution of https://github.com/inveniosoftware/invenio-search-ui/issues/130
                 "@translations/invenio_app_rdm": "translations/oarepo_ui",
                 '@translations/oarepo_ui': 'translations/oarepo_ui',
+                '@templates/oarepo_ui/components': 'components',
                 "../../theme.config$": "less/theme.config",
                 "../../less/site": "less/site",
                 "../../less": "less",
                 "themes/oarepo": "less/invenio_theme/theme",
                 "@less/oarepo_ui": "less/oarepo_ui",
+                '@js/oarepo_ui': 'js/oarepo_ui',
+                '@uijs/oarepo_ui': 'js/oarepo_ui/ui_components',
+                '@uijs': 'js'
             }
         )
     },
