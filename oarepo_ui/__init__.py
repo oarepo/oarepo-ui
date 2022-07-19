@@ -5,6 +5,6 @@
 
 from .ext import OARepoUIExtension
 
-__version__ = "4.0.9"
+__version__ = "4.0.10"
 
 __all__ = ('__version__', 'OARepoUIExtension')
