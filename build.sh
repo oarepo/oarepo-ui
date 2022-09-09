@@ -25,7 +25,7 @@ with open("$out_f", "w") as f:
 EOF
   python $python_f
   cat $out_f | while read LINE; do
-    ( cat $directory/setup.cfg | grep $LINE &>/dev/null ) || (
+    ( cat $directory/setup.cfg | grep "$LINE" &>/dev/null ) || (
       echo "Replacing oarepo_ui inside $directory/setup.cfg with $LINE"
       
       cat $directory/setup.cfg | egrep '^[ \t]*oarepo.ui =[ \t]*$' || (
