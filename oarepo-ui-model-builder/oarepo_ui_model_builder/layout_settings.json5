@@ -1,0 +1,18 @@
+{
+  "settings-python": {
+    "type": "object",
+    "properties": {
+      "layout": {
+        "type": "string"
+      }
+    }
+  },
+  "settings": {
+    "type": "object",
+    "properties": {
+      "layout": {
+        "type": "string"
+      }
+    }
+  }
+}

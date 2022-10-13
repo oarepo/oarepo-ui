@@ -1,0 +1,16 @@
+{
+  "jsonschema-property": {
+    "properties": {
+      "oarepo:ui": {
+
+      }
+    }
+  },
+  "root": {
+    "properties": {
+      'oarepo:ui': {
+
+      }
+    }
+  }
+}
