@@ -15,10 +15,10 @@ set -o errexit
 set -o nounset
 
 # Always bring down docker services
-function cleanup() {
-    # eval "$(docker-services-cli down --env)"
-}
-trap cleanup EXIT
+# function cleanup() {
+#     # eval "$(docker-services-cli down --env)"
+# }
+# trap cleanup EXIT
 
 
 # python -m check_manifest
