@@ -41,7 +41,6 @@ class ColumnComponent:
     jinja_template = 'oarepo_ui/components/column.html.jinja2'
     react_component = '@uijs/oarepo_ui/ui_components/Column'
 
-
 # Basic components
 class IconComponent:
     name = 'icon'
