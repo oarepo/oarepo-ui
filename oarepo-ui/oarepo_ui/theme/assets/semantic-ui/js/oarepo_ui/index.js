@@ -11,6 +11,17 @@
 // }
 // eslint-disable-next-line react-hooks/rules-of-hooks
 
-import { buildUID } from './util'
+export { buildUID } from './util'
+export { useLayout } from './hooks'
+export { GlobalDataContextProvider } from './context'
 
-export { buildUID }
+// TODO: update oarepo-ui README with info how to use this JS package:
+// 
+// import { useLayout } from '@js/oarepo_ui'
+// const appRoot = document.querySelector('#search-app')
+// const SearchLayout = ({ layout, data, useGlobalData = false }) => useLayout({ layout, data, useGlobalData })
+//
+// ReactDOM.render(
+//   <SearchLayout layout={searchResultItem} data={searchResultItemData} />
+//   appRoot,
+// )
