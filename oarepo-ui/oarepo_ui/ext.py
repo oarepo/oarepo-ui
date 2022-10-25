@@ -2,12 +2,11 @@ import functools
 import json
 import os
 from functools import cached_property
-from typing import List
 
 from importlib_metadata import entry_points
 from jinja2.environment import TemplateModule
+from werkzeug.utils import import_string
 
-from oarepo_ui.ext_api import OARepoUIExtensionConfig
 from oarepo_ui.resources.templating import get_macro_environment
 
 
@@ -15,24 +14,17 @@ class OARepoUIState:
     def __init__(self, app):
         self.app = app
 
-    # @cached_property
-    # def ui_extensions(self) -> List[OARepoUIExtensionConfig]:
-    #     return [x.load()(app=self.app) for x in entry_points().select(group='oarepo_ui.extensions')]
 
     @cached_property
     def components_specifications(self):
-        ret = []
-        for extension in self.ui_extensions:
-            ret.extend(getattr(extension, 'components'))
-        return ret
+        eps = entry_points()["oarepo_ui"]
+        component_defs = {}
+        for ep in eps:
+            entrypoint = import_string(ep.value)
+            component_defs[ep.name] = entrypoint
 
-    # @cached_property
-    # def imported_templates(self):
-    #     """returns a dictionary of alias -> template name"""
-    #     ret = {}
-    #     for extension in self.ui_extensions:
-    #         ret.update(getattr(extension, 'imported_templates'))
-    #     return ret
+        return component_defs
+
 
     def get_jinja_component(self, component_name):
         return self.jinja_components[component_name]
@@ -73,4 +65,6 @@ class OARepoUIExtension:
 
     def init_app(self, app):
         app.extensions["oarepo_ui"] = OARepoUIState(app)
+
+
 
