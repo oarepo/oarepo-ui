@@ -99,7 +99,7 @@ def test_array_object(create_app):
                                 'detail': {
                                     'component': 'row',
                                     'separator': '_',
-                                    'items': [
+                                    'columns': [
                                         'first_name',
                                         'last_name'
                                     ]
@@ -134,7 +134,7 @@ def test_array_object(create_app):
                         'detail': {
                             'component': 'row',
                             'separator': '_',
-                            'items': [
+                            'columns': [
                                 'name',
                                 'age'
                             ]
@@ -202,7 +202,7 @@ def test_array_object(create_app):
             'oarepo:ui': {
                 'detail': {
                     'component': 'row',
-                    'items':
+                    'columns':
                         ['title', 'text', 'contributors']
 
                 },
@@ -225,7 +225,7 @@ def test_array_object(create_app):
     # data = builder.filesystem.open(os.path.join("test","records", "jsonschemas", "test-1.0.0.json"))
     data = json.loads(data)
     # data = json5.load(data)
-    expected = {'detail': {'component': 'row', 'items': [{'component': 'column', 'dataField': 'title', 'items': {'component': 'raw', 'dataField': 'text'}}, {'component': 'raw', 'dataField': 'text'}, {'component': 'column', 'dataField': 'contributors', 'items': {'component': 'row', 'separator': '_', 'items': [{'component': 'row', 'separator': '_', 'items': [{'component': 'raw', 'dataField': 'name.last_name'}, {'component': 'raw', 'dataField': 'name.first_name'}]}, {'component': 'raw', 'dataField': 'age'}]}}]}, 'search': {'component': 'column', 'items': [{'component': 'column', 'dataField': 'title', 'items': {'component': 'raw', 'dataField': 'text'}}, {'component': 'column', 'dataField': 'contributors', 'items': {'component': 'column', 'items': [{'component': 'column', 'items': [{'component': 'raw', 'dataField': 'name.last_name'}, {'component': 'raw', 'dataField': 'name.first_name'}]}, {'component': 'raw', 'dataField': 'age'}]}}]}}
+    expected = {'detail': {'component': 'row', 'columns': [{'component': 'column', 'dataField': 'title', 'items': {'component': 'raw', 'dataField': 'text'}}, {'component': 'raw', 'dataField': 'text'}, {'component': 'column', 'dataField': 'contributors', 'items': {'component': 'row', 'separator': '_', 'columns': [{'component': 'row', 'separator': '_', 'columns': [{'component': 'raw', 'dataField': 'name.last_name'}, {'component': 'raw', 'dataField': 'name.first_name'}]}, {'component': 'raw', 'dataField': 'age'}]}}]}, 'search': {'component': 'column', 'items': [{'component': 'column', 'dataField': 'title', 'items': {'component': 'raw', 'dataField': 'text'}}, {'component': 'column', 'dataField': 'contributors', 'items': {'component': 'column', 'items': [{'component': 'column', 'items': [{'component': 'raw', 'dataField': 'name.last_name'}, {'component': 'raw', 'dataField': 'name.first_name'}]}, {'component': 'raw', 'dataField': 'age'}]}}]}}
     assert data == expected
 
 def test_leveled_object(create_app):
@@ -278,13 +278,13 @@ def test_leveled_object(create_app):
                                             'oarepo:ui': {
                                                 'detail': {
                                                     "component": "row",
-                                                    "items": [
+                                                    "columns": [
                                                         'a', 'b'
                                                     ]
 
                                                 }, 'search': {
                                                     "component": "row",
-                                                    "items": [
+                                                    "columns": [
                                                         'a', 'b'
                                                     ]
                                                 }
@@ -301,7 +301,7 @@ def test_leveled_object(create_app):
                                     'detail': {
                                         'component': 'row',
                                         'separator': '_',
-                                        'items': [
+                                        'columns': [
                                             'first_name',
                                             'last_name'
                                         ]
@@ -325,7 +325,7 @@ def test_leveled_object(create_app):
             'oarepo:ui': {
                 'detail': {
                     'component': 'row',
-                    'items':
+                    'columns':
                         ['author']
 
                 },
@@ -349,7 +349,7 @@ def test_leveled_object(create_app):
     builder.build(schema, "")
     data = builder.filesystem.open(os.path.join("ui", "layout.yaml")).read()
     data = json.loads(data)
-    expected = {'detail': {'component': 'row', 'items': [{'component': 'row', 'separator': '_', 'items': [{'component': 'raw', 'dataField': 'author.first_name'}, {'component': 'row', 'items': [{'component': 'raw', 'dataField': 'author.last_name.a'}, {'component': 'raw', 'dataField': 'author.last_name.b'}]}]}]}, 'search': {'component': 'column', 'items': [{'component': 'column', 'items': [{'component': 'row', 'items': [{'component': 'raw', 'dataField': 'author.last_name.a'}, {'component': 'raw', 'dataField': 'author.last_name.b'}]}, {'component': 'raw', 'dataField': 'author.first_name'}]}, {'component': 'raw', 'dataField': 'author.first_name'}]}}
+    expected = {'detail': {'component': 'row', 'columns': [{'component': 'row', 'separator': '_', 'columns': [{'component': 'raw', 'dataField': 'author.first_name'}, {'component': 'row', 'columns': [{'component': 'raw', 'dataField': 'author.last_name.a'}, {'component': 'raw', 'dataField': 'author.last_name.b'}]}]}]}, 'search': {'component': 'column', 'items': [{'component': 'column', 'items': [{'component': 'row', 'columns': [{'component': 'raw', 'dataField': 'author.last_name.a'}, {'component': 'raw', 'dataField': 'author.last_name.b'}]}, {'component': 'raw', 'dataField': 'author.first_name'}]}, {'component': 'raw', 'dataField': 'author.first_name'}]}}
 
     assert data == expected
 
@@ -452,7 +452,7 @@ def test_basic(create_app):
                                     'detail': {
                                         'component': 'row',
                                         'separator': '_',
-                                        'items': [
+                                        'columns': [
                                             'first_name',
                                             'last_name'
                                         ]
@@ -509,7 +509,7 @@ def test_basic(create_app):
                 },
                 'search': {
                     'component': 'row',
-                    'items': [
+                    'columns': [
                         {
                             "component": "list",
                             "name": "thumbs up",
@@ -538,9 +538,9 @@ def test_basic(create_app):
         'detail': {'component': 'column',
                    'items': [{'component': 'icon', 'name': 'thumbs up', 'color': 'green', 'size': 'large'},
                              {'component': 'row', 'separator': '_',
-                              'items': [{'component': 'raw', 'dataField': 'author.first_name'},
+                              'columns': [{'component': 'raw', 'dataField': 'author.first_name'},
                                         {'component': 'raw', 'dataField': 'author.last_name'}]},
-                             {'component': 'raw', 'dataField': 'title'}]}, 'search': {'component': 'row', 'items': [
+                             {'component': 'raw', 'dataField': 'title'}]}, 'search': {'component': 'row', 'columns': [
             {'component': 'list', 'name': 'thumbs up', 'color': 'green', 'size': 'large'},
             {'component': 'raw', 'dataField': 'author.first_name'}, {'component': 'raw', 'dataField': 'title'}]}
 

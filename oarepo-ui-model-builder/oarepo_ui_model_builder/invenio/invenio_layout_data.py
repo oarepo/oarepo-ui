@@ -30,7 +30,7 @@ class InvenioLayoutBuilder(JSONBaseBuilder):
         components_eps = importlib_metadata.entry_points()['oarepo_model_builder_ui.components']
         for ep in components_eps:
             entrypoint = import_string(ep.value)
-            self.components[ep.name] = {'members': entrypoint.members, 'value_type': entrypoint.value_type}
+            self.components[ep.name] = {'members': entrypoint.members}
 
 
     @process("/model/**", condition=lambda current, stack: stack.schema_valid)
@@ -150,7 +150,7 @@ class InvenioLayoutBuilder(JSONBaseBuilder):
                     for it in items:
                         index = fl_layout_data[fl_members_name].index(it)
                         result = self.array_processing(items, it, "", layout)
-                        fl_layout_data[members_name][index] = result
+                        fl_layout_data[fl_members_name][index] = result #members_name -> fl_members_name
 
 
                 top_layout_data[members_name] = fl_layout_data
@@ -211,11 +211,13 @@ class InvenioLayoutBuilder(JSONBaseBuilder):
 
             member_names = component_def.get('members', '')
             members = []
+            m_name = ''
             if type(member_names) is str:
                 if member_names not in layout_data:
                     continue
                 else:
                     members = layout_data[member_names]
+                    m_name = member_names
             elif type(member_names) is list:
                 if not any(member in layout_data for member in member_names):
                     continue
@@ -223,14 +225,20 @@ class InvenioLayoutBuilder(JSONBaseBuilder):
                     for member in member_names:
                         if member in layout_data:
                             members = layout_data[member]
+                            m_name = member
+                            break
 
             for it in members:
                 if it == path:
                     index = members.index(it)
                     if layout in content:
-                        layout_data['items'][index] = content[layout]
+                        layout_data[m_name][index] = content[layout]
+
+                        # layout_data['items'][index] = content[layout]
                     elif 'default' in content:
-                        layout_data['items'][index] = content['default']
+                        layout_data[m_name][index] = content['default']
+
+                        # layout_data['items'][index] = content['default']
                 elif type(it) is not str:
                     self.object_processing(it, path, content, layout)
             dictionary[layout] = layout_data
@@ -244,12 +252,13 @@ class InvenioLayoutBuilder(JSONBaseBuilder):
                 result = self.array_processing(data['properties'], i, it + ".", layout)
                 new_items_list.append(result)
             members_name = self.members_name(data['oarepo:ui'][layout]['component'])
+            m_name = ""
             if type(members_name) is list:
                 for mem in members_name:
                     if mem in data['oarepo:ui'][layout]:
-                        members_name = mem
+                        m_name = mem
                         break
-            data['oarepo:ui'][layout][members_name] = new_items_list
+            data['oarepo:ui'][layout][m_name] = new_items_list
             return data['oarepo:ui'][layout]
         else:
             if 'oarepo:ui' not in data:
@@ -277,11 +286,13 @@ class InvenioLayoutBuilder(JSONBaseBuilder):
             return layout_data
         member_names = component_def.get('members', '')
         members = []
+        m_name = ""
         if type(member_names) is str:
             if member_names not in layout_data:
                 return layout_data
             else:
                 members = layout_data[member_names]
+                m_name = member_names
         elif type(member_names) is list:
             if not any(member in layout_data for member in member_names):
                 return layout_data
@@ -289,14 +300,18 @@ class InvenioLayoutBuilder(JSONBaseBuilder):
                 for member in member_names:
                     if member in layout_data:
                         members = layout_data[member]
+                        m_name = member
 
         for it in members:
             if it == path:
                 index = members.index(it)
                 if layout in content:
-                    layout_data['items'][index] = content[layout]
+                    # layout_data['items'][index] = content[layout]
+                    layout_data[m_name][index] = content[layout]
                 elif 'default' in content:
-                    layout_data['items'][index] = content['default']
+                    # layout_data['items'][index] = content['default']
+                    layout_data[m_name][index] = content['default']
+
             elif type(it) is not str:
                 self.object_processing(it, path, content, layout)
 
