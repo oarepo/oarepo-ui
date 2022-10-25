@@ -15,24 +15,24 @@ class OARepoUIState:
     def __init__(self, app):
         self.app = app
 
-    @cached_property
-    def ui_extensions(self) -> List[OARepoUIExtensionConfig]:
-        return [x.load()(app=self.app) for x in entry_points().select(group='oarepo_ui.extensions')]
+    # @cached_property
+    # def ui_extensions(self) -> List[OARepoUIExtensionConfig]:
+    #     return [x.load()(app=self.app) for x in entry_points().select(group='oarepo_ui.extensions')]
 
     @cached_property
-    def default_components(self):
+    def components_specifications(self):
         ret = []
         for extension in self.ui_extensions:
             ret.extend(getattr(extension, 'components'))
         return ret
 
-    @cached_property
-    def imported_templates(self):
-        """returns a dictionary of alias -> template name"""
-        ret = {}
-        for extension in self.ui_extensions:
-            ret.update(getattr(extension, 'imported_templates'))
-        return ret
+    # @cached_property
+    # def imported_templates(self):
+    #     """returns a dictionary of alias -> template name"""
+    #     ret = {}
+    #     for extension in self.ui_extensions:
+    #         ret.update(getattr(extension, 'imported_templates'))
+    #     return ret
 
     def get_jinja_component(self, component_name):
         return self.jinja_components[component_name]
