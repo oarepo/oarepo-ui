@@ -51,7 +51,7 @@ class InvenioLayoutBuilder(JSONBaseBuilder):
                 for element in self.ui:
                     if element in self.stack.top.data['oarepo:ui']:
                         content = self.stack.top.data['oarepo:ui'][element]
-                        self.ui[element] = self.merge_content(self.ui[element], key, content)
+                        self.ui[element] = self.merge_content( key, content)
 
             self.build_children()
 
