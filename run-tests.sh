@@ -31,3 +31,9 @@ export PYTHONPATH=$PWD/oarepo-ui:$PWD/oarepo-ui-model-builder:$PWD/tests
 python -m pytest
 tests_exit_code=$?
 exit "$tests_exit_code"
+
+export PYTHONPATH=$PWD/oarepo-ui:$PWD/oarepo-ui:$PWD/tests
+
+python -m pytest
+tests_exit_code=$?
+exit "$tests_exit_code"
