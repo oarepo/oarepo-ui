@@ -25,15 +25,23 @@ set -o nounset
 # python -m sphinx.cmd.build -qnNW docs docs/_build/html
 
 # eval "$(docker-services-cli up --db ${DB:-postgresql} --search ${SEARCH:-elasticsearch} --cache ${CACHE:-redis} --mq ${MQ:-rabbitmq} --env)"
+rm -rf $PWD/.pytest_cache
 
+
+cd oarepo-ui-model-builder
 export PYTHONPATH=$PWD/oarepo-ui:$PWD/oarepo-ui-model-builder:$PWD/tests
 
 python -m pytest
 tests_exit_code=$?
-exit "$tests_exit_code"
+rm -rf .pytest_cache
+cd ..
+rm -rf $PWD/oarepo-ui/.pytest_cache
 
 export PYTHONPATH=$PWD/oarepo-ui:$PWD/oarepo-ui:$PWD/tests
+
+cd $PWD/oarepo-ui
 
 python -m pytest
 tests_exit_code=$?
 exit "$tests_exit_code"
+
