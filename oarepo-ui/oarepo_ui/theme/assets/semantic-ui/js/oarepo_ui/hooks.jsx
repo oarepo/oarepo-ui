@@ -31,9 +31,9 @@ export const useDataContext = (data, field) => {
   }
 
   if (_isArray(data)) {
-    return data.map((d) => _getContextData(d, field))
+    return data.map((d) => _getContextData(d))
   }
-  return _getContextData(data, field)
+  return _getContextData(data)
 }
 
 export const useGlobalDataContext = () => {
