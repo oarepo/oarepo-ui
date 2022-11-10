@@ -14,3 +14,4 @@
 export { buildUID } from './util'
 export { useLayout } from './hooks'
 export { GlobalDataContextProvider } from './context'
+export { OARepoRecordResultsListItem } from './layouts'
