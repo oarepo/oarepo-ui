@@ -38,7 +38,6 @@ theme = WebpackThemeBundle(
                 "formik": "^2.1.0",
                 "i18next": "^20.3.0",
                 "i18next-browser-languagedetector": "^6.1.0",
-                "invenio-search-ui": "^2.2.0",
                 "luxon": "^1.23.0",
                 "path": "^0.12.7",
                 "lodash": "^4.17.0",
