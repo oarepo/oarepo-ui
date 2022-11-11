@@ -11,11 +11,17 @@ export const OARepoRecordResultsListItem = ({ result, index }) => {
     SearchConfigurationContext
   );
 
+  console.debug(
+    "render OARepoRecordResultsListItem:",
+    result,
+    index,
+    layoutOptions
+  );
+
   return useLayout({
     layout: layoutOptions.ResultsList?.item || DEFAULT_LAYOUT,
     data: result,
     key: index,
-    buildUID,
   });
 };
 

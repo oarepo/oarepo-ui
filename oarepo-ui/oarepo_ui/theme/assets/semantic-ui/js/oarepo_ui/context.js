@@ -1,4 +1,6 @@
-function globalDataReducer(_state, action) {
+import * as React from 'react'
+
+function globalDataReducer (_state, action) {
   if (action.type === 'set') {
     return action.value
   } else {
@@ -6,7 +8,7 @@ function globalDataReducer(_state, action) {
   }
 }
 
-function GlobalDataContextProvider({ children, value }) {
+function GlobalDataContextProvider ({ children, value }) {
   const [state, dispatch] = React.useReducer(globalDataReducer, value || {})
   const stateValue = { state, dispatch }
 

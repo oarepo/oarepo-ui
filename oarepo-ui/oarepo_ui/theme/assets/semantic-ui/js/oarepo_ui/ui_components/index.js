@@ -11,7 +11,6 @@ import ErrorMessage from './ErrorMessage'
 import Grid from './Grid'
 import Header from './Header'
 import Icon from './Icon'
-import Item from './Item'
 import Label from './Label'
 import Link from './Link'
 import List from './List'
@@ -33,7 +32,6 @@ export {
   Grid,
   Header,
   Icon,
-  Item,
   Label,
   Link,
   List,
