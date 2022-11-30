@@ -437,13 +437,10 @@ def test_basic(create_app):
                                             'type': 'fulltext',
                                             'minLength': 5,
                                             'oarepo:ui': {
-                                                'detail': {
+                                                'default': {
                                                     "component": "raw",
                                                     "dataField": ""
 
-                                                }, 'search': {
-                                                    "component": "raw",
-                                                    "dataField": ""
                                                 }
                                             }
                                         }
@@ -465,10 +462,6 @@ def test_basic(create_app):
                                         ]
                                     }
                                 }
-                            },
-                            'bezui': {
-                                'type': 'fulltext',
-                                'minLength': 5
                             },
                             'title': {
                                 'type': 'fulltext',
@@ -534,6 +527,7 @@ def test_basic(create_app):
     # data = builder.filesystem.open(os.path.join("test", "records", "mappings", "v7", "test", "test-1.0.0.json")).read()
     data = builder.filesystem.open(os.path.join("ui", "layout.yaml")).read()
     data = json.loads(data)
+    print(data)
     expected = {
         'detail': {'component': 'column',
                    'items': [{'component': 'icon', 'name': 'thumbs up', 'color': 'green', 'size': 'large'},
