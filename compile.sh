@@ -17,7 +17,7 @@ if [ ! -d ${MB_VENV} ] ; then
   ${MB_PIP} install -U setuptools wheel
 
   # install model builder main package
-  ${MB_PIP} install 'oarepo-model-builder>=1.0.0dev29'
+  ${MB_PIP} install 'oarepo-model-builder>=2.0.0'
 
   # install required plugins
   
