@@ -1,23 +1,21 @@
-from oarepo_ui import OARepoUIExtension
-import os
-import shutil
-import sys
 import pytest
-import tempfile
-from flask import Flask
+from invenio_app.factory import create_app as _create_app
 
 
 @pytest.fixture(scope="module")
-def app():
-    """Flask application fixture."""
-    # Set temporary instance path for sqlite
-    instance_path = tempfile.mkdtemp()
-    app = Flask("testapp", instance_path=instance_path)
-    app.config.update(TESTING=True)
-    OARepoUIExtension(app)
+def extra_entry_points():
+    """Extra entry points to load the mock_module features."""
+    return {"invenio_i18n.translations": ["1000-test = tests"]}
 
-    with app.app_context():
-        yield app
 
-    # Teardown instance path.
-    shutil.rmtree(instance_path)
+@pytest.fixture(scope="module")
+def app_config(app_config):
+    app_config["I18N_LANGUAGES"] = [("en", "English"), ("cs", "Czech")]
+    app_config["BABEL_DEFAULT_LOCALE"] = "en"
+    return app_config
+
+
+@pytest.fixture(scope="module")
+def create_app(instance_path, entry_points):
+    """Application factory fixture."""
+    return _create_app
