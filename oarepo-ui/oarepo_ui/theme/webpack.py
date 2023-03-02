@@ -26,8 +26,8 @@ theme = WebpackThemeBundle(
     themes={
         "semantic-ui": dict(
             entry={
-                'oarepo_ui': './js/oarepo_ui/index.js',
-                'oarepo_ui_search': './js/oarepo_ui/search.js'
+                "oarepo_ui": "./js/oarepo_ui/index.js",
+                "oarepo_ui_search": "./js/oarepo_ui/search.js",
             },
             dependencies={
                 "@babel/runtime": "^7.9.0",
@@ -51,20 +51,21 @@ theme = WebpackThemeBundle(
                 "lodash": "^4.17.0",
                 "react-text-truncate": "^0.19.0",
             },
-            devDependencies={
-            },
+            devDependencies={},
             aliases={
-                '@translations/oarepo_ui': 'translations/oarepo_ui',
-                '@templates/oarepo_ui/components': 'components',
+                "@translations/oarepo_ui": "translations/oarepo_ui",
+                "@templates/oarepo_ui/components": "components",
                 "../../theme.config$": "less/theme.config",
                 "../../less/site": "less/site",
                 "../../less": "less",
                 "themes/oarepo": "less/invenio_theme/theme",
                 "@less/oarepo_ui": "less/oarepo_ui",
-                '@js/oarepo_ui': 'js/oarepo_ui',
-                '@uijs/oarepo_ui': 'js/oarepo_ui/ui_components',
-                '@uijs': 'js'
-            }
+                "@js/oarepo_ui": "js/oarepo_ui",
+                "@uijs/oarepo_ui": "js/oarepo_ui/ui_components",
+                "@uijs": "js",
+                # hack for communities being dependent on RDM
+                "@translations/invenio_app_rdm/i18next": "translations/oarepo_ui/i18next.js",
+            },
         )
     },
 )

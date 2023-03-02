@@ -2,60 +2,30 @@ import functools
 import json
 import os
 from functools import cached_property
+from typing import Dict
 
 from importlib_metadata import entry_points
 from jinja2.environment import TemplateModule
 from werkzeug.utils import import_string
+from frozendict import frozendict
 
-from oarepo_ui.resources.templating import get_macro_environment
+from oarepo_ui.resources.templating import TemplateRegistry
 
 
 class OARepoUIState:
     def __init__(self, app):
         self.app = app
+        self.templates = TemplateRegistry(app, self)
+        self._resources = []
 
+    def get_template(self, layout: str, blocks: Dict[str, str]):
+        return self.templates.get_template(layout, frozendict(blocks))
 
-    @cached_property
-    def components_specifications(self):
-        eps = entry_points()["oarepo_ui"]
-        component_defs = {}
-        for ep in eps:
-            entrypoint = import_string(ep.value)
-            component_defs[ep.name] = entrypoint
+    def register_resource(self, ui_resource):
+        self._resources.append(ui_resource)
 
-        return component_defs
-
-
-    def get_jinja_component(self, component_name):
-        return self.jinja_components[component_name]
-
-    @cached_property
-    def jinja_components(self):
-        _, env = get_macro_environment({})
-        ret = {}
-        for name, val in env.globals.items():
-            if not isinstance(val, TemplateModule):
-                continue
-            for kk in dir(val):
-                if kk.startswith('render_'):
-                    component_name = kk[len('render_'):]
-                    ret[component_name] = (name, kk)
-        return ret
-
-    @cached_property
-    def layout_directories(self):
-        return [
-            ep.load().__file__ for ep in entry_points().select(group='oarepo_ui.layouts')
-        ]
-
-    @functools.lru_cache
-    def get_layout(self, name):
-        for d in self.layout_directories:
-            file_path = os.path.join(d, name)
-            if os.path.exists(file_path):
-                with open(file_path) as f:
-                    return json.load(f)
-        raise KeyError(f'Layout {name} not found')
+    def get_resources(self):
+        return self._resources
 
 
 class OARepoUIExtension:
@@ -65,6 +35,3 @@ class OARepoUIExtension:
 
     def init_app(self, app):
         app.extensions["oarepo_ui"] = OARepoUIState(app)
-
-
-

@@ -25,7 +25,7 @@
 @import (optional) 'themes/invenio/globals/site.variables';
 
 /* oarepo theme global site.variables */
-// @import (optional) 'themes/oarepo/globals/site.variables';
+@import (optional) 'themes/oarepo/globals/site.variables';
 
 /* Site theme site.variables */
 @import (optional) '@{siteFolder}/globals/site.variables';
@@ -45,7 +45,7 @@
 @import (optional, multiple) 'themes/invenio/@{type}s/@{element}.variables';
 
 /* oarepo theme */
-// @import (optional, multiple) 'themes/oarepo/@{type}s/@{element}.variables';
+@import (optional, multiple) 'themes/oarepo/@{type}s/@{element}.variables';
 
 /* Site Theme */
 @import (optional, multiple) '@{siteFolder}/@{type}s/@{element}.variables';
@@ -71,6 +71,6 @@
   @import (optional, multiple)
     '@{themesFolder}/@{theme}/@{type}s/@{element}.overrides';
   @import (optional, multiple) 'themes/invenio/@{type}s/@{element}.overrides';
-  // @import (optional, multiple) 'themes/oarepo/@{type}s/@{element}.overrides';
+  @import (optional, multiple) 'themes/oarepo/@{type}s/@{element}.overrides';
   @import (optional, multiple) '@{siteFolder}/@{type}s/@{element}.overrides';
 }
