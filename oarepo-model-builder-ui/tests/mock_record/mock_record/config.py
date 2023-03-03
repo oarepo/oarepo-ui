@@ -1,0 +1,9 @@
+from mock_record.resources.records.config import MockRecordResourceConfig
+from mock_record.resources.records.resource import MockRecordResource
+from mock_record.services.records.config import MockRecordServiceConfig
+from mock_record.services.records.service import MockRecordService
+
+MOCK_RECORD_RESOURCE_CONFIG_MOCK_RECORD = MockRecordResourceConfig
+MOCK_RECORD_RESOURCE_CLASS_MOCK_RECORD = MockRecordResource
+MOCK_RECORD_SERVICE_CONFIG_MOCK_RECORD = MockRecordServiceConfig
+MOCK_RECORD_SERVICE_CLASS_MOCK_RECORD = MockRecordService

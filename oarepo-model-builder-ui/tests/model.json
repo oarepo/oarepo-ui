@@ -1,0 +1,41 @@
+{
+  "settings": {
+    "i18n-languages": ["en", "cs"]
+  },
+  "model": {
+    "package": "mock_record",
+    "properties": {
+      "title": {
+        "type": "fulltext",
+        "label.en": "Title",
+        "label.cs": "Název"
+      },
+      "prices[]": {
+        "type": "double"
+      },
+      "expires": {
+        "type": "date"
+      },
+      "lowest_price": {
+        "type": "double",
+        "hint.en": "Enter the lowest price, should be in prices",
+        "hint.cs": "Vložte nejmenší cenu, měla by být v seznamu cen výše"
+      },
+      "tags[]": {
+        "type": "keyword"
+      },
+      "providers[]": {
+        "type": "nested",
+        "properties": {
+          "org_id": "keyword",
+          "name": "keyword",
+          "area": "keyword",
+          "tags[]": "keyword"
+        },
+        "^help.en": "A list of providers of this item. Normally this help text should be quite long as it is displayed in a dialog box",
+        "^help.cs": "Seznam dodavatelů. Normálně tento popisek bude docela dlouhý, protože bude zobrazen v dialogovém okně",
+        "^help.key": "prov"
+      }
+    }
+  }
+}

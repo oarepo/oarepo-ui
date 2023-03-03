@@ -1,0 +1,38 @@
+{
+    "mappings": {
+        "properties": {
+            "title": {
+                "type": "text"
+            },
+            "prices": {
+                "type": "double"
+            },
+            "expires": {
+                "type": "date"
+            },
+            "lowest_price": {
+                "type": "double"
+            },
+            "tags": {
+                "type": "keyword"
+            },
+            "providers": {
+                "type": "nested",
+                "properties": {
+                    "org_id": {
+                        "type": "keyword"
+                    },
+                    "name": {
+                        "type": "keyword"
+                    },
+                    "area": {
+                        "type": "keyword"
+                    },
+                    "tags": {
+                        "type": "keyword"
+                    }
+                }
+            }
+        }
+    }
+}
