@@ -17,7 +17,6 @@
                 "type": "keyword"
             },
             "providers": {
-                "type": "nested",
                 "properties": {
                     "org_id": {
                         "type": "keyword"
@@ -31,7 +30,8 @@
                     "tags": {
                         "type": "keyword"
                     }
-                }
+                },
+                "type": "nested"
             }
         }
     }

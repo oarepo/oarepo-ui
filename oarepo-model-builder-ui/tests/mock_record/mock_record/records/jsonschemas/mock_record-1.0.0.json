@@ -5,10 +5,10 @@
             "type": "string"
         },
         "prices": {
-            "type": "array",
             "items": {
                 "type": "number"
-            }
+            },
+            "type": "array"
         },
         "expires": {
             "type": "string",
@@ -18,15 +18,13 @@
             "type": "number"
         },
         "tags": {
-            "type": "array",
             "items": {
                 "type": "string"
-            }
+            },
+            "type": "array"
         },
         "providers": {
-            "type": "array",
             "items": {
-                "type": "object",
                 "properties": {
                     "org_id": {
                         "type": "string"
@@ -38,13 +36,15 @@
                         "type": "string"
                     },
                     "tags": {
-                        "type": "array",
                         "items": {
                             "type": "string"
-                        }
+                        },
+                        "type": "array"
                     }
-                }
-            }
+                },
+                "type": "object"
+            },
+            "type": "array"
         }
     }
 }
