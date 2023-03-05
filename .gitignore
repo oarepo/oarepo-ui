@@ -65,3 +65,5 @@ messages.mo
 .vscode
 # node modules
 **/*/node_modules
+
+.venv-builder/

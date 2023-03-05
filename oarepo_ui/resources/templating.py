@@ -1,3 +1,7 @@
+import functools
+from pathlib import Path
+import re
+from typing import Dict
 from flask.globals import _app_ctx_stack
 from flask.templating import _render
 from jinja2 import nodes, pass_context
@@ -8,231 +12,199 @@ from oarepo_ui.utils import n2w
 from jinja2.utils import htmlsafe_json_dumps
 import markupsafe
 
-
-class ImportMacros(Extension):
-    """
-    Parse an {% import_macros %} tag. Takes configuration
-    from current_oarepo_ui.macros and loads them into the globals.
-
-    Passes all the globals to the loaded macros (preventing caching,
-    but the modules will have access to, for example, url_for
-    """
-    tags = {"import_macros"}
-
-    def parse(self, parser):
-        lineno = parser.stream.expect("name:import_macros").lineno
-        for alias, tmpl in current_oarepo_ui.imported_templates.items():
-            loaded = self.environment.get_or_select_template(tmpl)
-            self.environment.globals[alias] = loaded.make_module({**self.environment.globals}, True, {})
-        return nodes.Output([]).set_lineno(lineno)
+from frozendict import frozendict
+from lxml import etree
+from jinja2 import Environment
+from jinja2.loaders import BaseLoader
+from jinja2.runtime import Context
+from jinja2.environment import TemplateModule
+from invenio_records.dictutils import dict_lookup
+from markupsafe import escape
+import json
 
 
-def is_list(value):
-    return isinstance(value, (list, tuple))
+class RegistryLoader(BaseLoader):
+    def __init__(self, parent_loader) -> None:
+        super().__init__()
+        self.parent_loader = parent_loader
+
+    def get_source(self, environment: "Environment", template: str):
+        return self.parent_loader.get_source(environment=environment, template=template)
+
+    def list_templates(self):
+        return self.parent_loader.list_templates()
+
+    def load(
+        self,
+        environment: "Environment",
+        name: str,
+        globals=None,
+    ):
+        return self.parent_loader.load(
+            environment=environment, name=name, globals=globals
+        )
 
 
-def get_item(value, item, default=None):
-    return value.get(item, default)
+class TemplateRegistry:
+    def __init__(self, app, ui_state) -> None:
+        self.app = app
+        self.ui_state = ui_state
+        self._cached_jinja_env = None
 
-
-@pass_context
-def get_component(context, component_name):
-    f"""
-    Looks up a component by name in the jinja context and returns a pair 
-    (component_accepts_array_of_values, jinja_compiled_macro). 
-    
-    If there is a context macro with name "{component_name}_array", returns that the component
-    accepts array, that is (True, jinja_compiled_macro)
-    
-    If there is a context macro with name "component_name", returns (False, jinja_compiled_macro)
-    
-    If no macro has been found, returns the special "unknown" macro that displays "undefined component"
-    message.
-    
-    :param context: jinja context
-    :param component_name:   name of the component to resolve
-    :return: tuple (accepts_array, jinja_component function)
-    """
-    component_name = (component_name or '').replace('-', '_')
-
-    def resolve_component(name):
-        (module_name, render_name) = current_oarepo_ui.get_jinja_component(name)
-        return getattr(context.environment.globals[module_name], render_name)
-
-    try:
-        return True, resolve_component(component_name + '_array')
-    except KeyError:
-        pass
-
-    try:
-        return False, resolve_component(component_name)
-    except KeyError:
-        pass
-
-    return True, resolve_component('unknown')
-
-
-def get_data(layout_data_definition, data, record):
-    def _rec(path, current_data):
-        if isinstance(current_data, (list, tuple)):
-            for val in current_data:
-                yield from _rec(path, val)
-            return
-
-        if not path:
-            yield current_data
-            return
-
-        first = path[0]
-        path = path[1:]
-        if isinstance(current_data, dict) and first in current_data:
-                yield from _rec(path, current_data[first])
-            # else do not yield a value
-        # else do not yield a value
-
-    if not layout_data_definition:
-        return data
-    return list(_rec(layout_data_definition.split('.'), data))
-
-
-def get_props(layout_props, className, style):
-    if not layout_props:
-        layout_props = {}
-    else:
-        layout_props = {**layout_props}
-    if className:
-        if 'className' not in layout_props:
-            layout_props['className'] = className
-        else:
-            layout_props['className'] += ' ' + className
-    if style:
-        if 'style' not in layout_props:
-            layout_props['style'] = style
-        else:
-            if not layout_props['style'].strip().endswith(';'):
-                layout_props['style'] += '; '
-            layout_props['style'] += style
-    layout_props.pop('data', None)  # remove already processed stuff from the props
-    layout_props.pop('component', None)
-    return layout_props
-
-
-def merge_class_name(class_name, merged):
-    if not class_name:
-        return merged
-    return class_name + ' ' + merged
-
-
-SIZES = ['mini', 'tiny', 'small', 'medium', 'large', 'big', 'huge', 'massive']
-
-
-def add_size(value, *sizes):
-    split_val = [x for x in (value or '').split() if x]
-    for s in sizes:
-        if not s:
-            continue
-        for v in split_val:
-            if v in SIZES:
-                return value
-        split_val.append(s)
-        break
-    return ' '.join(split_val)
-
-
-def update(dictionary, **kwargs):
-    return {
-        **dictionary,
-        **kwargs
-    }
-
-
-def as_attributes(*dictionaries):
-    if len(dictionaries) == 1:
-        dictionary = dictionaries[0]
-    else:
-        dictionary = {}
-        for d in dictionaries:
-            dictionary.update(d)
-
-    ret = []
-    for k, v in (dictionary or {}).items():
-        if k in (
-                'dataField'
+    @property
+    def jinja_env(self):
+        if (
+            self._cached_jinja_env
+            and not self.app.debug
+            and not self.app.config.get("TEMPLATES_AUTO_RELOAD")
         ):
-            continue
-        v = htmlsafe_json_dumps(v)
-        if v[0] != '"':
-            v = v.replace('"', '&quot;')
-            v = f'"{v}"'
-        ret.append(f'{k}={v}')
-    return markupsafe.Markup(' '.join(ret))
+            return self._cached_jinja_env
 
+        self._cached_jinja_env = self.app.jinja_env.overlay(
+            loader=RegistryLoader(self.app.jinja_env.loader),
+            extensions=[FieldExtension, ValueExtension],
+        )
+        self._load_macros(self._cached_jinja_env)
+        return self._cached_jinja_env
 
-def as_array(value):
-    if not value:
-        return []
-    if isinstance(value, (list, tuple)):
-        return value
-    return [value]
-
-
-@pass_context
-def render_macro_to_array(context, macro_name, layout=None, data=None, record=None, items=None, is_array=None):
-    if not data:
-        return ''
-
-    macro = context[macro_name]
-    ret = []
-
-    def _render(data):
-        if items is not None:
-            for it in items:
-                yield macro(layout=it, data=data, record=record)
+    def get_template(self, layout: str, layout_blocks: frozendict):
+        if self.app.debug or self.app.config.get("TEMPLATES_AUTO_RELOAD"):
+            return self._get_template(layout, layout_blocks)
         else:
-            if not is_array:
-                data = [data]
-            if not isinstance(data, (tuple, list)):
-                data = [data]
-            for d in data:
-                yield macro(layout=layout, data=d, record=record)
+            return self._get_cached_template(layout, layout_blocks)
 
-    for rendered_d in _render(data):
-        if rendered_d:
-            rendered_d = rendered_d.strip()
-        if rendered_d:
-            ret.append(markupsafe.Markup(rendered_d))
-    return ret
+    def _get_template(self, layout: str, layout_blocks: frozendict):
+        assembled_template = ['{%% extends "%s" %%}' % layout]
+        for blk_name, blk in layout_blocks.items():
+            assembled_template.append(
+                '{%% block %s %%}{%% include "%s" %%}{%% endblock %%}' % (blk_name, blk)
+            )
+        assembled_template = "\n".join(assembled_template)
+
+        return self.jinja_env.from_string(assembled_template)
+
+    _get_cached_template = functools.lru_cache(_get_template)
+
+    def _load_macros(self, env):
+        macros = {}
+        templates = [
+            x for x in env.loader.list_templates() if "oarepo_ui/components/" in x
+        ]
+        # sort templates - take theme ones (semantic-ui/oarepo_ui/components/...) first,
+        # then sort by file name - 999-aaa will be processed before 000-aaa
+        templates.sort(
+            key=lambda x: (not x[0].startswith("oarepo_ui/components/"), Path(x).name)
+        )
+        for template_name in reversed(templates):
+            loaded = env.get_or_select_template(template_name)
+            for symbol in dir(loaded.module):
+                if symbol.startswith("render_"):
+                    macros[symbol] = loaded
+        env.globals["oarepo_ui_macros"] = macros
+
+    def get_macros(self):
+        return self.jinja_env.globals["oarepo_ui_macros"]
 
 
-def render_template_with_macros(template_name_or_list, **context):
-    """adapted from render_template, just an overlay with ImportMacros extension"""
-    app, env = get_macro_environment(context)
-    return _render(
-        env.get_or_select_template(template_name_or_list),
-        context,
-        app,
-    )
+from jinja2_simple_tags import StandaloneTag
 
 
-def get_macro_environment(context):
-    app = _app_ctx_stack.top.app
-    app.update_template_context(context)
-    env = app.jinja_env.overlay(extensions=[ImportMacros])
-    env.tests.update({'list': is_list})
-    env.filters.update({
-        'item': get_item,
-        'remove_property': lambda val, prop: {k: v for k, v in val.items() if k != prop},
-        'update': update,
-        'add_size': add_size
-    })
-    env.globals.update({
-        'get_component': get_component,
-        'get_data': get_data,
-        'get_props': get_props,
-        'merge_class_name': merge_class_name,
-        'number_to_word': n2w,
-        'as_attributes': as_attributes,
-        'as_array': as_array,
-        'render_macro_to_array': render_macro_to_array
-    })
-    return app, env
+class LookupError(Exception):
+    def __init__(self, message) -> None:
+        super().__init__(message)
+        self.message = message
+
+
+class RenderMixin:
+    def lookup_data(self, field_path, ui, layout):
+        if not field_path:
+            return ui or self.context["ui"], layout or self.context["layout"]
+        if ui is None or layout is None:
+            if ui is None:
+                try:
+                    ui = dict_lookup(self.context["ui"], field_path)
+                except KeyError:
+                    raise LookupError("")
+            if layout is None:
+                fp = []
+                for fld in field_path.split("."):
+                    fp.append("children")
+                    fp.append(fld)
+                try:
+                    layout = dict_lookup(self.context["layout"], fp)
+                except KeyError:
+                    raise LookupError(
+                        '<div style="color: red">'
+                        f'ERROR: layout not found for "{escape(field_path)}", '
+                        f"layout is <pre>{escape(json.dumps(self.context['layout'], ensure_ascii=False, indent=4))}</pre>"
+                        f"data is <pre>{escape(json.dumps(self.context['data'], ensure_ascii=False, indent=4))}</pre>"
+                        "</div>"
+                    )
+        return ui, layout
+
+    def get_value_component(self, ctx, layout, component):
+        value_component = None
+        if not component:
+            component = layout.get(ctx["component_key"])
+            if not component:
+                component = "value"
+        if isinstance(component, str):
+
+            def replace_non_variable_signs(x):
+                return f"__{ord(x.group())}__"
+
+            component = re.sub("\W", replace_non_variable_signs, component)
+            render_macro = "render_" + component
+            component_module = ctx["oarepo_ui_macros"].get(render_macro)
+            if component_module:
+                value_component = getattr(
+                    TemplateModule(component_module, ctx), render_macro, None
+                )
+        else:
+            value_component = component
+        if not value_component:
+            raise LookupError(
+                '<div style="color: red">'
+                f'ERROR: no component registered with code "{escape(component)}"'
+                "</div>"
+            )
+        return value_component
+
+
+class FieldExtension(RenderMixin, StandaloneTag):
+    tags = {"field"}
+
+    def render(self, field_path=None, component=None, label_key=None):
+        try:
+            ui, layout = self.lookup_data(field_path, None, None)
+        except LookupError as e:
+            return e.message
+        # render content
+        ctx = self.context.derived({"ui": ui, "layout": layout})
+        try:
+            value_component = self.get_value_component(ctx, layout, component)
+        except LookupError as e:
+            return e.message
+        content = ctx.call(value_component, ui)
+        return self.get_value_component(ctx, layout, "field")(
+            label_key or layout.get("label"), content
+        )
+
+
+class ValueExtension(RenderMixin, StandaloneTag):
+    tags = {"value"}
+
+    def render(self, field_path=None, component=None, **kwargs):
+        try:
+            ui, layout = self.lookup_data(
+                field_path, kwargs.pop("ui", None), kwargs.pop("layout", None)
+            )
+        except LookupError as e:
+            return e.message
+        # render content
+        ctx = self.context.derived({**kwargs, "ui": ui, "layout": layout})
+        try:
+            value_component = self.get_value_component(ctx, layout, component)
+        except LookupError as e:
+            return e.message
+        return ctx.call(value_component, ui)

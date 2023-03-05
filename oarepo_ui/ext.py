@@ -2,68 +2,48 @@ import functools
 import json
 import os
 from functools import cached_property
-from typing import List
+from pathlib import Path
+from typing import Dict
 
 from importlib_metadata import entry_points
 from jinja2.environment import TemplateModule
+from werkzeug.utils import import_string
+from frozendict import frozendict
 
-from oarepo_ui.ext_api import OARepoUIExtensionConfig
-from oarepo_ui.resources.templating import get_macro_environment
+from oarepo_ui.resources.templating import TemplateRegistry
+
+from importlib_metadata import entry_points
+from importlib import import_module
+
+import oarepo_ui.cli  # noqa
 
 
 class OARepoUIState:
     def __init__(self, app):
         self.app = app
+        self.templates = TemplateRegistry(app, self)
+        self._resources = []
+        self.layouts = self._load_layouts()
 
-    @cached_property
-    def ui_extensions(self) -> List[OARepoUIExtensionConfig]:
-        return [x.load()(app=self.app) for x in entry_points().select(group='oarepo_ui.extensions')]
+    def get_template(self, layout: str, blocks: Dict[str, str]):
+        return self.templates.get_template(layout, frozendict(blocks))
 
-    @cached_property
-    def default_components(self):
-        ret = []
-        for extension in self.ui_extensions:
-            ret.extend(getattr(extension, 'components'))
-        return ret
+    def register_resource(self, ui_resource):
+        self._resources.append(ui_resource)
 
-    @cached_property
-    def imported_templates(self):
-        """returns a dictionary of alias -> template name"""
-        ret = {}
-        for extension in self.ui_extensions:
-            ret.update(getattr(extension, 'imported_templates'))
-        return ret
+    def get_resources(self):
+        return self._resources
 
-    def get_jinja_component(self, component_name):
-        return self.jinja_components[component_name]
+    def get_layout(self, layout_name):
+        return self.layouts[layout_name]
 
-    @cached_property
-    def jinja_components(self):
-        _, env = get_macro_environment({})
-        ret = {}
-        for name, val in env.globals.items():
-            if not isinstance(val, TemplateModule):
-                continue
-            for kk in dir(val):
-                if kk.startswith('render_'):
-                    component_name = kk[len('render_'):]
-                    ret[component_name] = (name, kk)
-        return ret
-
-    @cached_property
-    def layout_directories(self):
-        return [
-            ep.load().__file__ for ep in entry_points().select(group='oarepo_ui.layouts')
-        ]
-
-    @functools.lru_cache
-    def get_layout(self, name):
-        for d in self.layout_directories:
-            file_path = os.path.join(d, name)
-            if os.path.exists(file_path):
-                with open(file_path) as f:
-                    return json.load(f)
-        raise KeyError(f'Layout {name} not found')
+    def _load_layouts(self):
+        layouts = {}
+        for ep in entry_points(group="oarepo.ui"):
+            m = import_module(ep.module)
+            path = Path(m.__file__).parent / ep.attr
+            layouts[ep.name] = json.loads(path.read_text())
+        return layouts
 
 
 class OARepoUIExtension:
@@ -73,4 +53,3 @@ class OARepoUIExtension:
 
     def init_app(self, app):
         app.extensions["oarepo_ui"] = OARepoUIState(app)
-

@@ -1,0 +1,5 @@
+{%- macro render_array(arg) -%}
+    {% for a in (arg or {}) -%}
+        {% value ui=a, layout=layout.child, in_array=not loop.first %}
+    {%- endfor %}
+{%- endmacro -%}

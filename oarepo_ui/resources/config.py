@@ -3,15 +3,22 @@ from pathlib import Path
 
 from flask_resources import ResponseHandler, JSONSerializer
 from invenio_records_resources.resources import (
-    RecordResourceConfig as InvenioRecordResourceConfig, )
+    RecordResourceConfig as InvenioRecordResourceConfig,
+)
 
 from oarepo_ui.proxies import current_oarepo_ui
+from flask_resources import (
+    ResourceConfig,
+)
+
+from invenio_base.utils import obj_or_import_string
+
+import marshmallow as ma
 
 
-class UIResourceConfig(InvenioRecordResourceConfig):
+class UIResourceConfig(ResourceConfig):
     components = None
     template_folder = None
-    imported_templates = None
 
     def get_template_folder(self):
         if not self.template_folder:
@@ -19,13 +26,20 @@ class UIResourceConfig(InvenioRecordResourceConfig):
 
         tf = Path(self.template_folder)
         if not tf.is_absolute():
-            tf = Path(inspect.getfile(type(self))).parent.absolute().joinpath(tf).absolute()
+            tf = (
+                Path(inspect.getfile(type(self)))
+                .parent.absolute()
+                .joinpath(tf)
+                .absolute()
+            )
         return str(tf)
 
-    def get_imported_templates(self):
-        if self.imported_templates:
-            return self.imported_templates
-        return {}
+    response_handlers = {"text/html": None}
+    default_accept_mimetype = "text/html"
+
+    # Request parsing
+    request_read_args = {}
+    request_view_args = {"pid_value": ma.fields.Str()}
 
 
 class RecordsUIResourceConfig(UIResourceConfig):
@@ -33,20 +47,19 @@ class RecordsUIResourceConfig(UIResourceConfig):
         "search": "",
         "detail": "/<pid_value>",
     }
-    detail_template = 'oarepo_ui/generic_detail.html.jinja2'
     app_contexts = None
+    ui_serializer = None
     ui_serializer_class = None
-    layouts = {
-        'detail': None
+    api_service = None
+    templates = {
+        "detail": {
+            "layout": "oarepo_ui/generic_detail.html.jinja2",
+            "blocks": {},
+        },
+        "search": {"layout": "oarepo_ui/search.html.jinja2"},
     }
+    layout = "sample"
 
     @property
-    def response_handlers(self):
-        return {
-            "application/json": ResponseHandler(JSONSerializer()),
-            "application/vnd.inveniordm.v1+json": ResponseHandler(self.ui_serializer_class()),
-        }
-
-    @property
-    def components(self):
-        return current_oarepo_ui.default_components
+    def ui_serializer(self):
+        return obj_or_import_string(self.ui_serializer_class)()
