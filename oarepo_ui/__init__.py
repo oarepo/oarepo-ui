@@ -5,4 +5,6 @@
 
 from .ext import OARepoUIExtension
 
-__all__ = "OARepoUIExtension"
+__all__ = [
+    "OARepoUIExtension",
+]
