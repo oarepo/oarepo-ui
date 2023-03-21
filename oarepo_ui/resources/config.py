@@ -53,10 +53,15 @@ class RecordsUIResourceConfig(UIResourceConfig):
     api_service = None
     templates = {
         "detail": {
-            "layout": "oarepo_ui/generic_detail.html.jinja2",
+            "layout": "add-your-own-detail-template-to-site-or-ui-application.html.jinja2",
             "blocks": {},
         },
-        "search": {"layout": "oarepo_ui/search.html.jinja2"},
+        "search": {
+            "layout": "add-your-own-search-template-to-site-or-ui-application.html.jinja2"
+        },
+        "edit": {
+            "layout": "add-your-own-edit-template-to-site-or-ui-application.html.jinja2"
+        },
     }
     layout = "sample"
 
