@@ -57,6 +57,9 @@ theme = WebpackThemeBundle(
                 "../../theme.config$": "less/theme.config",
                 "../../less/site": "less/site",
                 "../../less": "less",
+                # search and edit
+                "@less/oarepo_ui": "less/oarepo_ui",
+                "@js/oarepo_ui": "js/oarepo_ui",
                 # hack for communities being dependent on RDM
                 "@translations/invenio_app_rdm/i18next": "translations/oarepo_ui/i18next.js",
             },

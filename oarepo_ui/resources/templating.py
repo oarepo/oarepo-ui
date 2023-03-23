@@ -63,6 +63,7 @@ class TemplateRegistry:
         self._cached_jinja_env = self.app.jinja_env.overlay(
             loader=RegistryLoader(self.app.jinja_env.loader),
             extensions=[FieldExtension, ValueExtension],
+            filters={"id": id_filter},
         )
         self._load_macros(self._cached_jinja_env)
         return self._cached_jinja_env
@@ -93,7 +94,10 @@ class TemplateRegistry:
         # sort templates - take theme ones (semantic-ui/oarepo_ui/components/...) first,
         # then sort by file name - 999-aaa will be processed before 000-aaa
         templates.sort(
-            key=lambda x: (not x[0].startswith("oarepo_ui/components/"), Path(x).name)
+            key=lambda x: (
+                not x[0].startswith("oarepo_ui/components/"),
+                Path(x).name,
+            )
         )
         for template_name in reversed(templates):
             loaded = env.get_or_select_template(template_name)
@@ -208,3 +212,6 @@ class ValueExtension(RenderMixin, StandaloneTag):
         except LookupError as e:
             return e.message
         return ctx.call(value_component, ui)
+
+def id_filter(x):
+    return id(x)
