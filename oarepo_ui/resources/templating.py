@@ -63,8 +63,8 @@ class TemplateRegistry:
         self._cached_jinja_env = self.app.jinja_env.overlay(
             loader=RegistryLoader(self.app.jinja_env.loader),
             extensions=[FieldExtension, ValueExtension],
-            filters={"id": id_filter},
         )
+        self._cached_jinja_env.filters["id"] = id_filter
         self._load_macros(self._cached_jinja_env)
         return self._cached_jinja_env
 
@@ -212,6 +212,7 @@ class ValueExtension(RenderMixin, StandaloneTag):
         except LookupError as e:
             return e.message
         return ctx.call(value_component, ui)
+
 
 def id_filter(x):
     return id(x)
