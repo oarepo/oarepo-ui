@@ -1,5 +1,11 @@
-from flask import g, render_template
-from flask_resources import Resource, route, resource_requestctx
+from flask import g, render_template, abort
+from flask_resources import (
+    Resource,
+    route,
+    resource_requestctx,
+    from_conf,
+    request_parser,
+)
 from invenio_records_resources.resources import (
     RecordResourceConfig,
 )
@@ -12,11 +18,16 @@ from invenio_records_resources.services import RecordService
 from .config import UIResourceConfig, RecordsUIResourceConfig
 
 from invenio_records_resources.proxies import current_service_registry
+from flask import current_app
+
+from invenio_base.utils import obj_or_import_string
 
 #
 # Resource
 #
 from ..proxies import current_oarepo_ui
+
+request_export_args = request_parser(from_conf("request_export_args"), location="args")
 
 
 class UIResource(Resource):
@@ -87,6 +98,14 @@ class RecordsUIResource(UIResource):
         )
         # TODO: handle permissions UI way - better response than generic error
         serialized_record = self.config.ui_serializer.dump_obj(record.to_dict())
+        # make links absolute
+        if "links" in serialized_record:
+            for k, v in list(serialized_record["links"].items()):
+                if not isinstance(v, str):
+                    continue
+                if not v.startswith("/"):
+                    v = f"/api{self._api_service.config.url_prefix}{v}"
+                    serialized_record["links"][k] = v
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
         self.run_components(
             "before_ui_detail",
@@ -109,6 +128,32 @@ class RecordsUIResource(UIResource):
             layout=layout,
             component_key="detail",
         )
+
+    @request_read_args
+    @request_view_args
+    def export(self):
+        pid_value = resource_requestctx.view_args["pid_value"]
+        export_format = resource_requestctx.view_args["export_format"]
+
+        record = self._api_service.read(g.identity, pid_value)
+        exporter = self.config.exports.get(export_format)
+        if exporter is None:
+            abort(404)
+
+        serializer = obj_or_import_string(exporter["serializer"])(
+            options={
+                "indent": 2,
+                "sort_keys": True,
+            }
+        )
+        exported_record = serializer.serialize_object(record.to_dict())
+        contentType = exporter.get("content-type", export_format)
+        filename = exporter.get("filename", export_format).format(id=pid_value)
+        headers = {
+            "Content-Type": contentType,
+            "Content-Disposition": f"attachment; filename={filename}",
+        }
+        return (exported_record, 200, headers)
 
     def get_layout_name(self):
         return self.config.layout

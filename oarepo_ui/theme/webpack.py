@@ -62,6 +62,8 @@ theme = WebpackThemeBundle(
                 "@js/oarepo_ui": "js/oarepo_ui",
                 # hack for communities being dependent on RDM
                 "@translations/invenio_app_rdm/i18next": "translations/oarepo_ui/i18next.js",
+                # another hack for communities
+                "@templates/custom_fields": "js/custom_fields",
             },
         )
     },

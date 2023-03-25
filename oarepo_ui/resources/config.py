@@ -16,6 +16,11 @@ from invenio_base.utils import obj_or_import_string
 import marshmallow as ma
 
 
+def _(x):
+    """Identity function used to trigger string extraction."""
+    return x
+
+
 class UIResourceConfig(ResourceConfig):
     components = None
     template_folder = None
@@ -39,14 +44,18 @@ class UIResourceConfig(ResourceConfig):
 
     # Request parsing
     request_read_args = {}
-    request_view_args = {"pid_value": ma.fields.Str()}
+    request_view_args = {}
 
 
 class RecordsUIResourceConfig(UIResourceConfig):
     routes = {
         "search": "",
         "detail": "/<pid_value>",
+        "export": "/<pid_value>/export/<export_format>",
     }
+    request_view_args = {"pid_value": ma.fields.Str()}
+    request_export_args = {"export_format": ma.fields.Str()}
+
     app_contexts = None
     ui_serializer = None
     ui_serializer_class = None
@@ -64,6 +73,17 @@ class RecordsUIResourceConfig(UIResourceConfig):
         },
     }
     layout = "sample"
+
+    @property
+    def exports(self):
+        return {
+            "json": {
+                "name": _("JSON"),
+                "serializer": ("flask_resources.serializers:JSONSerializer"),
+                "content-type": "application/json",
+                "filename": "{id}.json",
+            },
+        }
 
     @property
     def ui_serializer(self):

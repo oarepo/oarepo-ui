@@ -29,3 +29,4 @@ recursive-include oarepo_ui *.css
 recursive-include oarepo_ui *.jinja2
 recursive-include oarepo_ui *.lock
 recursive-exclude oarepo_ui *.DS_Store
+recursive-exclude tests *
