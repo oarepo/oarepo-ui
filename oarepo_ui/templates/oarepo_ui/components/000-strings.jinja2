@@ -9,3 +9,7 @@
 {%- macro render_fulltext__43__keyword(arg) -%}
     {% value component='value' %}
 {%- endmacro -%}
+
+{%- macro render_string(arg) -%}{% value component='value' %}{%- endmacro -%}
+
+{%- macro render_url(arg) -%}<a href="{{arg}}" target="_blank">{{arg}}</a>{%- endmacro -%}

@@ -9,3 +9,14 @@
 {%- macro render_int(arg) -%}
     {% value component='value' %}
 {%- endmacro -%}
+
+{%- macro render_integer(arg) -%}{% value component='value' %}{%- endmacro -%}
+
+{%- macro render_boolean(arg) -%}
+{% if arg %}
+    {{ _('yes') }}
+{% else %}
+    {{ _('no') }}
+{% endif %}
+{%- endmacro -%}
+
