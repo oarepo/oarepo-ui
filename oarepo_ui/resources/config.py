@@ -1,6 +1,5 @@
 import inspect
 from pathlib import Path
-
 from flask_resources import ResponseHandler, JSONSerializer
 from invenio_records_resources.resources import (
     RecordResourceConfig as InvenioRecordResourceConfig,
