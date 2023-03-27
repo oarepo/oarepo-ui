@@ -1,4 +1,4 @@
-from flask import g, render_template, abort
+from flask import g, render_template, abort, request
 from flask_resources import (
     Resource,
     route,
@@ -120,6 +120,10 @@ class RecordsUIResource(UIResource):
             template_def["layout"],
             template_def["blocks"],
         )
+        export_path = request.path.split("?")[0]
+        if not export_path.endswith("/"):
+            export_path += "/"
+        export_path += "export"
         return render_template(
             template,
             record=serialized_record,
@@ -128,6 +132,7 @@ class RecordsUIResource(UIResource):
             ui=serialized_record.get("ui", serialized_record),
             layout=layout,
             component_key="detail",
+            export_path=export_path,
         )
 
     def _get_record(self, resource_requestctx):
