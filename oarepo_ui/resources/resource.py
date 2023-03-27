@@ -93,9 +93,7 @@ class RecordsUIResource(UIResource):
     @request_view_args
     def detail(self):
         """Returns item detail page."""
-        record = self._api_service.read(
-            g.identity, resource_requestctx.view_args["pid_value"]
-        )
+        record = self._get_record(resource_requestctx)
         # TODO: handle permissions UI way - better response than generic error
         serialized_record = self.config.ui_serializer.dump_obj(record.to_dict())
         # make links absolute
@@ -103,7 +101,7 @@ class RecordsUIResource(UIResource):
             for k, v in list(serialized_record["links"].items()):
                 if not isinstance(v, str):
                     continue
-                if not v.startswith("/"):
+                if not v.startswith("/") and not v.startswith("https://"):
                     v = f"/api{self._api_service.config.url_prefix}{v}"
                     serialized_record["links"][k] = v
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
@@ -127,6 +125,11 @@ class RecordsUIResource(UIResource):
             ui=serialized_record.get("ui", serialized_record),
             layout=layout,
             component_key="detail",
+        )
+
+    def _get_record(self, resource_requestctx):
+        return self._api_service.read(
+            g.identity, resource_requestctx.view_args["pid_value"]
         )
 
     @request_read_args
