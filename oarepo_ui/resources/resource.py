@@ -137,7 +137,7 @@ class RecordsUIResource(UIResource):
         template_def = self.get_template_def("search")
         template = current_oarepo_ui.get_template(
             template_def["layout"],
-            template_def["blocks"],
+            template_def.get("blocks", {}),
         )
 
         api_search_opts = self._api_service.config.search
