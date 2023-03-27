@@ -27,7 +27,9 @@ from invenio_base.utils import obj_or_import_string
 #
 from ..proxies import current_oarepo_ui
 
-request_export_args = request_parser(from_conf("request_export_args"), location="args")
+request_export_args = request_parser(
+    from_conf("request_export_args"), location="view_args"
+)
 
 
 class UIResource(Resource):
@@ -75,6 +77,7 @@ class RecordsUIResource(UIResource):
         """Create the URL rules for the record resource."""
         routes = self.config.routes
         return [
+            route("GET", routes["export"], self.export),
             route("GET", routes["detail"], self.detail),
         ]
 
@@ -134,14 +137,15 @@ class RecordsUIResource(UIResource):
 
     @request_read_args
     @request_view_args
+    @request_export_args
     def export(self):
         pid_value = resource_requestctx.view_args["pid_value"]
         export_format = resource_requestctx.view_args["export_format"]
+        record = self._get_record(resource_requestctx)
 
-        record = self._api_service.read(g.identity, pid_value)
-        exporter = self.config.exports.get(export_format)
+        exporter = self.config.exports.get(export_format.lower())
         if exporter is None:
-            abort(404)
+            abort(404, f"No exporter for code {{export_format}}")
 
         serializer = obj_or_import_string(exporter["serializer"])(
             options={
@@ -166,5 +170,4 @@ class RecordsUIResource(UIResource):
 
     @property
     def _api_service(self):
-        print(current_service_registry._services.keys())
         return current_service_registry.get(self.config.api_service)
