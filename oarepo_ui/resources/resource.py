@@ -1,6 +1,6 @@
 from functools import partial
 
-from flask import g, render_template, abort
+from flask import g, render_template, abort, request
 from flask_resources import (
     Resource,
     route,
@@ -30,7 +30,9 @@ from invenio_base.utils import obj_or_import_string
 #
 from ..proxies import current_oarepo_ui
 
-request_export_args = request_parser(from_conf("request_export_args"), location="args")
+request_export_args = request_parser(
+    from_conf("request_export_args"), location="view_args"
+)
 
 
 class UIResource(Resource):
@@ -78,6 +80,7 @@ class RecordsUIResource(UIResource):
         """Create the URL rules for the record resource."""
         routes = self.config.routes
         return [
+            route("GET", routes["export"], self.export),
             route("GET", routes["detail"], self.detail),
             route("GET", routes["search"], self.search),
         ]
@@ -97,9 +100,7 @@ class RecordsUIResource(UIResource):
     @request_view_args
     def detail(self):
         """Returns item detail page."""
-        record = self._api_service.read(
-            g.identity, resource_requestctx.view_args["pid_value"]
-        )
+        record = self._get_record(resource_requestctx)
         # TODO: handle permissions UI way - better response than generic error
         serialized_record = self.config.ui_serializer.dump_obj(record.to_dict())
         # make links absolute
@@ -107,7 +108,7 @@ class RecordsUIResource(UIResource):
             for k, v in list(serialized_record["links"].items()):
                 if not isinstance(v, str):
                     continue
-                if not v.startswith("/"):
+                if not v.startswith("/") and not v.startswith("https://"):
                     v = f"/api{self._api_service.config.url_prefix}{v}"
                     serialized_record["links"][k] = v
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
@@ -123,6 +124,10 @@ class RecordsUIResource(UIResource):
             template_def["layout"],
             template_def["blocks"],
         )
+        export_path = request.path.split("?")[0]
+        if not export_path.endswith("/"):
+            export_path += "/"
+        export_path += "export"
         return render_template(
             template,
             record=serialized_record,
@@ -131,6 +136,12 @@ class RecordsUIResource(UIResource):
             ui=serialized_record.get("ui", serialized_record),
             layout=layout,
             component_key="detail",
+            export_path=export_path,
+        )
+
+    def _get_record(self, resource_requestctx):
+        return self._api_service.read(
+            g.identity, resource_requestctx.view_args["pid_value"]
         )
 
     def search(self):
@@ -156,14 +167,15 @@ class RecordsUIResource(UIResource):
 
     @request_read_args
     @request_view_args
+    @request_export_args
     def export(self):
         pid_value = resource_requestctx.view_args["pid_value"]
         export_format = resource_requestctx.view_args["export_format"]
+        record = self._get_record(resource_requestctx)
 
-        record = self._api_service.read(g.identity, pid_value)
-        exporter = self.config.exports.get(export_format)
+        exporter = self.config.exports.get(export_format.lower())
         if exporter is None:
-            abort(404)
+            abort(404, f"No exporter for code {{export_format}}")
 
         serializer = obj_or_import_string(exporter["serializer"])(
             options={
@@ -188,5 +200,4 @@ class RecordsUIResource(UIResource):
 
     @property
     def _api_service(self):
-        print(current_service_registry._services.keys())
         return current_service_registry.get(self.config.api_service)
