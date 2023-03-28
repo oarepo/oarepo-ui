@@ -99,11 +99,20 @@ class RecordsUIResourceConfig(UIResourceConfig):
     def search_facets_config(
         self, available_facets, identity, api_config, selected_facets=[]
     ):
-        return FacetsConfig(available_facets, selected_facets)
+        facets_config = {}
+        for facet_key, facet in available_facets.items():
+            facets_config[facet_key] = {
+                "facet": facet,
+                "ui": {
+                    "field": facet._params.get("field", facet_key),
+                },
+            }
+
+        return FacetsConfig(facets_config, selected_facets)
 
     def search_app_config(self, identity, api_config, overrides=None, **kwargs):
         opts = dict(
-            endpoint=api_config.links_search,
+            endpoint=api_config.url_prefix,
             headers={"Accept": "application/vnd.inveniordm.v1+json"},
             grid_view=False,
             sort=self.search_sort_config(
