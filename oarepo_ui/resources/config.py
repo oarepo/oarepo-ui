@@ -1,11 +1,6 @@
 import inspect
 from pathlib import Path
-from flask_resources import ResponseHandler, JSONSerializer
-from invenio_records_resources.resources import (
-    RecordResourceConfig as InvenioRecordResourceConfig,
-)
-
-from oarepo_ui.proxies import current_oarepo_ui
+from invenio_search_ui.searchconfig import SortConfig, FacetsConfig, SearchAppConfig
 from flask_resources import (
     ResourceConfig,
 )
@@ -87,3 +82,43 @@ class RecordsUIResourceConfig(UIResourceConfig):
     @property
     def ui_serializer(self):
         return obj_or_import_string(self.ui_serializer_class)()
+
+    def search_sort_config(
+        self,
+        available_options,
+        identity,
+        api_config,
+        selected_options=[],
+        default_option=None,
+        no_query_option=None,
+    ):
+        return SortConfig(
+            available_options, selected_options, default_option, no_query_option
+        )
+
+    def search_facets_config(
+        self, available_facets, identity, api_config, selected_facets=[]
+    ):
+        return FacetsConfig(available_facets, selected_facets)
+
+    def search_app_config(self, identity, api_config, overrides=None, **kwargs):
+        opts = dict(
+            endpoint=api_config.links_search,
+            headers={"Accept": "application/vnd.inveniordm.v1+json"},
+            grid_view=False,
+            sort=self.search_sort_config(
+                available_options=api_config.search.sort_options,
+                selected_options=list(api_config.search.sort_options.keys()),
+                identity=identity,
+                api_config=api_config,
+            ),
+            facets=self.search_facets_config(
+                available_facets=api_config.search.facets,
+                selected_facets=list(api_config.search.facets.keys()),
+                identity=identity,
+                api_config=api_config,
+            ),
+        )
+        opts.update(kwargs)
+        overrides = overrides or {}
+        return SearchAppConfig.generate(opts, **overrides)

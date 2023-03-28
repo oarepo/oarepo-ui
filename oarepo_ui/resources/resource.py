@@ -140,15 +140,10 @@ class RecordsUIResource(UIResource):
             template_def.get("blocks", {}),
         )
 
-        api_search_opts = self._api_service.config.search
-
         search_config = partial(
-            search_app_config,
-            "DEFAULT_SEARCH",
-            available_facets=api_search_opts.facets,
-            sort_options=api_search_opts.sort_options,
-            endpoint=self._api_service.config.links_search,
-            headers={"Accept": "application/vnd.inveniordm.v1+json"},
+            self.config.search_app_config,
+            api_config=self._api_service.config,
+            identity=g.identity,
         )
 
         self.run_components(
