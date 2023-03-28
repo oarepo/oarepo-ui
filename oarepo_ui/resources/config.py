@@ -112,7 +112,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
     def search_app_config(self, identity, api_config, overrides=None, **kwargs):
         opts = dict(
-            endpoint=api_config.url_prefix,
+            endpoint=f"/api/{api_config.url_prefix}",
             headers={"Accept": "application/vnd.inveniordm.v1+json"},
             grid_view=False,
             sort=self.search_sort_config(
@@ -122,8 +122,8 @@ class RecordsUIResourceConfig(UIResourceConfig):
                 api_config=api_config,
             ),
             facets=self.search_facets_config(
-                available_facets=api_config.search.facets,
-                selected_facets=list(api_config.search.facets.keys()),
+                available_facets={},
+                selected_facets=list([]),
                 identity=identity,
                 api_config=api_config,
             ),
