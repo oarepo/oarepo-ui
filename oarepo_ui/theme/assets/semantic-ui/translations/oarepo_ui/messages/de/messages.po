@@ -5,57 +5,57 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2023-03-29T13:55:29.479Z\n"
-"PO-Revision-Date: 2023-03-29T13:55:29.479Z\n"
-"Language: en\n"
+"POT-Creation-Date: 2023-03-29T13:56:34.577Z\n"
+"PO-Revision-Date: 2023-03-29T13:56:34.577Z\n"
+"Language: de\n"
 
 msgid "We couldn't find any matches for "
-msgstr "We couldn't find any matches for "
+msgstr ""
 
 msgid "your search"
-msgstr "your search"
+msgstr ""
 
 msgid "Start over"
-msgstr "Start over"
+msgstr ""
 
 msgid "ProTip"
-msgstr "ProTip"
+msgstr ""
 
 msgid "will give you all the publications from 2017 until today."
-msgstr "will give you all the publications from 2017 until today."
+msgstr ""
 
 msgid "For more tips, check out our "
-msgstr "For more tips, check out our "
+msgstr ""
 
 msgid "Search guide"
-msgstr "Search guide"
+msgstr ""
 
 msgid "search guide"
-msgstr "search guide"
+msgstr ""
 
 msgid " for defining advanced search queries."
-msgstr " for defining advanced search queries."
+msgstr ""
 
 msgid "ORCID profile"
-msgstr "ORCID profile"
+msgstr ""
 
 msgid "ROR profile"
-msgstr "ROR profile"
+msgstr ""
 
 msgid "GND profile"
-msgstr "GND profile"
+msgstr ""
 
 msgid "Search"
-msgstr "Search"
+msgstr ""
 
 msgid "Uploaded on"
-msgstr "Uploaded on"
+msgstr ""
 
 msgid "Published in: "
-msgstr "Published in: "
+msgstr ""
 
 msgid "Sort"
-msgstr "Sort"
+msgstr ""
 
 msgid "Sort by"
-msgstr "Sort by"
+msgstr ""
