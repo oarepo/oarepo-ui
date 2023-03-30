@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import Overridable from "react-overridable";
 
@@ -8,6 +8,8 @@ import _truncate from "lodash/truncate";
 
 import { Item, Label, Icon } from "semantic-ui-react";
 import { withState, buildUID } from "react-searchkit";
+import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
+
 import { i18next } from "@translations/oarepo_ui/i18next";
 
 import { ResultsItemCreators } from "./ResultsItemCreators";
@@ -17,6 +19,7 @@ export const ResultsListItemComponent = ({
   result,
   appName,
 }) => {
+  const searchAppConfig = useContext(SearchConfigurationContext);
   const accessStatusId = _get(result, "ui.access_status.id", "open");
   const accessStatus = _get(result, "metadata.accessRights.title", "Open");
   const accessStatusIcon = _get(result, "ui.access_status.icon", "unlock");
@@ -49,13 +52,16 @@ export const ResultsListItemComponent = ({
     ","
   );
 
+  console.log(subjects);
   const filters =
     currentQueryState && Object.fromEntries(currentQueryState.filters);
   const allVersionsVisible = filters?.allversions;
   const numOtherVersions = version - 1;
 
-  // Derivatives
-  const viewLink = `/docs/${result.links.self}`;
+  const viewLink = new URL(
+    result.links.self,
+    new URL(searchAppConfig.ui_endpoint, window.location.origin)
+  );
   return (
     <Overridable
       id={buildUID("RecordsResultsListItem.layout", "", appName)}
@@ -101,7 +107,7 @@ export const ResultsListItemComponent = ({
           <Item.Extra>
             {subjects.map((subject, idx) => (
               <Label key={`${idx}-${subject.subject}`} size="tiny">
-                {subject.subject}
+                {/* {subject.subject} */}
               </Label>
             ))}
             <div>

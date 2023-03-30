@@ -112,7 +112,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
     def search_app_config(self, identity, api_config, overrides=None, **kwargs):
         opts = dict(
-            endpoint=f"/api/{api_config.url_prefix}",
+            endpoint=f"/api{api_config.url_prefix}",
             headers={"Accept": "application/vnd.inveniordm.v1+json"},
             grid_view=False,
             sort=self.search_sort_config(
@@ -129,5 +129,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
             ),
         )
         opts.update(kwargs)
-        overrides = overrides or {}
+        overrides = overrides or {
+            "ui_endpoint": self.url_prefix,
+        }
         return SearchAppConfig.generate(opts, **overrides)
