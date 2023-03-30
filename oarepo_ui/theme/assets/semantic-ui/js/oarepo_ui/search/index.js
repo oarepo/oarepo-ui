@@ -10,6 +10,5 @@ export { ResultsListItem, ResultsListItemWithState } from "./ResultsListItem";
 
 export { SearchAppFacets } from "./SearchAppFacets";
 export { SearchAppSearchbarContainer } from "./SearchAppSearchbarContainer";
+export { SearchAppSort } from "./SearchAppSort"
 export { SearchFiltersToggleElement } from "./SearchFiltersToggleElement";
-
-export { SortElement } from "./SortElement"
