@@ -13,6 +13,7 @@ import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
 import { i18next } from "@translations/oarepo_ui/i18next";
 
 import { ResultsItemCreators } from "./ResultsItemCreators";
+import { ResultsItemSubjects } from "./ResultsItemSubjects";
 
 export const ResultsListItemComponent = ({
   currentQueryState,
@@ -105,11 +106,7 @@ export const ResultsListItemComponent = ({
             {_truncate(descriptionStripped, { length: 350 })}
           </Item.Description>
           <Item.Extra>
-            {subjects.map((subject, idx) => (
-              <Label key={`${idx}-${subject.subject}`} size="tiny">
-                {/* {subject.subject} */}
-              </Label>
-            ))}
+            <ResultsItemSubjects subjects={subjects} />
             <div>
               <small>
                 <p>
