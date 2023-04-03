@@ -83,11 +83,21 @@ class RecordsUIResourceConfig(UIResourceConfig):
     def ui_serializer(self):
         return obj_or_import_string(self.ui_serializer_class)()
 
+    def search_available_facets(self, api_config, identity):
+        return api_config.search.facets
+
+    def search_available_sort_options(self, api_config, identity):
+        return api_config.search.sort_options
+
+    def search_active_facets(self, api_config, identity):
+        return list([])
+
+    def search_active_sort_options(self, api_config, identity):
+        return list(api_config.search.sort_options.keys())
+
     def search_sort_config(
         self,
         available_options,
-        identity,
-        api_config,
         selected_options=[],
         default_option=None,
         no_query_option=None,
@@ -96,9 +106,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
             available_options, selected_options, default_option, no_query_option
         )
 
-    def search_facets_config(
-        self, available_facets, identity, api_config, selected_facets=[]
-    ):
+    def search_facets_config(self, available_facets, selected_facets=[]):
         facets_config = {}
         for facet_key, facet in available_facets.items():
             facets_config[facet_key] = {
@@ -116,16 +124,14 @@ class RecordsUIResourceConfig(UIResourceConfig):
             headers={"Accept": "application/vnd.inveniordm.v1+json"},
             grid_view=False,
             sort=self.search_sort_config(
-                available_options=api_config.search.sort_options,
-                selected_options=list(api_config.search.sort_options.keys()),
-                identity=identity,
-                api_config=api_config,
+                available_options=self.search_available_sort_options(
+                    api_config, identity
+                ),
+                selected_options=self.search_active_sort_options(api_config, identity),
             ),
             facets=self.search_facets_config(
-                available_facets={},
-                selected_facets=list([]),
-                identity=identity,
-                api_config=api_config,
+                available_facets=self.search_available_facets(api_config, identity),
+                selected_facets=self.search_active_facets(api_config, identity),
             ),
         )
         opts.update(kwargs)
