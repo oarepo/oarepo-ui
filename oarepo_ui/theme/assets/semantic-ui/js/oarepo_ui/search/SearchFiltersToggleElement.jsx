@@ -19,7 +19,7 @@ export const SearchFiltersToggleElement = ({
     updateQueryFilters(filterValue);
   };
 
-  var isChecked = _isChecked(userSelectionFilters);
+  const isChecked = _isChecked(userSelectionFilters);
   return (
     <Card className="borderless facet">
       <Card.Content>

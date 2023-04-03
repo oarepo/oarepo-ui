@@ -1,6 +1,5 @@
-import React, { useContext } from "react";
-import { AppContext, Sort } from "react-searchkit";
-import { Dropdown } from "semantic-ui-react";
+import React from "react";
+import { Sort } from "react-searchkit";
 
 import { i18next } from "@translations/oarepo_ui/i18next";
 
