@@ -5,12 +5,31 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2\n"
-"POT-Creation-Date: 2023-04-03T08:56:16.989Z\n"
-"PO-Revision-Date: 2023-04-03T08:56:16.989Z\n"
+"POT-Creation-Date: 2023-04-05T13:33:13.492Z\n"
+"PO-Revision-Date: 2023-04-05T13:33:13.492Z\n"
 "Language: cs\n"
 
 msgid "Sort"
 msgstr "Řazení"
 
 msgid "Sort by"
-msgstr "Řadit podle"
+msgstr "Řazení"
+
+msgid "Filter results"
+msgstr "Filtrovat výsledky"
+
+msgctxt "one"
+msgid "totalResults"
+msgstr "{{val, number}} výsledek"
+
+msgctxt "few"
+msgid "totalResults"
+msgstr "{{val, number}} výsledky"
+
+msgctxt "many"
+msgid "totalResults"
+msgstr "{{val, number}} výsledků"
+
+msgctxt "other"
+msgid "totalResults"
+msgstr "{{val, number}} výsledků"

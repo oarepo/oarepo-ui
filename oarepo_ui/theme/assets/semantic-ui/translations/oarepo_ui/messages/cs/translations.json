@@ -1,4 +1,9 @@
 {
     "Sort": "Řazení",
-    "Sort by": "Řadit podle"
+    "Sort by": "Řazení",
+    "Filter results": "Filtrovat výsledky",
+    "totalResults_one": "{{val, number}} výsledek",
+    "totalResults_few": "{{val, number}} výsledky",
+    "totalResults_many": "{{val, number}} výsledků",
+    "totalResults_other": "{{val, number}} výsledků"
 }
