@@ -1,12 +1,6 @@
 import inspect
 from pathlib import Path
-
-from flask_resources import ResponseHandler, JSONSerializer
-from invenio_records_resources.resources import (
-    RecordResourceConfig as InvenioRecordResourceConfig,
-)
-
-from oarepo_ui.proxies import current_oarepo_ui
+from invenio_search_ui.searchconfig import SortConfig, FacetsConfig, SearchAppConfig
 from flask_resources import (
     ResourceConfig,
 )
@@ -88,3 +82,60 @@ class RecordsUIResourceConfig(UIResourceConfig):
     @property
     def ui_serializer(self):
         return obj_or_import_string(self.ui_serializer_class)()
+
+    def search_available_facets(self, api_config, identity):
+        return api_config.search.facets
+
+    def search_available_sort_options(self, api_config, identity):
+        return api_config.search.sort_options
+
+    def search_active_facets(self, api_config, identity):
+        return list([])
+
+    def search_active_sort_options(self, api_config, identity):
+        return list(api_config.search.sort_options.keys())
+
+    def search_sort_config(
+        self,
+        available_options,
+        selected_options=[],
+        default_option=None,
+        no_query_option=None,
+    ):
+        return SortConfig(
+            available_options, selected_options, default_option, no_query_option
+        )
+
+    def search_facets_config(self, available_facets, selected_facets=[]):
+        facets_config = {}
+        for facet_key, facet in available_facets.items():
+            facets_config[facet_key] = {
+                "facet": facet,
+                "ui": {
+                    "field": facet._params.get("field", facet_key),
+                },
+            }
+
+        return FacetsConfig(facets_config, selected_facets)
+
+    def search_app_config(self, identity, api_config, overrides=None, **kwargs):
+        opts = dict(
+            endpoint=f"/api{api_config.url_prefix}",
+            headers={"Accept": "application/vnd.inveniordm.v1+json"},
+            grid_view=False,
+            sort=self.search_sort_config(
+                available_options=self.search_available_sort_options(
+                    api_config, identity
+                ),
+                selected_options=self.search_active_sort_options(api_config, identity),
+            ),
+            facets=self.search_facets_config(
+                available_facets=self.search_available_facets(api_config, identity),
+                selected_facets=self.search_active_facets(api_config, identity),
+            ),
+        )
+        opts.update(kwargs)
+        overrides = overrides or {
+            "ui_endpoint": self.url_prefix,
+        }
+        return SearchAppConfig.generate(opts, **overrides)

@@ -1,3 +1,5 @@
+from functools import partial
+
 from flask import g, render_template, abort, request
 from flask_resources import (
     Resource,
@@ -14,6 +16,7 @@ from invenio_records_resources.resources.records.resource import (
     request_view_args,
 )
 from invenio_records_resources.services import RecordService
+from invenio_search_ui.searchconfig import search_app_config
 
 from .config import UIResourceConfig, RecordsUIResourceConfig
 
@@ -79,6 +82,7 @@ class RecordsUIResource(UIResource):
         return [
             route("GET", routes["export"], self.export),
             route("GET", routes["detail"], self.detail),
+            route("GET", routes["search"], self.search),
         ]
 
     def as_blueprint(self, **options):
@@ -139,6 +143,27 @@ class RecordsUIResource(UIResource):
         return self._api_service.read(
             g.identity, resource_requestctx.view_args["pid_value"]
         )
+
+    def search(self):
+        template_def = self.get_template_def("search")
+        template = current_oarepo_ui.get_template(
+            template_def["layout"],
+            template_def.get("blocks", {}),
+        )
+
+        search_config = partial(
+            self.config.search_app_config,
+            api_config=self._api_service.config,
+            identity=g.identity,
+        )
+
+        self.run_components(
+            "before_ui_search",
+            resource=self,
+            identity=g.identity,
+            search_app_config=search_config,
+        )
+        return render_template(template, search_app_config=search_config)
 
     @request_read_args
     @request_view_args

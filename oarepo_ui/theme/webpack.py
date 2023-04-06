@@ -27,7 +27,7 @@ theme = WebpackThemeBundle(
         "semantic-ui": dict(
             entry={
                 "oarepo_ui": "./js/oarepo_ui/index.js",
-                "oarepo_ui_search": "./js/oarepo_ui/search.js",
+                "oarepo_ui_search": "./js/oarepo_ui/search/index.js",
             },
             dependencies={
                 "@babel/runtime": "^7.9.0",
