@@ -151,8 +151,7 @@ class RecordsUIResource(UIResource):
             template_def.get("blocks", {}),
         )
 
-        search_config = partial(
-            self.config.search_app_config,
+        search_options = dict(
             api_config=self._api_service.config,
             identity=g.identity,
         )
@@ -161,8 +160,12 @@ class RecordsUIResource(UIResource):
             "before_ui_search",
             resource=self,
             identity=g.identity,
-            search_app_config=search_config,
+            search_options=search_options,
+            args=resource_requestctx.args,
+            view_args=resource_requestctx.view_args,
         )
+
+        search_config = partial(self.config.search_app_config, **search_options)
         return render_template(template, search_app_config=search_config)
 
     @request_read_args
