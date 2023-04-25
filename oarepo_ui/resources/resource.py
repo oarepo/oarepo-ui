@@ -134,6 +134,8 @@ class RecordsUIResource(UIResource):
             data=serialized_record,
             metadata=serialized_record.get("metadata", serialized_record),
             ui=serialized_record.get("ui", serialized_record),
+            ui_config=self.config,
+            ui_resource=self,
             layout=layout,
             component_key="detail",
             export_path=export_path,
@@ -146,6 +148,7 @@ class RecordsUIResource(UIResource):
 
     def search(self):
         template_def = self.get_template_def("search")
+        layout = current_oarepo_ui.get_layout(self.get_layout_name())
         template = current_oarepo_ui.get_template(
             template_def["layout"],
             template_def.get("blocks", {}),
@@ -163,10 +166,21 @@ class RecordsUIResource(UIResource):
             search_options=search_options,
             args=resource_requestctx.args,
             view_args=resource_requestctx.view_args,
+            ui_config=self.config,
+            ui_resource=self,
+            layout=layout,
+            component_key="search",
         )
 
         search_config = partial(self.config.search_app_config, **search_options)
-        return render_template(template, search_app_config=search_config)
+        return render_template(
+            template,
+            search_app_config=search_config,
+            ui_config=self.config,
+            ui_resource=self,
+            layout=layout,
+            component_key="search",
+        )
 
     @request_read_args
     @request_view_args

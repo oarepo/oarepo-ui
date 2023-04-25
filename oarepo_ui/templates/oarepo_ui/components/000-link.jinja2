@@ -1,0 +1,7 @@
+{%- macro render_search_link(arg) -%}
+<a class="{{arg.className}}" href="{{ui_config.url_prefix}}?q=&amp;f={{arg.field | urlencode}}:{{arg.value | urlencode}}" title="{{arg.title}}">
+    <span class="{{arg.className}} value">
+        {{arg.value}}
+    </span>
+</a>
+{%- endmacro -%}
