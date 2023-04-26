@@ -178,13 +178,13 @@ class RenderMixin:
 class FieldExtension(RenderMixin, StandaloneTag):
     tags = {"field"}
 
-    def render(self, field_path=None, component=None, label_key=None):
+    def render(self, field_path=None, component=None, label_key=None, **kwargs):
         try:
             ui, layout = self.lookup_data(field_path, None, None)
         except LookupError as e:
             return e.message
         # render content
-        ctx = self.context.derived({"ui": ui, "layout": layout})
+        ctx = self.context.derived({**kwargs, "ui": ui, "layout": layout})
         try:
             value_component = self.get_value_component(ctx, layout, component)
         except LookupError as e:
