@@ -1,7 +1,23 @@
 {%- macro render_search_link(arg) -%}
-<a class="{{arg.className}}" href="{{ui_config.url_prefix}}?q=&amp;f={{arg.field | urlencode}}:{{arg.value | urlencode}}" title="{{arg.title}}">
-    <span class="{{arg.className}} value">
-        {{arg.value}}
+    {%- value ui=({
+        "href": ui_config.url_prefix ~ "?q=&f=" ~ searchFacet ~ ":" ~ arg.value,
+        "title": arg.title,
+        "label": arg.label
+        }),
+        component="url" 
+    -%}
+{%- endmacro -%}
+
+{%- macro render_definition_link(arg) -%}
+    <a href="{{arg}}" target="_blank" title="{{_("Open definition")}}" >
+        <i class="icon book justify"></i>
+    </a>
+{%- endmacro -%}  
+
+{%- macro render_url(arg) -%}
+<a class="{{className}}" href="{{arg.href | e}}" title="{{arg.title}}">
+    <span class="{{className}} label">
+        {{arg.label if arg.label else arg.title}}
     </span>
 </a>
 {%- endmacro -%}
