@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import _isEmpty from "lodash/isEmpty";
 import Overridable from "react-overridable";
-import { withState } from "react-searchkit";
+import { withState, ActiveFilters } from "react-searchkit";
 import { GridResponsiveSidebarColumn } from "react-invenio-forms";
 import { Container, Grid, Button } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
@@ -67,21 +67,26 @@ export const SearchAppLayout = ({ config }) => {
           className="result-options"
         >
           {facetsAvailable && (
-            <Grid.Column
-              only="mobile tablet"
-              mobile={2}
-              tablet={2}
-              textAlign="center"
-              verticalAlign="middle"
-            >
-              <Button
-                basic
-                icon="sliders"
-                onClick={() => setSidebarVisible(true)}
-                title={i18next.t("Filter results")}
-                aria-label={i18next.t("Filter results")}
-              />
-            </Grid.Column>
+            <>
+              <Grid.Column
+                only="mobile tablet"
+                mobile={2}
+                tablet={2}
+                textAlign="center"
+                verticalAlign="middle"
+              >
+                <Button
+                  basic
+                  icon="sliders"
+                  onClick={() => setSidebarVisible(true)}
+                  title={i18next.t("Filter results")}
+                  aria-label={i18next.t("Filter results")}
+                />
+              </Grid.Column>
+              <Grid.Column only="computer" width={3}>
+                <ActiveFilters />
+              </Grid.Column>
+            </>
           )}
           <Grid.Column {...resultSortLayout} floated="right">
             <ResultOptionsWithState />

@@ -1,3 +1,5 @@
+export { ActiveFiltersElement } from "./ActiveFiltersElement"
+
 export { BucketAggregationElement } from "./BucketAggregationElement";
 export { BucketAggregationValuesElement } from "./BucketAggregationValuesElement";
 

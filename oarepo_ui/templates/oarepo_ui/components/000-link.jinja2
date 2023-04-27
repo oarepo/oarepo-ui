@@ -4,18 +4,19 @@
         "title": arg.title,
         "label": arg.label
         }),
-        component="url" 
+        component="url",
+        className="search link"
     -%}
 {%- endmacro -%}
 
 {%- macro render_definition_link(arg) -%}
-    <a href="{{arg}}" target="_blank" title="{{_("Open definition")}}" >
+    <a href="{{arg}}" target="_blank" aria-label="{{_("Open definition")}}" title="{{_("Open definition")}}" >
         <i class="icon book justify"></i>
     </a>
 {%- endmacro -%}  
 
 {%- macro render_url(arg) -%}
-    <a class="{{className}}" href="{{arg.href | e}}" title="{{arg.title}}">
+    <a class="ui {{className}}" href="{{arg.href | e}}" aria-label="{{arg.title}}" title="{{arg.title}}">
         <span class="{{className}} label">
             {{arg.label if arg.label else arg.title}}
         </span>
