@@ -21,7 +21,7 @@ export const SearchFiltersToggleElement = ({
 
   const isChecked = _isChecked(userSelectionFilters);
   return (
-    <Card className="borderless facet">
+    <Card className="shadowless borderless facet">
       <Card.Content>
         <Card.Header as="h2">{title}</Card.Header>
       </Card.Content>
