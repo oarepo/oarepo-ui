@@ -2,6 +2,7 @@
     "Sort": "Sort",
     "Sort by": "Sort by",
     "Filter results": "Filter results",
-    "totalResults_one": "{{val, number}} result found",
-    "totalResults_other": "{{val, number}} results found"
+    "totalResults": "totalResults",
+    "totalResults_plural": "totalResults",
+    "results per page": "results per page"
 }

@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2023-04-05T13:33:13.750Z\n"
-"PO-Revision-Date: 2023-04-05T13:33:13.750Z\n"
+"POT-Creation-Date: 2023-05-11T09:15:17.075Z\n"
+"PO-Revision-Date: 2023-05-11T09:15:17.075Z\n"
 "Language: el\n"
 
 msgid "Sort"
@@ -21,4 +21,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Filter results"
+msgstr ""
+
+msgid "results per page"
 msgstr ""

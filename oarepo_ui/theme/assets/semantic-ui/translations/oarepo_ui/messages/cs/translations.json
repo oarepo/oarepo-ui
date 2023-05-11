@@ -2,8 +2,8 @@
     "Sort": "Řazení",
     "Sort by": "Řazení",
     "Filter results": "Filtrovat výsledky",
-    "totalResults_one": "{{val, number}} výsledek",
-    "totalResults_few": "{{val, number}} výsledky",
-    "totalResults_many": "{{val, number}} výsledků",
-    "totalResults_other": "{{val, number}} výsledků"
+    "totalResults_0": "{{val, number}} výsledek",
+    "totalResults_1": "{{val, number}} výsledky",
+    "totalResults_2": "{{val, number}} výsledků",
+    "results per page": "výsledků na stránku"
 }

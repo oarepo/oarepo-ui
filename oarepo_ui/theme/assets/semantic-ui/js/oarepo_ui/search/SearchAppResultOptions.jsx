@@ -81,7 +81,12 @@ export const SearchAppResultOptions = ({
         <Grid.Column floated="right" textAlign="right" width={4}>
           <ResultsPerPage
             values={paginationOptions.resultsPerPage}
-            label={(cmp) => <> {cmp} results per page</>}
+            label={(cmp) => (
+              <>
+                {" "}
+                {cmp} {i18next.t("results per page")}
+              </>
+            )}
           />
         </Grid.Column>
       </Grid.Row>
