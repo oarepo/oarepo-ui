@@ -40,6 +40,9 @@ export const SearchAppLayout = ({ config }) => {
     widescreen: 13,
   };
 
+  const resultsPaneLayoutNoFacets = resultsPaneLayoutFacets;
+  const resultsSortLayoutNoFacets = resultsSortLayoutFacets;
+
   // make list full width if no facets available
   const resultsPaneLayout = facetsAvailable
     ? resultsPaneLayoutFacets
