@@ -9,6 +9,7 @@ include .tx/config
 include LICENSE
 include babel.ini
 include pytest.ini
+exclude tests
 recursive-exclude .github/workflows *.yml
 recursive-exclude docs *
 recursive-exclude playground *
