@@ -68,28 +68,6 @@ export const SearchAppResultOptions = ({
           </Grid.Column>
         ) : null}
       </Grid.Row>
-      <Grid.Row verticalAlign="middle">
-        <Grid.Column floated="left" width={8}>
-          <Pagination
-            options={{
-              size: "mini",
-              showFirst: false,
-              showLast: false,
-            }}
-          />
-        </Grid.Column>
-        <Grid.Column floated="right" textAlign="right" width={4}>
-          <ResultsPerPage
-            values={paginationOptions.resultsPerPage}
-            label={(cmp) => (
-              <>
-                {" "}
-                {cmp} {i18next.t("results per page")}
-              </>
-            )}
-          />
-        </Grid.Column>
-      </Grid.Row>
     </Grid>
   );
 };

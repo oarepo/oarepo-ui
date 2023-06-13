@@ -1,10 +1,10 @@
 {
-    "Sort": "Řazení",
-    "Sort by": "Řazení",
-    "Filter results": "Filtrovat výsledky",
-    "totalResults_0": "{{val, number}} výsledek",
-    "totalResults_1": "{{val, number}} výsledky",
-    "totalResults_2": "{{val, number}} výsledků",
-    "results per page": "výsledků na stránku",
-    "Filters": "Filtry"
+  "Sort": "Řazení",
+  "Sort by": "Řazení",
+  "Filter results": "Filtrovat výsledky",
+  "totalResults_0": "{{count}} výsledek",
+  "totalResults_1": "{{count}} výsledky",
+  "totalResults_2": "{{count}} výsledků",
+  "results per page": "výsledků na stránku",
+  "Filters": "Filtry"
 }
