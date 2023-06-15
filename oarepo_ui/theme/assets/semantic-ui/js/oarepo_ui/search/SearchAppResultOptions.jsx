@@ -1,9 +1,8 @@
 import React, { useContext } from "react";
 import Overridable from "react-overridable";
 import { PropTypes } from "prop-types";
-
 import { Grid } from "semantic-ui-react";
-import { Sort, withState, Pagination, ResultsPerPage } from "react-searchkit";
+import { Sort, withState } from "react-searchkit";
 import { CountElement } from "./CountElement";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
@@ -26,15 +25,21 @@ export const ResultCount = ({ currentResultsState = {} }) => {
 
 const ResultCountWithState = withState(ResultCount);
 
-export const SearchAppResultOptions = ({
-  sortOptions,
-  paginationOptions,
-  layoutOptions,
-}) => {
+const sortTranslation = (sortOptions) => {
+  const translatedSortOptions = sortOptions.map((sortOption) => {
+    return {
+      ...sortOption,
+      text: i18next.t(sortOption.sortBy),
+    };
+  });
+  return translatedSortOptions;
+};
+
+export const SearchAppResultOptions = ({ sortOptions, layoutOptions }) => {
+  sortOptions = sortTranslation(sortOptions);
   const { buildUID } = useContext(SearchConfigurationContext);
   const multipleLayouts =
     Object.values(layoutOptions).filter((i) => i).length > 1;
-
   return (
     <Grid>
       <Grid.Row verticalAlign="middle">

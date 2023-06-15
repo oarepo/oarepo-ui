@@ -5,5 +5,10 @@
   "totalResults": "{{count}} result",
   "totalResults_plural": "{{count}} results",
   "results per page": "results per page",
-  "Filters": "Filters"
+  "Filters": "Filters",
+  "bestmatch": "Best match",
+  "title": "Title",
+  "newest": "Newest",
+  "oldest": "Oldest",
+  "resultsPerPage": "results per page"
 }
