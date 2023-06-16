@@ -1,6 +1,6 @@
 from functools import partial
 
-from flask import g, render_template, abort, request
+from flask import g, render_template, abort, request, redirect
 from flask_resources import (
     Resource,
     route,
@@ -79,10 +79,16 @@ class RecordsUIResource(UIResource):
     def create_url_rules(self):
         """Create the URL rules for the record resource."""
         routes = self.config.routes
+        search_route=routes["search"]
+        if not search_route.endswith("/"):
+            search_route+="/"
+        search_route_without_slash = search_route[:-1]
         return [
             route("GET", routes["export"], self.export),
             route("GET", routes["detail"], self.detail),
-            route("GET", routes["search"], self.search),
+            route("GET", search_route, self.search),
+            route("GET", search_route_without_slash, self.search_without_slash),
+
         ]
 
     def as_blueprint(self, **options):
@@ -145,7 +151,15 @@ class RecordsUIResource(UIResource):
         return self._api_service.read(
             g.identity, resource_requestctx.view_args["pid_value"]
         )
-
+        
+    def search_without_slash(self):
+        split_path=request.full_path.split("?",maxsplit=1)
+        path_with_slash=split_path[0]+"/"
+        if len(split_path) == 1:
+            return redirect(path_with_slash, code=302)
+        else:
+            return redirect(path_with_slash + '?' + split_path[1] , code=302)
+        
     def search(self):
         template_def = self.get_template_def("search")
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
