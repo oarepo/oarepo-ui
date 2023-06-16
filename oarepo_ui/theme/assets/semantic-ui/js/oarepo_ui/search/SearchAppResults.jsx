@@ -3,6 +3,12 @@ import { Grid } from "semantic-ui-react";
 import { ResultsList, Pagination, ResultsPerPage } from "react-searchkit";
 import { i18next } from "@translations/oarepo_ui/i18next";
 
+const resultsPerPageLabel = (cmp) => (
+  <>
+    {cmp} {i18next.t("resultsPerPage")}
+  </>
+);
+
 export const SearchAppResults = ({ paginationOptions }) => {
   const { resultsPerPage } = paginationOptions;
   return (
@@ -41,28 +47,14 @@ export const SearchAppResults = ({ paginationOptions }) => {
           textAlign="right"
           width={4}
         >
-          <ResultsPerPage
-            values={resultsPerPage}
-            label={(cmp) => (
-              <>
-                {cmp} {i18next.t("resultsPerPage")}
-              </>
-            )}
-          />
+          <ResultsPerPage values={resultsPerPage} label={resultsPerPageLabel} />
         </Grid.Column>
         <Grid.Column
           className="mobile only mt-10"
           textAlign="center"
           width={16}
         >
-          <ResultsPerPage
-            values={resultsPerPage}
-            label={(cmp) => (
-              <>
-                {cmp} {i18next.t("resultsPerPage")}
-              </>
-            )}
-          />
+          <ResultsPerPage values={resultsPerPage} label={resultsPerPageLabel} />
         </Grid.Column>
       </Grid.Row>
     </Grid>
