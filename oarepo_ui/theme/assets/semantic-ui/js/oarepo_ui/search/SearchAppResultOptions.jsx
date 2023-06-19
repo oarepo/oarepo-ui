@@ -2,10 +2,11 @@ import React, { useContext } from "react";
 import Overridable from "react-overridable";
 import { PropTypes } from "prop-types";
 import { Grid } from "semantic-ui-react";
-import { Sort, withState } from "react-searchkit";
+import { withState, LayoutSwitcher } from "react-searchkit";
 import { CountElement } from "./CountElement";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
+import { SearchAppSort } from "./SearchAppSort";
 
 export const ResultCount = ({ currentResultsState = {} }) => {
   const { total } = currentResultsState.data;
@@ -53,23 +54,13 @@ export const SearchAppResultOptions = ({ sortOptions, layoutOptions }) => {
         <Grid.Column width={8} textAlign="right" floated="right">
           {sortOptions && (
             <Overridable id={buildUID("SearchApp.sort")} options={sortOptions}>
-              <Sort
-                sortOrderDisabled={false}
-                values={sortOptions}
-                ariaLabel={i18next.t("Sort")}
-                label={(cmp) => (
-                  <>
-                    <label className="mr-10">{i18next.t("Sort by")}</label>
-                    {cmp}
-                  </>
-                )}
-              />
+              <SearchAppSort />
             </Overridable>
           )}
         </Grid.Column>
         {multipleLayouts ? (
           <Grid.Column width={3} textAlign="right">
-            {/* <LayoutSwitcher /> */}
+            {multipleLayouts && <LayoutSwitcher />}
           </Grid.Column>
         ) : null}
       </Grid.Row>

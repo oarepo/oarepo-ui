@@ -19,10 +19,8 @@ const ResultOptionsWithState = withState(ResultOptions);
 export const SearchAppLayout = ({ config }) => {
   const [sidebarVisible, setSidebarVisible] = React.useState(false);
   const { appName, buildUID } = useContext(SearchConfigurationContext);
-
   const facetsAvailable = !_isEmpty(config.aggs);
   const columnsAmount = facetsAvailable ? 2 : 1;
-
   const resultsPaneLayoutFacets = {
     mobile: 16,
     tablet: 16,
@@ -91,7 +89,7 @@ export const SearchAppLayout = ({ config }) => {
               </Grid.Column>
             </>
           )}
-          <Grid.Column {...resultSortLayout} floated="right">
+          <Grid.Column {...resultSortLayout} floated="left">
             <ResultOptionsWithState />
           </Grid.Column>
         </Grid.Row>

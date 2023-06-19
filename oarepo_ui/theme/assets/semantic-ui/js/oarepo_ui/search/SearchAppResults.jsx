@@ -1,6 +1,11 @@
 import React from "react";
 import { Grid } from "semantic-ui-react";
-import { ResultsList, Pagination, ResultsPerPage } from "react-searchkit";
+import {
+  ResultsList,
+  Pagination,
+  ResultsPerPage,
+  ResultsMultiLayout,
+} from "react-searchkit";
 import { i18next } from "@translations/oarepo_ui/i18next";
 
 const resultsPerPageLabel = (cmp) => (
@@ -9,13 +14,20 @@ const resultsPerPageLabel = (cmp) => (
   </>
 );
 
-export const SearchAppResults = ({ paginationOptions }) => {
+export const SearchAppResults = ({ paginationOptions, layoutOptions }) => {
   const { resultsPerPage } = paginationOptions;
+  const multipleLayouts = layoutOptions.listView && layoutOptions.gridView;
+  const listOrGridView = layoutOptions.listView ? (
+    <ResultsList />
+  ) : (
+    <ResultsGrid />
+  );
+
   return (
     <Grid relaxed>
       <Grid.Row>
         <Grid.Column>
-          <ResultsList />
+          {multipleLayouts ? <ResultsMultiLayout /> : listOrGridView}
         </Grid.Column>
       </Grid.Row>
       <Grid.Row verticalAlign="middle">
