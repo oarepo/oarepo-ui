@@ -8,7 +8,7 @@ import { buildUID } from "react-searchkit";
 export const SearchAppSearchbarContainer = ({ appName }) => {
   return (
     <Overridable id={buildUID("SearchApp.searchbar", "", appName)}>
-      <SearchBar />
+      <SearchBar buildUID={buildUID} />
     </Overridable>
   );
 };
