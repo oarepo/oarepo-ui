@@ -16,12 +16,10 @@ from invenio_records_resources.resources.records.resource import (
     request_view_args,
 )
 from invenio_records_resources.services import RecordService
-from invenio_search_ui.searchconfig import search_app_config
 
 from .config import UIResourceConfig, RecordsUIResourceConfig
 
 from invenio_records_resources.proxies import current_service_registry
-from flask import current_app
 
 from invenio_base.utils import obj_or_import_string
 
@@ -118,13 +116,21 @@ class RecordsUIResource(UIResource):
                     v = f"/api{self._api_service.config.url_prefix}{v}"
                     serialized_record["links"][k] = v
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
+        extra_context=dict()
         self.run_components(
             "before_ui_detail",
-            layout=layout,
             resource=self,
             record=serialized_record,
             identity=g.identity,
+            extra_context=extra_context,
+            args=resource_requestctx.args,
+            view_args=resource_requestctx.view_args,
+            ui_config=self.config,
+            ui_resource=self,
+            layout=layout,
+            component_key="search",
         )
+
         template_def = self.get_template_def("detail")
         template = current_oarepo_ui.get_template(
             template_def["layout"],
@@ -134,6 +140,7 @@ class RecordsUIResource(UIResource):
         if not export_path.endswith("/"):
             export_path += "/"
         export_path += "export"
+
         return render_template(
             template,
             record=serialized_record,
@@ -145,6 +152,7 @@ class RecordsUIResource(UIResource):
             layout=layout,
             component_key="detail",
             export_path=export_path,
+            **extra_context,
         )
 
     def _get_record(self, resource_requestctx):
@@ -172,7 +180,9 @@ class RecordsUIResource(UIResource):
             api_config=self._api_service.config,
             identity=g.identity,
         )
-
+        
+        extra_context=dict()
+        
         self.run_components(
             "before_ui_search",
             resource=self,
@@ -184,6 +194,7 @@ class RecordsUIResource(UIResource):
             ui_resource=self,
             layout=layout,
             component_key="search",
+            extra_context=extra_context
         )
 
         search_config = partial(self.config.search_app_config, **search_options)
@@ -194,6 +205,7 @@ class RecordsUIResource(UIResource):
             ui_resource=self,
             layout=layout,
             component_key="search",
+            **extra_context
         )
 
     @request_read_args
