@@ -2,29 +2,11 @@ import React, { useContext } from "react";
 import Overridable from "react-overridable";
 import { PropTypes } from "prop-types";
 import { Grid } from "semantic-ui-react";
-import { withState, LayoutSwitcher } from "react-searchkit";
-import { CountElement } from "./CountElement";
+import { LayoutSwitcher, ActiveFilters } from "react-searchkit";
+import { ResultCountWithState } from "./CountElement";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
 import { SearchAppSort } from "./SearchAppSort";
-
-export const ResultCount = ({ currentResultsState = {} }) => {
-  const { total } = currentResultsState.data;
-  const { loading } = currentResultsState;
-  const { buildUID } = useContext(SearchConfigurationContext);
-
-  const resultsLoaded = !loading && total > 0;
-
-  return (
-    resultsLoaded && (
-      <Overridable id={buildUID("Count.element")} totalResults={total}>
-        <CountElement totalResults={total} />
-      </Overridable>
-    )
-  );
-};
-
-const ResultCountWithState = withState(ResultCount);
 
 const sortTranslation = (sortOptions) => {
   const translatedSortOptions = sortOptions.map((sortOption) => {
@@ -44,14 +26,13 @@ export const SearchAppResultOptions = ({ sortOptions, layoutOptions }) => {
   return (
     <Grid>
       <Grid.Row verticalAlign="middle">
-        <Grid.Column
-          floated="left"
-          textAlign="left"
-          width={multipleLayouts ? 5 : 8}
-        >
+        <Grid.Column floated="left" textAlign="left" width={4}>
           <ResultCountWithState />
         </Grid.Column>
-        <Grid.Column width={8} textAlign="right" floated="right">
+        <Grid.Column>
+          <ActiveFilters />
+        </Grid.Column>
+        <Grid.Column textAlign="right" floated="right" width={4}>
           {sortOptions && (
             <Overridable id={buildUID("SearchApp.sort")} options={sortOptions}>
               <SearchAppSort />
