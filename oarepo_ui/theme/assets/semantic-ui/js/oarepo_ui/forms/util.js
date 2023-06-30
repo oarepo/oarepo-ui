@@ -28,11 +28,14 @@ export function createFormAppInit (
         const formConfig = getInputFromDOM('form-config')
         const recordPermissions = getInputFromDOM('record-permissions')
 
+        console.debug('Initializing Formik form app...')
+        console.debug('[record]:', vocabularyRecord, '\n[formConfig]', formConfig, '\n[recordPermissions]', recordPermissions)
+
         loadComponents(appId, defaultComponents).then((res) => {
             ReactDOM.render(
                 <ContainerComponent>
                     <OverridableContext.Provider value={overrideStore.getAll()}>
-                        <FormConfigProvider value={{record, formConfig, recordPermissions}}>
+                        <FormConfigProvider value={{ record, formConfig, recordPermissions }}>
                             <Overridable id="FormApp.layout">
                                 <Container fluid>
                                     <p>Provide your form components here by overriding component id "FormApp.layout"</p>

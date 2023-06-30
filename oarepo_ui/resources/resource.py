@@ -269,6 +269,8 @@ class RecordsUIResource(UIResource):
             record=serialized_record,
             data=data,
             form_config=form_config,
+            args=resource_requestctx.args,
+            view_args=resource_requestctx.view_args,
             identity=g.identity
         )
         template_def = self.get_template_def("edit")
@@ -307,6 +309,8 @@ class RecordsUIResource(UIResource):
             record=empty_record,
             data=empty_record,
             form_config=form_config,
+            args=resource_requestctx.args,
+            view_args=resource_requestctx.view_args,
             identity=g.identity,
         )
         template_def = self.get_template_def("create")
