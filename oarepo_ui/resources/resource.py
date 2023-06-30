@@ -81,14 +81,17 @@ class RecordsUIResource(UIResource):
         if not search_route.endswith("/"):
             search_route += "/"
         search_route_without_slash = search_route[:-1]
-        return [
+        routes = [
             route("GET", routes["export"], self.export),
             route("GET", routes["detail"], self.detail),
-            route("GET", routes["create"], self.create),
-            route("GET", routes["edit"], self.edit),
             route("GET", search_route, self.search),
             route("GET", search_route_without_slash, self.search_without_slash),
         ]
+        if 'create' in routes:
+            routes += route("GET", routes["create"], self.create)
+        if 'edit' in routes:
+            routes += route("GET", routes["edit"], self.edit)
+        return routes
 
     def new_record(self):
         """Create an empty record with default values."""
