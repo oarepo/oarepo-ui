@@ -6,14 +6,17 @@
   Invenio App RDM is free software; you can redistribute it and/or modify it
   under the terms of the MIT License; see LICENSE file for more details.
 #}
+
+{%- block javascript %}
+{{ super() }}
+{# {{ webpack['your-formapp-entrypoint-here.js'] }} #}
+{%- endblock javascript -%}
+
 {%- if forms_config.createUrl %}
   {%- set title = _("New item") %}
 {% elif record.title %}
   {%- set title = _("Edit item ") + record.title %}
 {%- endif %}
-
-{%- block bypasslinks %}
-{%- endblock bypasslinks %}
 
 {%- block page_body %}
 <div class="ui main container">
@@ -51,9 +54,3 @@
 </div>
 {% endblock page_body %}
 
-{%- block javascript %}
-    {# 
-      {{ super() }}
-      {{ webpack['your-formapp-entrypoint-here.js'] }}
-    #}
-{%- endblock javascript -%}

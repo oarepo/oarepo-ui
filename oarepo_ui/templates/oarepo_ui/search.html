@@ -2,10 +2,8 @@
 {%- set title = _("Search results") %}
 
 {%- block javascript %}
-<!--
 {{ super() }}
-{{ webpack['your-searchapp-entrypoint-here.js'] }}
--->
+{# {{ webpack['your-searchapp-entrypoint-here.js'] }} #}
 {%- endblock %}
 
 {%- block page_body %}
