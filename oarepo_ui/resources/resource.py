@@ -258,10 +258,8 @@ class RecordsUIResource(UIResource):
         data = record.to_dict()
         serialized_record = self.config.ui_serializer.dump_obj(record.to_dict())
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
-        forms_config = (
-            self.config.form_config(
-                updateUrl=record.links.get("self", None),
-            ),
+        form_config = self.config.form_config(
+            updateUrl=record.links.get("self", None)
         )
 
         self.run_components(
@@ -270,8 +268,8 @@ class RecordsUIResource(UIResource):
             resource=self,
             record=serialized_record,
             data=data,
-            forms_config=forms_config,
-            identity=g.identity,
+            form_config=form_config,
+            identity=g.identity
         )
         template_def = self.get_template_def("edit")
         template = current_oarepo_ui.get_template(
@@ -285,9 +283,9 @@ class RecordsUIResource(UIResource):
             ui=serialized_record.get("ui", serialized_record),
             ui_config=self.config,
             ui_resource=self,
-            forms_config=forms_config,
+            form_config=form_config,
             layout=layout,
-            component_key="edit",
+            component_key="edit"
         )
 
     # TODO: !IMPORTANT!: needs to be enabled before production deployment
@@ -297,7 +295,7 @@ class RecordsUIResource(UIResource):
     def create(self):
         empty_record = self.new_record()
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
-        forms_config = self.config.form_config(
+        form_config = self.config.form_config(
             # TODO: use api service create link when available
             createUrl=f"/api{self._api_service.config.url_prefix}",
         )
@@ -308,7 +306,7 @@ class RecordsUIResource(UIResource):
             resource=self,
             record=empty_record,
             data=empty_record,
-            forms_config=forms_config,
+            form_config=form_config,
             identity=g.identity,
         )
         template_def = self.get_template_def("create")
@@ -325,7 +323,7 @@ class RecordsUIResource(UIResource):
             ui_resource=self,
             layout=layout,
             component_key="create",
-            forms_config=forms_config
+            form_config=form_config,
         )
 
     @property
