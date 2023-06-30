@@ -77,17 +77,25 @@ class RecordsUIResource(UIResource):
     def create_url_rules(self):
         """Create the URL rules for the record resource."""
         routes = self.config.routes
-        search_route=routes["search"]
+        search_route = routes["search"]
         if not search_route.endswith("/"):
-            search_route+="/"
+            search_route += "/"
         search_route_without_slash = search_route[:-1]
         return [
             route("GET", routes["export"], self.export),
             route("GET", routes["detail"], self.detail),
+            route("GET", routes["create"], self.create),
+            route("GET", routes["edit"], self.edit),
             route("GET", search_route, self.search),
             route("GET", search_route_without_slash, self.search_without_slash),
-
         ]
+
+    def new_record(self):
+        """Create an empty record with default values."""
+        record = dump_empty(self._api_service.config.schema)
+        record["files"] = {"enabled": False}
+        record["pids"] = {}
+        return record
 
     def as_blueprint(self, **options):
         blueprint = super().as_blueprint(**options)
@@ -116,7 +124,7 @@ class RecordsUIResource(UIResource):
                     v = f"/api{self._api_service.config.url_prefix}{v}"
                     serialized_record["links"][k] = v
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
-        extra_context=dict()
+        extra_context = dict()
         self.run_components(
             "before_ui_detail",
             resource=self,
@@ -159,15 +167,15 @@ class RecordsUIResource(UIResource):
         return self._api_service.read(
             g.identity, resource_requestctx.view_args["pid_value"]
         )
-        
+
     def search_without_slash(self):
-        split_path=request.full_path.split("?",maxsplit=1)
-        path_with_slash=split_path[0]+"/"
+        split_path = request.full_path.split("?", maxsplit=1)
+        path_with_slash = split_path[0] + "/"
         if len(split_path) == 1:
             return redirect(path_with_slash, code=302)
         else:
-            return redirect(path_with_slash + '?' + split_path[1] , code=302)
-        
+            return redirect(path_with_slash + "?" + split_path[1], code=302)
+
     def search(self):
         template_def = self.get_template_def("search")
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
@@ -180,9 +188,9 @@ class RecordsUIResource(UIResource):
             api_config=self._api_service.config,
             identity=g.identity,
         )
-        
-        extra_context=dict()
-        
+
+        extra_context = dict()
+
         self.run_components(
             "before_ui_search",
             resource=self,
@@ -194,7 +202,7 @@ class RecordsUIResource(UIResource):
             ui_resource=self,
             layout=layout,
             component_key="search",
-            extra_context=extra_context
+            extra_context=extra_context,
         )
 
         search_config = partial(self.config.search_app_config, **search_options)
@@ -205,7 +213,7 @@ class RecordsUIResource(UIResource):
             ui_resource=self,
             layout=layout,
             component_key="search",
-            **extra_context
+            **extra_context,
         )
 
     @request_read_args
@@ -240,6 +248,85 @@ class RecordsUIResource(UIResource):
 
     def get_template_def(self, template_type):
         return self.config.templates[template_type]
+
+    # TODO: !IMPORTANT!: must be enabled before any production usage
+    # @login_required
+    @request_read_args
+    @request_view_args
+    def edit(self):
+        record = self._get_record(resource_requestctx)
+        data = record.to_dict()
+        serialized_record = self.config.ui_serializer.dump_obj(record.to_dict())
+        layout = current_oarepo_ui.get_layout(self.get_layout_name())
+        forms_config = (
+            self.config.form_config(
+                updateUrl=record.links.get("self", None),
+            ),
+        )
+
+        self.run_components(
+            "before_ui_edit",
+            layout=layout,
+            resource=self,
+            record=serialized_record,
+            data=data,
+            forms_config=forms_config,
+            identity=g.identity,
+        )
+        template_def = self.get_template_def("edit")
+        template = current_oarepo_ui.get_template(
+            template_def["layout"], template_def.get("blocks", {})
+        )
+
+        return render_template(
+            template,
+            record=serialized_record,
+            data=data,
+            ui=serialized_record.get("ui", serialized_record),
+            ui_config=self.config,
+            ui_resource=self,
+            forms_config=forms_config,
+            layout=layout,
+            component_key="edit",
+        )
+
+    # TODO: !IMPORTANT!: needs to be enabled before production deployment
+    # @login_required
+    @request_read_args
+    @request_view_args
+    def create(self):
+        empty_record = self.new_record()
+        layout = current_oarepo_ui.get_layout(self.get_layout_name())
+        forms_config = self.config.form_config(
+            # TODO: use api service create link when available
+            createUrl=f"/api{self._api_service.config.url_prefix}",
+        )
+
+        self.run_components(
+            "before_ui_create",
+            layout=layout,
+            resource=self,
+            record=empty_record,
+            data=empty_record,
+            forms_config=forms_config,
+            identity=g.identity,
+        )
+        template_def = self.get_template_def("create")
+        template = current_oarepo_ui.get_template(
+            template_def["layout"], template_def.get("blocks", {})
+        )
+
+        return render_template(
+            template,
+            record=empty_record,
+            data=empty_record,
+            ui=empty_record.get("ui", empty_record),
+            ui_config=self.config,
+            ui_resource=self,
+            layout=layout,
+            component_key="create",
+            forms_config=forms_config
+        )
 
     @property
     def _api_service(self):
