@@ -1,32 +1,27 @@
 from functools import partial
 
-from flask import g, render_template, abort, request, redirect
+from flask import abort, g, redirect, render_template, request
 from flask_resources import (
     Resource,
-    route,
-    resource_requestctx,
     from_conf,
     request_parser,
+    resource_requestctx,
+    route,
 )
-from invenio_records_resources.resources import (
-    RecordResourceConfig,
-)
+from invenio_base.utils import obj_or_import_string
+from invenio_records_resources.proxies import current_service_registry
+from invenio_records_resources.resources import RecordResourceConfig
 from invenio_records_resources.resources.records.resource import (
     request_read_args,
     request_view_args,
 )
 from invenio_records_resources.services import RecordService
 
-from .config import UIResourceConfig, RecordsUIResourceConfig
-
-from invenio_records_resources.proxies import current_service_registry
-
-from invenio_base.utils import obj_or_import_string
-
 #
 # Resource
 #
 from ..proxies import current_oarepo_ui
+from .config import RecordsUIResourceConfig, UIResourceConfig
 
 request_export_args = request_parser(
     from_conf("request_export_args"), location="view_args"
@@ -77,16 +72,15 @@ class RecordsUIResource(UIResource):
     def create_url_rules(self):
         """Create the URL rules for the record resource."""
         routes = self.config.routes
-        search_route=routes["search"]
+        search_route = routes["search"]
         if not search_route.endswith("/"):
-            search_route+="/"
+            search_route += "/"
         search_route_without_slash = search_route[:-1]
         return [
             route("GET", routes["export"], self.export),
             route("GET", routes["detail"], self.detail),
             route("GET", search_route, self.search),
             route("GET", search_route_without_slash, self.search_without_slash),
-
         ]
 
     def as_blueprint(self, **options):
@@ -116,7 +110,7 @@ class RecordsUIResource(UIResource):
                     v = f"/api{self._api_service.config.url_prefix}{v}"
                     serialized_record["links"][k] = v
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
-        extra_context=dict()
+        extra_context = dict()
         self.run_components(
             "before_ui_detail",
             resource=self,
@@ -159,15 +153,15 @@ class RecordsUIResource(UIResource):
         return self._api_service.read(
             g.identity, resource_requestctx.view_args["pid_value"]
         )
-        
+
     def search_without_slash(self):
-        split_path=request.full_path.split("?",maxsplit=1)
-        path_with_slash=split_path[0]+"/"
+        split_path = request.full_path.split("?", maxsplit=1)
+        path_with_slash = split_path[0] + "/"
         if len(split_path) == 1:
             return redirect(path_with_slash, code=302)
         else:
-            return redirect(path_with_slash + '?' + split_path[1] , code=302)
-        
+            return redirect(path_with_slash + "?" + split_path[1], code=302)
+
     def search(self):
         template_def = self.get_template_def("search")
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
@@ -180,9 +174,9 @@ class RecordsUIResource(UIResource):
             api_config=self._api_service.config,
             identity=g.identity,
         )
-        
-        extra_context=dict()
-        
+
+        extra_context = dict()
+
         self.run_components(
             "before_ui_search",
             resource=self,
@@ -194,7 +188,7 @@ class RecordsUIResource(UIResource):
             ui_resource=self,
             layout=layout,
             component_key="search",
-            extra_context=extra_context
+            extra_context=extra_context,
         )
 
         search_config = partial(self.config.search_app_config, **search_options)
@@ -205,7 +199,7 @@ class RecordsUIResource(UIResource):
             ui_resource=self,
             layout=layout,
             component_key="search",
-            **extra_context
+            **extra_context,
         )
 
     @request_read_args

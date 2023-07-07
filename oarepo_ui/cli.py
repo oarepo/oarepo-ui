@@ -1,10 +1,12 @@
-from oarepo_runtime.cli import oarepo
-from flask.cli import with_appcontext
-from oarepo_ui.proxies import current_oarepo_ui
-import click
-from pathlib import Path
-import sys
 import json as json_lib
+import sys
+from pathlib import Path
+
+import click
+from flask.cli import with_appcontext
+from oarepo_runtime.cli import oarepo
+
+from oarepo_ui.proxies import current_oarepo_ui
 
 
 @oarepo.group("ui")
