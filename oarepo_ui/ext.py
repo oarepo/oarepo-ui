@@ -40,7 +40,7 @@ class OARepoUIState:
         return layouts
 
     def init_builder_plugin(self):
-        if self.app.config["DEVELOPMENT_MODE"]:
+        if self.app.config["OAREPO_UI_DEVELOPMENT_MODE"]:
             self.app.after_request(self.development_after_request)
 
     def development_after_request(self, response: Response):
