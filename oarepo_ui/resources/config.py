@@ -1,12 +1,13 @@
 import inspect
 from pathlib import Path
-from flask import current_app
-from flask_resources import ResourceConfig
-import marshmallow as ma
 
+from flask import current_app
+import marshmallow as ma
+from flask_resources import ResourceConfig
 from invenio_i18n.ext import current_i18n
+
 from invenio_base.utils import obj_or_import_string
-from invenio_search_ui.searchconfig import SortConfig, FacetsConfig, SearchAppConfig
+from invenio_search_ui.searchconfig import FacetsConfig, SearchAppConfig, SortConfig
 
 
 def _(x):

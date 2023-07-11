@@ -1,32 +1,27 @@
 from functools import partial
 
-from flask import g, render_template, abort, request, redirect
+from flask import abort, g, redirect, render_template, request
 from flask_resources import (
     Resource,
-    route,
-    resource_requestctx,
     from_conf,
     request_parser,
+    resource_requestctx,
+    route,
 )
-from invenio_records_resources.resources import (
-    RecordResourceConfig,
-)
+from invenio_base.utils import obj_or_import_string
+from invenio_records_resources.proxies import current_service_registry
+from invenio_records_resources.resources import RecordResourceConfig
 from invenio_records_resources.resources.records.resource import (
     request_read_args,
     request_view_args,
 )
 from invenio_records_resources.services import RecordService
 
-from .config import UIResourceConfig, RecordsUIResourceConfig
-
-from invenio_records_resources.proxies import current_service_registry
-
-from invenio_base.utils import obj_or_import_string
-
 #
 # Resource
 #
 from ..proxies import current_oarepo_ui
+from .config import RecordsUIResourceConfig, UIResourceConfig
 
 request_export_args = request_parser(
     from_conf("request_export_args"), location="view_args"

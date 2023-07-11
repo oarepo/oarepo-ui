@@ -1,26 +1,14 @@
 import functools
-from pathlib import Path
+import json
 import re
-from typing import Dict
-from flask.globals import _app_ctx_stack
-from flask.templating import _render
-from jinja2 import nodes, pass_context
-from jinja2.ext import Extension
-
-from oarepo_ui.proxies import current_oarepo_ui
-from oarepo_ui.utils import n2w
-from jinja2.utils import htmlsafe_json_dumps
-import markupsafe
+from pathlib import Path
 
 from frozendict import frozendict
-from lxml import etree
-from jinja2 import Environment
-from jinja2.loaders import BaseLoader
-from jinja2.runtime import Context
-from jinja2.environment import TemplateModule
 from invenio_records.dictutils import dict_lookup
+from jinja2 import Environment
+from jinja2.environment import TemplateModule
+from jinja2.loaders import BaseLoader
 from markupsafe import escape
-import json
 
 
 class RegistryLoader(BaseLoader):

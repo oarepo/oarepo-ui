@@ -1,5 +1,5 @@
-from oarepo_ui.resources.templating import TemplateRegistry
-from flask import render_template_string
+from oarepo_ui.resources.templating import TemplateRegistry # noqa
+from flask import render_template_string # noqa
 import re
 
 
