@@ -3,7 +3,7 @@ export { ActiveFiltersElement } from "./ActiveFiltersElement";
 export { BucketAggregationElement } from "./BucketAggregationElement";
 export { BucketAggregationValuesElement } from "./BucketAggregationValuesElement";
 
-export { ResultCountWithState } from "./CountElement";
+export { ResultCountWithState, ResultCount } from "./ResultCount";
 export { ErrorElement } from "./ErrorElement";
 
 export { SearchAppFacets } from "./SearchAppFacets";

@@ -6,7 +6,7 @@ import { withState, buildUID as searchkitUID } from "react-searchkit";
 import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
 import Overridable from "react-overridable";
 
-export const CountElement = ({ totalResults }) => {
+const CountElement = ({ totalResults }) => {
   return (
     <Label size="large">
       {i18next.t("totalResults", { count: totalResults })}
@@ -14,7 +14,7 @@ export const CountElement = ({ totalResults }) => {
   );
 };
 
-const ResultCount = ({ currentResultsState = {} }) => {
+export const ResultCount = ({ currentResultsState = {} }) => {
   const { total } = currentResultsState.data;
   const { loading } = currentResultsState;
   // determine if we are in searchApp context or pure searchkit
