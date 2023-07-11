@@ -6,7 +6,7 @@ import { withState, buildUID as searchkitUID } from "react-searchkit";
 import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
 import Overridable from "react-overridable";
 
-const CountElement = ({ totalResults }) => {
+export const CountElement = ({ totalResults }) => {
   return (
     <Label size="large">
       {i18next.t("totalResults", { count: totalResults })}
