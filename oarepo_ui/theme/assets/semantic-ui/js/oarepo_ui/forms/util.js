@@ -5,6 +5,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { getInputFromDOM } from "@js/oarepo_ui";
 import { FormConfigProvider } from "./contexts";
+import { Container } from 'semantic-ui-react'
 
 import Overridable, {
     OverridableContext,
@@ -29,9 +30,9 @@ export function createFormAppInit (
         const recordPermissions = getInputFromDOM('record-permissions')
 
         console.debug('Initializing Formik form app...')
-        console.debug('[record]:', vocabularyRecord, '\n[formConfig]', formConfig, '\n[recordPermissions]', recordPermissions)
+        console.debug('[record]:', record, '\n[formConfig]', formConfig, '\n[recordPermissions]', recordPermissions)
 
-        loadComponents(appId, defaultComponents).then((res) => {
+        loadComponents('', defaultComponents).then((res) => {
             ReactDOM.render(
                 <ContainerComponent>
                     <OverridableContext.Provider value={overrideStore.getAll()}>

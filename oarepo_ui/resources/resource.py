@@ -260,6 +260,7 @@ class RecordsUIResource(UIResource):
             updateUrl=record.links.get("self", None)
         )
 
+        extra_context = dict()
         self.run_components(
             "before_ui_edit",
             layout=layout,
@@ -269,7 +270,8 @@ class RecordsUIResource(UIResource):
             form_config=form_config,
             args=resource_requestctx.args,
             view_args=resource_requestctx.view_args,
-            identity=g.identity
+            identity=g.identity,
+            extra_context=extra_context
         )
         template_def = self.get_template_def("edit")
         template = current_oarepo_ui.get_template(
@@ -285,7 +287,8 @@ class RecordsUIResource(UIResource):
             ui_resource=self,
             form_config=form_config,
             layout=layout,
-            component_key="edit"
+            component_key="edit",
+            extra_context=extra_context
         )
 
     # TODO: !IMPORTANT!: needs to be enabled before production deployment
@@ -299,6 +302,7 @@ class RecordsUIResource(UIResource):
             # TODO: use api service create link when available
             createUrl=f"/api{self._api_service.config.url_prefix}",
         )
+        extra_context = dict()
 
         self.run_components(
             "before_ui_create",
@@ -310,6 +314,7 @@ class RecordsUIResource(UIResource):
             args=resource_requestctx.args,
             view_args=resource_requestctx.view_args,
             identity=g.identity,
+            extra_context=extra_context
         )
         template_def = self.get_template_def("create")
         template = current_oarepo_ui.get_template(
@@ -326,6 +331,7 @@ class RecordsUIResource(UIResource):
             layout=layout,
             component_key="create",
             form_config=form_config,
+            extra_context=extra_context
         )
 
     @property
