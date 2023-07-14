@@ -76,12 +76,24 @@ class RecordsUIResource(UIResource):
         if not search_route.endswith("/"):
             search_route += "/"
         search_route_without_slash = search_route[:-1]
-        return [
+        routes = [
             route("GET", routes["export"], self.export),
             route("GET", routes["detail"], self.detail),
             route("GET", search_route, self.search),
             route("GET", search_route_without_slash, self.search_without_slash),
         ]
+        if 'create' in routes:
+            routes += route("GET", routes["create"], self.create)
+        if 'edit' in routes:
+            routes += route("GET", routes["edit"], self.edit)
+        return routes
+
+    def new_record(self):
+        """Create an empty record with default values."""
+        record = dump_empty(self._api_service.config.schema)
+        record["files"] = {"enabled": False}
+        record["pids"] = {}
+        return record
 
     def as_blueprint(self, **options):
         blueprint = super().as_blueprint(**options)
@@ -234,6 +246,93 @@ class RecordsUIResource(UIResource):
 
     def get_template_def(self, template_type):
         return self.config.templates[template_type]
+
+    # TODO: !IMPORTANT!: must be enabled before any production usage
+    # @login_required
+    @request_read_args
+    @request_view_args
+    def edit(self):
+        record = self._get_record(resource_requestctx)
+        data = record.to_dict()
+        serialized_record = self.config.ui_serializer.dump_obj(record.to_dict())
+        layout = current_oarepo_ui.get_layout(self.get_layout_name())
+        form_config = self.config.form_config(
+            updateUrl=record.links.get("self", None)
+        )
+
+        extra_context = dict()
+        self.run_components(
+            "before_ui_edit",
+            layout=layout,
+            resource=self,
+            record=serialized_record,
+            data=data,
+            form_config=form_config,
+            args=resource_requestctx.args,
+            view_args=resource_requestctx.view_args,
+            identity=g.identity,
+            extra_context=extra_context
+        )
+        template_def = self.get_template_def("edit")
+        template = current_oarepo_ui.get_template(
+            template_def["layout"], template_def.get("blocks", {})
+        )
+
+        return render_template(
+            template,
+            record=serialized_record,
+            data=data,
+            ui=serialized_record.get("ui", serialized_record),
+            ui_config=self.config,
+            ui_resource=self,
+            form_config=form_config,
+            layout=layout,
+            component_key="edit",
+            extra_context=extra_context
+        )
+
+    # TODO: !IMPORTANT!: needs to be enabled before production deployment
+    # @login_required
+    @request_read_args
+    @request_view_args
+    def create(self):
+        empty_record = self.new_record()
+        layout = current_oarepo_ui.get_layout(self.get_layout_name())
+        form_config = self.config.form_config(
+            # TODO: use api service create link when available
+            createUrl=f"/api{self._api_service.config.url_prefix}",
+        )
+        extra_context = dict()
+
+        self.run_components(
+            "before_ui_create",
+            layout=layout,
+            resource=self,
+            record=empty_record,
+            data=empty_record,
+            form_config=form_config,
+            args=resource_requestctx.args,
+            view_args=resource_requestctx.view_args,
+            identity=g.identity,
+            extra_context=extra_context
+        )
+        template_def = self.get_template_def("create")
+        template = current_oarepo_ui.get_template(
+            template_def["layout"], template_def.get("blocks", {})
+        )
+
+        return render_template(
+            template,
+            record=empty_record,
+            data=empty_record,
+            ui=empty_record.get("ui", empty_record),
+            ui_config=self.config,
+            ui_resource=self,
+            layout=layout,
+            component_key="create",
+            form_config=form_config,
+            extra_context=extra_context
+        )
 
     @property
     def _api_service(self):

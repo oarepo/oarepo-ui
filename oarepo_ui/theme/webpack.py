@@ -28,6 +28,7 @@ theme = WebpackThemeBundle(
             entry={
                 "oarepo_ui": "./js/oarepo_ui/index.js",
                 "oarepo_ui_search": "./js/oarepo_ui/search/index.js",
+                "oarepo_ui_forms": "./js/oarepo_ui/forms/index.js",
             },
             dependencies={
                 "@babel/runtime": "^7.9.0",

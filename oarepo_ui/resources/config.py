@@ -1,8 +1,11 @@
 import inspect
 from pathlib import Path
 
+from flask import current_app
 import marshmallow as ma
 from flask_resources import ResourceConfig
+from invenio_i18n.ext import current_i18n
+
 from invenio_base.utils import obj_or_import_string
 from invenio_search_ui.searchconfig import FacetsConfig, SearchAppConfig, SortConfig
 
@@ -41,7 +44,9 @@ class UIResourceConfig(ResourceConfig):
 class RecordsUIResourceConfig(UIResourceConfig):
     routes = {
         "search": "",
+        "create": "/_new",
         "detail": "/<pid_value>",
+        "edit": "/<pid_value>/edit",
         "export": "/<pid_value>/export/<export_format>",
     }
     request_view_args = {"pid_value": ma.fields.Str()}
@@ -53,15 +58,13 @@ class RecordsUIResourceConfig(UIResourceConfig):
     api_service = None
     templates = {
         "detail": {
-            "layout": "add-your-own-detail-template-to-site-or-ui-application.html.jinja2",
-            "blocks": {},
+            "layout": "oarepo_ui/detail.html",
         },
         "search": {
-            "layout": "add-your-own-search-template-to-site-or-ui-application.html.jinja2"
+            "layout": "oarepo_ui/search.html",
         },
-        "edit": {
-            "layout": "add-your-own-edit-template-to-site-or-ui-application.html.jinja2"
-        },
+        "edit": {"layout": "oarepo_ui/form.html"},
+        "create": {"layout": "oarepo_ui/form.html"},
     }
     layout = "sample"
 
@@ -136,3 +139,22 @@ class RecordsUIResourceConfig(UIResourceConfig):
             "ui_endpoint": self.url_prefix,
         }
         return SearchAppConfig.generate(opts, **overrides)
+
+    @property
+    def custom_fields(self):
+        # TODO: currently used by forms only, implement custom fields loading
+        return {
+            "ui": {},
+        }
+
+    def form_config(self, **kwargs):
+        """Get the react form configuration."""
+        conf = current_app.config
+
+        return dict(
+            current_locale=str(current_i18n.locale),
+            default_locale=conf.get("BABEL_DEFAULT_LOCALE", "en"),
+            links=dict(),
+            custom_fields=self.custom_fields,
+            **kwargs,
+        )

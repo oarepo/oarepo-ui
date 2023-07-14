@@ -1,0 +1,15 @@
+{%- extends config.BASE_TEMPLATE %}
+{%- set title = _("Search results") %}
+
+{%- block javascript %}
+{{ super() }}
+{# {{ webpack['your-searchapp-entrypoint-here.js'] }} #}
+{%- endblock %}
+
+{%- block page_body %}
+<div class="ui main container">
+    {%- block searchapp_root %}
+    <div data-invenio-search-config="{}"></div>
+    {%- endblock %}
+</div>
+{%- endblock page_body %}

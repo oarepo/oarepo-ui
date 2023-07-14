@@ -1,3 +1,8 @@
+from marshmallow import Schema, fields
+from marshmallow.schema import SchemaMeta
+from marshmallow_utils.fields import NestedAttribute
+
+
 num2words = {
     1: "one",
     2: "two",
@@ -38,3 +43,24 @@ def n2w(n):
             return num2words[n - n % 10] + num2words[n % 10].lower()
         except KeyError:
             raise AttributeError("Number out of range")
+
+
+def dump_empty(schema_or_field):
+    """Return a full json-compatible dict of schema representation with empty values."""
+    if isinstance(schema_or_field, (Schema,)):
+        schema = schema_or_field
+        return {k: dump_empty(v) for (k, v) in schema.fields.items()}
+    if isinstance(schema_or_field, SchemaMeta):
+        # Nested fields can pass a Schema class (SchemaMeta)
+        # or a Schema instance.
+        # Schema classes need to be instantiated to get .fields
+        schema = schema_or_field()
+        return {k: dump_empty(v) for (k, v) in schema.fields.items()}
+    if isinstance(schema_or_field, fields.List):
+        field = schema_or_field
+        return [dump_empty(field.inner)]
+    if isinstance(schema_or_field, NestedAttribute):
+        field = schema_or_field
+        return dump_empty(field.nested)
+
+    return None
