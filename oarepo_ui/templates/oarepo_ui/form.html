@@ -33,7 +33,7 @@
         {%- if record %}
         <input id="record" type="hidden" name="record" value='{{data | tojson }}' />
         {%- endif %}
-        {%- if forms_config %}
+        {%- if form_config %}
         <input type="hidden" name="form-config" value='{{form_config | tojson }}' />
         {%- endif %}
         {%- if permissions %}
