@@ -16,19 +16,59 @@ import { ResultOptions } from "@js/invenio_search_ui/components/Results";
 
 const ResultOptionsWithState = withState(ResultOptions);
 
-export const SearchAppLayout = ({ config }) => {
+export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
   const [sidebarVisible, setSidebarVisible] = React.useState(false);
   const { appName, buildUID } = useContext(SearchConfigurationContext);
   const facetsAvailable = !_isEmpty(config.aggs);
-  const columnsAmount = facetsAvailable ? 2 : 1;
-  const resultsPaneLayoutFacets = {
-    mobile: 16,
-    tablet: 16,
-    computer: 12,
-    largeScreen: 13,
-    widescreen: 13,
-    width: undefined,
-  };
+
+  let columnsAmount;
+  let resultsPaneLayoutFacets;
+
+  if (facetsAvailable) {
+    if (hasButtonSidebar) {
+      columnsAmount = 3;
+      resultsPaneLayoutFacets = {
+        mobile: 16,
+        tablet: 16,
+        computer: 10,
+        largeScreen: 10,
+        widescreen: 10,
+        width: undefined,
+      };
+    } else {
+      columnsAmount = 2;
+      resultsPaneLayoutFacets = {
+        mobile: 16,
+        tablet: 16,
+        computer: 13,
+        largeScreen: 13,
+        widescreen: 13,
+        width: undefined,
+      };
+    }
+  } else {
+    if (hasButtonSidebar) {
+      columnsAmount = 2;
+      resultsPaneLayoutFacets = {
+        mobile: 16,
+        tablet: 16,
+        computer: 13,
+        largeScreen: 13,
+        widescreen: 13,
+        width: undefined,
+      };
+    } else {
+      columnsAmount = 1;
+      resultsPaneLayoutFacets = {
+        mobile: 16,
+        tablet: 16,
+        computer: 16,
+        largeScreen: 16,
+        widescreen: 16,
+        width: undefined,
+      };
+    }
+  }
 
   const resultsSortLayoutFacets = {
     mobile: 14,
@@ -61,8 +101,14 @@ export const SearchAppLayout = ({ config }) => {
           </Grid.Row>
         </Grid>
       </Overridable>
-      <Grid relaxed celled="internally" className="search-app rel-mt-2">
+      <Grid
+        columns={columnsAmount}
+        relaxed
+        celled="internally"
+        className="search-app rel-mt-2"
+      >
         <Grid.Row
+          stretched
           textAlign="left"
           columns={columnsAmount}
           className="result-options"
@@ -89,7 +135,7 @@ export const SearchAppLayout = ({ config }) => {
               </Grid.Column>
             </>
           )}
-          <Grid.Column {...resultSortLayout} floated="left">
+          <Grid.Column {...resultSortLayout}>
             <ResultOptionsWithState />
           </Grid.Column>
         </Grid.Row>
@@ -118,6 +164,19 @@ export const SearchAppLayout = ({ config }) => {
               buildUID={buildUID}
             />
           </Grid.Column>
+          {hasButtonSidebar && (
+            <Grid.Column
+              mobile={3}
+              tablet={3}
+              computer={3}
+              largeScreen={3}
+              widescreen={3}
+            >
+              <Overridable
+                id={buildUID("SearchApp.buttonSidebarContainer", "", appName)}
+              ></Overridable>
+            </Grid.Column>
+          )}
         </Grid.Row>
       </Grid>
     </Container>

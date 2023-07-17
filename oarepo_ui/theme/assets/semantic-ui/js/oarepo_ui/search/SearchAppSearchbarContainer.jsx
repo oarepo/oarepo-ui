@@ -5,10 +5,9 @@ import { SearchBar } from "@js/invenio_search_ui/components";
 import { buildUID } from "react-searchkit";
 
 export const SearchAppSearchbarContainer = ({ appName }) => {
-  console.log("searcdadadah bar");
   return (
     <Overridable id={buildUID("SearchApp.searchbar", "", appName)}>
-      <SearchBar elementId="" buildUID={buildUID} />
+      <SearchBar buildUID={buildUID} />
     </Overridable>
   );
 };
