@@ -7,6 +7,7 @@ export const useFormConfig = () => {
     if (!context) {
         throw new Error('useFormConfig must be used inside FormConfigContext.Provider')
     }
+    return context
 }
 
 export const FormConfigProvider = ({children, value}) => {
