@@ -21,8 +21,7 @@
 {%- block page_body %}
 <div class="ui main container">
   <div class="ui relaxed grid">
-    <div class="two column row">
-      
+    <div class="one column row">
       {# Main form content #}
       <div class="column">
       {%- block form_main_content %}
@@ -43,15 +42,6 @@
         <div id="form-app"></div>
       {%- endblock form_main_content -%}
       </div>
-      
-      {# Form actions sidebar #}
-      <aside
-        class="sixteen wide tablet four wide computer column sidebar"
-        aria-label="{{ _('Form actions') }}"
-      >
-        {% block form_sidebar %}
-        {% endblock form_sidebar %}
-      </aside>
     </div>
   </div>
 </div>
