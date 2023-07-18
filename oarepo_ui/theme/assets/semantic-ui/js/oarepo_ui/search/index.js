@@ -14,4 +14,3 @@ export { SearchAppSort } from "./SearchAppSort";
 export { SearchFiltersToggleElement } from "./SearchFiltersToggleElement";
 export { SearchAppResults } from "./SearchAppResults";
 export { EmptyResultsElement } from "./EmptyResultsElement";
-export { SearchAppSearchBar } from "./SearchAppSearchBar";
