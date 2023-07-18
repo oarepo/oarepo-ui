@@ -87,7 +87,6 @@ class RecordsUIResource(UIResource):
             routes += [route("GET", route_config["create"], self.create)]
         if 'edit' in route_config:
             routes += [route("GET", route_config["edit"], self.edit)]
-            print("AAA", route_config, routes)
         return routes
 
     def new_record(self):
