@@ -89,15 +89,17 @@ class RecordsUIResource(UIResource):
             routes += [route("GET", route_config["edit"], self.edit)]
         return routes
 
-    def new_record(self):
+    def empty_record(self, resource_requestctx, **kwargs):
         """Create an empty record with default values."""
         record = dump_empty(self.api_config.schema)
         files_field = getattr(self.api_config.record_cls, "files", None)
         if files_field and isinstance(files_field, FilesField):
             record["files"] = {"enabled": False}
-        return deepmerge.always_merger.merge(
+        record = deepmerge.always_merger.merge(
             record, copy.deepcopy(self.config.empty_record)
         )
+        self.run_components("empty_record", resource_requestctx=resource_requestctx, record=record)
+        return record
 
     def as_blueprint(self, **options):
         blueprint = super().as_blueprint(**options)
@@ -298,7 +300,7 @@ class RecordsUIResource(UIResource):
     @request_read_args
     @request_view_args
     def create(self):
-        empty_record = self.new_record()
+        empty_record = self.empty_record(resource_requestctx)
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
         form_config = self.config.form_config(
             # TODO: use api service create link when available
