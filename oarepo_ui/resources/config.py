@@ -157,6 +157,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
         return dict(
             current_locale=str(current_i18n.locale),
+            locales=[{"code": l.language, "name": l.get_display_name()} for l in current_i18n.get_locales()],
             default_locale=conf.get("BABEL_DEFAULT_LOCALE", "en"),
             links=dict(),
             custom_fields=self.custom_fields,
