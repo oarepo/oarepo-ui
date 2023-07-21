@@ -1,5 +1,7 @@
+import copy
 from functools import partial
 
+import deepmerge
 from flask import abort, g, redirect, render_template, request
 from flask_resources import (
     Resource,
@@ -10,12 +12,12 @@ from flask_resources import (
 )
 from invenio_base.utils import obj_or_import_string
 from invenio_records_resources.proxies import current_service_registry
-from invenio_records_resources.resources import RecordResourceConfig
+from invenio_records_resources.records.systemfields import FilesField
 from invenio_records_resources.resources.records.resource import (
     request_read_args,
     request_view_args,
 )
-from invenio_records_resources.services import RecordService
+
 from oarepo_ui.utils import dump_empty
 
 #
@@ -63,8 +65,6 @@ class UIResource(Resource):
 
 class RecordsUIResource(UIResource):
     config: RecordsUIResourceConfig
-    api_config: RecordResourceConfig
-    service: RecordService
 
     def __init__(self, config=None):
         """Constructor."""
@@ -83,18 +83,21 @@ class RecordsUIResource(UIResource):
             route("GET", search_route, self.search),
             route("GET", search_route_without_slash, self.search_without_slash),
         ]
-        if 'create' in route_config:
+        if "create" in route_config:
             routes += [route("GET", route_config["create"], self.create)]
-        if 'edit' in route_config:
+        if "edit" in route_config:
             routes += [route("GET", route_config["edit"], self.edit)]
         return routes
 
     def new_record(self):
         """Create an empty record with default values."""
-        record = dump_empty(self._api_service.config.schema)
-        record["files"] = {"enabled": False}
-        record["pids"] = {}
-        return record
+        record = dump_empty(self.api_config.schema)
+        files_field = getattr(self.api_config.record_cls, "files", None)
+        if files_field and isinstance(files_field, FilesField):
+            record["files"] = {"enabled": False}
+        return deepmerge.always_merger.merge(
+            record, copy.deepcopy(self.config.empty_record)
+        )
 
     def as_blueprint(self, **options):
         blueprint = super().as_blueprint(**options)
@@ -120,7 +123,7 @@ class RecordsUIResource(UIResource):
                 if not isinstance(v, str):
                     continue
                 if not v.startswith("/") and not v.startswith("https://"):
-                    v = f"/api{self._api_service.config.url_prefix}{v}"
+                    v = f"/api{self.api_service.config.url_prefix}{v}"
                     serialized_record["links"][k] = v
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
         extra_context = dict()
@@ -163,7 +166,7 @@ class RecordsUIResource(UIResource):
         )
 
     def _get_record(self, resource_requestctx):
-        return self._api_service.read(
+        return self.api_service.read(
             g.identity, resource_requestctx.view_args["pid_value"]
         )
 
@@ -184,7 +187,7 @@ class RecordsUIResource(UIResource):
         )
 
         search_options = dict(
-            api_config=self._api_service.config,
+            api_config=self.api_service.config,
             identity=g.identity,
         )
 
@@ -257,9 +260,7 @@ class RecordsUIResource(UIResource):
         data = record.to_dict()
         serialized_record = self.config.ui_serializer.dump_obj(record.to_dict())
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
-        form_config = self.config.form_config(
-            updateUrl=record.links.get("self", None)
-        )
+        form_config = self.config.form_config(updateUrl=record.links.get("self", None))
 
         extra_context = dict()
         self.run_components(
@@ -272,7 +273,7 @@ class RecordsUIResource(UIResource):
             args=resource_requestctx.args,
             view_args=resource_requestctx.view_args,
             identity=g.identity,
-            extra_context=extra_context
+            extra_context=extra_context,
         )
         template_def = self.get_template_def("edit")
         template = current_oarepo_ui.get_template(
@@ -289,7 +290,7 @@ class RecordsUIResource(UIResource):
             form_config=form_config,
             layout=layout,
             component_key="edit",
-            extra_context=extra_context
+            extra_context=extra_context,
         )
 
     # TODO: !IMPORTANT!: needs to be enabled before production deployment
@@ -301,7 +302,7 @@ class RecordsUIResource(UIResource):
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
         form_config = self.config.form_config(
             # TODO: use api service create link when available
-            createUrl=f"/api{self._api_service.config.url_prefix}",
+            createUrl=f"/api{self.api_service.config.url_prefix}",
         )
         extra_context = dict()
 
@@ -315,7 +316,7 @@ class RecordsUIResource(UIResource):
             args=resource_requestctx.args,
             view_args=resource_requestctx.view_args,
             identity=g.identity,
-            extra_context=extra_context
+            extra_context=extra_context,
         )
         template_def = self.get_template_def("create")
         template = current_oarepo_ui.get_template(
@@ -332,9 +333,14 @@ class RecordsUIResource(UIResource):
             layout=layout,
             component_key="create",
             form_config=form_config,
-            extra_context=extra_context
+            extra_context=extra_context,
         )
 
     @property
-    def _api_service(self):
+    def api_service(self):
+        print(current_service_registry._services)
         return current_service_registry.get(self.config.api_service)
+
+    @property
+    def api_config(self):
+        return self.api_service.config

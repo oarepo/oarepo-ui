@@ -1,12 +1,11 @@
 import inspect
 from pathlib import Path
 
-from flask import current_app
 import marshmallow as ma
+from flask import current_app
 from flask_resources import ResourceConfig
-from invenio_i18n.ext import current_i18n
-
 from invenio_base.utils import obj_or_import_string
+from invenio_i18n.ext import current_i18n
 from invenio_search_ui.searchconfig import FacetsConfig, SearchAppConfig, SortConfig
 
 
@@ -55,7 +54,10 @@ class RecordsUIResourceConfig(UIResourceConfig):
     app_contexts = None
     ui_serializer = None
     ui_serializer_class = None
+
     api_service = None
+    """Name of the API service as registered inside the service registry"""
+
     templates = {
         "detail": {
             "layout": "oarepo_ui/detail.html",
@@ -67,6 +69,8 @@ class RecordsUIResourceConfig(UIResourceConfig):
         "create": {"layout": "oarepo_ui/form.html"},
     }
     layout = "sample"
+
+    empty_record = {}
 
     @property
     def exports(self):
