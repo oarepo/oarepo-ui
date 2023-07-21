@@ -1,5 +1,5 @@
 def test_ui_resource_create_new(app, record_ui_resource):
-    assert record_ui_resource.new_record() == {
+    assert record_ui_resource.empty_record(None) == {
         "created": None,
         "description": None,
         "icon": None,
