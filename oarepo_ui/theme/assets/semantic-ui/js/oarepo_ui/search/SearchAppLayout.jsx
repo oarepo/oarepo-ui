@@ -166,8 +166,8 @@ export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
           </Grid.Column>
           {hasButtonSidebar && (
             <Grid.Column
-              mobile={3}
-              tablet={3}
+              mobile={16}
+              tablet={16}
               computer={3}
               largeScreen={3}
               widescreen={3}
