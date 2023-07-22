@@ -1,7 +1,9 @@
-from .resource import UIResource, RecordsUIResource
-from .config import UIResourceConfig, RecordsUIResourceConfig
+from .config import RecordsUIResourceConfig, UIResourceConfig
+from .resource import RecordsUIResource, UIResource
 
 __all__ = (
-"UIResource", "RecordsUIResource",
-"UIResourceConfig", "RecordsUIResourceConfig"
+    "UIResource",
+    "RecordsUIResource",
+    "UIResourceConfig",
+    "RecordsUIResourceConfig",
 )

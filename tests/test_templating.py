@@ -1,6 +1,8 @@
-from oarepo_ui.resources.templating import TemplateRegistry # noqa
-from flask import render_template_string # noqa
 import re
+
+from flask import render_template_string  # noqa
+
+from oarepo_ui.resources.templating import TemplateRegistry  # noqa
 
 
 def strip_ws(x):
