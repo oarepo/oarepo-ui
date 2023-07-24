@@ -91,6 +91,7 @@ export class ApiClient extends DepositApiClient {
   constructor(additionalApiConfig) {
     super(additionalApiConfig);
   }
+
   async _createResponse(axiosRequest) {
     try {
       const response = await axiosRequest();
@@ -98,7 +99,8 @@ export class ApiClient extends DepositApiClient {
       return data;
     } catch (error) {
       const errorData = error.response.data;
-      return errorData;
+      console.log(errorData);
+      return Promise.reject(errorData);
     }
   }
 
