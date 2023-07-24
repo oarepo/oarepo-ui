@@ -1,5 +1,7 @@
+import copy
 from functools import partial
 
+import deepmerge
 from flask import abort, g, redirect, render_template, request
 from flask_resources import (
     Resource,
@@ -10,12 +12,15 @@ from flask_resources import (
 )
 from invenio_base.utils import obj_or_import_string
 from invenio_records_resources.proxies import current_service_registry
-from invenio_records_resources.resources import RecordResourceConfig
+from invenio_records_resources.records.systemfields import FilesField
 from invenio_records_resources.resources.records.resource import (
     request_read_args,
     request_view_args,
 )
+<<<<<<< HEAD
 from invenio_records_resources.services import RecordService
+=======
+>>>>>>> origin/main
 
 from oarepo_ui.utils import dump_empty
 
@@ -64,8 +69,6 @@ class UIResource(Resource):
 
 class RecordsUIResource(UIResource):
     config: RecordsUIResourceConfig
-    api_config: RecordResourceConfig
-    service: RecordService
 
     def __init__(self, config=None):
         """Constructor."""
@@ -90,11 +93,16 @@ class RecordsUIResource(UIResource):
             routes += [route("GET", route_config["edit"], self.edit)]
         return routes
 
-    def new_record(self):
+    def empty_record(self, resource_requestctx, **kwargs):
         """Create an empty record with default values."""
-        record = dump_empty(self._api_service.config.schema)
-        record["files"] = {"enabled": False}
-        record["pids"] = {}
+        record = dump_empty(self.api_config.schema)
+        files_field = getattr(self.api_config.record_cls, "files", None)
+        if files_field and isinstance(files_field, FilesField):
+            record["files"] = {"enabled": False}
+        record = deepmerge.always_merger.merge(
+            record, copy.deepcopy(self.config.empty_record)
+        )
+        self.run_components("empty_record", resource_requestctx=resource_requestctx, record=record)
         return record
 
     def as_blueprint(self, **options):
@@ -121,7 +129,7 @@ class RecordsUIResource(UIResource):
                 if not isinstance(v, str):
                     continue
                 if not v.startswith("/") and not v.startswith("https://"):
-                    v = f"/api{self._api_service.config.url_prefix}{v}"
+                    v = f"/api{self.api_service.config.url_prefix}{v}"
                     serialized_record["links"][k] = v
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
         extra_context = dict()
@@ -164,7 +172,7 @@ class RecordsUIResource(UIResource):
         )
 
     def _get_record(self, resource_requestctx):
-        return self._api_service.read(
+        return self.api_service.read(
             g.identity, resource_requestctx.view_args["pid_value"]
         )
 
@@ -185,7 +193,7 @@ class RecordsUIResource(UIResource):
         )
 
         search_options = dict(
-            api_config=self._api_service.config,
+            api_config=self.api_service.config,
             identity=g.identity,
         )
 
@@ -296,11 +304,11 @@ class RecordsUIResource(UIResource):
     @request_read_args
     @request_view_args
     def create(self):
-        empty_record = self.new_record()
+        empty_record = self.empty_record(resource_requestctx)
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
         form_config = self.config.form_config(
             # TODO: use api service create link when available
-            createUrl=f"/api{self._api_service.config.url_prefix}",
+            createUrl=f"/api{self.api_service.config.url_prefix}",
         )
         extra_context = dict()
 
@@ -335,5 +343,10 @@ class RecordsUIResource(UIResource):
         )
 
     @property
-    def _api_service(self):
+    def api_service(self):
+        print(current_service_registry._services)
         return current_service_registry.get(self.config.api_service)
+
+    @property
+    def api_config(self):
+        return self.api_service.config

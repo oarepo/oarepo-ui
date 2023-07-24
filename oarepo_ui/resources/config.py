@@ -54,7 +54,10 @@ class RecordsUIResourceConfig(UIResourceConfig):
     app_contexts = None
     ui_serializer = None
     ui_serializer_class = None
+
     api_service = None
+    """Name of the API service as registered inside the service registry"""
+
     templates = {
         "detail": {
             "layout": "oarepo_ui/detail.html",
@@ -66,6 +69,8 @@ class RecordsUIResourceConfig(UIResourceConfig):
         "create": {"layout": "oarepo_ui/form.html"},
     }
     layout = "sample"
+
+    empty_record = {}
 
     @property
     def exports(self):
@@ -152,6 +157,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
         return dict(
             current_locale=str(current_i18n.locale),
+            locales=[{"code": l.language, "name": l.get_display_name()} for l in current_i18n.get_locales()],
             default_locale=conf.get("BABEL_DEFAULT_LOCALE", "en"),
             links=dict(),
             custom_fields=self.custom_fields,
