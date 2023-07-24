@@ -1,7 +1,5 @@
 import React from "react";
 import { RemoteSelectField } from "react-invenio-forms";
-import { useFormikContext } from "formik";
-import { useFormConfig } from "@js/oarepo_ui/forms";
 import PropTypes from "prop-types";
 
 // for testing purposes
@@ -22,9 +20,6 @@ export const SelectVocabularyItem = ({
   suggestionAPIHeaders,
   width,
 }) => {
-  const { record } = useFormConfig();
-  const { values } = useFormikContext();
-
   return (
     <RemoteSelectField
       clearable
