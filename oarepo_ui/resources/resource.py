@@ -16,6 +16,7 @@ from invenio_records_resources.resources.records.resource import (
     request_view_args,
 )
 from invenio_records_resources.services import RecordService
+
 from oarepo_ui.utils import dump_empty
 
 #
@@ -83,9 +84,9 @@ class RecordsUIResource(UIResource):
             route("GET", search_route, self.search),
             route("GET", search_route_without_slash, self.search_without_slash),
         ]
-        if 'create' in route_config:
+        if "create" in route_config:
             routes += [route("GET", route_config["create"], self.create)]
-        if 'edit' in route_config:
+        if "edit" in route_config:
             routes += [route("GET", route_config["edit"], self.edit)]
         return routes
 
@@ -257,9 +258,7 @@ class RecordsUIResource(UIResource):
         data = record.to_dict()
         serialized_record = self.config.ui_serializer.dump_obj(record.to_dict())
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
-        form_config = self.config.form_config(
-            updateUrl=record.links.get("self", None)
-        )
+        form_config = self.config.form_config(updateUrl=record.links.get("self", None))
 
         extra_context = dict()
         self.run_components(
@@ -272,7 +271,7 @@ class RecordsUIResource(UIResource):
             args=resource_requestctx.args,
             view_args=resource_requestctx.view_args,
             identity=g.identity,
-            extra_context=extra_context
+            extra_context=extra_context,
         )
         template_def = self.get_template_def("edit")
         template = current_oarepo_ui.get_template(
@@ -289,7 +288,7 @@ class RecordsUIResource(UIResource):
             form_config=form_config,
             layout=layout,
             component_key="edit",
-            extra_context=extra_context
+            extra_context=extra_context,
         )
 
     # TODO: !IMPORTANT!: needs to be enabled before production deployment
@@ -315,7 +314,7 @@ class RecordsUIResource(UIResource):
             args=resource_requestctx.args,
             view_args=resource_requestctx.view_args,
             identity=g.identity,
-            extra_context=extra_context
+            extra_context=extra_context,
         )
         template_def = self.get_template_def("create")
         template = current_oarepo_ui.get_template(
@@ -332,7 +331,7 @@ class RecordsUIResource(UIResource):
             layout=layout,
             component_key="create",
             form_config=form_config,
-            extra_context=extra_context
+            extra_context=extra_context,
         )
 
     @property

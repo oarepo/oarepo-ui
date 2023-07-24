@@ -2,7 +2,6 @@ from marshmallow import Schema, fields
 from marshmallow.schema import SchemaMeta
 from marshmallow_utils.fields import NestedAttribute
 
-
 num2words = {
     1: "one",
     2: "two",
