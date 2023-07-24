@@ -17,16 +17,6 @@ const BASE_HEADERS = {
   "octet-stream": { "Content-Type": "application/octet-stream" },
 };
 
-/**
- * API client response.
- */
-export class DepositApiClientResponse {
-  constructor(data, errors) {
-    this.data = data;
-    this.errors = errors;
-  }
-}
-
 export class DepositApiClient {
   /* eslint-disable no-unused-vars */
   constructor(additionalApiConfig, createDraftURL, recordSerializer) {
@@ -88,10 +78,6 @@ export class DepositApiClient {
  * API Client for deposits.
  */
 export class ApiClient extends DepositApiClient {
-  constructor(additionalApiConfig) {
-    super(additionalApiConfig);
-  }
-
   async _createResponse(axiosRequest) {
     try {
       const response = await axiosRequest();
