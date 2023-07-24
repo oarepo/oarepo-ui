@@ -17,10 +17,6 @@ from invenio_records_resources.resources.records.resource import (
     request_read_args,
     request_view_args,
 )
-<<<<<<< HEAD
-from invenio_records_resources.services import RecordService
-=======
->>>>>>> origin/main
 
 from oarepo_ui.utils import dump_empty
 
@@ -350,3 +346,4 @@ class RecordsUIResource(UIResource):
     @property
     def api_config(self):
         return self.api_service.config
+
