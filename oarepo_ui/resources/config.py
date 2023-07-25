@@ -153,6 +153,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
             "ui": {},
         }
 
+    @property
     def languages_config(self):
         config = current_app.config
         if not config.get('MULTILINGUAL_DISABLED'):
@@ -193,7 +194,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
                 for l in current_i18n.get_locales()
             ],
             default_locale=conf.get("BABEL_DEFAULT_LOCALE", "en"),
-            languages=self.languages_config(),
+            languages=self.languages_config,
             links=dict(),
             custom_fields=self.custom_fields,
             **kwargs,
