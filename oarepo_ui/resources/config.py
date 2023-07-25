@@ -2,11 +2,13 @@ import inspect
 from pathlib import Path
 
 import marshmallow as ma
-from flask import current_app
+from flask import current_app, g
 from flask_resources import ResourceConfig
 from invenio_base.utils import obj_or_import_string
 from invenio_i18n.ext import current_i18n
 from invenio_search_ui.searchconfig import FacetsConfig, SearchAppConfig, SortConfig
+from invenio_vocabularies.proxies import current_service as vocabulary_service
+from marshmallow_utils.fields.babel import gettext_from_dict
 
 
 def _(x):
@@ -151,14 +153,47 @@ class RecordsUIResourceConfig(UIResourceConfig):
             "ui": {},
         }
 
+    def languages_config(self):
+        config = current_app.config
+        if not config.get('MULTILINGUAL_DISABLED'):
+            languages = vocabulary_service.read_all(
+                g.identity, fields=["id", "title"], type='languages',
+                max_records=500
+            )
+            all_opts = []
+            common_opts = []
+            common_config = current_app.config.get("MULTILINGUAL_COMMON_LANGUAGES", ["en"])
+
+            for hit in languages.to_dict()["hits"]["hits"]:
+                code = hit["id"]
+                label = gettext_from_dict(
+                            hit["title"],
+                            current_i18n.locale,
+                            current_app.config.get("BABEL_DEFAULT_LOCALE", "en"))
+                option = dict(text=label, value=code)
+                
+                if code in common_config:
+                    common_opts.append(option)
+                
+                all_opts.append(option)
+                            
+            return dict(
+                common=common_opts,
+                all=all_opts
+            )
+
     def form_config(self, **kwargs):
         """Get the react form configuration."""
         conf = current_app.config
 
         return dict(
             current_locale=str(current_i18n.locale),
-            locales=[{"code": l.language, "name": l.get_display_name()} for l in current_i18n.get_locales()],
+            locales=[
+                {"code": l.language, "name": l.get_display_name()}
+                for l in current_i18n.get_locales()
+            ],
             default_locale=conf.get("BABEL_DEFAULT_LOCALE", "en"),
+            languages=self.languages_config(),
             links=dict(),
             custom_fields=self.custom_fields,
             **kwargs,
