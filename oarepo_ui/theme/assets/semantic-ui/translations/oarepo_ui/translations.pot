@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2023-05-11T12:06:47.911Z\n"
-"PO-Revision-Date: 2023-05-11T12:06:47.911Z\n"
+"POT-Creation-Date: 2023-07-24T14:39:20.586Z\n"
+"PO-Revision-Date: 2023-07-24T14:39:20.586Z\n"
 "Language: en\n"
 
 msgid "Sort"
@@ -20,11 +20,23 @@ msgstr "Filter results"
 
 msgid "totalResults"
 msgid_plural "totalResults"
-msgstr[0] "totalResults"
-msgstr[1] "totalResults"
-
-msgid "results per page"
-msgstr "results per page"
+msgstr[0] "{{count}} result"
+msgstr[1] "{{count}} results"
 
 msgid "Filters"
 msgstr "Filters"
+
+msgid "resultsPerPage"
+msgstr "results per page"
+
+msgid "We couldn't find any matches for "
+msgstr "We couldn't find any matches for "
+
+msgid "Start over"
+msgstr "Start over"
+
+msgid "Language"
+msgstr "Language"
+
+msgid "Value"
+msgstr "Value"
