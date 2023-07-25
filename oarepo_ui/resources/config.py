@@ -84,6 +84,16 @@ class RecordsUIResourceConfig(UIResourceConfig):
         }
 
     @property
+    def ui_links(self):
+        def _ui_link(path):
+            return f"{self.url_prefix}/{path}".replace('//', '/')
+
+        return {
+            "search": _ui_link(self.routes["search"]),
+            "create": _ui_link(self.routes["create"]),
+        }
+
+    @property
     def ui_serializer(self):
         return obj_or_import_string(self.ui_serializer_class)()
 

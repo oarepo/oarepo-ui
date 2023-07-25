@@ -111,7 +111,8 @@ class RecordsUIResource(UIResource):
         ret = {}
         self.run_components("register_context_processor", context_processors=ret)
         return ret
-
+    
+    
     @request_read_args
     @request_view_args
     def detail(self):
@@ -162,6 +163,7 @@ class RecordsUIResource(UIResource):
             ui_config=self.config,
             ui_resource=self,
             layout=layout,
+            links=self.config.ui_links,
             component_key="detail",
             export_path=export_path,
             **extra_context,
@@ -216,6 +218,7 @@ class RecordsUIResource(UIResource):
             ui_config=self.config,
             ui_resource=self,
             layout=layout,
+            links=self.config.ui_links,
             component_key="search",
             **extra_context,
         )
@@ -291,6 +294,7 @@ class RecordsUIResource(UIResource):
             ui_resource=self,
             form_config=form_config,
             layout=layout,
+            links=self.config.ui_links,
             component_key="edit",
             extra_context=extra_context,
         )
@@ -333,6 +337,7 @@ class RecordsUIResource(UIResource):
             ui_config=self.config,
             ui_resource=self,
             layout=layout,
+            links=self.config.ui_links,
             component_key="create",
             form_config=form_config,
             extra_context=extra_context,
