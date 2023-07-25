@@ -14,7 +14,7 @@ import { FastField } from "formik";
 export const SelectVocabularyExternalApiResultsList = withState(
   ({ currentResultsState: results, serializeSuggestions }) => {
     return (
-      <FastField name="selectedLicense">
+      <FastField name="selectedItem">
         {({ form: { values, setFieldValue } }) => (
           <Item.Group>
             {results.data.hits.map((result) => {
@@ -28,7 +28,7 @@ export const SelectVocabularyExternalApiResultsList = withState(
                 >
                   <Radio
                     checked={_get(values, "selectedItem.title") === title}
-                    onChange={() => setFieldValue("selectedLicense", result)}
+                    onChange={() => setFieldValue("selectedItem", result)}
                     {...(!description && { className: "mt-0" })}
                   />
                   <Item.Content className="license-item-content">

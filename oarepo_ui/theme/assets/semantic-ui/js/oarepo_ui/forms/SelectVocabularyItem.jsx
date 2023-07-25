@@ -6,12 +6,6 @@ import { Message } from "semantic-ui-react";
 import { ExternalApiModal } from "./ExternalApiModal";
 import { NoResultsMessage } from "./NoResultsMessage";
 
-const resultsPerPageLabel = (cmp) => (
-  <React.Fragment>
-    {cmp} {i18next.t("resultsPerPage")}
-  </React.Fragment>
-);
-
 NoResultsMessage.propTypes = {
   noResultsMessage: PropTypes.node,
 };
@@ -23,7 +17,7 @@ NoResultsMessage.defaultProps = {
 
 const serializeSuggestions = (suggestions) =>
   suggestions.map((item) => ({
-    text: item.title?.[i18next.language],
+    text: <div>katedra</div>,
     value: item.id,
     key: item.id,
   }));
@@ -72,6 +66,7 @@ export class SelectVocabularyItem extends RemoteSelectField {
   };
 
   render() {
+    console.log(this.state);
     const parentRenderResult = super.render();
     // You can add your custom content here
 
@@ -85,6 +80,7 @@ export class SelectVocabularyItem extends RemoteSelectField {
       },
       initialQueryState: {
         queryString: this.state.searchQuery,
+        size: 10,
       },
       paginationOptions: {
         defaultValue: 10,

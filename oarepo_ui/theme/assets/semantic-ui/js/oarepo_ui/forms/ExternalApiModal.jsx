@@ -31,7 +31,7 @@ export const ExternalApiModal = ({
   serializeSuggestions,
 }) => {
   const searchApi = new InvenioSearchApi(searchConfig.searchApi);
-
+  console.log(searchConfig.paginationOptions.resultsPerPage);
   return (
     <Modal open={open} onClose={onClose}>
       <Modal.Header as="h6" className="pt-10 pb-10">
@@ -79,7 +79,7 @@ export const ExternalApiModal = ({
                   <Pagination />
                 </Grid.Column>
 
-                <Grid.Column>
+                <Grid.Column floated="right" width={3}>
                   <ResultsPerPage
                     values={searchConfig.paginationOptions.resultsPerPage}
                     label={resultsPerPageLabel}
@@ -90,6 +90,25 @@ export const ExternalApiModal = ({
           </ReactSearchKit>
         </OverridableContext.Provider>
       </Modal.Content>
+      <Modal.Actions>
+        <Button
+          name="cancel"
+          onClick={() => {
+            onClose();
+          }}
+          icon="remove"
+          labelPosition="left"
+          content={i18next.t("Cancel")}
+          floated="left"
+        />
+        <Button
+          name="submit"
+          onClick={(event) => handleSubmit(event)}
+          primary
+          icon="checkmark"
+          labelPosition="left"
+        />
+      </Modal.Actions>
     </Modal>
   );
 };
