@@ -1,10 +1,3 @@
-// This file is part of Invenio-RDM-Records
-// Copyright (C) 2020-2023 CERN.
-// Copyright (C) 2020-2022 Northwestern University.
-//
-// Invenio-RDM-Records is free software; you can redistribute it and/or modify it
-// under the terms of the MIT License; see LICENSE file for more details.
-
 import React from "react";
 import { Item, Header, Radio, Grid, Table } from "semantic-ui-react";
 import { withState } from "react-searchkit";
@@ -13,6 +6,9 @@ import { FastField } from "formik";
 import _toPairs from "lodash/toPairs";
 import _chunk from "lodash/chunk";
 import { i18next } from "@translations/oarepo_ui/i18next";
+import { useFormikContext } from "formik";
+
+// taken from oarepo vocabularies components/VocabularyResultsListItem => maybe we could move this specific component to oarepo ui as it could be useful in more places like here?
 
 const VocabularyItemPropsTable = (props) => {
   // Split properties into max. 4 tables of max. 2 rows
@@ -41,40 +37,45 @@ const VocabularyItemPropsTable = (props) => {
 };
 
 export const SelectVocabularyExternalApiResultsList = withState(
-  ({ currentResultsState: results, serializeSuggestions }) => {
+  ({
+    currentResultsState: results,
+    serializeSuggestions,
+    handleAddingExternalApiSuggestion,
+    handleExternalRecordChange,
+    externalApiRecord,
+  }) => {
     return (
-      <FastField name="selectedItem">
-        {({ form: { values, setFieldValue } }) => (
-          <Item.Group>
-            {results.data.hits.map((result) => {
-              const title = result.title;
-              const itemProps = result.props;
-              return (
-                <Item
-                  key={title.cs}
-                  onClick={() => setFieldValue("selectedItem", result)}
-                  className="license-item mb-15"
-                >
-                  <Radio
-                    checked={_get(values, "selectedItem.title") === title}
-                    onChange={() => setFieldValue("selectedItem", result)}
-                  />
-                  <Item.Content className="license-item-content">
-                    <Header size="small" className="mt-0">
-                      {title.cs}
-                    </Header>
-                    {itemProps && (
-                      <Item.Description className="license-item-description">
-                        <VocabularyItemPropsTable {...itemProps} />
-                      </Item.Description>
-                    )}
-                  </Item.Content>
-                </Item>
-              );
-            })}
-          </Item.Group>
-        )}
-      </FastField>
+      <Item.Group>
+        {serializeSuggestions(results?.data?.hits).map((record) => {
+          console.log(record);
+          const title = record.text;
+          const itemProps = record.props;
+          return (
+            <Item
+              key={title}
+              onClick={() => {
+                handleAddingExternalApiSuggestion(record);
+                handleExternalRecordChange(record);
+              }}
+            >
+              <Radio
+                checked={externalApiRecord.text === title}
+                onChange={() => handleExternalRecordChange(record)}
+              />
+              <Item.Content>
+                <Header size="small" className="mt-0">
+                  {title}
+                </Header>
+                {itemProps && (
+                  <Item.Description>
+                    <VocabularyItemPropsTable {...itemProps} />
+                  </Item.Description>
+                )}
+              </Item.Content>
+            </Item>
+          );
+        })}
+      </Item.Group>
     );
   }
 );

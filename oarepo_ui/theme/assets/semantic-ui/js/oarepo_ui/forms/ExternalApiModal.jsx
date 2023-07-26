@@ -17,6 +17,7 @@ import {
   ResultsPerPage,
 } from "react-searchkit";
 import { SelectVocabularyExternalApiResultsList } from "./SelectVocabularyExternalApiResultsList";
+import { useFormikContext } from "formik";
 
 const resultsPerPageLabel = (cmp) => (
   <React.Fragment>
@@ -29,9 +30,16 @@ export const ExternalApiModal = ({
   open,
   onClose,
   serializeSuggestions,
+  handleAddingExternalApiSuggestion,
+  fieldPath,
 }) => {
+  const [externalApiRecord, setExternalApiRecord] = useState({});
+  const { setFieldValue } = useFormikContext();
   const searchApi = new InvenioSearchApi(searchConfig.searchApi);
-  console.log(searchConfig.paginationOptions.resultsPerPage);
+
+  const handleExternalRecordChange = (record) => {
+    setExternalApiRecord(record);
+  };
   return (
     <Modal open={open} onClose={onClose}>
       <Modal.Header as="h6" className="pt-10 pb-10">
@@ -70,6 +78,12 @@ export const ExternalApiModal = ({
                     <Error />
                     <SelectVocabularyExternalApiResultsList
                       serializeSuggestions={serializeSuggestions}
+                      handleAddingExternalApiSuggestion={
+                        handleAddingExternalApiSuggestion
+                      }
+                      fieldPath={fieldPath}
+                      handleExternalRecordChange={handleExternalRecordChange}
+                      externalApiRecord={externalApiRecord}
                     />
                   </ResultsLoader>
                 </Grid.Column>
@@ -103,11 +117,14 @@ export const ExternalApiModal = ({
         />
         <Button
           name="submit"
-          onClick={(event) => handleSubmit(event)}
           primary
           icon="checkmark"
           labelPosition="left"
           content={i18next.t("Choose")}
+          onClick={() => {
+            setFieldValue(fieldPath, externalApiRecord);
+            onClose();
+          }}
         />
       </Modal.Actions>
     </Modal>

@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { RemoteSelectField } from "react-invenio-forms";
+import React from "react";
 import PropTypes from "prop-types";
 import { Message, Grid, Button } from "semantic-ui-react";
 

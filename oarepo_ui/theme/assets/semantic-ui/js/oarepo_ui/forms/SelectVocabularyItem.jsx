@@ -2,27 +2,62 @@ import React from "react";
 import { RemoteSelectField } from "react-invenio-forms";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import { Message } from "semantic-ui-react";
+import { Message, Icon, Label } from "semantic-ui-react";
 import { ExternalApiModal } from "./ExternalApiModal";
 import { NoResultsMessage } from "./NoResultsMessage";
+import _reverse from "lodash/reverse";
+// example usage
 
-NoResultsMessage.propTypes = {
-  noResultsMessage: PropTypes.node,
-};
+{
+  /* <SelectVocabularyItem
+fieldPath={fieldPath}
+suggestionAPIUrl={"/api/vocabularies/institutions"}
+clearable
+externalSuggestionAPI={"/api/vocabularies/languages"}
+search={(options) => options}
+selectOnBlur={false}
+onValueChange={({ formikProps }, selectedItems) => {
+  formikProps.form.setFieldValue(
+    fieldPath,
+    selectedItems[0]
+  );
+}}
+value={
+  getIn(values, "remote")?.value
+    ? getIn(values, "remote")?.value
+    : ""
+}
+/> */
+}
 
-NoResultsMessage.defaultProps = {
-  noResultsMessage: "No results found",
-};
-// for testing purposes
-
+// serializer deciedes what properties of the record passed from API you will be able to use
+// in your code. I am not 100% sure yet how this component is going to be used but
+// I would say that we will probably need more than just id and text representation
 const serializeSuggestions = (suggestions) =>
   suggestions.map((item) => ({
-    ...item,
-    text: item.title.cs,
+    text:
+      item.hierarchy.ancestors.length === 0 ? (
+        item.title[i18next.language]
+      ) : (
+        <span>
+          <Label>
+            {_reverse(item.hierarchy.ancestors).map((ancestor) => (
+              <React.Fragment key={ancestor}>
+                {ancestor}{" "}
+                <Icon size="small" name="arrow right" className="ml-3" />
+              </React.Fragment>
+            ))}
+          </Label>
+          <Label color="green" className="ml-3">
+            {item.title[i18next.language]}
+          </Label>
+        </span>
+      ),
     value: item.id,
     key: item.id,
+    hierarchy: item.hierarchy,
+    props: item.props,
   }));
-console.log(i18next.language);
 
 export class SelectVocabularyItem extends RemoteSelectField {
   constructor(props) {
@@ -36,8 +71,9 @@ export class SelectVocabularyItem extends RemoteSelectField {
   }
 
   handleModal = () => {
-    this.setState({ ...this.state, isModalOpen: !this.state.isModalOpen });
+    this.setState({ isModalOpen: !this.state.isModalOpen });
   };
+
   getNoResultsMessage = () => {
     const {
       loadingMessage,
@@ -66,16 +102,67 @@ export class SelectVocabularyItem extends RemoteSelectField {
     );
   };
 
+  handleAddingExternalApiSuggestion = (externalApiSuggestion) => {
+    this.setState({
+      suggestions: [...this.state.suggestions, externalApiSuggestion],
+    });
+  };
+
+  getProps = () => {
+    const {
+      externalSuggestionAPI,
+      hierarchical,
+      fieldPath,
+      suggestionAPIUrl,
+      suggestionAPIQueryParams,
+      serializeSuggestions,
+      serializeAddedValue,
+      suggestionAPIHeaders,
+      debounceTime,
+      noResultsMessage,
+      loadingMessage,
+      suggestionsErrorMessage,
+      noQueryMessage,
+      initialSuggestions,
+      preSearchChange,
+      onValueChange,
+      search,
+      ...uiProps
+    } = this.props;
+    const compProps = {
+      fieldPath,
+      suggestionAPIUrl,
+      suggestionAPIQueryParams,
+      suggestionAPIHeaders,
+      serializeSuggestions,
+      serializeAddedValue,
+      debounceTime,
+      noResultsMessage,
+      loadingMessage,
+      suggestionsErrorMessage,
+      noQueryMessage,
+      initialSuggestions,
+      preSearchChange,
+      onValueChange,
+      search,
+    };
+    return { compProps, uiProps };
+  };
+
   render() {
-    console.log(this.state);
-    const parentRenderResult = super.render();
-    // You can add your custom content here
+    const {
+      serializeSuggestions,
+      fieldPath,
+      suggestionAPIHeaders,
+      externalSuggestionAPI,
+      hierarchical,
+    } = this.props;
 
     const searchConfig = {
       searchApi: {
         axios: {
-          headers: this.props.suggestionAPIHeaders,
-          url: this.props.externalSuggestionAPI,
+          headers: suggestionAPIHeaders,
+          url: externalSuggestionAPI,
           withCredentials: false,
         },
       },
@@ -92,22 +179,22 @@ export class SelectVocabularyItem extends RemoteSelectField {
         ],
       },
     };
-
-    const additionalContent = (
-      <ExternalApiModal
-        searchConfig={searchConfig}
-        open={this.state.isModalOpen}
-        onClose={this.handleModal}
-        serializeSuggestions={this.props.serializeSuggestions}
-      />
-    );
-
+    console.log(this.state);
     // Call the original render method from the base class
     return (
       <React.Fragment>
-        {parentRenderResult}
-
-        {additionalContent}
+        {super.render(this.getProps())}
+        <ExternalApiModal
+          searchConfig={searchConfig}
+          open={this.state.isModalOpen}
+          onClose={this.handleModal}
+          serializeSuggestions={serializeSuggestions}
+          // handleExternalApiSelection={this.handleExternalApiSelection}
+          handleAddingExternalApiSuggestion={
+            this.handleAddingExternalApiSuggestion
+          }
+          fieldPath={fieldPath}
+        />
       </React.Fragment>
     );
   }
@@ -137,6 +224,7 @@ SelectVocabularyItem.propTypes = {
   search: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
   multiple: PropTypes.bool,
   externalSuggestionAPI: PropTypes.string,
+  hierarchical: PropTypes.bool,
 };
 
 RemoteSelectField.defaultProps = {
@@ -145,7 +233,7 @@ RemoteSelectField.defaultProps = {
   serializeSuggestions: serializeSuggestions,
   suggestionsErrorMessage: "Something went wrong...",
   noQueryMessage: "Search...",
-  // noResultsMessage: "No results found.",
+  noResultsMessage: "No results found.",
   loadingMessage: "Loading...",
   preSearchChange: (x) => x,
   search: true,
@@ -154,4 +242,5 @@ RemoteSelectField.defaultProps = {
   initialSuggestions: [],
   onValueChange: undefined,
   suggestionAPIHeaders: { Accept: "application/json" },
+  hierarchical: true,
 };
