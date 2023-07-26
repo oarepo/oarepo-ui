@@ -262,7 +262,7 @@ class RecordsUIResource(UIResource):
         data = record.to_dict()
         serialized_record = self.config.ui_serializer.dump_obj(record.to_dict())
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
-        form_config = self.config.form_config(updateUrl=record.links.get("self", None))
+        form_config = self.config.form_config(identity=g.identity, updateUrl=record.links.get("self", None))
 
         extra_context = dict()
         self.run_components(
@@ -303,6 +303,7 @@ class RecordsUIResource(UIResource):
         empty_record = self.empty_record(resource_requestctx)
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
         form_config = self.config.form_config(
+            identity=g.identity,
             # TODO: use api service create link when available
             createUrl=f"/api{self.api_service.config.url_prefix}",
         )
