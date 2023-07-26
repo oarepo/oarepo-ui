@@ -2,7 +2,7 @@ import inspect
 from pathlib import Path
 
 import marshmallow as ma
-from flask import current_app, g
+from flask import current_app
 from flask_resources import ResourceConfig
 from invenio_base.utils import obj_or_import_string
 from invenio_i18n.ext import current_i18n
@@ -153,12 +153,11 @@ class RecordsUIResourceConfig(UIResourceConfig):
             "ui": {},
         }
 
-    @property
-    def languages_config(self):
+    def languages_config(self, identity):
         config = current_app.config
         if not config.get('MULTILINGUAL_DISABLED'):
             languages = vocabulary_service.read_all(
-                g.identity, fields=["id", "title"], type='languages',
+                identity, fields=["id", "title"], type='languages',
                 max_records=500
             )
             all_opts = []
@@ -183,7 +182,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
                 all=all_opts
             )
 
-    def form_config(self, **kwargs):
+    def form_config(self, identity=None, **kwargs):
         """Get the react form configuration."""
         conf = current_app.config
 
@@ -194,7 +193,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
                 for l in current_i18n.get_locales()
             ],
             default_locale=conf.get("BABEL_DEFAULT_LOCALE", "en"),
-            languages=self.languages_config,
+            languages=self.languages_config(identity),
             links=dict(),
             custom_fields=self.custom_fields,
             **kwargs,
