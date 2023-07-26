@@ -17,7 +17,8 @@ NoResultsMessage.defaultProps = {
 
 const serializeSuggestions = (suggestions) =>
   suggestions.map((item) => ({
-    text: <div>katedra</div>,
+    ...item,
+    text: item.title.cs,
     value: item.id,
     key: item.id,
   }));

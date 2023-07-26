@@ -107,6 +107,7 @@ export const ExternalApiModal = ({
           primary
           icon="checkmark"
           labelPosition="left"
+          content={i18next.t("Choose")}
         />
       </Modal.Actions>
     </Modal>
