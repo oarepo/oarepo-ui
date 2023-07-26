@@ -6,7 +6,7 @@ def test_ui_resource_form_config(app, record_ui_resource):
             {"value": "cs", "text": "Czech"},
         ],
         default_locale="en",
-        languages={},
+        languages={"all": [], "common": []},
         links=dict(),
         custom_fields=[],
     )

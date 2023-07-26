@@ -7,8 +7,6 @@ from flask_resources import ResourceConfig
 from invenio_base.utils import obj_or_import_string
 from invenio_i18n.ext import current_i18n
 from invenio_search_ui.searchconfig import FacetsConfig, SearchAppConfig, SortConfig
-from invenio_vocabularies.proxies import current_service as vocabulary_service
-from marshmallow_utils.fields.babel import gettext_from_dict
 
 
 def _(x):
@@ -154,33 +152,10 @@ class RecordsUIResourceConfig(UIResourceConfig):
         }
 
     def languages_config(self, identity):
-        config = current_app.config
-        if not config.get('MULTILINGUAL_DISABLED'):
-            languages = vocabulary_service.read_all(
-                identity, fields=["id", "title"], type='languages',
-                max_records=500
-            )
-            all_opts = []
-            common_opts = []
-            common_config = current_app.config.get("MULTILINGUAL_COMMON_LANGUAGES", ["en"])
-
-            for hit in languages.to_dict()["hits"]["hits"]:
-                code = hit["id"]
-                label = gettext_from_dict(
-                            hit["title"],
-                            current_i18n.locale,
-                            current_app.config.get("BABEL_DEFAULT_LOCALE", "en"))
-                option = dict(text=label, value=code)
-                
-                if code in common_config:
-                    common_opts.append(option)
-                
-                all_opts.append(option)
-                            
-            return dict(
-                common=common_opts,
-                all=all_opts
-            )
+        return dict(
+            common=[],
+            all=[]
+        )
 
     def form_config(self, identity=None, **kwargs):
         """Get the react form configuration."""
