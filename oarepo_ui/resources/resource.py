@@ -193,6 +193,7 @@ class RecordsUIResource(UIResource):
         search_options = dict(
             api_config=self.api_service.config,
             identity=g.identity,
+            links=self.config.ui_links
         )
 
         extra_context = dict()
