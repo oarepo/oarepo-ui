@@ -62,7 +62,6 @@ export class RelatedSelectField extends RemoteSelectField {
 
   handleModal = () => {
     this.setState({
-      ...this.state,
       isModalOpen: !this.state.isModalOpen,
     });
   };

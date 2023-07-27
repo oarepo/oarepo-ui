@@ -164,7 +164,7 @@ ExternalApiModal.propTypes = {
   handleAddingExternalApiSuggestion: PropTypes.func.isRequired,
   fieldPath: PropTypes.string.isRequired,
   searchConfig: PropTypes.shape({
-    searchApi: PropTypes.object.isRequired, // same as ReactSearchKit.searchApi
+    searchApi: PropTypes.object.isRequired,
     initialQueryState: PropTypes.shape({
       queryString: PropTypes.string,
       sortBy: PropTypes.string,
