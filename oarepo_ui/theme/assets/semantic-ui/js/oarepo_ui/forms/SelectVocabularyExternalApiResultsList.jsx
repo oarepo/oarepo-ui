@@ -7,6 +7,15 @@ import { i18next } from "@translations/oarepo_ui/i18next";
 
 // taken from oarepo vocabularies components/VocabularyResultsListItem => maybe we could move this specific component to oarepo ui as it could be useful in more places like here?
 
+const serializeSuggestions = (suggestions) =>
+  suggestions.map((item) => ({
+    text: item.title[i18next.language],
+    value: item.id,
+    key: item.id,
+    hierarchy: item.hierarchy,
+    props: item.props,
+  }));
+
 const VocabularyItemPropsTable = (props) => {
   // Split properties into max. 4 tables of max. 2 rows
   const tables = _chunk(_toPairs(props), 2).slice(0, 4);
@@ -36,17 +45,19 @@ const VocabularyItemPropsTable = (props) => {
 export const SelectVocabularyExternalApiResultsList = withState(
   ({
     currentResultsState: results,
-    serializeSuggestions,
     handleAddingExternalApiSuggestion,
     handleExternalRecordChange,
     externalApiRecord,
   }) => {
+    console.log(results);
+
     return (
-      <Item.Group>
+      <Item.Group divided>
         {serializeSuggestions(results?.data?.hits).map((record) => {
           console.log(record);
           const title = record.text;
           const itemProps = record.props;
+          console.log(itemProps);
           return (
             <Item
               key={title}
