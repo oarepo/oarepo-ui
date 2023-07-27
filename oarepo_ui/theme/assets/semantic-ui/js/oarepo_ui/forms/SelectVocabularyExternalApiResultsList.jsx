@@ -4,6 +4,7 @@ import { withState } from "react-searchkit";
 import _toPairs from "lodash/toPairs";
 import _chunk from "lodash/chunk";
 import { i18next } from "@translations/oarepo_ui/i18next";
+import PropTypes from "prop-types";
 
 // taken from oarepo vocabularies components/VocabularyResultsListItem => maybe we could move this specific component to oarepo ui as it could be useful in more places like here?
 
@@ -42,6 +43,11 @@ const VocabularyItemPropsTable = (props) => {
   );
 };
 
+VocabularyItemPropsTable.propTypes = {
+  // Assuming the `props` object contains key-value pairs of string values
+  props: PropTypes.object.isRequired,
+};
+
 export const SelectVocabularyExternalApiResultsList = withState(
   ({
     currentResultsState: results,
@@ -49,28 +55,30 @@ export const SelectVocabularyExternalApiResultsList = withState(
     handleExternalRecordChange,
     externalApiRecord,
   }) => {
-    console.log(results);
-
     return (
-      <Item.Group divided>
+      <Grid celled>
         {serializeSuggestions(results?.data?.hits).map((record) => {
           console.log(record);
           const title = record.text;
           const itemProps = record.props;
           console.log(itemProps);
           return (
-            <Item
+            <Grid.Row
               key={title}
               onClick={() => {
                 handleAddingExternalApiSuggestion(record);
                 handleExternalRecordChange(record);
               }}
             >
-              <Radio
-                checked={externalApiRecord.text === title}
-                onChange={() => handleExternalRecordChange(record)}
-              />
-              <Item.Content>
+              <Grid.Column width={2}>
+                {" "}
+                <Radio
+                  checked={externalApiRecord.text === title}
+                  onChange={() => handleExternalRecordChange(record)}
+                />
+              </Grid.Column>
+
+              <Grid.Column width={8}>
                 <Header size="small" className="mt-0">
                   {title}
                 </Header>
@@ -79,11 +87,18 @@ export const SelectVocabularyExternalApiResultsList = withState(
                     <VocabularyItemPropsTable {...itemProps} />
                   </Item.Description>
                 )}
-              </Item.Content>
-            </Item>
+              </Grid.Column>
+            </Grid.Row>
           );
         })}
-      </Item.Group>
+      </Grid>
     );
   }
 );
+
+SelectVocabularyExternalApiResultsList.propTypes = {
+  currentResultsState: PropTypes.arrayOf(PropTypes.object),
+  handleAddingExternalApiSuggestion: PropTypes.func.isRequired,
+  handleExternalRecordChange: PropTypes.func.isRequired,
+  externalApiRecord: PropTypes.object.isRequired,
+};

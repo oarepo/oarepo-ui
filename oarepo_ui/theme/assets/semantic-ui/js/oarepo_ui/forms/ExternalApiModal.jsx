@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import { Modal, Button, Message, Grid, Header } from "semantic-ui-react";
+import { Modal, Button, Grid, Header } from "semantic-ui-react";
 import { OverridableContext } from "react-overridable";
 import {
   EmptyResults,
@@ -26,7 +26,6 @@ export const ExternalApiModal = ({
   searchConfig,
   open,
   onClose,
-  serializeSuggestions,
   handleAddingExternalApiSuggestion,
   fieldPath,
 }) => {
@@ -74,7 +73,6 @@ export const ExternalApiModal = ({
                     <EmptyResults />
                     <Error />
                     <SelectVocabularyExternalApiResultsList
-                      serializeSuggestions={serializeSuggestions}
                       handleAddingExternalApiSuggestion={
                         handleAddingExternalApiSuggestion
                       }
@@ -126,4 +124,75 @@ export const ExternalApiModal = ({
       </Modal.Actions>
     </Modal>
   );
+};
+
+ExternalApiModal.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  handleAddingExternalApiSuggestion: PropTypes.func.isRequired,
+  fieldPath: PropTypes.string.isRequired,
+  searchConfig: PropTypes.shape({
+    searchApi: PropTypes.object.isRequired, // same as ReactSearchKit.searchApi
+    initialQueryState: PropTypes.shape({
+      queryString: PropTypes.string,
+      sortBy: PropTypes.string,
+      sortOrder: PropTypes.string,
+      page: PropTypes.number,
+      size: PropTypes.number,
+      hiddenParams: PropTypes.array,
+      layout: PropTypes.oneOf(["list", "grid"]),
+    }),
+    aggs: PropTypes.arrayOf(
+      PropTypes.shape({
+        title: PropTypes.string,
+        aggName: PropTypes.string,
+        access_right: PropTypes.string,
+        mapping: PropTypes.object,
+      })
+    ),
+    sortOptions: PropTypes.arrayOf(
+      PropTypes.shape({
+        sortBy: PropTypes.string,
+        sortOrder: PropTypes.string,
+        text: PropTypes.string,
+      })
+    ),
+    paginationOptions: PropTypes.shape({
+      resultsPerPage: PropTypes.arrayOf(
+        PropTypes.shape({
+          text: PropTypes.string,
+          value: PropTypes.number,
+        })
+      ),
+    }),
+    layoutOptions: PropTypes.shape({
+      listView: PropTypes.bool.isRequired,
+      gridView: PropTypes.bool.isRequired,
+    }).isRequired,
+    defaultSortingOnEmptyQueryString: PropTypes.shape({
+      sortBy: PropTypes.string,
+      sortOrder: PropTypes.string,
+    }),
+  }).isRequired,
+  appName: PropTypes.string,
+};
+
+ExternalApiModal.defaultProps = {
+  searchConfig: {
+    searchApi: {
+      url: "",
+      withCredentials: false,
+      headers: {},
+    },
+    initialQueryState: {},
+    aggs: [],
+    sortOptions: [],
+    paginationOptions: {},
+    layoutOptions: {
+      listView: true,
+      gridView: false,
+    },
+    defaultSortingOnEmptyQueryString: {},
+  },
+  appName: null,
 };

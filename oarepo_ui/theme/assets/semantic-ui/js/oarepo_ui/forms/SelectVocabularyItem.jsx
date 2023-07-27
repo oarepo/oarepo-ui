@@ -7,27 +7,37 @@ import { ExternalApiModal } from "./ExternalApiModal";
 import { NoResultsMessage } from "./NoResultsMessage";
 import _reverse from "lodash/reverse";
 // example usage
+// the reason why it is like this is because the field can contain complex object and you somehow need to add it a value
+// which can be a primitive only and if it is used directly under invenio's base form at that moment you don't have access
+// to formik's values (as invenio's version does not allow to render the form as a render prop)
 
 {
-  /* <SelectVocabularyItem
-fieldPath={fieldPath}
-suggestionAPIUrl={"/api/vocabularies/institutions"}
-clearable
-externalSuggestionAPI={"/api/vocabularies/languages"}
-search={(options) => options}
-selectOnBlur={false}
-onValueChange={({ formikProps }, selectedItems) => {
-  formikProps.form.setFieldValue(
-    fieldPath,
-    selectedItems[0]
+  /* <Field name="remote">
+{({ form: { values } }) => {
+  const fieldPath = "remote";
+  return (
+    <SelectVocabularyItem
+      fieldPath={fieldPath}
+      suggestionAPIUrl={"/api/vocabularies/institutions"}
+      clearable
+      externalSuggestionAPI={"/api/vocabularies/institutions"}
+      search={(options) => options}
+      selectOnBlur={false}
+      onValueChange={({ formikProps }, selectedItems) => {
+        formikProps.form.setFieldValue(
+          fieldPath,
+          selectedItems[0]
+        );
+      }}
+      value={
+        getIn(values, "remote")?.value
+          ? getIn(values, "remote")?.value
+          : ""
+      }
+    />
   );
 }}
-value={
-  getIn(values, "remote")?.value
-    ? getIn(values, "remote")?.value
-    : ""
-}
-/> */
+</Field> */
 }
 
 // serializer deciedes what properties of the record passed from API you will be able to use
@@ -66,7 +76,6 @@ export class SelectVocabularyItem extends RemoteSelectField {
       ...this.state,
       isModalOpen: false,
     };
-    console.log(this.state);
     this.handleModal = this.handleModal.bind(this);
   }
 
@@ -155,9 +164,8 @@ export class SelectVocabularyItem extends RemoteSelectField {
       fieldPath,
       suggestionAPIHeaders,
       externalSuggestionAPI,
-      hierarchical,
     } = this.props;
-
+    // not sure how to pass search APP config in the best way because search app is being mounted within a modal
     const searchConfig = {
       searchApi: {
         axios: {
@@ -178,9 +186,11 @@ export class SelectVocabularyItem extends RemoteSelectField {
           { text: "50", value: 50 },
         ],
       },
+      layoutOptions: {
+        listView: true,
+        gridView: false,
+      },
     };
-    console.log(this.state);
-    // Call the original render method from the base class
     return (
       <React.Fragment>
         {super.render(this.getProps())}
@@ -189,7 +199,6 @@ export class SelectVocabularyItem extends RemoteSelectField {
           open={this.state.isModalOpen}
           onClose={this.handleModal}
           serializeSuggestions={serializeSuggestions}
-          // handleExternalApiSelection={this.handleExternalApiSelection}
           handleAddingExternalApiSuggestion={
             this.handleAddingExternalApiSuggestion
           }
@@ -224,7 +233,6 @@ SelectVocabularyItem.propTypes = {
   search: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
   multiple: PropTypes.bool,
   externalSuggestionAPI: PropTypes.string,
-  hierarchical: PropTypes.bool,
 };
 
 RemoteSelectField.defaultProps = {
@@ -242,5 +250,4 @@ RemoteSelectField.defaultProps = {
   initialSuggestions: [],
   onValueChange: undefined,
   suggestionAPIHeaders: { Accept: "application/json" },
-  hierarchical: true,
 };
