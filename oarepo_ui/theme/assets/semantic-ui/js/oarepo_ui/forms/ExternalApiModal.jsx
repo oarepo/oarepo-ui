@@ -57,6 +57,7 @@ export const ExternalApiModal = ({
   onClose,
   handleAddingExternalApiSuggestion,
   fieldPath,
+  serializeSuggestions,
 }) => {
   const [externalApiRecord, setExternalApiRecord] = useState({});
   const { setFieldValue } = useFormikContext();
@@ -107,6 +108,7 @@ export const ExternalApiModal = ({
                       fieldPath={fieldPath}
                       handleExternalRecordChange={handleExternalRecordChange}
                       externalApiRecord={externalApiRecord}
+                      serializeSuggestions={serializeSuggestions}
                     />
                   </ResultsLoader>
                 </Grid.Column>

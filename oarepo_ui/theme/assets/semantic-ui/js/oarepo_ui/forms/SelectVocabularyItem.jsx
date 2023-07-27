@@ -40,33 +40,13 @@ import _reverse from "lodash/reverse";
 </Field> */
 }
 
-// serializer deciedes what properties of the record passed from API you will be able to use
-// in your code. I am not 100% sure yet how this component is going to be used but
-// I would say that we will probably need more than just id and text representation
+// default serializer provided expecting that in any scenario item would have id and a title. For more specific use cases, it is necessary to
+// use a different serializer in order to control the information that will be available inside of the component (coming from API)
 const serializeSuggestions = (suggestions) =>
   suggestions.map((item) => ({
-    text:
-      item.hierarchy.ancestors.length === 0 ? (
-        item.title[i18next.language]
-      ) : (
-        <span>
-          <Label>
-            {_reverse(item.hierarchy.ancestors).map((ancestor) => (
-              <React.Fragment key={ancestor}>
-                {ancestor}{" "}
-                <Icon size="small" name="arrow right" className="ml-3" />
-              </React.Fragment>
-            ))}
-          </Label>
-          <Label color="green" className="ml-3">
-            {item.title[i18next.language]}
-          </Label>
-        </span>
-      ),
+    text: item.title[i18next.language],
     value: item.id,
     key: item.id,
-    hierarchy: item.hierarchy,
-    props: item.props,
   }));
 
 export class SelectVocabularyItem extends RemoteSelectField {
@@ -84,14 +64,6 @@ export class SelectVocabularyItem extends RemoteSelectField {
       ...this.state,
       isModalOpen: !this.state.isModalOpen,
     });
-  };
-  onBlur = () => {
-    this.setState((prevState) => ({
-      open: false,
-      error: false,
-      searchQuery: null,
-      suggestions: [...prevState.selectedSuggestions],
-    }));
   };
 
   getNoResultsMessage = () => {
@@ -130,6 +102,8 @@ export class SelectVocabularyItem extends RemoteSelectField {
 
   getProps = () => {
     const {
+      // allow to pass a different serializer to transform data from external API in case it is needed
+      serializeExternalApiSuggestions,
       externalSuggestionAPI,
       hierarchical,
       fieldPath,
@@ -248,6 +222,7 @@ SelectVocabularyItem.propTypes = {
   search: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
   multiple: PropTypes.bool,
   externalSuggestionAPI: PropTypes.string,
+  serializeExternalApiSuggestions: PropTypes.func,
 };
 
 SelectVocabularyItem.defaultProps = {
@@ -265,4 +240,5 @@ SelectVocabularyItem.defaultProps = {
   initialSuggestions: [],
   onValueChange: undefined,
   suggestionAPIHeaders: { Accept: "application/json" },
+  serializeExternalApiSuggestions: undefined,
 };
