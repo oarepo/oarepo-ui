@@ -58,10 +58,8 @@ export const SelectVocabularyExternalApiResultsList = withState(
     return (
       <Grid celled>
         {serializeSuggestions(results?.data?.hits).map((record) => {
-          console.log(record);
           const title = record.text;
           const itemProps = record.props;
-          console.log(itemProps);
           return (
             <Grid.Row
               key={title}

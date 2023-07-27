@@ -80,7 +80,18 @@ export class SelectVocabularyItem extends RemoteSelectField {
   }
 
   handleModal = () => {
-    this.setState({ isModalOpen: !this.state.isModalOpen });
+    this.setState({
+      ...this.state,
+      isModalOpen: !this.state.isModalOpen,
+    });
+  };
+  onBlur = () => {
+    this.setState((prevState) => ({
+      open: false,
+      error: false,
+      searchQuery: null,
+      suggestions: [...prevState.selectedSuggestions],
+    }));
   };
 
   getNoResultsMessage = () => {
@@ -159,6 +170,7 @@ export class SelectVocabularyItem extends RemoteSelectField {
   };
 
   render() {
+    console.log(this.state);
     const {
       serializeSuggestions,
       fieldPath,
@@ -191,19 +203,22 @@ export class SelectVocabularyItem extends RemoteSelectField {
         gridView: false,
       },
     };
+    console.log(searchConfig);
     return (
       <React.Fragment>
         {super.render(this.getProps())}
-        <ExternalApiModal
-          searchConfig={searchConfig}
-          open={this.state.isModalOpen}
-          onClose={this.handleModal}
-          serializeSuggestions={serializeSuggestions}
-          handleAddingExternalApiSuggestion={
-            this.handleAddingExternalApiSuggestion
-          }
-          fieldPath={fieldPath}
-        />
+        {externalSuggestionAPI && (
+          <ExternalApiModal
+            searchConfig={searchConfig}
+            open={this.state.isModalOpen}
+            onClose={this.handleModal}
+            serializeSuggestions={serializeSuggestions}
+            handleAddingExternalApiSuggestion={
+              this.handleAddingExternalApiSuggestion
+            }
+            fieldPath={fieldPath}
+          />
+        )}
       </React.Fragment>
     );
   }
@@ -235,7 +250,7 @@ SelectVocabularyItem.propTypes = {
   externalSuggestionAPI: PropTypes.string,
 };
 
-RemoteSelectField.defaultProps = {
+SelectVocabularyItem.defaultProps = {
   debounceTime: 500,
   suggestionAPIQueryParams: {},
   serializeSuggestions: serializeSuggestions,

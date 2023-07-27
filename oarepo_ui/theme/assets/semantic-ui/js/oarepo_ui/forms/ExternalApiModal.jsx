@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import { Modal, Button, Grid, Header } from "semantic-ui-react";
+import { Modal, Button, Grid, Header, Segment, Icon } from "semantic-ui-react";
 import { OverridableContext } from "react-overridable";
 import {
   EmptyResults,
@@ -15,12 +15,41 @@ import {
 } from "react-searchkit";
 import { SelectVocabularyExternalApiResultsList } from "./SelectVocabularyExternalApiResultsList";
 import { useFormikContext } from "formik";
+import _isEmpty from "lodash/isEmpty";
 
 const resultsPerPageLabel = (cmp) => (
   <React.Fragment>
     {cmp} {i18next.t("resultsPerPage")}
   </React.Fragment>
 );
+
+//  providing custom empty error message because we are initializing app with a query string and the button to reset search effectivelly does nothing (it is resetting to already existing query string so I thought it is useless)
+// and I dont see a reasonable way to override resetQuery action from react searchkit
+export const EmptyResultsElement = ({ queryString }) => {
+  return (
+    <Segment placeholder textAlign="center">
+      <Header icon>
+        <Icon name="search" />
+      </Header>
+      {queryString && (
+        <em>
+          {i18next.t("We couldn't find any matches for ")} "{queryString}"
+        </em>
+      )}
+      <br />
+    </Segment>
+  );
+};
+
+EmptyResultsElement.propTypes = {
+  queryString: PropTypes.string,
+  resetQuery: PropTypes.func.isRequired,
+  extraContent: PropTypes.node,
+};
+
+const overriddenComponents = {
+  ["EmptyResults.element"]: EmptyResultsElement,
+};
 
 export const ExternalApiModal = ({
   searchConfig,
@@ -32,7 +61,7 @@ export const ExternalApiModal = ({
   const [externalApiRecord, setExternalApiRecord] = useState({});
   const { setFieldValue } = useFormikContext();
   const searchApi = new InvenioSearchApi(searchConfig.searchApi);
-
+  console.log(searchConfig);
   const handleExternalRecordChange = (record) => {
     setExternalApiRecord(record);
   };
@@ -46,12 +75,11 @@ export const ExternalApiModal = ({
         </Grid>
       </Modal.Header>
       <Modal.Content>
-        <OverridableContext.Provider value={{}}>
+        <OverridableContext.Provider value={overriddenComponents}>
           <ReactSearchKit
             searchApi={searchApi}
-            appName="licenses"
-            urlHandlerApi={{ enabled: false }}
             initialQueryState={searchConfig.initialQueryState}
+            urlHandlerApi={{ enabled: false }}
           >
             <Grid celled="internally">
               <Grid.Row>
@@ -111,6 +139,7 @@ export const ExternalApiModal = ({
           floated="left"
         />
         <Button
+          disabled={_isEmpty(externalApiRecord)}
           name="submit"
           primary
           icon="checkmark"
