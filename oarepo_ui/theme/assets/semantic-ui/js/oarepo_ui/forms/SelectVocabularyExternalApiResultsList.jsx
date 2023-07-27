@@ -1,12 +1,9 @@
 import React from "react";
 import { Item, Header, Radio, Grid, Table } from "semantic-ui-react";
 import { withState } from "react-searchkit";
-import _get from "lodash/get";
-import { FastField } from "formik";
 import _toPairs from "lodash/toPairs";
 import _chunk from "lodash/chunk";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import { useFormikContext } from "formik";
 
 // taken from oarepo vocabularies components/VocabularyResultsListItem => maybe we could move this specific component to oarepo ui as it could be useful in more places like here?
 

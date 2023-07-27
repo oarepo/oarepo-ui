@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { RemoteSelectField } from "react-invenio-forms";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { Modal, Button, Message, Grid, Header } from "semantic-ui-react";
@@ -10,9 +9,7 @@ import {
   ReactSearchKit,
   ResultsLoader,
   SearchBar,
-  withState,
   InvenioSearchApi,
-  Toggle,
   Pagination,
   ResultsPerPage,
 } from "react-searchkit";
@@ -57,7 +54,7 @@ export const ExternalApiModal = ({
             urlHandlerApi={{ enabled: false }}
             initialQueryState={searchConfig.initialQueryState}
           >
-            <Grid>
+            <Grid celled="internally">
               <Grid.Row>
                 <Grid.Column width={8} floated="left" verticalAlign="middle">
                   <SearchBar
@@ -90,7 +87,7 @@ export const ExternalApiModal = ({
               </Grid.Row>
               <Grid.Row verticalAlign="middle">
                 <Grid.Column>
-                  <Pagination />
+                  <Pagination options={{ size: "tiny" }} />
                 </Grid.Column>
 
                 <Grid.Column floated="right" width={3}>
