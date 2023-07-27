@@ -50,7 +50,7 @@ const serializeSuggestions = (suggestions) =>
     key: item.id,
   }));
 
-export class SelectVocabularyItem extends RemoteSelectField {
+export class RelatedSelectField extends RemoteSelectField {
   constructor(props) {
     super(props);
     this.state = {
@@ -150,6 +150,7 @@ export class SelectVocabularyItem extends RemoteSelectField {
       fieldPath,
       suggestionAPIHeaders,
       externalSuggestionAPI,
+      serializeExternalApiSuggestions,
     } = this.props;
     // not sure how to pass search APP config in the best way
     // because search app is being mounted within a modal and also I don't know
@@ -205,7 +206,7 @@ export class SelectVocabularyItem extends RemoteSelectField {
   }
 }
 
-SelectVocabularyItem.propTypes = {
+RelatedSelectField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   suggestionAPIUrl: PropTypes.string.isRequired,
   suggestionAPIQueryParams: PropTypes.object,
@@ -232,7 +233,7 @@ SelectVocabularyItem.propTypes = {
   serializeExternalApiSuggestions: PropTypes.func,
 };
 
-SelectVocabularyItem.defaultProps = {
+RelatedSelectField.defaultProps = {
   debounceTime: 500,
   suggestionAPIQueryParams: {},
   serializeSuggestions: serializeSuggestions,

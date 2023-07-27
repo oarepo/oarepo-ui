@@ -11,7 +11,7 @@ import Overridable from "react-overridable";
 // for a case where we would have multiple such inputs in the same app
 // and want to have each render something differently
 
-export const SelectVocabularyExternalApiResultsList = withState(
+export const ExternalApiResultsList = withState(
   ({
     currentResultsState: results,
     handleAddingExternalApiSuggestion,
@@ -59,7 +59,7 @@ export const SelectVocabularyExternalApiResultsList = withState(
   }
 );
 
-SelectVocabularyExternalApiResultsList.propTypes = {
+ExternalApiResultsList.propTypes = {
   currentResultsState: PropTypes.arrayOf(PropTypes.object),
   handleAddingExternalApiSuggestion: PropTypes.func.isRequired,
   handleExternalRecordChange: PropTypes.func.isRequired,

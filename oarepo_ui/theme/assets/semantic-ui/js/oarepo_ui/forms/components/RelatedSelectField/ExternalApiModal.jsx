@@ -13,7 +13,7 @@ import {
   Pagination,
   ResultsPerPage,
 } from "react-searchkit";
-import { SelectVocabularyExternalApiResultsList } from "./SelectVocabularyExternalApiResultsList";
+import { ExternalApiResultsList } from "./ExternalApiResultsList";
 import { useFormikContext } from "formik";
 import _isEmpty from "lodash/isEmpty";
 
@@ -102,7 +102,7 @@ export const ExternalApiModal = ({
                   <ResultsLoader>
                     <EmptyResults />
                     <Error />
-                    <SelectVocabularyExternalApiResultsList
+                    <ExternalApiResultsList
                       handleAddingExternalApiSuggestion={
                         handleAddingExternalApiSuggestion
                       }
