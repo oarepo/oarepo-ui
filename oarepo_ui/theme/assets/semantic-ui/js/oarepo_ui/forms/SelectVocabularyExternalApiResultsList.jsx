@@ -1,11 +1,15 @@
 import React from "react";
-import { Item, Header, Radio, Grid, Table } from "semantic-ui-react";
+import { Header, Radio, Grid, Table } from "semantic-ui-react";
 import { withState } from "react-searchkit";
 import _toPairs from "lodash/toPairs";
 import _chunk from "lodash/chunk";
-import { i18next } from "@translations/oarepo_ui/i18next";
 import PropTypes from "prop-types";
 import Overridable from "react-overridable";
+
+// this search app is wrapped by its own overridable context
+// maybe the main component should also accept overriden components as props
+// for a case where we would have multiple such inputs in the same app
+// and want to have each render something differently
 
 export const SelectVocabularyExternalApiResultsList = withState(
   ({

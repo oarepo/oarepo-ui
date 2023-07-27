@@ -12,6 +12,7 @@ export const NoResultsMessage = ({ noResultsMessage, handleModal }) => {
           </Grid.Column>
           <Grid.Column textAlign="right">
             <Button
+              fluid
               as="a"
               color="green"
               icon="search"

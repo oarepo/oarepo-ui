@@ -85,7 +85,6 @@ export class ApiClient extends DepositApiClient {
       return data;
     } catch (error) {
       const errorData = error.response.data;
-      console.log(errorData);
       return Promise.reject(errorData);
     }
   }

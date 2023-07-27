@@ -17,6 +17,8 @@ import { SelectVocabularyExternalApiResultsList } from "./SelectVocabularyExtern
 import { useFormikContext } from "formik";
 import _isEmpty from "lodash/isEmpty";
 
+// have the same component in another module. Where could we place such
+// small components to be reused
 const resultsPerPageLabel = (cmp) => (
   <React.Fragment>
     {cmp} {i18next.t("resultsPerPage")}
@@ -62,7 +64,6 @@ export const ExternalApiModal = ({
   const [externalApiRecord, setExternalApiRecord] = useState({});
   const { setFieldValue } = useFormikContext();
   const searchApi = new InvenioSearchApi(searchConfig.searchApi);
-  console.log(searchConfig);
   const handleExternalRecordChange = (record) => {
     setExternalApiRecord(record);
   };

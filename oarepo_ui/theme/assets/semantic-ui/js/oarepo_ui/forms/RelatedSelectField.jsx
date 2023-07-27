@@ -6,6 +6,7 @@ import { Message, Icon, Label } from "semantic-ui-react";
 import { ExternalApiModal } from "./ExternalApiModal";
 import { NoResultsMessage } from "./NoResultsMessage";
 import _reverse from "lodash/reverse";
+
 // example usage
 // the reason why it is like this is because the field can contain complex object and you somehow need to add it a value
 // which can be a primitive only and if it is used directly under invenio's base form at that moment you don't have access
@@ -144,14 +145,17 @@ export class SelectVocabularyItem extends RemoteSelectField {
   };
 
   render() {
-    console.log(this.state);
     const {
       serializeSuggestions,
       fieldPath,
       suggestionAPIHeaders,
       externalSuggestionAPI,
     } = this.props;
-    // not sure how to pass search APP config in the best way because search app is being mounted within a modal
+    // not sure how to pass search APP config in the best way
+    // because search app is being mounted within a modal and also I don't know
+    // where the component would be used in advance
+    // maybe it makes sense for the component to accept searchConfig as a prop
+
     const searchConfig = {
       searchApi: {
         axios: {
@@ -177,7 +181,6 @@ export class SelectVocabularyItem extends RemoteSelectField {
         gridView: false,
       },
     };
-    console.log(searchConfig);
     return (
       <React.Fragment>
         {super.render(this.getProps())}
@@ -186,7 +189,11 @@ export class SelectVocabularyItem extends RemoteSelectField {
             searchConfig={searchConfig}
             open={this.state.isModalOpen}
             onClose={this.handleModal}
-            serializeSuggestions={serializeSuggestions}
+            serializeSuggestions={
+              serializeExternalApiSuggestions !== undefined
+                ? serializeExternalApiSuggestions
+                : serializeSuggestions
+            }
             handleAddingExternalApiSuggestion={
               this.handleAddingExternalApiSuggestion
             }
