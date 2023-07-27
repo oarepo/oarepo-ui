@@ -347,3 +347,4 @@ class RecordsUIResource(UIResource):
     @property
     def api_config(self):
         return self.api_service.config
+
