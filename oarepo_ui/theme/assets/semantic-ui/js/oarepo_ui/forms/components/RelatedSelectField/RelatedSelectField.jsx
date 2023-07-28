@@ -2,10 +2,9 @@ import React from "react";
 import { RemoteSelectField } from "react-invenio-forms";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import { Message, Icon, Label } from "semantic-ui-react";
+import { Message } from "semantic-ui-react";
 import { ExternalApiModal } from "./ExternalApiModal";
 import { NoResultsMessage } from "./NoResultsMessage";
-import _reverse from "lodash/reverse";
 
 // example usage
 // the reason why it is like this is because the field can contain complex object and you somehow need to add it a value

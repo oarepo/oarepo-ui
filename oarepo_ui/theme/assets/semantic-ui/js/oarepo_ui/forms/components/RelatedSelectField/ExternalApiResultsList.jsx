@@ -1,8 +1,6 @@
 import React from "react";
-import { Header, Radio, Grid, Table } from "semantic-ui-react";
+import { Header, Radio, Grid } from "semantic-ui-react";
 import { withState } from "react-searchkit";
-import _toPairs from "lodash/toPairs";
-import _chunk from "lodash/chunk";
 import PropTypes from "prop-types";
 import Overridable from "react-overridable";
 
