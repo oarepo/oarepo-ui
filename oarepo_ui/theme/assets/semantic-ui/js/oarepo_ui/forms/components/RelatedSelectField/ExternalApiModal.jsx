@@ -149,7 +149,7 @@ export const ExternalApiModal = ({
           labelPosition="left"
           content={i18next.t("Choose")}
           onClick={() => {
-            setFieldValue(fieldPath, externalApiRecord);
+            setFieldValue(fieldPath, externalApiRecord.value);
             onClose();
           }}
         />
