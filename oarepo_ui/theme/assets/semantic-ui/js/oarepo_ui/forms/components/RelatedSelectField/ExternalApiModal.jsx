@@ -60,7 +60,7 @@ export const ExternalApiModal = ({
     setExternalApiRecord(record);
   };
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal open={open} onClose={onClose} closeIcon className="rel-mt-2">
       <Modal.Header as="h6" className="pt-10 pb-10">
         <Grid>
           <Grid.Column floated="left">
@@ -124,16 +124,6 @@ export const ExternalApiModal = ({
         </OverridableContext.Provider>
       </Modal.Content>
       <Modal.Actions>
-        <Button
-          name="cancel"
-          onClick={() => {
-            onClose();
-          }}
-          icon="remove"
-          labelPosition="left"
-          content={i18next.t("Cancel")}
-          floated="left"
-        />
         <Button
           disabled={_isEmpty(externalApiRecord)}
           name="submit"
