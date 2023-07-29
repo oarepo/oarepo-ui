@@ -96,9 +96,9 @@ export class RelatedSelectField extends RemoteSelectField {
     );
   };
 
-  handleAddingExternalApiSuggestion = (externalApiSuggestion) => {
+  handleAddingExternalApiSuggestion = (externalApiSuggestions) => {
     this.setState({
-      suggestions: [...this.state.suggestions, externalApiSuggestion],
+      suggestions: [...externalApiSuggestions],
     });
   };
 
@@ -155,6 +155,7 @@ export class RelatedSelectField extends RemoteSelectField {
       externalSuggestionApi,
       serializeExternalApiSuggestions,
       externalApiModalTitle,
+      multiple,
     } = this.props;
     console.log(this.state);
     // not sure how to pass search APP config in the best way
@@ -246,6 +247,7 @@ export class RelatedSelectField extends RemoteSelectField {
             }
             fieldPath={fieldPath}
             externalApiModalTitle={externalApiModalTitle}
+            multiple={multiple}
           />
         )}
       </React.Fragment>

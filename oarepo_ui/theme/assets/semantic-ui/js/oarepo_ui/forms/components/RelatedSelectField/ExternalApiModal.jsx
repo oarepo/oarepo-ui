@@ -52,12 +52,32 @@ export const ExternalApiModal = ({
   fieldPath,
   serializeExternalApiSuggestions,
   externalApiModalTitle,
+  multiple,
 }) => {
-  const [externalApiRecord, setExternalApiRecord] = useState({});
+  const [externalApiRecords, setExternalApiRecords] = useState([]);
+  console.log(externalApiRecords);
   const { setFieldValue } = useFormikContext();
   const searchApi = new InvenioSearchApi(searchConfig.searchApi);
   const handleExternalRecordChange = (record) => {
-    setExternalApiRecord(record);
+    if (multiple) {
+      const recordIndex = externalApiRecords.findIndex(
+        (item) => item.text === record.text
+      );
+
+      if (recordIndex === -1) {
+        // If the record is not present in the array, add it (checkbox was checked)
+        setExternalApiRecords((prevSelected) => [...prevSelected, record]);
+      } else {
+        // If the record is already in the array, remove it (checkbox was unchecked)
+        setExternalApiRecords((prevSelected) => {
+          const updatedSelected = [...prevSelected];
+          updatedSelected.splice(recordIndex, 1);
+          return updatedSelected;
+        });
+      }
+    } else {
+      setExternalApiRecords([record]);
+    }
   };
   return (
     <Modal open={open} onClose={onClose} closeIcon className="rel-mt-2">
@@ -99,10 +119,11 @@ export const ExternalApiModal = ({
                         handleAddingExternalApiSuggestion
                       }
                       handleExternalRecordChange={handleExternalRecordChange}
-                      externalApiRecord={externalApiRecord}
+                      externalApiRecords={externalApiRecords}
                       serializeExternalApiSuggestions={
                         serializeExternalApiSuggestions
                       }
+                      multiple={multiple}
                     />
                   </ResultsLoader>
                 </Grid.Column>
@@ -124,18 +145,36 @@ export const ExternalApiModal = ({
         </OverridableContext.Provider>
       </Modal.Content>
       <Modal.Actions>
-        <Button
-          disabled={_isEmpty(externalApiRecord)}
-          name="submit"
-          primary
-          icon="checkmark"
-          labelPosition="left"
-          content={i18next.t("Choose")}
-          onClick={() => {
-            setFieldValue(fieldPath, externalApiRecord.value);
-            onClose();
-          }}
-        />
+        {multiple ? (
+          <Button
+            disabled={_isEmpty(externalApiRecords)}
+            primary
+            icon="checkmark"
+            labelPosition="left"
+            content={i18next.t("Choose")}
+            onClick={() => {
+              handleAddingExternalApiSuggestion(externalApiRecords);
+              setFieldValue(
+                fieldPath,
+                externalApiRecords.map((record) => record.value)
+              );
+              setExternalApiRecords([]);
+              onClose();
+            }}
+          />
+        ) : (
+          <Button
+            disabled={_isEmpty(externalApiRecords)}
+            primary
+            icon="checkmark"
+            labelPosition="left"
+            content={i18next.t("Choose")}
+            onClick={() => {
+              setFieldValue(fieldPath, externalApiRecords[0].value);
+              onClose();
+            }}
+          />
+        )}
       </Modal.Actions>
     </Modal>
   );
