@@ -1,10 +1,11 @@
 import React from "react";
-import { RemoteSelectField } from "react-invenio-forms";
+import { RemoteSelectField, SelectField } from "react-invenio-forms";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import { Message } from "semantic-ui-react";
+import { Message, Button } from "semantic-ui-react";
 import { ExternalApiModal } from "./ExternalApiModal";
 import { NoResultsMessage } from "./NoResultsMessage";
+import _isEmpty from "lodash/isEmpty";
 
 // example usage
 // the reason why it is like this is because the field can contain complex object and you somehow need to add it a value
@@ -155,11 +156,12 @@ export class RelatedSelectField extends RemoteSelectField {
       serializeExternalApiSuggestions,
       externalApiModalTitle,
     } = this.props;
+    console.log(this.state);
     // not sure how to pass search APP config in the best way
     // because search app is being mounted within a modal and also I don't know
     // where the component would be used in advance
     // maybe it makes sense for the component to accept searchConfig as a prop
-
+    const { compProps, uiProps } = this.getProps();
     const searchConfig = {
       searchApi: {
         axios: {
@@ -187,7 +189,48 @@ export class RelatedSelectField extends RemoteSelectField {
     };
     return (
       <React.Fragment>
-        {super.render(this.getProps())}
+        <SelectField
+          {...uiProps}
+          allowAdditions={this.error ? false : uiProps.allowAdditions}
+          fieldPath={compProps.fieldPath}
+          options={this.state.suggestions}
+          noResultsMessage={this.getNoResultsMessage()}
+          search={compProps.search}
+          lazyLoad
+          open={this.open}
+          onClose={this.onClose}
+          onFocus={this.onFocus}
+          onBlur={this.onBlur}
+          onSearchChange={this.onSearchChange}
+          onAddItem={({ event, data, formikProps }) => {
+            this.handleAddition(event, data, (selectedSuggestions) => {
+              if (compProps.onValueChange) {
+                compProps.onValueChange(
+                  { event, data, formikProps },
+                  selectedSuggestions
+                );
+              }
+            });
+          }}
+          onChange={({ event, data, formikProps }) => {
+            this.onSelectValue(event, data, (selectedSuggestions) => {
+              if (data.value === "" || _isEmpty(data.value)) {
+                this.setState({ suggestions: [] });
+              }
+              if (compProps.onValueChange) {
+                compProps.onValueChange(
+                  { event, data, formikProps },
+                  selectedSuggestions
+                );
+              } else {
+                console.log("actual change");
+                formikProps.form.setFieldValue(compProps.fieldPath, data.value);
+              }
+            });
+          }}
+          loading={this.isFetching}
+          className="invenio-remote-select-field"
+        />
         {externalSuggestionApi && (
           <ExternalApiModal
             searchConfig={searchConfig}
