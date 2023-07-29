@@ -20,7 +20,7 @@ import { NoResultsMessage } from "./NoResultsMessage";
       fieldPath={fieldPath}
       suggestionAPIUrl={"/api/vocabularies/institutions"}
       clearable
-      externalSuggestionAPI={"/api/vocabularies/institutions"}
+      externalSuggestionApi={"/api/vocabularies/institutions"}
       search={(options) => options}
       selectOnBlur={false}
       onValueChange={({ formikProps }, selectedItems) => {
@@ -70,8 +70,9 @@ export class RelatedSelectField extends RemoteSelectField {
       loadingMessage,
       suggestionsErrorMessage,
       noQueryMessage,
-      externalSuggestionAPI,
+      externalSuggestionApi,
       noResultsMessage,
+      externalApiButtonContent,
     } = this.props;
     const { isFetching, error, searchQuery } = this.state;
     if (isFetching) {
@@ -83,10 +84,11 @@ export class RelatedSelectField extends RemoteSelectField {
     if (!searchQuery) {
       return noQueryMessage;
     }
-    return externalSuggestionAPI ? (
+    return externalSuggestionApi ? (
       <NoResultsMessage
         noResultsMessage={"No results found"}
         handleModal={this.handleModal}
+        externalApiButtonContent={externalApiButtonContent}
       />
     ) : (
       noResultsMessage
@@ -102,8 +104,10 @@ export class RelatedSelectField extends RemoteSelectField {
   getProps = () => {
     const {
       // allow to pass a different serializer to transform data from external API in case it is needed
+      externalApiButtonContent,
+      externalApiModalTitle,
       serializeExternalApiSuggestions,
-      externalSuggestionAPI,
+      externalSuggestionApi,
       hierarchical,
       fieldPath,
       suggestionAPIUrl,
@@ -147,8 +151,9 @@ export class RelatedSelectField extends RemoteSelectField {
       serializeSuggestions,
       fieldPath,
       suggestionAPIHeaders,
-      externalSuggestionAPI,
+      externalSuggestionApi,
       serializeExternalApiSuggestions,
+      externalApiModalTitle,
     } = this.props;
     // not sure how to pass search APP config in the best way
     // because search app is being mounted within a modal and also I don't know
@@ -159,7 +164,7 @@ export class RelatedSelectField extends RemoteSelectField {
       searchApi: {
         axios: {
           headers: suggestionAPIHeaders,
-          url: externalSuggestionAPI,
+          url: externalSuggestionApi,
           withCredentials: false,
         },
       },
@@ -183,13 +188,13 @@ export class RelatedSelectField extends RemoteSelectField {
     return (
       <React.Fragment>
         {super.render(this.getProps())}
-        {externalSuggestionAPI && (
+        {externalSuggestionApi && (
           <ExternalApiModal
             searchConfig={searchConfig}
             open={this.state.isModalOpen}
             onClose={this.handleModal}
-            serializeSuggestions={
-              serializeExternalApiSuggestions !== undefined
+            serializeExternalApiSuggestions={
+              serializeExternalApiSuggestions
                 ? serializeExternalApiSuggestions
                 : serializeSuggestions
             }
@@ -197,6 +202,7 @@ export class RelatedSelectField extends RemoteSelectField {
               this.handleAddingExternalApiSuggestion
             }
             fieldPath={fieldPath}
+            externalApiModalTitle={externalApiModalTitle}
           />
         )}
       </React.Fragment>
@@ -227,8 +233,10 @@ RelatedSelectField.propTypes = {
   onValueChange: PropTypes.func, // Takes the SUI hanf and updated selectedSuggestions
   search: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
   multiple: PropTypes.bool,
-  externalSuggestionAPI: PropTypes.string,
+  externalSuggestionApi: PropTypes.string,
   serializeExternalApiSuggestions: PropTypes.func,
+  externalApiButtonContent: PropTypes.string,
+  externalApiModalTitle: PropTypes.string,
 };
 
 RelatedSelectField.defaultProps = {
@@ -247,4 +255,6 @@ RelatedSelectField.defaultProps = {
   onValueChange: undefined,
   suggestionAPIHeaders: { Accept: "application/json" },
   serializeExternalApiSuggestions: undefined,
+  externalApiButtonContent: "Search External Database",
+  externalApiModalTitle: "Search results from external API",
 };

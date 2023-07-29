@@ -2,7 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Message, Grid, Button } from "semantic-ui-react";
 
-export const NoResultsMessage = ({ noResultsMessage, handleModal }) => {
+export const NoResultsMessage = ({
+  noResultsMessage,
+  handleModal,
+  externalApiButtonContent,
+}) => {
   return (
     <Message>
       <Message.Content>
@@ -17,7 +21,7 @@ export const NoResultsMessage = ({ noResultsMessage, handleModal }) => {
               color="green"
               icon="search"
               labelPosition="left"
-              content="Search External Database"
+              content={externalApiButtonContent}
               type="button"
               onClick={handleModal}
             />

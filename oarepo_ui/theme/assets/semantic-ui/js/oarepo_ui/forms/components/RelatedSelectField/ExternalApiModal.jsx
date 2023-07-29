@@ -16,17 +16,8 @@ import {
 import { ExternalApiResultsList } from "./ExternalApiResultsList";
 import { useFormikContext } from "formik";
 import _isEmpty from "lodash/isEmpty";
+import { ResultsPerPageLabel } from "@js/oarepo_ui/search/";
 
-// have the same component in another module. Where could we place such
-// small components to be reused
-const resultsPerPageLabel = (cmp) => (
-  <React.Fragment>
-    {cmp} {i18next.t("resultsPerPage")}
-  </React.Fragment>
-);
-
-//  providing custom empty error message because we are initializing app with a query string and the button to reset search effectivelly does nothing (it is resetting to already existing query string so I thought it is useless)
-// and I dont see a reasonable way to override resetQuery action from react searchkit
 export const EmptyResultsElement = ({ queryString }) => {
   return (
     <Segment placeholder textAlign="center">
@@ -59,7 +50,8 @@ export const ExternalApiModal = ({
   onClose,
   handleAddingExternalApiSuggestion,
   fieldPath,
-  serializeSuggestions,
+  serializeExternalApiSuggestions,
+  externalApiModalTitle,
 }) => {
   const [externalApiRecord, setExternalApiRecord] = useState({});
   const { setFieldValue } = useFormikContext();
@@ -72,7 +64,7 @@ export const ExternalApiModal = ({
       <Modal.Header as="h6" className="pt-10 pb-10">
         <Grid>
           <Grid.Column floated="left">
-            <Header as="h2">Search results from external API</Header>
+            <Header as="h2">{externalApiModalTitle}</Header>
           </Grid.Column>
         </Grid>
       </Modal.Header>
@@ -106,10 +98,11 @@ export const ExternalApiModal = ({
                       handleAddingExternalApiSuggestion={
                         handleAddingExternalApiSuggestion
                       }
-                      fieldPath={fieldPath}
                       handleExternalRecordChange={handleExternalRecordChange}
                       externalApiRecord={externalApiRecord}
-                      serializeSuggestions={serializeSuggestions}
+                      serializeExternalApiSuggestions={
+                        serializeExternalApiSuggestions
+                      }
                     />
                   </ResultsLoader>
                 </Grid.Column>
@@ -122,7 +115,7 @@ export const ExternalApiModal = ({
                 <Grid.Column floated="right" width={3}>
                   <ResultsPerPage
                     values={searchConfig.paginationOptions.resultsPerPage}
-                    label={resultsPerPageLabel}
+                    label={ResultsPerPageLabel}
                   />
                 </Grid.Column>
               </Grid.Row>
