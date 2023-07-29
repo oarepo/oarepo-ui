@@ -63,7 +63,6 @@ export const ExternalApiModal = ({
       const recordIndex = externalApiRecords.findIndex(
         (item) => item.text === record.text
       );
-
       if (recordIndex === -1) {
         // If the record is not present in the array, add it (checkbox was checked)
         setExternalApiRecords((prevSelected) => [...prevSelected, record]);
