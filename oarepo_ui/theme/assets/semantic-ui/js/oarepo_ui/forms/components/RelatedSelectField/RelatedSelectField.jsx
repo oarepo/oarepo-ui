@@ -157,7 +157,6 @@ export class RelatedSelectField extends RemoteSelectField {
       externalApiModalTitle,
       multiple,
     } = this.props;
-    console.log(this.state);
     // not sure how to pass search APP config in the best way
     // because search app is being mounted within a modal and also I don't know
     // where the component would be used in advance

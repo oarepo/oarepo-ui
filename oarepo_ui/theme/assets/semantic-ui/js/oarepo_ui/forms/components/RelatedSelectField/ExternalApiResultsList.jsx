@@ -36,7 +36,7 @@ export const ExternalApiResultsList = withState(
               );
               const isDisabled = externalApiRecords.length >= 20 && !isChecked;
               return multiple ? (
-                <Grid.Row width={10} key={title}>
+                <Grid.Row width={10} key={record.value}>
                   <Grid.Column width={2}>
                     <Checkbox
                       disabled={isDisabled}
@@ -54,7 +54,7 @@ export const ExternalApiResultsList = withState(
                 </Grid.Row>
               ) : (
                 <Grid.Row
-                  key={title}
+                  key={record.value}
                   onClick={() => {
                     handleAddingExternalApiSuggestion([record]);
                     handleExternalRecordChange(record);
@@ -81,7 +81,7 @@ export const ExternalApiResultsList = withState(
               {externalApiRecords.map((record) => (
                 <Label
                   image
-                  key={record.id}
+                  key={record.value}
                   onClick={() => handleExternalRecordChange(record)}
                 >
                   {record.text}
@@ -101,4 +101,5 @@ ExternalApiResultsList.propTypes = {
   handleAddingExternalApiSuggestion: PropTypes.func.isRequired,
   handleExternalRecordChange: PropTypes.func.isRequired,
   externalApiRecords: PropTypes.array.isRequired,
+  multiple: PropTypes.bool.isRequired,
 };

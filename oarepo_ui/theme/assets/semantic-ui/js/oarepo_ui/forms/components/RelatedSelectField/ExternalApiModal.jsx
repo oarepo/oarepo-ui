@@ -55,7 +55,6 @@ export const ExternalApiModal = ({
   multiple,
 }) => {
   const [externalApiRecords, setExternalApiRecords] = useState([]);
-  console.log(externalApiRecords);
   const { setFieldValue } = useFormikContext();
   const searchApi = new InvenioSearchApi(searchConfig.searchApi);
   const handleExternalRecordChange = (record) => {
@@ -64,10 +63,8 @@ export const ExternalApiModal = ({
         (item) => item.text === record.text
       );
       if (recordIndex === -1) {
-        // If the record is not present in the array, add it (checkbox was checked)
         setExternalApiRecords((prevSelected) => [...prevSelected, record]);
       } else {
-        // If the record is already in the array, remove it (checkbox was unchecked)
         setExternalApiRecords((prevSelected) => {
           const updatedSelected = [...prevSelected];
           updatedSelected.splice(recordIndex, 1);
