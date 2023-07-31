@@ -2,7 +2,7 @@ import React from "react";
 import { RemoteSelectField, SelectField } from "react-invenio-forms";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import { Message, Button } from "semantic-ui-react";
+import { Message } from "semantic-ui-react";
 import { ExternalApiModal } from "./ExternalApiModal";
 import { NoResultsMessage } from "./NoResultsMessage";
 import _isEmpty from "lodash/isEmpty";
@@ -87,7 +87,7 @@ export class RelatedSelectField extends RemoteSelectField {
     }
     return externalSuggestionApi ? (
       <NoResultsMessage
-        noResultsMessage={"No results found"}
+        noResultsMessage={i18next.t("No results found")}
         handleModal={this.handleModal}
         externalApiButtonContent={externalApiButtonContent}
       />
@@ -223,7 +223,6 @@ export class RelatedSelectField extends RemoteSelectField {
                   selectedSuggestions
                 );
               } else {
-                console.log("actual change");
                 formikProps.form.setFieldValue(compProps.fieldPath, data.value);
               }
             });
@@ -287,10 +286,10 @@ RelatedSelectField.defaultProps = {
   debounceTime: 500,
   suggestionAPIQueryParams: {},
   serializeSuggestions: serializeSuggestions,
-  suggestionsErrorMessage: "Something went wrong...",
-  noQueryMessage: "Search...",
-  noResultsMessage: "No results found.",
-  loadingMessage: "Loading...",
+  suggestionsErrorMessage: i18next.t("Something went wrong..."),
+  noQueryMessage: i18next.t("search"),
+  noResultsMessage: i18next.t("No results found"),
+  loadingMessage: i18next.t("Loading..."),
   preSearchChange: (x) => x,
   search: true,
   multiple: false,
@@ -299,6 +298,6 @@ RelatedSelectField.defaultProps = {
   onValueChange: undefined,
   suggestionAPIHeaders: { Accept: "application/json" },
   serializeExternalApiSuggestions: undefined,
-  externalApiButtonContent: "Search External Database",
-  externalApiModalTitle: "Search results from external API",
+  externalApiButtonContent: i18next.t("Search External Database"),
+  externalApiModalTitle: i18next.t("Search results from external API"),
 };
