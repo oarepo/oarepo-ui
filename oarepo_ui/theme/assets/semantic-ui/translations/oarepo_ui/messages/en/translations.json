@@ -18,5 +18,11 @@
   "show": "Show",
   "totalDescendants": "{{count}} child item",
   "totalDescendants_plural": "{{count}} children items",
-  "search": "Search"
+  "search": "Search",
+  "Something went wrong...": "Something went wrong...",
+  "No results found": "No results found",
+  "Loading...": "Loading...",
+  "Search External Database": "Search External Database",
+  "Search results from external API": "Search results from external API",
+  "Choose": "Choose"
 }

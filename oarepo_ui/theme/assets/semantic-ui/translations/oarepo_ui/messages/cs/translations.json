@@ -20,5 +20,11 @@
   "totalDescendants_0": "1 podřízená položka",
   "totalDescendants_1": "{{count}} podřízené položky",
   "totalDescendants_2": "{{count}} podřízených položek",
-  "search": "Hledat"
+  "search": "Hledat",
+  "Something went wrong...": "Stalo se něco špatného",
+  "No results found": "Nebyly nalezeny žádné výsledky",
+  "Loading...": "Načítání...",
+  "Search External Database": "Prohledejte externí databázi",
+  "Search results from external API": "Výsledky vyhledávání z externího API",
+  "Choose": "Vybrat"
 }
