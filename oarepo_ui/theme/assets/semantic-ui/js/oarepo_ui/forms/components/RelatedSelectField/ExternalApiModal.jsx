@@ -95,7 +95,7 @@ export const ExternalApiModal = ({
               <Grid.Row>
                 <Grid.Column width={8} floated="left" verticalAlign="middle">
                   <SearchBar
-                    placeholder={i18next.t("Search")}
+                    placeholder={i18next.t("search")}
                     autofocus
                     actionProps={{
                       icon: "search",
