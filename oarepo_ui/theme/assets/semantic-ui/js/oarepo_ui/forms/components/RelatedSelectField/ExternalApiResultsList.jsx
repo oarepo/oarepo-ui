@@ -1,13 +1,20 @@
-import React from "react";
-import { Header, Radio, Grid, Checkbox, Icon, Label } from "semantic-ui-react";
+import React, { useMemo } from "react";
+import { Header, Grid, Checkbox, Icon, Label, Button } from "semantic-ui-react";
 import { withState } from "react-searchkit";
 import PropTypes from "prop-types";
 import Overridable from "react-overridable";
+import { i18next } from "@translations/oarepo_ui/i18next";
+import { useFormikContext } from "formik";
 
 // this search app is wrapped by its own overridable context
 // maybe the main component should also accept overriden components as props
 // for a case where we would have multiple such inputs in the same app
 // and want to have each render something differently
+
+// make another fieldPath with _ that would hold actually state we are
+// sending to the server it should be fieldPath : {id :"string"}
+// do language fall back to avoid getting undefined title text when
+// translation to current i18 language is not available
 
 export const ExternalApiResultsList = withState(
   ({
@@ -17,7 +24,13 @@ export const ExternalApiResultsList = withState(
     externalApiRecords,
     serializeExternalApiSuggestions,
     multiple,
+    fieldPath,
+    onClose,
   }) => {
+    const { setFieldValue } = useFormikContext();
+    const serializedSuggestions = useMemo(() => {
+      return serializeExternalApiSuggestions(results?.data?.hits);
+    }, [results]);
     return (
       <Overridable
         id="ExternalApiSuggestions.container"
@@ -28,56 +41,44 @@ export const ExternalApiResultsList = withState(
         serializeExternalApiSuggestions={serializeExternalApiSuggestions}
       >
         <Grid celled columns={3}>
-          {serializeExternalApiSuggestions(results?.data?.hits).map(
-            (record) => {
-              const title = record.text;
-              const isChecked = externalApiRecords.some(
-                (record) => record.text === title
-              );
-              const isDisabled = externalApiRecords.length >= 20 && !isChecked;
-              return multiple ? (
-                <Grid.Row width={10} key={record.value}>
-                  <Grid.Column width={2}>
-                    <Checkbox
-                      disabled={isDisabled}
-                      checked={isChecked}
-                      onChange={() => {
-                        handleExternalRecordChange(record);
-                      }}
-                    />
-                  </Grid.Column>
-                  <Grid.Column width={8}>
-                    <Header size="small" className="mt-0">
-                      {title}
-                    </Header>
-                  </Grid.Column>
-                </Grid.Row>
-              ) : (
-                <Grid.Row
-                  key={record.value}
-                  onClick={() => {
-                    handleAddingExternalApiSuggestion([record]);
-                    handleExternalRecordChange(record);
-                  }}
-                >
-                  <Grid.Column width={2}>
-                    <Radio
-                      checked={externalApiRecords[0]?.text === title}
-                      onChange={() => handleExternalRecordChange(record)}
-                    />
-                  </Grid.Column>
-                  <Grid.Column width={8}>
-                    <Header size="small" className="mt-0">
-                      {title}
-                    </Header>
-                  </Grid.Column>
-                </Grid.Row>
-              );
-            }
-          )}
+          {serializedSuggestions.map((record) => {
+            const title = record.text;
+            const isSelected = externalApiRecords.some(
+              (record) => record.text === title
+            );
+            return multiple ? (
+              <Grid.Row key={record.value}>
+                <Grid.Column width={16}>
+                  <Button
+                    onClick={() => {
+                      handleExternalRecordChange(record);
+                    }}
+                    fluid
+                    content={title}
+                    color={isSelected ? "green" : "blue"}
+                  />
+                </Grid.Column>
+              </Grid.Row>
+            ) : (
+              <Grid.Row key={record.value}>
+                <Grid.Column width={16}>
+                  <Button
+                    onClick={() => {
+                      handleAddingExternalApiSuggestion([record]);
+                      setFieldValue(fieldPath, record.value);
+                      onClose();
+                    }}
+                    fluid
+                    content={title}
+                    primary
+                  />
+                </Grid.Column>
+              </Grid.Row>
+            );
+          })}
           {externalApiRecords.length > 0 && multiple && (
             <Grid.Column width={10}>
-              <Header as="h3">Selected records</Header>
+              <Header as="h3">{i18next.t("Selected records")}</Header>
               {externalApiRecords.map((record) => (
                 <Label
                   image
@@ -102,4 +103,5 @@ ExternalApiResultsList.propTypes = {
   handleExternalRecordChange: PropTypes.func.isRequired,
   externalApiRecords: PropTypes.array.isRequired,
   multiple: PropTypes.bool.isRequired,
+  fieldPath: PropTypes.string.isRequired,
 };

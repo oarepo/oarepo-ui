@@ -120,6 +120,8 @@ export const ExternalApiModal = ({
                         serializeExternalApiSuggestions
                       }
                       multiple={multiple}
+                      fieldPath={fieldPath}
+                      onClose={onClose}
                     />
                   </ResultsLoader>
                 </Grid.Column>
@@ -141,7 +143,7 @@ export const ExternalApiModal = ({
         </OverridableContext.Provider>
       </Modal.Content>
       <Modal.Actions>
-        {multiple ? (
+        {multiple && (
           <Button
             disabled={_isEmpty(externalApiRecords)}
             primary
@@ -155,18 +157,6 @@ export const ExternalApiModal = ({
                 externalApiRecords.map((record) => record.value)
               );
               setExternalApiRecords([]);
-              onClose();
-            }}
-          />
-        ) : (
-          <Button
-            disabled={_isEmpty(externalApiRecords)}
-            primary
-            icon="checkmark"
-            labelPosition="left"
-            content={i18next.t("Choose")}
-            onClick={() => {
-              setFieldValue(fieldPath, externalApiRecords[0].value);
               onClose();
             }}
           />
