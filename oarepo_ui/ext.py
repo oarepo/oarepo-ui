@@ -2,11 +2,10 @@ import json
 from importlib import import_module
 from pathlib import Path
 from typing import Dict
-
+from jinjax import Catalog
 from flask import Response, current_app
 from frozendict import frozendict
 from importlib_metadata import entry_points
-
 import oarepo_ui.cli  # noqa
 from oarepo_ui.resources.templating import TemplateRegistry
 
@@ -18,6 +17,20 @@ class OARepoUIState:
         self._resources = []
         self.layouts = self._load_layouts()
         self.init_builder_plugin()
+        self.catalog = None
+
+    @property
+    def catalog(self):
+        return getattr(self, '_catalog')
+
+    @catalog.setter
+    def catalog(self, value):
+        self._catalog = Catalog()
+        self._load_components() #todo add folders
+
+    def _load_components(self):
+        for ep in entry_points(group="oarepo.ui_components"):
+            pass
 
     def get_template(self, layout: str, blocks: Dict[str, str]):
         return self.templates.get_template(layout, frozendict(blocks))
