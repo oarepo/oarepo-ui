@@ -10,10 +10,10 @@
   "We couldn't find any matches for ": "Nenašli jsme žádné shody pro ",
   "Start over": "Začít znovu",
   "search": "Hledat",
-  "Something went wrong...": "Stalo se něco špatného",
+  "Something went wrong...": "Něco se pokazilo...",
   "No results found": "Nebyly nalezeny žádné výsledky",
   "Loading...": "Načítání...",
-  "Search External Database": "Prohledejte externí databázi",
+  "Search External Database": "Hledat v externí databázi",
   "Search results from external API": "Výsledky vyhledávání z externího API",
   "Choose": "Vybrat"
 }
