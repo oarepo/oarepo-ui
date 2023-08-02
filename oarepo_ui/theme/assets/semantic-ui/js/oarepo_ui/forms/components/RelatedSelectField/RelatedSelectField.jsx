@@ -59,6 +59,7 @@ export const RelatedSelectField = ({
   serializeExternalApiSuggestions,
   externalApiButtonContent,
   externalApiModalTitle,
+  placeholder,
 }) => {
   const { values } = useFormikContext();
   return (
@@ -107,6 +108,7 @@ export const RelatedSelectField = ({
           : ""
       }
       clearable
+      placeholder={placeholder}
     />
   );
 };
