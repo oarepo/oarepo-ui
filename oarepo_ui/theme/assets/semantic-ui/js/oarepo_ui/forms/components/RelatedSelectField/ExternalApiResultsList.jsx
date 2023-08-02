@@ -1,20 +1,10 @@
 import React, { useMemo } from "react";
-import { Header, Grid, Checkbox, Icon, Label, Button } from "semantic-ui-react";
+import { Header, Grid, Icon, Label, Button } from "semantic-ui-react";
 import { withState } from "react-searchkit";
 import PropTypes from "prop-types";
 import Overridable from "react-overridable";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { useFormikContext } from "formik";
-
-// this search app is wrapped by its own overridable context
-// maybe the main component should also accept overriden components as props
-// for a case where we would have multiple such inputs in the same app
-// and want to have each render something differently
-
-// make another fieldPath with _ that would hold actually state we are
-// sending to the server it should be fieldPath : {id :"string"}
-// do language fall back to avoid getting undefined title text when
-// translation to current i18 language is not available
 
 export const ExternalApiResultsList = withState(
   ({

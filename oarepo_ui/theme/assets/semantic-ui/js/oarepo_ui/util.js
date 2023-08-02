@@ -22,6 +22,6 @@ export const languageFallback = (titleObject) => {
   return (
     titleObject[i18next.language] ||
     titleObject[i18next.options.fallbackLng] ||
-    titleObject[_findKey(item.title, (value) => Boolean(value))]
+    titleObject[_findKey(titleObject, (value) => Boolean(value))]
   );
 };
