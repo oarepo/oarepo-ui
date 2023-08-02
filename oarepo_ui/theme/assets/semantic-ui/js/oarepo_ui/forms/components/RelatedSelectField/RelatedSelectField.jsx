@@ -60,6 +60,8 @@ export const RelatedSelectField = ({
   externalApiButtonContent,
   externalApiModalTitle,
   placeholder,
+  label,
+  required,
 }) => {
   const { values } = useFormikContext();
   return (
@@ -109,6 +111,8 @@ export const RelatedSelectField = ({
       }
       clearable
       placeholder={placeholder}
+      label={label}
+      required={required}
     />
   );
 };
