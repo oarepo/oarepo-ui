@@ -6,6 +6,8 @@ import { Message } from "semantic-ui-react";
 import { ExternalApiModal } from "./ExternalApiModal";
 import { NoResultsMessage } from "./NoResultsMessage";
 import _isEmpty from "lodash/isEmpty";
+import _findKey from "lodash/findKey";
+import { languageFallback } from "../../../util";
 
 // example usage
 // the reason why it is like this is because the field can contain complex object and you somehow need to add it a value
@@ -41,11 +43,12 @@ import _isEmpty from "lodash/isEmpty";
 </Field> */
 }
 
+console.log(i18next.language, i18next.options);
 // default serializer provided expecting that in any scenario item would have id and a title. For more specific use cases, it is necessary to
 // use a different serializer in order to control the information that will be available inside of the component (coming from API)
 const serializeSuggestions = (suggestions) =>
   suggestions.map((item) => ({
-    text: item.title[i18next.language],
+    text: languageFallback(item.title),
     value: item.id,
     key: item.id,
   }));
@@ -161,6 +164,7 @@ export class RelatedSelectField extends RemoteSelectField {
     // because search app is being mounted within a modal and also I don't know
     // where the component would be used in advance
     // maybe it makes sense for the component to accept searchConfig as a prop
+    console.log(this.state);
     const { compProps, uiProps } = this.getProps();
     const searchConfig = {
       searchApi: {

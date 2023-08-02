@@ -65,7 +65,7 @@ export const ExternalApiResultsList = withState(
                   <Button
                     onClick={() => {
                       handleAddingExternalApiSuggestion([record]);
-                      setFieldValue(fieldPath, record.value);
+                      setFieldValue(fieldPath, { id: record.value });
                       onClose();
                     }}
                     fluid
