@@ -116,6 +116,7 @@ export class RelatedSelectFieldInternal extends RemoteSelectField {
     } = this.props;
 
     const { compProps, uiProps } = this.getProps();
+
     const searchConfig = {
       searchApi: {
         axios: {

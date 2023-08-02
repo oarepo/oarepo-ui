@@ -65,7 +65,6 @@ export const RelatedSelectField = ({
     <RelatedSelectFieldInternal
       fieldPath={fieldPath}
       suggestionAPIUrl={suggestionAPIUrl}
-      clearable
       selectOnBlur={false}
       suggestionAPIQueryParams={suggestionAPIQueryParams}
       suggestionAPIHeaders={suggestionAPIHeaders}
@@ -107,6 +106,7 @@ export const RelatedSelectField = ({
           ? getIn(values, fieldPath)?.id
           : ""
       }
+      clearable
     />
   );
 };

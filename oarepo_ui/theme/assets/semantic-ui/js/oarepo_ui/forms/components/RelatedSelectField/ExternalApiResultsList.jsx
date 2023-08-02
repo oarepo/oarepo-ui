@@ -32,12 +32,12 @@ export const ExternalApiResultsList = withState(
       >
         <Grid celled columns={3}>
           {serializedSuggestions.map((record) => {
-            const title = record.text;
+            const { text: title, value } = record;
             const isSelected = externalApiRecords.some(
-              (record) => record.text === title
+              (record) => record.value === value
             );
             return multiple ? (
-              <Grid.Row key={record.value}>
+              <Grid.Row key={value}>
                 <Grid.Column width={16}>
                   <Button
                     onClick={() => {
@@ -50,12 +50,12 @@ export const ExternalApiResultsList = withState(
                 </Grid.Column>
               </Grid.Row>
             ) : (
-              <Grid.Row key={record.value}>
+              <Grid.Row key={value}>
                 <Grid.Column width={16}>
                   <Button
                     onClick={() => {
                       handleAddingExternalApiSuggestion([record]);
-                      setFieldValue(fieldPath, { id: record.value });
+                      setFieldValue(fieldPath, { id: value });
                       onClose();
                     }}
                     fluid
