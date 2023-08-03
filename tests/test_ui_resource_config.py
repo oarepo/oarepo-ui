@@ -8,7 +8,7 @@ def test_ui_resource_form_config(app, record_ui_resource):
     record_ui_resource.run_components(
         "form_config",
         form_config=fc,
-        layout='',
+        layout="",
         resource=record_ui_resource,
         record={},
         data={},
@@ -21,8 +21,6 @@ def test_ui_resource_form_config(app, record_ui_resource):
     assert fc == dict(
         current_locale="en",
         locales=[
-            # TODO: not sure why current_i18.get_locales() puts English twice here
-            {"value": "en", "text": "English"},
             {"value": "en", "text": "English"},
             {"value": "cs", "text": "čeština"},
         ],
@@ -32,7 +30,7 @@ def test_ui_resource_form_config(app, record_ui_resource):
                 {"value": "en", "text": "English"},
                 {"value": "cs", "text": "čeština"},
             ],
-            "common": [],
+            "common": [{"text": "English", "value": "en"}],
         },
         links=dict(),
         custom_fields={"ui": {}},
