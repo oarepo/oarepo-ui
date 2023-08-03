@@ -4,32 +4,7 @@ import { useFormikContext, getIn } from "formik";
 import { RelatedSelectFieldInternal } from "./RelatedSelectFieldInternal";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { languageFallback } from "../../../util";
-import { Label, Icon } from "semantic-ui-react";
 import _reverse from "lodash/reverse";
-
-export const serializeVocabularySuggestions = (suggestions) =>
-  suggestions.map((item) => ({
-    text:
-      item.hierarchy.ancestors.length === 0 ? (
-        languageFallback(item.title)
-      ) : (
-        <span>
-          <Label>
-            {_reverse(item.hierarchy.ancestors).map((ancestor) => (
-              <React.Fragment key={ancestor}>
-                {ancestor}{" "}
-                <Icon size="small" name="arrow right" className="ml-3" />
-              </React.Fragment>
-            ))}
-          </Label>
-          <Label color="green" className="ml-3">
-            {languageFallback(item.title)}
-          </Label>
-        </span>
-      ),
-    value: item.id,
-    key: item.id,
-  }));
 
 const serializeSuggestions = (suggestions) =>
   suggestions.map((item) => ({
@@ -59,9 +34,7 @@ export const RelatedSelectField = ({
   serializeExternalApiSuggestions,
   externalApiButtonContent,
   externalApiModalTitle,
-  placeholder,
-  label,
-  required,
+  ...uiProps
 }) => {
   const { values } = useFormikContext();
   return (
@@ -109,10 +82,7 @@ export const RelatedSelectField = ({
           ? getIn(values, fieldPath)?.id
           : ""
       }
-      clearable
-      placeholder={placeholder}
-      label={label}
-      required={required}
+      {...uiProps}
     />
   );
 };

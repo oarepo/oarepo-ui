@@ -1,4 +1,1 @@
-export {
-  RelatedSelectField,
-  serializeVocabularySuggestions,
-} from "./RelatedSelectField";
+export { RelatedSelectField } from "./RelatedSelectField";

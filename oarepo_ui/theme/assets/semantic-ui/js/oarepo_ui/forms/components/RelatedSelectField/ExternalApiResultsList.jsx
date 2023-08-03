@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Header, Grid, Icon, Label, Button } from "semantic-ui-react";
+import { Header, Grid, Icon, Label, List, Container } from "semantic-ui-react";
 import { withState } from "react-searchkit";
 import PropTypes from "prop-types";
 import Overridable from "react-overridable";
@@ -30,42 +30,33 @@ export const ExternalApiResultsList = withState(
         externalApiRecords={externalApiRecords}
         serializeExternalApiSuggestions={serializeExternalApiSuggestions}
       >
-        <Grid celled columns={3}>
-          {serializedSuggestions.map((record) => {
-            const { text: title, value } = record;
-            const isSelected = externalApiRecords.some(
-              (record) => record.value === value
-            );
-            return multiple ? (
-              <Grid.Row key={value}>
-                <Grid.Column width={16}>
-                  <Button
-                    onClick={() => {
-                      handleExternalRecordChange(record);
-                    }}
-                    fluid
-                    content={title}
-                    color={isSelected ? "green" : "blue"}
-                  />
-                </Grid.Column>
-              </Grid.Row>
-            ) : (
-              <Grid.Row key={value}>
-                <Grid.Column width={16}>
-                  <Button
-                    onClick={() => {
-                      handleAddingExternalApiSuggestion([record]);
-                      setFieldValue(fieldPath, { id: value });
-                      onClose();
-                    }}
-                    fluid
-                    content={title}
-                    primary
-                  />
-                </Grid.Column>
-              </Grid.Row>
-            );
-          })}
+        <Container celled columns={3}>
+          <List animated celled divided relaxed="very" selection>
+            {serializedSuggestions.map((record) => {
+              const { text: title, value } = record;
+              return multiple ? (
+                <List.Item
+                  onClick={() => {
+                    handleExternalRecordChange(record);
+                  }}
+                  key={value}
+                >
+                  {title}
+                </List.Item>
+              ) : (
+                <List.Item
+                  onClick={() => {
+                    handleAddingExternalApiSuggestion([record]);
+                    setFieldValue(fieldPath, { id: value });
+                    onClose();
+                  }}
+                  key={value}
+                >
+                  {title}
+                </List.Item>
+              );
+            })}
+          </List>
           {externalApiRecords.length > 0 && multiple && (
             <Grid.Column width={10}>
               <Header as="h3">{i18next.t("Selected records")}</Header>
@@ -81,7 +72,7 @@ export const ExternalApiResultsList = withState(
               ))}
             </Grid.Column>
           )}
-        </Grid>
+        </Container>
       </Overridable>
     );
   }
@@ -94,4 +85,5 @@ ExternalApiResultsList.propTypes = {
   externalApiRecords: PropTypes.array.isRequired,
   multiple: PropTypes.bool.isRequired,
   fieldPath: PropTypes.string.isRequired,
+  onClose: PropTypes.func,
 };
