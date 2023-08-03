@@ -95,7 +95,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
     @property
     def ui_links_search(self):
         return {
-            **pagination_links("{+ui}{+url_prefix}/records{?args*}"),
+            **pagination_links("{+ui}{+url_prefix}{?args*}"),
             "create": Link("{+ui}{+url_prefix}/_new"),
         }
 
