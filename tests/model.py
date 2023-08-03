@@ -31,6 +31,7 @@ class ModelPermissionPolicy(RecordPermissionPolicy):
 
 
 class ModelSchema(ma.Schema):
+    title = ma.fields.String()
     class Meta:
         unknown = ma.INCLUDE
 
@@ -68,6 +69,9 @@ class ModelUIResourceConfig(RecordsUIResourceConfig):
         "detail": {
             "layout": "test_detail.html",
             "blocks": {}
+        },
+        "search": {
+            "layout": "test_detail.html",
         }
     }
 class ModelUIResource(RecordsUIResource):

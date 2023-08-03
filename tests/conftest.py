@@ -43,18 +43,21 @@ def create_app(instance_path, entry_points):
     return _create_app
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def record_service(app):
-    pass
+    from .model import ModelRecord, ModelService, ModelServiceConfig
+    service = ModelService(ModelServiceConfig())
+    sregistry = app.extensions["invenio-records-resources"].registry
+    sregistry.register(service, service_id="simple_model")
+    return service
 
-
-@pytest.fixture
+@pytest.fixture(scope="module")
 def record_ui_resource_config(app):
     return ModelUIResourceConfig()
 
 
-@pytest.fixture
-def record_ui_resource(app, record_ui_resource_config):
+@pytest.fixture(scope="module")
+def record_ui_resource(app, record_ui_resource_config, record_service):
     ui_resource = ModelUIResource(record_ui_resource_config)
     app.register_blueprint(ui_resource.as_blueprint(
         template_folder=Path(__file__).parent / 'templates')
@@ -74,12 +77,9 @@ def fake_manifest(app):
 
 
 @pytest.fixture
-def simple_record(app, db, search_clear):
+def simple_record(app, db, search_clear, record_service):
     from .model import ModelRecord, ModelService, ModelServiceConfig
-    service = ModelService(ModelServiceConfig())
-    sregistry = app.extensions["invenio-records-resources"].registry
-    sregistry.register(service, service_id="simple_model")
-    record = service.create(
+    record = record_service.create(
         system_identity,
         {},
     )

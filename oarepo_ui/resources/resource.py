@@ -11,11 +11,12 @@ from flask_resources import (
     route,
 )
 from invenio_base.utils import obj_or_import_string
+from invenio_records_resources.pagination import Pagination
 from invenio_records_resources.proxies import current_service_registry
 from invenio_records_resources.records.systemfields import FilesField
 from invenio_records_resources.resources.records.resource import (
     request_read_args,
-    request_view_args,
+    request_view_args, request_search_args,
 )
 from invenio_records_resources.services import LinksTemplate
 
@@ -185,6 +186,7 @@ class RecordsUIResource(UIResource):
         else:
             return redirect(path_with_slash + "?" + split_path[1], code=302)
 
+    @request_search_args
     def search(self):
         template_def = self.get_template_def("search")
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
@@ -196,10 +198,22 @@ class RecordsUIResource(UIResource):
         search_options = dict(
             api_config=self.api_service.config,
             identity=g.identity,
-            links=self.config.ui_links
+            links=self.config.ui_links_search
+        )
+
+        # TODO: we do not know here, but should be able to parse these from the request
+        page = resource_requestctx.args.get('page', 1)
+        size = resource_requestctx.args.get('size', 10)
+        pagination = Pagination(
+            size,
+            page,
+            # we should present all links
+            # (but do not want to get the count as it is another request to Opensearch)
+            (page + 1) * size,
         )
 
         extra_context = dict()
+        links = self.expand_search_links(g.identity, pagination, resource_requestctx.args)
 
         self.run_components(
             "before_ui_search",
@@ -210,6 +224,7 @@ class RecordsUIResource(UIResource):
             view_args=resource_requestctx.view_args,
             ui_config=self.config,
             ui_resource=self,
+            links=links,
             layout=layout,
             component_key="search",
             extra_context=extra_context,
@@ -222,7 +237,7 @@ class RecordsUIResource(UIResource):
             ui_config=self.config,
             ui_resource=self,
             layout=layout,
-            links=self.config.ui_links,
+            links=links,
             component_key="search",
             **extra_context,
         )
@@ -368,12 +383,14 @@ class RecordsUIResource(UIResource):
         )
         return tpl.expand(identity, record)
 
-    def expand_search_links(self, identity, pagination):
+    def expand_search_links(self, identity, pagination, args):
         """Get links for this result item."""
         tpl = LinksTemplate(
             self.config.ui_links_search,
             {
-                'config': self.config
+                'config': self.config,
+                'url_prefix': self.config.url_prefix,
+                'args': args
             }
         )
         return tpl.expand(identity, pagination)
