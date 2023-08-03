@@ -6,7 +6,10 @@ from flask import current_app
 from flask_resources import ResourceConfig
 from invenio_base.utils import obj_or_import_string
 from invenio_i18n.ext import current_i18n
+from invenio_records_resources.services import RecordLink, pagination_links, Link
 from invenio_search_ui.searchconfig import FacetsConfig, SearchAppConfig, SortConfig
+
+from oarepo_ui.resources.links import UIRecordLink
 
 
 def _(x):
@@ -83,14 +86,16 @@ class RecordsUIResourceConfig(UIResourceConfig):
             },
         }
 
-    @property
-    def ui_links(self):
-        def _ui_link(path):
-            return f"{self.url_prefix}/{path}".replace('//', '/')
+    ui_links_item = {
+        "self": UIRecordLink("{+ui}{+url_prefix}/{id}"),
+        "edit": UIRecordLink("{+ui}{+url_prefix}/{id}/edit"),
+    }
 
+    @property
+    def ui_links_search(self):
         return {
-            "search": _ui_link(self.routes["search"]),
-            "create": _ui_link(self.routes["create"]),
+            **pagination_links("{+ui}{+url_prefix}/records{?args*}"),
+            "create": Link("{+ui}{+url_prefix}/_new"),
         }
 
     @property
