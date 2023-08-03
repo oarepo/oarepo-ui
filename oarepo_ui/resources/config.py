@@ -7,7 +7,7 @@ from flask_resources import ResourceConfig
 from invenio_base.utils import obj_or_import_string
 from invenio_i18n.ext import current_i18n
 from invenio_search_ui.searchconfig import FacetsConfig, SearchAppConfig, SortConfig
-
+from oarepo_ui.proxies import current_oarepo_ui
 
 def _(x):
     """Identity function used to trigger string extraction."""
@@ -151,15 +151,17 @@ class RecordsUIResourceConfig(UIResourceConfig):
             "ui": {},
         }
 
-    def languages_config(self, identity):
-        return dict(
-            common=[],
-            all=[]
-        )
-
     def form_config(self, identity=None, **kwargs):
         """Get the react form configuration."""
         conf = current_app.config
+
+        languages_config = {"all": [], "common": []}
+        for l in current_i18n.get_locales():
+            option = {"value": l.language, "text": l.get_display_name()}
+            languages_config["all"].append(option)
+
+            if l.language in current_oarepo_ui.common_languages:
+                languages_config["common"].append(option)
 
         return dict(
             current_locale=str(current_i18n.locale),
@@ -168,7 +170,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
                 for l in current_i18n.get_locales()
             ],
             default_locale=conf.get("BABEL_DEFAULT_LOCALE", "en"),
-            languages=self.languages_config(identity),
+            languages=languages_config,
             links=dict(),
             custom_fields=self.custom_fields,
             **kwargs,

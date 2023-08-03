@@ -31,6 +31,10 @@ class OARepoUIState:
     def get_layout(self, layout_name):
         return self.layouts[layout_name]
 
+    @property
+    def common_languages(self):
+        return self.app.config.get("COMMON_LANGUAGES", ["en"])
+
     def _load_layouts(self):
         layouts = {}
         for ep in entry_points(group="oarepo.ui"):
