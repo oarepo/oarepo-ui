@@ -1,5 +1,16 @@
 def test_ui_resource_form_config(app, record_ui_resource):
-    assert record_ui_resource.config().form_config() == dict(
+    fc = record_ui_resource.config().form_config()
+    assert fc == dict(
+        links=dict(),
+        custom_fields={"ui": {}},
+    )
+
+    record_ui_resource.run_components(
+        "form_config",
+        form_config=fc,
+    )
+
+    assert fc == dict(
         current_locale="en",
         locales=[
             # TODO: not sure why current_i18.get_locales() puts English twice here
