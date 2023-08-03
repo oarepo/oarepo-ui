@@ -5,7 +5,7 @@ from invenio_records_permissions import RecordPermissionPolicy
 from invenio_records_permissions.generators import AnyUser, SystemProcess
 from invenio_records_resources.records.systemfields import IndexField, PIDField
 from invenio_records_resources.records.systemfields.pid import PIDFieldContext
-from invenio_records_resources.services import ServiceConfig, RecordServiceConfig, RecordService
+from invenio_records_resources.services import ServiceConfig, RecordServiceConfig, RecordService, RecordLink
 import marshmallow as ma
 from flask_resources import BaseListSchema, MarshmallowSerializer
 from flask_resources.serializers import JSONSerializer
@@ -28,6 +28,8 @@ class ModelRecord(Record):
 
 class ModelPermissionPolicy(RecordPermissionPolicy):
     can_create = [AnyUser(), SystemProcess()]
+    can_search = [AnyUser(), SystemProcess()]
+    can_read = [AnyUser(), SystemProcess()]
 
 
 class ModelSchema(ma.Schema):
@@ -40,6 +42,15 @@ class ModelServiceConfig(RecordServiceConfig):
     record_cls = ModelRecord
     permission_policy_cls = ModelPermissionPolicy
     schema = ModelSchema
+
+    url_prefix = "/simple-model"
+
+    @property
+    def links_item(self):
+        return {
+            "self": RecordLink("{+api}{self.url_prefix}{id}"),
+            "ui": RecordLink("{+ui}{self.url_prefix}{id}"),
+        }
 
 
 class ModelService(RecordService):
