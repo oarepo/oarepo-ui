@@ -1,8 +1,7 @@
 import pytest
 from invenio_app.factory import create_app as _create_app
 
-from oarepo_ui.resources import RecordsUIResource, RecordsUIResourceConfig
-
+from oarepo_ui.resources import RecordsUIResource, RecordsUIResourceConfig, BabelFormConfigComponent
 
 @pytest.fixture(scope="module")
 def extra_entry_points():
@@ -32,6 +31,7 @@ def record_service(app):
 def record_ui_resource_config(app):
     class Cfg(RecordsUIResourceConfig):
         api_service = "vocabularies"  # must be something included in oarepo, as oarepo is used in tests
+        components = [BabelFormConfigComponent]
 
     return Cfg
 
