@@ -25,13 +25,6 @@ def test_ui_resource_form_config(app, record_ui_resource):
             {"value": "cs", "text": "čeština"},
         ],
         default_locale="en",
-        languages={
-            "all": [
-                {"value": "en", "text": "English"},
-                {"value": "cs", "text": "čeština"},
-            ],
-            "common": [{"text": "English", "value": "en"}],
-        },
         links=dict(),
         custom_fields={"ui": {}},
     )

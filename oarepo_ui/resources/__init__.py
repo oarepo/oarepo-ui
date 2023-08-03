@@ -1,11 +1,11 @@
 from .config import RecordsUIResourceConfig, UIResourceConfig
 from .resource import RecordsUIResource, UIResource
-from .components import BabelFormConfigComponent
+from .components import BabelComponent
 
 __all__ = (
     "UIResource",
     "RecordsUIResource",
     "UIResourceConfig",
     "RecordsUIResourceConfig",
-    "BabelFormConfigComponent"
+    "BabelComponent"
 )
