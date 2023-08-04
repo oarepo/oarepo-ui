@@ -2,11 +2,9 @@ import inspect
 from pathlib import Path
 
 import marshmallow as ma
-from flask import current_app
 from flask_resources import ResourceConfig
 from invenio_base.utils import obj_or_import_string
-from invenio_i18n.ext import current_i18n
-from invenio_records_resources.services import RecordLink, pagination_links, Link
+from invenio_records_resources.services import pagination_links, Link
 from invenio_search_ui.searchconfig import FacetsConfig, SearchAppConfig, SortConfig
 
 from oarepo_ui.resources.links import UIRecordLink
@@ -167,24 +165,10 @@ class RecordsUIResourceConfig(UIResourceConfig):
             "ui": {},
         }
 
-    def languages_config(self, identity):
-        return dict(
-            featured=[],
-            all=[]
-        )
-
     def form_config(self, identity=None, **kwargs):
         """Get the react form configuration."""
-        conf = current_app.config
 
         return dict(
-            current_locale=str(current_i18n.locale),
-            locales=[
-                {"value": l.language, "text": l.get_display_name()}
-                for l in current_i18n.get_locales()
-            ],
-            default_locale=conf.get("BABEL_DEFAULT_LOCALE", "en"),
-            languages=self.languages_config(identity),
             links=dict(),
             custom_fields=self.custom_fields,
             **kwargs,
