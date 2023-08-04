@@ -166,7 +166,6 @@ class RecordsUIResourceConfig(UIResourceConfig):
         """Get the react form configuration."""
 
         return dict(
-            links=dict(),
             custom_fields=self.custom_fields,
             **kwargs,
         )
