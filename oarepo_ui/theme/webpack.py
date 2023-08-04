@@ -31,6 +31,7 @@ theme = WebpackThemeBundle(
                 "oarepo_ui_forms": "./js/oarepo_ui/forms/index.js",
             },
             dependencies={
+                "@tanstack/react-query": "^4.32.0",
                 "@babel/runtime": "^7.9.0",
                 "@ckeditor/ckeditor5-build-classic": "^16.0.0",
                 "@ckeditor/ckeditor5-react": "^2.1.0",

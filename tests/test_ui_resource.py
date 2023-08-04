@@ -8,6 +8,12 @@ def test_ui_resource_create_new(app, record_ui_resource, record_service):
     assert record_ui_resource.empty_record(None) == {'title': None}
 
 
+
+def test_ui_resource_form_config(app, record_ui_resource):
+    # TODO: what is this?
+    assert record_ui_resource
+
+
 def test_ui_links_on_detail(app, record_ui_resource, simple_record, client, fake_manifest):
     with client.get(f'/simple-model/{simple_record.id}') as c:
         assert c.status_code == 200

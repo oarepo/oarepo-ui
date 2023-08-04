@@ -167,14 +167,24 @@ class RecordsUIResourceConfig(UIResourceConfig):
             "ui": {},
         }
 
-    def form_config(self, **kwargs):
+    def languages_config(self, identity):
+        return dict(
+            common=[],
+            all=[]
+        )
+
+    def form_config(self, identity=None, **kwargs):
         """Get the react form configuration."""
         conf = current_app.config
 
         return dict(
             current_locale=str(current_i18n.locale),
-            locales=[{"code": l.language, "name": l.get_display_name()} for l in current_i18n.get_locales()],
+            locales=[
+                {"value": l.language, "text": l.get_display_name()}
+                for l in current_i18n.get_locales()
+            ],
             default_locale=conf.get("BABEL_DEFAULT_LOCALE", "en"),
+            languages=self.languages_config(identity),
             links=dict(),
             custom_fields=self.custom_fields,
             **kwargs,
