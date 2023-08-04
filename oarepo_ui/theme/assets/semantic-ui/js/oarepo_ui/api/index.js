@@ -1,1 +1,1 @@
-export { ApiClientInitialized } from "./ApiClient";
+export { OARepoDepositApiClient } from "./client";
