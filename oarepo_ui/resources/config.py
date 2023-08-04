@@ -2,9 +2,15 @@ import inspect
 from pathlib import Path
 
 import marshmallow as ma
+from flask import current_app
 from flask_resources import ResourceConfig
 from invenio_base.utils import obj_or_import_string
+from invenio_i18n.ext import current_i18n
+from invenio_records_resources.services import RecordLink, pagination_links, Link
 from invenio_search_ui.searchconfig import FacetsConfig, SearchAppConfig, SortConfig
+
+from oarepo_ui.resources.links import UIRecordLink
+
 
 def _(x):
     """Identity function used to trigger string extraction."""
@@ -47,6 +53,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
     }
     request_view_args = {"pid_value": ma.fields.Str()}
     request_export_args = {"export_format": ma.fields.Str()}
+    request_search_args = {"page": ma.fields.Integer(), "size": ma.fields.Integer()}
 
     app_contexts = None
     ui_serializer = None
@@ -78,6 +85,18 @@ class RecordsUIResourceConfig(UIResourceConfig):
                 "content-type": "application/json",
                 "filename": "{id}.json",
             },
+        }
+
+    ui_links_item = {
+        "self": UIRecordLink("{+ui}{+url_prefix}/{id}"),
+        "edit": UIRecordLink("{+ui}{+url_prefix}/{id}/edit"),
+    }
+
+    @property
+    def ui_links_search(self):
+        return {
+            **pagination_links("{+ui}{+url_prefix}{?args*}"),
+            "create": Link("{+ui}{+url_prefix}/_new"),
         }
 
     @property
@@ -148,9 +167,24 @@ class RecordsUIResourceConfig(UIResourceConfig):
             "ui": {},
         }
 
+    def languages_config(self, identity):
+        return dict(
+            featured=[],
+            all=[]
+        )
+
     def form_config(self, identity=None, **kwargs):
         """Get the react form configuration."""
+        conf = current_app.config
+
         return dict(
+            current_locale=str(current_i18n.locale),
+            locales=[
+                {"value": l.language, "text": l.get_display_name()}
+                for l in current_i18n.get_locales()
+            ],
+            default_locale=conf.get("BABEL_DEFAULT_LOCALE", "en"),
+            languages=self.languages_config(identity),
             links=dict(),
             custom_fields=self.custom_fields,
             **kwargs,
