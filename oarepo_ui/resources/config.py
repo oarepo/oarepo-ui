@@ -136,7 +136,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
         return FacetsConfig(facets_config, selected_facets)
 
-    def search_app_config(self, identity, api_config, overrides=None, **kwargs):
+    def search_app_config(self, identity, api_config, overrides={}, **kwargs):
         opts = dict(
             endpoint=f"/api{api_config.url_prefix}",
             headers={"Accept": "application/vnd.inveniordm.v1+json"},
@@ -153,9 +153,6 @@ class RecordsUIResourceConfig(UIResourceConfig):
             ),
         )
         opts.update(kwargs)
-        overrides = overrides or {
-            "ui_endpoint": self.url_prefix,
-        }
         return SearchAppConfig.generate(opts, **overrides)
 
     @property
