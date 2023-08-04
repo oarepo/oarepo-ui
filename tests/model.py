@@ -11,7 +11,7 @@ from flask_resources import BaseListSchema, MarshmallowSerializer
 from flask_resources.serializers import JSONSerializer
 
 
-from oarepo_ui.resources import RecordsUIResource, RecordsUIResourceConfig
+from oarepo_ui.resources import RecordsUIResource, RecordsUIResourceConfig, BabelComponent
 
 
 class ModelRecordIdProvider(RecordIdProviderV2):
@@ -85,5 +85,9 @@ class ModelUIResourceConfig(RecordsUIResourceConfig):
             "layout": "test_detail.html",
         }
     }
+
+    components = [BabelComponent]
+
+
 class ModelUIResource(RecordsUIResource):
     pass
