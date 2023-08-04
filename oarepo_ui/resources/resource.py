@@ -265,6 +265,19 @@ class RecordsUIResource(UIResource):
         form_config = self.config.form_config(identity=g.identity, updateUrl=record.links.get("self", None))
 
         extra_context = dict()
+
+        self.run_components(
+            "form_config",
+            layout=layout,
+            resource=self,
+            record=record,
+            data=record,
+            form_config=form_config,
+            args=resource_requestctx.args,
+            view_args=resource_requestctx.view_args,
+            identity=g.identity,
+            extra_context=extra_context,
+        )
         self.run_components(
             "before_ui_edit",
             layout=layout,
@@ -309,6 +322,18 @@ class RecordsUIResource(UIResource):
         )
         extra_context = dict()
 
+        self.run_components(
+            "form_config",
+            layout=layout,
+            resource=self,
+            record=empty_record,
+            data=empty_record,
+            form_config=form_config,
+            args=resource_requestctx.args,
+            view_args=resource_requestctx.view_args,
+            identity=g.identity,
+            extra_context=extra_context,
+        )
         self.run_components(
             "before_ui_create",
             layout=layout,
