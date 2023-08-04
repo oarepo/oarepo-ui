@@ -48,8 +48,8 @@ class ModelServiceConfig(RecordServiceConfig):
     @property
     def links_item(self):
         return {
-            "self": RecordLink("{+api}{self.url_prefix}{id}"),
-            "ui": RecordLink("{+ui}{self.url_prefix}{id}"),
+            "self": RecordLink("{+api}%s/{id}" % self.url_prefix),
+            "ui": RecordLink("{+ui}%s/{id}" % self.url_prefix),
         }
 
 

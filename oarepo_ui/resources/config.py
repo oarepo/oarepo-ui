@@ -169,7 +169,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
     def languages_config(self, identity):
         return dict(
-            common=[],
+            featured=[],
             all=[]
         )
 

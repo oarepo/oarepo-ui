@@ -39,5 +39,5 @@ def test_service_ui_link(app, record_service, simple_record, fake_manifest):
     data = record_service.read(system_identity, simple_record.id)
     # note: in tests, the ui and api urls are the same, this should be different
     # in production
-    assert data.links['self'] == f'https://127.0.0.1:5000/{simple_record.id}'
-    assert data.links['edit'] == f'https://127.0.0.1:5000/{simple_record.id}'
+    assert data.links['self'] == f'https://127.0.0.1:5000/api/simple-model/{simple_record.id}'
+    assert data.links['ui'] == f'https://127.0.0.1:5000/simple-model/{simple_record.id}'
