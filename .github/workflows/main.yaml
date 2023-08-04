@@ -56,6 +56,9 @@ jobs:
       - name: Test with pytest
         run: |
           pip install -e '.[tests]'
+          pip uninstall -y uritemplate.py || true
+          pip uninstall -y uritemplate || true
+          pip install -y uritemplate
           pytest tests
       
 
