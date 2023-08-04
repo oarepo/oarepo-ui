@@ -165,9 +165,9 @@ class RecordsUIResource(UIResource):
             metadata=serialized_record.get("metadata", serialized_record),
             ui=serialized_record.get("ui", serialized_record),
             ui_config=self.config,
+            ui_links=ui_links,
             ui_resource=self,
             layout=layout,
-            links=ui_links,
             component_key="detail",
             export_path=export_path,
             **extra_context,
@@ -198,7 +198,7 @@ class RecordsUIResource(UIResource):
         search_options = dict(
             api_config=self.api_service.config,
             identity=g.identity,
-            links=self.config.ui_links_search
+            ui_links=self.config.ui_links_search
         )
 
         # TODO: we do not know here, but should be able to parse these from the request
@@ -224,7 +224,7 @@ class RecordsUIResource(UIResource):
             view_args=resource_requestctx.view_args,
             ui_config=self.config,
             ui_resource=self,
-            links=links,
+            ui_links=links,
             layout=layout,
             component_key="search",
             extra_context=extra_context,
@@ -237,7 +237,7 @@ class RecordsUIResource(UIResource):
             ui_config=self.config,
             ui_resource=self,
             layout=layout,
-            links=links,
+            ui_links=links,
             component_key="search",
             **extra_context,
         )
@@ -300,6 +300,7 @@ class RecordsUIResource(UIResource):
             args=resource_requestctx.args,
             view_args=resource_requestctx.view_args,
             identity=g.identity,
+            ui_links=ui_links,
             extra_context=extra_context,
         )
         self.run_components(
