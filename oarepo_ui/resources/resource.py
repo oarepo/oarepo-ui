@@ -165,9 +165,9 @@ class RecordsUIResource(UIResource):
             metadata=serialized_record.get("metadata", serialized_record),
             ui=serialized_record.get("ui", serialized_record),
             ui_config=self.config,
+            ui_links=ui_links,
             ui_resource=self,
             layout=layout,
-            links=ui_links,
             component_key="detail",
             export_path=export_path,
             **extra_context,
@@ -195,13 +195,6 @@ class RecordsUIResource(UIResource):
             template_def.get("blocks", {}),
         )
 
-        search_options = dict(
-            api_config=self.api_service.config,
-            identity=g.identity,
-            links=self.config.ui_links_search
-        )
-
-        # TODO: we do not know here, but should be able to parse these from the request
         page = resource_requestctx.args.get('page', 1)
         size = resource_requestctx.args.get('size', 10)
         pagination = Pagination(
@@ -211,9 +204,20 @@ class RecordsUIResource(UIResource):
             # (but do not want to get the count as it is another request to Opensearch)
             (page + 1) * size,
         )
+        ui_links = self.expand_search_links(g.identity, pagination, resource_requestctx.args)
+        
+        search_options = dict(
+            api_config=self.api_service.config,
+            identity=g.identity,
+            overrides={
+                "ui_endpoint": self.config.url_prefix,
+                "ui_links": ui_links
+            }
+        )
+
+        # TODO: we do not know here, but should be able to parse these from the request
 
         extra_context = dict()
-        links = self.expand_search_links(g.identity, pagination, resource_requestctx.args)
 
         self.run_components(
             "before_ui_search",
@@ -224,7 +228,7 @@ class RecordsUIResource(UIResource):
             view_args=resource_requestctx.view_args,
             ui_config=self.config,
             ui_resource=self,
-            links=links,
+            ui_links=ui_links,
             layout=layout,
             component_key="search",
             extra_context=extra_context,
@@ -237,7 +241,7 @@ class RecordsUIResource(UIResource):
             ui_config=self.config,
             ui_resource=self,
             layout=layout,
-            links=links,
+            ui_links=ui_links,
             component_key="search",
             **extra_context,
         )
@@ -300,6 +304,7 @@ class RecordsUIResource(UIResource):
             args=resource_requestctx.args,
             view_args=resource_requestctx.view_args,
             identity=g.identity,
+            ui_links=ui_links,
             extra_context=extra_context,
         )
         self.run_components(
@@ -384,8 +389,8 @@ class RecordsUIResource(UIResource):
             ui=empty_record.get("ui", empty_record),
             ui_config=self.config,
             ui_resource=self,
+            ui_links={},
             layout=layout,
-            links=self.config.ui_links,
             component_key="create",
             form_config=form_config,
             extra_context=extra_context,
