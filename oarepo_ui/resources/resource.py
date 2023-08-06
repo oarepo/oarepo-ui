@@ -262,9 +262,22 @@ class RecordsUIResource(UIResource):
         data = record.to_dict()
         serialized_record = self.config.ui_serializer.dump_obj(record.to_dict())
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
-        form_config = self.config.form_config(updateUrl=record.links.get("self", None))
+        form_config = self.config.form_config(identity=g.identity, updateUrl=record.links.get("self", None))
 
         extra_context = dict()
+
+        self.run_components(
+            "form_config",
+            layout=layout,
+            resource=self,
+            record=record,
+            data=record,
+            form_config=form_config,
+            args=resource_requestctx.args,
+            view_args=resource_requestctx.view_args,
+            identity=g.identity,
+            extra_context=extra_context,
+        )
         self.run_components(
             "before_ui_edit",
             layout=layout,
@@ -303,11 +316,24 @@ class RecordsUIResource(UIResource):
         empty_record = self.empty_record(resource_requestctx)
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
         form_config = self.config.form_config(
+            identity=g.identity,
             # TODO: use api service create link when available
             createUrl=f"/api{self.api_service.config.url_prefix}",
         )
         extra_context = dict()
 
+        self.run_components(
+            "form_config",
+            layout=layout,
+            resource=self,
+            record=empty_record,
+            data=empty_record,
+            form_config=form_config,
+            args=resource_requestctx.args,
+            view_args=resource_requestctx.view_args,
+            identity=g.identity,
+            extra_context=extra_context,
+        )
         self.run_components(
             "before_ui_create",
             layout=layout,
@@ -346,3 +372,4 @@ class RecordsUIResource(UIResource):
     @property
     def api_config(self):
         return self.api_service.config
+
