@@ -10,7 +10,7 @@ import {
 import { Button, Form, Icon } from "semantic-ui-react";
 import { useFormikContext, getIn } from "formik";
 import _toPairs from "lodash/toPairs";
-import { i18next } from "@translations/oarepo_ui/i18next";
+import { useFormConfig } from "@js/oarepo_ui/forms";
 
 const translateObjectToArray = (obj) => {
   return _toPairs(obj).map(([language, title]) => ({ language, name: title }));
@@ -27,21 +27,36 @@ export const transformArrayToObject = (arr) => {
   return result;
 };
 
-export const MultilingualTextInput = ({
+const eliminateUsedLanguages = (excludeIndex, languageOptions, fieldArray) => {
+  const currentlySelectedLanguage = fieldArray[excludeIndex].language;
+
+  const excludedLanguages = fieldArray.filter(
+    (item) => item.language !== currentlySelectedLanguage && item.language
+  );
+
+  const remainingLanguages = languageOptions.filter(
+    (option) =>
+      !excludedLanguages.map((item) => item.language).includes(option.value)
+  );
+  return remainingLanguages;
+};
+
+export const MultiLingualTextInput = ({
   fieldPath,
   label,
   labelIcon,
   required,
-  options,
   emptyNewInput,
   newItemInitialValue,
 }) => {
+  const {
+    formConfig: {
+      vocabularies: { languages },
+    },
+  } = useFormConfig();
+
   const placeholderFieldPath = `_${fieldPath}`;
   const { setFieldValue, values } = useFormikContext();
-
-  const value = getIn(values, fieldPath);
-  console.log(fieldPath, label, options, emptyNewInput, newItemInitialValue, value);
-
   useEffect(() => {
     if (!getIn(values, placeholderFieldPath)) {
       setFieldValue(
@@ -66,24 +81,33 @@ export const MultilingualTextInput = ({
       label={<FieldLabel htmlFor={fieldPath} icon="" label={label} />}
       required={required}
     >
-      {({ arrayHelpers, indexPath }) => {
-        const fieldPathPrefix = `_${fieldPath}.${indexPath}`;
+      {({ indexPath, array, arrayHelpers }) => {
+        const fieldPathPrefix = `${placeholderFieldPath}.${indexPath}`;
+
+        const availableOptions = eliminateUsedLanguages(
+          indexPath,
+          languages,
+          array
+        );
 
         return (
           <GroupField optimized>
             <SelectField
+              // necessary because otherwise other inputs are not rerendered and keep the previous state i.e. I could potentially choose two same languages in some scenarios
+              key={availableOptions}
               clearable
               fieldPath={`${fieldPathPrefix}.language`}
-              label={i18next.t("Language")}
+              label="Language"
               optimized
-              options={options.languages}
+              options={availableOptions}
               required
               width={2}
+              selectOnBlur={false}
             />
 
             <TextField
-              fieldPath={`${fieldPathPrefix}.value`}
-              label={i18next.t("Value")}
+              fieldPath={`${fieldPathPrefix}.name`}
+              label="Name"
               width={9}
               required
             />
@@ -108,7 +132,7 @@ export const MultilingualTextInput = ({
   );
 };
 
-MultilingualTextInput.propTypes = {
+MultiLingualTextInput.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   label: PropTypes.string,
   labelIcon: PropTypes.string,
@@ -121,7 +145,7 @@ MultilingualTextInput.propTypes = {
   newItemInitialValue: PropTypes.object,
 };
 
-MultilingualTextInput.defaultProps = {
+MultiLingualTextInput.defaultProps = {
   label: "Title",
   required: undefined,
   emptyNewInput: {
