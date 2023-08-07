@@ -1,3 +1,4 @@
+import * as React from 'react'
 import PropTypes from "prop-types";
 import {i18next} from '@translations/oarepo_ui/i18next'
 
@@ -11,9 +12,7 @@ export const MultilingualString = ({value}) => {
 };
 
 MultilingualString.propTypes = {
-  value: PropTypes.arrayOf(
-    PropTypes.shape({ lang: PropTypes.string, value: PropTypes.string })
-  ),
+  value: PropTypes.object
 };
 
 MultilingualString.defaultProps = {};
