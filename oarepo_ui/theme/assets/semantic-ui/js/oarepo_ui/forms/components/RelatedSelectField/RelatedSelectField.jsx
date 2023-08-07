@@ -2,13 +2,13 @@ import React from "react";
 import PropTypes from "prop-types";
 import { useFormikContext, getIn } from "formik";
 import { RelatedSelectFieldInternal } from "./RelatedSelectFieldInternal";
+import { MultilingualString } from "../MultilingualString";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import { languageFallback } from "../../../util";
 import _reverse from "lodash/reverse";
 
 const serializeSuggestions = (suggestions) =>
   suggestions.map((item) => ({
-    text: languageFallback(item.title),
+    text: <MultilingualString value={item.title} />,
     value: item.id,
     key: item.id,
   }));
