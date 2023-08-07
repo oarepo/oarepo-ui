@@ -117,4 +117,4 @@ export class ApiClient extends DepositApiClient {
   }
 }
 
-export const ApiClientInitialized = new ApiClient();
+export const OARepoDepositApiClient = new ApiClient();

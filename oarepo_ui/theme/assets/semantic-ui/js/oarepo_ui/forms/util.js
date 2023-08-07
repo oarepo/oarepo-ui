@@ -31,6 +31,7 @@ export function createFormAppInit(
     const record = getInputFromDOM("record");
     const formConfig = getInputFromDOM("form-config");
     const recordPermissions = getInputFromDOM("record-permissions");
+    const links = getInputFromDOM("links")
 
     console.debug("Initializing Formik form app...");
     console.debug(
@@ -39,7 +40,9 @@ export function createFormAppInit(
       "\n[formConfig]",
       formConfig,
       "\n[recordPermissions]",
-      recordPermissions
+      recordPermissions,
+      "\n[UI links]",
+      links
     );
 
     loadComponents("", defaultComponents).then((res) => {
@@ -49,7 +52,7 @@ export function createFormAppInit(
             <Router>
               <OverridableContext.Provider value={overrideStore.getAll()}>
                 <FormConfigProvider
-                  value={{ record, formConfig, recordPermissions }}
+                  value={{ record, formConfig, recordPermissions, links }}
                 >
                   <Overridable id="FormApp.layout">
                     <Container fluid>
@@ -75,4 +78,19 @@ export function createFormAppInit(
   } else {
     return initFormApp;
   }
+}
+
+export const invokeCallbacks = (callbacks, ...args) => {
+  let result
+  if (!Array.isArray(callbacks)) {
+    callbacks = [callbacks];
+  }
+  callbacks.forEach(callback => {
+    if (typeof callback === 'function') {
+      // TODO: can this be improved?
+      result = callback(...args);
+    }
+  });
+
+  return result
 }
