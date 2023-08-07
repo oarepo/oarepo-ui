@@ -30,7 +30,7 @@ export const ExternalApiResultsList = withState(
         externalApiRecords={externalApiRecords}
         serializeExternalApiSuggestions={serializeExternalApiSuggestions}
       >
-        <Container celled columns={3}>
+        <Container>
           <List celled divided relaxed="very" selection>
             {serializedSuggestions.map((record) => {
               const { text: title, value } = record;
