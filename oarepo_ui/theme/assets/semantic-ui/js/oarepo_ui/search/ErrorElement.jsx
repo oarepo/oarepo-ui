@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import { Message } from "semantic-ui-react";
 
 export const ErrorElement = ({ error }) => {
-  console.log(error);
   return (
     <Message
       content={

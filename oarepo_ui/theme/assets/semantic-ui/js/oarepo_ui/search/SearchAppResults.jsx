@@ -6,13 +6,7 @@ import {
   ResultsPerPage,
   ResultsMultiLayout,
 } from "react-searchkit";
-import { i18next } from "@translations/oarepo_ui/i18next";
-
-const resultsPerPageLabel = (cmp) => (
-  <>
-    {cmp} {i18next.t("resultsPerPage")}
-  </>
-);
+import { ResultsPerPageLabel } from "./ResultsPerPageLabel";
 
 export const SearchAppResults = ({ paginationOptions, layoutOptions }) => {
   const { resultsPerPage } = paginationOptions;
@@ -59,14 +53,14 @@ export const SearchAppResults = ({ paginationOptions, layoutOptions }) => {
           textAlign="right"
           width={4}
         >
-          <ResultsPerPage values={resultsPerPage} label={resultsPerPageLabel} />
+          <ResultsPerPage values={resultsPerPage} label={ResultsPerPageLabel} />
         </Grid.Column>
         <Grid.Column
           className="mobile only mt-10"
           textAlign="center"
           width={16}
         >
-          <ResultsPerPage values={resultsPerPage} label={resultsPerPageLabel} />
+          <ResultsPerPage values={resultsPerPage} label={ResultsPerPageLabel} />
         </Grid.Column>
       </Grid.Row>
     </Grid>
