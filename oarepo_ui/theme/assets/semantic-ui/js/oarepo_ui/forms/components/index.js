@@ -1,1 +1,2 @@
-export * from './MultilingualTextInput'
+export * from "./MultilingualTextInput";
+export * from "./RelatedSelectField";

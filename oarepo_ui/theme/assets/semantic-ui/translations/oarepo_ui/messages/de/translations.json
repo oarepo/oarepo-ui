@@ -5,9 +5,15 @@
   "totalResults": "",
   "totalResults_plural": "",
   "Filters": "",
-  "Language": "",
-  "Value": "",
   "We couldn't find any matches for ": "",
+  "Search": "",
+  "Choose": "",
   "Start over": "",
-  "resultsPerPage": ""
+  "resultsPerPage": "",
+  "No results found": "",
+  "Something went wrong...": "",
+  "search": "",
+  "Loading...": "",
+  "Search External Database": "",
+  "Search results from external API": ""
 }

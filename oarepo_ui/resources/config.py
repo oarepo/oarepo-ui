@@ -4,7 +4,11 @@ from pathlib import Path
 import marshmallow as ma
 from flask_resources import ResourceConfig
 from invenio_base.utils import obj_or_import_string
+from invenio_records_resources.services import pagination_links, Link
 from invenio_search_ui.searchconfig import FacetsConfig, SearchAppConfig, SortConfig
+
+from oarepo_ui.resources.links import UIRecordLink
+
 
 def _(x):
     """Identity function used to trigger string extraction."""
@@ -47,6 +51,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
     }
     request_view_args = {"pid_value": ma.fields.Str()}
     request_export_args = {"export_format": ma.fields.Str()}
+    request_search_args = {"page": ma.fields.Integer(), "size": ma.fields.Integer()}
 
     app_contexts = None
     ui_serializer = None
@@ -78,6 +83,18 @@ class RecordsUIResourceConfig(UIResourceConfig):
                 "content-type": "application/json",
                 "filename": "{id}.json",
             },
+        }
+
+    ui_links_item = {
+        "self": UIRecordLink("{+ui}{+url_prefix}/{id}"),
+        "edit": UIRecordLink("{+ui}{+url_prefix}/{id}/edit"),
+    }
+
+    @property
+    def ui_links_search(self):
+        return {
+            **pagination_links("{+ui}{+url_prefix}{?args*}"),
+            "create": Link("{+ui}{+url_prefix}/_new"),
         }
 
     @property
@@ -119,7 +136,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
         return FacetsConfig(facets_config, selected_facets)
 
-    def search_app_config(self, identity, api_config, overrides=None, **kwargs):
+    def search_app_config(self, identity, api_config, overrides={}, **kwargs):
         opts = dict(
             endpoint=f"/api{api_config.url_prefix}",
             headers={"Accept": "application/vnd.inveniordm.v1+json"},
@@ -136,9 +153,6 @@ class RecordsUIResourceConfig(UIResourceConfig):
             ),
         )
         opts.update(kwargs)
-        overrides = overrides or {
-            "ui_endpoint": self.url_prefix,
-        }
         return SearchAppConfig.generate(opts, **overrides)
 
     @property
@@ -150,8 +164,8 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
     def form_config(self, identity=None, **kwargs):
         """Get the react form configuration."""
+
         return dict(
-            links=dict(),
             custom_fields=self.custom_fields,
             **kwargs,
         )

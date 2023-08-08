@@ -2,13 +2,18 @@
   "Sort": "Řazení",
   "Sort by": "Řazení",
   "Filter results": "Filtrovat výsledky",
-  "totalResults_0": "1 výsledek",
-  "totalResults_1": "{{count}} výsledky",
-  "totalResults_2": "{{count}} výsledků",
+  "totalResults_one": "1 výsledek",
+  "totalResults_few": "{{count}} výsledky",
+  "totalResults_other": "{{count}} výsledků",
   "Filters": "Filtry",
   "resultsPerPage": "výsledků na stránku",
   "We couldn't find any matches for ": "Nenašli jsme žádné shody pro ",
   "Start over": "Začít znovu",
-  "Language": "Jazyk",
-  "Value": "Hodnota"
+  "search": "Hledat",
+  "Something went wrong...": "Něco se pokazilo...",
+  "No results found": "Nebyly nalezeny žádné výsledky",
+  "Loading...": "Načítání...",
+  "Search External Database": "Hledat v externí databázi",
+  "Search results from external API": "Výsledky vyhledávání z externího API",
+  "Choose": "Vybrat"
 }

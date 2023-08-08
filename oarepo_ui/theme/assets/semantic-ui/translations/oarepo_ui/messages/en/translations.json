@@ -2,12 +2,17 @@
   "Sort": "Sort",
   "Sort by": "Sort by",
   "Filter results": "Filter results",
-  "totalResults": "{{count}} result",
-  "totalResults_plural": "{{count}} results",
+  "totalResults_one": "{{count}} result",
+  "totalResults_other": "{{count}} results",
   "Filters": "Filters",
   "resultsPerPage": "results per page",
   "We couldn't find any matches for ": "We couldn't find any matches for ",
   "Start over": "Start over",
-  "Language": "Language",
-  "Value": "Value"
+  "search": "Search",
+  "Something went wrong...": "Something went wrong...",
+  "No results found": "No results found",
+  "Loading...": "Loading...",
+  "Search External Database": "Search External Database",
+  "Search results from external API": "Search results from external API",
+  "Choose": "Choose"
 }

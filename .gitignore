@@ -65,5 +65,9 @@ messages.mo
 .vscode
 # node modules
 **/*/node_modules
+yarn.lock
+package-lock.json
 
 .venv-builder/
+
+
