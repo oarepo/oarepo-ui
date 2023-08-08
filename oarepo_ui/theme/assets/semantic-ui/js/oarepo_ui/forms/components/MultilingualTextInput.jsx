@@ -163,11 +163,6 @@ MultiLingualTextInput.propTypes = {
   label: PropTypes.string,
   labelIcon: PropTypes.string,
   required: PropTypes.bool,
-  options: PropTypes.object.isRequired,
-  emptyNewInput: PropTypes.shape({
-    language: PropTypes.string,
-    name: PropTypes.string,
-  }),
   newItemInitialValue: PropTypes.object,
   hasRichInput: PropTypes.bool,
   editorConfig: PropTypes.object,
