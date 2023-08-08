@@ -82,7 +82,9 @@ export const MultiLingualTextInput = ({
       addButtonLabel="Add another language"
       defaultNewValue={emptyNewInput}
       fieldPath={placeholderFieldPath}
-      label={<FieldLabel htmlFor={fieldPath} icon="" label={label} />}
+      label={
+        <FieldLabel htmlFor={fieldPath} icon={labelIcon ?? ""} label={label} />
+      }
       required={required}
     >
       {({ indexPath, array, arrayHelpers }) => {
