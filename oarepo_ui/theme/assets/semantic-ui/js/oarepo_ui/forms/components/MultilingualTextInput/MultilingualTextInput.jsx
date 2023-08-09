@@ -49,7 +49,7 @@ const PopupComponent = ({ content, trigger }) => (
   />
 );
 
-export const MultiLingualTextInput = ({
+export const MultilingualTextInput = ({
   fieldPath,
   label,
   labelIcon,
@@ -174,7 +174,7 @@ export const MultiLingualTextInput = ({
   );
 };
 
-MultiLingualTextInput.propTypes = {
+MultilingualTextInput.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   label: PropTypes.string,
   labelIcon: PropTypes.string,
@@ -184,7 +184,7 @@ MultiLingualTextInput.propTypes = {
   editorConfig: PropTypes.object,
 };
 
-MultiLingualTextInput.defaultProps = {
+MultilingualTextInput.defaultProps = {
   label: "Title",
   required: undefined,
   emptyNewInput: {
