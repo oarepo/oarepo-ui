@@ -8,11 +8,11 @@ import {
   SelectField,
   RichInputField,
 } from "react-invenio-forms";
-import { Button, Form, Icon } from "semantic-ui-react";
+import { Button, Form, Icon, Popup } from "semantic-ui-react";
 import { useFormikContext, getIn } from "formik";
 import _toPairs from "lodash/toPairs";
 import { useFormConfig } from "@js/oarepo_ui/forms";
-import { i18next } from "@translations/docs_app/i18next";
+import { i18next } from "@translations/oarepo_ui/i18next";
 
 const translateObjectToArray = (obj) => {
   return _toPairs(obj).map(([language, title]) => ({ language, name: title }));
@@ -20,7 +20,6 @@ const translateObjectToArray = (obj) => {
 
 export const transformArrayToObject = (arr) => {
   const result = {};
-
   arr.forEach((obj) => {
     const { language, name } = obj;
     result[language] = name;
@@ -31,11 +30,9 @@ export const transformArrayToObject = (arr) => {
 
 const eliminateUsedLanguages = (excludeIndex, languageOptions, fieldArray) => {
   const currentlySelectedLanguage = fieldArray[excludeIndex].language;
-
   const excludedLanguages = fieldArray.filter(
     (item) => item.language !== currentlySelectedLanguage && item.language
   );
-
   const remainingLanguages = languageOptions.filter(
     (option) =>
       !excludedLanguages.map((item) => item.language).includes(option.value)
@@ -107,20 +104,28 @@ export const MultiLingualTextInput = ({
                 label="Language"
                 optimized
                 options={availableOptions}
-                required
+                required={required}
                 selectOnBlur={false}
                 search
               />
               {indexPath > 0 && hasRichInput && (
-                <Button
-                  aria-label="remove field"
-                  className="rel-mt-1"
-                  icon
-                  onClick={() => arrayHelpers.remove(indexPath)}
-                  fluid
-                >
-                  <Icon name="close" />
-                </Button>
+                <Popup
+                  basic
+                  inverted
+                  position="bottom center"
+                  content={i18next.t("Remove description")}
+                  trigger={
+                    <Button
+                      aria-label="remove field"
+                      className="rel-mt-1"
+                      icon
+                      onClick={() => arrayHelpers.remove(indexPath)}
+                      fluid
+                    >
+                      <Icon name="close" />
+                    </Button>
+                  }
+                />
               )}
             </Form.Field>
 
@@ -131,23 +136,31 @@ export const MultiLingualTextInput = ({
                   label={i18next.t("Description")}
                   editorConfig={editorConfig}
                   optimized
-                  required
+                  required={required}
                 />
               </Form.Field>
             ) : (
               <TextField
                 fieldPath={`${fieldPathPrefix}.name`}
                 label="Name"
-                required
+                required={required}
                 width={13}
                 icon={
                   indexPath > 0 ? (
-                    <Icon
-                      as="button"
-                      onClick={() => arrayHelpers.remove(indexPath)}
-                    >
-                      <Icon name="close" />
-                    </Icon>
+                    <Popup
+                      basic
+                      inverted
+                      position="bottom center"
+                      content={i18next.t("Remove field")}
+                      trigger={
+                        <Icon
+                          as="button"
+                          onClick={() => arrayHelpers.remove(indexPath)}
+                        >
+                          <Icon name="close" />
+                        </Icon>
+                      }
+                    />
                   ) : null
                 }
                 iconPosition="right"
