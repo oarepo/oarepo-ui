@@ -20,8 +20,7 @@ const translateObjectToArray = (obj) => {
 
 export const transformArrayToObject = (arr) => {
   const result = {};
-  arr.forEach((obj) => {
-    const { language, name } = obj;
+  arr.forEach(({ language, name }) => {
     result[language] = name;
   });
 
@@ -39,6 +38,16 @@ const eliminateUsedLanguages = (excludeIndex, languageOptions, fieldArray) => {
   );
   return remainingLanguages;
 };
+
+const PopupComponent = ({ content, trigger }) => (
+  <Popup
+    basic
+    inverted
+    position="bottom center"
+    content={content}
+    trigger={trigger}
+  />
+);
 
 export const MultiLingualTextInput = ({
   fieldPath,
@@ -106,13 +115,9 @@ export const MultiLingualTextInput = ({
                 options={availableOptions}
                 required={required}
                 selectOnBlur={false}
-                search
               />
               {indexPath > 0 && hasRichInput && (
-                <Popup
-                  basic
-                  inverted
-                  position="bottom center"
+                <PopupComponent
                   content={i18next.t("Remove description")}
                   trigger={
                     <Button
@@ -147,10 +152,7 @@ export const MultiLingualTextInput = ({
                 width={13}
                 icon={
                   indexPath > 0 ? (
-                    <Popup
-                      basic
-                      inverted
-                      position="bottom center"
+                    <PopupComponent
                       content={i18next.t("Remove field")}
                       trigger={
                         <Icon

@@ -28,7 +28,7 @@ export const RelatedSelectField = ({
   noQueryMessage,
   preSearchChange,
   onValueChange,
-  search=(options) => options,
+  search = (options) => options,
   multiple,
   externalSuggestionApi,
   serializeExternalApiSuggestions,
