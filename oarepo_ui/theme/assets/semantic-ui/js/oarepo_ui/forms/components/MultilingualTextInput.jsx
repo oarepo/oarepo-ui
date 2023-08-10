@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import {
   TextField,
@@ -58,6 +58,8 @@ export const MultiLingualTextInput = ({
   newItemInitialValue,
   hasRichInput,
   editorConfig,
+  textFieldLabel,
+  richFieldLabel,
 }) => {
   const {
     formConfig: {
@@ -65,8 +67,17 @@ export const MultiLingualTextInput = ({
     },
   } = useFormConfig();
 
-  const placeholderFieldPath = `_${fieldPath}`;
+  // to have only property with _ for internal multilignaul field i.e. if used inside another component in previous implementation, it would start to set the main object property instead of the internal _ representation
+  const placeholderFieldPath = useMemo(() => {
+    return fieldPath
+      .split(".")
+      .map((part, index, array) =>
+        index === array.length - 1 ? `_${part}` : part
+      )
+      .join(".");
+  }, [fieldPath]);
   const { setFieldValue, values } = useFormikContext();
+
   useEffect(() => {
     if (!getIn(values, placeholderFieldPath)) {
       setFieldValue(
@@ -138,7 +149,7 @@ export const MultiLingualTextInput = ({
               <Form.Field width={13}>
                 <RichInputField
                   fieldPath={`${fieldPathPrefix}.name`}
-                  label={i18next.t("Description")}
+                  label={richFieldLabel}
                   editorConfig={editorConfig}
                   optimized
                   required={required}
@@ -147,7 +158,7 @@ export const MultiLingualTextInput = ({
             ) : (
               <TextField
                 fieldPath={`${fieldPathPrefix}.name`}
-                label="Name"
+                label={textFieldLabel}
                 required={required}
                 width={13}
                 icon={
@@ -155,12 +166,12 @@ export const MultiLingualTextInput = ({
                     <PopupComponent
                       content={i18next.t("Remove field")}
                       trigger={
-                        <Icon
-                          as="button"
+                        <Button
+                          className="rel-ml-1"
                           onClick={() => arrayHelpers.remove(indexPath)}
                         >
-                          <Icon name="close" />
-                        </Icon>
+                          <Icon fitted name="close" />
+                        </Button>
                       }
                     />
                   ) : null
@@ -182,6 +193,8 @@ MultiLingualTextInput.propTypes = {
   newItemInitialValue: PropTypes.object,
   hasRichInput: PropTypes.bool,
   editorConfig: PropTypes.object,
+  textFieldLabel: PropTypes.string,
+  richFieldLabel: PropTypes.string,
 };
 
 MultiLingualTextInput.defaultProps = {
@@ -207,4 +220,6 @@ MultiLingualTextInput.defaultProps = {
       "TableCellProperties",
     ],
   },
+  textFieldLabel: i18next.t("Name"),
+  richFieldLabel: i18next.t("Description"),
 };
