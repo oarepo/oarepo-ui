@@ -11,21 +11,9 @@ import {
 import { Button, Form, Icon, Popup } from "semantic-ui-react";
 import { useFormikContext, getIn } from "formik";
 import _toPairs from "lodash/toPairs";
-import { useFormConfig } from "@js/oarepo_ui/forms";
+import { useFormConfig, array2object, object2array } from "@js/oarepo_ui";
 import { i18next } from "@translations/oarepo_ui/i18next";
 
-const translateObjectToArray = (obj) => {
-  return _toPairs(obj).map(([language, title]) => ({ language, name: title }));
-};
-
-export const transformArrayToObject = (arr) => {
-  const result = {};
-  arr.forEach(({ language, name }) => {
-    result[language] = name;
-  });
-
-  return result;
-};
 
 const eliminateUsedLanguages = (excludeIndex, languageOptions, fieldArray) => {
   const currentlySelectedLanguage = fieldArray[excludeIndex].language;
@@ -72,14 +60,14 @@ export const MultilingualTextInput = ({
       setFieldValue(
         placeholderFieldPath,
         getIn(values, fieldPath)
-          ? translateObjectToArray(getIn(values, fieldPath, ""))
-          : translateObjectToArray(newItemInitialValue)
+          ? object2array(getIn(values, fieldPath, ""), "lang", "value")
+          : object2array(newItemInitialValue, "lang", "value")
       );
       return;
     }
     setFieldValue(
       fieldPath,
-      transformArrayToObject(getIn(values, placeholderFieldPath))
+      array2object(getIn(values, placeholderFieldPath), "lang", "value")
     );
   }, [values[placeholderFieldPath]]);
 
