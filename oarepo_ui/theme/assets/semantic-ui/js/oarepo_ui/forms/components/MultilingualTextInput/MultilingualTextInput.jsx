@@ -14,7 +14,6 @@ import _toPairs from "lodash/toPairs";
 import { useFormConfig, array2object, object2array } from "@js/oarepo_ui";
 import { i18next } from "@translations/oarepo_ui/i18next";
 
-
 const eliminateUsedLanguages = (excludeIndex, languageOptions, fieldArray) => {
   const currentlySelectedLanguage = fieldArray[excludeIndex].language;
   const excludedLanguages = fieldArray.filter(
@@ -36,7 +35,6 @@ const PopupComponent = ({ content, trigger }) => (
     trigger={trigger}
   />
 );
-
 export const MultilingualTextInput = ({
   fieldPath,
   label,
@@ -65,20 +63,19 @@ export const MultilingualTextInput = ({
       .join(".");
   }, [fieldPath]);
   const { setFieldValue, values } = useFormikContext();
-
   useEffect(() => {
     if (!getIn(values, placeholderFieldPath)) {
       setFieldValue(
         placeholderFieldPath,
         getIn(values, fieldPath)
-          ? object2array(getIn(values, fieldPath, ""), "lang", "value")
-          : object2array(newItemInitialValue, "lang", "value")
+          ? object2array(getIn(values, fieldPath, ""), "language", "name")
+          : object2array(newItemInitialValue, "language", "name")
       );
       return;
     }
     setFieldValue(
       fieldPath,
-      array2object(getIn(values, placeholderFieldPath), "lang", "value")
+      array2object(getIn(values, placeholderFieldPath), "language", "name")
     );
   }, [values[placeholderFieldPath]]);
 
