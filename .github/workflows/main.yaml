@@ -44,7 +44,7 @@ jobs:
       - name: Test with pytest
         run: |
           pip install -e '.[tests]'
-          pytest tests
+          pytest tests --show-capture=stderr --exitfirst
       
 
       - name: Build package to publish
