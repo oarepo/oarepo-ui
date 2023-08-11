@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { useFormikContext, getIn } from "formik";
 import { RelatedSelectFieldInternal } from "./RelatedSelectFieldInternal";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import _reverse from "lodash/reverse";
