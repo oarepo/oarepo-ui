@@ -1,6 +1,5 @@
 import * as React from "react";
 import { LanguageSelectField } from "@js/oarepo_ui";
-import { i18next } from "@translations/oarepo_ui/i18next";
 import { TextField, GroupField, FieldLabel } from "react-invenio-forms";
 import PropTypes from "prop-types";
 
