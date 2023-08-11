@@ -1,6 +1,8 @@
-import {SelectField} from 'react-invenio-forms'
+import * as React from 'react'
+import {SelectField, FieldLabel} from 'react-invenio-forms'
 import { useVocabularyOptions } from '@js/oarepo_ui';
 import { i18next } from "@translations/oarepo_ui/i18next";
+import PropTypes from 'prop-types'
 
 export const LanguageSelectField = ({
   fieldPath,
@@ -25,6 +27,7 @@ export const LanguageSelectField = ({
       options={options}
       label={<FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />}
       selectOnBlur={false}
+      fluid
       {...uiProps}
     />
   );
@@ -41,9 +44,10 @@ LanguageSelectField.propTypes = {
 };
 
 LanguageSelectField.defaultProps = {
-  label: i18next.t("Languages"),
+  label: i18next.t("Language"),
   labelIcon: "globe",
-  multiple: true,
+  multiple: false,
+  search: true,
   clearable: true,
   placeholder: i18next.t(
     'Search for a language by name (e.g "eng", "fr" or "Polish")'
