@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import {
   TextField,
@@ -9,23 +9,25 @@ import {
   RichInputField,
 } from "react-invenio-forms";
 import { Button, Form, Icon, Popup } from "semantic-ui-react";
-import { useFormikContext, getIn } from "formik";
-import _toPairs from "lodash/toPairs";
-import { useFormConfig, array2object, object2array } from "@js/oarepo_ui";
+import { useFormConfig } from "@js/oarepo_ui";
 import { i18next } from "@translations/oarepo_ui/i18next";
 
+// could be hoisted to oarepo ui utils?
+
 const eliminateUsedLanguages = (excludeIndex, languageOptions, fieldArray) => {
-  const currentlySelectedLanguage = fieldArray[excludeIndex].language;
+  const currentlySelectedLanguage = fieldArray[excludeIndex].lang;
   const excludedLanguages = fieldArray.filter(
-    (item) => item.language !== currentlySelectedLanguage && item.language
+    (item) => item.lang !== currentlySelectedLanguage && item.lang
   );
   const remainingLanguages = languageOptions.filter(
     (option) =>
-      !excludedLanguages.map((item) => item.language).includes(option.value)
+      !excludedLanguages.map((item) => item.lang).includes(option.value)
   );
   return remainingLanguages;
 };
 
+// slight issue is that invenio's ArrayField, adds a negative key to each object when you add an item
+// we could sanitize this before posting?
 const PopupComponent = ({ content, trigger }) => (
   <Popup
     basic
@@ -41,11 +43,11 @@ export const MultilingualTextInput = ({
   labelIcon,
   required,
   emptyNewInput,
-  newItemInitialValue,
   hasRichInput,
   editorConfig,
   textFieldLabel,
   richFieldLabel,
+  helpText,
 }) => {
   const {
     formConfig: {
@@ -53,44 +55,19 @@ export const MultilingualTextInput = ({
     },
   } = useFormConfig();
 
-  // to have only property with _ for internal multilignaul field i.e. if used inside another component in previous implementation, it would start to set the main object property instead of the internal _ representation
-  const placeholderFieldPath = useMemo(() => {
-    return fieldPath
-      .split(".")
-      .map((part, index, array) =>
-        index === array.length - 1 ? `_${part}` : part
-      )
-      .join(".");
-  }, [fieldPath]);
-  const { setFieldValue, values } = useFormikContext();
-  useEffect(() => {
-    if (!getIn(values, placeholderFieldPath)) {
-      setFieldValue(
-        placeholderFieldPath,
-        getIn(values, fieldPath)
-          ? object2array(getIn(values, fieldPath, ""), "language", "name")
-          : object2array(newItemInitialValue, "language", "name")
-      );
-      return;
-    }
-    setFieldValue(
-      fieldPath,
-      array2object(getIn(values, placeholderFieldPath), "language", "name")
-    );
-  }, [values[placeholderFieldPath]]);
-
   return (
     <ArrayField
       addButtonLabel="Add another language"
       defaultNewValue={emptyNewInput}
-      fieldPath={placeholderFieldPath}
+      fieldPath={fieldPath}
       label={
         <FieldLabel htmlFor={fieldPath} icon={labelIcon ?? ""} label={label} />
       }
       required={required}
+      helpText={helpText}
     >
       {({ indexPath, array, arrayHelpers }) => {
-        const fieldPathPrefix = `${placeholderFieldPath}.${indexPath}`;
+        const fieldPathPrefix = `${fieldPath}.${indexPath}`;
 
         const availableOptions = eliminateUsedLanguages(
           indexPath,
@@ -105,14 +82,14 @@ export const MultilingualTextInput = ({
                 // necessary because otherwise other inputs are not rerendered and keep the previous state i.e. I could potentially choose two same languages in some scenarios
                 key={availableOptions}
                 clearable
-                fieldPath={`${fieldPathPrefix}.language`}
+                fieldPath={`${fieldPathPrefix}.lang`}
                 label="Language"
                 optimized
                 options={availableOptions}
                 required={required}
                 selectOnBlur={false}
               />
-              {indexPath > 0 && hasRichInput && (
+              {hasRichInput && (
                 <PopupComponent
                   content={i18next.t("Remove description")}
                   trigger={
@@ -133,7 +110,7 @@ export const MultilingualTextInput = ({
             {hasRichInput ? (
               <Form.Field width={13}>
                 <RichInputField
-                  fieldPath={`${fieldPathPrefix}.name`}
+                  fieldPath={`${fieldPathPrefix}.value`}
                   label={richFieldLabel}
                   editorConfig={editorConfig}
                   optimized
@@ -142,24 +119,22 @@ export const MultilingualTextInput = ({
               </Form.Field>
             ) : (
               <TextField
-                fieldPath={`${fieldPathPrefix}.name`}
+                fieldPath={`${fieldPathPrefix}.value`}
                 label={textFieldLabel}
                 required={required}
                 width={13}
                 icon={
-                  indexPath > 0 ? (
-                    <PopupComponent
-                      content={i18next.t("Remove field")}
-                      trigger={
-                        <Button
-                          className="rel-ml-1"
-                          onClick={() => arrayHelpers.remove(indexPath)}
-                        >
-                          <Icon fitted name="close" />
-                        </Button>
-                      }
-                    />
-                  ) : null
+                  <PopupComponent
+                    content={i18next.t("Remove field")}
+                    trigger={
+                      <Button
+                        className="rel-ml-1"
+                        onClick={() => arrayHelpers.remove(indexPath)}
+                      >
+                        <Icon fitted name="close" />
+                      </Button>
+                    }
+                  />
                 }
               />
             )}
@@ -175,21 +150,20 @@ MultilingualTextInput.propTypes = {
   label: PropTypes.string,
   labelIcon: PropTypes.string,
   required: PropTypes.bool,
-  newItemInitialValue: PropTypes.object,
   hasRichInput: PropTypes.bool,
   editorConfig: PropTypes.object,
   textFieldLabel: PropTypes.string,
   richFieldLabel: PropTypes.string,
+  helpText: PropTypes.string,
 };
 
 MultilingualTextInput.defaultProps = {
   label: "Title",
-  required: undefined,
   emptyNewInput: {
-    language: "",
-    name: "",
+    lang: "",
+    value: "",
   },
-  newItemInitialValue: { cs: "" },
+  newItemInitialValue: [{ language: "cs", value: "" }],
   hasRichInput: false,
   editorConfig: {
     removePlugins: [
