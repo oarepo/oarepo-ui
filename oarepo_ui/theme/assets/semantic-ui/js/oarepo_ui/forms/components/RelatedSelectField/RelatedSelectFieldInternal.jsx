@@ -255,6 +255,5 @@ RelatedSelectFieldInternal.defaultProps = {
   },
   externalApiButtonContent: i18next.t("Search External Database"),
   externalApiModalTitle: i18next.t("Search results from external API"),
-  serializeSuggestions: undefined,
   serializeExternalApiSuggestions: undefined,
 };
