@@ -14,6 +14,12 @@ export const useFormConfig = () => {
 }
 
 
+export const useVocabularyOptions = (vocabularyType) => {
+    const { formConfig: { vocabularies } } = useFormConfig();
+
+    return { options: vocabularies[vocabularyType] }
+}
+
 export const submitContextType = {
     create: 'create',
     update: 'update',
@@ -33,8 +39,8 @@ export const useOnSubmit = ({
             return context === submitContextType.create
                 ? apiClient.createDraft(apiUrl, data)
                 : context === submitContextType.update
-                ? apiClient.saveDraft(apiUrl, data)
-                : new Error(`Unsupported submit context: ${context}`)
+                    ? apiClient.saveDraft(apiUrl, data)
+                    : new Error(`Unsupported submit context: ${context}`)
         }
     })
 

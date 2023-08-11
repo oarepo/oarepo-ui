@@ -1,14 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { useFormikContext, getIn } from "formik";
 import { RelatedSelectFieldInternal } from "./RelatedSelectFieldInternal";
-import { MultilingualString } from "../MultilingualString";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import _reverse from "lodash/reverse";
 
-const serializeSuggestions = (suggestions) =>
+const defaultSuggestionsSerializer = (suggestions) =>
   suggestions.map((item) => ({
-    text: <MultilingualString value={item.title} />,
+    text: item.title_l10n,
     value: item.id,
     key: item.id,
   }));
@@ -28,7 +26,7 @@ export const RelatedSelectField = ({
   noQueryMessage,
   preSearchChange,
   onValueChange,
-  search=(options) => options,
+  search,
   multiple,
   externalSuggestionApi,
   serializeExternalApiSuggestions,
@@ -36,9 +34,9 @@ export const RelatedSelectField = ({
   externalApiModalTitle,
   ...uiProps
 }) => {
-  const { values } = useFormikContext();
   return (
     <RelatedSelectFieldInternal
+      fluid
       fieldPath={fieldPath}
       suggestionAPIUrl={suggestionAPIUrl}
       selectOnBlur={false}
@@ -53,35 +51,12 @@ export const RelatedSelectField = ({
       suggestionsErrorMessage={suggestionsErrorMessage}
       noQueryMessage={noQueryMessage}
       preSearchChange={preSearchChange}
-      onValueChange={
-        onValueChange
-          ? onValueChange
-          : multiple
-          ? ({ formikProps }, selectedItems) => {
-              formikProps.form.setFieldValue(
-                fieldPath,
-                selectedItems.map((item) => ({ id: item.value }))
-              );
-            }
-          : ({ formikProps }, selectedItems) => {
-              formikProps.form.setFieldValue(fieldPath, {
-                id: selectedItems[0]?.value,
-              });
-            }
-      }
       search={search}
       multiple={multiple}
       externalSuggestionApi={externalSuggestionApi}
       serializeExternalApiSuggestions={serializeExternalApiSuggestions}
       externalApiButtonContent={externalApiButtonContent}
       externalApiModalTitle={externalApiModalTitle}
-      value={
-        multiple
-          ? getIn(values, fieldPath, []).map((item) => item.id)
-          : getIn(values, fieldPath)?.id
-          ? getIn(values, fieldPath)?.id
-          : ""
-      }
       {...uiProps}
     />
   );
@@ -121,19 +96,20 @@ RelatedSelectField.propTypes = {
 RelatedSelectField.defaultProps = {
   debounceTime: 500,
   suggestionAPIQueryParams: {},
-  serializeSuggestions: serializeSuggestions,
+  serializeSuggestions: defaultSuggestionsSerializer,
   suggestionsErrorMessage: i18next.t("Something went wrong..."),
-  noQueryMessage: i18next.t("search"),
+  noQueryMessage: i18next.t("Search..."),
   noResultsMessage: i18next.t("No results found"),
   loadingMessage: i18next.t("Loading..."),
   preSearchChange: (x) => x,
   // search: true,
   multiple: false,
-  serializeAddedValue: undefined,
+  search: (options) => options,
   initialSuggestions: [],
-  onValueChange: undefined,
-  suggestionAPIHeaders: { Accept: "application/json" },
-  serializeExternalApiSuggestions: undefined,
+  suggestionAPIHeaders: {
+    Accept: "application/vnd.inveniordm.v1+json",
+  },
   externalApiButtonContent: i18next.t("Search External Database"),
   externalApiModalTitle: i18next.t("Search results from external API"),
+  serializeExternalApiSuggestions: undefined
 };
