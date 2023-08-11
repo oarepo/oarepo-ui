@@ -37,6 +37,7 @@ export const RelatedSelectField = ({
 }) => {
   return (
     <RelatedSelectFieldInternal
+      fluid
       fieldPath={fieldPath}
       suggestionAPIUrl={suggestionAPIUrl}
       selectOnBlur={false}
