@@ -18,6 +18,6 @@ def test_process_template(app):
         layout={
             "children": {"metadata": {"children": {"title": {"detail": "fulltext"}}}}
         },
-        component_key="detail",
+        component_key="search",
     )
     assert strip_ws(rendered) == strip_ws("""<h1>Hello world!</h1>""")
