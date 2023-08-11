@@ -44,7 +44,9 @@ jobs:
       - name: Test with pytest
         run: |
           pip install -e '.[tests]'
-          pytest tests --capture=no
+          error_output=$(pytest tests 2>&1)
+          echo "$error_output"
+          echo "::set-output name=error_output::$error_output"
       
 
       - name: Build package to publish
