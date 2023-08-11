@@ -2,7 +2,7 @@ import copy
 from functools import partial
 
 import deepmerge
-from flask import abort, g, redirect, render_template, request
+from flask import abort, current_app, g, redirect, render_template, request
 from flask_resources import (
     Resource,
     from_conf,
@@ -24,6 +24,7 @@ from oarepo_ui.utils import dump_empty
 # Resource
 #
 from ..proxies import current_oarepo_ui
+from .catalog import catalog_config
 from .config import RecordsUIResourceConfig, UIResourceConfig
 
 request_export_args = request_parser(
@@ -98,7 +99,9 @@ class RecordsUIResource(UIResource):
         record = deepmerge.always_merger.merge(
             record, copy.deepcopy(self.config.empty_record)
         )
-        self.run_components("empty_record", resource_requestctx=resource_requestctx, record=record)
+        self.run_components(
+            "empty_record", resource_requestctx=resource_requestctx, record=record
+        )
         return record
 
     def as_blueprint(self, **options):
@@ -142,29 +145,14 @@ class RecordsUIResource(UIResource):
             layout=layout,
             component_key="search",
         )
+        _catalog = current_oarepo_ui.catalog
 
-        template_def = self.get_template_def("detail")
-        template = current_oarepo_ui.get_template(
-            template_def["layout"],
-            template_def["blocks"],
-        )
-        export_path = request.path.split("?")[0]
-        if not export_path.endswith("/"):
-            export_path += "/"
-        export_path += "export"
+        if not _catalog.singleton_check:
+            _catalog.set_config()
+            _catalog = catalog_config(_catalog, current_app.jinja_env)
 
-        return render_template(
-            template,
-            record=serialized_record,
-            data=serialized_record,
-            metadata=serialized_record.get("metadata", serialized_record),
-            ui=serialized_record.get("ui", serialized_record),
-            ui_config=self.config,
-            ui_resource=self,
-            layout=layout,
-            component_key="detail",
-            export_path=export_path,
-            **extra_context,
+        return _catalog.render(
+            "DetailRoot", metadata=serialized_record["metadata"], **extra_context
         )
 
     def _get_record(self, resource_requestctx):
