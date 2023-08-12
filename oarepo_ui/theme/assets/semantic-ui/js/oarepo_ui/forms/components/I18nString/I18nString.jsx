@@ -2,7 +2,7 @@ import * as React from 'react'
 import PropTypes from "prop-types";
 import {i18next} from '@translations/oarepo_ui/i18next'
 
-export const MultilingualString = ({value}) => {
+export const I18nString = ({value}) => {
     const localizedValue =
       value[i18next.language] ||
       value[i18next.options.fallbackLng] ||
@@ -11,8 +11,8 @@ export const MultilingualString = ({value}) => {
     return <>{localizedValue}</>;
 };
 
-MultilingualString.propTypes = {
+I18nString.propTypes = {
   value: PropTypes.object
 };
 
-MultilingualString.defaultProps = {};
+I18nString.defaultProps = {};
