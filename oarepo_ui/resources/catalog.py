@@ -99,6 +99,7 @@ def list_templates(env):
             {
                 "root_path": crop_root_path(temp.filename, app_theme),
                 "component_path": crop_component_path(temp.filename),
+                    'component_file': temp.filename
             }
         )
 
@@ -116,3 +117,16 @@ def catalog_config(catalog, env):
     catalog.prefixes[""] = env.loader
 
     return catalog
+
+def get_jinja_template(_catalog, template_def):
+    for component in _catalog.jinja_env.loader.searchpath:
+        if component['component_file'].endswith(template_def['layout']):
+            with open(component['component_file'], 'r') as file:
+                jinja_content = file.read()
+    assembled_template = [jinja_content]
+    for blk_name, blk in template_def['blocks'].items():
+        assembled_template.append(
+                '{%% block %s %%}<%s metadata={{metadata}} ui={{ui}} layout={{layout}}></%s>{%% endblock %%}' % (blk_name, blk, blk)
+        )
+    assembled_template = "\n".join(assembled_template)
+    return assembled_template

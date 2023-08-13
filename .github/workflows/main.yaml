@@ -44,7 +44,7 @@ jobs:
       - name: Test with pytest
         run: |
           pip install -e '.[tests]'
-          pytest tests --capture=no
+          pytest tests
       
 
       - name: Build package to publish

@@ -24,7 +24,7 @@ from oarepo_ui.utils import dump_empty
 # Resource
 #
 from ..proxies import current_oarepo_ui
-from .catalog import catalog_config
+from .catalog import catalog_config, get_jinja_template
 from .config import RecordsUIResourceConfig, UIResourceConfig
 
 request_export_args = request_parser(
@@ -150,9 +150,12 @@ class RecordsUIResource(UIResource):
         if not _catalog.singleton_check:
             _catalog.set_config()
             _catalog = catalog_config(_catalog, current_app.jinja_env)
-
+        template_def = self.get_template_def("detail")
+        source = get_jinja_template(_catalog, template_def)
         return _catalog.render(
-            "DetailRoot", metadata=serialized_record["metadata"], **extra_context
+            "detail",__source=source, metadata=serialized_record["metadata"],
+            ui = serialized_record.get("ui", serialized_record),
+            layout = layout
         )
 
     def _get_record(self, resource_requestctx):
