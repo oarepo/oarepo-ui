@@ -45,7 +45,7 @@ jobs:
         run: |
           pip install -e '.[tests]'
           pytest tests
-      
+
 
       - name: Build package to publish
         run: |
