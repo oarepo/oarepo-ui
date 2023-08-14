@@ -56,7 +56,7 @@ export const MultilingualTextInput = ({
 
         return (
           <GroupField>
-            <Form.Field width={hasRichInput ? 15 : 16}>
+            <Form.Field width={16}>
               {hasRichInput ? (
                 <I18nRichInputField
                   key={availableOptions}
