@@ -6,6 +6,7 @@ import { getInputFromDOM } from "@js/oarepo_ui";
 import { FormConfigProvider } from "./contexts";
 import { Container } from "semantic-ui-react";
 import { BrowserRouter as Router } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import Overridable, {
   OverridableContext,
@@ -19,6 +20,8 @@ import Overridable, {
  * @param {boolean} autoInit - if true then the application is getting registered to the DOM.
  * @returns {object} renderable React object
  */
+
+const queryClient = new QueryClient();
 export function createFormAppInit(
   defaultComponents,
   autoInit = true,
@@ -28,6 +31,7 @@ export function createFormAppInit(
     const record = getInputFromDOM("record");
     const formConfig = getInputFromDOM("form-config");
     const recordPermissions = getInputFromDOM("record-permissions");
+    const links = getInputFromDOM("links")
 
     console.debug("Initializing Formik form app...");
     console.debug(
@@ -36,28 +40,32 @@ export function createFormAppInit(
       "\n[formConfig]",
       formConfig,
       "\n[recordPermissions]",
-      recordPermissions
+      recordPermissions,
+      "\n[UI links]",
+      links
     );
 
     loadComponents("", defaultComponents).then((res) => {
       ReactDOM.render(
         <ContainerComponent>
-          <Router>
-            <OverridableContext.Provider value={overrideStore.getAll()}>
-              <FormConfigProvider
-                value={{ record, formConfig, recordPermissions }}
-              >
-                <Overridable id="FormApp.layout">
-                  <Container fluid>
-                    <p>
-                      Provide your form components here by overriding component
-                      id "FormApp.layout"
-                    </p>
-                  </Container>
-                </Overridable>
-              </FormConfigProvider>
-            </OverridableContext.Provider>
-          </Router>
+          <QueryClientProvider client={queryClient}>
+            <Router>
+              <OverridableContext.Provider value={overrideStore.getAll()}>
+                <FormConfigProvider
+                  value={{ record, formConfig, recordPermissions, links }}
+                >
+                  <Overridable id="FormApp.layout">
+                    <Container fluid>
+                      <p>
+                        Provide your form components here by overriding
+                        component id "FormApp.layout"
+                      </p>
+                    </Container>
+                  </Overridable>
+                </FormConfigProvider>
+              </OverridableContext.Provider>
+            </Router>
+          </QueryClientProvider>
         </ContainerComponent>,
         rootElement
       );
@@ -70,4 +78,19 @@ export function createFormAppInit(
   } else {
     return initFormApp;
   }
+}
+
+export const invokeCallbacks = (callbacks, ...args) => {
+  let result
+  if (!Array.isArray(callbacks)) {
+    callbacks = [callbacks];
+  }
+  callbacks.forEach(callback => {
+    if (typeof callback === 'function') {
+      // TODO: can this be improved?
+      result = callback(...args);
+    }
+  });
+
+  return result
 }

@@ -6,8 +6,11 @@ import { Message } from "semantic-ui-react";
 export const ErrorElement = ({ error }) => {
   return (
     <Message
-      error
-      content={error.response.data.message || error.response.statusText}
+      content={
+        error?.response?.data?.message ||
+        error?.response?.statusText ||
+        error?.message
+      }
       icon="warning sign"
     />
   );

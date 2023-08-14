@@ -39,7 +39,7 @@ class OARepoUIState:
         return self._resources
 
     def get_layout(self, layout_name):
-        return self.layouts[layout_name]
+        return self.layouts.get(layout_name, {})
 
     def _load_layouts(self):
         layouts = {}

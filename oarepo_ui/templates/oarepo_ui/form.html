@@ -39,6 +39,7 @@
         {%- if permissions %}
         <input id="record-permissions" type="hidden" name="record-permissions" value='{{permissions | tojson }}' />
         {%- endif %}
+        <input id="links" type="hidden" name="links" value='{{ui_links | tojson }}' />
         <div id="form-app"></div>
       {%- endblock form_main_content -%}
       </div>
