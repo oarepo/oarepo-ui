@@ -120,10 +120,13 @@ def catalog_config(catalog, env):
     return catalog
 
 def get_jinja_template(_catalog, template_def):
+    jinja_content = None
     for component in _catalog.jinja_env.loader.searchpath:
         if component['component_file'].endswith(template_def['layout']):
             with open(component['component_file'], 'r') as file:
                 jinja_content = file.read()
+    if not jinja_content:
+        raise Exception('%s was not found' % (template_def['layout']))
     assembled_template = [jinja_content]
     for blk_name, blk in template_def['blocks'].items():
         assembled_template.append(
