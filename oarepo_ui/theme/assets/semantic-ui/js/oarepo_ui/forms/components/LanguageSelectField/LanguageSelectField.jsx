@@ -1,8 +1,8 @@
-import * as React from 'react'
-import {SelectField, FieldLabel} from 'react-invenio-forms'
-import { useVocabularyOptions } from '@js/oarepo_ui';
+import * as React from "react";
+import { SelectField, FieldLabel } from "react-invenio-forms";
+import { useVocabularyOptions } from "@js/oarepo_ui";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import PropTypes from 'prop-types'
+import PropTypes from "prop-types";
 
 export const LanguageSelectField = ({
   fieldPath,
@@ -12,9 +12,11 @@ export const LanguageSelectField = ({
   multiple,
   placeholder,
   clearable,
+  filteredLanguages,
   ...uiProps
 }) => {
-  const {options} = useVocabularyOptions('languages')
+  let { options } = useVocabularyOptions("languages");
+  options = filteredLanguages ?? options;
 
   return (
     <SelectField
@@ -41,6 +43,7 @@ LanguageSelectField.propTypes = {
   multiple: PropTypes.bool,
   clearable: PropTypes.bool,
   placeholder: PropTypes.string,
+  filteredLanguages: PropTypes.array,
 };
 
 LanguageSelectField.defaultProps = {

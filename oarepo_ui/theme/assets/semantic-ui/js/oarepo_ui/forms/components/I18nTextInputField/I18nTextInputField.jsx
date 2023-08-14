@@ -10,6 +10,8 @@ export const I18nTextInputField = ({
   optimized,
   labelIcon,
   placeholder,
+  languageOptions,
+  filteredLanguages,
   ...uiProps
 }) => {
   return (
@@ -18,12 +20,13 @@ export const I18nTextInputField = ({
         fieldPath={`${fieldPath}.lang`}
         placeholder=""
         required
-        width={4}
+        width={3}
+        filteredLanguages={filteredLanguages}
       />
       <TextField
         // TODO: hacky fix for SUI alignment bug for case with
         // field groups with empty field label on one of inputs
-        className={`${!label ? 'mt-20': ''}`}
+        className={`${!label ? "mt-20" : ""}`}
         fieldPath={`${fieldPath}.value`}
         label={
           <FieldLabel
@@ -35,8 +38,8 @@ export const I18nTextInputField = ({
         required={required}
         optimized={optimized}
         placeholder={placeholder}
+        width={13}
         {...uiProps}
-        width={14}
       />
     </GroupField>
   );
@@ -52,6 +55,7 @@ I18nTextInputField.propTypes = {
   helpText: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   disabled: PropTypes.bool,
   optimized: PropTypes.bool,
+  filteredLanguages: PropTypes.array,
 };
 
 I18nTextInputField.defaultProps = {
