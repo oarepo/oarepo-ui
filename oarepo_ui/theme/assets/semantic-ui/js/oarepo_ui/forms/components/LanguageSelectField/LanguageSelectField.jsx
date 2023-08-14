@@ -12,12 +12,10 @@ export const LanguageSelectField = ({
   multiple,
   placeholder,
   clearable,
-  filteredLanguages,
+  options,
   ...uiProps
 }) => {
-  let { options } = useVocabularyOptions("languages");
-  options = filteredLanguages ?? options;
-
+  const { options: languages } = options ? {options} : useVocabularyOptions("languages");
   return (
     <SelectField
       fieldPath={fieldPath}
@@ -26,7 +24,7 @@ export const LanguageSelectField = ({
       required={required}
       clearable={clearable}
       multiple={multiple}
-      options={options}
+      options={languages}
       label={<FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />}
       selectOnBlur={false}
       fluid
@@ -43,7 +41,7 @@ LanguageSelectField.propTypes = {
   multiple: PropTypes.bool,
   clearable: PropTypes.bool,
   placeholder: PropTypes.string,
-  filteredLanguages: PropTypes.array,
+  options: PropTypes.array,
 };
 
 LanguageSelectField.defaultProps = {

@@ -12,7 +12,7 @@ export const I18nRichInputField = ({
   labelIcon,
   placeholder,
   editorConfig,
-  filteredLanguages,
+  languageOptions,
   ...uiProps
 }) => {
   return (
@@ -21,7 +21,7 @@ export const I18nRichInputField = ({
         fieldPath={`${fieldPath}.lang`}
         placeholder=""
         required
-        filteredLanguages={filteredLanguages}
+        options={languageOptions}
         width={3}
       />
 
@@ -61,7 +61,7 @@ I18nRichInputField.propTypes = {
   disabled: PropTypes.bool,
   optimized: PropTypes.bool,
   editorConfig: PropTypes.object,
-  filteredLanguages: PropTypes.array,
+  languageOptions: PropTypes.array,
 };
 
 I18nRichInputField.defaultProps = {

@@ -34,7 +34,7 @@ export const MultilingualTextInput = ({
   helpText,
   ...uiProps
 }) => {
-  const { options } = useVocabularyOptions("languages");
+  const { options: allLanguages } = useVocabularyOptions("languages");
 
   return (
     <ArrayField
@@ -48,18 +48,9 @@ export const MultilingualTextInput = ({
     >
       {({ indexPath, array, arrayHelpers }) => {
         const fieldPathPrefix = `${fieldPath}.${indexPath}`;
-
-        const fieldLabel = textFieldLabel && (
-          <FieldLabel
-            htmlFor={fieldPathPrefix}
-            icon={textFieldIcon}
-            label={textFieldLabel}
-          />
-        );
-
-        const availableOptions = eliminateUsedLanguages(
+        const availableLanguages = eliminateUsedLanguages(
           indexPath,
-          options,
+          allLanguages,
           array
         );
 
@@ -68,22 +59,24 @@ export const MultilingualTextInput = ({
             <Form.Field width={16}>
               {rich ? (
                 <I18nRichInputField
-                  key={availableOptions}
+                  key={fieldPathPrefix}
                   fieldPath={fieldPathPrefix}
-                  label={fieldLabel}
+                  label={textFieldLabel}
+                  labelIcon={textFieldIcon}
                   editorConfig={editorConfig}
                   optimized
                   required={required}
-                  filteredLanguages={availableOptions}
+                  languageOptions={availableLanguages}
                   {...uiProps}
                 />
               ) : (
                 <I18nTextInputField
-                  key={availableOptions}
+                  key={fieldPathPrefix}
                   fieldPath={fieldPathPrefix}
-                  label={fieldLabel}
+                  label={textFieldLabel}
+                  labelIcon={textFieldIcon}
                   required={required}
-                  filteredLanguages={availableOptions}
+                  languageOptions={availableLanguages}
                   {...uiProps}
                 />
               )}

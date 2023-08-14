@@ -11,7 +11,6 @@ export const I18nTextInputField = ({
   labelIcon,
   placeholder,
   languageOptions,
-  filteredLanguages,
   ...uiProps
 }) => {
   return (
@@ -21,7 +20,7 @@ export const I18nTextInputField = ({
         placeholder=""
         required
         width={3}
-        filteredLanguages={filteredLanguages}
+        options={languageOptions}
       />
       <TextField
         // TODO: hacky fix for SUI alignment bug for case with
@@ -55,7 +54,7 @@ I18nTextInputField.propTypes = {
   helpText: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   disabled: PropTypes.bool,
   optimized: PropTypes.bool,
-  filteredLanguages: PropTypes.array,
+  languageOptions: PropTypes.array,
 };
 
 I18nTextInputField.defaultProps = {
