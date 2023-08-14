@@ -31,7 +31,7 @@ export const I18nRichInputField = ({
           // TODO: hacky fix for SUI alignment bug for case with
           // field groups with empty field label on one of inputs
 
-          className={`${!label ? "mt-20" : ""}`}
+          className={`${!label ? "mt-25" : ""}`}
           fieldPath={`${fieldPath}.value`}
           label={
             <FieldLabel

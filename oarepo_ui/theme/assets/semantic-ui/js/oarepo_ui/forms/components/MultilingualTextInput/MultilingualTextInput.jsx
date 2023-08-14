@@ -27,11 +27,12 @@ export const MultilingualTextInput = ({
   labelIcon,
   required,
   emptyNewInput,
-  hasRichInput,
+  rich,
   editorConfig,
   textFieldLabel,
-  richFieldLabel,
+  textFieldIcon,
   helpText,
+  ...uiProps
 }) => {
   const { options } = useVocabularyOptions("languages");
 
@@ -48,6 +49,14 @@ export const MultilingualTextInput = ({
       {({ indexPath, array, arrayHelpers }) => {
         const fieldPathPrefix = `${fieldPath}.${indexPath}`;
 
+        const fieldLabel = textFieldLabel && (
+          <FieldLabel
+            htmlFor={fieldPathPrefix}
+            icon={textFieldIcon}
+            label={textFieldLabel}
+          />
+        );
+
         const availableOptions = eliminateUsedLanguages(
           indexPath,
           options,
@@ -57,23 +66,25 @@ export const MultilingualTextInput = ({
         return (
           <GroupField>
             <Form.Field width={16}>
-              {hasRichInput ? (
+              {rich ? (
                 <I18nRichInputField
                   key={availableOptions}
                   fieldPath={fieldPathPrefix}
-                  label={richFieldLabel}
+                  label={fieldLabel}
                   editorConfig={editorConfig}
                   optimized
                   required={required}
                   filteredLanguages={availableOptions}
+                  {...uiProps}
                 />
               ) : (
                 <I18nTextInputField
                   key={availableOptions}
                   fieldPath={fieldPathPrefix}
-                  label={textFieldLabel}
+                  label={fieldLabel}
                   required={required}
                   filteredLanguages={availableOptions}
+                  {...uiProps}
                 />
               )}
             </Form.Field>
@@ -102,18 +113,16 @@ MultilingualTextInput.propTypes = {
   hasRichInput: PropTypes.bool,
   editorConfig: PropTypes.object,
   textFieldLabel: PropTypes.string,
-  richFieldLabel: PropTypes.string,
+  textFieldIcon: PropTypes.string,
   helpText: PropTypes.string,
 };
 
 MultilingualTextInput.defaultProps = {
-  label: "Title",
   emptyNewInput: {
     lang: "",
     value: "",
   },
   newItemInitialValue: [{ language: "cs", value: "" }],
-  hasRichInput: false,
-  textFieldLabel: i18next.t("Name"),
-  richFieldLabel: i18next.t("Description"),
+  rich: false,
+  label: undefined,
 };
