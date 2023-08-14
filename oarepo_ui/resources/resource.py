@@ -150,11 +150,13 @@ class RecordsUIResource(UIResource):
             layout=layout,
             component_key="search",
         )
+
+
         _catalog = current_oarepo_ui.catalog
 
         if not _catalog.singleton_check:
             _catalog.set_config()
-            _catalog = catalog_config(_catalog, current_app.jinja_env)
+            _catalog = catalog_config(_catalog, current_oarepo_ui.templates.jinja_env)
         template_def = self.get_template_def("detail")
         source = get_jinja_template(_catalog, template_def)
         return _catalog.render(

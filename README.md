@@ -12,6 +12,11 @@ functions to render layouts from model configuration.
 
 ## Usage
 
+### JinjaX
+
+See also [JinjaX documentation](https://jinjax.scaletti.dev/).
+
+Oarepo využívá při tvorbě ui pomocí šablon Jinja knihovnu JinjaX. 
 ### React
 
 To render a custom layout in a React app (e. g. records search result page), this package provides the `useLayout` hook and an entrypoint

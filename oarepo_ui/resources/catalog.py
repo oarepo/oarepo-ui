@@ -99,7 +99,7 @@ def list_templates(env):
             {
                 "root_path": crop_root_path(temp.filename, app_theme),
                 "component_path": crop_component_path(temp.filename),
-                    'component_file': temp.filename
+                "component_file": temp.filename
             }
         )
 
@@ -113,6 +113,7 @@ def catalog_config(catalog, env):
     context.update(catalog.jinja_env.globals)
     context.update(env.globals)
     catalog.jinja_env.globals = context
+    catalog.jinja_env.extensions.update(env.extensions)
     env.loader.searchpath = list_templates(env)
     catalog.prefixes[""] = env.loader
 
