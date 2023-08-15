@@ -2,6 +2,7 @@ import * as React from "react";
 import { SelectField, FieldLabel } from "react-invenio-forms";
 import { useVocabularyOptions } from "@js/oarepo_ui";
 import { i18next } from "@translations/oarepo_ui/i18next";
+import { useFormikContext } from "formik";
 import PropTypes from "prop-types";
 
 export const LanguageSelectField = ({
@@ -15,9 +16,13 @@ export const LanguageSelectField = ({
   options,
   ...uiProps
 }) => {
-  const { options: languages } = options ? {options} : useVocabularyOptions("languages");
+  const { options: languages } = options
+    ? { options }
+    : useVocabularyOptions("languages");
+  const { setFieldTouched } = useFormikContext();
   return (
     <SelectField
+      onBlur={() => setFieldTouched(fieldPath)}
       fieldPath={fieldPath}
       optimized
       placeholder={placeholder}

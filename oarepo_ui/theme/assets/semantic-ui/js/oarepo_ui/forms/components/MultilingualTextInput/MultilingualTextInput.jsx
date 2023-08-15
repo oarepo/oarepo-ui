@@ -38,7 +38,7 @@ export const MultilingualTextInput = ({
 
   return (
     <ArrayField
-      addButtonLabel="Add another language"
+      addButtonLabel={i18next.t("Add another language")}
       defaultNewValue={emptyNewInput}
       fieldPath={fieldPath}
       label={
@@ -53,13 +53,12 @@ export const MultilingualTextInput = ({
           allLanguages,
           array
         );
-
         return (
           <GroupField>
             <Form.Field width={16}>
               {rich ? (
                 <I18nRichInputField
-                  key={fieldPathPrefix}
+                  key={availableLanguages.length}
                   fieldPath={fieldPathPrefix}
                   label={textFieldLabel}
                   labelIcon={textFieldIcon}
@@ -67,11 +66,12 @@ export const MultilingualTextInput = ({
                   optimized
                   required={required}
                   languageOptions={availableLanguages}
+                  languageOptionsLength={availableLanguages.length}
                   {...uiProps}
                 />
               ) : (
                 <I18nTextInputField
-                  key={fieldPathPrefix}
+                  key={availableLanguages.length}
                   fieldPath={fieldPathPrefix}
                   label={textFieldLabel}
                   labelIcon={textFieldIcon}
@@ -115,7 +115,6 @@ MultilingualTextInput.defaultProps = {
     lang: "",
     value: "",
   },
-  newItemInitialValue: [{ language: "cs", value: "" }],
   rich: false,
   label: undefined,
 };
