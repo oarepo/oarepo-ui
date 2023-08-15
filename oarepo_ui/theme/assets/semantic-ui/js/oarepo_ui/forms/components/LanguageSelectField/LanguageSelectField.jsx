@@ -16,9 +16,8 @@ export const LanguageSelectField = ({
   options,
   ...uiProps
 }) => {
-  const { options: languages } = options
-    ? { options }
-    : useVocabularyOptions("languages");
+  const { options: languages } = useVocabularyOptions("languages");
+
   const { setFieldTouched } = useFormikContext();
   return (
     <SelectField
@@ -29,7 +28,7 @@ export const LanguageSelectField = ({
       required={required}
       clearable={clearable}
       multiple={multiple}
-      options={languages}
+      options={options ?? languages}
       label={<FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />}
       selectOnBlur={false}
       fluid
