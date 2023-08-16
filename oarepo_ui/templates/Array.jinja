@@ -1,4 +1,4 @@
-{% for a in (content or {}) -%}
-    <Value ui={{a}} in_array=false>{{a}}</Value>
-        {# {% value ui=a, layout=layout.child, in_array=false loop.first %} #}
+{# def data #}
+{% for a in (data or {}) -%}
+    <Value ui={{a}}, in_array={{not loop.first}}}>{{a}}</Value>
 {%- endfor %}
