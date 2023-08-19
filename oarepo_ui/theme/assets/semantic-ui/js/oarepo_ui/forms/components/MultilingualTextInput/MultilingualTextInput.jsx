@@ -6,9 +6,9 @@ import {
   I18nTextInputField,
   I18nRichInputField,
   useVocabularyOptions,
+  eliminateUsedLanguages,
 } from "@js/oarepo_ui";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import { eliminateUsedLanguages } from "@js/oarepo_ui";
 
 export const MultilingualTextInput = ({
   fieldPath,
