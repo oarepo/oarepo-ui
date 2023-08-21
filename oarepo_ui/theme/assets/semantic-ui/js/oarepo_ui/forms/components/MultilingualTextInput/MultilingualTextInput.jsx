@@ -21,13 +21,14 @@ export const MultilingualTextInput = ({
   textFieldLabel,
   textFieldIcon,
   helpText,
+  addButtonLabel,
   ...uiProps
 }) => {
   const { options: allLanguages } = useVocabularyOptions("languages");
 
   return (
     <ArrayField
-      addButtonLabel={i18next.t("Add another language")}
+      addButtonLabel={addButtonLabel}
       defaultNewValue={emptyNewInput}
       fieldPath={fieldPath}
       label={
@@ -55,7 +56,6 @@ export const MultilingualTextInput = ({
                   optimized
                   required={required}
                   languageOptions={availableLanguages}
-                  languageOptionsLength={availableLanguages.length}
                   {...uiProps}
                 />
               ) : (
@@ -97,6 +97,7 @@ MultilingualTextInput.propTypes = {
   textFieldLabel: PropTypes.string,
   textFieldIcon: PropTypes.string,
   helpText: PropTypes.string,
+  addButtonLabel: PropTypes.string,
 };
 
 MultilingualTextInput.defaultProps = {
@@ -106,4 +107,5 @@ MultilingualTextInput.defaultProps = {
   },
   rich: false,
   label: undefined,
+  addButtonLabel: i18next.t("Add another language"),
 };
