@@ -6,20 +6,9 @@ import {
   I18nTextInputField,
   I18nRichInputField,
   useVocabularyOptions,
+  eliminateUsedLanguages,
 } from "@js/oarepo_ui";
 import { i18next } from "@translations/oarepo_ui/i18next";
-
-const eliminateUsedLanguages = (excludeIndex, languageOptions, fieldArray) => {
-  const currentlySelectedLanguage = fieldArray[excludeIndex].lang;
-  const excludedLanguages = fieldArray.filter(
-    (item) => item.lang !== currentlySelectedLanguage && item.lang
-  );
-  const remainingLanguages = languageOptions.filter(
-    (option) =>
-      !excludedLanguages.map((item) => item.lang).includes(option.value)
-  );
-  return remainingLanguages;
-};
 
 export const MultilingualTextInput = ({
   fieldPath,
