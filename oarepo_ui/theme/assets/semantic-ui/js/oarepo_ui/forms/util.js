@@ -3,7 +3,7 @@ import _camelCase from "lodash/camelCase";
 import React from "react";
 import ReactDOM from "react-dom";
 import { getInputFromDOM } from "@js/oarepo_ui";
-import { FormConfigProvider } from "./contexts";
+import { FormConfigProvider, SubmitConfigProvider } from "./contexts";
 import { Container } from "semantic-ui-react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -54,14 +54,16 @@ export function createFormAppInit(
                 <FormConfigProvider
                   value={{ record, formConfig, recordPermissions, links }}
                 >
-                  <Overridable id="FormApp.layout">
-                    <Container fluid>
-                      <p>
-                        Provide your form components here by overriding
-                        component id "FormApp.layout"
-                      </p>
-                    </Container>
-                  </Overridable>
+                  <SubmitConfigProvider>
+                    <Overridable id="FormApp.layout">
+                      <Container fluid>
+                        <p>
+                          Provide your form components here by overriding
+                          component id "FormApp.layout"
+                        </p>
+                      </Container>
+                    </Overridable>
+                  </SubmitConfigProvider>
                 </FormConfigProvider>
               </OverridableContext.Provider>
             </Router>

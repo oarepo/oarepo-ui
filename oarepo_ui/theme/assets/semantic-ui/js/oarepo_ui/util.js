@@ -1,5 +1,10 @@
 import _map from "lodash/map";
 import _reduce from "lodash/reduce";
+import _omitBy from "lodash/omitBy";
+import _omit from "lodash/omit";
+import _isObject from "lodash/isObject";
+import _mapValues from "lodash/mapValues";
+import _isArray from "lodash/isArray";
 
 export const getInputFromDOM = (elementName) => {
   const element = document.getElementsByName(elementName);
@@ -55,4 +60,49 @@ export const eliminateUsedLanguages = (
       !excludedLanguages.map((item) => item.lang).includes(option.value)
   );
   return remainingLanguages;
+};
+
+const removeKeyFromNestedObjects = (inputObject) => {
+  const processArray = (arr) => {
+    return arr.map((item) => {
+      if (_isObject(item)) {
+        return _omit(item, "__key");
+      }
+      return item;
+    });
+  };
+
+  const processObject = (obj) => {
+    return _mapValues(obj, (value) => {
+      if (_isArray(value)) {
+        return processArray(value);
+      }
+      return value;
+    });
+  };
+
+  return processObject(inputObject);
+};
+
+// this function is a temporary solution for removing __key properties from arrayField items in formik's state
+// before we submit. The function is kind of similar to the one in vocabularies, but also cannot be reused
+// as vocabularies have only one arrayField and we keep the actual state with __key in _fieldName, which is deleted
+// before submitting
+// the problem with this implementation is if I have arrayFild within arrayField, it will not remove __key
+// from internal arrayField (i.e. subjects field) which is solvable, but better to wait and see how we will
+// actually hande this issue in reality before
+export const removeNullAndUnderscoreProperties = (values, formik) => {
+  const newValues = _omitBy(
+    values,
+    (value, key) =>
+      value === null ||
+      (Array.isArray(value) && value.every((item) => item === null)) ||
+      key.startsWith("_") ||
+      key === "revision_id" ||
+      key === "links" ||
+      key === "updated" ||
+      key === "created"
+  );
+  newValues.metadata = removeKeyFromNestedObjects(newValues.metadata);
+  return newValues;
 };

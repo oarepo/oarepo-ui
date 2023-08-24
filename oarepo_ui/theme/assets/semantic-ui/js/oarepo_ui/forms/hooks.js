@@ -38,11 +38,20 @@ export const useOnSubmit = ({
 }) => {
   const { error: submitError, mutateAsync: submitAsync } = useMutation({
     mutationFn: async ({ apiUrl, data }) => {
-      return context === submitContextType.create
-        ? apiClient.createDraft(apiUrl, data)
-        : context === submitContextType.update
-        ? apiClient.saveDraft(apiUrl, data)
-        : new Error(`Unsupported submit context: ${context}`);
+      let result;
+      switch (context) {
+        case submitContextType.create:
+          result = await apiClient.createDraft(apiUrl, data);
+          break;
+        case submitContextType.update:
+          result = await apiClient.saveDraft(apiUrl, data);
+          break;
+        case submitContextType.preview:
+          break;
+        default:
+          throw new Error(`Unsupported submit context: ${context}`);
+      }
+      return result;
     },
   });
 
@@ -58,7 +67,7 @@ export const useOnSubmit = ({
       })
       .catch((error) => {
         formik.setSubmitting(false);
-        invokeCallbacks(onSubmitError, error);
+        invokeCallbacks(onSubmitError, error, formik);
       });
   };
 
