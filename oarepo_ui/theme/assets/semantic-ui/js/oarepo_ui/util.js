@@ -97,7 +97,7 @@ function removeKeyFromNestedObjects(obj, keysToRemove) {
 // actually hande this issue in reality before
 export const removeNullAndInternalFields = (
   internalFieldsArray,
-  keyToRemove
+  keysToRemove
 ) => {
   return (values, formik) => {
     const newValues = _omitBy(
@@ -108,6 +108,6 @@ export const removeNullAndInternalFields = (
         key.startsWith("_") ||
         internalFieldsArray.includes(key)
     );
-    return removeKeyFromNestedObjects(newValues, keyToRemove);
+    return removeKeyFromNestedObjects(newValues, keysToRemove);
   };
 };
