@@ -1,10 +1,9 @@
 import _map from "lodash/map";
 import _reduce from "lodash/reduce";
 import _omitBy from "lodash/omitBy";
-import _omit from "lodash/omit";
 import _isObject from "lodash/isObject";
-import _mapValues from "lodash/mapValues";
 import _isArray from "lodash/isArray";
+import _forEach from "lodash/forEach";
 
 export const getInputFromDOM = (elementName) => {
   const element = document.getElementsByName(elementName);
@@ -62,27 +61,32 @@ export const eliminateUsedLanguages = (
   return remainingLanguages;
 };
 
-const removeKeyFromNestedObjects = (inputObject) => {
-  const processArray = (arr) => {
-    return arr.map((item) => {
-      if (_isObject(item)) {
-        return _omit(item, "__key");
-      }
-      return item;
-    });
-  };
+// function that goes through an object and all its members and removes all the keys in the
+// list of keys provided as argument from any object that lives inside the initial object,
+//  even if it is inside of an array
 
-  const processObject = (obj) => {
-    return _mapValues(obj, (value) => {
-      if (_isArray(value)) {
-        return processArray(value);
+function removeKeyFromNestedObjects(obj, keysToRemove) {
+  for (let keyToRemove of keysToRemove) {
+    console.log(keyToRemove);
+    if (_isObject(obj)) {
+      if (obj[keyToRemove] !== undefined) {
+        delete obj[keyToRemove];
       }
-      return value;
-    });
-  };
 
-  return processObject(inputObject);
-};
+      _forEach(obj, (value, key) => {
+        if (_isObject(value) || _isArray(value)) {
+          obj[key] = removeKeyFromNestedObjects(value, keysToRemove);
+        }
+      });
+    } else if (_isArray(obj)) {
+      _forEach(obj, (item, index) => {
+        obj[index] = removeKeyFromNestedObjects(item, keysToRemove);
+      });
+    }
+  }
+
+  return obj;
+}
 
 // this function is a temporary solution for removing __key properties from arrayField items in formik's state
 // before we submit. The function is kind of similar to the one in vocabularies, but also cannot be reused
@@ -91,18 +95,19 @@ const removeKeyFromNestedObjects = (inputObject) => {
 // the problem with this implementation is if I have arrayFild within arrayField, it will not remove __key
 // from internal arrayField (i.e. subjects field) which is solvable, but better to wait and see how we will
 // actually hande this issue in reality before
-export const removeNullAndUnderscoreProperties = (values, formik) => {
-  const newValues = _omitBy(
-    values,
-    (value, key) =>
-      value === null ||
-      (Array.isArray(value) && value.every((item) => item === null)) ||
-      key.startsWith("_") ||
-      key === "revision_id" ||
-      key === "links" ||
-      key === "updated" ||
-      key === "created"
-  );
-  newValues.metadata = removeKeyFromNestedObjects(newValues.metadata);
-  return newValues;
+export const removeNullAndInternalFields = (
+  internalFieldsArray,
+  keyToRemove
+) => {
+  return (values, formik) => {
+    const newValues = _omitBy(
+      values,
+      (value, key) =>
+        value === null ||
+        (Array.isArray(value) && value.every((item) => item === null)) ||
+        key.startsWith("_") ||
+        internalFieldsArray.includes(key)
+    );
+    return removeKeyFromNestedObjects(newValues, keyToRemove);
+  };
 };

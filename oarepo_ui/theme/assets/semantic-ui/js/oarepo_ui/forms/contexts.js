@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback, useContext, useState } from "react";
-import { removeNullAndUnderscoreProperties } from "../util";
+import { removeNullAndInternalFields } from "../util";
 
 export const FormConfigContext = React.createContext();
 
@@ -15,7 +15,7 @@ export const SubmitConfigContext = React.createContext();
 
 export const SubmitConfigProvider = ({ children }) => {
   const defaultConfig = {
-    onBeforeSubmit: removeNullAndUnderscoreProperties,
+    onBeforeSubmit: removeNullAndInternalFields([], ["__key"]),
     onSubmitError: (error, formik) => {
       if (
         error &&
@@ -49,6 +49,12 @@ export const SubmitConfigProvider = ({ children }) => {
   );
 };
 
-export function useSubmitConfig() {
-  return useContext(SubmitConfigContext);
-}
+export const useSubmitConfig = () => {
+  const context = useContext(SubmitConfigContext);
+  if (!context) {
+    throw new Error(
+      "useSubmitConfig must be used inside SubmitConfigContext.Provider"
+    );
+  }
+  return context;
+};
