@@ -2,12 +2,9 @@ import inspect
 from pathlib import Path
 
 import marshmallow as ma
-from flask import current_app
 from flask_resources import ResourceConfig
 from invenio_base.utils import obj_or_import_string
-from invenio_i18n.ext import current_i18n
 from invenio_records_resources.services import Link, pagination_links
-from invenio_records_resources.services import pagination_links, Link
 from invenio_search_ui.searchconfig import FacetsConfig, SearchAppConfig, SortConfig
 
 from oarepo_ui.resources.links import UIRecordLink

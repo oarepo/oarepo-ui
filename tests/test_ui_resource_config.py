@@ -24,5 +24,5 @@ def test_ui_resource_form_config(app, record_ui_resource):
             {"value": "cs", "text": "čeština"},
         ],
         default_locale="en",
-        custom_fields={'ui': {}},
+        custom_fields={"ui": {}},
     )

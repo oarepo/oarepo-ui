@@ -7,8 +7,6 @@ from invenio_access.permissions import system_identity
 from invenio_app.factory import create_app as _create_app
 
 from tests.model import ModelUIResource, ModelUIResourceConfig
-from oarepo_ui.resources import RecordsUIResource, RecordsUIResourceConfig
-from tests.model import ModelUIResourceConfig, ModelUIResource
 
 
 @pytest.fixture(scope="module")
@@ -31,9 +29,7 @@ def app_config(app_config):
     # for ui tests
     app_config["APP_THEME"] = ["semantic-ui"]
     app_config["THEME_SEARCHBAR"] = False
-    app_config[
-        "THEME_HEADER_TEMPLATE"
-    ] = "oarepo_ui/header.html"
+    app_config["THEME_HEADER_TEMPLATE"] = "oarepo_ui/header.html"
 
     return app_config
 
@@ -47,10 +43,12 @@ def create_app(instance_path, entry_points):
 @pytest.fixture(scope="module")
 def record_service(app):
     from .model import ModelService, ModelServiceConfig
+
     service = ModelService(ModelServiceConfig())
     sregistry = app.extensions["invenio-records-resources"].registry
     sregistry.register(service, service_id="simple_model")
     return service
+
 
 @pytest.fixture(scope="module")
 def record_ui_resource_config(app):
@@ -60,8 +58,8 @@ def record_ui_resource_config(app):
 @pytest.fixture(scope="module")
 def record_ui_resource(app, record_ui_resource_config, record_service):
     ui_resource = ModelUIResource(record_ui_resource_config)
-    app.register_blueprint(ui_resource.as_blueprint(
-        template_folder=Path(__file__).parent / 'templates')
+    app.register_blueprint(
+        ui_resource.as_blueprint(template_folder=Path(__file__).parent / "templates")
     )
     return ui_resource
 
@@ -80,6 +78,7 @@ def fake_manifest(app):
 @pytest.fixture
 def simple_record(app, db, search_clear, record_service):
     from .model import ModelRecord
+
     record = record_service.create(
         system_identity,
         {},
