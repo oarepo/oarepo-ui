@@ -44,6 +44,11 @@ class PermissionsComponent(ServiceComponent):
             ["create"], resource.api_service, identity
         )
 
+    def form_config(
+        self, *, form_config, resource, record, view_args, identity, **kwargs
+    ):
+        self.fill_permissions(resource, record, form_config, identity)
+
     def fill_permissions(self, resource, record, extra_context, identity):
         extra_context["permissions"] = self.get_record_permissions(
             [
