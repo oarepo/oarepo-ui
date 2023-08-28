@@ -19,7 +19,7 @@ def extra_entry_points():
 
 @pytest.fixture(scope="module")
 def app_config(app_config):
-    app_config["I18N_LANGUAGES"] = [("en", "English"), ("cs", "Czech")]
+    app_config["I18N_LANGUAGES"] = [("cs", "Czech")]
     app_config["BABEL_DEFAULT_LOCALE"] = "en"
     app_config[
         "RECORDS_REFRESOLVER_CLS"
