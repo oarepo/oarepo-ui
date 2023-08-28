@@ -16,7 +16,8 @@ from invenio_records_resources.proxies import current_service_registry
 from invenio_records_resources.records.systemfields import FilesField
 from invenio_records_resources.resources.records.resource import (
     request_read_args,
-    request_view_args, request_search_args,
+    request_search_args,
+    request_view_args,
 )
 from invenio_records_resources.services import LinksTemplate
 
@@ -100,7 +101,9 @@ class RecordsUIResource(UIResource):
         record = deepmerge.always_merger.merge(
             record, copy.deepcopy(self.config.empty_record)
         )
-        self.run_components("empty_record", resource_requestctx=resource_requestctx, record=record)
+        self.run_components(
+            "empty_record", resource_requestctx=resource_requestctx, record=record
+        )
         return record
 
     def as_blueprint(self, **options):
@@ -113,7 +116,6 @@ class RecordsUIResource(UIResource):
         ret = {}
         self.run_components("register_context_processor", context_processors=ret)
         return ret
-
 
     @request_read_args
     @request_view_args
@@ -198,12 +200,12 @@ class RecordsUIResource(UIResource):
         search_options = dict(
             api_config=self.api_service.config,
             identity=g.identity,
-            links=self.config.ui_links_search
+            links=self.config.ui_links_search,
         )
 
         # TODO: we do not know here, but should be able to parse these from the request
-        page = resource_requestctx.args.get('page', 1)
-        size = resource_requestctx.args.get('size', 10)
+        page = resource_requestctx.args.get("page", 1)
+        size = resource_requestctx.args.get("size", 10)
         pagination = Pagination(
             size,
             page,
@@ -213,7 +215,9 @@ class RecordsUIResource(UIResource):
         )
 
         extra_context = dict()
-        links = self.expand_search_links(g.identity, pagination, resource_requestctx.args)
+        links = self.expand_search_links(
+            g.identity, pagination, resource_requestctx.args
+        )
 
         self.run_components(
             "before_ui_search",
@@ -284,7 +288,9 @@ class RecordsUIResource(UIResource):
         data = record.to_dict()
         serialized_record = self.config.ui_serializer.dump_obj(record.to_dict())
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
-        form_config = self.config.form_config(identity=g.identity, updateUrl=record.links.get("self", None))
+        form_config = self.config.form_config(
+            identity=g.identity, updateUrl=record.links.get("self", None)
+        )
 
         ui_links = self.expand_detail_links(identity=g.identity, record=record)
 
@@ -402,10 +408,7 @@ class RecordsUIResource(UIResource):
     def expand_detail_links(self, identity, record):
         """Get links for this result item."""
         tpl = LinksTemplate(
-            self.config.ui_links_item,
-            {
-                'url_prefix': self.config.url_prefix
-            }
+            self.config.ui_links_item, {"url_prefix": self.config.url_prefix}
         )
         return tpl.expand(identity, record)
 
@@ -413,10 +416,6 @@ class RecordsUIResource(UIResource):
         """Get links for this result item."""
         tpl = LinksTemplate(
             self.config.ui_links_search,
-            {
-                'config': self.config,
-                'url_prefix': self.config.url_prefix,
-                'args': args
-            }
+            {"config": self.config, "url_prefix": self.config.url_prefix, "args": args},
         )
         return tpl.expand(identity, pagination)
