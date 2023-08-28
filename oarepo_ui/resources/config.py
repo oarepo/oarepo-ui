@@ -162,9 +162,6 @@ class RecordsUIResourceConfig(UIResourceConfig):
             "ui": {},
         }
 
-    def languages_config(self, identity):
-        return dict(featured=[], all=[])
-
     def form_config(self, identity=None, **kwargs):
         """Get the react form configuration."""
 
