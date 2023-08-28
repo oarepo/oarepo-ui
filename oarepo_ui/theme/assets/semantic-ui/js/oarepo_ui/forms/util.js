@@ -31,7 +31,7 @@ export function createFormAppInit(
     const record = getInputFromDOM("record");
     const formConfig = getInputFromDOM("form-config");
     const recordPermissions = getInputFromDOM("record-permissions");
-    const links = getInputFromDOM("links")
+    const links = getInputFromDOM("links");
 
     console.debug("Initializing Formik form app...");
     console.debug(
@@ -79,3 +79,20 @@ export function createFormAppInit(
     return initFormApp;
   }
 }
+
+// values = invokeCallbacks(onBeforeSubmit, values, formik);
+
+export const invokeCallbacks = (callbacks, ...args) => {
+  let result;
+  if (!Array.isArray(callbacks)) {
+    callbacks = [callbacks];
+  }
+  callbacks.forEach((callback) => {
+    if (typeof callback === "function") {
+      // TODO: can this be improved?
+      result = callback(...args);
+    }
+  });
+
+  return result;
+};

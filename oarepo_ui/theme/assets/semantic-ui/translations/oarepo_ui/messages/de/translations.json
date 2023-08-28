@@ -1,9 +1,19 @@
 {
-    "Sort": "",
-    "Sort by": "",
-    "Filter results": "",
-    "totalResults": "",
-    "totalResults_plural": "",
-    "results per page": "",
-    "Filters": ""
+  "Sort": "",
+  "Sort by": "",
+  "Filter results": "",
+  "totalResults": "",
+  "totalResults_plural": "",
+  "Filters": "",
+  "We couldn't find any matches for ": "",
+  "Search": "",
+  "Choose": "",
+  "Start over": "",
+  "resultsPerPage": "",
+  "No results found": "",
+  "Something went wrong...": "",
+  "search": "",
+  "Loading...": "",
+  "Search External Database": "",
+  "Search results from external API": ""
 }

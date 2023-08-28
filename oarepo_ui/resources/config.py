@@ -7,6 +7,7 @@ from flask_resources import ResourceConfig
 from invenio_base.utils import obj_or_import_string
 from invenio_i18n.ext import current_i18n
 from invenio_records_resources.services import Link, pagination_links
+from invenio_records_resources.services import pagination_links, Link
 from invenio_search_ui.searchconfig import FacetsConfig, SearchAppConfig, SortConfig
 
 from oarepo_ui.resources.links import UIRecordLink
@@ -138,7 +139,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
         return FacetsConfig(facets_config, selected_facets)
 
-    def search_app_config(self, identity, api_config, overrides=None, **kwargs):
+    def search_app_config(self, identity, api_config, overrides={}, **kwargs):
         opts = dict(
             endpoint=f"/api{api_config.url_prefix}",
             headers={"Accept": "application/vnd.inveniordm.v1+json"},
@@ -155,9 +156,6 @@ class RecordsUIResourceConfig(UIResourceConfig):
             ),
         )
         opts.update(kwargs)
-        overrides = overrides or {
-            "ui_endpoint": self.url_prefix,
-        }
         return SearchAppConfig.generate(opts, **overrides)
 
     @property

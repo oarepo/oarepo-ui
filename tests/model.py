@@ -20,6 +20,20 @@ from oarepo_ui.resources import (
     RecordsUIResourceConfig,
 )
 from oarepo_ui.resources.components import PermissionsComponent
+from invenio_pidstore.providers.recordid_v2 import RecordIdProviderV2
+from invenio_records_resources.records.api import Record
+from invenio_records.models import RecordMetadata
+from invenio_records_permissions import RecordPermissionPolicy
+from invenio_records_permissions.generators import AnyUser, SystemProcess
+from invenio_records_resources.records.systemfields import IndexField, PIDField
+from invenio_records_resources.records.systemfields.pid import PIDFieldContext
+from invenio_records_resources.services import ServiceConfig, RecordServiceConfig, RecordService, RecordLink
+import marshmallow as ma
+from flask_resources import BaseListSchema, MarshmallowSerializer
+from flask_resources.serializers import JSONSerializer
+
+
+from oarepo_ui.resources import RecordsUIResource, RecordsUIResourceConfig, BabelComponent
 
 
 class ModelRecordIdProvider(RecordIdProviderV2):
@@ -42,7 +56,6 @@ class ModelPermissionPolicy(RecordPermissionPolicy):
 
 class ModelSchema(ma.Schema):
     title = ma.fields.String()
-
     class Meta:
         unknown = ma.INCLUDE
 
@@ -81,15 +94,19 @@ class ModelUISerializer(MarshmallowSerializer):
 
 class ModelUIResourceConfig(RecordsUIResourceConfig):
     api_service = "simple_model"  # must be something included in oarepo, as oarepo is used in tests
-    blueprint_name = "simple_model"
-    url_prefix = "/simple-model"
+
+    blueprint_name = 'simple_model'
+    url_prefix = '/simple-model'
     ui_serializer_class = ModelUISerializer
     templates = {
         **RecordsUIResourceConfig.templates,
-        "detail": {"layout": "test_detail.html", "blocks": {}},
+        "detail": {
+            "layout": "test_detail.html",
+            "blocks": {}
+        },
         "search": {
             "layout": "test_detail.html",
-        },
+        }
     }
 
     components = [BabelComponent, PermissionsComponent]
@@ -97,3 +114,4 @@ class ModelUIResourceConfig(RecordsUIResourceConfig):
 
 class ModelUIResource(RecordsUIResource):
     pass
+
