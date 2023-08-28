@@ -1,3 +1,6 @@
+from invenio_access.permissions import system_identity
+
+
 def test_ui_resource_form_config(app, record_ui_resource):
     fc = record_ui_resource.config.form_config()
     assert fc == dict(
@@ -13,7 +16,7 @@ def test_ui_resource_form_config(app, record_ui_resource):
         data={},
         args={},
         view_args={},
-        identity=None,
+        identity=system_identity,
         extra_context={},
     )
 
@@ -25,4 +28,16 @@ def test_ui_resource_form_config(app, record_ui_resource):
         ],
         default_locale="en",
         custom_fields={"ui": {}},
+        permissions={
+            "can_delete_draft": False,
+            "can_edit": False,
+            "can_manage": False,
+            "can_manage_files": False,
+            "can_manage_record_access": False,
+            "can_new_version": False,
+            "can_read_files": False,
+            "can_review": False,
+            "can_update_draft": False,
+            "can_view": False,
+        },
     )
