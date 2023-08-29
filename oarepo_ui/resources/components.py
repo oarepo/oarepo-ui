@@ -39,7 +39,9 @@ class PermissionsComponent(ServiceComponent):
     def before_ui_create(self, *, resource, record, extra_context, identity, **kwargs):
         self.fill_permissions(resource, record, extra_context, identity)
 
-    def before_ui_search(self, *, resource, extra_context, identity, search_options, **kwargs):
+    def before_ui_search(
+        self, *, resource, extra_context, identity, search_options, **kwargs
+    ):
         extra_context["permissions"] = self.get_record_permissions(
             ["create"], resource.api_service, identity
         )
