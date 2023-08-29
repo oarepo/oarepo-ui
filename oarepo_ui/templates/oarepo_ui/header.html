@@ -120,7 +120,7 @@
                         </div>
                       {% endfor %}
                     {% endif %}
-                    {# TODO: support user accounts include config.THEME_HEADER_LOGIN_TEMPLATE #}
+                    {%- include config.THEME_HEADER_LOGIN_TEMPLATE %}
                   </div>
                 {%- endblock navbar_right %}
               </div>
