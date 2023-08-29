@@ -179,13 +179,13 @@ class RecordsUIResource(UIResource):
 
     def _get_record(self, resource_requestctx, allow_draft=False):
         if allow_draft:
-            read_method = getattr(self.api_service, "read_draft") or self.api_service.read
+            read_method = (
+                getattr(self.api_service, "read_draft") or self.api_service.read
+            )
         else:
             read_method = self.api_service.read
 
-        return read_method(
-            g.identity, resource_requestctx.view_args["pid_value"]
-        )
+        return read_method(g.identity, resource_requestctx.view_args["pid_value"])
 
     def search_without_slash(self):
         split_path = request.full_path.split("?", maxsplit=1)
