@@ -122,7 +122,7 @@ class RecordsUIResource(UIResource):
     @request_view_args
     def detail(self):
         """Returns item detail page."""
-        record = self._get_record(resource_requestctx)
+        record = self._get_record(resource_requestctx, allow_draft=False)
         # TODO: handle permissions UI way - better response than generic error
         serialized_record = self.config.ui_serializer.dump_obj(record.to_dict())
         # make links absolute
@@ -177,10 +177,15 @@ class RecordsUIResource(UIResource):
             **extra_context,
         )
 
-    def _get_record(self, resource_requestctx):
-        return self.api_service.read(
-            g.identity, resource_requestctx.view_args["pid_value"]
-        )
+    def _get_record(self, resource_requestctx, allow_draft=False):
+        if allow_draft:
+            read_method = (
+                getattr(self.api_service, "read_draft") or self.api_service.read
+            )
+        else:
+            read_method = self.api_service.read
+
+        return read_method(g.identity, resource_requestctx.view_args["pid_value"])
 
     def search_without_slash(self):
         split_path = request.full_path.split("?", maxsplit=1)
@@ -256,7 +261,7 @@ class RecordsUIResource(UIResource):
     def export(self):
         pid_value = resource_requestctx.view_args["pid_value"]
         export_format = resource_requestctx.view_args["export_format"]
-        record = self._get_record(resource_requestctx)
+        record = self._get_record(resource_requestctx, allow_draft=False)
 
         exporter = self.config.exports.get(export_format.lower())
         if exporter is None:
@@ -287,7 +292,7 @@ class RecordsUIResource(UIResource):
     @request_read_args
     @request_view_args
     def edit(self):
-        record = self._get_record(resource_requestctx)
+        record = self._get_record(resource_requestctx, allow_draft=True)
         data = record.to_dict()
         serialized_record = self.config.ui_serializer.dump_obj(record.to_dict())
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
