@@ -395,7 +395,6 @@ class RecordsUIResource(UIResource):
             ui_resource=self,
             ui_links={},
             layout=layout,
-            links=self.config.ui_links,
             component_key="create",
             form_config=form_config,
             extra_context=extra_context,
