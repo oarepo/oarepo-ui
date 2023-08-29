@@ -1,6 +1,6 @@
 import copy
 from functools import partial
-from flask_security import login_required
+
 import deepmerge
 from flask import abort, g, redirect, render_template, request
 from flask_resources import (
@@ -10,14 +10,15 @@ from flask_resources import (
     resource_requestctx,
     route,
 )
+from flask_security import login_required
 from invenio_base.utils import obj_or_import_string
 from invenio_records_resources.pagination import Pagination
 from invenio_records_resources.proxies import current_service_registry
 from invenio_records_resources.records.systemfields import FilesField
 from invenio_records_resources.resources.records.resource import (
     request_read_args,
-    request_view_args,
     request_search_args,
+    request_view_args,
 )
 from invenio_records_resources.services import LinksTemplate
 
@@ -170,6 +171,7 @@ class RecordsUIResource(UIResource):
             ui_links=ui_links,
             ui_resource=self,
             layout=layout,
+            links=ui_links,
             component_key="detail",
             export_path=export_path,
             **extra_context,
@@ -217,6 +219,9 @@ class RecordsUIResource(UIResource):
         )
 
         extra_context = dict()
+        links = self.expand_search_links(
+            g.identity, pagination, resource_requestctx.args
+        )
 
         self.run_components(
             "before_ui_search",
@@ -390,6 +395,7 @@ class RecordsUIResource(UIResource):
             ui_resource=self,
             ui_links={},
             layout=layout,
+            links=self.config.ui_links,
             component_key="create",
             form_config=form_config,
             extra_context=extra_context,
