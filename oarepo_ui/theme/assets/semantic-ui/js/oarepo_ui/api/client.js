@@ -94,8 +94,10 @@ export class ApiClient extends DepositApiClient {
    *
    * @param {object} draft - Serialized draft
    */
-  async createDraft(url, payload) {
-    return this._createResponse(() => this.axiosWithConfig.post(url, payload));
+  async createDraft(createUrl, payload) {
+    return this._createResponse(() =>
+      this.axiosWithConfig.post(createUrl, payload)
+    );
   }
 
   /**
@@ -103,8 +105,10 @@ export class ApiClient extends DepositApiClient {
    *
    * @param {object} draftLinks - the draft links object
    */
-  async readDraft(url) {
-    return this._createResponse(() => this.axiosWithConfig.get(url));
+  async readDraft(draftlinks) {
+    return this._createResponse(() =>
+      this.axiosWithConfig.get(draftlinks.self)
+    );
   }
 
   /**
@@ -112,15 +116,25 @@ export class ApiClient extends DepositApiClient {
    *
    * @param {object} draft - the draft payload
    */
-  async saveDraft(url, payload) {
-    return this._createResponse(() => this.axiosWithConfig.put(url, payload));
+  async saveDraft(draftlinks, payload) {
+    console.log("save running with", draftlinks.self);
+    return this._createResponse(() =>
+      this.axiosWithConfig.put(
+        draftlinks.self.replace("https://0.0.0.0:5000", ""),
+        payload
+      )
+    );
   }
 
-  async publishDraft(url, payload) {
-    return this._createResponse(() => this.axiosWithConfig.post(url, payload));
+  async publishDraft(draftlinks, payload) {
+    return this._createResponse(() =>
+      this.axiosWithConfig.post(draftlinks.publish, payload)
+    );
   }
-  async deleteDraft(url) {
-    return this._createResponse(() => this.axiosWithConfig.post(url));
+  async deleteDraft(draftlinks) {
+    return this._createResponse(() =>
+      this.axiosWithConfig.post(draftlinks.self)
+    );
   }
 }
 
