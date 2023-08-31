@@ -23,19 +23,24 @@ export const useVocabularyOptions = (vocabularyType) => {
 };
 
 export const submitContextType = {
-  create: "create",
-  update: "update",
+  save: "save",
+  publish: "publish",
   preview: "preview",
+  delete: "delete",
 };
 
 export const useOnSubmit = ({
   apiUrl,
-  context = submitContextType.create,
+  context,
   apiClient = OARepoDepositApiClient,
   onBeforeSubmit = (values, formik) => values,
   onSubmitSuccess = () => {},
   onSubmitError = () => {},
 }) => {
+  const {
+    formConfig: { createUrl },
+  } = useFormConfig();
+
   const { error: submitError, mutateAsync: submitAsync } = useMutation({
     mutationFn: async ({ apiUrl, data }) => {
       let result;

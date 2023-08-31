@@ -103,8 +103,8 @@ export class ApiClient extends DepositApiClient {
    *
    * @param {object} draftLinks - the draft links object
    */
-  async readDraft(draftLinks) {
-    return this._createResponse(() => this.axiosWithConfig.get(draftLinks));
+  async readDraft(url) {
+    return this._createResponse(() => this.axiosWithConfig.get(url));
   }
 
   /**
@@ -114,6 +114,13 @@ export class ApiClient extends DepositApiClient {
    */
   async saveDraft(url, payload) {
     return this._createResponse(() => this.axiosWithConfig.put(url, payload));
+  }
+
+  async publishDraft(url, payload) {
+    return this._createResponse(() => this.axiosWithConfig.post(url, payload));
+  }
+  async deleteDraft(url) {
+    return this._createResponse(() => this.axiosWithConfig.post(url));
   }
 }
 
