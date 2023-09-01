@@ -29,9 +29,6 @@ export const SearchAppResultOptions = ({ sortOptions, layoutOptions }) => {
         <Grid.Column floated="left" textAlign="left" width={4}>
           <ResultCountWithState />
         </Grid.Column>
-        <Grid.Column>
-          <ActiveFilters />
-        </Grid.Column>
         <Grid.Column textAlign="right" floated="right" width={4}>
           {sortOptions && (
             <Overridable id={buildUID("SearchApp.sort")} options={sortOptions}>

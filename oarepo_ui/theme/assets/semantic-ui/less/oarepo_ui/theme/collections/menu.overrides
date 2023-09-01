@@ -1,0 +1,74 @@
+@media all and (max-width: @largestTabletScreen) {
+  #invenio-nav.ui.menu {
+
+    &.active #invenio-menu.ui.menu {
+      flex-direction: column;
+      position: fixed;
+      right: 0;
+      max-width: 25rem;
+      box-shadow: 0px 0px 7px rgba(0,0,0,0.2);
+      background-color: rgb(255,255,255);
+      height: 100vh;
+      z-index: 100;
+      padding: 2rem 1.5rem 1.5rem 1.5rem;
+      overflow-y: scroll;
+
+      .item {
+        width: 100%;
+        padding: .5rem 0;
+
+        &.search-bar {
+          margin-bottom: 1.5rem;
+        }
+
+        a:not(.ui.button) {
+          color: @textColor;
+          padding: 0;
+        }
+
+        &.search-bar {
+          width: 100%;
+
+          .ui.input {
+            width: 99% !important;
+          }
+        }
+
+        .icon.inverted {
+          color: @textColor;
+        }
+
+        &.right.menu {
+          padding: 0;
+          margin-left: unset !important;
+          flex-direction: column;
+          align-items: flex-start;
+
+          .sub-menu {
+            width: 100%;
+            margin: 2rem 0 0 0;
+
+            .ui.heading {
+              color: @textColor;
+            }
+
+            .item {
+              padding: .5rem 1rem;
+            }
+          }
+
+          form {
+            margin-top: 1rem;
+          }
+        }
+      }
+    }
+
+
+    &:not(.active) {
+      .mobile-hidden {
+        display: none;
+      }
+    }
+  }
+}
