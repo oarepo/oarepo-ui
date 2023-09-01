@@ -2,7 +2,6 @@ import { OARepoDepositApiClient } from "./client";
 
 export const save = async (draft, createUrl) => {
   const draftExists = !!draft.id;
-  console.log(draftExists, draft);
   let response;
   if (draftExists) {
     response = await OARepoDepositApiClient.saveDraft(draft.links, draft);

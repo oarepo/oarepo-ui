@@ -16,7 +16,7 @@ export const SubmitConfigContext = React.createContext();
 export const SubmitConfigProvider = ({ children, config = undefined }) => {
   let defaultConfig = useMemo(
     () => ({
-      onBeforeSubmit: removeNullAndInternalFields([], ["__key"]),
+      onBeforeSubmit: [removeNullAndInternalFields([], ["__key"])],
       // TODO: handle various errors (talking about 400/500 status codes)
       onSubmitError: (error, formik) => {
         if (
