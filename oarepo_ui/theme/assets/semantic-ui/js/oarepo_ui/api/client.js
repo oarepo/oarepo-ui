@@ -128,12 +128,17 @@ export class ApiClient extends DepositApiClient {
 
   async publishDraft(draftlinks, payload) {
     return this._createResponse(() =>
-      this.axiosWithConfig.post(draftlinks.publish, payload)
+      this.axiosWithConfig.post(
+        draftlinks.publish.replace("https://0.0.0.0:5000", ""),
+        payload
+      )
     );
   }
   async deleteDraft(draftlinks) {
     return this._createResponse(() =>
-      this.axiosWithConfig.post(draftlinks.self)
+      this.axiosWithConfig.delete(
+        draftlinks.self.replace("https://0.0.0.0:5000", "")
+      )
     );
   }
 }

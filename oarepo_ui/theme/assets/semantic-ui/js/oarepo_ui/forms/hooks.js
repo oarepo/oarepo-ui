@@ -1,9 +1,9 @@
 import * as React from "react";
 import { FormConfigContext } from "./contexts";
 import { useMutation } from "@tanstack/react-query";
-import { OARepoDepositApiClient } from "../api/client";
 import { invokeCallbacks } from "./util";
 import { save, _delete, publish } from "../api/actions";
+import { useSubmitConfig } from "@js/oarepo_ui";
 
 export const useFormConfig = () => {
   const context = React.useContext(FormConfigContext);
@@ -31,8 +31,7 @@ export const submitContextType = {
 };
 
 export const useOnSubmit = ({
-  context,
-  apiClient = OARepoDepositApiClient,
+  context = undefined,
   onBeforeSubmit = (values, formik) => values,
   onSubmitSuccess = () => {},
   onSubmitError = () => {},
@@ -40,7 +39,7 @@ export const useOnSubmit = ({
   const {
     formConfig: { createUrl },
   } = useFormConfig();
-
+  const { updateConfig } = useSubmitConfig();
   const { error: submitError, mutateAsync: submitAsync } = useMutation({
     mutationFn: async ({ data }) => {
       let result;
@@ -49,11 +48,13 @@ export const useOnSubmit = ({
           result = await save(data, createUrl);
           break;
         case submitContextType.publish:
-          result = await apiClient.saveDraft(data);
+          result = await publish(data, createUrl);
           break;
         case submitContextType.preview:
+          // TODO: don't have preview page yet
           break;
         case submitContextType.delete:
+          await _delete(data);
           break;
         default:
           throw new Error(`Unsupported submit context: ${context}`);
@@ -74,7 +75,8 @@ export const useOnSubmit = ({
       .catch((error) => {
         formik.setSubmitting(false);
         invokeCallbacks(onSubmitError, error, formik);
-      });
+      })
+      .finally(updateConfig({ contenxt: undefined }));
   };
 
   return { onSubmit, submitError };

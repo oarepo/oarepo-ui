@@ -14,15 +14,14 @@ export const save = async (draft, createUrl) => {
 };
 
 export const _delete = async (draft) => {
-  console.log(draft);
   let response = await OARepoDepositApiClient.deleteDraft(draft.links);
   return response;
 };
 
-export const publish = async (draft) => {
-  const responseWithLinks = await save(draft);
+export const publish = async (draft, createUrl) => {
+  const responseWithLinks = await save(draft, createUrl);
   let response = await OARepoDepositApiClient.publishDraft(
-    responseWithLinks.links.publish.replace("https://0.0.0.0:5000", ""),
+    responseWithLinks.links,
     draft
   );
   return response;
