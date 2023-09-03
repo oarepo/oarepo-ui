@@ -117,7 +117,6 @@ export class ApiClient extends DepositApiClient {
    * @param {object} draft - the draft payload
    */
   async saveDraft(draftlinks, payload) {
-    console.log("save running with", draftlinks.self);
     return this._createResponse(() =>
       this.axiosWithConfig.put(
         draftlinks.self.replace("https://0.0.0.0:5000", ""),

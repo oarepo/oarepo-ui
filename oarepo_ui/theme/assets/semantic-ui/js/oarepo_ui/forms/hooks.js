@@ -3,7 +3,6 @@ import { FormConfigContext } from "./contexts";
 import { useMutation } from "@tanstack/react-query";
 import { invokeCallbacks } from "./util";
 import { save, _delete, publish } from "../api/actions";
-import _isEmpty from "lodash/isEmpty";
 
 export const useFormConfig = () => {
   const context = React.useContext(FormConfigContext);
@@ -53,7 +52,7 @@ export const useOnSubmit = ({
           // TODO: don't have preview page yet
           break;
         case submitContextType.delete:
-          await _delete(data);
+          result = await _delete(data);
           break;
         default:
           throw new Error(`Unsupported submit context: ${context}`);
@@ -64,17 +63,6 @@ export const useOnSubmit = ({
 
   const onSubmit = async (values, formik) => {
     values = invokeCallbacks(onBeforeSubmit, values, formik);
-    // for some reason when I set the submit context, even though I also conditionally set validation
-    // schema, it seems that handleSubmit is still fired with previous (undefined) validation schema,
-    // which causes FE validation to not do anything. So here I am calling form validation manually
-    // and aborting the hook in case there are any errors, which works, but I am not a fan of this solution
-    // it might be worth considering to just forget about FE validation like invenio does, because
-    // with all these rerenders and contexts, it is not easy to guarantee the order in which things are
-    // executed. Or if we have a better proposal it would be good.
-    if (context === submitContextType.publish) {
-      const errors = await formik.validateForm();
-      if (!_isEmpty(errors)) return;
-    }
     submitAsync({
       data: values,
     })
