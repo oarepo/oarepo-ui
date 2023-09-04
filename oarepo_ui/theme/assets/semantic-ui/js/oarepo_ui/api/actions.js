@@ -13,7 +13,7 @@ export const save = async (draft, createUrl) => {
 };
 
 export const _delete = async (draft) => {
-  const response = await OARepoDepositApiClient.deconsteDraft(draft.links);
+  const response = await OARepoDepositApiClient.deleteDraft(draft.links);
   return response;
 };
 
