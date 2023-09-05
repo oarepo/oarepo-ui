@@ -7,6 +7,12 @@
 
 import axios from "axios";
 import _get from "lodash/get";
+import { getInputFromDOM } from "@js/oarepo_ui";
+
+// create URL is fixed and gotten from the HTML, it would be good to code it straight into the API client
+// to simplify things that for code that later uses the client
+
+const formConfig = getInputFromDOM("form-config");
 
 const BASE_HEADERS = {
   json: { "Content-Type": "application/json" },
@@ -82,6 +88,7 @@ export class ApiClient extends DepositApiClient {
     try {
       const response = await axiosRequest();
       const data = response.data || {};
+
       return data;
     } catch (error) {
       const errorData = error.response.data;
@@ -94,9 +101,9 @@ export class ApiClient extends DepositApiClient {
    *
    * @param {object} draft - Serialized draft
    */
-  async createDraft(createUrl, payload) {
+  async createDraft(payload) {
     return this._createResponse(() =>
-      this.axiosWithConfig.post(createUrl, payload)
+      this.axiosWithConfig.post(formConfig.createUrl, payload)
     );
   }
 
@@ -118,26 +125,18 @@ export class ApiClient extends DepositApiClient {
    */
   async saveDraft(draftlinks, payload) {
     return this._createResponse(() =>
-      this.axiosWithConfig.put(
-        draftlinks.self.replace("https://0.0.0.0:5000", ""),
-        payload
-      )
+      this.axiosWithConfig.put(draftlinks.self, payload)
     );
   }
 
   async publishDraft(draftlinks, payload) {
     return this._createResponse(() =>
-      this.axiosWithConfig.post(
-        draftlinks.publish.replace("https://0.0.0.0:5000", ""),
-        payload
-      )
+      this.axiosWithConfig.post(draftlinks.publish, payload)
     );
   }
   async deleteDraft(draftlinks) {
     return this._createResponse(() =>
-      this.axiosWithConfig.delete(
-        draftlinks.self.replace("https://0.0.0.0:5000", "")
-      )
+      this.axiosWithConfig.delete(draftlinks.self)
     );
   }
 }

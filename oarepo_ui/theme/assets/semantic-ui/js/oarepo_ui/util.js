@@ -67,7 +67,6 @@ export const eliminateUsedLanguages = (
 
 function removeKeyFromNestedObjects(obj, keysToRemove) {
   for (let keyToRemove of keysToRemove) {
-    console.log(keyToRemove);
     if (_isObject(obj)) {
       if (obj[keyToRemove] !== undefined) {
         delete obj[keyToRemove];

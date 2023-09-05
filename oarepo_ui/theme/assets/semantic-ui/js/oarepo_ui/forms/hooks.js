@@ -2,7 +2,11 @@ import * as React from "react";
 import { FormConfigContext } from "./contexts";
 import { useMutation } from "@tanstack/react-query";
 import { invokeCallbacks } from "./util";
-import { save, _delete, publish } from "../api/actions";
+import { useFormikContext } from "formik";
+import { useSubmitConfig } from "@js/oarepo_ui";
+import { apiConfig } from "../api/apiConfig";
+import { submitContextType } from "../api/submitContextTypes";
+import { OArepoApiCaller } from "../api/api";
 
 export const useFormConfig = () => {
   const context = React.useContext(FormConfigContext);
@@ -22,40 +26,36 @@ export const useVocabularyOptions = (vocabularyType) => {
   return { options: vocabularies[vocabularyType] };
 };
 
-export const submitContextType = {
-  save: "save",
-  publish: "publish",
-  preview: "preview",
-  delete: "delete",
-};
-
 export const useOnSubmit = ({
-  context = undefined,
+  actionName,
   onBeforeSubmit = (values, formik) => values,
-  onSubmitSuccess = () => {},
-  onSubmitError = () => {},
 }) => {
-  const {
-    formConfig: { createUrl },
-  } = useFormConfig();
   const { error: submitError, mutateAsync: submitAsync } = useMutation({
-    mutationFn: async ({ data }) => {
+    mutationFn: async ({ data, formik }) => {
       let result;
-      switch (context) {
+      switch (actionName) {
         case submitContextType.save:
-          result = await save(data, createUrl);
+          result = await OArepoApiCaller.call(actionName, formik, data);
+          console.log(result);
           break;
         case submitContextType.publish:
-          result = await publish(data, createUrl);
+          result = await OArepoApiCaller.call(
+            submitContextType.save,
+            formik,
+            data
+          );
+          if (result.errors) return;
+          result = await OArepoApiCaller.call(actionName, formik, data, result);
+
           break;
         case submitContextType.preview:
           // TODO: don't have preview page yet
           break;
         case submitContextType.delete:
-          result = await _delete(data);
+          result = await OArepoApiCaller.call(actionName, formik, data);
           break;
         default:
-          throw new Error(`Unsupported submit context: ${context}`);
+          throw new Error(`Unsupported submit context: ${actionName}`);
       }
       return result;
     },
@@ -65,16 +65,30 @@ export const useOnSubmit = ({
     values = invokeCallbacks(onBeforeSubmit, values, formik);
     submitAsync({
       data: values,
-    })
-      .then((result) => {
-        formik.setSubmitting(false);
-        invokeCallbacks(onSubmitSuccess, result, formik);
-      })
-      .catch((error) => {
-        formik.setSubmitting(false);
-        invokeCallbacks(onSubmitError, error, formik);
-      });
+      formik,
+    });
+    // .then((result) => {
+    //   formik.setSubmitting(false);
+    //   invokeCallbacks(onSubmitSuccess, result, formik);
+    // })
+    // .catch((error) => {
+    //   formik.setSubmitting(false);
+    //   invokeCallbacks(onSubmitError, error, formik);
+    // });
   };
 
   return { onSubmit, submitError };
+};
+
+export const useSubmitSupport = (actionName) => {
+  const { updateConfig } = useSubmitConfig();
+  const { handleSubmit, isSubmitting, setValues, values } = useFormikContext();
+  const submit = () => {
+    const callback = () => {
+      updateConfig(apiConfig["save"]);
+      setTimeout(handleSubmit, 0);
+    };
+    return callback;
+  };
+  return { submit, isSubmitting, setValues, values };
 };

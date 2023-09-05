@@ -1,5 +1,4 @@
 import React, { useMemo, useCallback, useContext, useState } from "react";
-import { removeNullAndInternalFields } from "../util";
 
 export const FormConfigContext = React.createContext();
 
@@ -13,39 +12,12 @@ export const FormConfigProvider = ({ children, value }) => {
 
 export const SubmitConfigContext = React.createContext();
 
-export const SubmitConfigProvider = ({ children, config = undefined }) => {
-  let defaultConfig = useMemo(
-    () => ({
-      onBeforeSubmit: [removeNullAndInternalFields([], ["__key"])],
-      // TODO: handle various errors (talking about 400/500 status codes)
-      onSubmitError: (error, formik) => {
-        if (
-          error &&
-          error.status === 400 &&
-          error.message === "A validation error occurred."
-        ) {
-          error.errors?.forEach((err) =>
-            formik.setFieldError(err.field, err.messages.join(" "))
-          );
-        }
-      },
-    }),
-    []
-  );
+export const SubmitConfigProvider = ({ children }) => {
+  const [submitConfig, setSubmitConfig] = useState(undefined);
 
-  defaultConfig = config ?? defaultConfig;
-
-  const [submitConfig, setSubmitConfig] = useState(defaultConfig);
-
-  const updateConfig = useCallback(
-    (newConfig) => {
-      setSubmitConfig(() => ({
-        ...defaultConfig,
-        ...newConfig,
-      }));
-    },
-    [defaultConfig]
-  );
+  const updateConfig = useCallback((newConfig) => {
+    setSubmitConfig(newConfig);
+  }, []);
 
   const contextValue = useMemo(
     () => ({ submitConfig, updateConfig }),
