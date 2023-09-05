@@ -84,61 +84,95 @@ export class DepositApiClient {
  * API Client for deposits.
  */
 export class ApiClient extends DepositApiClient {
-  async _createResponse(axiosRequest) {
+  _createResponse = async (axiosRequest) => {
     try {
       const response = await axiosRequest();
       const data = response.data || {};
-
       return data;
     } catch (error) {
       const errorData = error.response.data;
       return Promise.reject(errorData);
     }
-  }
+  };
 
   /**
    * Calls the API to create a new draft.
    *
    * @param {object} draft - Serialized draft
    */
-  async createDraft(payload) {
+  createDraft = async (draft) => {
     return this._createResponse(() =>
-      this.axiosWithConfig.post(formConfig.createUrl, payload)
+      this.axiosWithConfig.post(
+        formConfig.createUrl.replace("https://0.0.0.0:5000", ""),
+        draft
+      )
     );
-  }
+  };
+  /**
+   * Calls the API to save a pre-existing draft.
+   *
+   * @param {object} draft - the draft payload
+   */
+  saveDraft = async (draft) => {
+    return this._createResponse(() =>
+      this.axiosWithConfig.put(
+        draft.links.self.replace("https://0.0.0.0:5000", ""),
+        draft
+      )
+    );
+  };
+
+  /**
+   * Calls the API to save a pre-existing draft. Method that combines saveDraft and createDraft
+   * and calls appropriate method depending on whether or not the draft already exists
+   * it is an arrow function, because otherwise this inside of the method does not refer to the actual class
+   * @param {object} draft - the draft payload
+   */
+
+  saveOrCreateDraft = async (draft) => {
+    return draft.id ? this.saveDraft(draft) : this.createDraft(draft);
+  };
 
   /**
    * Calls the API to read a pre-existing draft.
    *
    * @param {object} draftLinks - the draft links object
    */
-  async readDraft(draftlinks) {
+  readDraft = async (draft) => {
     return this._createResponse(() =>
-      this.axiosWithConfig.get(draftlinks.self)
+      this.axiosWithConfig.get(
+        draft.links.self.replace("https://0.0.0.0:5000", "")
+      )
     );
-  }
+  };
 
   /**
-   * Calls the API to save a pre-existing draft.
+   * Calls the API to publish a pre-existing draft.
    *
    * @param {object} draft - the draft payload
    */
-  async saveDraft(draftlinks, payload) {
-    return this._createResponse(() =>
-      this.axiosWithConfig.put(draftlinks.self, payload)
-    );
-  }
 
-  async publishDraft(draftlinks, payload) {
+  publishDraft = async (draft) => {
+    return this._createResponse(() => {
+      return this.axiosWithConfig.post(
+        draft.links.publish.replace("https://0.0.0.0:5000", ""),
+        draft
+      );
+    });
+  };
+
+  /**
+   * Calls the API to delete a pre-existing draft.
+   *
+   * @param {object} draft - the draft payload
+   */
+  deleteDraft = async (draft) => {
     return this._createResponse(() =>
-      this.axiosWithConfig.post(draftlinks.publish, payload)
+      this.axiosWithConfig.delete(
+        draft.links.self.replace("https://0.0.0.0:5000", "")
+      )
     );
-  }
-  async deleteDraft(draftlinks) {
-    return this._createResponse(() =>
-      this.axiosWithConfig.delete(draftlinks.self)
-    );
-  }
+  };
 }
 
 export const OARepoDepositApiClient = new ApiClient();

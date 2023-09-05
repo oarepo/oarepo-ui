@@ -36,7 +36,6 @@ export const useOnSubmit = ({
       switch (actionName) {
         case submitContextType.save:
           result = await OArepoApiCaller.call(actionName, formik, data);
-          console.log(result);
           break;
         case submitContextType.publish:
           result = await OArepoApiCaller.call(
@@ -45,6 +44,7 @@ export const useOnSubmit = ({
             data
           );
           if (result.errors) return;
+
           result = await OArepoApiCaller.call(actionName, formik, data, result);
 
           break;

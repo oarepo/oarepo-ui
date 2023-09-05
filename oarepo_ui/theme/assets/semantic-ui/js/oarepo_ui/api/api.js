@@ -1,7 +1,5 @@
-import { submitContextType } from "./submitContextTypes";
-import { save, publish, _delete } from "./actions";
 import { i18next } from "@translations/oarepo_ui/i18next";
-
+import { OARepoDepositApiClient } from "./client";
 export class Api {
   async call(actionName, formik, formikValues, ...rest) {
     let response;
@@ -18,13 +16,11 @@ export class Api {
 
 export class NrDocsApi extends Api {
   constructor() {
-    super(); // Make sure to call the parent class constructor
+    super();
 
     this.save = {
-      call: save,
-      context: submitContextType.save,
+      call: OARepoDepositApiClient.saveOrCreateDraft,
       onSubmitSuccess: (result, formik, formikValues) => {
-        console.log(result);
         if (!formikValues.id) {
           window.history.replaceState(
             undefined,
@@ -47,7 +43,6 @@ export class NrDocsApi extends Api {
         return result;
       },
       onSubmitError: (error, formik) => {
-        console.log(error);
         if (
           error &&
           error.status === 400 &&
@@ -63,8 +58,7 @@ export class NrDocsApi extends Api {
     };
 
     this.publish = {
-      call: publish,
-      context: submitContextType.publish,
+      call: OARepoDepositApiClient.publishDraft,
       onSubmitSuccess: (result, formik) => {
         window.location.href = result.links.self_html;
       },
@@ -83,14 +77,12 @@ export class NrDocsApi extends Api {
     };
 
     this.delete = {
-      call: _delete,
-      context: submitContextType.delete,
+      call: OARepoDepositApiClient.deleteDraft,
       onSubmitSuccess: (result, formik) => {
-        // TODO: should redirect to /me page but we don't have that one yet
+        // TODO: should redirect to /me page in user dashboard?? but we don't have that one yet
         window.location.href = "/docs/";
       },
       onSubmitError: (error, formik) => {
-        console.log("error");
         if (
           error &&
           error.status === 400 &&
@@ -101,9 +93,8 @@ export class NrDocsApi extends Api {
           );
         }
       },
-      // Add other functions if needed
     };
   }
 }
 
-export const OArepoApiCaller = new NrDocsApi();
+export const OArepoApiCaller = new NrDocsApi(OARepoDepositApiClient);
