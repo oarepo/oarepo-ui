@@ -7,12 +7,9 @@
 
 import axios from "axios";
 import _get from "lodash/get";
-import { getInputFromDOM } from "@js/oarepo_ui";
 
 // create URL is fixed and gotten from the HTML, it would be good to code it straight into the API client
 // to simplify things that for code that later uses the client
-
-const formConfig = getInputFromDOM("form-config");
 
 const BASE_HEADERS = {
   json: { "Content-Type": "application/json" },
@@ -84,14 +81,17 @@ export class DepositApiClient {
  * API Client for deposits.
  */
 export class ApiClient extends DepositApiClient {
+  constructor(createUrl) {
+    super();
+    this.createUrl = createUrl;
+  }
   _createResponse = async (axiosRequest) => {
     try {
       const response = await axiosRequest();
       const data = response.data || {};
       return data;
     } catch (error) {
-      const errorData = error.response.data;
-      return Promise.reject(errorData);
+      return Promise.reject(error);
     }
   };
 
@@ -103,7 +103,8 @@ export class ApiClient extends DepositApiClient {
   createDraft = async (draft) => {
     return this._createResponse(() =>
       this.axiosWithConfig.post(
-        formConfig.createUrl.replace("https://0.0.0.0:5000", ""),
+        this.createUrl.replace("https://0.0.0.0:5000", ""),
+        // "/fake/api",
         draft
       )
     );
@@ -125,7 +126,7 @@ export class ApiClient extends DepositApiClient {
   /**
    * Calls the API to save a pre-existing draft. Method that combines saveDraft and createDraft
    * and calls appropriate method depending on whether or not the draft already exists
-   * it is an arrow function, because otherwise this inside of the method does not refer to the actual class
+   *
    * @param {object} draft - the draft payload
    */
 
