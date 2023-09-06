@@ -1,6 +1,20 @@
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { OARepoDepositApiClient } from "./client";
-export class Api {
+
+export class DepositAction {
+  // add error handlers for 400 and 500 errors that arent validation errors
+  onSubmitError(error, formik) {
+    if (
+      error &&
+      error.status === 400 &&
+      error.message === "A validation error occurred."
+    ) {
+      error.errors?.forEach((err) =>
+        formik.setFieldError(err.field, err.messages.join(" "))
+      );
+    }
+  }
+
   async call(actionName, formik, formikValues, ...rest) {
     let response;
     const action = this[actionName];
@@ -8,13 +22,15 @@ export class Api {
       response = await action.call(formikValues, ...rest);
       return action.onSubmitSuccess(response, formik, formikValues);
     } catch (error) {
-      action.onSubmitError(error, formik);
+      action.onSubmitError
+        ? action.onSubmitError(error, formik)
+        : this.onSubmitError(error, formik);
       return false;
     }
   }
 }
 
-export class NrDocsApi extends Api {
+export class DepositActions extends DepositAction {
   constructor() {
     super();
 
@@ -42,37 +58,12 @@ export class NrDocsApi extends Api {
         }
         return result;
       },
-      onSubmitError: (error, formik) => {
-        if (
-          error &&
-          error.status === 400 &&
-          error.message === "A validation error occurred."
-        ) {
-          error.errors?.forEach((err) =>
-            formik.setFieldError(err.field, err.messages.join(" "))
-          );
-        }
-      },
-
-      // Add other functions if needed
     };
 
     this.publish = {
       call: OARepoDepositApiClient.publishDraft,
       onSubmitSuccess: (result, formik) => {
         window.location.href = result.links.self_html;
-      },
-
-      onSubmitError: (error, formik) => {
-        if (
-          error &&
-          error.status === 400 &&
-          error.message === "A validation error occurred."
-        ) {
-          error.errors?.forEach((err) =>
-            formik.setFieldError(err.field, err.messages.join(" "))
-          );
-        }
       },
     };
 
@@ -82,19 +73,8 @@ export class NrDocsApi extends Api {
         // TODO: should redirect to /me page in user dashboard?? but we don't have that one yet
         window.location.href = "/docs/";
       },
-      onSubmitError: (error, formik) => {
-        if (
-          error &&
-          error.status === 400 &&
-          error.message === "A validation error occurred."
-        ) {
-          error.errors?.forEach((err) =>
-            formik.setFieldError(err.field, err.messages.join(" "))
-          );
-        }
-      },
     };
   }
 }
 
-export const OArepoApiCaller = new NrDocsApi(OARepoDepositApiClient);
+export const OARepoFormActions = new DepositActions();

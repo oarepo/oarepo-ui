@@ -2,7 +2,7 @@ import { loadComponents } from "@js/invenio_theme/templates";
 import React from "react";
 import ReactDOM from "react-dom";
 import { getInputFromDOM } from "@js/oarepo_ui";
-import { FormConfigProvider, SubmitConfigProvider } from "./contexts";
+import { FormConfigProvider, ActionNameProvider } from "./contexts";
 import { Container } from "semantic-ui-react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -53,7 +53,7 @@ export function createFormAppInit(
                 <FormConfigProvider
                   value={{ record, formConfig, recordPermissions, links }}
                 >
-                  <SubmitConfigProvider>
+                  <ActionNameProvider>
                     <Overridable id="FormApp.layout">
                       <Container fluid>
                         <p>
@@ -62,7 +62,7 @@ export function createFormAppInit(
                         </p>
                       </Container>
                     </Overridable>
-                  </SubmitConfigProvider>
+                  </ActionNameProvider>
                 </FormConfigProvider>
               </OverridableContext.Provider>
             </Router>

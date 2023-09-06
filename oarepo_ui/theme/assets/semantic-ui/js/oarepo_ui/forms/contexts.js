@@ -10,32 +10,32 @@ export const FormConfigProvider = ({ children, value }) => {
   );
 };
 
-export const SubmitConfigContext = React.createContext();
+export const ActionNameContext = React.createContext();
 
-export const SubmitConfigProvider = ({ children }) => {
-  const [submitConfig, setSubmitConfig] = useState(undefined);
+export const ActionNameProvider = ({ children }) => {
+  const [actionName, setActionName] = useState(undefined);
 
-  const updateConfig = useCallback((newConfig) => {
-    setSubmitConfig(newConfig);
+  const updateActionName = useCallback((newConfig) => {
+    setActionName(newConfig);
   }, []);
 
   const contextValue = useMemo(
-    () => ({ submitConfig, updateConfig }),
-    [submitConfig, updateConfig]
+    () => ({ actionName, updateActionName }),
+    [actionName, updateActionName]
   );
 
   return (
-    <SubmitConfigContext.Provider value={contextValue}>
+    <ActionNameContext.Provider value={contextValue}>
       {children}
-    </SubmitConfigContext.Provider>
+    </ActionNameContext.Provider>
   );
 };
 
-export const useSubmitConfig = () => {
-  const context = useContext(SubmitConfigContext);
+export const useActionName = () => {
+  const context = useContext(ActionNameContext);
   if (!context) {
     throw new Error(
-      "useSubmitConfig must be used inside SubmitConfigContext.Provider"
+      "useSubmitConfig must be used inside ActionNameContext.Provider"
     );
   }
   return context;

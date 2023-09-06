@@ -3,10 +3,9 @@ import { FormConfigContext } from "./contexts";
 import { useMutation } from "@tanstack/react-query";
 import { invokeCallbacks } from "./util";
 import { useFormikContext } from "formik";
-import { useSubmitConfig } from "@js/oarepo_ui";
-import { apiConfig } from "../api/apiConfig";
+import { useActionName } from "@js/oarepo_ui";
 import { submitContextType } from "../api/submitContextTypes";
-import { OArepoApiCaller } from "../api/api";
+import { OARepoFormActions } from "../api/depositActions";
 
 export const useFormConfig = () => {
   const context = React.useContext(FormConfigContext);
@@ -35,24 +34,27 @@ export const useOnSubmit = ({
       let result;
       switch (actionName) {
         case submitContextType.save:
-          result = await OArepoApiCaller.call(actionName, formik, data);
+          result = await OARepoFormActions.call(actionName, formik, data);
           break;
         case submitContextType.publish:
-          result = await OArepoApiCaller.call(
+          result = await OARepoFormActions.call(
             submitContextType.save,
             formik,
             data
           );
           if (result.errors) return;
-
-          result = await OArepoApiCaller.call(actionName, formik, data, result);
-
+          result = await OARepoFormActions.call(
+            actionName,
+            formik,
+            data,
+            result
+          );
           break;
         case submitContextType.preview:
           // TODO: don't have preview page yet
           break;
         case submitContextType.delete:
-          result = await OArepoApiCaller.call(actionName, formik, data);
+          result = await OARepoFormActions.call(actionName, formik, data);
           break;
         default:
           throw new Error(`Unsupported submit context: ${actionName}`);
@@ -80,15 +82,14 @@ export const useOnSubmit = ({
   return { onSubmit, submitError };
 };
 
+// hook to be used inside of biut
 export const useSubmitSupport = (actionName) => {
-  const { updateConfig } = useSubmitConfig();
+  const { updateActionName } = useActionName();
   const { handleSubmit, isSubmitting, setValues, values } = useFormikContext();
   const submit = () => {
-    const callback = () => {
-      updateConfig(apiConfig["save"]);
-      setTimeout(handleSubmit, 0);
-    };
-    return callback;
+    updateActionName(submitContextType[actionName]);
+    // hacky way to make sure that updateActionName has finished before firing handle submit
+    setTimeout(handleSubmit, 0);
   };
   return { submit, isSubmitting, setValues, values };
 };
