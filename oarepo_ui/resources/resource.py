@@ -10,6 +10,7 @@ from flask_resources import (
     resource_requestctx,
     route,
 )
+from flask_security import login_required
 from invenio_base.utils import obj_or_import_string
 from invenio_records_resources.pagination import Pagination
 from invenio_records_resources.proxies import current_service_registry
