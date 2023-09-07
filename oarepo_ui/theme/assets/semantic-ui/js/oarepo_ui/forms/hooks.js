@@ -2,9 +2,6 @@ import * as React from "react";
 import { FormConfigContext } from "./contexts";
 import { useMutation } from "@tanstack/react-query";
 import { invokeCallbacks } from "./util";
-import { useFormikContext } from "formik";
-// import { useActionName } from "@js/oarepo_ui";
-import { submitContextType } from "../api/submitContextTypes";
 
 export const useFormConfig = () => {
   const context = React.useContext(FormConfigContext);
@@ -73,14 +70,29 @@ export const useOnSubmit = ({
   return { onSubmit, submitError };
 };
 
-// hook to be used inside of biut
-// export const useSubmitSupport = (actionName) => {
-//   const { updateActionName } = useActionName();
-//   const { handleSubmit, isSubmitting, setValues, values } = useFormikContext();
-//   const submit = () => {
-//     updateActionName(submitContextType[actionName]);
-//     // hacky way to make sure that updateActionName has finished before firing handle submit
-//     setTimeout(handleSubmit, 0);
-//   };
-//   return { submit, isSubmitting, setValues, values };
-// };
+// hook that enables me to highlight the related inputs when I hover over the close buttons
+// for arrayFields type of inputs
+export const useHighlightState = () => {
+  const [highlightedStates, setHighlightedStates] = React.useState([]);
+
+  const handleHover = (index) => {
+    const updatedStates = [...highlightedStates];
+    updatedStates[index] = true;
+    setHighlightedStates(updatedStates);
+  };
+
+  const handleMouseLeave = (index) => {
+    const updatedStates = [...highlightedStates];
+    updatedStates[index] = false;
+    setHighlightedStates(updatedStates);
+  };
+
+  return { highlightedStates, handleHover, handleMouseLeave };
+};
+
+export const submitContextType = {
+  save: "save",
+  publish: "publish",
+  preview: "preview",
+  delete: "delete",
+};
