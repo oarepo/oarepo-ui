@@ -12,10 +12,11 @@ export class DepositActions {
   async save() {
     let response;
     const cleanedValues = removeNullAndInternalFields(
-      ["errors", "validationErrors", "httpErrors"],
+      ["errors", "validationErrors", "httpErrors", "successMessage"],
       ["__key"]
     )(this.formik.values);
     this.formik.setSubmitting(true);
+    this.formik.setErrors({});
     try {
       response = await this.apiClient.saveOrCreateDraft(cleanedValues);
       // when I am creating a new draft, it saves the response into formik's state, so that I would have access
@@ -43,15 +44,20 @@ export class DepositActions {
         this.formik.setFieldValue("validationErrors", {
           errors: response.errors,
           errorMessage: i18next.t(
-            "Form saved with validation errors. Fields listed below that failed validation were not saved to the server"
+            "Draft saved with validation errors. Fields listed below that failed validation were not saved to the server"
           ),
         });
         this.formik.setSubmitting(false);
         return false;
       }
       this.formik.setSubmitting(false);
+      this.formik.setFieldValue(
+        "successMessage",
+        i18next.t("Draft saved successfully.")
+      );
       return response;
     } catch (error) {
+      console.log(error);
       // handle 400/500 errors. Here I am not sure how detailed we wish to be and what kind of
       // errors can we provide in case of errors on client/server
       this.formik.setFieldValue("httpErrors", error.message);
@@ -70,7 +76,7 @@ export class DepositActions {
 
     let response;
     const cleanedValues = removeNullAndInternalFields(
-      ["errors", "validationErrors", "httpErrors"],
+      ["errors", "validationErrors", "httpErrors", "successMessage"],
       ["__key"]
     )(this.formik.values);
 
@@ -78,6 +84,12 @@ export class DepositActions {
       response = await this.apiClient.publishDraft(cleanedValues);
       window.location.href = response.links.self_html;
       this.formik.setSubmitting(false);
+      this.formik.setFieldValue(
+        "successMessage",
+        i18next.t(
+          "Draft published successfully. Redirecting to record's detail page ..."
+        )
+      );
 
       return response;
     } catch (error) {
@@ -109,7 +121,12 @@ export class DepositActions {
       // TODO: should redirect to /me page in user dashboard?? but we don't have that one yet
       window.location.href = "/docs/";
       this.formik.setSubmitting(false);
-
+      this.formik.setFieldValue(
+        "successMessage",
+        i18next.t(
+          "Draft deleted successfully. Redirecting to the main page ..."
+        )
+      );
       return response;
     } catch (error) {
       this.formik.setFieldValue("httpErrors", error.message);
