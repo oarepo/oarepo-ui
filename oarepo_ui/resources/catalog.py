@@ -5,6 +5,7 @@ import jinja2
 from flask import current_app
 from jinjax import Catalog
 from jinjax.exceptions import ComponentNotFound
+import re
 
 DEFAULT_URL_ROOT = "/static/components/"
 ALLOWED_EXTENSIONS = (".css", ".js")
@@ -22,10 +23,6 @@ class OarepoCatalog(Catalog):
     def __init__(self):
         super().__init__()
         self.jinja_env.undefined = jinja2.Undefined
-        self.singleton_check = False
-
-    def set_config(self):
-        self.singleton_check = True
 
     def get_source(self, cname: str, file_ext: "TFileExt" = "") -> str:
         prefix, name = self._split_name(cname)
@@ -50,15 +47,29 @@ class OarepoCatalog(Catalog):
                     continue
 
                 for filename in files:
-                    if relfolder:
-                        filepath = f"{relfolder}/{filename}"
-                    else:
-                        filepath = filename
-                    if filepath.startswith(name_dot) and filepath.endswith(file_ext):
-                        return (
-                            Path(root_path["root_path"]),
-                            Path(curr_folder) / filename,
-                        )
+                    _filepath = curr_folder + "/" + filename
+                    in_searchpath = False
+                    for searchpath in self.jinja_env.loader.searchpath:
+                        if _filepath == searchpath["component_file"]:
+                            in_searchpath = True
+                            break
+                    if in_searchpath:
+                        prefix_pattern = re.compile(r"^\d{3}-")
+                        without_prefix_filename = filename
+                        if prefix_pattern.match(filename):
+                            # Remove the prefix
+                            without_prefix_filename = prefix_pattern.sub("", filename)
+                        if relfolder:
+                            filepath = f"{relfolder}/{without_prefix_filename}"
+                        else:
+                            filepath = without_prefix_filename
+                        if filepath.startswith(name_dot) and filepath.endswith(
+                            file_ext
+                        ):
+                            return (
+                                Path(root_path["root_path"]),
+                                Path(curr_folder) / filename,
+                            )
 
         raise ComponentNotFound(
             f"Unable to find a file named {name}{file_ext} "
@@ -66,71 +77,19 @@ class OarepoCatalog(Catalog):
         )
 
 
-def crop_component_path(path):
-    parent_dir = os.path.dirname(path)
-
-    return parent_dir
-
-
-def crop_root_path(path, app_theme):
-    if app_theme:
-        for theme in app_theme:
-            if theme in path:
-                folder_index = path.index(theme)
-                cropped_path = path[: folder_index + len(theme)]
-
-                return cropped_path
-
-    return crop_component_path(path)
-
-
-def list_templates(env):
-    searchpath = []
-    jinja_templates = []
-    for i in env.loader.list_templates():
-        try:
-            if i.endswith("jinja") or i.endswith("jinja2"):
-                jinja_templates.append(env.loader.load(env, i))
-        except:
-            pass
-    for temp in jinja_templates:
-        app_theme = current_app.config.get("APP_THEME", None)
-        searchpath.append(
-            {
-                "root_path": crop_root_path(temp.filename, app_theme),
-                "component_path": crop_component_path(temp.filename),
-                "component_file": temp.filename
-            }
-        )
-
-    return searchpath
-
-
-def catalog_config(catalog, env):
-    context = {}
-    current_app.update_template_context(context)
-    catalog.jinja_env.loader = env.loader
-    context.update(catalog.jinja_env.globals)
-    context.update(env.globals)
-    catalog.jinja_env.globals = context
-    catalog.jinja_env.extensions.update(env.extensions)
-    env.loader.searchpath = list_templates(env)
-    catalog.prefixes[""] = env.loader
-
-    return catalog
-
 def get_jinja_template(_catalog, template_def):
     jinja_content = None
     for component in _catalog.jinja_env.loader.searchpath:
-        if component['component_file'].endswith(template_def['layout']):
-            with open(component['component_file'], 'r') as file:
+        if component["component_file"].endswith(template_def["layout"]):
+            with open(component["component_file"], "r") as file:
                 jinja_content = file.read()
     if not jinja_content:
-        raise Exception('%s was not found' % (template_def['layout']))
+        raise Exception("%s was not found" % (template_def["layout"]))
     assembled_template = [jinja_content]
-    for blk_name, blk in template_def['blocks'].items():
+    for blk_name, blk in template_def["blocks"].items():
         assembled_template.append(
-                '{%% block %s %%}<%s metadata={{metadata}} ui={{ui}} layout={{layout}}></%s>{%% endblock %%}' % (blk_name, blk, blk)
+            "{%% block %s %%}<%s metadata={metadata} ui={ui} layout={layout} url_prefix={url_prefix} record={record} extra_context={extra_context}></%s>{%% endblock %%}"
+            % (blk_name, blk, blk)
         )
     assembled_template = "\n".join(assembled_template)
     return assembled_template

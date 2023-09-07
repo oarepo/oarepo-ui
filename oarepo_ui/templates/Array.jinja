@@ -1,0 +1,6 @@
+{# def data #}
+{% if data %}
+    {% for a in (data or {}) -%}
+        <Value ui={a} in_array={not loop.first}>{{a}}</Value>
+    {%- endfor %}
+{% endif %}

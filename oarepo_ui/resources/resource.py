@@ -16,17 +16,19 @@ from invenio_records_resources.proxies import current_service_registry
 from invenio_records_resources.records.systemfields import FilesField
 from invenio_records_resources.resources.records.resource import (
     request_read_args,
-    request_view_args, request_search_args,
+    request_view_args,
+    request_search_args,
 )
 from invenio_records_resources.services import LinksTemplate
 
+from .catalog import get_jinja_template
 from oarepo_ui.utils import dump_empty
 
 #
 # Resource
 #
 from ..proxies import current_oarepo_ui
-from .catalog import catalog_config, get_jinja_template
+from .catalog import get_jinja_template
 from .config import RecordsUIResourceConfig, UIResourceConfig
 
 request_export_args = request_parser(
@@ -117,12 +119,12 @@ class RecordsUIResource(UIResource):
         self.run_components("register_context_processor", context_processors=ret)
         return ret
 
-
     @request_read_args
     @request_view_args
     def detail(self):
         """Returns item detail page."""
-        record = self._get_record(resource_requestctx)
+        """Returns item detail page."""
+        record = self._get_record(resource_requestctx, allow_draft=False)
         # TODO: handle permissions UI way - better response than generic error
         serialized_record = self.config.ui_serializer.dump_obj(record.to_dict())
         # make links absolute
@@ -133,9 +135,23 @@ class RecordsUIResource(UIResource):
                 if not v.startswith("/") and not v.startswith("https://"):
                     v = f"/api{self.api_service.config.url_prefix}{v}"
                     serialized_record["links"][k] = v
+
+        export_path = request.path.split("?")[0]
+        if not export_path.endswith("/"):
+            export_path += "/"
+        export_path += "export"
+        serialized_record["export_path"] = export_path
+
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
+        _catalog = current_oarepo_ui.catalog
+
+        template_def = self.get_template_def("detail")
+        source = get_jinja_template(_catalog, template_def)
+
         extra_context = dict()
         ui_links = self.expand_detail_links(identity=g.identity, record=record)
+        serialized_record["ui_links"] = ui_links
+
         self.run_components(
             "before_ui_detail",
             resource=self,
@@ -151,25 +167,27 @@ class RecordsUIResource(UIResource):
             component_key="search",
         )
 
-
-        _catalog = current_oarepo_ui.catalog
-
-        if not _catalog.singleton_check:
-            _catalog.set_config()
-            _catalog = catalog_config(_catalog, current_oarepo_ui.templates.jinja_env)
-        template_def = self.get_template_def("detail")
-        source = get_jinja_template(_catalog, template_def)
+        metadata = dict(serialized_record.get("metadata", serialized_record))
         return _catalog.render(
-            "detail",__source=source, metadata=serialized_record["metadata"],
-            ui = serialized_record.get("ui", serialized_record),
-            layout = layout
-
+            "detail",
+            __source=source,
+            metadata=metadata,
+            ui=dict(serialized_record.get("ui", serialized_record)),
+            layout=dict(layout),
+            url_prefix=self.config.url_prefix,
+            record=serialized_record,
+            extra_context=extra_context,
         )
 
-    def _get_record(self, resource_requestctx):
-        return self.api_service.read(
-            g.identity, resource_requestctx.view_args["pid_value"]
-        )
+    def _get_record(self, resource_requestctx, allow_draft=False):
+        if allow_draft:
+            read_method = (
+                getattr(self.api_service, "read_draft") or self.api_service.read
+            )
+        else:
+            read_method = self.api_service.read
+
+        return read_method(g.identity, resource_requestctx.view_args["pid_value"])
 
     def search_without_slash(self):
         split_path = request.full_path.split("?", maxsplit=1)
@@ -188,8 +206,8 @@ class RecordsUIResource(UIResource):
             template_def.get("blocks", {}),
         )
 
-        page = resource_requestctx.args.get('page', 1)
-        size = resource_requestctx.args.get('size', 10)
+        page = resource_requestctx.args.get("page", 1)
+        size = resource_requestctx.args.get("size", 10)
         pagination = Pagination(
             size,
             page,
@@ -197,20 +215,20 @@ class RecordsUIResource(UIResource):
             # (but do not want to get the count as it is another request to Opensearch)
             (page + 1) * size,
         )
-        ui_links = self.expand_search_links(g.identity, pagination, resource_requestctx.args)
-        
+        ui_links = self.expand_search_links(
+            g.identity, pagination, resource_requestctx.args
+        )
+
         search_options = dict(
             api_config=self.api_service.config,
             identity=g.identity,
-            overrides={
-                "ui_endpoint": self.config.url_prefix,
-                "ui_links": ui_links
-            }
+            overrides={"ui_endpoint": self.config.url_prefix, "ui_links": ui_links},
         )
 
-        # TODO: we do not know here, but should be able to parse these from the request
-
         extra_context = dict()
+        links = self.expand_search_links(
+            g.identity, pagination, resource_requestctx.args
+        )
 
         self.run_components(
             "before_ui_search",
@@ -245,7 +263,7 @@ class RecordsUIResource(UIResource):
     def export(self):
         pid_value = resource_requestctx.view_args["pid_value"]
         export_format = resource_requestctx.view_args["export_format"]
-        record = self._get_record(resource_requestctx)
+        record = self._get_record(resource_requestctx, allow_draft=False)
 
         exporter = self.config.exports.get(export_format.lower())
         if exporter is None:
@@ -272,16 +290,17 @@ class RecordsUIResource(UIResource):
     def get_template_def(self, template_type):
         return self.config.templates[template_type]
 
-    # TODO: !IMPORTANT!: must be enabled before any production usage
-    # @login_required
+    @login_required
     @request_read_args
     @request_view_args
     def edit(self):
-        record = self._get_record(resource_requestctx)
+        record = self._get_record(resource_requestctx, allow_draft=True)
         data = record.to_dict()
         serialized_record = self.config.ui_serializer.dump_obj(record.to_dict())
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
-        form_config = self.config.form_config(identity=g.identity, updateUrl=record.links.get("self", None))
+        form_config = self.config.form_config(
+            identity=g.identity, updateUrl=record.links.get("self", None)
+        )
 
         ui_links = self.expand_detail_links(identity=g.identity, record=record)
 
@@ -332,8 +351,7 @@ class RecordsUIResource(UIResource):
             extra_context=extra_context,
         )
 
-    # TODO: !IMPORTANT!: needs to be enabled before production deployment
-    # @login_required
+    @login_required
     @request_read_args
     @request_view_args
     def create(self):
@@ -400,10 +418,7 @@ class RecordsUIResource(UIResource):
     def expand_detail_links(self, identity, record):
         """Get links for this result item."""
         tpl = LinksTemplate(
-            self.config.ui_links_item,
-            {
-                'url_prefix': self.config.url_prefix
-            }
+            self.config.ui_links_item, {"url_prefix": self.config.url_prefix}
         )
         return tpl.expand(identity, record)
 
@@ -411,10 +426,6 @@ class RecordsUIResource(UIResource):
         """Get links for this result item."""
         tpl = LinksTemplate(
             self.config.ui_links_search,
-            {
-                'config': self.config,
-                'url_prefix': self.config.url_prefix,
-                'args': args
-            }
+            {"config": self.config, "url_prefix": self.config.url_prefix, "args": args},
         )
         return tpl.expand(identity, pagination)
