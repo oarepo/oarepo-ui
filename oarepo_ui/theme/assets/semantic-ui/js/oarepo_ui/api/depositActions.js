@@ -46,6 +46,7 @@ export class DepositActions {
             "Form saved with validation errors. Fields listed below that failed validation were not saved to the server"
           ),
         });
+        this.formik.setSubmitting(false);
         return false;
       }
       this.formik.setSubmitting(false);
