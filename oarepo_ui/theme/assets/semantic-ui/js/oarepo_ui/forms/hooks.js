@@ -90,6 +90,15 @@ export const useHighlightState = () => {
   return { highlightedStates, handleHover, handleMouseLeave };
 };
 
+export const useConfirmationModal = () => {
+  const [isModalOpen, setIsModalOopen] = React.useState(false);
+
+  const handleCloseModal = () => setIsModalOopen(false);
+  const handleOpenModal = () => setIsModalOopen(true);
+
+  return { isModalOpen, handleCloseModal, handleOpenModal };
+};
+
 export const submitContextType = {
   save: "save",
   publish: "publish",
