@@ -61,7 +61,7 @@ export class DepositActions {
 
   async publish() {
     // call save and if save returns false, exit
-    if (!this.save()) return;
+    if (!(await this.save())) return;
     // imperative form validation, if fails exit
     const validationErrors = await this.formik.validateForm();
     if (!_isEmpty(validationErrors)) return;
