@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2\n"
-"POT-Creation-Date: 2023-05-11T12:07:05.244Z\n"
-"PO-Revision-Date: 2023-05-11T12:07:05.244Z\n"
+"POT-Creation-Date: 2023-08-30T08:41:45.841Z\n"
+"PO-Revision-Date: 2023-08-30T08:41:45.841Z\n"
 "Language: cs\n"
 
 msgid "Sort"
@@ -19,13 +19,34 @@ msgid "Filter results"
 msgstr "Filtrovat výsledky"
 
 msgid "totalResults"
-msgid_plural "totalResults"
-msgstr[0] "{{val, number}} výsledek"
-msgstr[1] "{{val, number}} výsledky"
-msgstr[2] "{{val, number}} výsledků"
-
-msgid "results per page"
-msgstr "výsledků na stránku"
+msgstr "{{count}} výsledek"
 
 msgid "Filters"
 msgstr "Filtry"
+
+msgid "resultsPerPage"
+msgstr "výsledků na stránku"
+
+msgid "We couldn't find any matches for "
+msgstr "Nenašli jsme žádné shody pro "
+
+msgid "Start over"
+msgstr "Začít znovu"
+
+msgid "Language"
+msgstr "Jazyk"
+
+msgid "Value"
+msgstr "Hodnota"
+
+msgctxt "few"
+msgid "totalResults"
+msgstr "{{count}} výsledky"
+
+msgctxt "many"
+msgid "totalResults"
+msgstr "{{count}} výsledků"
+
+msgctxt "other"
+msgid "totalResults"
+msgstr "{{count}} výsledků"
