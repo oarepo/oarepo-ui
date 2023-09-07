@@ -40,9 +40,9 @@ export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
       resultsPaneLayoutFacets = {
         mobile: 16,
         tablet: 16,
-        computer: 13,
-        largeScreen: 13,
-        widescreen: 13,
+        computer: 12,
+        largeScreen: 12,
+        widescreen: 12,
         width: undefined,
       };
     }
@@ -52,9 +52,9 @@ export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
       resultsPaneLayoutFacets = {
         mobile: 16,
         tablet: 16,
-        computer: 13,
-        largeScreen: 13,
-        widescreen: 13,
+        computer: 12,
+        largeScreen: 12,
+        widescreen: 12,
         width: undefined,
       };
     } else {
@@ -74,8 +74,8 @@ export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
     mobile: 14,
     tablet: 14,
     computer: 12,
-    largeScreen: 13,
-    widescreen: 13,
+    largeScreen: 12,
+    widescreen: 12,
   };
 
   const resultsPaneLayoutNoFacets = resultsPaneLayoutFacets;
@@ -130,7 +130,7 @@ export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
                   aria-label={i18next.t("Filter results")}
                 />
               </Grid.Column>
-              <Grid.Column only="computer" width={3}>
+              <Grid.Column only="computer" width={4}>
                 <ActiveFilters />
               </Grid.Column>
             </>
