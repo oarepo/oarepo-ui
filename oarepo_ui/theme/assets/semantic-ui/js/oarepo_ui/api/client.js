@@ -103,8 +103,9 @@ export class ApiClient extends DepositApiClient {
   createDraft = async (draft) => {
     return this._createResponse(() =>
       this.axiosWithConfig.post(
+        this.createUrl,
         // this.createUrl.replace("https://0.0.0.0:5000", ""),
-        "/fake/api",
+        // "/fake/api",
         draft
       )
     );
@@ -117,8 +118,10 @@ export class ApiClient extends DepositApiClient {
   saveDraft = async (draft) => {
     return this._createResponse(() =>
       this.axiosWithConfig.put(
+        draft.links.self,
+
         // draft.links.self.replace("https://0.0.0.0:5000", ""),
-        "/fake/api",
+        // "/fake/api",
         draft
       )
     );
@@ -143,7 +146,8 @@ export class ApiClient extends DepositApiClient {
   readDraft = async (draft) => {
     return this._createResponse(() =>
       this.axiosWithConfig.get(
-        draft.links.self.replace("https://0.0.0.0:5000", "")
+        draft.links.self
+        // draft.links.self.replace("https://0.0.0.0:5000", "")
       )
     );
   };
@@ -157,8 +161,9 @@ export class ApiClient extends DepositApiClient {
   publishDraft = async (draft) => {
     return this._createResponse(() => {
       return this.axiosWithConfig.post(
+        draft.links.publish,
         // draft.links.publish.replace("https://0.0.0.0:5000", ""),
-        "/fake/api",
+        // "/fake/api",
         draft
       );
     });
@@ -172,8 +177,9 @@ export class ApiClient extends DepositApiClient {
   deleteDraft = async (draft) => {
     return this._createResponse(() =>
       this.axiosWithConfig.delete(
+        draft.links.self
         // draft.links.self.replace("https://0.0.0.0:5000", ""),
-        "/fake/api"
+        // "/fake/api"
       )
     );
   };
