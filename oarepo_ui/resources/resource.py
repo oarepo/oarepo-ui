@@ -150,12 +150,11 @@ class RecordsUIResource(UIResource):
 
         extra_context = dict()
         ui_links = self.expand_detail_links(identity=g.identity, record=record)
-        api_links = serialized_record["links"]
-        serialized_record["links"] = {
-            "api_links": api_links,
+
+        serialized_record["extra_links"] = {
             "ui_links": ui_links,
             "export_path": export_path,
-            "search_path": self.config.url_prefix,
+            "search_link": self.config.url_prefix,
         }
 
         self.run_components(
