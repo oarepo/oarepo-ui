@@ -1,14 +1,99 @@
 import json
+import os
 from importlib import import_module
 from pathlib import Path
 from typing import Dict
-
+import functools
 from flask import Response, current_app
 from frozendict import frozendict
 from importlib_metadata import entry_points
-
+import re
 import oarepo_ui.cli  # noqa
+from oarepo_ui.resources.catalog import OarepoCatalog as Catalog
 from oarepo_ui.resources.templating import TemplateRegistry
+
+
+def crop_component_path(path):
+    parent_dir = os.path.dirname(path)
+
+    return parent_dir
+
+
+def crop_root_path(path, app_theme):
+    if app_theme:
+        for theme in app_theme:
+            if theme in path:
+                folder_index = path.index(theme)
+                cropped_path = path[: folder_index + len(theme)]
+
+                return cropped_path
+
+    return crop_component_path(path)
+
+
+def extract_priority(path):
+    match, _s = prefix_match(path)
+    if match:
+        path_parts = path.split("/")
+        file_parts = path_parts[-1].split("-")
+        return int(file_parts[0])
+    return 0
+
+
+def prefix_match(path):
+    match = re.match(r"^(?:.*[\\\/])?\d{3}-.*$", path)
+    if match:
+        return True, match
+    return False, None
+
+
+def list_templates(env):
+    searchpath = []
+
+    path_dict = {}
+    for path in env.loader.list_templates():
+        try:
+            if path.endswith("jinja") or path.endswith("jinja2"):
+                priority = extract_priority(path)
+                file_name = path.split("/")[-1]
+                match, _s = prefix_match(file_name)
+                if match:
+                    _, _, file_name = file_name.partition("-")
+                if file_name not in path_dict or priority > path_dict[file_name][0]:
+                    path_dict[file_name] = (priority, path)
+        except Exception as e:
+            print(e)
+    jinja_templates = [
+        env.loader.load(env, path) for priority, path in path_dict.values()
+    ]
+
+    for temp in jinja_templates:
+        app_theme = current_app.config.get("APP_THEME", None)
+        searchpath.append(
+            {
+                "root_path": crop_root_path(temp.filename, app_theme),
+                "component_path": crop_component_path(temp.filename),
+                "component_file": temp.filename,
+            }
+        )
+
+    return searchpath
+
+
+def catalog_config(catalog, env):
+    context = {}
+    current_app.update_template_context(context)
+    catalog.jinja_env.loader = env.loader
+    context.update(catalog.jinja_env.globals)
+    context.update(env.globals)
+    catalog.jinja_env.globals = context
+    catalog.jinja_env.extensions.update(env.extensions)
+    catalog.jinja_env.filters.update(env.filters)
+
+    env.loader.searchpath = list_templates(env)
+    catalog.prefixes[""] = env.loader
+
+    return catalog
 
 
 class OARepoUIState:
@@ -18,6 +103,13 @@ class OARepoUIState:
         self._resources = []
         self.layouts = self._load_layouts()
         self.init_builder_plugin()
+        self._catalog = None
+
+    @functools.cached_property
+    def catalog(self):
+        self._catalog = Catalog()
+
+        return catalog_config(self._catalog, self.templates.jinja_env)
 
     def get_template(self, layout: str, blocks: Dict[str, str]):
         return self.templates.get_template(layout, frozendict(blocks))

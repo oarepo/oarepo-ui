@@ -15,6 +15,7 @@ recursive-exclude docs *
 recursive-exclude playground *
 recursive-include examples *
 recursive-include oarepo_ui *.html
+recursive-include oarepo_ui *.jinja
 recursive-include oarepo_ui *.js
 recursive-include oarepo_ui *.mo
 recursive-include oarepo_ui *.po

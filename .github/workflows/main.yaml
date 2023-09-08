@@ -60,7 +60,7 @@ jobs:
           pip uninstall -y uritemplate || true
           pip install -U uritemplate
           pytest tests
-      
+
 
       - name: Build package to publish
         run: |

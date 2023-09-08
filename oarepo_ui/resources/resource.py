@@ -2,7 +2,7 @@ import copy
 from functools import partial
 
 import deepmerge
-from flask import abort, g, redirect, render_template, request
+from flask import abort, current_app, g, redirect, render_template, request
 from flask_resources import (
     Resource,
     from_conf,
@@ -17,17 +17,19 @@ from invenio_records_resources.proxies import current_service_registry
 from invenio_records_resources.records.systemfields import FilesField
 from invenio_records_resources.resources.records.resource import (
     request_read_args,
-    request_search_args,
     request_view_args,
+    request_search_args,
 )
 from invenio_records_resources.services import LinksTemplate
 
+from .catalog import get_jinja_template
 from oarepo_ui.utils import dump_empty
 
 #
 # Resource
 #
 from ..proxies import current_oarepo_ui
+from .catalog import get_jinja_template
 from .config import RecordsUIResourceConfig, UIResourceConfig
 
 request_export_args = request_parser(
@@ -122,6 +124,7 @@ class RecordsUIResource(UIResource):
     @request_view_args
     def detail(self):
         """Returns item detail page."""
+        """Returns item detail page."""
         record = self._get_record(resource_requestctx, allow_draft=False)
         # TODO: handle permissions UI way - better response than generic error
         serialized_record = self.config.ui_serializer.dump_obj(record.to_dict())
@@ -133,9 +136,23 @@ class RecordsUIResource(UIResource):
                 if not v.startswith("/") and not v.startswith("https://"):
                     v = f"/api{self.api_service.config.url_prefix}{v}"
                     serialized_record["links"][k] = v
+
+        export_path = request.path.split("?")[0]
+        if not export_path.endswith("/"):
+            export_path += "/"
+        export_path += "export"
+        serialized_record["export_path"] = export_path
+
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
+        _catalog = current_oarepo_ui.catalog
+
+        template_def = self.get_template_def("detail")
+        source = get_jinja_template(_catalog, template_def)
+
         extra_context = dict()
         ui_links = self.expand_detail_links(identity=g.identity, record=record)
+        serialized_record["ui_links"] = ui_links
+
         self.run_components(
             "before_ui_detail",
             resource=self,
@@ -151,30 +168,16 @@ class RecordsUIResource(UIResource):
             component_key="search",
         )
 
-        template_def = self.get_template_def("detail")
-        template = current_oarepo_ui.get_template(
-            template_def["layout"],
-            template_def["blocks"],
-        )
-        export_path = request.path.split("?")[0]
-        if not export_path.endswith("/"):
-            export_path += "/"
-        export_path += "export"
-
-        return render_template(
-            template,
+        metadata = dict(serialized_record.get("metadata", serialized_record))
+        return _catalog.render(
+            "detail",
+            __source=source,
+            metadata=metadata,
+            ui=dict(serialized_record.get("ui", serialized_record)),
+            layout=dict(layout),
+            url_prefix=self.config.url_prefix,
             record=serialized_record,
-            data=serialized_record,
-            metadata=serialized_record.get("metadata", serialized_record),
-            ui=serialized_record.get("ui", serialized_record),
-            ui_config=self.config,
-            ui_links=ui_links,
-            ui_resource=self,
-            layout=layout,
-            links=ui_links,
-            component_key="detail",
-            export_path=export_path,
-            **extra_context,
+            extra_context=extra_context,
         )
 
     def _get_record(self, resource_requestctx, allow_draft=False):

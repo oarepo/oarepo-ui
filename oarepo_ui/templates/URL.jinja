@@ -1,0 +1,7 @@
+{# def className, data #}
+{% set data_dict = data | to_dict %}
+ <a class="ui {{className}}" href="{{data_dict.href | e}}" aria-label="{{data_dict.title}}" title="{{data_dict.title}}">
+        <span class="{className} label">
+            {{data_dict.label if data_dict.label else data_dict.title}}
+        </span>
+    </a>
