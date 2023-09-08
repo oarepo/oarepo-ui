@@ -88,7 +88,7 @@ def get_jinja_template(_catalog, template_def):
     assembled_template = [jinja_content]
     for blk_name, blk in template_def["blocks"].items():
         assembled_template.append(
-            "{%% block %s %%}<%s metadata={metadata} ui={ui} layout={layout} url_prefix={url_prefix} record={record} extra_context={extra_context}></%s>{%% endblock %%}"
+            "{%% block %s %%}<%s metadata={metadata} ui={ui} layout={layout}  record={record} extra_context={extra_context}></%s>{%% endblock %%}"
             % (blk_name, blk, blk)
         )
     assembled_template = "\n".join(assembled_template)

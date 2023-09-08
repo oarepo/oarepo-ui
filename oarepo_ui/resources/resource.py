@@ -141,7 +141,6 @@ class RecordsUIResource(UIResource):
         if not export_path.endswith("/"):
             export_path += "/"
         export_path += "export"
-        serialized_record["export_path"] = export_path
 
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
         _catalog = current_oarepo_ui.catalog
@@ -151,7 +150,12 @@ class RecordsUIResource(UIResource):
 
         extra_context = dict()
         ui_links = self.expand_detail_links(identity=g.identity, record=record)
-        serialized_record["ui_links"] = ui_links
+
+        serialized_record["extra_links"] = {
+            "ui_links": ui_links,
+            "export_path": export_path,
+            "search_link": self.config.url_prefix,
+        }
 
         self.run_components(
             "before_ui_detail",
@@ -175,7 +179,6 @@ class RecordsUIResource(UIResource):
             metadata=metadata,
             ui=dict(serialized_record.get("ui", serialized_record)),
             layout=dict(layout),
-            url_prefix=self.config.url_prefix,
             record=serialized_record,
             extra_context=extra_context,
         )
