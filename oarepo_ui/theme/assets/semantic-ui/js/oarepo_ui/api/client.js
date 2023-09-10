@@ -80,10 +80,14 @@ export class DepositApiClient {
 /**
  * API Client for deposits.
  */
-export class ApiClient extends DepositApiClient {
-  constructor(createUrl) {
+export class OARepoDepositApiClient extends DepositApiClient {
+  // TODO: init with serializer class
+  constructor(createUrl = undefined, recordSerializer) {
+    console.log(recordSerializer);
     super();
     this.createUrl = createUrl;
+    this.recordSerializer = recordSerializer;
+    console.log(this.recordSerializer);
   }
   _createResponse = async (axiosRequest) => {
     try {
@@ -100,14 +104,14 @@ export class ApiClient extends DepositApiClient {
    *
    * @param {object} draft - Serialized draft
    */
-  createDraft = async (draft) => {
+  createDraft = async (draft, createUrl = this.createUrl) => {
+    if (!createUrl)
+      throw new Error(
+        "You must either pass createUrl when initializing the OARepoDepositApiClient class or pass it to createDraft method., "
+      );
+    const payload = this.recordSerializer.serialize(draft);
     return this._createResponse(() =>
-      this.axiosWithConfig.post(
-        this.createUrl,
-        // this.createUrl.replace("https://0.0.0.0:5000", ""),
-        // "/fake/api",
-        draft
-      )
+      this.axiosWithConfig.post(createUrl, payload)
     );
   };
   /**
@@ -116,14 +120,10 @@ export class ApiClient extends DepositApiClient {
    * @param {object} draft - the draft payload
    */
   saveDraft = async (draft) => {
-    return this._createResponse(() =>
-      this.axiosWithConfig.put(
-        draft.links.self,
+    const payload = this.recordSerializer.serialize(draft);
 
-        // draft.links.self.replace("https://0.0.0.0:5000", ""),
-        // "/fake/api",
-        draft
-      )
+    return this._createResponse(() =>
+      this.axiosWithConfig.put(new URL(draft.links.self).pathname, payload)
     );
   };
 
@@ -145,10 +145,7 @@ export class ApiClient extends DepositApiClient {
    */
   readDraft = async (draft) => {
     return this._createResponse(() =>
-      this.axiosWithConfig.get(
-        draft.links.self
-        // draft.links.self.replace("https://0.0.0.0:5000", "")
-      )
+      this.axiosWithConfig.get(new URL(draft.links.self).pathname)
     );
   };
 
@@ -161,9 +158,7 @@ export class ApiClient extends DepositApiClient {
   publishDraft = async (draft) => {
     return this._createResponse(() => {
       return this.axiosWithConfig.post(
-        draft.links.publish,
-        // draft.links.publish.replace("https://0.0.0.0:5000", ""),
-        // "/fake/api",
+        new URL(draft.links.self).pathname,
         draft
       );
     });
@@ -176,13 +171,7 @@ export class ApiClient extends DepositApiClient {
    */
   deleteDraft = async (draft) => {
     return this._createResponse(() =>
-      this.axiosWithConfig.delete(
-        draft.links.self
-        // draft.links.self.replace("https://0.0.0.0:5000", ""),
-        // "/fake/api"
-      )
+      this.axiosWithConfig.delete(new URL(draft.links.self).pathname)
     );
   };
 }
-
-export const OARepoDepositApiClient = new ApiClient();

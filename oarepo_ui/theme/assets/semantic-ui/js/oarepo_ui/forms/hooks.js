@@ -1,7 +1,5 @@
 import * as React from "react";
 import { FormConfigContext } from "./contexts";
-import { useMutation } from "@tanstack/react-query";
-import { invokeCallbacks } from "./util";
 
 export const useFormConfig = () => {
   const context = React.useContext(FormConfigContext);
@@ -19,55 +17,6 @@ export const useVocabularyOptions = (vocabularyType) => {
   } = useFormConfig();
 
   return { options: vocabularies[vocabularyType] };
-};
-
-export const useOnSubmit = ({
-  actionName,
-  onBeforeSubmit = (values, formik) => values,
-}) => {
-  const { error: submitError, mutateAsync: submitAsync } = useMutation({
-    mutationFn: async ({ data, formik }) => {
-      let result;
-      // switch (actionName) {
-      //   case submitContextType.save:
-      //     result = await OARepoFormActions.call(actionName, formik, data);
-      //     break;
-      //   case submitContextType.publish:
-      //     result = await OARepoFormActions.call(
-      //       submitContextType.save,
-      //       formik,
-      //       data
-      //     );
-      //     if (result.errors) return;
-      //     result = await OARepoFormActions.call(
-      //       actionName,
-      //       formik,
-      //       data,
-      //       result
-      //     );
-      //     break;
-      //   case submitContextType.preview:
-      //     // TODO: don't have preview page yet
-      //     break;
-      //   case submitContextType.delete:
-      //     result = await OARepoFormActions.call(actionName, formik, data);
-      //     break;
-      //   default:
-      //     throw new Error(`Unsupported submit context: ${actionName}`);
-      // }
-      return result;
-    },
-  });
-
-  const onSubmit = async (values, formik) => {
-    values = invokeCallbacks(onBeforeSubmit, values, formik);
-    submitAsync({
-      data: values,
-      formik,
-    });
-  };
-
-  return { onSubmit, submitError };
 };
 
 // hook that enables me to highlight the related inputs when I hover over the close buttons
@@ -97,11 +46,4 @@ export const useConfirmationModal = () => {
   const handleOpenModal = () => setIsModalOopen(true);
 
   return { isModalOpen, handleCloseModal, handleOpenModal };
-};
-
-export const submitContextType = {
-  save: "save",
-  publish: "publish",
-  preview: "preview",
-  delete: "delete",
 };

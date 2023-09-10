@@ -1,6 +1,8 @@
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { removeNullAndInternalFields } from "../util";
 import _isEmpty from "lodash/isEmpty";
+import _omit from "lodash/omit";
+import _pick from "lodash/pick";
 
 export class DepositActions {
   constructor(initializedApiClient, formik) {
@@ -13,10 +15,12 @@ export class DepositActions {
     let response;
     const cleanedValues = removeNullAndInternalFields(
       ["errors", "validationErrors", "httpErrors", "successMessage"],
-      ["__key"]
-    )(this.formik.values);
+      ["__key"],
+      this.formik.values
+    );
     this.formik.setSubmitting(true);
     this.formik.setErrors({});
+    console.log(this.formik);
     try {
       response = await this.apiClient.saveOrCreateDraft(cleanedValues);
       // when I am creating a new draft, it saves the response into formik's state, so that I would have access
@@ -24,6 +28,7 @@ export class DepositActions {
       // create new draft, as I don't actually refresh the page, so the record from html is still empty. Invenio,
       // solves this by keeping record in the store, but the idea here is to not create some central state,
       // but use formik as some sort of auxiliary state.
+
       if (!this.formik.values.id) {
         window.history.replaceState(
           undefined,
@@ -31,7 +36,14 @@ export class DepositActions {
           new URL(response.links.self_html).pathname
         );
       }
-      this.formik.setValues(response);
+
+      // it is a little bit problematic that when you save with errors, the server does not actually return in the response
+      // the value you filled if it resulted in validation error. It can cause discrepancy between what is shown in the form and actual
+      // state in formik so I solve it in the way below
+      this.formik.setValues({
+        ..._omit(response, ["metadata"]),
+        ..._pick(this.formik.values, ["metadata"]),
+      });
 
       // save accepts posts/puts even with validation errors. Here I check if there are some errors in the response
       // body. Here I am setting the individual error messages to the field
@@ -57,7 +69,6 @@ export class DepositActions {
       );
       return response;
     } catch (error) {
-      console.log(error);
       // handle 400/500 errors. Here I am not sure how detailed we wish to be and what kind of
       // errors can we provide in case of errors on client/server
       this.formik.setFieldValue("httpErrors", error.message);
@@ -67,21 +78,27 @@ export class DepositActions {
   }
 
   async publish() {
+    console.log("publishing");
     // call save and if save returns false, exit
-    if (!(await this.save())) return;
+    const saveResult = await this.save();
+    if (!saveResult) return;
     // imperative form validation, if fails exit
     const validationErrors = await this.formik.validateForm();
     if (!_isEmpty(validationErrors)) return;
     this.formik.setSubmitting(true);
-
+    console.log(this.formik.values);
     let response;
     const cleanedValues = removeNullAndInternalFields(
       ["errors", "validationErrors", "httpErrors", "successMessage"],
-      ["__key"]
-    )(this.formik.values);
+      ["__key"],
+      saveResult
+    );
 
     try {
+      console.log("try publish");
       response = await this.apiClient.publishDraft(cleanedValues);
+      console.log("response recieved", response);
+
       window.location.href = response.links.self_html;
       this.formik.setSubmitting(false);
       this.formik.setFieldValue(
@@ -135,65 +152,4 @@ export class DepositActions {
       return false;
     }
   }
-  //   console.log(this.formik);
-  //   this.save = {
-  //     call: this.apiClient.saveOrCreateDraft,
-  //     onSubmitSuccess: (result, formik) => {
-  // if (!formik.values.id) {
-  //   window.history.replaceState(
-  //     undefined,
-  //     "",
-  //     new URL(result.links.self_html).pathname
-  //   );
-  //   formik.setValues(result);
-  // }
-  // if (result.errors) {
-  //   result.errors.forEach((error) =>
-  //     formik.setFieldError(error.field, error.messages[0])
-  //   );
-  //   formik.setFieldValue("validationErrors", {
-  //     errors: result.errors,
-  //     errorMessage: i18next.t(
-  //       "Form saved with validation errors. Fields listed below that failed validation were not saved to the server"
-  //     ),
-  //   });
-  // }
-  // return result;
-  //     },
-  //   };
-
-  //   this.publish = {
-  //     call: this.apiClient.publishDraft,
-  //     onSubmitSuccess: (result, formik) => {
-  // window.location.href = result.links.self_html;
-  //     },
-  //   };
-
-  //   this.delete = {
-  //     call: this.apiClient.deleteDraft,
-  // onSubmitSuccess: (result, formik) => {
-  //   // TODO: should redirect to /me page in user dashboard?? but we don't have that one yet
-  //   window.location.href = "/docs/";
-  // },
-  //   };
-  // }
-
-  // async call(actionName, formik, ...rest) {
-  //   let response;
-  //   const action = this[actionName];
-  //   try {
-  //     const cleanedValues = removeNullAndInternalFields(
-  //       ["errors", "validationErrors"],
-  //       ["__key"]
-  //     )(this.formik.values);
-  //     response = await action.call(cleanedValues, ...rest);
-  //     return action.onSubmitSuccess(response, this.formik);
-  //   } catch (error) {
-  //     console.log(error);
-  //     action.onSubmitError
-  //       ? action.onSubmitError(error, this.formik)
-  //       : this.onSubmitError(error, this.formik);
-  //     return false;
-  //   }
-  // }
 }

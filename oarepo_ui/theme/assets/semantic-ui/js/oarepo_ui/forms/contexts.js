@@ -1,8 +1,11 @@
 import React, { useMemo, useContext } from "react";
 import { useFormikContext } from "formik";
 import { useFormConfig } from "./hooks";
-import { ApiClient, DepositActions } from "../api";
-console.log(useFormConfig);
+import {
+  OARepoDepositApiClient,
+  DepositActions,
+  OARepoDepositSerializer,
+} from "../api";
 
 export const FormConfigContext = React.createContext();
 
@@ -14,21 +17,33 @@ export const FormConfigProvider = ({ children, value }) => {
   );
 };
 
+// TODO: fix links in low level API client
+// create a serializer Class for cleanup. Pass the record through deserializer when it arrives from HTML
+// when making CRUD when sending, serialize the record, when recieving response, deserialize record
+// test how all of this would work in vocabularies
+//
 export const ApiClientContext = React.createContext();
-
+// TODO: maybe try useReducer?
 export const ApiClientProvider = ({
   children,
   clientClass = DepositActions,
+  baseClientClass = OARepoDepositApiClient,
+  recordSerializer = new OARepoDepositSerializer(
+    ["errors", "validationErrors", "httpErrors", "successMessage"],
+    ["__key"]
+  ),
 }) => {
   const {
     formConfig: { createUrl },
   } = useFormConfig();
-  // DefaultClass muze byt to OARepo.cosi..Client co ted mame
   const formik = useFormikContext();
-  // initializing the low level api client with createUrl - the rest of URLs come from the record.links
+
+  const initializedBaseClientClass = useMemo(() => {
+    return new baseClientClass(createUrl, recordSerializer);
+  }, [createUrl, baseClientClass, recordSerializer]);
   const OARepoFormActions = useMemo(() => {
-    return new clientClass(new ApiClient(createUrl), formik);
-  }, [createUrl, formik, clientClass]);
+    return new clientClass(initializedBaseClientClass, formik);
+  }, [formik, clientClass, initializedBaseClientClass]);
   return (
     <ApiClientContext.Provider value={OARepoFormActions}>
       {children}
