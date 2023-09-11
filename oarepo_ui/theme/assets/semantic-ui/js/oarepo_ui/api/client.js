@@ -81,8 +81,7 @@ export class DepositApiClient {
  * API Client for deposits.
  */
 export class OARepoDepositApiClient extends DepositApiClient {
-  // TODO: init with serializer class
-  constructor(createUrl = undefined, recordSerializer) {
+  constructor(createUrl, recordSerializer) {
     super();
     this.createUrl = createUrl;
     this.recordSerializer = recordSerializer;

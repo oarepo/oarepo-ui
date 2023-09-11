@@ -55,15 +55,15 @@ export const useConfirmationModal = () => {
 };
 
 export const useDepositApiClient = (
+  baseApiClient,
+  serializer,
   internalFieldsArray = [
     "errors",
     "validationErrors",
     "httpErrors",
     "successMessage",
   ],
-  keysToRemove = ["__key"],
-  baseApiClient,
-  serializer
+  keysToRemove = ["__key"]
 ) => {
   const {
     isSubmitting,
