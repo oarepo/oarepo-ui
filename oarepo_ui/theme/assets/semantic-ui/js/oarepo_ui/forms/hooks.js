@@ -54,6 +54,8 @@ export const useConfirmationModal = () => {
   return { isModalOpen, handleCloseModal, handleOpenModal };
 };
 // TODO: give these defaults to the class directly
+// which client class, serializer class is going to be used
+// HOOK inside of HOOK
 export const useDepositApiClient = (
   internalFieldsArray = [
     "errors",
@@ -61,7 +63,9 @@ export const useDepositApiClient = (
     "httpErrors",
     "successMessage",
   ],
-  keysToRemove = ["__key"]
+  keysToRemove = ["__key"],
+  baseApiClient,
+  serializer
 ) => {
   const {
     isSubmitting,
@@ -78,12 +82,13 @@ export const useDepositApiClient = (
     formConfig: { createUrl },
   } = useFormConfig();
 
-  const recordSerializer = new OARepoDepositSerializer(
-    internalFieldsArray,
-    keysToRemove
-  );
+  const recordSerializer = serializer
+    ? new serializer(internalFieldsArray, keysToRemove)
+    : new OARepoDepositSerializer(internalFieldsArray, keysToRemove);
 
-  const apiClient = new OARepoDepositApiClient(createUrl, recordSerializer);
+  const apiClient = baseApiClient
+    ? new baseApiClient(createUrl, recordSerializer)
+    : new OARepoDepositApiClient(createUrl, recordSerializer);
 
   async function save() {
     let response;
@@ -108,7 +113,7 @@ export const useDepositApiClient = (
 
       // it is a little bit problematic that when you save with errors, the server does not actually return in the response
       // the value you filled if it resulted in validation error. It can cause discrepancy between what is shown in the form and actual
-      // state in formik so I solve it in the way below
+      // state in formik so we preserve metadata in this way
       setValues({
         ..._omit(response, ["metadata"]),
         ..._pick(values, ["metadata"]),

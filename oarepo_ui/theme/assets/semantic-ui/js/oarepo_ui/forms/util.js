@@ -78,18 +78,3 @@ export function createFormAppInit(
     return initFormApp;
   }
 }
-
-export const invokeCallbacks = (callbacks, ...args) => {
-  let result;
-  if (!Array.isArray(callbacks)) {
-    callbacks = [callbacks];
-  }
-  callbacks.forEach((callback) => {
-    if (typeof callback === "function") {
-      // TODO: can this be improved?
-      result = callback(...args);
-    }
-  });
-
-  return result;
-};
