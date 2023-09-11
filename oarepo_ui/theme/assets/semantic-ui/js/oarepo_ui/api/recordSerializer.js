@@ -1,5 +1,3 @@
-import _cloneDeep from "lodash/cloneDeep";
-import _defaults from "lodash/defaults";
 import _isArray from "lodash/isArray";
 import _isBoolean from "lodash/isBoolean";
 import _isEmpty from "lodash/isEmpty";
@@ -7,9 +5,7 @@ import _isNull from "lodash/isNull";
 import _isNumber from "lodash/isNumber";
 import _isObject from "lodash/isObject";
 import _mapValues from "lodash/mapValues";
-import _pick from "lodash/pick";
 import _pickBy from "lodash/pickBy";
-import _set from "lodash/set";
 import _forEach from "lodash/forEach";
 import _omitBy from "lodash/omitBy";
 
@@ -115,77 +111,12 @@ export class OARepoDepositSerializer extends DepositRecordSerializer {
     );
 
   /**
-   * Deserialize backend record into format compatible with frontend.
+   * Deserialize backend record into format compatible with frontend. We are not using deserialization yet. We are only currently serializing the record before sending
    * @method
    * @param {object} record - potentially empty object
    * @returns {object} frontend compatible record object
    */
-  deserialize(record) {
-    // NOTE: cloning now allows us to manipulate the copy with impunity
-    //       without affecting the original
-    const originalRecord = _pick(_cloneDeep(record), [
-      "access",
-      "expanded",
-      "metadata",
-      "id",
-      "links",
-      "files",
-      "media_files",
-      "is_published",
-      "versions",
-      "parent",
-      "status",
-      "pids",
-      "ui",
-      "custom_fields",
-    ]);
-
-    // FIXME: move logic in a more sophisticated PIDField that allows empty values
-    // to be sent in the backend
-    const savedPIDsFieldValue = originalRecord.pids || {};
-
-    // Remove empty null values from record. This happens when we create a new
-    // draft and the backend produces an empty record filled in with null
-    // values, array of null values etc.
-    // TODO: Backend should not attempt to provide empty values. It should just
-    //       return existing record in case of edit or {} in case of new.
-    let deserializedRecord = this._removeEmptyValues(originalRecord);
-
-    // FIXME: Add back pids field in case it was removed
-    deserializedRecord = {
-      ...deserializedRecord,
-      ...(!_isEmpty(savedPIDsFieldValue) ? { pids: savedPIDsFieldValue } : {}),
-    };
-
-    for (const key in this.depositRecordSchema) {
-      deserializedRecord = this.depositRecordSchema[key].deserialize(
-        deserializedRecord,
-        this.defaultLocale
-      );
-    }
-    return deserializedRecord;
-  }
-
-  /**
-   * Deserialize backend record errors into format compatible with frontend.
-   * @method
-   * @param {array} errors - array of error objects
-   * @returns {object} - object representing errors
-   */
-  deserializeErrors(errors) {
-    let deserializedErrors = {};
-
-    // TODO - WARNING: This doesn't convert backend error paths to frontend
-    //                 error paths. Doing so is non-trivial
-    //                 (re-using deserialize has some caveats)
-    //                 Form/Error UX is tackled in next sprint and this is good
-    //                 enough for now.
-    for (const e of errors) {
-      _set(deserializedErrors, e.field, e.messages.join(" "));
-    }
-
-    return deserializedErrors;
-  }
+  deserialize(record) {}
 
   /**
    * Serialize record to send to the backend.

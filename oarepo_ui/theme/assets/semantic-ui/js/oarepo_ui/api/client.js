@@ -154,12 +154,11 @@ export class OARepoDepositApiClient extends DepositApiClient {
    */
 
   publishDraft = async (draft) => {
-    console.log("publishing client");
-    console.log(draft.links.publish);
+    const payload = this.recordSerializer.serialize(draft);
     return this._createResponse(() => {
       return this.axiosWithConfig.post(
         new URL(draft.links.publish).pathname,
-        draft
+        payload
       );
     });
   };

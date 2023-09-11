@@ -20,7 +20,6 @@ export class DepositActions {
     // );
     this.formik.setSubmitting(true);
     this.formik.setErrors({});
-    console.log(this.formik);
     try {
       response = await this.apiClient.saveOrCreateDraft(this.formik.values);
       // when I am creating a new draft, it saves the response into formik's state, so that I would have access
@@ -30,7 +29,6 @@ export class DepositActions {
       // but use formik as some sort of auxiliary state.
 
       if (!this.formik.values.id) {
-        console.log("replacing link in save");
         window.history.replaceState(
           undefined,
           "",
@@ -79,8 +77,6 @@ export class DepositActions {
   }
 
   async publish() {
-    console.log("publishing");
-    console.log(this.formik.values);
     // call save and if save returns false, exit
     const saveResult = await this.save();
     if (!saveResult) return;
@@ -88,7 +84,6 @@ export class DepositActions {
     const validationErrors = await this.formik.validateForm();
     if (!_isEmpty(validationErrors)) return;
     this.formik.setSubmitting(true);
-    console.log(this.formik.values);
     let response;
     const cleanedValues = removeNullAndInternalFields(
       ["errors", "validationErrors", "httpErrors", "successMessage"],
@@ -97,9 +92,7 @@ export class DepositActions {
     );
 
     try {
-      console.log("try publish");
       response = await this.apiClient.publishDraft(cleanedValues);
-      console.log("response recieved", response);
 
       window.location.href = response.links.self_html;
       this.formik.setSubmitting(false);
