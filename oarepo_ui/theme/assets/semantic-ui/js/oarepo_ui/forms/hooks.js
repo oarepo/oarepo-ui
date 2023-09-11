@@ -53,7 +53,7 @@ export const useConfirmationModal = () => {
 
   return { isModalOpen, handleCloseModal, handleOpenModal };
 };
-
+// TODO: give these defaults to the class directly
 export const useDepositApiClient = (
   internalFieldsArray = [
     "errors",

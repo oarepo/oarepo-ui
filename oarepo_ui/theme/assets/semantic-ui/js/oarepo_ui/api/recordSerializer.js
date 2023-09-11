@@ -116,7 +116,9 @@ export class OARepoDepositSerializer extends DepositRecordSerializer {
    * @param {object} record - potentially empty object
    * @returns {object} frontend compatible record object
    */
-  deserialize(record) {}
+  deserialize(record) {
+    return record;
+  }
 
   /**
    * Serialize record to send to the backend.
