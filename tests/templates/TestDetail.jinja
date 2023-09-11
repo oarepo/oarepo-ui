@@ -1,0 +1,5 @@
+{#def record, extra_context #}
+{%- for link_name, link in record.extra_links.ui_links.items() -%}
+  {{link_name}}:{{link}}
+{% endfor-%}
+permissions={{ extra_context.permissions }}

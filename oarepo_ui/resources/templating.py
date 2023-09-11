@@ -33,6 +33,11 @@ class RegistryLoader(BaseLoader):
         )
 
 
+def to_dict(value=None):
+    if value:
+        return value
+
+
 class TemplateRegistry:
     def __init__(self, app, ui_state) -> None:
         self.app = app
@@ -53,6 +58,7 @@ class TemplateRegistry:
             extensions=[FieldExtension, ValueExtension],
         )
         self._cached_jinja_env.filters["id"] = id_filter
+        self._cached_jinja_env.filters["to_dict"] = to_dict
         self._load_macros(self._cached_jinja_env)
         return self._cached_jinja_env
 

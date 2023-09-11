@@ -1,0 +1,11 @@
+{#def className, search_link,  searchFacet, data #}
+{% set data_dict = data | to_dict %}
+{% set href = search_link ~ "?q=&f=" ~ searchFacet ~ ":" ~ data_dict.value %}
+
+{% set url_data = {
+    "href": href,
+    "title": data_dict.title,
+    "label": data_dict.label
+} %}
+
+<URL className={className} data = {url_data}></URL>
