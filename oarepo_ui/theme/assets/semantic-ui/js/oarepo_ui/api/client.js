@@ -83,11 +83,9 @@ export class DepositApiClient {
 export class OARepoDepositApiClient extends DepositApiClient {
   // TODO: init with serializer class
   constructor(createUrl = undefined, recordSerializer) {
-    console.log(recordSerializer);
     super();
     this.createUrl = createUrl;
     this.recordSerializer = recordSerializer;
-    console.log(this.recordSerializer);
   }
   _createResponse = async (axiosRequest) => {
     try {
@@ -156,9 +154,11 @@ export class OARepoDepositApiClient extends DepositApiClient {
    */
 
   publishDraft = async (draft) => {
+    console.log("publishing client");
+    console.log(draft.links.publish);
     return this._createResponse(() => {
       return this.axiosWithConfig.post(
-        new URL(draft.links.self).pathname,
+        new URL(draft.links.publish).pathname,
         draft
       );
     });

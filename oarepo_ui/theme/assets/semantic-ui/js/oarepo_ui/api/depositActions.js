@@ -13,16 +13,16 @@ export class DepositActions {
 
   async save() {
     let response;
-    const cleanedValues = removeNullAndInternalFields(
-      ["errors", "validationErrors", "httpErrors", "successMessage"],
-      ["__key"],
-      this.formik.values
-    );
+    // const cleanedValues = removeNullAndInternalFields(
+    //   ["errors", "validationErrors", "httpErrors", "successMessage"],
+    //   ["__key"],
+    //   this.formik.values
+    // );
     this.formik.setSubmitting(true);
     this.formik.setErrors({});
     console.log(this.formik);
     try {
-      response = await this.apiClient.saveOrCreateDraft(cleanedValues);
+      response = await this.apiClient.saveOrCreateDraft(this.formik.values);
       // when I am creating a new draft, it saves the response into formik's state, so that I would have access
       // to the draft and draft links in the app. I we don't do that then each time I click on save it will
       // create new draft, as I don't actually refresh the page, so the record from html is still empty. Invenio,
@@ -30,6 +30,7 @@ export class DepositActions {
       // but use formik as some sort of auxiliary state.
 
       if (!this.formik.values.id) {
+        console.log("replacing link in save");
         window.history.replaceState(
           undefined,
           "",
@@ -79,6 +80,7 @@ export class DepositActions {
 
   async publish() {
     console.log("publishing");
+    console.log(this.formik.values);
     // call save and if save returns false, exit
     const saveResult = await this.save();
     if (!saveResult) return;
