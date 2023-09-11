@@ -53,9 +53,7 @@ export const useConfirmationModal = () => {
 
   return { isModalOpen, handleCloseModal, handleOpenModal };
 };
-// TODO: give these defaults to the class directly
-// which client class, serializer class is going to be used
-// HOOK inside of HOOK
+
 export const useDepositApiClient = (
   internalFieldsArray = [
     "errors",
