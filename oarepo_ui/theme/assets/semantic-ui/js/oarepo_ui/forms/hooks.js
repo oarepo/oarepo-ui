@@ -220,5 +220,6 @@ export const useDepositApiClient = (
     _delete,
     recordSerializer,
     apiClient,
+    createUrl,
   };
 };
