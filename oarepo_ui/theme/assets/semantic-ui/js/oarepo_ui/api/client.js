@@ -121,8 +121,7 @@ export class OARepoDepositApiClient extends DepositApiClient {
     const payload = this.recordSerializer.serialize(draft);
 
     return this._createResponse(() =>
-      // this.axiosWithConfig.put(new URL(draft.links.self).pathname, payload)
-      this.axiosWithConfig.put("/api/bla", payload)
+      this.axiosWithConfig.put(new URL(draft.links.self).pathname, payload)
     );
   };
 
