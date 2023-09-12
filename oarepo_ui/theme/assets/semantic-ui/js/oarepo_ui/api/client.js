@@ -87,8 +87,9 @@ export class OARepoDepositApiClient extends DepositApiClient {
     this.recordSerializer = recordSerializer;
   }
   _createResponse = async (axiosRequest) => {
+    let response;
     try {
-      const response = await axiosRequest();
+      response = await axiosRequest();
       const data = response.data || {};
       return data;
     } catch (error) {
@@ -120,7 +121,8 @@ export class OARepoDepositApiClient extends DepositApiClient {
     const payload = this.recordSerializer.serialize(draft);
 
     return this._createResponse(() =>
-      this.axiosWithConfig.put(new URL(draft.links.self).pathname, payload)
+      // this.axiosWithConfig.put(new URL(draft.links.self).pathname, payload)
+      this.axiosWithConfig.put("/api/bla", payload)
     );
   };
 

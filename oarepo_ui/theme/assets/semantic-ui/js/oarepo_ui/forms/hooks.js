@@ -136,9 +136,13 @@ export const useDepositApiClient = (
       setFieldValue("successMessage", i18next.t("Draft saved successfully."));
       return response;
     } catch (error) {
-      // handle 400/500 errors. Here I am not sure how detailed we wish to be and what kind of
-      // errors can we provide in case of errors on client/server
-      setFieldValue("httpErrors", error.message);
+      // handle 400 errors. Normally, axios would put messages in error.response. But for example
+      // offline Error message does not produce a response, so in this way we can display
+      // network error message
+      setFieldValue(
+        "httpErrors",
+        error?.response?.data?.message ?? error.message
+      );
       return false;
     } finally {
       setSubmitting(false);
@@ -170,15 +174,18 @@ export const useDepositApiClient = (
       // in case of validation errors on the server during publish, in RDM they return a 400 and below
       // error message. Not 100% sure if our server does the same.
       if (
-        error &&
-        error.status === 400 &&
-        error.message === "A validation error occurred."
+        error?.response &&
+        error.response.data?.status === 400 &&
+        error.response.data?.message === "A validation error occurred."
       ) {
         error.errors?.forEach((err) =>
           setFieldError(err.field, err.messages.join(" "))
         );
       } else {
-        setFieldValue("httpErrors", error.message);
+        setFieldValue(
+          "httpErrors",
+          error?.response?.data?.message ?? error.message
+        );
       }
 
       return false;
@@ -203,8 +210,10 @@ export const useDepositApiClient = (
       );
       return response;
     } catch (error) {
-      setFieldValue("httpErrors", error.message);
-
+      setFieldValue(
+        "httpErrors",
+        error?.response?.data?.message ?? error.message
+      );
       return false;
     } finally {
       setSubmitting(false);

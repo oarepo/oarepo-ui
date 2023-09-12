@@ -6,3 +6,4 @@ export * from "./I18nTextInputField";
 export * from "./I18nRichInputField";
 export * from "./MultilingualTextInput";
 export * from "./BaseForm";
+export * from "./FormFeedback";
