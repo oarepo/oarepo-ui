@@ -210,6 +210,15 @@ export const useDepositApiClient = (
       setSubmitting(false);
     }
   }
-
-  return { values, isSubmitting, save, publish, _delete };
+  // return also recordSerializer and apiClient instances, if someone wants to use this hook
+  // inside of another hook, so they don't have to initialize the instance manually
+  return {
+    values,
+    isSubmitting,
+    save,
+    publish,
+    _delete,
+    recordSerializer,
+    apiClient,
+  };
 };
