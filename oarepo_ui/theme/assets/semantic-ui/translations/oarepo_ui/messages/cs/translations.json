@@ -1,15 +1,14 @@
 {
-    "Sort": "Řazení",
-    "Sort by": "Řazení",
-    "Filter results": "Filtrovat výsledky",
-    "totalResults": "{{count}} výsledek",
-    "totalResults_few": "{{count}} výsledky",
-    "totalResults_many": "{{count}} výsledků",
-    "totalResults_other": "{{count}} výsledků",
-    "Filters": "Filtry",
-    "resultsPerPage": "výsledků na stránku",
-    "We couldn't find any matches for ": "Nenašli jsme žádné shody pro ",
-    "Start over": "Začít znovu",
-    "Language": "Jazyk",
-    "Value": "Hodnota"
+  "Sort": "Řazení",
+  "Sort by": "Řazení",
+  "Filter results": "Filtrovat výsledky",
+  "totalResults_0": "{{count}} výsledek",
+  "totalResults_1": "{{count}} výsledky",
+  "totalResults_2": "{{count}} výsledků",
+  "Filters": "Filtry",
+  "resultsPerPage": "výsledků na stránku",
+  "We couldn't find any matches for ": "Nenašli jsme žádné shody pro ",
+  "Start over": "Začít znovu",
+  "Language": "Jazyk",
+  "Value": "Hodnota"
 }
