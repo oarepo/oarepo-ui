@@ -8,6 +8,6 @@
   "Start over": "Start over",
   "Language": "Language",
   "Value": "Value",
-  "totalResults": "{{count}} result",
-  "totalResults_plural": "{{count}} results"
+  "totalResults_one": "{{count}} result",
+  "totalResults_other": "{{count}} results"
 }
