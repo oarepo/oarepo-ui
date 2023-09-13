@@ -65,6 +65,8 @@ export const useDepositApiClient = (
   ],
   keysToRemove = ["__key"]
 ) => {
+  const formik = useFormikContext();
+
   const {
     isSubmitting,
     values,
@@ -74,7 +76,7 @@ export const useDepositApiClient = (
     setValues,
     setFieldError,
     setFieldValue,
-  } = useFormikContext();
+  } = formik;
 
   const {
     formConfig: { createUrl },
@@ -124,7 +126,6 @@ export const useDepositApiClient = (
           setFieldError(error.field, error.messages[0])
         );
         // here I am setting the state to be used by FormFeedback componene that plugs into the formik's context.
-        // note that we are using removeNullAndInternalFields to clean this up before submitting
         setFieldValue("validationErrors", {
           errors: response.errors,
           errorMessage: i18next.t(
@@ -194,14 +195,16 @@ export const useDepositApiClient = (
     }
   }
 
-  async function _delete() {
+  async function _delete(redirectUrl) {
+    if (!redirectUrl)
+      throw new Error(
+        "You must provide url where to be redirected after deleting a draft"
+      );
     setSubmitting(true);
-
     try {
       let response = await apiClient.deleteDraft(values);
 
-      // TODO: should redirect to /me page in user dashboard?? but we don't have that one yet
-      window.location.href = "/docs/";
+      window.location.href = redirectUrl;
       setFieldValue(
         "successMessage",
         i18next.t(
@@ -230,5 +233,6 @@ export const useDepositApiClient = (
     recordSerializer,
     apiClient,
     createUrl,
+    formik,
   };
 };
