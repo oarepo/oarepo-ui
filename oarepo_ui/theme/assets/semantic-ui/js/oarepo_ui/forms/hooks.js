@@ -233,6 +233,7 @@ export const useDepositApiClient = (
     isSubmitting,
     save,
     publish,
+    read,
     _delete,
     recordSerializer,
     apiClient,
