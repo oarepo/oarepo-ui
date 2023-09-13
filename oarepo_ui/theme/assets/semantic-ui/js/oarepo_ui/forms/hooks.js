@@ -195,6 +195,10 @@ export const useDepositApiClient = (
     }
   }
 
+  async function read(recordUrl) {
+    return await apiClient.readDraft({ self: recordUrl })
+  }
+
   async function _delete(redirectUrl) {
     if (!redirectUrl)
       throw new Error(
@@ -222,8 +226,8 @@ export const useDepositApiClient = (
       setSubmitting(false);
     }
   }
-  // return also recordSerializer and apiClient instances, if someone wants to use this hook
-  // inside of another hook, so they don't have to initialize the instance manually
+  // we return also recordSerializer and apiClient instances, if someone wants to use this hook
+  // inside of another hook, they don't have to initialize the instances manually
   return {
     values,
     isSubmitting,

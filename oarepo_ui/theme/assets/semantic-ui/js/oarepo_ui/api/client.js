@@ -142,9 +142,10 @@ export class OARepoDepositApiClient extends DepositApiClient {
    * @param {object} draftLinks - the draft links object
    */
   readDraft = async (draftLinks) => {
-    return this._createResponse(() =>
-      this.axiosWithConfig.get(new URL(draftLinks.self).pathname)
-    );
+    return this._createResponse(() => {
+      const response = this.axiosWithConfig.get(new URL(draftLinks.self).pathname)
+      return this.recordSerializer.deserialize(response)
+    });
   };
 
   /**
