@@ -80,22 +80,6 @@ def list_templates(env):
     return searchpath
 
 
-def catalog_config(catalog, env):
-    context = {}
-    current_app.update_template_context(context)
-    catalog.jinja_env.loader = env.loader
-    context.update(catalog.jinja_env.globals)
-    context.update(env.globals)
-    catalog.jinja_env.globals = context
-    catalog.jinja_env.extensions.update(env.extensions)
-    catalog.jinja_env.filters.update(env.filters)
-
-    env.loader.searchpath = list_templates(env)
-    catalog.prefixes[""] = env.loader
-
-    return catalog
-
-
 class OARepoUIState:
     def __init__(self, app):
         self.app = app
@@ -109,7 +93,23 @@ class OARepoUIState:
     def catalog(self):
         self._catalog = Catalog()
 
-        return catalog_config(self._catalog, self.templates.jinja_env)
+        return self._catalog_config(self._catalog, self.templates.jinja_env)
+
+    def _catalog_config(self, catalog, env):
+        context = {}
+        self.app.update_template_context(context)
+        catalog.jinja_env.loader = env.loader
+        context.update(catalog.jinja_env.globals)
+        context.update(env.globals)
+        catalog.jinja_env.globals = context
+        catalog.jinja_env.extensions.update(env.extensions)
+        catalog.jinja_env.filters.update(env.filters)
+        catalog.jinja_env.filters.update(self.app.config["OAREPO_UI_JINJAX_FILTERS"])
+
+        env.loader.searchpath = list_templates(env)
+        catalog.prefixes[""] = env.loader
+
+        return catalog
 
     def get_template(self, layout: str, blocks: Dict[str, str]):
         return self.templates.get_template(layout, frozendict(blocks))
