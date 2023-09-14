@@ -62,5 +62,6 @@ export const absoluteUrl = (urlString) => {
 }
 
 export const relativeUrl = (urlString) => {
-  return absoluteUrl(urlString).pathname
+  const {pathname, search} = absoluteUrl(urlString)
+  return `${pathname}${search}`
 }
