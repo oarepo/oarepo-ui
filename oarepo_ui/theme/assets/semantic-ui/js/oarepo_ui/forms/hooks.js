@@ -6,6 +6,7 @@ import _omit from "lodash/omit";
 import _pick from "lodash/pick";
 import _isEmpty from "lodash/isEmpty";
 import { i18next } from "@translations/oarepo_ui/i18next";
+import { relativeUrl } from "../util";
 
 export const useFormConfig = () => {
   const context = React.useContext(FormConfigContext);
@@ -107,7 +108,7 @@ export const useDepositApiClient = (
         window.history.replaceState(
           undefined,
           "",
-          new URL(response.links.self_html).pathname
+          relativeUrl(response.links.self_html)
         );
       }
 

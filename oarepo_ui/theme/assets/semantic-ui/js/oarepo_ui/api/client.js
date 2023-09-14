@@ -7,6 +7,7 @@
 
 import axios from "axios";
 import _get from "lodash/get";
+import { relativeUrl } from "../util";
 
 // create URL is fixed and gotten from the HTML, it would be good to code it straight into the API client
 // to simplify things that for code that later uses the client
@@ -121,7 +122,7 @@ export class OARepoDepositApiClient extends DepositApiClient {
     const payload = this.recordSerializer.serialize(draft);
 
     return this._createResponse(() =>
-      this.axiosWithConfig.put(new URL(draft.links.self).pathname, payload)
+      this.axiosWithConfig.put(relativeUrl(draft.links.self), payload)
     );
   };
 
@@ -143,7 +144,7 @@ export class OARepoDepositApiClient extends DepositApiClient {
    */
   readDraft = async (draftLinks) => {
     return this._createResponse(() => {
-      const response = this.axiosWithConfig.get(new URL(draftLinks.self).pathname)
+      const response = this.axiosWithConfig.get(relativeUrl(draftLinks.self))
       return this.recordSerializer.deserialize(response)
     });
   };
@@ -158,7 +159,7 @@ export class OARepoDepositApiClient extends DepositApiClient {
     const payload = this.recordSerializer.serialize(draft);
     return this._createResponse(() => {
       return this.axiosWithConfig.post(
-        new URL(draft.links.publish).pathname,
+        relativeUrl(draft.links.publish),
         payload
       );
     });
@@ -171,7 +172,7 @@ export class OARepoDepositApiClient extends DepositApiClient {
    */
   deleteDraft = async (draft) => {
     return this._createResponse(() =>
-      this.axiosWithConfig.delete(new URL(draft.links.self).pathname)
+      this.axiosWithConfig.delete(relativeUrl(draft.links.self))
     );
   };
 }
