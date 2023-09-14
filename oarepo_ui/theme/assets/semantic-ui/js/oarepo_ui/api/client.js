@@ -7,6 +7,10 @@
 
 import axios from "axios";
 import _get from "lodash/get";
+import { relativeUrl } from "../util";
+
+// create URL is fixed and gotten from the HTML, it would be good to code it straight into the API client
+// to simplify things that for code that later uses the client
 
 const BASE_HEADERS = {
   json: { "Content-Type": "application/json" },
@@ -77,44 +81,98 @@ export class DepositApiClient {
 /**
  * API Client for deposits.
  */
-export class ApiClient extends DepositApiClient {
-  async _createResponse(axiosRequest) {
+export class OARepoDepositApiClient extends DepositApiClient {
+  constructor(createUrl, recordSerializer) {
+    super();
+    this.createUrl = createUrl;
+    this.recordSerializer = recordSerializer;
+  }
+  _createResponse = async (axiosRequest) => {
+    let response;
     try {
-      const response = await axiosRequest();
+      response = await axiosRequest();
       const data = response.data || {};
       return data;
     } catch (error) {
-      const errorData = error.response.data;
-      return Promise.reject(errorData);
+      return Promise.reject(error);
     }
-  }
+  };
 
   /**
    * Calls the API to create a new draft.
    *
    * @param {object} draft - Serialized draft
    */
-  async createDraft(url, payload) {
-    return this._createResponse(() => this.axiosWithConfig.post(url, payload));
-  }
+  createDraft = async (draft, createUrl = this.createUrl) => {
+    if (!createUrl)
+      throw new Error(
+        "You must either pass createUrl when initializing the OARepoDepositApiClient class or pass it to createDraft method., "
+      );
+    const payload = this.recordSerializer.serialize(draft);
+    return this._createResponse(() =>
+      this.axiosWithConfig.post(createUrl, payload)
+    );
+  };
+  /**
+   * Calls the API to save a pre-existing draft.
+   *
+   * @param {object} draft - the draft payload
+   */
+  saveDraft = async (draft) => {
+    const payload = this.recordSerializer.serialize(draft);
+
+    return this._createResponse(() =>
+      this.axiosWithConfig.put(relativeUrl(draft.links.self), payload)
+    );
+  };
+
+  /**
+   * Calls the API to save a pre-existing draft. Method that combines saveDraft and createDraft
+   * and calls appropriate method depending on whether or not the draft already exists
+   *
+   * @param {object} draft - the draft payload
+   */
+
+  saveOrCreateDraft = async (draft) => {
+    return draft.id ? this.saveDraft(draft) : this.createDraft(draft);
+  };
 
   /**
    * Calls the API to read a pre-existing draft.
    *
    * @param {object} draftLinks - the draft links object
    */
-  async readDraft(draftLinks) {
-    return this._createResponse(() => this.axiosWithConfig.get(draftLinks));
-  }
+  readDraft = async (draftLinks) => {
+    return this._createResponse(() => {
+      const response = this.axiosWithConfig.get(relativeUrl(draftLinks.self))
+      return this.recordSerializer.deserialize(response)
+    });
+  };
 
   /**
-   * Calls the API to save a pre-existing draft.
+   * Calls the API to publish a pre-existing draft.
    *
    * @param {object} draft - the draft payload
    */
-  async saveDraft(url, payload) {
-    return this._createResponse(() => this.axiosWithConfig.put(url, payload));
-  }
-}
 
-export const OARepoDepositApiClient = new ApiClient();
+  publishDraft = async (draft) => {
+    const payload = this.recordSerializer.serialize(draft);
+    return this._createResponse(() => {
+      return this.axiosWithConfig.post(
+        relativeUrl(draft.links.publish),
+        payload
+      );
+    });
+  };
+
+  /**
+   * Calls the API to delete a pre-existing draft.
+   *
+   * @param {object} draft - the draft payload
+   */
+  deleteDraft = async (draft) => {
+    return this._createResponse(() =>
+      this.axiosWithConfig.delete(relativeUrl(draft.links.self))
+    );
+  };
+}

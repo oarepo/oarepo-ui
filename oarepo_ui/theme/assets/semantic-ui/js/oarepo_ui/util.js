@@ -56,3 +56,12 @@ export const eliminateUsedLanguages = (
   );
   return remainingLanguages;
 };
+
+export const absoluteUrl = (urlString) => {
+  return new URL(urlString, window.location.origin)
+}
+
+export const relativeUrl = (urlString) => {
+  const {pathname, search} = absoluteUrl(urlString)
+  return `${pathname}${search}`
+}
