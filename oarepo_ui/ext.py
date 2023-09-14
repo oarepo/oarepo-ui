@@ -89,11 +89,6 @@ class OARepoUIState:
         self.init_builder_plugin()
         self._catalog = None
 
-        # TODO: modified the global env - not pretty, but gets filters to search as well
-        # TODO: should be called before the first request, probably not here
-        env = self.templates.jinja_env
-        env.filters.update(self.app.config["OAREPO_UI_JINJAX_FILTERS"])
-
     @functools.cached_property
     def catalog(self):
         self._catalog = Catalog()
