@@ -23,12 +23,28 @@ def test_permissions_on_detail(
         ) in c.text
 
 
+def test_filter_on_detail(
+    app, record_ui_resource, simple_record, client, fake_manifest
+):
+    with client.get(f"/simple-model/{simple_record.id}") as c:
+        assert c.status_code == 200
+        assert "dummy" in c.text
+
+
 def test_permissions_on_search(
     app, record_ui_resource, simple_record, client, fake_manifest
 ):
     with client.get(f"/simple-model/") as c:
         assert c.status_code == 200
         assert ("permissions={&#39;can_create&#39;: True}") in c.text
+
+
+def test_filter_on_search(
+    app, record_ui_resource, simple_record, client, fake_manifest
+):
+    with client.get(f"/simple-model/") as c:
+        assert c.status_code == 200
+        assert "dummy" in c.text
 
 
 def test_ui_links_on_detail(
