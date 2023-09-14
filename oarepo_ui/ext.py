@@ -92,7 +92,6 @@ class OARepoUIState:
     @functools.cached_property
     def catalog(self):
         self._catalog = Catalog()
-
         return self._catalog_config(self._catalog, self.templates.jinja_env)
 
     def _catalog_config(self, catalog, env):
@@ -104,7 +103,6 @@ class OARepoUIState:
         catalog.jinja_env.globals = context
         catalog.jinja_env.extensions.update(env.extensions)
         catalog.jinja_env.filters.update(env.filters)
-        catalog.jinja_env.filters.update(self.app.config["OAREPO_UI_JINJAX_FILTERS"])
 
         env.loader.searchpath = list_templates(catalog.jinja_env)
         catalog.prefixes[""] = catalog.jinja_env.loader
