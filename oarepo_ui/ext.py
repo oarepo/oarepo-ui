@@ -106,8 +106,8 @@ class OARepoUIState:
         catalog.jinja_env.filters.update(env.filters)
         catalog.jinja_env.filters.update(self.app.config["OAREPO_UI_JINJAX_FILTERS"])
 
-        env.loader.searchpath = list_templates(env)
-        catalog.prefixes[""] = env.loader
+        env.loader.searchpath = list_templates(catalog.jinja_env)
+        catalog.prefixes[""] = catalog.jinja_env.loader
 
         return catalog
 
