@@ -32,7 +32,7 @@ export const FormFeedback = () => {
         <Message.Header>{validationErrors?.errorMessage}</Message.Header>
         <Message.List>
           {validationErrors?.errors?.map((error, index) => (
-            <Message.Item key={index}>{`${titleCase(error.field)}:${
+            <Message.Item key={`${error.field}-${index}`}>{`${titleCase(error.field)}:${
               error.messages[0]
             }`}</Message.Item>
           ))}
