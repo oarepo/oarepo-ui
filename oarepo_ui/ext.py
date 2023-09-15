@@ -96,6 +96,7 @@ class OARepoUIState:
 
     def _catalog_config(self, catalog, env):
         context = {}
+        env.policies.setdefault("json.dumps_kwargs", {}).setdefault("default", str)
         self.app.update_template_context(context)
         catalog.jinja_env.loader = env.loader
         context.update(catalog.jinja_env.globals)
@@ -103,6 +104,7 @@ class OARepoUIState:
         catalog.jinja_env.globals = context
         catalog.jinja_env.extensions.update(env.extensions)
         catalog.jinja_env.filters.update(env.filters)
+        catalog.jinja_env.policies.update(env.policies)
 
         env.loader.searchpath = list_templates(catalog.jinja_env)
         catalog.prefixes[""] = catalog.jinja_env.loader
