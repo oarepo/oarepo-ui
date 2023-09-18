@@ -141,6 +141,10 @@ class OARepoUIState:
 
             return add_vite_tags(response)
 
+    @property
+    def vite_server_url(self):
+        return self.app.config.get("VITE_SERVER_URL", "https://127.0.0.1:5123/")
+
 
 class OARepoUIExtension:
     def __init__(self, app=None):

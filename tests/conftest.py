@@ -32,6 +32,10 @@ def app_config(app_config):
     app_config["THEME_HEADER_TEMPLATE"] = "oarepo_ui/header.html"
     app_config["OAREPO_UI_JINJAX_FILTERS"] = {"dummy": lambda *args, **kwargs: "dummy"}
 
+    # support for vite
+    app_config["OAREPO_UI_BUILD_FRAMEWORK"] = "vite"
+    app_config["VITE_DEVELOPMENT"] = True
+
     return app_config
 
 
@@ -65,17 +69,6 @@ def record_ui_resource(app, record_ui_resource_config, record_service):
     return ui_resource
 
 
-@pytest.fixture()
-def fake_manifest(app):
-    python_path = Path(sys.executable)
-    invenio_instance_path = python_path.parent.parent / "var" / "instance"
-    manifest_path = invenio_instance_path / "static" / "dist"
-    manifest_path.mkdir(parents=True, exist_ok=True)
-    shutil.copy(
-        Path(__file__).parent / "manifest.json", manifest_path / "manifest.json"
-    )
-
-
 @pytest.fixture
 def simple_record(app, db, search_clear, record_service):
     from .model import ModelRecord
@@ -86,3 +79,14 @@ def simple_record(app, db, search_clear, record_service):
     )
     ModelRecord.index.refresh()
     return record
+
+
+@pytest.fixture()
+def fake_manifest(app):
+    python_path = Path(sys.executable)
+    invenio_instance_path = python_path.parent.parent / "var" / "instance"
+    manifest_path = invenio_instance_path / "static" / "dist"
+    manifest_path.mkdir(parents=True, exist_ok=True)
+    shutil.copy(
+        Path(__file__).parent / "manifest.json", manifest_path / "manifest.json"
+    )

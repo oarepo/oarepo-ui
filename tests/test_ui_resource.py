@@ -10,9 +10,7 @@ def test_ui_resource_form_config(app, record_ui_resource):
     assert record_ui_resource
 
 
-def test_permissions_on_detail(
-    app, record_ui_resource, simple_record, client, fake_manifest
-):
+def test_permissions_on_detail(app, record_ui_resource, simple_record, client):
     with client.get(f"/simple-model/{simple_record.id}") as c:
         assert c.status_code == 200
         assert (
@@ -23,33 +21,25 @@ def test_permissions_on_detail(
         ) in c.text
 
 
-def test_filter_on_detail(
-    app, record_ui_resource, simple_record, client, fake_manifest
-):
+def test_filter_on_detail(app, record_ui_resource, simple_record, client):
     with client.get(f"/simple-model/{simple_record.id}") as c:
         assert c.status_code == 200
         assert "dummy" in c.text
 
 
-def test_permissions_on_search(
-    app, record_ui_resource, simple_record, client, fake_manifest
-):
+def test_permissions_on_search(app, record_ui_resource, simple_record, client):
     with client.get(f"/simple-model/") as c:
         assert c.status_code == 200
         assert ("permissions={&#39;can_create&#39;: True}") in c.text
 
 
-def test_filter_on_search(
-    app, record_ui_resource, simple_record, client, fake_manifest
-):
+def test_filter_on_search(app, record_ui_resource, simple_record, client):
     with client.get(f"/simple-model/") as c:
         assert c.status_code == 200
         assert "dummy" in c.text
 
 
-def test_ui_links_on_detail(
-    app, record_ui_resource, simple_record, client, fake_manifest
-):
+def test_ui_links_on_detail(app, record_ui_resource, simple_record, client):
     with client.get(f"/simple-model/{simple_record.id}") as c:
         assert c.status_code == 200
         assert (
@@ -61,7 +51,7 @@ def test_ui_links_on_detail(
         )
 
 
-def test_ui_listing(app, record_ui_resource, simple_record, client, fake_manifest):
+def test_ui_listing(app, record_ui_resource, simple_record, client):
     with client.get(f"/simple-model/") as c:
         assert c.status_code == 200
         assert "self:https://127.0.0.1:5000/simple-model" in c.text
@@ -76,7 +66,7 @@ def test_ui_listing(app, record_ui_resource, simple_record, client, fake_manifes
         assert "create:https://127.0.0.1:5000/simple-model/_new" in c.text
 
 
-def test_service_ui_link(app, record_service, simple_record, fake_manifest):
+def test_service_ui_link(app, record_service, simple_record):
     data = record_service.read(system_identity, simple_record.id)
     # note: in tests, the ui and api urls are the same, this should be different
     # in production

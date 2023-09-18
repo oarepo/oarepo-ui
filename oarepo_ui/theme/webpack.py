@@ -57,6 +57,7 @@ theme = WebpackThemeBundle(
             aliases={
                 "@translations/oarepo_ui": "translations/oarepo_ui",
                 "../../theme.config$": "less/theme.config",
+                "../../theme.config$": "less/theme.config",
                 "../../less/site": "less/site",
                 "../../less": "less",
                 # search and edit

@@ -13,4 +13,13 @@ def add_jinja_filters(state):
     env.policies.setdefault("json.dumps_kwargs", {}).setdefault("default", str)
 
 
+def set_manifest_loader(state):
+    app = state.app
+    if app.config["OAREPO_UI_BUILD_FRAMEWORK"] == "vite":
+        from oarepo_ui.vite import ViteManifestLoader
+
+        app.config["WEBPACKEXT_MANIFEST_LOADER"] = ViteManifestLoader
+
+
 blueprint.record_once(add_jinja_filters)
+blueprint.record_once(set_manifest_loader)
