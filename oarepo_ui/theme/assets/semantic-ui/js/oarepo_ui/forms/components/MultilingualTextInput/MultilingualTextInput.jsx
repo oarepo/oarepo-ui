@@ -7,6 +7,7 @@ import {
   I18nRichInputField,
   useVocabularyOptions,
   eliminateUsedLanguages,
+  useHighlightState,
 } from "@js/oarepo_ui";
 import { i18next } from "@translations/oarepo_ui/i18next";
 
@@ -22,9 +23,14 @@ export const MultilingualTextInput = ({
   textFieldIcon,
   helpText,
   addButtonLabel,
+  className,
+  hasHighlighting,
+  lngFieldWidth,
   ...uiProps
 }) => {
   const { options: allLanguages } = useVocabularyOptions("languages");
+  const { highlightedStates, handleHover, handleMouseLeave } =
+    useHighlightState();
 
   return (
     <ArrayField
@@ -44,7 +50,13 @@ export const MultilingualTextInput = ({
           array
         );
         return (
-          <GroupField>
+          <GroupField
+            className={
+              highlightedStates[indexPath]
+                ? `${hasHighlighting ? "highlighted" : ""} ${className}`
+                : `${className}`
+            }
+          >
             <Form.Field width={16}>
               {rich ? (
                 <I18nRichInputField
@@ -56,6 +68,7 @@ export const MultilingualTextInput = ({
                   optimized
                   required={required}
                   languageOptions={availableLanguages}
+                  lngFieldWidth={lngFieldWidth}
                   {...uiProps}
                 />
               ) : (
@@ -66,16 +79,22 @@ export const MultilingualTextInput = ({
                   labelIcon={textFieldIcon}
                   required={required}
                   languageOptions={availableLanguages}
+                  lngFieldWidth={lngFieldWidth}
                   {...uiProps}
                 />
               )}
             </Form.Field>
-            <Form.Field style={{ marginTop: "1.75rem" }}>
+            <Form.Field>
               <Button
                 aria-label={i18next.t("Remove field")}
                 className="close-btn"
                 icon
-                onClick={() => arrayHelpers.remove(indexPath)}
+                onClick={() => {
+                  arrayHelpers.remove(indexPath);
+                  handleMouseLeave(indexPath);
+                }}
+                onMouseEnter={() => handleHover(indexPath)}
+                onMouseLeave={() => handleMouseLeave(indexPath)}
               >
                 <Icon name="close" />
               </Button>
@@ -98,6 +117,9 @@ MultilingualTextInput.propTypes = {
   textFieldIcon: PropTypes.string,
   helpText: PropTypes.string,
   addButtonLabel: PropTypes.string,
+  className: PropTypes.string,
+  hasHighlighting: PropTypes.bool,
+  lngFieldWidth: PropTypes.number,
 };
 
 MultilingualTextInput.defaultProps = {
@@ -108,4 +130,6 @@ MultilingualTextInput.defaultProps = {
   rich: false,
   label: undefined,
   addButtonLabel: i18next.t("Add another language"),
+  className: "invenio-group-field",
+  hasHighlighting: false,
 };
