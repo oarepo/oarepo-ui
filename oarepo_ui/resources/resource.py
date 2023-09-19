@@ -181,6 +181,7 @@ class RecordsUIResource(UIResource):
             layout=dict(layout),
             record=serialized_record,
             extra_context=extra_context,
+            ui_links=ui_links,
         )
 
     def _get_record(self, resource_requestctx, allow_draft=False):
