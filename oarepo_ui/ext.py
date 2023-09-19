@@ -136,6 +136,7 @@ class OARepoUIState:
             self.app.after_request(self.development_after_request)
 
     def development_after_request(self, response: Response):
+        print(f'development after request called, framework={current_app.config["OAREPO_UI_BUILD_FRAMEWORK"]}')
         if current_app.config["OAREPO_UI_BUILD_FRAMEWORK"] == "vite":
             from oarepo_ui.vite import add_vite_tags
 
@@ -143,7 +144,7 @@ class OARepoUIState:
 
     @property
     def vite_server_url(self):
-        return self.app.config.get("VITE_SERVER_URL", "https://127.0.0.1:5123/")
+        return self.app.config.get("VITE_SERVER_URL", "https://127.0.0.1:5173/")
 
 
 class OARepoUIExtension:

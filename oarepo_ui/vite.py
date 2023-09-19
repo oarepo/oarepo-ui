@@ -22,7 +22,7 @@ def add_vite_tags(response):
 
     body = b"".join(response.response).decode()
     tag = make_tag()
-    body = body.replace("</head>", f"{tag}\n</head>")
+    body = body.replace("<head>", f"<head>\n{tag}\n")
     response.response = [body.encode("utf8")]
     response.content_length = len(response.response[0])
     return response
@@ -31,17 +31,18 @@ def add_vite_tags(response):
 def make_tag():
     return (
         """         
-            <!-- REACT_VITE_HEADER -->
-            <script type="module">
-              import RefreshRuntime from 'http://localhost:5173/@react-refresh'
-              RefreshRuntime.injectIntoGlobalHook(window)
-              window.$RefreshReg$ = () => {}
-              window.$RefreshSig$ = () => (type) => type
-              window.__vite_plugin_react_preamble_installed__ = true
-            </script>
-            
-            <!-- FLASK_VITE_HEADER -->
-            <script type="module" src="http://localhost:5173/@vite/client"></script>
+<!-- REACT_VITE_HEADER INSTRUMENTATION-->
+<script type="module">
+  import RefreshRuntime from 'https://127.0.0.1:5173/@react-refresh'
+  RefreshRuntime.injectIntoGlobalHook(window)
+  window.$RefreshReg$ = () => {}
+  window.$RefreshSig$ = () => (type) => type
+  window.__vite_plugin_react_preamble_installed__ = true
+</script>
+
+<!-- FLASK_VITE_HEADER INSTRUMENTATION -->
+<script type="module" src="https://127.0.0.1:5173/@vite/client"></script>
+<!-- END OF VITE INSTRUMENTATION -->
         """
     ).strip()
 
@@ -83,18 +84,34 @@ class ViteFactory(ManifestFactory):
 
 class PassThroughManifest(JinjaManifest):
     def __getitem__(self, item):
+        print(f"Getting manifest {item=}")
         try:
             return super().__getitem__(item)
         except ManifestKeyNotFoundError:
-            if not current_app.config.get("VITE_DEVELOPMENT"):
+            if not current_app.config.get("OAREPO_UI_DEVELOPMENT_MODE"):
                 raise
-            return UniqueJinjaManifestEntry(
-                name=item,
-                paths=[
-                    f"{current_oarepo_ui.vite_server_url}entrypoints/{item}.js",
-                    f"{current_oarepo_ui.vite_server_url}entrypoints/{item}.css",
-                ],
-            )
+            if item.endswith('.css'):
+                # TODO: in development, handle css better way than via .js
+                return ViteManifestEntry(
+                    name=item[:-4],
+                    paths=[
+                        f"{current_oarepo_ui.vite_server_url}entrypoints/{item[:-4]}.js",
+                    ],
+                )
+            elif item.endswith('.js'):
+                return ViteManifestEntry(
+                    name=item[:-3],
+                    paths=[
+                        f"{current_oarepo_ui.vite_server_url}entrypoints/{item[:-3]}.js",
+                    ],
+                )
+
+
+class ViteManifestEntry(UniqueJinjaManifestEntry):
+    templates = {
+        '.js': '<script type="module" src="{}"></script>',
+        '.css': '<link rel="stylesheet" href="{}" />',
+    }
 
 
 # TODO: images, fonts and other assets
@@ -104,7 +121,7 @@ class ViteManifestLoader(UniqueJinjaManifestLoader):
     types = [ViteFactory]
 
     def __init__(
-        self, manifest_cls=PassThroughManifest, entry_cls=UniqueJinjaManifestEntry
+        self, manifest_cls=PassThroughManifest, entry_cls=ViteManifestEntry
     ):
         """Initialize manifest loader."""
         super(UniqueJinjaManifestLoader, self).__init__(

@@ -134,7 +134,8 @@ def vite(output_file, root_dir):
         "~semantic-ui-less/themes/../../less/site/globals": assets_path / "less/site/globals",
         "~": "node_modules/",
         "../../fonts/Lato-(.*)": get_theme_dir('invenio_theme', theme, root_dir) / "less/invenio_theme/fonts/Lato-$1",
-        "../../fonts/": assets_path / "less/site/globals",
+        "../../../themes/default/assets/fonts/":
+            ".venv/var/instance/assets/node_modules/semantic-ui-css/themes/default/assets/fonts/",
     }
     entries = {}
     dependencies = {}
