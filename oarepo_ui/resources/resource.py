@@ -146,7 +146,8 @@ class RecordsUIResource(UIResource):
         _catalog = current_oarepo_ui.catalog
 
         template_def = self.get_template_def("detail")
-        source = get_jinja_template(_catalog, template_def)
+        fields = ["metadata", "ui", "layout", "record", "extra_content"]
+        source = get_jinja_template(_catalog, template_def, fields)
 
         extra_context = dict()
         ui_links = self.expand_detail_links(identity=g.identity, record=record)

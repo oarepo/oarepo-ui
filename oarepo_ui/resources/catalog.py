@@ -77,7 +77,7 @@ class OarepoCatalog(Catalog):
         )
 
 
-def get_jinja_template(_catalog, template_def):
+def get_jinja_template(_catalog, template_def, fields):
     jinja_content = None
     for component in _catalog.jinja_env.loader.searchpath:
         if component["component_file"].endswith(template_def["layout"]):
@@ -87,9 +87,13 @@ def get_jinja_template(_catalog, template_def):
         raise Exception("%s was not found" % (template_def["layout"]))
     assembled_template = [jinja_content]
     for blk_name, blk in template_def["blocks"].items():
+        component_content = ""
+        for field in fields:
+            component_content = component_content + "%s={%s} " % (field, field)
+        component_str = "<%s %s> </%s>" % (blk, component_content, blk)
         assembled_template.append(
-            "{%% block %s %%}<%s metadata={metadata} ui={ui} layout={layout}  record={record} extra_context={extra_context}></%s>{%% endblock %%}"
-            % (blk_name, blk, blk)
+            "{%% block %s %%}%s{%% endblock %%}"
+            % (blk_name, component_str)
         )
     assembled_template = "\n".join(assembled_template)
     return assembled_template
