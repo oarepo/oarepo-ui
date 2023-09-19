@@ -1,13 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { GroupField, ArrayField, FieldLabel } from "react-invenio-forms";
-import { Button, Icon, Form } from "semantic-ui-react";
+import { ArrayField, FieldLabel } from "react-invenio-forms";
+import { Form } from "semantic-ui-react";
 import {
   I18nTextInputField,
   I18nRichInputField,
   useVocabularyOptions,
   eliminateUsedLanguages,
-  useHighlightState,
+  ArrayFieldItem,
 } from "@js/oarepo_ui";
 import { i18next } from "@translations/oarepo_ui/i18next";
 
@@ -23,14 +23,10 @@ export const MultilingualTextInput = ({
   textFieldIcon,
   helpText,
   addButtonLabel,
-  className,
-  hasHighlighting,
   lngFieldWidth,
   ...uiProps
 }) => {
   const { options: allLanguages } = useVocabularyOptions("languages");
-  const { highlightedStates, handleHover, handleMouseLeave } =
-    useHighlightState();
 
   return (
     <ArrayField
@@ -50,12 +46,10 @@ export const MultilingualTextInput = ({
           array
         );
         return (
-          <GroupField
-            className={
-              highlightedStates[indexPath]
-                ? `${hasHighlighting ? "highlighted" : ""} ${className}`
-                : `${className}`
-            }
+          <ArrayFieldItem
+            indexPath={indexPath}
+            array={array}
+            arrayHelpers={arrayHelpers}
           >
             <Form.Field width={16}>
               {rich ? (
@@ -84,22 +78,7 @@ export const MultilingualTextInput = ({
                 />
               )}
             </Form.Field>
-            <Form.Field>
-              <Button
-                aria-label={i18next.t("Remove field")}
-                className="close-btn"
-                icon
-                onClick={() => {
-                  arrayHelpers.remove(indexPath);
-                  handleMouseLeave(indexPath);
-                }}
-                onMouseEnter={() => handleHover(indexPath)}
-                onMouseLeave={() => handleMouseLeave(indexPath)}
-              >
-                <Icon name="close" />
-              </Button>
-            </Form.Field>
-          </GroupField>
+          </ArrayFieldItem>
         );
       }}
     </ArrayField>
@@ -117,8 +96,6 @@ MultilingualTextInput.propTypes = {
   textFieldIcon: PropTypes.string,
   helpText: PropTypes.string,
   addButtonLabel: PropTypes.string,
-  className: PropTypes.string,
-  hasHighlighting: PropTypes.bool,
   lngFieldWidth: PropTypes.number,
 };
 
@@ -130,6 +107,4 @@ MultilingualTextInput.defaultProps = {
   rich: false,
   label: undefined,
   addButtonLabel: i18next.t("Add another language"),
-  className: "invenio-group-field",
-  hasHighlighting: false,
 };
