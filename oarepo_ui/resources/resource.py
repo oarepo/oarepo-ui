@@ -204,12 +204,17 @@ class RecordsUIResource(UIResource):
 
     @request_search_args
     def search(self):
+        _catalog = current_oarepo_ui.catalog
+
         template_def = self.get_template_def("search")
+        fields = ["search_app_config", "ui_layout", "layout", "ui_links", "extra_content"]
+        source = get_jinja_template(_catalog, template_def, fields)
+
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
-        template = current_oarepo_ui.get_template(
-            template_def["layout"],
-            template_def.get("blocks", {}),
-        )
+        # template = current_oarepo_ui.get_template(
+        #     template_def["layout"],
+        #     template_def.get("blocks", {}),
+        # )
 
         page = resource_requestctx.args.get("page", 1)
         size = resource_requestctx.args.get("size", 10)
@@ -251,6 +256,17 @@ class RecordsUIResource(UIResource):
         )
 
         search_config = partial(self.config.search_app_config, **search_options)
+        search_app_config = search_config(app_id="DocsApp.Search")
+        return _catalog.render(
+            "search",
+            __source=source,
+            search_app_config=search_app_config,
+            ui_config=self.config,
+            ui_resource=self,
+            layout=layout,
+            ui_links=ui_links,
+            extra_context=extra_context,
+        )
         return render_template(
             template,
             search_app_config=search_config,
