@@ -86,14 +86,16 @@ def get_jinja_template(_catalog, template_def, fields):
     if not jinja_content:
         raise Exception("%s was not found" % (template_def["layout"]))
     assembled_template = [jinja_content]
-    for blk_name, blk in template_def["blocks"].items():
-        component_content = ""
-        for field in fields:
-            component_content = component_content + "%s={%s} " % (field, field)
-        component_str = "<%s %s> </%s>" % (blk, component_content, blk)
-        assembled_template.append(
-            "{%% block %s %%}%s{%% endblock %%}"
-            % (blk_name, component_str)
-        )
+    if "blocks" in template_def:
+
+        for blk_name, blk in template_def["blocks"].items():
+            component_content = ""
+            for field in fields:
+                component_content = component_content + "%s={%s} " % (field, field)
+            component_str = "<%s %s> </%s>" % (blk, component_content, blk)
+            assembled_template.append(
+                "{%% block %s %%}%s{%% endblock %%}"
+                % (blk_name, component_str)
+            )
     assembled_template = "\n".join(assembled_template)
     return assembled_template

@@ -267,16 +267,16 @@ class RecordsUIResource(UIResource):
             ui_links=ui_links,
             extra_context=extra_context,
         )
-        return render_template(
-            template,
-            search_app_config=search_config,
-            ui_config=self.config,
-            ui_resource=self,
-            layout=layout,
-            ui_links=ui_links,
-            component_key="search",
-            **extra_context,
-        )
+        # return render_template(
+        #     template,
+        #     search_app_config=search_config,
+        #     ui_config=self.config,
+        #     ui_resource=self,
+        #     layout=layout,
+        #     ui_links=ui_links,
+        #     component_key="search",
+        #     **extra_context,
+        # )
 
     @request_read_args
     @request_view_args
@@ -354,23 +354,43 @@ class RecordsUIResource(UIResource):
             extra_context=extra_context,
         )
         template_def = self.get_template_def("edit")
-        template = current_oarepo_ui.get_template(
-            template_def["layout"], template_def.get("blocks", {})
-        )
-
-        return render_template(
-            template,
+        _catalog = current_oarepo_ui.catalog
+        # fields = ["metadata", "ui", "layout", "record", "extra_context"]
+        source = get_jinja_template(_catalog, template_def, ["record", "extra_context", "form_config"])
+        serialized_record["extra_links"] = {
+            "ui_links": ui_links,
+            "search_link": self.config.url_prefix,
+        }
+        # template = current_oarepo_ui.get_template(
+        #     template_def["layout"], template_def.get("blocks", {})
+        # )
+        return _catalog.render(
+            "edit",
+            __source=source,
             record=serialized_record,
-            data=data,
-            ui=serialized_record.get("ui", serialized_record),
-            ui_config=self.config,
-            ui_resource=self,
             form_config=form_config,
-            layout=layout,
-            ui_links=ui_links,
-            component_key="edit",
-            extra_context=extra_context,
+            extra_context=extra_context
+            # search_app_config=search_app_config,
+            # ui_config=self.config,
+            # ui_resource=self,
+            # layout=layout,
+            # ui_links=ui_links,
+            # extra_context=extra_context,
         )
+        # return render_template(
+        #     template,
+        #     record=serialized_record,
+        #     data=data,
+        #     ui=serialized_record.get("ui", serialized_record),
+        #     ui_config=self.config,
+        #     ui_resource=self,
+        #     form_config=form_config,
+        #     layout=layout,
+        #     ui_links=ui_links,
+        #     component_key="edit",
+        #     extra_context=extra_context,
+        # )
+
 
     @login_required
     @request_read_args
