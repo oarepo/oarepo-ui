@@ -4,7 +4,6 @@ import { Form, Button, Icon } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import PropTypes from "prop-types";
 
-// TODO: decide what to do about the button and margin
 export const ArrayFieldItem = ({
   arrayHelpers,
   indexPath,
