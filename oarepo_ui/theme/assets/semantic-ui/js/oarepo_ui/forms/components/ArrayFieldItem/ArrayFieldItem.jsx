@@ -10,6 +10,8 @@ export const ArrayFieldItem = ({
   indexPath,
   children,
   className,
+  closeButton: CloseButton,
+  closeButtonProps,
   ...uiProps
 }) => {
   const [highlighted, setHighlighted] = useState(false);
@@ -20,18 +22,27 @@ export const ArrayFieldItem = ({
     >
       {children}
       <Form.Field>
-        <Button
-          aria-label={i18next.t("Remove field")}
-          className="close-btn"
-          icon
-          onClick={() => {
-            arrayHelpers.remove(indexPath);
-          }}
-          onMouseEnter={() => setHighlighted(true)}
-          onMouseLeave={() => setHighlighted(false)}
-        >
-          <Icon name="close" />
-        </Button>
+        {CloseButton ? (
+          <CloseButton
+            arrayHelpers={arrayHelpers}
+            indexPath={indexPath}
+            {...closeButtonProps}
+          />
+        ) : (
+          <Button
+            style={{ marginTop: "1.75rem" }}
+            aria-label={i18next.t("Remove field")}
+            className="close-btn"
+            icon
+            onClick={() => {
+              arrayHelpers.remove(indexPath);
+            }}
+            onMouseEnter={() => setHighlighted(true)}
+            onMouseLeave={() => setHighlighted(false)}
+          >
+            <Icon name="close" />
+          </Button>
+        )}
       </Form.Field>
     </GroupField>
   );
@@ -42,8 +53,12 @@ ArrayFieldItem.propTypes = {
   indexPath: PropTypes.string,
   children: PropTypes.node,
   className: PropTypes.string,
+  closeButton: PropTypes.node,
+  closeButtonProps: PropTypes.object,
 };
 
 ArrayFieldItem.defaultProps = {
   className: "invenio-group-field",
+  closeButton: undefined,
+  closeButtonProps: {},
 };
