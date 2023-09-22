@@ -130,7 +130,7 @@ export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
                   aria-label={i18next.t("Filter results")}
                 />
               </Grid.Column>
-              <Grid.Column only="computer" width={4}>
+              <Grid.Column only="computer" width={3}>
                 <ActiveFilters />
               </Grid.Column>
             </>
