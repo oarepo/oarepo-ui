@@ -26,26 +26,6 @@ export const useVocabularyOptions = (vocabularyType) => {
   return { options: vocabularies[vocabularyType] };
 };
 
-// hook that enables me to highlight the related inputs when I hover over the close buttons
-// for arrayFields type of inputs
-export const useHighlightState = () => {
-  const [highlightedStates, setHighlightedStates] = React.useState([]);
-
-  const handleHover = (index) => {
-    const updatedStates = [...highlightedStates];
-    updatedStates[index] = true;
-    setHighlightedStates(updatedStates);
-  };
-
-  const handleMouseLeave = (index) => {
-    const updatedStates = [...highlightedStates];
-    updatedStates[index] = false;
-    setHighlightedStates(updatedStates);
-  };
-
-  return { highlightedStates, handleHover, handleMouseLeave };
-};
-
 export const useConfirmationModal = () => {
   const [isModalOpen, setIsModalOopen] = React.useState(false);
 
@@ -197,7 +177,7 @@ export const useDepositApiClient = (
   }
 
   async function read(recordUrl) {
-    return await apiClient.readDraft({ self: recordUrl })
+    return await apiClient.readDraft({ self: recordUrl });
   }
 
   async function _delete(redirectUrl) {

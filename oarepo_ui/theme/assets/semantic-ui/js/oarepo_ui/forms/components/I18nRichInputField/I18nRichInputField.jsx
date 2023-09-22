@@ -13,6 +13,7 @@ export const I18nRichInputField = ({
   placeholder,
   editorConfig,
   languageOptions,
+  lngFieldWidth,
   ...uiProps
 }) => {
   return (
@@ -22,7 +23,7 @@ export const I18nRichInputField = ({
         placeholder=""
         required
         options={languageOptions}
-        width={3}
+        width={lngFieldWidth}
       />
 
       <Form.Field width={13}>
@@ -62,6 +63,7 @@ I18nRichInputField.propTypes = {
   optimized: PropTypes.bool,
   editorConfig: PropTypes.object,
   languageOptions: PropTypes.array,
+  lngFieldWidth: PropTypes.number,
 };
 
 I18nRichInputField.defaultProps = {
@@ -87,4 +89,5 @@ I18nRichInputField.defaultProps = {
       "TableCellProperties",
     ],
   },
+  lngFieldWidth: 3,
 };
