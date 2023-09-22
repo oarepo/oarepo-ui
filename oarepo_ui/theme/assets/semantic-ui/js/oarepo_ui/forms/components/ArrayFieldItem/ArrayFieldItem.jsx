@@ -9,8 +9,8 @@ export const ArrayFieldItem = ({
   indexPath,
   children,
   className,
-  closeButton: CloseButton,
-  closeButtonProps,
+  removeButton: RemoveButton,
+  removeButtonProps,
   ...uiProps
 }) => {
   const [highlighted, setHighlighted] = useState(false);
@@ -21,11 +21,11 @@ export const ArrayFieldItem = ({
     >
       {children}
       <Form.Field>
-        {CloseButton ? (
-          <CloseButton
+        {RemoveButton ? (
+          <RemoveButton
             arrayHelpers={arrayHelpers}
             indexPath={indexPath}
-            {...closeButtonProps}
+            {...removeButtonProps}
           />
         ) : (
           <Button
@@ -52,12 +52,12 @@ ArrayFieldItem.propTypes = {
   indexPath: PropTypes.string,
   children: PropTypes.node,
   className: PropTypes.string,
-  closeButton: PropTypes.node,
-  closeButtonProps: PropTypes.object,
+  removeButton: PropTypes.node,
+  removeButtonProps: PropTypes.object,
 };
 
 ArrayFieldItem.defaultProps = {
   className: "invenio-group-field",
-  closeButton: undefined,
-  closeButtonProps: {},
+  removeButton: undefined,
+  removeButtonProps: {},
 };
