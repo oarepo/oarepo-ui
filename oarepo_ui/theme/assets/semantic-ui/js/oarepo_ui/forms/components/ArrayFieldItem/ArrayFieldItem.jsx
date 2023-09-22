@@ -49,7 +49,7 @@ export const ArrayFieldItem = ({
 
 ArrayFieldItem.propTypes = {
   arrayHelpers: PropTypes.object,
-  indexPath: PropTypes.string,
+  indexPath: PropTypes.number,
   children: PropTypes.node,
   className: PropTypes.string,
   removeButton: PropTypes.node,
