@@ -42,7 +42,7 @@ export const MultilingualTextInput = ({
         const fieldPathPrefix = `${fieldPath}.${indexPath}`;
         const availableLanguages = eliminateUsedLanguages(
           indexPath,
-          allLanguages,
+          allLanguages.all,
           array
         );
         return (
