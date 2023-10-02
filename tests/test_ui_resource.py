@@ -36,7 +36,7 @@ def test_permissions_on_search(
 ):
     with client.get(f"/simple-model/") as c:
         assert c.status_code == 200
-        assert ("permissions={&#39;can_create&#39;: True}") in c.text
+        assert ("permissions={'can_create': True}") in c.text
 
 
 def test_filter_on_search(

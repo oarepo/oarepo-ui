@@ -88,9 +88,7 @@ class ModelUIResourceConfig(RecordsUIResourceConfig):
     templates = {
         **RecordsUIResourceConfig.templates,
         "detail": {"layout": "TestDetail.jinja", "blocks": {}},
-        "search": {
-            "layout": "test_detail.html",
-        },
+        "search": {"layout": "TestSearch.jinja", "app_id": "SimpleModel.Search"},
     }
 
     components = [BabelComponent, PermissionsComponent]
