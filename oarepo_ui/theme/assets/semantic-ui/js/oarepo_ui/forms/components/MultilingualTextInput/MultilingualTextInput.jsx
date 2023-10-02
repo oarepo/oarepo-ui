@@ -1,12 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { GroupField, ArrayField, FieldLabel } from "react-invenio-forms";
-import { Button, Icon, Form } from "semantic-ui-react";
+import { ArrayField, FieldLabel } from "react-invenio-forms";
+import { Form } from "semantic-ui-react";
 import {
   I18nTextInputField,
   I18nRichInputField,
   useVocabularyOptions,
   eliminateUsedLanguages,
+  ArrayFieldItem,
 } from "@js/oarepo_ui";
 import { i18next } from "@translations/oarepo_ui/i18next";
 
@@ -22,6 +23,7 @@ export const MultilingualTextInput = ({
   textFieldIcon,
   helpText,
   addButtonLabel,
+  lngFieldWidth,
   ...uiProps
 }) => {
   const { options: allLanguages } = useVocabularyOptions("languages");
@@ -44,7 +46,11 @@ export const MultilingualTextInput = ({
           array
         );
         return (
-          <GroupField>
+          <ArrayFieldItem
+            indexPath={indexPath}
+            array={array}
+            arrayHelpers={arrayHelpers}
+          >
             <Form.Field width={16}>
               {rich ? (
                 <I18nRichInputField
@@ -56,6 +62,7 @@ export const MultilingualTextInput = ({
                   optimized
                   required={required}
                   languageOptions={availableLanguages}
+                  lngFieldWidth={lngFieldWidth}
                   {...uiProps}
                 />
               ) : (
@@ -66,21 +73,12 @@ export const MultilingualTextInput = ({
                   labelIcon={textFieldIcon}
                   required={required}
                   languageOptions={availableLanguages}
+                  lngFieldWidth={lngFieldWidth}
                   {...uiProps}
                 />
               )}
             </Form.Field>
-            <Form.Field style={{ marginTop: "1.75rem" }}>
-              <Button
-                aria-label={i18next.t("Remove field")}
-                className="close-btn"
-                icon
-                onClick={() => arrayHelpers.remove(indexPath)}
-              >
-                <Icon name="close" />
-              </Button>
-            </Form.Field>
-          </GroupField>
+          </ArrayFieldItem>
         );
       }}
     </ArrayField>
@@ -98,6 +96,7 @@ MultilingualTextInput.propTypes = {
   textFieldIcon: PropTypes.string,
   helpText: PropTypes.string,
   addButtonLabel: PropTypes.string,
+  lngFieldWidth: PropTypes.number,
 };
 
 MultilingualTextInput.defaultProps = {

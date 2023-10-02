@@ -88,6 +88,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
     ui_links_item = {
         "self": UIRecordLink("{+ui}{+url_prefix}/{id}"),
         "edit": UIRecordLink("{+ui}{+url_prefix}/{id}/edit"),
+        "search": UIRecordLink("{+ui}{+url_prefix}/")
     }
 
     @property

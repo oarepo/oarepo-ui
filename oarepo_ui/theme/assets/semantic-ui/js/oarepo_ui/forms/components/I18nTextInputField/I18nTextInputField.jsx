@@ -11,6 +11,7 @@ export const I18nTextInputField = ({
   labelIcon,
   placeholder,
   languageOptions,
+  lngFieldWidth,
   ...uiProps
 }) => {
   return (
@@ -19,7 +20,7 @@ export const I18nTextInputField = ({
         fieldPath={`${fieldPath}.lang`}
         placeholder=""
         required
-        width={3}
+        width={lngFieldWidth}
         options={languageOptions}
       />
       <TextField
@@ -55,6 +56,7 @@ I18nTextInputField.propTypes = {
   disabled: PropTypes.bool,
   optimized: PropTypes.bool,
   languageOptions: PropTypes.array,
+  lngFieldWidth: PropTypes.number,
 };
 
 I18nTextInputField.defaultProps = {
@@ -66,4 +68,5 @@ I18nTextInputField.defaultProps = {
   disabled: false,
   optimized: true,
   required: false,
+  lngFieldWidth: 3,
 };
