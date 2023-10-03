@@ -86,7 +86,7 @@ class PassThroughManifest(JinjaManifest):
         try:
             return super().__getitem__(item)
         except ManifestKeyNotFoundError:
-            if not current_app.config.get("VITE_DEVELOPMENT"):
+            if not current_app.config.get("OAREPO_UI_DEVELOPMENT_MODE"):
                 raise
             return UniqueJinjaManifestEntry(
                 name=item,

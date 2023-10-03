@@ -34,7 +34,7 @@ def app_config(app_config):
 
     # support for vite
     app_config["OAREPO_UI_BUILD_FRAMEWORK"] = "vite"
-    app_config["VITE_DEVELOPMENT"] = True
+    app_config["OAREPO_UI_DEVELOPMENT_MODE"] = True
 
     return app_config
 
