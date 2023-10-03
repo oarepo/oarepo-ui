@@ -5,5 +5,8 @@ import React from "react";
 
 export const FormikStateLogger = () => {
   const state = useFormikContext();
-  return <pre>{JSON.stringify(state, null, 2)}</pre>;
+
+  console.debug("[form state]: ", state, "\n[form values]:", state.values);
+
+  return <></>
 };
