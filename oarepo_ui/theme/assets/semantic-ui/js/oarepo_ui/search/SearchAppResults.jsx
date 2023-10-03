@@ -5,6 +5,7 @@ import {
   Pagination,
   ResultsPerPage,
   ResultsMultiLayout,
+  ResultsGrid,
 } from "react-searchkit";
 import { ResultsPerPageLabel } from "./ResultsPerPageLabel";
 

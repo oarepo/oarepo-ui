@@ -26,7 +26,7 @@ export const MultilingualTextInput = ({
   lngFieldWidth,
   ...uiProps
 }) => {
-  const { options: allLanguages } = useVocabularyOptions("languages");
+  const { options: languages } = useVocabularyOptions("languages");
 
   return (
     <ArrayField
@@ -42,7 +42,7 @@ export const MultilingualTextInput = ({
         const fieldPathPrefix = `${fieldPath}.${indexPath}`;
         const availableLanguages = eliminateUsedLanguages(
           indexPath,
-          allLanguages,
+          languages.all,
           array
         );
         return (
