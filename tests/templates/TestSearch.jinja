@@ -1,0 +1,6 @@
+{#def extra_context, ui_links #}
+{%- for link_name, link in ui_links.items() -%}
+  {{link_name}}:{{link}}
+{% endfor-%}
+permissions={{ extra_context.permissions }}
+{{ 1|dummy }}

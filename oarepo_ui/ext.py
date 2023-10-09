@@ -1,13 +1,15 @@
+import functools
 import json
 import os
+import re
 from importlib import import_module
 from pathlib import Path
 from typing import Dict
-import functools
+
 from flask import Response, current_app
 from frozendict import frozendict
 from importlib_metadata import entry_points
-import re
+
 import oarepo_ui.cli  # noqa
 from oarepo_ui.resources.catalog import OarepoCatalog as Catalog
 from oarepo_ui.resources.templating import TemplateRegistry

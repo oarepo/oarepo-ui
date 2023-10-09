@@ -1,11 +1,10 @@
 import os
+import re
 from pathlib import Path
 
 import jinja2
-from flask import current_app
 from jinjax import Catalog
 from jinjax.exceptions import ComponentNotFound
-import re
 
 DEFAULT_URL_ROOT = "/static/components/"
 ALLOWED_EXTENSIONS = (".css", ".js")
@@ -77,7 +76,7 @@ class OarepoCatalog(Catalog):
         )
 
 
-def get_jinja_template(_catalog, template_def):
+def get_jinja_template(_catalog, template_def, fields):
     jinja_content = None
     for component in _catalog.jinja_env.loader.searchpath:
         if component["component_file"].endswith(template_def["layout"]):
@@ -86,10 +85,23 @@ def get_jinja_template(_catalog, template_def):
     if not jinja_content:
         raise Exception("%s was not found" % (template_def["layout"]))
     assembled_template = [jinja_content]
-    for blk_name, blk in template_def["blocks"].items():
-        assembled_template.append(
-            "{%% block %s %%}<%s metadata={metadata} ui={ui} layout={layout}  record={record} extra_context={extra_context}></%s>{%% endblock %%}"
-            % (blk_name, blk, blk)
-        )
+    if "blocks" in template_def:
+        for blk_name, blk in template_def["blocks"].items():
+            component_content = ""
+            for field in fields:
+                component_content = component_content + "%s={%s} " % (field, field)
+            component_str = "<%s %s> </%s>" % (blk, component_content, blk)
+            assembled_template.append(
+                "{%% block %s %%}%s{%% endblock %%}" % (blk_name, component_str)
+            )
     assembled_template = "\n".join(assembled_template)
     return assembled_template
+
+
+def lazy_string_encoder(obj):
+    if isinstance(obj, list):
+        return [lazy_string_encoder(item) for item in obj]
+    elif isinstance(obj, dict):
+        return {key: lazy_string_encoder(value) for key, value in obj.items()}
+    else:
+        return str(obj)
