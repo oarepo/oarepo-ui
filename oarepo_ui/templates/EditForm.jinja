@@ -1,0 +1,36 @@
+{#def record, form_config, data, extra_context, ui_links= {} #}
+{%- if form_config.createUrl %}
+  {%- set title = _("New item") %}
+{% elif record.title %}
+  {%- set title = _("Edit item ") + record.title %}
+{%- endif %}
+
+{%- block page_body %}
+<div class="ui main container">
+  <div class="ui relaxed grid">
+    <div class="one column row">
+      {# Main form content #}
+      <div class="column">
+      {%- block form_main_content %}
+        {%- if form_config.updateUrl %}
+        <h1 class="mt-20" style="text-transform: capitalize">{{ record.title }}</h1>
+        {%- elif form_config.createUrl -%}
+        <h1 class="mt-20">{{ _("New item") }}</h1>
+        {%- endif %}
+        {%- if record %}
+        <input id="record" type="hidden" name="record" value='{{data | tojson }}' />
+        {%- endif %}
+        {%- if form_config %}
+        <input type="hidden" name="form-config" value='{{form_config | tojson }}' />
+        {%- endif %}
+        {%- if permissions %}
+        <input id="record-permissions" type="hidden" name="record-permissions" value='{{permissions | tojson }}' />
+        {%- endif %}
+        <input id="links" type="hidden" name="links" value='{{ui_links | tojson }}' />
+        <div id="form-app"></div>
+      {%- endblock form_main_content -%}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock page_body %}
