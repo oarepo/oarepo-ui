@@ -5,14 +5,67 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2023-08-30T08:41:46.161Z\n"
-"PO-Revision-Date: 2023-08-30T08:41:46.161Z\n"
+"POT-Creation-Date: 2023-10-12T15:34:33.071Z\n"
+"PO-Revision-Date: 2023-10-12T15:34:33.071Z\n"
 "Language: el\n"
 
-msgid "Sort"
+msgid "Remove field"
 msgstr ""
 
-msgid "Sort by"
+msgid "Language"
+msgstr ""
+
+msgid "Search for a language by name (e.g \"eng\", \"fr\" or \"Polish\")"
+msgstr ""
+
+msgid "Add another language"
+msgstr ""
+
+msgid "We couldn't find any matches for "
+msgstr ""
+
+msgid "search"
+msgstr ""
+
+msgid "Choose"
+msgstr ""
+
+msgid "Selected records"
+msgstr ""
+
+msgid "Something went wrong..."
+msgstr ""
+
+msgid "Search..."
+msgstr ""
+
+msgid "No results found"
+msgstr ""
+
+msgid "Loading..."
+msgstr ""
+
+msgid "Search External Database"
+msgstr ""
+
+msgid "Search results from external API"
+msgstr ""
+
+msgid ""
+"Draft saved with validation errors. Fields listed below that failed "
+"validation were not saved to the server"
+msgstr ""
+
+msgid "Draft saved successfully."
+msgstr ""
+
+msgid "Draft published successfully. Redirecting to record's detail page ..."
+msgstr ""
+
+msgid "Draft deleted successfully. Redirecting to the main page ..."
+msgstr ""
+
+msgid "Start over"
 msgstr ""
 
 msgid "totalResults"
@@ -20,23 +73,17 @@ msgid_plural "totalResults"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Filter results"
+msgid "resultsPerPage"
 msgstr ""
 
 msgid "Filters"
 msgstr ""
 
-msgid "Language"
+msgid "Filter results"
 msgstr ""
 
-msgid "Value"
+msgid "Sort by"
 msgstr ""
 
-msgid "We couldn't find any matches for "
-msgstr ""
-
-msgid "Start over"
-msgstr ""
-
-msgid "resultsPerPage"
+msgid "Sort"
 msgstr ""

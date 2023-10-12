@@ -5,41 +5,87 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2023-08-30T08:41:45.997Z\n"
-"PO-Revision-Date: 2023-08-30T08:41:45.997Z\n"
+"POT-Creation-Date: 2023-10-12T15:34:33.022Z\n"
+"PO-Revision-Date: 2023-10-12T15:34:33.022Z\n"
 "Language: en\n"
 
-msgid "Sort"
-msgstr "Sort"
-
-msgid "Sort by"
-msgstr "Sort by"
-
-msgid "Filter results"
-msgstr "Filter results"
-
-msgid "Filters"
-msgstr "Filters"
-
-msgid "resultsPerPage"
-msgstr "results per page"
-
-msgid "We couldn't find any matches for "
-msgstr "We couldn't find any matches for "
-
-msgid "Start over"
-msgstr "Start over"
+msgid "Remove field"
+msgstr "Remove field"
 
 msgid "Language"
 msgstr "Language"
 
-msgid "Value"
-msgstr "Value"
+msgid "Search for a language by name (e.g \"eng\", \"fr\" or \"Polish\")"
+msgstr "Search for a language by name (e.g \"eng\", \"fr\" or \"Polish\")"
 
-msgctxt "one"
-msgid "totalResults"
-msgstr "{{count}} result"
+msgid "Add another language"
+msgstr "Add another language"
 
-msgctxt "other"
+msgid "We couldn't find any matches for "
+msgstr "We couldn't find any matches for "
+
+msgid "search"
+msgstr "search"
+
+msgid "Choose"
+msgstr "Choose"
+
+msgid "Selected records"
+msgstr "Selected records"
+
+msgid "Something went wrong..."
+msgstr "Something went wrong..."
+
+msgid "Search..."
+msgstr "Search..."
+
+msgid "No results found"
+msgstr "No results found"
+
+msgid "Loading..."
+msgstr "Loading..."
+
+msgid "Search External Database"
+msgstr "Search External Database"
+
+msgid "Search results from external API"
+msgstr "Search results from external API"
+
+msgid ""
+"Draft saved with validation errors. Fields listed below that failed "
+"validation were not saved to the server"
+msgstr ""
+"Draft saved with validation errors. Fields listed below that failed "
+"validation were not saved to the server"
+
+msgid "Draft saved successfully."
+msgstr "Draft saved successfully."
+
+msgid "Draft published successfully. Redirecting to record's detail page ..."
+msgstr "Draft published successfully. Redirecting to record's detail page ..."
+
+msgid "Draft deleted successfully. Redirecting to the main page ..."
+msgstr "Draft deleted successfully. Redirecting to the main page ..."
+
+msgid "Start over"
+msgstr "Start over"
+
 msgid "totalResults"
-msgstr "{{count}} results"
+msgid_plural "totalResults"
+msgstr[0] "totalResults"
+msgstr[1] "totalResults"
+
+msgid "resultsPerPage"
+msgstr "resultsPerPage"
+
+msgid "Filters"
+msgstr "Filters"
+
+msgid "Filter results"
+msgstr "Filter results"
+
+msgid "Sort by"
+msgstr "Sort by"
+
+msgid "Sort"
+msgstr "Sort"
