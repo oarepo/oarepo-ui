@@ -76,7 +76,7 @@ class OarepoCatalog(Catalog):
         )
 
 
-def get_jinja_template(_catalog, template_def, fields):
+def get_jinja_template(_catalog, template_def, fields=[]):
     jinja_content = None
     for component in _catalog.jinja_env.loader.searchpath:
         if component["component_file"].endswith(template_def["layout"]):
