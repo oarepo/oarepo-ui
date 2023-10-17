@@ -108,7 +108,6 @@ export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
         className="search-app rel-mt-2"
       >
         <Grid.Row
-          stretched
           textAlign="left"
           columns={columnsAmount}
           className="result-options"
