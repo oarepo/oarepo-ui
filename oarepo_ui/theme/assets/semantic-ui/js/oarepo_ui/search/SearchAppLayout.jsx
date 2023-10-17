@@ -130,7 +130,7 @@ export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
                   aria-label={i18next.t("Filter results")}
                 />
               </Grid.Column>
-              <Grid.Column only="computer" width={3}>
+              <Grid.Column only="computer" width={4}>
                 <ActiveFilters />
               </Grid.Column>
             </>
@@ -145,8 +145,8 @@ export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
               mobile={4}
               tablet={4}
               computer={4}
-              largeScreen={3}
-              widescreen={3}
+              largeScreen={4}
+              widescreen={4}
               open={sidebarVisible}
               onHideClick={() => setSidebarVisible(false)}
             >
