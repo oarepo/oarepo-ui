@@ -1,7 +1,7 @@
 import os
 import re
 from pathlib import Path
-
+from jinjax.component import Component
 import jinja2
 from jinjax import Catalog
 from jinjax.exceptions import ComponentNotFound
@@ -74,6 +74,17 @@ class OarepoCatalog(Catalog):
             f"Unable to find a file named {name}{file_ext} "
             f"or one following the pattern {name_dot}*{file_ext}"
         )
+    def _get_from_file(self, *, prefix: str, name: str, url_prefix: str, file_ext: str) -> "Component":
+        root_path, path = self._get_component_path(prefix, name, file_ext=file_ext)
+        component = Component(
+            name=name,
+            url_prefix=url_prefix,
+            path=path,
+        )
+        tmpl_name = str(path.relative_to(root_path))
+
+        component.tmpl = self.jinja_env.get_template(tmpl_name)
+        return component
 
 
 def get_jinja_template(_catalog, template_def, fields=[]):
