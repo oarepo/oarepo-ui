@@ -74,6 +74,7 @@ class OarepoCatalog(Catalog):
             f"Unable to find a file named {name}{file_ext} "
             f"or one following the pattern {name_dot}*{file_ext}"
         )
+
     def _get_from_file(self, *, prefix: str, name: str, url_prefix: str, file_ext: str) -> "Component":
         root_path, path = self._get_component_path(prefix, name, file_ext=file_ext)
         component = Component(
@@ -87,7 +88,9 @@ class OarepoCatalog(Catalog):
         return component
 
 
-def get_jinja_template(_catalog, template_def, fields=[]):
+def get_jinja_template(_catalog, template_def, fields=None):
+    if fields is None:
+        fields = []
     jinja_content = None
     for component in _catalog.jinja_env.loader.searchpath:
         if component["component_file"].endswith(template_def["layout"]):
