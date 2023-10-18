@@ -8,18 +8,7 @@ import { i18next } from "@translations/oarepo_ui/i18next";
 import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
 import { SearchAppSort } from "./SearchAppSort";
 
-const sortTranslation = (sortOptions) => {
-  const translatedSortOptions = sortOptions.map((sortOption) => {
-    return {
-      ...sortOption,
-      text: i18next.t(sortOption.sortBy),
-    };
-  });
-  return translatedSortOptions;
-};
-
 export const SearchAppResultOptions = ({ sortOptions, layoutOptions }) => {
-  sortOptions = sortTranslation(sortOptions);
   const { buildUID } = useContext(SearchConfigurationContext);
   const multipleLayouts =
     Object.values(layoutOptions).filter((i) => i).length > 1;
