@@ -101,6 +101,7 @@ class OARepoUIState:
         env.policies.setdefault("json.dumps_kwargs", {}).setdefault("default", str)
         self.app.update_template_context(context)
         catalog.jinja_env.loader = env.loader
+        catalog.jinja_env.autoescape = env.autoescape
         context.update(catalog.jinja_env.globals)
         context.update(env.globals)
         catalog.jinja_env.globals = context
