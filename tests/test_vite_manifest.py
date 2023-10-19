@@ -3,10 +3,10 @@ from flask_webpackext import current_manifest
 
 def test_vite_manifest(app, fake_manifest):
     manifest = current_manifest._get_current_object()
-    assert str(manifest["blah"]) == (
-        '<script src="https://127.0.0.1:5123/entrypoints/blah.js"></script>'
-        '<link rel="stylesheet" href="https://127.0.0.1:5123/entrypoints/blah.css" />'
+    assert str(manifest["blah.js"]) == (
+        '<script type="module" src="https://127.0.0.1:5173/.vite/blah.js"></script>'
     )
+
     assert manifest["previewer_theme"]._paths == [
         "assets/modulepreload-polyfill-3cfb730f.js",
         "assets/lodash-e693fe4d.js",
