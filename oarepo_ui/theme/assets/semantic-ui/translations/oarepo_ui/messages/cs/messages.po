@@ -1,43 +1,109 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: i18next-conv\n"
-"mime-version: 1.0\n"
+"POT-Creation-Date: 2023-10-12T15:26:43.798Z\n"
+"PO-Revision-Date: 2023-10-12 17:34+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: cs\n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2\n"
-"POT-Creation-Date: 2023-08-30T08:41:45.841Z\n"
-"PO-Revision-Date: 2023-08-30T08:41:45.841Z\n"
-"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Poedit 3.4\n"
 
-msgid "Sort"
-msgstr "Řazení"
-
-msgid "Sort by"
-msgstr "Řazení"
-
-msgid "Filter results"
-msgstr "Filtrovat výsledky"
-
-msgid "totalResults"
-msgstr "{{count}} výsledek"
-
-msgid "Filters"
-msgstr "Filtry"
-
-msgid "resultsPerPage"
-msgstr "výsledků na stránku"
-
-msgid "We couldn't find any matches for "
-msgstr "Nenašli jsme žádné shody pro "
-
-msgid "Start over"
-msgstr "Začít znovu"
+msgid "Remove field"
+msgstr "Odstranit položku"
 
 msgid "Language"
 msgstr "Jazyk"
 
+msgid "Search for a language by name (e.g \"eng\", \"fr\" or \"Polish\")"
+msgstr "Hledat jazyk dle jména"
+
+msgid "Add another language"
+msgstr "Přidat další jazyk"
+
+msgid "We couldn't find any matches for "
+msgstr "Nenašli jsme žádné shody pro "
+
+msgid "search"
+msgstr "hledat"
+
+msgid "Choose"
+msgstr "Vybrat"
+
+msgid "Selected records"
+msgstr "Vybrané záznamy"
+
+msgid "Something went wrong..."
+msgstr "Stala se nějaká chyba …"
+
+msgid "Search..."
+msgstr "Hledat …"
+
+msgid "No results found"
+msgstr "Nenalezeny žádné výsledky"
+
+msgid "Loading..."
+msgstr "Nahrávám …"
+
+msgid "Search External Database"
+msgstr "Hledat v externím zdroji"
+
+msgid "Search results from external API"
+msgstr "Hledat v externím zdroji"
+
+msgid ""
+"Draft saved with validation errors. Fields listed below that failed "
+"validation were not saved to the server"
+msgstr ""
+"Pracovní verze záznamu byla uložena s chybami. Následující pole nebyla "
+"uložena, prosím, opravte je a uložte znovu"
+
+msgid "Draft saved successfully."
+msgstr "Pracovní záznam byl uložen."
+
+msgid "Draft published successfully. Redirecting to record's detail page ..."
+msgstr ""
+"Pracovní záznam byl úspěšně publikován. Budete přesměrováni na stránku s "
+"detailem záznamu …"
+
+msgid "Draft deleted successfully. Redirecting to the main page ..."
+msgstr ""
+"Pracovní verze záznamu byla smazána. Za okamžik Vás přesměrujeme na hlavní "
+"stránku."
+
+msgid "Start over"
+msgstr "Začít znovu"
+
+msgid "totalResults"
+msgid_plural "totalResults"
+msgstr[0] "{{count}} výsledek"
+msgstr[1] "{{count}} výsledky"
+msgstr[2] "{{count}} výsledků"
+
+msgid "resultsPerPage"
+msgstr "výsledků na stránku"
+
+msgid "Filters"
+msgstr "Filtry"
+
+msgid "Filter results"
+msgstr "Filtrovat výsledky"
+
+msgid "Sort by"
+msgstr "Řazení"
+
+msgid "Sort"
+msgstr "Řazení"
+
 msgid "Value"
 msgstr "Hodnota"
+
+msgctxt "one"
+msgid "totalResults"
+msgstr "{{count}} výsledek"
 
 msgctxt "few"
 msgid "totalResults"

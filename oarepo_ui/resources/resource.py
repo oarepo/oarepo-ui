@@ -1,8 +1,9 @@
 import copy
+import json
 from functools import partial
 
 import deepmerge
-from flask import abort, current_app, g, redirect, render_template, request
+from flask import abort, g, redirect, request
 from flask_resources import (
     Resource,
     from_conf,
@@ -17,19 +18,18 @@ from invenio_records_resources.proxies import current_service_registry
 from invenio_records_resources.records.systemfields import FilesField
 from invenio_records_resources.resources.records.resource import (
     request_read_args,
-    request_view_args,
     request_search_args,
+    request_view_args,
 )
 from invenio_records_resources.services import LinksTemplate
 
-from .catalog import get_jinja_template
 from oarepo_ui.utils import dump_empty
 
 #
 # Resource
 #
 from ..proxies import current_oarepo_ui
-from .catalog import get_jinja_template
+from .catalog import get_jinja_template, lazy_string_encoder
 from .config import RecordsUIResourceConfig, UIResourceConfig
 
 request_export_args = request_parser(
@@ -146,7 +146,8 @@ class RecordsUIResource(UIResource):
         _catalog = current_oarepo_ui.catalog
 
         template_def = self.get_template_def("detail")
-        source = get_jinja_template(_catalog, template_def)
+        fields = ["metadata", "ui", "layout", "record", "extra_context"]
+        source = get_jinja_template(_catalog, template_def, fields)
 
         extra_context = dict()
         ui_links = self.expand_detail_links(identity=g.identity, record=record)
@@ -204,12 +205,20 @@ class RecordsUIResource(UIResource):
 
     @request_search_args
     def search(self):
+        _catalog = current_oarepo_ui.catalog
+
         template_def = self.get_template_def("search")
+        app_id = template_def["app_id"]
+        fields = [
+            "search_app_config",
+            "ui_layout",
+            "layout",
+            "ui_links",
+            "extra_content",
+        ]
+        source = get_jinja_template(_catalog, template_def, fields)
+
         layout = current_oarepo_ui.get_layout(self.get_layout_name())
-        template = current_oarepo_ui.get_template(
-            template_def["layout"],
-            template_def.get("blocks", {}),
-        )
 
         page = resource_requestctx.args.get("page", 1)
         size = resource_requestctx.args.get("size", 10)
@@ -251,15 +260,18 @@ class RecordsUIResource(UIResource):
         )
 
         search_config = partial(self.config.search_app_config, **search_options)
-        return render_template(
-            template,
-            search_app_config=search_config,
+
+        search_app_config = search_config(app_id=app_id)
+
+        return _catalog.render(
+            "search",
+            __source=source,
+            search_app_config=search_app_config,
             ui_config=self.config,
             ui_resource=self,
             layout=layout,
             ui_links=ui_links,
-            component_key="search",
-            **extra_context,
+            extra_context=extra_context,
         )
 
     @request_read_args
@@ -338,22 +350,23 @@ class RecordsUIResource(UIResource):
             extra_context=extra_context,
         )
         template_def = self.get_template_def("edit")
-        template = current_oarepo_ui.get_template(
-            template_def["layout"], template_def.get("blocks", {})
+        _catalog = current_oarepo_ui.catalog
+        source = get_jinja_template(
+            _catalog, template_def, ["record", "extra_context", "form_config", "data"]
         )
+        serialized_record["extra_links"] = {
+            "ui_links": ui_links,
+            "search_link": self.config.url_prefix,
+        }
 
-        return render_template(
-            template,
+        return _catalog.render(
+            "edit",
+            __source=source,
             record=serialized_record,
-            data=data,
-            ui=serialized_record.get("ui", serialized_record),
-            ui_config=self.config,
-            ui_resource=self,
             form_config=form_config,
-            layout=layout,
-            ui_links=ui_links,
-            component_key="edit",
             extra_context=extra_context,
+            ui_links=ui_links,
+            data=data,
         )
 
     @login_required
@@ -394,22 +407,20 @@ class RecordsUIResource(UIResource):
             extra_context=extra_context,
         )
         template_def = self.get_template_def("create")
-        template = current_oarepo_ui.get_template(
-            template_def["layout"], template_def.get("blocks", {})
+        _catalog = current_oarepo_ui.catalog
+
+        source = get_jinja_template(
+            _catalog, template_def, ["record", "extra_context", "form_config", "data"]
         )
 
-        return render_template(
-            template,
+        return _catalog.render(
+            "create",
+            __source=source,
             record=empty_record,
-            data=empty_record,
-            ui=empty_record.get("ui", empty_record),
-            ui_config=self.config,
-            ui_resource=self,
-            ui_links={},
-            layout=layout,
-            component_key="create",
             form_config=form_config,
             extra_context=extra_context,
+            ui_links={},
+            data=empty_record,
         )
 
     @property

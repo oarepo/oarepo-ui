@@ -14,10 +14,12 @@ def test_permissions_on_detail(app, record_ui_resource, simple_record, client):
     with client.get(f"/simple-model/{simple_record.id}") as c:
         assert c.status_code == 200
         assert (
-            "permissions={'can_edit': False, 'can_new_version': False, 'can_manage': "
-            "False, 'can_update_draft': False, 'can_read_files': True, 'can_review': "
-            "False, 'can_view': False, 'can_delete_draft': False, 'can_manage_files': "
-            "False, 'can_manage_record_access': False}"
+            'permissions={&#39;can_edit&#39;: False, &#39;can_new_version&#39;: False, '
+ '&#39;can_manage&#39;: False, &#39;can_update_draft&#39;: False, '
+ '&#39;can_read_files&#39;: True, &#39;can_review&#39;: False, '
+ '&#39;can_view&#39;: False, &#39;can_delete_draft&#39;: False, '
+ '&#39;can_manage_files&#39;: False, &#39;can_manage_record_access&#39;: '
+ 'False}'
         ) in c.text
 
 

@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { RelatedSelectFieldInternal } from "./RelatedSelectFieldInternal";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import _reverse from "lodash/reverse";
+import { getIn, useFormikContext } from "formik";
 
 const defaultSuggestionsSerializer = (suggestions) =>
   suggestions.map((item) => ({
@@ -18,6 +19,8 @@ export const RelatedSelectField = ({
   suggestionAPIHeaders,
   serializeSuggestions,
   serializeAddedValue,
+  serializeSelectedItem,
+  deserializeValue,
   initialSuggestions,
   debounceTime,
   noResultsMessage,
@@ -34,6 +37,7 @@ export const RelatedSelectField = ({
   externalApiModalTitle,
   ...uiProps
 }) => {
+  const { values } = useFormikContext();
   return (
     <RelatedSelectFieldInternal
       fluid
@@ -53,10 +57,21 @@ export const RelatedSelectField = ({
       preSearchChange={preSearchChange}
       search={search}
       multiple={multiple}
+      onValueChange={({ e, data, formikProps }) => {
+        formikProps.form.setFieldValue(
+          fieldPath,
+          serializeSelectedItem ? serializeSelectedItem(data.value) : data.value
+        );
+      }}
       externalSuggestionApi={externalSuggestionApi}
       serializeExternalApiSuggestions={serializeExternalApiSuggestions}
       externalApiButtonContent={externalApiButtonContent}
       externalApiModalTitle={externalApiModalTitle}
+      value={
+        deserializeValue
+          ? deserializeValue(getIn(values, fieldPath, multiple ? [] : {}))
+          : getIn(values, fieldPath, '')
+      }
       {...uiProps}
     />
   );
@@ -70,6 +85,8 @@ RelatedSelectField.propTypes = {
   suggestionAPIHeaders: PropTypes.object,
   serializeSuggestions: PropTypes.func,
   serializeAddedValue: PropTypes.func,
+  serializeSelectedItem: PropTypes.func,
+  deserializeValue: PropTypes.func,
   initialSuggestions: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.object),
     PropTypes.object,

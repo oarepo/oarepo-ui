@@ -21,6 +21,7 @@ export const LanguageSelectField = ({
   const { setFieldTouched } = useFormikContext();
   return (
     <SelectField
+      deburr
       onBlur={() => setFieldTouched(fieldPath)}
       fieldPath={fieldPath}
       optimized
@@ -28,7 +29,7 @@ export const LanguageSelectField = ({
       required={required}
       clearable={clearable}
       multiple={multiple}
-      options={options ?? languages}
+      options={options ?? languages.all}
       label={<FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />}
       selectOnBlur={false}
       fluid

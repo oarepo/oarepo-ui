@@ -9,7 +9,7 @@ export const SearchAppFacets = ({ aggs, appName }) => {
         <h2>{i18next.t("Filters")}</h2>
         <div className="ui divider"></div>
       </div>
-      <div className="vertical scroll facet-list">
+      <div className="facet-list">
         {aggs.map((agg) => (
           <BucketAggregation key={agg.aggName} title={agg.title} agg={agg} />
         ))}

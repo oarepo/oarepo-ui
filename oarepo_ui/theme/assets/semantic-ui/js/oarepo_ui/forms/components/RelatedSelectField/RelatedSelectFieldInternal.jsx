@@ -13,6 +13,11 @@ export class RelatedSelectFieldInternal extends RemoteSelectField {
     this.state = {
       ...this.state,
       isModalOpen: false,
+      suggestions: props.initialSuggestions?.length
+        ? props.initialSuggestions
+        : props.value
+        ? props.serializeSuggestions(props.value)
+        : [],
     };
     this.handleModal = this.handleModal.bind(this);
   }
@@ -249,7 +254,6 @@ RelatedSelectFieldInternal.defaultProps = {
   // search: true,
   multiple: false,
   search: (options) => options,
-  initialSuggestions: [],
   suggestionAPIHeaders: {
     Accept: "application/vnd.inveniordm.v1+json",
   },
