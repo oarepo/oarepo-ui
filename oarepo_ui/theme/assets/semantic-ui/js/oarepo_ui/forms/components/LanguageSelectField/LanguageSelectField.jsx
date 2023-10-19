@@ -21,6 +21,7 @@ export const LanguageSelectField = ({
   const { setFieldTouched } = useFormikContext();
   return (
     <SelectField
+      deburr
       onBlur={() => setFieldTouched(fieldPath)}
       fieldPath={fieldPath}
       optimized
