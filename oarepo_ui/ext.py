@@ -158,7 +158,7 @@ class OARepoUIState:
 
     @property
     def vite_server_url(self):
-        return self.app.config.get("VITE_SERVER_URL", "https://127.0.0.1:5123/")
+        return self.app.config["OAREPO_VITE_SERVER_URL"]
 
 
 class OARepoUIExtension:
@@ -175,5 +175,5 @@ class OARepoUIExtension:
         from . import config
 
         for k in dir(config):
-            if k.startswith("OAREPO_UI_"):
+            if k.startswith("OAREPO_"):
                 app.config.setdefault(k, getattr(config, k))

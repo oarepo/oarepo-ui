@@ -1,4 +1,6 @@
 import json as json_lib
+import re
+import site
 import sys
 from oarepo_runtime.cli import oarepo
 
@@ -13,6 +15,7 @@ import click
 from flask import current_app
 from flask.cli import with_appcontext
 from importlib_metadata import entry_points
+import sys
 
 
 @oarepo.group("ui")
@@ -123,25 +126,59 @@ def less_components(output_file):
 
 
 @assets.command(help="Create vite directory and configuration files")
-@click.argument("root_dir")
 @click.argument("output_file")
 @with_appcontext
-def vite(output_file, root_dir):
+def vite(output_file):
     theme = (current_app.config["APP_THEME"] or ["semantic-ui"])[0]
-    root_dir = Path(root_dir).resolve()
-    assets_path = (Path.cwd() / 'assets').relative_to(root_dir)
+    assets_path = Path.cwd().resolve() / 'assets'
+    repo_path = assets_path.parent.parent.parent
+
+    site_packages_path = Path(site.getsitepackages()[0])
+    extra_paths = [Path(x) for x in sys.path if Path(x).is_dir()]
+
+    relative_bases = {
+        'python': site_packages_path,
+        'repo': repo_path,
+        **{
+            e.name: e for e in extra_paths
+        }
+    }
+
+    def classified_path(pth: str):
+        if isinstance(pth, Path):
+            pth = str(pth)
+
+        for rb in relative_bases:
+            if pth.startswith(f'{rb}:'):
+                return pth
+        if not pth.startswith('/'):
+            return f'relative:{pth}'
+        trailing_slash = '/' if pth.endswith('/') else ''
+
+        pth = Path(pth)
+        for k, v in relative_bases.items():
+            if pth.is_relative_to(v):
+                return f"{k}:{pth.relative_to(v)}{trailing_slash}"
+        raise Exception(f'Do not have relative path for {pth}')
+
     aliases = {
         "~semantic-ui-less/themes/../../less/site/globals": assets_path / "less/site/globals",
+        "~semantic-ui": "node_modules/semantic-ui",
         "~": "node_modules/",
-        "../../fonts/Lato-(.*)": get_theme_dir('invenio_theme', theme, root_dir) / "less/invenio_theme/fonts/Lato-$1",
+        "../../fonts/Lato-(.*)": get_theme_dir('invenio_theme', theme) / "less/invenio_theme/fonts/Lato-$1",
         "../../fonts/": assets_path / "less/site/globals",
+        "../../../themes/default/assets/fonts/":
+            "repo:node_modules/semantic-ui-css/themes/default/assets/fonts/",
     }
     entries = {}
-    dependencies = {}
+    dependencies = {
+        'query-string': '^8.1.0'
+    }
 
     vite_prohibited_aliases = {"../../less/site", "../../less"}
     vite_extra_aliases = {
         "../../less/site/globals": "less/site/globals",
+        "../../less/site/": "less/site/",
     }
 
     for ep in entry_points(group="invenio_assets.webpack"):
@@ -151,19 +188,24 @@ def vite(output_file, root_dir):
             for alias_name, alias_value in webpack.themes[theme].aliases.items():
                 if alias_name in vite_prohibited_aliases:
                     continue
-                generate_alias(aliases, alias_name, alias_value, t.path, root_dir)
-            generate_less_alias(aliases, t.path, root_dir)
+                generate_alias(aliases, alias_name, alias_value, t.path)
+            generate_less_alias(aliases, t.path)
             for entry_name, entry_value in webpack.entry.items():
-                entries[entry_name] = str(
-                    Path(t.path).joinpath(entry_value).absolute().relative_to(root_dir)
-                )
+                entries[entry_name] = Path(t.path).joinpath(entry_value).resolve()
             for k, v in t.dependencies.items():
                 dependencies.setdefault(k, {}).update(v)
 
     for alias_name, alias_value in vite_extra_aliases.items():
         generate_alias(
-            aliases, alias_name, alias_value, Path().cwd().absolute(), root_dir
+            aliases, alias_name, alias_value, Path().cwd().resolve()
         )
+
+    entries = {
+        k: classified_path(v) for k, v in entries.items()
+    }
+    aliases = {
+        k: classified_path(v) for k, v in aliases.items()
+    }
 
     with open(output_file, "w") as f:
         json.dump(
@@ -171,6 +213,7 @@ def vite(output_file, root_dir):
                 "aliases": {str(k): str(v) for k, v in aliases.items()},
                 "entries": entries,
                 "dependencies": dependencies,
+                "base_paths": relative_bases
             },
             f,
             indent=4,
@@ -181,20 +224,23 @@ def vite(output_file, root_dir):
     return
 
 
-def generate_alias(aliases, alias_name, alias_value, path, root_dir):
+def generate_alias(aliases, alias_name, alias_value, path):
     alias_full_path = Path(path).joinpath(alias_value)
     if not alias_full_path.exists():
         # try to get site-wide path
-        site_path = Path.cwd().absolute() / "assets"
+        site_path = Path.cwd().resolve() / "assets"
         if site_path.joinpath(alias_value).exists():
             alias_full_path = site_path.joinpath(alias_value)
     assert (
         alias_full_path.exists()
     ), f"Path in alias does not exist: {alias_name=} {alias_value=} {path=}"
-    aliases[alias_name] = str(alias_full_path.relative_to(root_dir))
+    alias_full_path = str(alias_full_path)
+    if alias_value.endswith('/') and not alias_full_path.endswith('/'):
+        alias_full_path += '/'
+    aliases[alias_name] = alias_full_path
 
 
-def generate_less_alias(aliases, path, root_dir):
+def generate_less_alias(aliases, path):
     already_generated = []
     for pth in Path(path).glob("**/less"):
         for apt in reversed(list(pth.glob("**"))):
@@ -205,13 +251,13 @@ def generate_less_alias(aliases, path, root_dir):
             relative = apt.relative_to(pth)
             already_generated.append(relative.parent)
             if relative not in already_generated:
-                aliases[str(relative)] = str(apt.resolve().relative_to(root_dir))
+                aliases[str(relative)] = apt.resolve()
 
-def get_theme_dir(pkg, theme, root_dir):
+def get_theme_dir(pkg, theme):
     for ep in entry_points(group="invenio_assets.webpack"):
         if ep.name != pkg:
             continue
         webpack = ep.load()
         if theme in webpack.themes:
             t = webpack.themes[theme]
-            return Path(t.path).relative_to(root_dir)
+            return Path(t.path)

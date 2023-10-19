@@ -29,19 +29,22 @@ def add_vite_tags(response):
 
 
 def make_tag():
+    vite_server = current_app.config['OAREPO_VITE_SERVER_URL']
+    if not vite_server.endswith('/'):
+        vite_server += '/'
     return (
-        """         
+        f"""         
             <!-- REACT_VITE_HEADER -->
             <script type="module">
-              import RefreshRuntime from 'http://localhost:5173/@react-refresh'
+              import RefreshRuntime from "{vite_server}@react-refresh"
               RefreshRuntime.injectIntoGlobalHook(window)
-              window.$RefreshReg$ = () => {}
+              window.$RefreshReg$ = () => {'{}'}
               window.$RefreshSig$ = () => (type) => type
               window.__vite_plugin_react_preamble_installed__ = true
             </script>
             
             <!-- FLASK_VITE_HEADER -->
-            <script type="module" src="http://localhost:5173/@vite/client"></script>
+            <script type="module" src="{vite_server}@vite/client"></script>
         """
     ).strip()
 
@@ -88,13 +91,23 @@ class PassThroughManifest(JinjaManifest):
         except ManifestKeyNotFoundError:
             if not current_app.config.get("OAREPO_UI_DEVELOPMENT_MODE"):
                 raise
-            return UniqueJinjaManifestEntry(
+            if item.endswith('.css'):
+                item = item[:-4] + '.js'
+            return ViteManifestEntry(
                 name=item,
                 paths=[
-                    f"{current_oarepo_ui.vite_server_url}entrypoints/{item}.js",
-                    f"{current_oarepo_ui.vite_server_url}entrypoints/{item}.css",
+                    f"{current_oarepo_ui.vite_server_url}.vite/{item}",
+                    # vite generates only javascripts, not importable styles
+                    # f"{current_oarepo_ui.vite_server_url}.vite/{item}.css",
                 ],
             )
+
+
+class ViteManifestEntry(UniqueJinjaManifestEntry):
+    templates = {
+        '.js': '<script type="module" src="{}"></script>',
+        '.css': '<link rel="stylesheet" href="{}" />',
+    }
 
 
 # TODO: images, fonts and other assets
@@ -104,7 +117,7 @@ class ViteManifestLoader(UniqueJinjaManifestLoader):
     types = [ViteFactory]
 
     def __init__(
-        self, manifest_cls=PassThroughManifest, entry_cls=UniqueJinjaManifestEntry
+        self, manifest_cls=PassThroughManifest, entry_cls=ViteManifestEntry
     ):
         """Initialize manifest loader."""
         super(UniqueJinjaManifestLoader, self).__init__(
