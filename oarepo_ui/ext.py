@@ -97,10 +97,23 @@ class OARepoUIState:
         return self._catalog_config(self._catalog, self.templates.jinja_env)
 
     def _catalog_config(self, catalog, env):
+
+        # monkeypatch component - see https://github.com/jpsca/jinjax/issues/32
+        from markupsafe import Markup
+        from jinjax.component import Component
+
+        def render(self, **kwargs):
+            assert self.tmpl, f"Component {self.name} has no template"
+            return Markup(self.tmpl.render(**kwargs).strip())
+        render.__name__ = 'render_patched_by_oarepo_ui'
+        Component.render = render
+        # monkeypatch end
+
         context = {}
         env.policies.setdefault("json.dumps_kwargs", {}).setdefault("default", str)
         self.app.update_template_context(context)
         catalog.jinja_env.loader = env.loader
+        catalog.jinja_env.autoescape = env.autoescape
         context.update(catalog.jinja_env.globals)
         context.update(env.globals)
         catalog.jinja_env.globals = context
