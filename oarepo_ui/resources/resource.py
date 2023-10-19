@@ -260,13 +260,13 @@ class RecordsUIResource(UIResource):
         )
 
         search_config = partial(self.config.search_app_config, **search_options)
+
         search_app_config = search_config(app_id=app_id)
-        json_data = json.dumps(search_app_config, default=lazy_string_encoder, indent=4)
 
         return _catalog.render(
             "search",
             __source=source,
-            search_app_config=json_data,
+            search_app_config=search_app_config,
             ui_config=self.config,
             ui_resource=self,
             layout=layout,
