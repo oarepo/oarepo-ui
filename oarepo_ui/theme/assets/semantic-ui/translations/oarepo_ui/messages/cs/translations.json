@@ -27,5 +27,6 @@
   "totalResults_one": "{{count}} výsledek",
   "totalResults_few": "{{count}} výsledky",
   "totalResults_many": "{{count}} výsledků",
-  "totalResults_other": "{{count}} výsledků"
+  "totalResults_other": "{{count}} výsledků",
+  "Clear all filters": "Vymazat všechny filtry"
 }

@@ -139,7 +139,7 @@ export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
           </Grid.Column>
         </Grid.Row>
         <Grid.Row>
-          <Grid.Column only="computer" width={16}>
+          <Grid.Column width={16}>
             <ActiveFilters />
           </Grid.Column>
         </Grid.Row>

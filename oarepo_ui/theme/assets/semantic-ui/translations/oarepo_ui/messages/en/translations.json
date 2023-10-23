@@ -24,5 +24,6 @@
   "Sort by": "Sort by",
   "Sort": "Sort",
   "totalResults_one": "{{count}} result",
-  "totalResults_other": "{{count}} results"
+  "totalResults_other": "{{count}} results",
+  "Clear all filters": "Clear all filters"
 }

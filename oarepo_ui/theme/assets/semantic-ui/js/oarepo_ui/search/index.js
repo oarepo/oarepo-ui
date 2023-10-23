@@ -1,11 +1,8 @@
 export { ActiveFiltersElement } from "./ActiveFiltersElement";
-
 export { BucketAggregationElement } from "./BucketAggregationElement";
 export { BucketAggregationValuesElement } from "./BucketAggregationValuesElement";
-
 export { ResultCountWithState, ResultCount, CountElement } from "./ResultCount";
 export { ErrorElement } from "./ErrorElement";
-export { SearchAppActiveFilters } from "./SearchAppActiveFilters";
 export { SearchAppFacets } from "./SearchAppFacets";
 export { SearchAppLayout } from "./SearchAppLayout";
 export { SearchAppResultOptions } from "./SearchAppResultOptions";
