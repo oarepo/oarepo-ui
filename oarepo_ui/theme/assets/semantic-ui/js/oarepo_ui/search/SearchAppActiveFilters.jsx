@@ -37,6 +37,10 @@ const SearchAppActiveFiltersComponent = ({
           })}
         </Label.Group>
       ))}
+      <Label color="orange" onClick={() => removeActiveFilter(filters)}>
+        Remove all filters
+        <Icon name="delete" />
+      </Label>
     </>
   );
 };

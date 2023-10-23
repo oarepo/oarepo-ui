@@ -14,7 +14,7 @@ export const SearchAppResultOptions = ({ sortOptions, layoutOptions }) => {
   return (
     <Grid>
       <Grid.Row verticalAlign="middle">
-        <Grid.Column floated="left" textAlign="left" width={5}>
+        <Grid.Column floated="right" textAlign="left" width={5}>
           <ResultCountWithState />
         </Grid.Column>
         <Grid.Column textAlign="right" floated="right" width={8}>
