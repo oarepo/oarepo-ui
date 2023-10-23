@@ -32,7 +32,7 @@ export const SearchAppResultsComponent = ({
           {multipleLayouts ? <ResultsMultiLayout /> : listOrGridView}
         </Grid.Column>
       </Grid.Row>
-      {total >= 10 && (
+      {total > 10 && (
         <Grid.Row verticalAlign="middle">
           <Grid.Column className="computer tablet only" width={4}></Grid.Column>
           <Grid.Column
