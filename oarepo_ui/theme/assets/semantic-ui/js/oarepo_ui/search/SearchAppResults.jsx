@@ -9,6 +9,7 @@ import {
   withState,
 } from "react-searchkit";
 import { ResultsPerPageLabel } from "./ResultsPerPageLabel";
+import PropTypes from "prop-types";
 
 export const SearchAppResultsComponent = ({
   paginationOptions,
@@ -82,6 +83,16 @@ export const SearchAppResultsComponent = ({
       )}
     </Grid>
   );
+};
+
+SearchAppResultsComponent.propTypes = {
+  paginationOptions: PropTypes.object.isRequired,
+  layoutOptions: PropTypes.object.isRequired,
+  currentResultsState: PropTypes.shape({
+    data: PropTypes.shape({
+      total: PropTypes.number.isRequired,
+    }).isRequired,
+  }).isRequired,
 };
 
 export const SearchAppResults = withState(SearchAppResultsComponent);
