@@ -147,6 +147,8 @@ class RecordsUIResourceConfig(UIResourceConfig):
                     api_config, identity
                 ),
                 selected_options=self.search_active_sort_options(api_config, identity),
+                default_option=api_config.search.sort_default,
+                no_query_option=api_config.search.sort_default_no_query
             ),
             facets=self.search_facets_config(
                 available_facets=self.search_available_facets(api_config, identity),
