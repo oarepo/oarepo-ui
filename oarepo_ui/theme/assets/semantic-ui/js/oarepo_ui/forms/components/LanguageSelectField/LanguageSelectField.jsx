@@ -32,7 +32,7 @@ export const LanguageSelectField = ({
       onChange={({ e, data, formikProps }) => {
         formikProps.form.setFieldValue(fieldPath, data.value);
       }}
-      value={getIn(values, fieldPath, multiple ? [] : {})}
+      value={getIn(values, fieldPath, multiple ? [] : '')}
       {...uiProps}
     />
   );
