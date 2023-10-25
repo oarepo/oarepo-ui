@@ -12,28 +12,19 @@ export const SearchAppResultOptions = ({ sortOptions, layoutOptions }) => {
   const multipleLayouts =
     Object.values(layoutOptions).filter((i) => i).length > 1;
   return (
-    <Grid>
-      <Grid.Row verticalAlign="middle">
-        <Grid.Column textAlign="right" floated="right" width={13}>
-          <ResultCountWithState />
-          {sortOptions && (
-            <Overridable id={buildUID("SearchApp.sort")} options={sortOptions}>
-              <SearchAppSort />
-            </Overridable>
-          )}
-        </Grid.Column>
-        {multipleLayouts ? (
-          <Grid.Column width={3} textAlign="right">
-            {multipleLayouts && <LayoutSwitcher />}
-          </Grid.Column>
-        ) : null}
-      </Grid.Row>
-    </Grid>
+    <React.Fragment>
+      <ResultCountWithState />
+      {sortOptions && (
+        <Overridable id={buildUID("SearchApp.sort")} options={sortOptions}>
+          <SearchAppSort />
+        </Overridable>
+      )}
+      {multipleLayouts && <LayoutSwitcher />}
+    </React.Fragment>
   );
 };
 
 SearchAppResultOptions.propTypes = {
-  currentResultsState: PropTypes.object.isRequired,
   sortOptions: PropTypes.arrayOf(
     PropTypes.shape({
       sortBy: PropTypes.string,

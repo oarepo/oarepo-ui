@@ -2,9 +2,8 @@ import PropTypes from "prop-types";
 import React from "react";
 import _groupBy from "lodash/groupBy";
 import _map from "lodash/map";
-import { Label, Icon, Grid, Button } from "semantic-ui-react";
+import { Label, Icon, Grid } from "semantic-ui-react";
 import { withState } from "react-searchkit";
-import { i18next } from "@translations/oarepo_ui/i18next";
 
 const ActiveFiltersElementComponent = ({
   filters,
@@ -18,7 +17,7 @@ const ActiveFiltersElementComponent = ({
 
   return (
     <Grid>
-      <Grid.Row style={{ display: "block" }} only="computer">
+      <Grid.Column only="computer">
         {_map(groupedData, (filters, key) => (
           <Label.Group key={key}>
             <Label pointing="right">{aggregations[key]?.label}</Label>
@@ -38,32 +37,7 @@ const ActiveFiltersElementComponent = ({
             })}
           </Label.Group>
         ))}
-      </Grid.Row>
-      <Grid.Row only="computer" textAlign="right">
-        <Button
-          name="clear"
-          color="orange"
-          onClick={() => removeActiveFilter(filters)}
-          icon="delete"
-          labelPosition="left"
-          content={i18next.t("Clear all filters")}
-          type="button"
-          size="mini"
-        />
-      </Grid.Row>
-      <Grid.Row only="tablet mobile">
-        <Button
-          style={{ marginLeft: "1rem" }}
-          name="clear"
-          color="orange"
-          onClick={() => removeActiveFilter(filters)}
-          icon="delete"
-          labelPosition="left"
-          content={i18next.t("Clear all filters")}
-          type="button"
-          size="mini"
-        />
-      </Grid.Row>
+      </Grid.Column>
     </Grid>
   );
 };

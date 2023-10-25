@@ -13,6 +13,7 @@ import {
   SearchConfigurationContext,
 } from "@js/invenio_search_ui/components";
 import { ResultOptions } from "@js/invenio_search_ui/components/Results";
+import { ClearFiltersButton } from "./ClearFiltersButton";
 
 const ResultOptionsWithState = withState(ResultOptions);
 
@@ -73,17 +74,17 @@ export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
   const resultsSortLayoutFacets = {
     mobile: 14,
     tablet: 14,
-    computer: 16,
-    largeScreen: 16,
-    widescreen: 16,
+    computer: 5,
+    largeScreen: 5,
+    widescreen: 5,
   };
 
   const resultsSortLayoutNoFacets = {
-    mobile: 16,
-    tablet: 16,
-    computer: 16,
-    largeScreen: 16,
-    widescreen: 16,
+    mobile: 14,
+    tablet: 14,
+    computer: 5,
+    largeScreen: 5,
+    widescreen: 5,
   };
 
   const resultsPaneLayoutNoFacets = resultsPaneLayoutFacets;
@@ -114,14 +115,14 @@ export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
         className="search-app rel-mt-2"
         padded
       >
-        <Grid.Row className="result-options">
+        <Grid.Row verticalAlign="middle" className="result-options">
           {facetsAvailable && (
             <Grid.Column
+              floated="left"
               only="mobile tablet"
               mobile={2}
               tablet={2}
               textAlign="center"
-              verticalAlign="middle"
             >
               <Button
                 basic
@@ -132,13 +133,16 @@ export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
               />
             </Grid.Column>
           )}
-          <Grid.Column {...resultSortLayout}>
+          <Grid.Column floated="left" only="computer" width={11}>
+            <ActiveFilters />
+          </Grid.Column>
+          <Grid.Column textAlign="right" floated="right" {...resultSortLayout}>
             <ResultOptionsWithState />
           </Grid.Column>
         </Grid.Row>
         <Grid.Row>
-          <Grid.Column width={16}>
-            <ActiveFilters />
+          <Grid.Column floated="left">
+            <ClearFiltersButton />
           </Grid.Column>
         </Grid.Row>
         <Grid.Row columns={columnsAmount}>
