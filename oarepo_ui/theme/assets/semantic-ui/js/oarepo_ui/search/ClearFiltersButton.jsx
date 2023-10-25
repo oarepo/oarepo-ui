@@ -25,9 +25,9 @@ const ClearFiltersButtonComponent = ({
   );
 };
 
+export const ClearFiltersButton = withState(ClearFiltersButtonComponent);
+
 ClearFiltersButtonComponent.propTypes = {
   updateQueryState: PropTypes.func.isRequired,
   currentQueryState: PropTypes.object.isRequired,
 };
-
-export const ClearFiltersButton = withState(ClearFiltersButtonComponent);
