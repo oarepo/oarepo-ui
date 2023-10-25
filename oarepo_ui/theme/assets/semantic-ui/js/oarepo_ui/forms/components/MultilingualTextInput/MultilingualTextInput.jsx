@@ -45,6 +45,7 @@ export const MultilingualTextInput = ({
           languages.all,
           array
         );
+
         return (
           <ArrayFieldItem
             indexPath={indexPath}
@@ -54,14 +55,13 @@ export const MultilingualTextInput = ({
             <Form.Field width={16}>
               {rich ? (
                 <I18nRichInputField
-                  key={availableLanguages.length}
                   fieldPath={fieldPathPrefix}
                   label={textFieldLabel}
                   labelIcon={textFieldIcon}
                   editorConfig={editorConfig}
                   optimized
                   required={required}
-                  languageOptions={availableLanguages}
+                  usedLanguages={array.map((v) => v.lang)}
                   lngFieldWidth={lngFieldWidth}
                   {...uiProps}
                 />
@@ -72,7 +72,7 @@ export const MultilingualTextInput = ({
                   label={textFieldLabel}
                   labelIcon={textFieldIcon}
                   required={required}
-                  languageOptions={availableLanguages}
+                  usedLanguages={array.map((v) => v.lang)}
                   lngFieldWidth={lngFieldWidth}
                   {...uiProps}
                 />
