@@ -28,6 +28,7 @@ export const LanguageSelectField = ({
       multiple={multiple}
       label={<FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />}
       optionsListName="languages"
+      usedOptions={usedLanguages}
       onChange={({ e, data, formikProps }) => {
         formikProps.form.setFieldValue(fieldPath, data.value);
       }}
