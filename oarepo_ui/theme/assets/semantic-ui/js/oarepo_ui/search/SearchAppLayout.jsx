@@ -80,11 +80,11 @@ export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
   };
 
   const resultsSortLayoutNoFacets = {
-    mobile: 14,
-    tablet: 14,
-    computer: 5,
-    largeScreen: 5,
-    widescreen: 5,
+    mobile: 16,
+    tablet: 16,
+    computer: 16,
+    largeScreen: 16,
+    widescreen: 16,
   };
 
   const resultsPaneLayoutNoFacets = resultsPaneLayoutFacets;
@@ -133,9 +133,11 @@ export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
               />
             </Grid.Column>
           )}
-          <Grid.Column floated="left" only="computer" width={11}>
-            <ActiveFilters />
-          </Grid.Column>
+          {facetsAvailable && (
+            <Grid.Column floated="left" only="computer" width={11}>
+              <ActiveFilters />
+            </Grid.Column>
+          )}
           <Grid.Column textAlign="right" floated="right" {...resultSortLayout}>
             <ResultOptionsWithState />
           </Grid.Column>
