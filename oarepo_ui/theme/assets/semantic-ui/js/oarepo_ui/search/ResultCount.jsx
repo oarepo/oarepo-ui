@@ -8,9 +8,9 @@ import Overridable from "react-overridable";
 
 export const CountElement = ({ totalResults }) => {
   return (
-    <Label size="large">
+    <label className="rel-mr-1">
       {i18next.t("totalResults", { count: totalResults })}
-    </Label>
+    </label>
   );
 };
 
