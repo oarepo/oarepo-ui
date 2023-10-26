@@ -5,8 +5,6 @@ import { Form } from "semantic-ui-react";
 import {
   I18nTextInputField,
   I18nRichInputField,
-  useVocabularyOptions,
-  eliminateUsedLanguages,
   ArrayFieldItem,
 } from "@js/oarepo_ui";
 import { i18next } from "@translations/oarepo_ui/i18next";
@@ -26,8 +24,6 @@ export const MultilingualTextInput = ({
   lngFieldWidth,
   ...uiProps
 }) => {
-  const { options: languages } = useVocabularyOptions("languages");
-
   return (
     <ArrayField
       addButtonLabel={addButtonLabel}
@@ -40,11 +36,6 @@ export const MultilingualTextInput = ({
     >
       {({ indexPath, array, arrayHelpers }) => {
         const fieldPathPrefix = `${fieldPath}.${indexPath}`;
-        const availableLanguages = eliminateUsedLanguages(
-          indexPath,
-          languages.all,
-          array
-        );
 
         return (
           <ArrayFieldItem
@@ -67,7 +58,6 @@ export const MultilingualTextInput = ({
                 />
               ) : (
                 <I18nTextInputField
-                  key={availableLanguages.length}
                   fieldPath={fieldPathPrefix}
                   label={textFieldLabel}
                   labelIcon={textFieldIcon}

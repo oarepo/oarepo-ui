@@ -41,22 +41,6 @@ export const array2object = (arr, keyName, valueName) =>
     {}
   );
 
-export const eliminateUsedLanguages = (
-  excludeIndex,
-  languageOptions,
-  fieldArray
-) => {
-  const currentlySelectedLanguage = fieldArray[excludeIndex].lang;
-  const excludedLanguages = fieldArray.filter(
-    (item) => item.lang !== currentlySelectedLanguage && item.lang
-  );
-  const remainingLanguages = languageOptions.filter(
-    (option) =>
-      !excludedLanguages.map((item) => item.lang).includes(option.value)
-  );
-  return remainingLanguages;
-};
-
 export const absoluteUrl = (urlString) => {
   return new URL(urlString, window.location.origin)
 }
