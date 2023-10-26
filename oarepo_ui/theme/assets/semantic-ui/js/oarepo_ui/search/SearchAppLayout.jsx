@@ -13,6 +13,7 @@ import {
   SearchConfigurationContext,
 } from "@js/invenio_search_ui/components";
 import { ResultOptions } from "@js/invenio_search_ui/components/Results";
+import { ClearFiltersButton } from "./ClearFiltersButton";
 
 const ResultOptionsWithState = withState(ResultOptions);
 
@@ -73,13 +74,20 @@ export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
   const resultsSortLayoutFacets = {
     mobile: 14,
     tablet: 14,
-    computer: 12,
-    largeScreen: 12,
-    widescreen: 12,
+    computer: 5,
+    largeScreen: 5,
+    widescreen: 5,
+  };
+
+  const resultsSortLayoutNoFacets = {
+    mobile: 16,
+    tablet: 16,
+    computer: 16,
+    largeScreen: 16,
+    widescreen: 16,
   };
 
   const resultsPaneLayoutNoFacets = resultsPaneLayoutFacets;
-  const resultsSortLayoutNoFacets = resultsSortLayoutFacets;
 
   // make list full width if no facets available
   const resultsPaneLayout = facetsAvailable
@@ -104,38 +112,39 @@ export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
       <Grid
         columns={columnsAmount}
         relaxed
-        celled="internally"
         className="search-app rel-mt-2"
+        padded
       >
-        <Grid.Row
-          textAlign="left"
-          columns={columnsAmount}
-          className="result-options"
-        >
+        <Grid.Row verticalAlign="middle" className="result-options">
           {facetsAvailable && (
-            <>
-              <Grid.Column
-                only="mobile tablet"
-                mobile={2}
-                tablet={2}
-                textAlign="center"
-                verticalAlign="middle"
-              >
-                <Button
-                  basic
-                  icon="sliders"
-                  onClick={() => setSidebarVisible(true)}
-                  title={i18next.t("Filter results")}
-                  aria-label={i18next.t("Filter results")}
-                />
-              </Grid.Column>
-              <Grid.Column only="computer" width={4}>
-                <ActiveFilters />
-              </Grid.Column>
-            </>
+            <Grid.Column
+              floated="left"
+              only="mobile tablet"
+              mobile={2}
+              tablet={2}
+              textAlign="center"
+            >
+              <Button
+                basic
+                icon="sliders"
+                onClick={() => setSidebarVisible(true)}
+                title={i18next.t("Filter results")}
+                aria-label={i18next.t("Filter results")}
+              />
+            </Grid.Column>
           )}
-          <Grid.Column {...resultSortLayout}>
+          {facetsAvailable && (
+            <Grid.Column floated="left" only="computer" width={11}>
+              <ActiveFilters />
+            </Grid.Column>
+          )}
+          <Grid.Column textAlign="right" floated="right" {...resultSortLayout}>
             <ResultOptionsWithState />
+          </Grid.Column>
+        </Grid.Row>
+        <Grid.Row>
+          <Grid.Column floated="left">
+            <ClearFiltersButton />
           </Grid.Column>
         </Grid.Row>
         <Grid.Row columns={columnsAmount}>
@@ -167,9 +176,9 @@ export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
             <Grid.Column
               mobile={16}
               tablet={16}
-              computer={3}
-              largeScreen={3}
-              widescreen={3}
+              computer={4}
+              largeScreen={4}
+              widescreen={4}
             >
               <Overridable
                 id={buildUID("SearchApp.buttonSidebarContainer", "", appName)}
