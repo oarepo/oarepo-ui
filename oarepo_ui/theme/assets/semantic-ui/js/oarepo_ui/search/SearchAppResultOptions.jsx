@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import Overridable from "react-overridable";
 import { PropTypes } from "prop-types";
-import { Grid } from "semantic-ui-react";
 import { LayoutSwitcher } from "react-searchkit";
 import { ResultCountWithState } from "./ResultCount";
 import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
