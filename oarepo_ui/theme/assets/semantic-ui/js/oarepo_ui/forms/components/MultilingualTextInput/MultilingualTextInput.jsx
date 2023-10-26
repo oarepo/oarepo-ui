@@ -5,8 +5,6 @@ import { Form } from "semantic-ui-react";
 import {
   I18nTextInputField,
   I18nRichInputField,
-  useVocabularyOptions,
-  eliminateUsedLanguages,
   ArrayFieldItem,
 } from "@js/oarepo_ui";
 import { i18next } from "@translations/oarepo_ui/i18next";
@@ -26,8 +24,6 @@ export const MultilingualTextInput = ({
   lngFieldWidth,
   ...uiProps
 }) => {
-  const { options: languages } = useVocabularyOptions("languages");
-
   return (
     <ArrayField
       addButtonLabel={addButtonLabel}
@@ -40,11 +36,7 @@ export const MultilingualTextInput = ({
     >
       {({ indexPath, array, arrayHelpers }) => {
         const fieldPathPrefix = `${fieldPath}.${indexPath}`;
-        const availableLanguages = eliminateUsedLanguages(
-          indexPath,
-          languages.all,
-          array
-        );
+
         return (
           <ArrayFieldItem
             indexPath={indexPath}
@@ -54,25 +46,23 @@ export const MultilingualTextInput = ({
             <Form.Field width={16}>
               {rich ? (
                 <I18nRichInputField
-                  key={availableLanguages.length}
                   fieldPath={fieldPathPrefix}
                   label={textFieldLabel}
                   labelIcon={textFieldIcon}
                   editorConfig={editorConfig}
                   optimized
                   required={required}
-                  languageOptions={availableLanguages}
+                  usedLanguages={array.map((v) => v.lang)}
                   lngFieldWidth={lngFieldWidth}
                   {...uiProps}
                 />
               ) : (
                 <I18nTextInputField
-                  key={availableLanguages.length}
                   fieldPath={fieldPathPrefix}
                   label={textFieldLabel}
                   labelIcon={textFieldIcon}
                   required={required}
-                  languageOptions={availableLanguages}
+                  usedLanguages={array.map((v) => v.lang)}
                   lngFieldWidth={lngFieldWidth}
                   {...uiProps}
                 />

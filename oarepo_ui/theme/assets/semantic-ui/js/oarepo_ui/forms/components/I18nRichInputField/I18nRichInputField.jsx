@@ -12,8 +12,8 @@ export const I18nRichInputField = ({
   labelIcon,
   placeholder,
   editorConfig,
-  languageOptions,
   lngFieldWidth,
+  usedLanguages,
   ...uiProps
 }) => {
   return (
@@ -22,8 +22,8 @@ export const I18nRichInputField = ({
         fieldPath={`${fieldPath}.lang`}
         placeholder=""
         required
-        options={languageOptions}
         width={lngFieldWidth}
+        usedLanguages={usedLanguages}
       />
 
       <Form.Field width={13}>

@@ -10,8 +10,8 @@ export const I18nTextInputField = ({
   optimized,
   labelIcon,
   placeholder,
-  languageOptions,
   lngFieldWidth,
+  usedLanguages,
   ...uiProps
 }) => {
   return (
@@ -21,7 +21,7 @@ export const I18nTextInputField = ({
         placeholder=""
         required
         width={lngFieldWidth}
-        options={languageOptions}
+        usedLanguages={usedLanguages}
       />
       <TextField
         // TODO: hacky fix for SUI alignment bug for case with
