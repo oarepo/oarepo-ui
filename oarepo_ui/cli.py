@@ -1,7 +1,8 @@
 import json as json_lib
+import os
 import sys
 from pathlib import Path
-import os
+
 import click
 from flask.cli import with_appcontext
 from oarepo_runtime.cli import oarepo
@@ -13,19 +14,22 @@ from oarepo_ui.proxies import current_oarepo_ui
 def ui():
     """UI commands"""
 
+
 @ui.command("components")
 def components():
-
     component_data = []
-    script_directory = os.path.dirname(os.path.abspath(__file__ or ''))
-    components_directory = os.path.join(script_directory, 'templates', 'components')
+    script_directory = os.path.dirname(os.path.abspath(__file__ or ""))
+    components_directory = os.path.join(script_directory, "templates", "components")
 
     file_names = os.listdir(components_directory)
 
     for file_name in file_names:
-        component_data.append({"key": file_name.lower(), "component": file_name.replace(".jinja", "")})
+        component_data.append(
+            {"key": file_name.lower(), "component": file_name.replace(".jinja", "")}
+        )
 
     print(component_data)
+
 
 @ui.command("renderers")
 @click.option("-v", "--verbose", is_flag=True, help="Verbose output")

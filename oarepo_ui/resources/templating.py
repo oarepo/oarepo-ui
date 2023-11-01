@@ -1,6 +1,6 @@
 from jinja2 import Environment
 from jinja2.loaders import BaseLoader
-import os
+
 
 class RegistryLoader(BaseLoader):
     def __init__(self, parent_loader) -> None:
@@ -55,4 +55,3 @@ class TemplateRegistry:
 
 def id_filter(x):
     return id(x)
-
