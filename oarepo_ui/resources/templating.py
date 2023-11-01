@@ -1,6 +1,6 @@
 from jinja2 import Environment
 from jinja2.loaders import BaseLoader
-
+import os
 
 class RegistryLoader(BaseLoader):
     def __init__(self, parent_loader) -> None:
@@ -57,6 +57,19 @@ def id_filter(x):
     return id(x)
 
 
-def to_dict(value=None):
-    if value:
-        return value
+def get_components():
+
+    component_data = []
+    directory = os.path.dirname(os.path.abspath(__file__ or ''))
+    parent_directory = os.path.dirname(directory)
+    components_directory = os.path.join(parent_directory, 'templates', 'components')
+
+
+    file_names = os.listdir(components_directory)
+
+    for file_name in file_names:
+        component_data.append({"key": file_name.replace(".jinja", "").lower(), "component": file_name.replace(".jinja", "")})
+
+
+    return component_data
+
