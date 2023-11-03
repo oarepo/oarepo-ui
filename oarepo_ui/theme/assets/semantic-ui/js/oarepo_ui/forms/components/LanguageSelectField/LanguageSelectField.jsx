@@ -3,6 +3,7 @@ import { FieldLabel } from "react-invenio-forms";
 import { LocalVocabularySelectField } from "@js/oarepo_vocabularies";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import PropTypes from "prop-types";
+import { useFormConfig } from "@js/oarepo_ui";
 
 export const LanguageSelectField = ({
   fieldPath,
@@ -16,6 +17,10 @@ export const LanguageSelectField = ({
   value,
   ...uiProps
 }) => {
+  const {
+    formConfig: { default_locale },
+  } = useFormConfig();
+
   return (
     <LocalVocabularySelectField
       deburr
@@ -30,7 +35,7 @@ export const LanguageSelectField = ({
       onChange={({ e, data, formikProps }) => {
         formikProps.form.setFieldValue(fieldPath, data.value);
       }}
-      defaultValue="en"
+      defaultValue={multiple ? [default_locale] : default_locale}
       {...uiProps}
     />
   );
