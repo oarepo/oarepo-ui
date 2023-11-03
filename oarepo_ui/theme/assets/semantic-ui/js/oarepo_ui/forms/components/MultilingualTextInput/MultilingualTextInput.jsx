@@ -87,6 +87,7 @@ MultilingualTextInput.propTypes = {
   helpText: PropTypes.string,
   addButtonLabel: PropTypes.string,
   lngFieldWidth: PropTypes.number,
+  rich: PropTypes.bool,
 };
 
 MultilingualTextInput.defaultProps = {

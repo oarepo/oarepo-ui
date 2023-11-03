@@ -8,6 +8,23 @@ import _isEmpty from "lodash/isEmpty";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { relativeUrl } from "../util";
 
+// maybe it makes sense to collocate it here as this is the only place it is used for now
+export const translateFEtoBEValidationErrors = (feValidationObject) => {
+  const beValidationArray = [];
+
+  for (const field in feValidationObject.metadata) {
+    if (feValidationObject.metadata.hasOwnProperty(field)) {
+      const errorMessage = feValidationObject.metadata[field];
+      const beError = {
+        field: `metadata.${field}`,
+        messages: [errorMessage],
+      };
+      beValidationArray.push(beError);
+    }
+  }
+  return beValidationArray;
+};
+
 export const useFormConfig = () => {
   const context = React.useContext(FormConfigContext);
   if (!context) {
@@ -58,7 +75,6 @@ export const useDepositApiClient = (
     setFieldError,
     setFieldValue,
   } = formik;
-
   const {
     formConfig: { createUrl },
   } = useFormConfig();
@@ -137,7 +153,16 @@ export const useDepositApiClient = (
     if (!saveResult) return;
     // imperative form validation, if fails exit
     const validationErrors = await validateForm();
-    if (!_isEmpty(validationErrors)) return;
+    // show also front end validation errors grouped on the top similar to BE validation errors for consistency
+    if (!_isEmpty(validationErrors)) {
+      setFieldValue("validationErrors", {
+        errors: translateFEtoBEValidationErrors(validationErrors),
+        errorMessage: i18next.t(
+          "Draft was saved but could not be published due to following validation errors"
+        ),
+      });
+      return;
+    }
     setSubmitting(true);
     let response;
     try {
