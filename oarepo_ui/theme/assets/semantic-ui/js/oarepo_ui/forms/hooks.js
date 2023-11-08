@@ -8,21 +8,24 @@ import _isEmpty from "lodash/isEmpty";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { relativeUrl } from "../util";
 
-// maybe it makes sense to collocate it here as this is the only place it is used for now
-export const translateFEtoBEValidationErrors = (feValidationObject) => {
-  const beValidationArray = [];
+const extractFEErrorMessages = (obj) => {
+  const errorMessages = [];
 
-  for (const field in feValidationObject.metadata) {
-    if (feValidationObject.metadata.hasOwnProperty(field)) {
-      const errorMessage = feValidationObject.metadata[field];
-      const beError = {
-        field: `metadata.${field}`,
-        messages: [errorMessage],
-      };
-      beValidationArray.push(beError);
+  const traverse = (obj) => {
+    for (const key in obj) {
+      if (typeof obj[key] === "string") {
+        errorMessages.push(obj[key]);
+      } else if (Array.isArray(obj[key])) {
+        obj[key].forEach((item) => traverse(item));
+      } else if (typeof obj[key] === "object") {
+        traverse(obj[key]);
+      }
     }
-  }
-  return beValidationArray;
+  };
+
+  traverse(obj);
+  const uniqueErrorMessages = [...new Set(errorMessages)];
+  return uniqueErrorMessages;
 };
 
 export const useFormConfig = () => {
@@ -57,7 +60,8 @@ export const useDepositApiClient = (
   serializer,
   internalFieldsArray = [
     "errors",
-    "validationErrors",
+    "BEvalidationErrors",
+    "FEvalidationErrors",
     "httpErrors",
     "successMessage",
   ],
@@ -123,7 +127,7 @@ export const useDepositApiClient = (
           setFieldError(error.field, error.messages[0])
         );
         // here I am setting the state to be used by FormFeedback componene that plugs into the formik's context.
-        setFieldValue("validationErrors", {
+        setFieldValue("BEvalidationErrors", {
           errors: response.errors,
           errorMessage: i18next.t(
             "Draft saved with validation errors. Fields listed below that failed validation were not saved to the server"
@@ -152,11 +156,11 @@ export const useDepositApiClient = (
     const saveResult = await save();
     if (!saveResult) return;
     // imperative form validation, if fails exit
-    const validationErrors = await validateForm();
+    const FEvalidationErrors = await validateForm();
     // show also front end validation errors grouped on the top similar to BE validation errors for consistency
-    if (!_isEmpty(validationErrors)) {
-      setFieldValue("validationErrors", {
-        errors: translateFEtoBEValidationErrors(validationErrors),
+    if (!_isEmpty(FEvalidationErrors)) {
+      setFieldValue("FEvalidationErrors", {
+        errors: extractFEErrorMessages(FEvalidationErrors.metadata),
         errorMessage: i18next.t(
           "Draft was saved but could not be published due to following validation errors"
         ),

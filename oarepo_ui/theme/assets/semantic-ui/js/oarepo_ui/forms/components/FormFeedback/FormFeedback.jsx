@@ -20,21 +20,33 @@ const CustomMessage = ({ children, ...uiProps }) => {
 };
 export const FormFeedback = () => {
   const { values } = useFormikContext();
-  const validationErrors = getIn(values, "validationErrors", {});
+  const BEvalidationErrors = getIn(values, "BEvalidationErrors", {});
+  const FEvalidationErrors = getIn(values, "FEvalidationErrors", {});
   let httpError = getIn(values, "httpErrors", "");
   if (httpError?.response?.data) {
     httpError = httpError?.response?.data.message;
   }
   const successMessage = getIn(values, "successMessage", "");
-  if (!_isEmpty(validationErrors))
+  if (!_isEmpty(BEvalidationErrors))
     return (
       <CustomMessage negative color="orange">
-        <Message.Header>{validationErrors?.errorMessage}</Message.Header>
+        <Message.Header>{BEvalidationErrors?.errorMessage}</Message.Header>
         <Message.List>
-          {validationErrors?.errors?.map((error, index) => (
+          {BEvalidationErrors?.errors?.map((error, index) => (
             <Message.Item key={`${error.field}-${index}`}>{`${titleCase(
               error.field
             )}: ${error.messages[0]}`}</Message.Item>
+          ))}
+        </Message.List>
+      </CustomMessage>
+    );
+  if (!_isEmpty(FEvalidationErrors))
+    return (
+      <CustomMessage negative color="orange">
+        <Message.Header>{FEvalidationErrors?.errorMessage}</Message.Header>
+        <Message.List>
+          {FEvalidationErrors?.errors?.map((error, index) => (
+            <Message.Item key={`${error.field}-${index}`}>{error}</Message.Item>
           ))}
         </Message.List>
       </CustomMessage>
