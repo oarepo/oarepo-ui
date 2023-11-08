@@ -64,6 +64,7 @@ I18nRichInputField.propTypes = {
   editorConfig: PropTypes.object,
   languageOptions: PropTypes.array,
   lngFieldWidth: PropTypes.number,
+  usedLanguages: PropTypes.array,
 };
 
 I18nRichInputField.defaultProps = {

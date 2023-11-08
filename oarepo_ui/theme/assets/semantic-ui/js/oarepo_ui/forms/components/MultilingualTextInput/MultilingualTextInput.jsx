@@ -6,6 +6,7 @@ import {
   I18nTextInputField,
   I18nRichInputField,
   ArrayFieldItem,
+  useShowEmptyValue,
 } from "@js/oarepo_ui";
 import { i18next } from "@translations/oarepo_ui/i18next";
 
@@ -14,7 +15,7 @@ export const MultilingualTextInput = ({
   label,
   labelIcon,
   required,
-  emptyNewInput,
+  defaultNewValue,
   rich,
   editorConfig,
   textFieldLabel,
@@ -22,12 +23,14 @@ export const MultilingualTextInput = ({
   helpText,
   addButtonLabel,
   lngFieldWidth,
+  showEmptyValue,
   ...uiProps
 }) => {
+  useShowEmptyValue(fieldPath, defaultNewValue, showEmptyValue);
   return (
     <ArrayField
       addButtonLabel={addButtonLabel}
-      defaultNewValue={emptyNewInput}
+      defaultNewValue={defaultNewValue}
       fieldPath={fieldPath}
       label={
         <FieldLabel htmlFor={fieldPath} icon={labelIcon ?? ""} label={label} />
@@ -88,14 +91,17 @@ MultilingualTextInput.propTypes = {
   addButtonLabel: PropTypes.string,
   lngFieldWidth: PropTypes.number,
   rich: PropTypes.bool,
+  defaultNewValue: PropTypes.object,
+  showEmptyValue: PropTypes.bool,
 };
 
 MultilingualTextInput.defaultProps = {
-  emptyNewInput: {
+  defaultNewValue: {
     lang: "",
     value: "",
   },
   rich: false,
   label: undefined,
   addButtonLabel: i18next.t("Add another language"),
+  showEmptyValue: false,
 };

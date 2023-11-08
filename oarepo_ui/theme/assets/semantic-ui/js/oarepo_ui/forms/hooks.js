@@ -1,7 +1,7 @@
 import * as React from "react";
 import { FormConfigContext } from "./contexts";
 import { OARepoDepositApiClient, OARepoDepositSerializer } from "../api";
-import { useFormikContext } from "formik";
+import { useFormikContext, getIn } from "formik";
 import _omit from "lodash/omit";
 import _pick from "lodash/pick";
 import _isEmpty from "lodash/isEmpty";
@@ -53,6 +53,24 @@ export const useConfirmationModal = () => {
   const handleOpenModal = () => setIsModalOopen(true);
 
   return { isModalOpen, handleCloseModal, handleOpenModal };
+};
+
+export const useShowEmptyValue = (
+  fieldPath,
+  defaultNewValue,
+  showEmptyValue
+) => {
+  const { values, setFieldValue } = useFormikContext();
+  const currentFieldValue = getIn(values, fieldPath, []);
+  React.useEffect(() => {
+    if (!showEmptyValue) return;
+    if (!_isEmpty(currentFieldValue)) return;
+    currentFieldValue.push({
+      __key: currentFieldValue.length,
+      ...defaultNewValue,
+    });
+    setFieldValue(fieldPath, currentFieldValue);
+  }, [showEmptyValue, setFieldValue, fieldPath, defaultNewValue]);
 };
 
 export const useDepositApiClient = (
