@@ -5,6 +5,7 @@ import { useFormikContext, getIn } from "formik";
 import _omit from "lodash/omit";
 import _pick from "lodash/pick";
 import _isEmpty from "lodash/isEmpty";
+import _isObject from "lodash/isObject";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { relativeUrl } from "../util";
 
@@ -12,12 +13,12 @@ const extractFEErrorMessages = (obj) => {
   const errorMessages = [];
 
   const traverse = (obj) => {
-    for (const key in obj) {
-      if (typeof obj[key] === "string") {
-        errorMessages.push(obj[key]);
-      } else if (Array.isArray(obj[key])) {
-        obj[key].forEach((item) => traverse(item));
-      } else if (typeof obj[key] === "object") {
+    if (typeof obj === "string") {
+      errorMessages.push(obj);
+    } else if (Array.isArray(obj)) {
+      obj.forEach((item) => traverse(item));
+    } else if (typeof obj === "object") {
+      for (const key in obj) {
         traverse(obj[key]);
       }
     }
@@ -65,11 +66,28 @@ export const useShowEmptyValue = (
   React.useEffect(() => {
     if (!showEmptyValue) return;
     if (!_isEmpty(currentFieldValue)) return;
-    currentFieldValue.push({
-      __key: currentFieldValue.length,
-      ...defaultNewValue,
-    });
-    setFieldValue(fieldPath, currentFieldValue);
+    if (defaultNewValue === undefined) {
+      console.error(
+        "Default value for new input must be provided. Field: ",
+        fieldPath
+      );
+      return;
+    }
+    if (!fieldPath) {
+      console.error("Fieldpath must be provided");
+      return;
+    }
+    // to be used with invenio array fields that always push objects and add the __key property
+    if (!_isEmpty(defaultNewValue) && _isObject(defaultNewValue)) {
+      currentFieldValue.push({
+        __key: currentFieldValue.length,
+        ...defaultNewValue,
+      });
+      setFieldValue(fieldPath, currentFieldValue);
+    } else if (typeof defaultNewValue === "string") {
+      currentFieldValue.push(defaultNewValue);
+      setFieldValue(fieldPath, currentFieldValue);
+    }
   }, [showEmptyValue, setFieldValue, fieldPath, defaultNewValue]);
 };
 
@@ -172,7 +190,15 @@ export const useDepositApiClient = (
   async function publish() {
     // call save and if save returns false, exit
     const saveResult = await save();
-    if (!saveResult) return;
+    if (!saveResult) {
+      setFieldValue(
+        "BEvalidationErrors.errorMessage",
+        i18next.t(
+          "Draft was saved but could not be published due to following validation errors"
+        )
+      );
+      return;
+    }
     // imperative form validation, if fails exit
     const FEvalidationErrors = await validateForm();
     // show also front end validation errors grouped on the top similar to BE validation errors for consistency
