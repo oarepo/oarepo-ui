@@ -20,7 +20,6 @@ export const I18nRichInputField = ({
     <GroupField fieldPath={fieldPath} optimized>
       <LanguageSelectField
         fieldPath={`${fieldPath}.lang`}
-        placeholder=""
         required
         width={lngFieldWidth}
         usedLanguages={usedLanguages}
@@ -31,7 +30,6 @@ export const I18nRichInputField = ({
           editorConfig={editorConfig}
           // TODO: hacky fix for SUI alignment bug for case with
           // field groups with empty field label on one of inputs
-
           className={`${!label ? "mt-25" : ""}`}
           fieldPath={`${fieldPath}.value`}
           label={
