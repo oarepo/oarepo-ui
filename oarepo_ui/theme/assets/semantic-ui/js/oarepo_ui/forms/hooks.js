@@ -1,7 +1,9 @@
 import * as React from "react";
 import { FormConfigContext } from "./contexts";
 import { OARepoDepositApiClient, OARepoDepositSerializer } from "../api";
-import { useFormikContext } from "formik";
+import { useFormikContext, getIn } from "formik";
+import _get from "lodash/get"
+import _set from "lodash/set"
 import _omit from "lodash/omit";
 import _pick from "lodash/pick";
 import _isEmpty from "lodash/isEmpty";
@@ -17,6 +19,14 @@ export const useFormConfig = () => {
   }
   return context;
 };
+
+export const useDefaultLocale = () => {
+  const {
+    formConfig: { default_locale },
+  } = useFormConfig();
+
+  return { defaultLocale: default_locale }
+}
 
 export const useVocabularyOptions = (vocabularyType) => {
   const {
@@ -34,6 +44,16 @@ export const useConfirmationModal = () => {
 
   return { isModalOpen, handleCloseModal, handleOpenModal };
 };
+
+export const useFormFieldValue = ({ fieldPath, subValuesPath, defaultValue, subValuesUnique = true }) => {
+  const usedSubValues = (value) =>
+    value && typeof Array.isArray(value)
+      ? value.map((val) => _get(val, "lang")) || []
+      : [];
+  const defaultNewValue = (initialVal, usedSubValues = []) => _set({...initialVal}, subValuesPath, !usedSubValues?.includes(defaultValue) || !subValuesUnique ? defaultValue : "")
+
+  return { usedSubValues, defaultNewValue }
+}
 
 export const useDepositApiClient = (
   baseApiClient,
@@ -71,7 +91,7 @@ export const useDepositApiClient = (
     ? new baseApiClient(createUrl, recordSerializer)
     : new OARepoDepositApiClient(createUrl, recordSerializer);
 
-  async function save() {
+  async function save () {
     let response;
 
     setSubmitting(true);
@@ -131,7 +151,7 @@ export const useDepositApiClient = (
     }
   }
 
-  async function publish() {
+  async function publish () {
     // call save and if save returns false, exit
     const saveResult = await save();
     if (!saveResult) return;
@@ -176,11 +196,11 @@ export const useDepositApiClient = (
     }
   }
 
-  async function read(recordUrl) {
+  async function read (recordUrl) {
     return await apiClient.readDraft({ self: recordUrl });
   }
 
-  async function _delete(redirectUrl) {
+  async function _delete (redirectUrl) {
     if (!redirectUrl)
       throw new Error(
         "You must provide url where to be redirected after deleting a draft"

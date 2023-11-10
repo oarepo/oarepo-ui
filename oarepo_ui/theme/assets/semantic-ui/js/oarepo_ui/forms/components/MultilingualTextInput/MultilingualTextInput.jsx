@@ -6,8 +6,12 @@ import {
   I18nTextInputField,
   I18nRichInputField,
   ArrayFieldItem,
+  useDefaultLocale,
+  useFormFieldValue,
 } from "@js/oarepo_ui";
 import { i18next } from "@translations/oarepo_ui/i18next";
+import { useFormikContext, getIn } from "formik";
+import _get from "lodash/get";
 
 export const MultilingualTextInput = ({
   fieldPath,
@@ -24,10 +28,21 @@ export const MultilingualTextInput = ({
   lngFieldWidth,
   ...uiProps
 }) => {
+  const { defaultLocale } = useDefaultLocale();
+  const { values } = useFormikContext();
+  const { usedSubValues, defaultNewValue } = useFormFieldValue({
+    defaultValue: defaultLocale,
+    fieldPath,
+    subValuesPath: "lang",
+  });
+  const value = getIn(values, fieldPath);
+  const usedLanguages = usedSubValues(value)
+  const newValue = defaultNewValue(emptyNewInput, usedLanguages);
+
   return (
     <ArrayField
       addButtonLabel={addButtonLabel}
-      defaultNewValue={emptyNewInput}
+      defaultNewValue={newValue}
       fieldPath={fieldPath}
       label={
         <FieldLabel htmlFor={fieldPath} icon={labelIcon ?? ""} label={label} />
@@ -52,7 +67,7 @@ export const MultilingualTextInput = ({
                   editorConfig={editorConfig}
                   optimized
                   required={required}
-                  usedLanguages={array.map((v) => v.lang)}
+                  usedLanguages={usedLanguages}
                   lngFieldWidth={lngFieldWidth}
                   {...uiProps}
                 />
@@ -62,7 +77,7 @@ export const MultilingualTextInput = ({
                   label={textFieldLabel}
                   labelIcon={textFieldIcon}
                   required={required}
-                  usedLanguages={array.map((v) => v.lang)}
+                  usedLanguages={usedLanguages}
                   lngFieldWidth={lngFieldWidth}
                   {...uiProps}
                 />
