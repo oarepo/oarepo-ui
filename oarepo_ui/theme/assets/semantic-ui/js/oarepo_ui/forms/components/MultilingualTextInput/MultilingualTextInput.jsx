@@ -43,7 +43,7 @@ export const MultilingualTextInput = ({
   return (
     <ArrayField
       addButtonLabel={addButtonLabel}
-      defaultNewValue={getNewValue(defaultNewValue, usedLanguages);}
+      defaultNewValue={getNewValue(defaultNewValue, usedLanguages)}
       fieldPath={fieldPath}
       label={
         <FieldLabel htmlFor={fieldPath} icon={labelIcon ?? ""} label={label} />
