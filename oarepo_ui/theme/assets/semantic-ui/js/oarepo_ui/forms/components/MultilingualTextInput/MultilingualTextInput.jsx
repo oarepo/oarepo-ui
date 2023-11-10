@@ -11,7 +11,6 @@ import {
 } from "@js/oarepo_ui";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { useFormikContext, getIn } from "formik";
-import _get from "lodash/get";
 
 export const MultilingualTextInput = ({
   fieldPath,
@@ -36,7 +35,7 @@ export const MultilingualTextInput = ({
     subValuesPath: "lang",
   });
   const value = getIn(values, fieldPath);
-  const usedLanguages = usedSubValues(value)
+  const usedLanguages = usedSubValues(value);
   const newValue = defaultNewValue(emptyNewInput, usedLanguages);
 
   return (

@@ -1,9 +1,9 @@
 import * as React from "react";
 import { FormConfigContext } from "./contexts";
 import { OARepoDepositApiClient, OARepoDepositSerializer } from "../api";
-import { useFormikContext, getIn } from "formik";
-import _get from "lodash/get"
-import _set from "lodash/set"
+import { useFormikContext } from "formik";
+import _get from "lodash/get";
+import _set from "lodash/set";
 import _omit from "lodash/omit";
 import _pick from "lodash/pick";
 import _isEmpty from "lodash/isEmpty";
@@ -50,7 +50,7 @@ export const useFormFieldValue = ({ fieldPath, subValuesPath, defaultValue, subV
     value && typeof Array.isArray(value)
       ? value.map((val) => _get(val, "lang")) || []
       : [];
-  const defaultNewValue = (initialVal, usedSubValues = []) => _set({...initialVal}, subValuesPath, !usedSubValues?.includes(defaultValue) || !subValuesUnique ? defaultValue : "")
+  const defaultNewValue = (initialVal, usedSubValues = []) => _set({ ...initialVal }, subValuesPath, !usedSubValues?.includes(defaultValue) || !subValuesUnique ? defaultValue : "")
 
   return { usedSubValues, defaultNewValue }
 }
