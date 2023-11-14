@@ -870,18 +870,18 @@
 }
 .react-datepicker__close-icon::after {
   cursor: pointer;
-  background-color: #216ba5;
-  color: #fff;
   border-radius: 50%;
   height: 16px;
   width: 16px;
   padding: 2px;
-  font-size: 12px;
+  padding-right: 12px;
+  font-size: 18px;
   line-height: 1;
   text-align: center;
   display: table-cell;
   vertical-align: middle;
   content: "×";
+  font-weight: 1000;
 }
 
 .react-datepicker__today-button {
@@ -949,4 +949,34 @@
   width: 1em;
   height: 1em;
   vertical-align: -0.125em;
+}
+
+.datepicker-input {
+  width: 100% !important;
+}
+
+.react-datepicker__tab-loop {
+  .ui.dropdown {
+    background-color: #f0f0f0 !important;
+    .text {
+      background-color: #f0f0f0 !important;
+      color: black !important;
+    }
+    div.item {
+      font-size: 0.8rem !important;
+      // background: white !important;
+      span.text {
+        background: white !important;
+      }
+    }
+    div.active.selected.item {
+      background-color: white !important;
+    }
+  }
+}
+
+.error.field.datepicker-wrapper-SUI-input .ui.dropdown .menu {
+  div.selected.active.item {
+    background-color: white !important;
+  }
 }
