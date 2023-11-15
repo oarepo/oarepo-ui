@@ -1,6 +1,7 @@
 import React from "react";
 import { Dropdown } from "semantic-ui-react";
 import PropTypes from "prop-types";
+import { i18next } from "@translations/oarepo_ui/i18next";
 
 export const DatePickerHeader = ({
   dateFormat,
@@ -33,7 +34,7 @@ export const DatePickerHeader = ({
             </span>
           </button>
           <span className="react-datepicker__current-month">
-            {monthDate.toLocaleString("cs-CZ", {
+            {monthDate.toLocaleString(i18next.language, {
               month: "long",
               year: "numeric",
             })}

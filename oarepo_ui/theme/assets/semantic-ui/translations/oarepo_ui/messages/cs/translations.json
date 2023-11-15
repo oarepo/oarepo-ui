@@ -28,5 +28,12 @@
   "totalResults_few": "{{count}} výsledky",
   "totalResults_many": "{{count}} výsledků",
   "totalResults_other": "{{count}} výsledků",
-  "Clear all filters": "Vymazat všechny filtry"
+  "Clear all filters": "Vymazat všechny filtry",
+  "YYYY": "RRRR",
+  "YYYY-MM": "RRRR-MM",
+  "YYYY-MM-DD": "RRRR-MM-DD",
+  "Format: YYYY-MM-DD/YYYY-MM-DD, YYYYY-MM/YYYY/MM or YYYY/YYYY.": "Formát: RRRR-MM-DD/RRRR-MM-DD, RRRR-MM/RRRR/MM nebo RRRR/RRRR.",
+  "Format: YYYY-MM-DD, YYYYY-MM or YYYY.": "Formát: RRRR-MM-DD, RRRR-MM nebo RRRR.",
+  "Select date range": "Vyberte časové období",
+  "Select date": "Vyberte datum"
 }

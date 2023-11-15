@@ -9,9 +9,9 @@ import { Form } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 
 const edtfDateFormatOptions = [
-  { value: "yyyy", text: "YYYY" },
-  { value: "yyyy-MM", text: "YYYY-MM" },
-  { value: "yyyy-MM-dd", text: "YYYY-MM-DD" },
+  { value: "yyyy", text: i18next.t("YYYY") },
+  { value: "yyyy-MM", text: i18next.t("YYYY-MM") },
+  { value: "yyyy-MM-dd", text: i18next.t("YYYY-MM-DD") },
 ];
 
 const useInitialDateFormat = (fieldValue) => {
@@ -65,6 +65,7 @@ export const DaterangePicker = ({
   icon,
   helpText,
   required,
+  placeholderText,
   ...datePickerProps
 }) => {
   const { setFieldValue } = useFormikContext();
@@ -98,6 +99,7 @@ export const DaterangePicker = ({
       >
         <DatePicker
           {...field}
+          className="datepicker-input"
           isClearable
           selected={dates[0] ?? null}
           startDate={dates[0] ?? null}
@@ -116,8 +118,8 @@ export const DaterangePicker = ({
               {...props}
             />
           )}
+          placeholderText={placeholderText}
           {...datePickerProps}
-          className="datepicker-input"
         />
       </Form.Input>
       {helpText && <label className="helptext">{helpText}</label>}
@@ -133,14 +135,16 @@ DaterangePicker.propTypes = {
   helpText: PropTypes.string,
   datePickerProps: PropTypes.object,
   required: PropTypes.bool,
+  placeholderText: PropTypes.string,
 };
 
 DaterangePicker.defaultProps = {
   icon: "calendar",
   helpText: i18next.t(
-    "Write down the time period in which the data collection took place/took place. If it is not a range, choose same date twice."
+    "Format: YYYY-MM-DD/YYYY-MM-DD, YYYYY-MM/YYYY/MM or YYYY/YYYY."
   ),
   required: false,
+  placeholderText: i18next.t("Select date range"),
 };
 
 export const SingleDatePicker = ({
@@ -150,6 +154,7 @@ export const SingleDatePicker = ({
   icon,
   helpText,
   required,
+  placeholderText,
   ...datePickerProps
 }) => {
   const { setFieldValue } = useFormikContext();
@@ -173,6 +178,7 @@ export const SingleDatePicker = ({
           selected={
             deserializeDate(field?.value) ? deserializeDate(field?.value) : null
           }
+          className="datepicker-input"
           isClearable
           onChange={onChange}
           showYearPicker={dateFormat === "yyyy"}
@@ -188,8 +194,8 @@ export const SingleDatePicker = ({
               {...props}
             />
           )}
+          placeholderText={placeholderText}
           {...datePickerProps}
-          className="datepicker-input"
         />
       </Form.Input>
       {helpText && <label className="helptext">{helpText}</label>}
@@ -205,12 +211,12 @@ SingleDatePicker.propTypes = {
   helpText: PropTypes.string,
   datePickerProps: PropTypes.object,
   required: PropTypes.bool,
+  placeholderText: PropTypes.string,
 };
 
 SingleDatePicker.defaultProps = {
   icon: "calendar",
-  helpText: i18next.t(
-    "If the dataset has been published elsewhere, use the date of first publication. You can also specify a future publication date (for embargo). If you do not enter a date, the system will automatically fill the date when the record is published. Format: YYYY-MM-DD, YYYYY-MM or YYYYY."
-  ),
+  helpText: i18next.t("Format: YYYY-MM-DD, YYYYY-MM or YYYY."),
   required: false,
+  placeholderText: i18next.t("Select date"),
 };

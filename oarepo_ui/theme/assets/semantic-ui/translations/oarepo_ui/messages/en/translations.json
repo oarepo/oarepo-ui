@@ -25,5 +25,12 @@
   "Sort": "Sort",
   "totalResults_one": "{{count}} result",
   "totalResults_other": "{{count}} results",
-  "Clear all filters": "Clear all filters"
+  "Clear all filters": "Clear all filters",
+  "YYYY": "YYYY",
+  "YYYY-MM": "YYYY-MM",
+  "YYYY-MM-DD": "YYYY-MM-DD",
+  "Format: YYYY-MM-DD/YYYY-MM-DD, YYYYY-MM/YYYY/MM or YYYY/YYYY.": "Format: YYYY-MM-DD/YYYY-MM-DD, YYYY-MM/YYYY/MM or YYYY/YYYY.",
+  "Format: YYYY-MM-DD, YYYYY-MM or YYYY.": "Format: YYYY-MM-DD, YYYY-MM or YYYY.",
+  "Select date range": "Select date range",
+  "Select date": "Select date"
 }
