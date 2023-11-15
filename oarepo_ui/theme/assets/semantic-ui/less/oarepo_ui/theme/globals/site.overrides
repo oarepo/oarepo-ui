@@ -958,25 +958,46 @@
 .react-datepicker__tab-loop {
   .ui.dropdown {
     background-color: #f0f0f0 !important;
-    .text {
-      background-color: #f0f0f0 !important;
-      color: black !important;
-    }
+
     div.item {
       font-size: 0.8rem !important;
-      // background: white !important;
-      span.text {
-        background: white !important;
-      }
-    }
-    div.active.selected.item {
-      background-color: white !important;
     }
   }
 }
 
 .error.field.datepicker-wrapper-SUI-input .ui.dropdown .menu {
   div.selected.active.item {
-    background-color: white !important;
+    background-color: #f0f0f0 !important;
+    span.text {
+      background-color: inherit !important;
+    }
+  }
+}
+
+.error.field.datepicker-wrapper-SUI-input {
+  .react-datepicker__header.react-datepicker__header--custom {
+    div.divider.text {
+      background-color: #f0f0f0 !important;
+      color: black !important;
+    }
+    div.item,
+    span.text {
+      color: black !important;
+      background-color: white !important;
+    }
+
+    div.item:hover {
+      color: black !important;
+      background-color: #f0f0f0 !important;
+      span.text {
+        color: inherit !important;
+        background-color: inherit !important;
+      }
+    }
+
+    div.selected.active.item {
+      color: black !important;
+      background-color: #f0f0f0 !important;
+    }
   }
 }

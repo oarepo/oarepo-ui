@@ -94,7 +94,6 @@ export const DatePickerHeader = ({
         </div>
       )}
       <div>
-        {/*TODO: semantic UI dropdown items weird styling - maybe make regular dropdown component from scratch */}
         <Dropdown
           options={edtfDateFormatOptions}
           onChange={(e, data) => setDateFormat(data.value)}

@@ -37,9 +37,10 @@ const useInitialDateFormat = (fieldValue) => {
 
 const allEmptyStrings = (arr) => arr.every((element) => element === "");
 
+const pad = (value) => (value < 10 ? `0${value}` : value);
+
 const serializeDate = (dateObj, dateFormat) => {
   if (dateObj === null) return "";
-  const pad = (value) => (value < 10 ? `0${value}` : value);
 
   if (dateFormat === "yyyy") return `${dateObj.getFullYear()}`;
   if (dateFormat === "yyyy-MM")
@@ -58,7 +59,7 @@ const deserializeDate = (edtfDateString) => {
   }
 };
 
-export const DaterangePicker = ({
+export const EDTFDaterangePicker = ({
   fieldPath,
   label,
   htmlFor,
@@ -127,7 +128,7 @@ export const DaterangePicker = ({
   );
 };
 
-DaterangePicker.propTypes = {
+EDTFDaterangePicker.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   htmlFor: PropTypes.string,
@@ -138,7 +139,7 @@ DaterangePicker.propTypes = {
   placeholderText: PropTypes.string,
 };
 
-DaterangePicker.defaultProps = {
+EDTFDaterangePicker.defaultProps = {
   icon: "calendar",
   helpText: i18next.t(
     "Format: YYYY-MM-DD/YYYY-MM-DD, YYYYY-MM/YYYY/MM or YYYY/YYYY."
@@ -147,7 +148,7 @@ DaterangePicker.defaultProps = {
   placeholderText: i18next.t("Select date range"),
 };
 
-export const SingleDatePicker = ({
+export const EDTFSingleDatePicker = ({
   fieldPath,
   label,
   htmlFor,
@@ -203,7 +204,7 @@ export const SingleDatePicker = ({
   );
 };
 
-SingleDatePicker.propTypes = {
+EDTFSingleDatePicker.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   htmlFor: PropTypes.string,
@@ -214,7 +215,7 @@ SingleDatePicker.propTypes = {
   placeholderText: PropTypes.string,
 };
 
-SingleDatePicker.defaultProps = {
+EDTFSingleDatePicker.defaultProps = {
   icon: "calendar",
   helpText: i18next.t("Format: YYYY-MM-DD, YYYYY-MM or YYYY."),
   required: false,

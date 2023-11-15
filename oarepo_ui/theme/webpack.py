@@ -54,7 +54,6 @@ theme = WebpackThemeBundle(
                 "lodash": "^4.17.0",
                 "react-text-truncate": "^0.19.0",
                 "react-datepicker": "^4.21.0",
-
             },
             devDependencies={},
             aliases={
