@@ -17,6 +17,7 @@
   "Draft saved successfully.": "Draft saved successfully.",
   "Draft published successfully. Redirecting to record's detail page ...": "Draft published successfully. Redirecting to record's detail page ...",
   "Draft deleted successfully. Redirecting to the main page ...": "Draft deleted successfully. Redirecting to the main page ...",
+  "Draft was saved but could not be published due to following validation errors": "Draft was saved but could not be published due to following validation errors:",
   "Start over": "Start over",
   "resultsPerPage": "Results per page",
   "Filters": "Filters",

@@ -57,6 +57,7 @@ I18nTextInputField.propTypes = {
   optimized: PropTypes.bool,
   languageOptions: PropTypes.array,
   lngFieldWidth: PropTypes.number,
+  usedLanguages: PropTypes.array,
 };
 
 I18nTextInputField.defaultProps = {

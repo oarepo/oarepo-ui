@@ -8,6 +8,7 @@ import {
   ArrayFieldItem,
   useDefaultLocale,
   useFormFieldValue,
+  useShowEmptyValue,
 } from "@js/oarepo_ui";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { useFormikContext, getIn } from "formik";
@@ -17,7 +18,7 @@ export const MultilingualTextInput = ({
   label,
   labelIcon,
   required,
-  emptyNewInput,
+  defaultNewValue,
   rich,
   editorConfig,
   textFieldLabel,
@@ -25,23 +26,24 @@ export const MultilingualTextInput = ({
   helpText,
   addButtonLabel,
   lngFieldWidth,
+  showEmptyValue,
   ...uiProps
 }) => {
   const { defaultLocale } = useDefaultLocale();
   const { values } = useFormikContext();
-  const { usedSubValues, defaultNewValue } = useFormFieldValue({
+  const { usedSubValues, defaultNewValue: getNewValue } = useFormFieldValue({
     defaultValue: defaultLocale,
     fieldPath,
     subValuesPath: "lang",
   });
   const value = getIn(values, fieldPath);
   const usedLanguages = usedSubValues(value);
-  const newValue = defaultNewValue(emptyNewInput, usedLanguages);
 
+  useShowEmptyValue(fieldPath, defaultNewValue, showEmptyValue);
   return (
     <ArrayField
       addButtonLabel={addButtonLabel}
-      defaultNewValue={newValue}
+      defaultNewValue={getNewValue(defaultNewValue, usedLanguages)}
       fieldPath={fieldPath}
       label={
         <FieldLabel htmlFor={fieldPath} icon={labelIcon ?? ""} label={label} />
@@ -101,14 +103,18 @@ MultilingualTextInput.propTypes = {
   helpText: PropTypes.string,
   addButtonLabel: PropTypes.string,
   lngFieldWidth: PropTypes.number,
+  rich: PropTypes.bool,
+  defaultNewValue: PropTypes.object,
+  showEmptyValue: PropTypes.bool,
 };
 
 MultilingualTextInput.defaultProps = {
-  emptyNewInput: {
+  defaultNewValue: {
     lang: "",
     value: "",
   },
   rich: false,
   label: undefined,
   addButtonLabel: i18next.t("Add another language"),
+  showEmptyValue: false,
 };
