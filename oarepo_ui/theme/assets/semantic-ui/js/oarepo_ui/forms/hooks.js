@@ -1,14 +1,35 @@
 import * as React from "react";
 import { FormConfigContext } from "./contexts";
 import { OARepoDepositApiClient, OARepoDepositSerializer } from "../api";
-import { useFormikContext } from "formik";
 import _get from "lodash/get";
 import _set from "lodash/set";
+import { useFormikContext, getIn } from "formik";
 import _omit from "lodash/omit";
 import _pick from "lodash/pick";
 import _isEmpty from "lodash/isEmpty";
+import _isObject from "lodash/isObject";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { relativeUrl } from "../util";
+
+const extractFEErrorMessages = (obj) => {
+  const errorMessages = [];
+
+  const traverse = (obj) => {
+    if (typeof obj === "string") {
+      errorMessages.push(obj);
+    } else if (Array.isArray(obj)) {
+      obj.forEach((item) => traverse(item));
+    } else if (typeof obj === "object") {
+      for (const key in obj) {
+        traverse(obj[key]);
+      }
+    }
+  };
+
+  traverse(obj);
+  const uniqueErrorMessages = [...new Set(errorMessages)];
+  return uniqueErrorMessages;
+};
 
 export const useFormConfig = () => {
   const context = React.useContext(FormConfigContext);
@@ -45,7 +66,7 @@ export const useConfirmationModal = () => {
   return { isModalOpen, handleCloseModal, handleOpenModal };
 };
 
-export const useFormFieldValue = ({ fieldPath, subValuesPath, defaultValue, subValuesUnique = true }) => {
+export const useFormFieldValue = ({ subValuesPath, defaultValue, subValuesUnique = true }) => {
   const usedSubValues = (value) =>
     value && typeof Array.isArray(value)
       ? value.map((val) => _get(val, "lang")) || []
@@ -55,12 +76,48 @@ export const useFormFieldValue = ({ fieldPath, subValuesPath, defaultValue, subV
   return { usedSubValues, defaultNewValue }
 }
 
+export const useShowEmptyValue = (
+  fieldPath,
+  defaultNewValue,
+  showEmptyValue
+) => {
+  const { values, setFieldValue } = useFormikContext();
+  const currentFieldValue = getIn(values, fieldPath, []);
+  React.useEffect(() => {
+    if (!showEmptyValue) return;
+    if (!_isEmpty(currentFieldValue)) return;
+    if (defaultNewValue === undefined) {
+      console.error(
+        "Default value for new input must be provided. Field: ",
+        fieldPath
+      );
+      return;
+    }
+    if (!fieldPath) {
+      console.error("Fieldpath must be provided");
+      return;
+    }
+    // to be used with invenio array fields that always push objects and add the __key property
+    if (!_isEmpty(defaultNewValue) && _isObject(defaultNewValue)) {
+      currentFieldValue.push({
+        __key: currentFieldValue.length,
+        ...defaultNewValue,
+      });
+      setFieldValue(fieldPath, currentFieldValue);
+    } else if (typeof defaultNewValue === "string") {
+      currentFieldValue.push(defaultNewValue);
+      setFieldValue(fieldPath, currentFieldValue);
+    }
+  }, [showEmptyValue, setFieldValue, fieldPath, defaultNewValue]);
+};
+
 export const useDepositApiClient = (
   baseApiClient,
   serializer,
   internalFieldsArray = [
     "errors",
-    "validationErrors",
+    "BEvalidationErrors",
+    "FEvalidationErrors",
     "httpErrors",
     "successMessage",
   ],
@@ -78,7 +135,6 @@ export const useDepositApiClient = (
     setFieldError,
     setFieldValue,
   } = formik;
-
   const {
     formConfig: { createUrl },
   } = useFormConfig();
@@ -127,7 +183,7 @@ export const useDepositApiClient = (
           setFieldError(error.field, error.messages[0])
         );
         // here I am setting the state to be used by FormFeedback componene that plugs into the formik's context.
-        setFieldValue("validationErrors", {
+        setFieldValue("BEvalidationErrors", {
           errors: response.errors,
           errorMessage: i18next.t(
             "Draft saved with validation errors. Fields listed below that failed validation were not saved to the server"
@@ -154,10 +210,27 @@ export const useDepositApiClient = (
   async function publish () {
     // call save and if save returns false, exit
     const saveResult = await save();
-    if (!saveResult) return;
+    if (!saveResult) {
+      setFieldValue(
+        "BEvalidationErrors.errorMessage",
+        i18next.t(
+          "Draft was saved but could not be published due to following validation errors"
+        )
+      );
+      return;
+    }
     // imperative form validation, if fails exit
-    const validationErrors = await validateForm();
-    if (!_isEmpty(validationErrors)) return;
+    const FEvalidationErrors = await validateForm();
+    // show also front end validation errors grouped on the top similar to BE validation errors for consistency
+    if (!_isEmpty(FEvalidationErrors)) {
+      setFieldValue("FEvalidationErrors", {
+        errors: extractFEErrorMessages(FEvalidationErrors.metadata),
+        errorMessage: i18next.t(
+          "Draft was saved but could not be published due to following validation errors"
+        ),
+      });
+      return;
+    }
     setSubmitting(true);
     let response;
     try {

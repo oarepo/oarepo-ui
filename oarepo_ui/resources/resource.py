@@ -104,6 +104,7 @@ class RecordsUIResource(UIResource):
         record = deepmerge.always_merger.merge(
             record, copy.deepcopy(self.config.empty_record)
         )
+        record['metadata']={}
         self.run_components(
             "empty_record", resource_requestctx=resource_requestctx, record=record
         )
