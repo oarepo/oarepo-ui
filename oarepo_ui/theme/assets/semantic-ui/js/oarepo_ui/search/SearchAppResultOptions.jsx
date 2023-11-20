@@ -12,7 +12,10 @@ export const SearchAppResultOptions = ({ sortOptions, layoutOptions }) => {
     Object.values(layoutOptions).filter((i) => i).length > 1;
   return (
     <React.Fragment>
-      <ResultCountWithState />
+      {/*
+        TODO: uncomment after full localization of oarepo-ui
+        <ResultCountWithState />
+      */}
       {sortOptions && (
         <Overridable id={buildUID("SearchApp.sort")} options={sortOptions}>
           <SearchAppSort />
