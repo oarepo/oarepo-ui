@@ -50,5 +50,6 @@
     "totalResults_other": "{{count}} results",
     "Clear all filters": "Clear all filters",
     "totalResults": "{{count}} result",
-    "totalResults_plural": "{{count}} results"
+    "totalResults_plural": "{{count}} results",
+    "Open definition": ""
 }

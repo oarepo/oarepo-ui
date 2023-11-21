@@ -54,5 +54,6 @@
     "Clear all filters": "Vymazat všechny filtry",
     "totalResults_0": "{{count}} výsledek",
     "totalResults_1": "{{count}} výsledky",
-    "totalResults_2": "{{count}} výsledků"
+    "totalResults_2": "{{count}} výsledků",
+    "Open definition": ""
 }

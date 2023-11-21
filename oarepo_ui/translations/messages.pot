@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-11-21 11:58+0100\n"
+"POT-Creation-Date: 2023-11-21 14:50+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,6 +49,21 @@ msgstr ""
 msgid "JSON"
 msgstr ""
 
+#: oarepo_ui/templates/DefinitionLink.jinja:2
+msgid "Open definition"
+msgstr ""
+
+#: oarepo_ui/templates/EditForm.jinja:3 oarepo_ui/templates/EditForm.jinja:18
+#: oarepo_ui/templates/oarepo_ui/form.html:16
+#: oarepo_ui/templates/oarepo_ui/form.html:31
+msgid "New item"
+msgstr ""
+
+#: oarepo_ui/templates/EditForm.jinja:5
+#: oarepo_ui/templates/oarepo_ui/form.html:18
+msgid "Edit item "
+msgstr ""
+
 #: oarepo_ui/templates/oarepo_ui/detail.html:20
 msgid "Record details"
 msgstr ""
@@ -58,15 +73,6 @@ msgstr ""
 msgid ""
 "Powered by\n"
 "          <a href=\"%(link)s\">Invenio</a>"
-msgstr ""
-
-#: oarepo_ui/templates/oarepo_ui/form.html:16
-#: oarepo_ui/templates/oarepo_ui/form.html:31
-msgid "New item"
-msgstr ""
-
-#: oarepo_ui/templates/oarepo_ui/form.html:18
-msgid "Edit item "
 msgstr ""
 
 #: oarepo_ui/templates/oarepo_ui/header.html:45

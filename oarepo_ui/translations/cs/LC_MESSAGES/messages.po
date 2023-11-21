@@ -231,3 +231,7 @@ msgid_plural "totalResults"
 msgstr[0] "{{count}} výsledek"
 msgstr[1] "{{count}} výsledky"
 msgstr[2] "{{count}} výsledků"
+
+#: oarepo_ui/templates/DefinitionLink.jinja:2
+msgid "Open definition"
+msgstr "Otevřít definici"

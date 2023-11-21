@@ -215,3 +215,7 @@ msgid "totalResults"
 msgid_plural "totalResults"
 msgstr[0] "{{count}} result"
 msgstr[1] "{{count}} results"
+
+#: oarepo_ui/templates/DefinitionLink.jinja:2
+msgid "Open definition"
+msgstr "Open definition"
