@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: oarepo-ui 4.0.0\n"
 "Report-Msgid-Bugs-To: info@oarepo.org\n"
 "POT-Creation-Date: 2023-10-25 13:15+0200\n"
-"PO-Revision-Date: 2023-10-25 13:35+0200\n"
+"PO-Revision-Date: 2023-11-21 10:28+0100\n"
 "Last-Translator: \n"
 "Language-Team: cs <LL@li.org>\n"
 "Language: cs\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
 "Generated-By: Babel 2.10.3\n"
-"X-Generator: Poedit 3.4\n"
+"X-Generator: Poedit 3.4.1\n"
 
 #: oarepo_ui/for_translations_only.py:4
 msgid "api.draft"
@@ -111,3 +111,127 @@ msgstr "Odhlásit se"
 #: oarepo_ui/templates/oarepo_ui/search.html:2
 msgid "Search results"
 msgstr "Výsledky vyhledávání"
+
+#: oarepo_ui/templates/oarepo_ui/footer.html:7
+#, python-format
+msgid ""
+"Powered by\n"
+"          <a href=\"%(link)s\">Invenio</a>"
+msgstr ""
+"Založeno na repozitářové platformě\n"
+"          <a href=“%(link)s”>Invenio</a>"
+
+msgid "Remove field"
+msgstr "Odstranit položku"
+
+msgid "Language"
+msgstr "Jazyk"
+
+msgid "Search for a language by name (e.g \"eng\", \"fr\" or \"Polish\")"
+msgstr "Hledat jazyk dle jména"
+
+msgid "Add another language"
+msgstr "Přidat další jazyk"
+
+msgid "We couldn't find any matches for "
+msgstr "Nenašli jsme žádné shody pro "
+
+msgid "search"
+msgstr "hledat"
+
+msgid "Choose"
+msgstr "Vybrat"
+
+msgid "Selected records"
+msgstr "Vybrané záznamy"
+
+msgid "Something went wrong..."
+msgstr "Stala se nějaká chyba …"
+
+msgid "Search..."
+msgstr "Hledat …"
+
+msgid "No results found"
+msgstr "Nenalezeny žádné výsledky"
+
+msgid "Loading..."
+msgstr "Nahrávám …"
+
+msgid "Search External Database"
+msgstr "Hledat v externím zdroji"
+
+msgid "Search results from external API"
+msgstr "Hledat v externím zdroji"
+
+msgid ""
+"Draft saved with validation errors. Fields listed below that failed "
+"validation were not saved to the server"
+msgstr ""
+"Pracovní verze záznamu byla uložena s chybami. Následující pole nebyla "
+"uložena, prosím, opravte je a uložte znovu"
+
+msgid "Draft saved successfully."
+msgstr "Pracovní záznam byl uložen."
+
+msgid "Draft published successfully. Redirecting to record's detail page ..."
+msgstr ""
+"Pracovní záznam byl úspěšně publikován. Budete přesměrováni na stránku s "
+"detailem záznamu …"
+
+msgid "Draft deleted successfully. Redirecting to the main page ..."
+msgstr ""
+"Pracovní verze záznamu byla smazána. Za okamžik Vás přesměrujeme na hlavní "
+"stránku."
+
+msgid ""
+"Draft was saved but could not be published due to following validation "
+"errors"
+msgstr ""
+"Koncept byl uložen, ale nemohl být publikován kvůli následujícím chybám "
+"ověření:"
+
+msgid "Start over"
+msgstr "Začít znovu"
+
+msgid "resultsPerPage"
+msgstr "Výsledků na stránku"
+
+msgid "Filters"
+msgstr "Filtry"
+
+msgid "Filter results"
+msgstr "Filtrovat výsledky"
+
+msgid "Sort by"
+msgstr "Řazení"
+
+msgid "Sort"
+msgstr "Řazení"
+
+msgid "Value"
+msgstr "Hodnota"
+
+msgid "totalResults_one"
+msgstr "{{count}} výsledek"
+
+msgid "totalResults_few"
+msgstr "{{count}} výsledky"
+
+msgid "totalResults_many"
+msgstr "{{count}} výsledků"
+
+msgid "totalResults_other"
+msgstr "{{count}} výsledků"
+
+msgid "Clear all filters"
+msgstr "Vymazat všechny filtry"
+
+msgid "totalResults"
+msgid_plural "totalResults"
+msgstr[0] "{{count}} výsledek"
+msgstr[1] "{{count}} výsledky"
+msgstr[2] "{{count}} výsledků"
+
+#: oarepo_ui/templates/DefinitionLink.jinja:2
+msgid "Open definition"
+msgstr "Otevřít definici"
