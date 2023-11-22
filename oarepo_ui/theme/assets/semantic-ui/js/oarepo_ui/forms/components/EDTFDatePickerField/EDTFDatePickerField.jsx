@@ -7,11 +7,12 @@ import PropTypes from "prop-types";
 import { FieldLabel } from "react-invenio-forms";
 import { Form } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
+import _padStart from "lodash/padStart";
 
 const edtfDateFormatOptions = [
   { value: "yyyy", text: i18next.t("YYYY") },
-  { value: "yyyy-MM", text: i18next.t("YYYY-MM") },
-  { value: "yyyy-MM-dd", text: i18next.t("YYYY-MM-DD") },
+  { value: "yyyy-mm", text: i18next.t("YYYY-MM") },
+  { value: "yyyy-mm-dd", text: i18next.t("YYYY-MM-DD") },
 ];
 
 const useInitialDateFormat = (fieldValue) => {
@@ -23,12 +24,12 @@ const useInitialDateFormat = (fieldValue) => {
     if (value.length === 4) {
       dateFormat = "yyyy";
     } else if (value.length === 7) {
-      dateFormat = "yyyy-MM";
+      dateFormat = "yyyy-mm";
     } else {
-      dateFormat = "yyyy-MM-dd";
+      dateFormat = "yyyy-mm-dd";
     }
   } else {
-    dateFormat = "yyyy-MM-dd";
+    dateFormat = "yyyy-mm-dd";
   }
 
   const [initialDateFormat, setInitialDateFormat] = useState(dateFormat);
@@ -37,23 +38,37 @@ const useInitialDateFormat = (fieldValue) => {
 
 const allEmptyStrings = (arr) => arr.every((element) => element === "");
 
-const pad = (value) => (value < 10 ? `0${value}` : value);
-
 const serializeDate = (dateObj, dateFormat) => {
   if (dateObj === null) return "";
 
   if (dateFormat === "yyyy") return `${dateObj.getFullYear()}`;
-  if (dateFormat === "yyyy-MM")
-    return `${dateObj.getFullYear()}-${pad(dateObj.getMonth() + 1)}`;
-  if (dateFormat === "yyyy-MM-dd")
-    return `${dateObj.getFullYear()}-${pad(dateObj.getMonth() + 1)}-${pad(
-      dateObj.getDate()
+  if (dateFormat === "yyyy-mm")
+    return `${dateObj.getFullYear()}-${_padStart(
+      dateObj.getMonth() + 1,
+      2,
+      "0"
     )}`;
+  if (dateFormat === "yyyy-mm-dd")
+    return `${dateObj.getFullYear()}-${_padStart(
+      dateObj.getMonth() + 1,
+      2,
+      "0"
+    )}-${_padStart(dateObj.getDate(), 2, "0")}`;
 };
 
 const deserializeDate = (edtfDateString) => {
   if (edtfDateString) {
-    return new Date(edtfDateString);
+    try {
+      const dateObject = new Date(edtfDateString);
+      // Check if the dateObject is valid
+      if (isNaN(dateObject.getTime())) {
+        throw new Error("Invalid date string");
+      }
+      return dateObject;
+    } catch (error) {
+      console.error("Error creating Date object:", error.message);
+      return null;
+    }
   } else {
     return null;
   }
@@ -93,7 +108,7 @@ export const EDTFDaterangePicker = ({
   return (
     <React.Fragment>
       <Form.Input
-        className="datepicker-wrapper-SUI-input"
+        className="ui datepicker"
         error={meta.error}
         required={required}
         label={<FieldLabel htmlFor={htmlFor} icon={icon} label={label} />}
@@ -107,7 +122,7 @@ export const EDTFDaterangePicker = ({
           endDate={dates[1] ?? null}
           onChange={onChange}
           showYearPicker={dateFormat === "yyyy"}
-          showMonthYearPicker={dateFormat === "yyyy-MM"}
+          showMonthYearPicker={dateFormat === "yyyy-mm"}
           dateFormat={dateFormat}
           selectsRange={true}
           autoComplete="off"
@@ -158,32 +173,30 @@ export const EDTFSingleDatePicker = ({
   placeholderText,
   ...datePickerProps
 }) => {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue, setFieldError } = useFormikContext();
   const [field, meta] = useField(fieldPath);
   const [dateFormat, setDateFormat] = useInitialDateFormat(field?.value);
 
-  const onChange = (dates) => {
-    setFieldValue(fieldPath, serializeDate(dates, dateFormat));
+  const onChange = (date) => {
+    setFieldValue(fieldPath, serializeDate(date, dateFormat));
   };
 
   return (
     <React.Fragment>
       <Form.Input
-        className="datepicker-wrapper-SUI-input"
+        className="ui datepicker"
         error={meta.error}
         required={required}
         label={<FieldLabel htmlFor={fieldPath} icon={icon} label={label} />}
       >
         <DatePicker
           {...field}
-          selected={
-            deserializeDate(field?.value) ? deserializeDate(field?.value) : null
-          }
+          selected={field?.value ? deserializeDate(field?.value) : null}
           className="datepicker-input"
           isClearable
           onChange={onChange}
           showYearPicker={dateFormat === "yyyy"}
-          showMonthYearPicker={dateFormat === "yyyy-MM"}
+          showMonthYearPicker={dateFormat === "yyyy-mm"}
           dateFormat={dateFormat}
           selectsRange={false}
           autoComplete="off"

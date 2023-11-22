@@ -16,10 +16,10 @@ export const DatePickerHeader = ({
 }) => {
   return (
     <div>
-      {(dateFormat === "yyyy-MM" || dateFormat === "yyyy-MM-dd") && (
+      {(dateFormat === "yyyy-mm" || dateFormat === "yyyy-mm-dd") && (
         <div>
           <button
-            aria-label="Previous Month"
+            aria-label={i18next.t("Previous Month")}
             className={
               "react-datepicker__navigation react-datepicker__navigation--previous"
             }
@@ -40,7 +40,7 @@ export const DatePickerHeader = ({
             })}
           </span>
           <button
-            aria-label="Next Month"
+            aria-label={i18next.t("Next Month")}
             className={
               "react-datepicker__navigation react-datepicker__navigation--next"
             }
@@ -59,11 +59,11 @@ export const DatePickerHeader = ({
       {dateFormat === "yyyy" && (
         <div>
           <button
-            aria-label="Previous Month"
+            aria-label={i18next.t("Previous Month")}
             className={
               "react-datepicker__navigation react-datepicker__navigation--previous"
             }
-            onClick={increaseYear}
+            onClick={decreaseYear}
           >
             <span
               className={
@@ -77,11 +77,11 @@ export const DatePickerHeader = ({
             {date.getFullYear()}
           </span>
           <button
-            aria-label="Next Month"
+            aria-label={i18next.t("Next Month")}
             className={
               "react-datepicker__navigation react-datepicker__navigation--next"
             }
-            onClick={decreaseYear}
+            onClick={increaseYear}
           >
             <span
               className={
