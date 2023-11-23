@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: oarepo-ui 4.0.0\n"
 "Report-Msgid-Bugs-To: info@oarepo.org\n"
 "POT-Creation-Date: 2023-10-25 13:15+0200\n"
-"PO-Revision-Date: 2023-09-25 13:33+0200\n"
+"PO-Revision-Date: 2023-11-21 10:30+0100\n"
 "Last-Translator: \n"
-"Language: en\n"
 "Language-Team: en <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: Babel 2.10.3\n"
+"X-Generator: Poedit 3.4.1\n"
 
 #: oarepo_ui/for_translations_only.py:4
 msgid "api.draft"
@@ -60,6 +61,8 @@ msgid ""
 "\n"
 "          <a href=\"%(link)s\">Invenio</a>"
 msgstr ""
+"\n"
+"          <a href=\"%(link)s\">Invenio</a>"
 
 #: oarepo_ui/templates/oarepo_ui/form.html:16
 #: oarepo_ui/templates/oarepo_ui/form.html:31
@@ -68,7 +71,7 @@ msgstr ""
 
 #: oarepo_ui/templates/oarepo_ui/form.html:18
 msgid "Edit item "
-msgstr ""
+msgstr "Edit item "
 
 #: oarepo_ui/templates/oarepo_ui/header.html:45
 msgid "Menu"
@@ -76,7 +79,7 @@ msgstr ""
 
 #: oarepo_ui/templates/oarepo_ui/header.html:64
 msgid "Close menu"
-msgstr ""
+msgstr "Close menu"
 
 #: oarepo_ui/templates/oarepo_ui/header.html:116
 msgid "Requests"
@@ -84,11 +87,11 @@ msgstr ""
 
 #: oarepo_ui/templates/oarepo_ui/header.html:118
 msgid "Inbox"
-msgstr ""
+msgstr "Inbox"
 
 #: oarepo_ui/templates/oarepo_ui/header_login.html:15
 msgid "Log in"
-msgstr ""
+msgstr "Log in"
 
 #: oarepo_ui/templates/oarepo_ui/header_login.html:19
 msgid "Sign up"
@@ -103,9 +106,116 @@ msgstr ""
 #: oarepo_ui/templates/oarepo_ui/header_login.html:95
 #: oarepo_ui/templates/oarepo_ui/header_login.html:102
 msgid "Log out"
-msgstr ""
+msgstr "Log out"
 
 #: oarepo_ui/templates/oarepo_ui/search.html:2
 msgid "Search results"
 msgstr ""
 
+#: oarepo_ui/templates/oarepo_ui/footer.html:7
+#, python-format
+msgid ""
+"Powered by\n"
+"          <a href=\"%(link)s\">Invenio</a>"
+msgstr ""
+
+msgid "Remove field"
+msgstr "Remove field"
+
+msgid "Language"
+msgstr "Language"
+
+msgid "Search for a language by name (e.g \"eng\", \"fr\" or \"Polish\")"
+msgstr "Search for a language by name (e.g \"eng\", \"fr\" or \"Polish\")"
+
+msgid "Add another language"
+msgstr "Add another language"
+
+msgid "We couldn't find any matches for "
+msgstr "We couldn't find any matches for "
+
+msgid "search"
+msgstr "search"
+
+msgid "Choose"
+msgstr "Choose"
+
+msgid "Selected records"
+msgstr "Selected records"
+
+msgid "Something went wrong..."
+msgstr "Something went wrong..."
+
+msgid "Search..."
+msgstr "Search..."
+
+msgid "No results found"
+msgstr "No results found"
+
+msgid "Loading..."
+msgstr "Loading..."
+
+msgid "Search External Database"
+msgstr "Search External Database"
+
+msgid "Search results from external API"
+msgstr "Search results from external API"
+
+msgid ""
+"Draft saved with validation errors. Fields listed below that failed "
+"validation were not saved to the server"
+msgstr ""
+"Draft saved with validation errors. Fields listed below that failed "
+"validation were not saved to the server"
+
+msgid "Draft saved successfully."
+msgstr "Draft saved successfully."
+
+msgid "Draft published successfully. Redirecting to record's detail page ..."
+msgstr "Draft published successfully. Redirecting to record's detail page ..."
+
+msgid "Draft deleted successfully. Redirecting to the main page ..."
+msgstr "Draft deleted successfully. Redirecting to the main page ..."
+
+msgid ""
+"Draft was saved but could not be published due to following validation "
+"errors"
+msgstr ""
+"Draft was saved but could not be published due to following validation "
+"errors:"
+
+msgid "Start over"
+msgstr "Start over"
+
+msgid "resultsPerPage"
+msgstr "Results per page"
+
+msgid "Filters"
+msgstr "Filters"
+
+msgid "Filter results"
+msgstr "Filter results"
+
+msgid "Sort by"
+msgstr "Sort by"
+
+msgid "Sort"
+msgstr "Sort"
+
+msgid "totalResults_one"
+msgstr "{{count}} result"
+
+msgid "totalResults_other"
+msgstr "{{count}} results"
+
+msgid "Clear all filters"
+msgstr "Clear all filters"
+
+msgid "totalResults"
+msgid_plural "totalResults"
+msgstr[0] "{{count}} result"
+msgstr[1] "{{count}} results"
+
+#: oarepo_ui/templates/DefinitionLink.jinja:2
+msgid "Open definition"
+msgstr "Open definition"
