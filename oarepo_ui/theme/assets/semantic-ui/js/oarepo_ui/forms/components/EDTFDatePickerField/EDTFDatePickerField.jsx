@@ -4,10 +4,11 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useField, useFormikContext } from "formik";
 import { DatePickerHeader } from "./DatePickerHeader";
 import PropTypes from "prop-types";
-import { FieldLabel } from "react-invenio-forms";
-import { Form } from "semantic-ui-react";
+import { FieldLabel, TextField, GroupField } from "react-invenio-forms";
+import { Form, Button, Icon } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import _padStart from "lodash/padStart";
+import isBefore from "date-fns/isBefore";
 
 const edtfDateFormatOptions = [
   { value: "yyyy", text: i18next.t("YYYY") },
@@ -66,7 +67,6 @@ const deserializeDate = (edtfDateString) => {
       }
       return dateObject;
     } catch (error) {
-      console.error("Error creating Date object:", error.message);
       return null;
     }
   } else {
@@ -81,13 +81,22 @@ export const EDTFDaterangePicker = ({
   icon,
   helpText,
   required,
-  placeholderText,
+  placeholder,
+  calendarControlButtonClassName,
+  calendarControlIconName,
+  clearIconClassName,
   ...datePickerProps
 }) => {
   const { setFieldValue } = useFormikContext();
-  const [field, meta] = useField(fieldPath);
+  const [field] = useField(fieldPath);
   const [dateFormat, setDateFormat] = useInitialDateFormat(field?.value);
   let dates;
+
+  const handleSelect = (date) => {
+    if (dates[0] && !dates[1] && !isBefore(date, dates[0])) {
+      setIsOpen(false);
+    }
+  };
 
   if (field?.value) {
     dates = field.value.split("/").map((date) => deserializeDate(date));
@@ -95,7 +104,7 @@ export const EDTFDaterangePicker = ({
     dates = [null, null];
   }
 
-  const onChange = (dates) => {
+  const handleChange = (dates) => {
     const serializedDates = dates.map((date) =>
       serializeDate(date, dateFormat)
     );
@@ -105,41 +114,73 @@ export const EDTFDaterangePicker = ({
       setFieldValue(fieldPath, serializedDates.join("/"));
     }
   };
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    setIsOpen(!isOpen);
+  };
+
   return (
-    <React.Fragment>
-      <Form.Input
-        className="ui datepicker"
-        error={meta.error}
-        required={required}
-        label={<FieldLabel htmlFor={htmlFor} icon={icon} label={label} />}
-      >
-        <DatePicker
-          {...field}
-          className="datepicker-input"
-          isClearable
-          selected={dates[0] ?? null}
-          startDate={dates[0] ?? null}
-          endDate={dates[1] ?? null}
-          onChange={onChange}
-          showYearPicker={dateFormat === "yyyy"}
-          showMonthYearPicker={dateFormat === "yyyy-mm"}
-          dateFormat={dateFormat}
-          selectsRange={true}
+    <div className="ui datepicker field">
+      <GroupField>
+        <TextField
+          width={15}
+          fieldPath={fieldPath}
+          required={required}
+          label={<FieldLabel htmlFor={fieldPath} icon={icon} label={label} />}
           autoComplete="off"
-          renderCustomHeader={(props) => (
-            <DatePickerHeader
-              dateFormat={dateFormat}
-              setDateFormat={setDateFormat}
-              edtfDateFormatOptions={edtfDateFormatOptions}
-              {...props}
-            />
-          )}
-          placeholderText={placeholderText}
-          {...datePickerProps}
+          placeholder={placeholder}
+          icon={
+            field?.value ? (
+              <Icon
+                className={clearIconClassName}
+                name="close"
+                onClick={() => setFieldValue(fieldPath, "")}
+              />
+            ) : null
+          }
+          iconPosition="right"
         />
-      </Form.Input>
-      {helpText && <label className="helptext">{helpText}</label>}
-    </React.Fragment>
+        {isOpen && (
+          <DatePicker
+            open={isOpen}
+            onSelect={handleSelect}
+            className="datepicker-input"
+            selected={dates[0] ?? null}
+            startDate={dates[0] ?? null}
+            endDate={dates[1] ?? null}
+            onChange={handleChange}
+            showYearPicker={dateFormat === "yyyy"}
+            showMonthYearPicker={dateFormat === "yyyy-mm"}
+            dateFormat={dateFormat}
+            selectsRange={true}
+            renderCustomHeader={(props) => (
+              <DatePickerHeader
+                dateFormat={dateFormat}
+                setDateFormat={setDateFormat}
+                edtfDateFormatOptions={edtfDateFormatOptions}
+                {...props}
+              />
+            )}
+            {...datePickerProps}
+          />
+        )}
+        <Form.Field>
+          <Button
+            aria-label={i18next.t("Choose a date range")}
+            className={calendarControlButtonClassName}
+            icon
+            onClick={handleClick}
+            type="button"
+          >
+            <Icon name={calendarControlIconName} size="big" />
+          </Button>
+        </Form.Field>
+      </GroupField>
+      <label className="helptext">{helpText}</label>
+    </div>
   );
 };
 
@@ -151,7 +192,10 @@ EDTFDaterangePicker.propTypes = {
   helpText: PropTypes.string,
   datePickerProps: PropTypes.object,
   required: PropTypes.bool,
-  placeholderText: PropTypes.string,
+  placeholder: PropTypes.string,
+  calendarControlButtonClassName: PropTypes.string,
+  calendarControlIconName: PropTypes.string,
+  clearIconClassName: PropTypes.string,
 };
 
 EDTFDaterangePicker.defaultProps = {
@@ -160,7 +204,12 @@ EDTFDaterangePicker.defaultProps = {
     "Format: YYYY-MM-DD/YYYY-MM-DD, YYYYY-MM/YYYY/MM or YYYY/YYYY."
   ),
   required: false,
-  placeholderText: i18next.t("Select date range"),
+  placeholder: i18next.t(
+    "Write a date range or click on the calendar icon to select it"
+  ),
+  calendarControlButtonClassName: "calendar-control-button",
+  calendarControlIconName: "calendar",
+  clearIconClassName: "clear-icon",
 };
 
 export const EDTFSingleDatePicker = ({
@@ -171,49 +220,85 @@ export const EDTFSingleDatePicker = ({
   helpText,
   required,
   placeholderText,
+  calendarControlButtonClassName,
+  calendarControlIconName,
+  clearIconClassName,
   ...datePickerProps
 }) => {
-  const { setFieldValue, setFieldError } = useFormikContext();
-  const [field, meta] = useField(fieldPath);
+  const { setFieldValue } = useFormikContext();
+  const [field] = useField(fieldPath);
   const [dateFormat, setDateFormat] = useInitialDateFormat(field?.value);
 
-  const onChange = (date) => {
+  const handleChange = (date) => {
     setFieldValue(fieldPath, serializeDate(date, dateFormat));
+    setIsOpen(!isOpen);
+  };
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    setIsOpen(!isOpen);
   };
 
   return (
-    <React.Fragment>
-      <Form.Input
-        className="ui datepicker"
-        error={meta.error}
-        required={required}
-        label={<FieldLabel htmlFor={fieldPath} icon={icon} label={label} />}
-      >
-        <DatePicker
-          {...field}
-          selected={field?.value ? deserializeDate(field?.value) : null}
-          className="datepicker-input"
-          isClearable
-          onChange={onChange}
-          showYearPicker={dateFormat === "yyyy"}
-          showMonthYearPicker={dateFormat === "yyyy-mm"}
-          dateFormat={dateFormat}
-          selectsRange={false}
+    <div className="ui datepicker field">
+      <GroupField>
+        <TextField
+          width={15}
+          fieldPath={fieldPath}
+          required={required}
           autoComplete="off"
-          renderCustomHeader={(props) => (
-            <DatePickerHeader
-              dateFormat={dateFormat}
-              setDateFormat={setDateFormat}
-              edtfDateFormatOptions={edtfDateFormatOptions}
-              {...props}
-            />
-          )}
-          placeholderText={placeholderText}
-          {...datePickerProps}
+          label={<FieldLabel htmlFor={fieldPath} icon={icon} label={label} />}
+          icon={
+            field?.value ? (
+              <Icon
+                className={clearIconClassName}
+                name="close"
+                onClick={() => setFieldValue(fieldPath, "")}
+              />
+            ) : null
+          }
         />
-      </Form.Input>
-      {helpText && <label className="helptext">{helpText}</label>}
-    </React.Fragment>
+        {isOpen && (
+          <DatePicker
+            open={isOpen}
+            shouldCloseOnSelect={true}
+            selected={field?.value ? deserializeDate(field?.value) : null}
+            className="datepicker-input"
+            isClearable
+            onChange={handleChange}
+            showYearPicker={dateFormat === "yyyy"}
+            showMonthYearPicker={dateFormat === "yyyy-mm"}
+            dateFormat={dateFormat}
+            selectsRange={false}
+            autoComplete="off"
+            renderCustomHeader={(props) => (
+              <DatePickerHeader
+                dateFormat={dateFormat}
+                setDateFormat={setDateFormat}
+                edtfDateFormatOptions={edtfDateFormatOptions}
+                {...props}
+              />
+            )}
+            placeholderText={placeholderText}
+            {...datePickerProps}
+          />
+        )}
+        <Form.Field>
+          <Button
+            aria-label={i18next.t("Choose a date range")}
+            className={calendarControlButtonClassName}
+            icon
+            onClick={handleClick}
+            type="button"
+          >
+            <Icon name={calendarControlIconName} size="big" />
+          </Button>
+        </Form.Field>
+      </GroupField>
+      <label className="helptext">{helpText}</label>
+    </div>
   );
 };
 
@@ -226,11 +311,19 @@ EDTFSingleDatePicker.propTypes = {
   datePickerProps: PropTypes.object,
   required: PropTypes.bool,
   placeholderText: PropTypes.string,
+  calendarControlButtonClassName: PropTypes.string,
+  calendarControlIconName: PropTypes.string,
+  clearIconClassName: PropTypes.string,
 };
 
 EDTFSingleDatePicker.defaultProps = {
   icon: "calendar",
   helpText: i18next.t("Format: YYYY-MM-DD, YYYYY-MM or YYYY."),
   required: false,
-  placeholderText: i18next.t("Select date"),
+  placeholderText: i18next.t(
+    "Write a date or click on the calendar icon to select it"
+  ),
+  calendarControlButtonClassName: "calendar-control-button",
+  calendarControlIconName: "calendar",
+  clearIconClassName: "clear-icon",
 };
