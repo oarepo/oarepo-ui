@@ -56,10 +56,12 @@ def dump_empty(schema_or_field):
         schema = schema_or_field()
         return {k: dump_empty(v) for (k, v) in schema.fields.items()}
     if isinstance(schema_or_field, fields.List):
-        field = schema_or_field
-        return [dump_empty(field.inner)]
-    if isinstance(schema_or_field, NestedAttribute):
+        # return [dump_empty(schema_or_field.inner)]
+        return []
+    if isinstance(schema_or_field, (NestedAttribute, fields.Nested)):
         field = schema_or_field
         return dump_empty(field.nested)
+    if isinstance(schema_or_field, fields.Str):
+        return ""
 
     return None

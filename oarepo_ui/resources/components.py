@@ -1,7 +1,6 @@
 from flask import current_app
 from invenio_i18n.ext import current_i18n
 from invenio_records_resources.services.records.components import ServiceComponent
-from invenio_records_resources.proxies import current_service_registry
 from oarepo_runtime.datastreams.utils import get_file_service_for_record_service
 
 
@@ -75,15 +74,12 @@ class PermissionsComponent(ServiceComponent):
 
 
 class FilesComponent(ServiceComponent):
-    def before_ui_edit(
-            self, *, record, resource, extra_context, identity, **kwargs
-    ):
+    def before_ui_edit(self, *, record, resource, extra_context, identity, **kwargs):
         file_service = get_file_service_for_record_service(
-            resource.api_service, record=record)
-        files = file_service.list_files(identity, record['id'])
+            resource.api_service, record=record
+        )
+        files = file_service.list_files(identity, record["id"])
         extra_context["files"] = files.to_dict()
 
-    def before_ui_detail(
-            self, **kwargs
-    ):
+    def before_ui_detail(self, **kwargs):
         self.before_ui_edit(**kwargs)

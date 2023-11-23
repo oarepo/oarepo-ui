@@ -2,7 +2,7 @@ from invenio_access.permissions import system_identity
 
 
 def test_ui_resource_create_new(app, record_ui_resource, record_service):
-    assert record_ui_resource.empty_record(None) == {'metadata': {}, 'title': None}
+    assert record_ui_resource.empty_record(None) == {"title": ''}
 
 
 def test_ui_resource_form_config(app, record_ui_resource):
@@ -16,12 +16,12 @@ def test_permissions_on_detail(
     with client.get(f"/simple-model/{simple_record.id}") as c:
         assert c.status_code == 200
         assert (
-            'permissions={&#39;can_edit&#39;: False, &#39;can_new_version&#39;: False, '
- '&#39;can_manage&#39;: False, &#39;can_update_draft&#39;: False, '
- '&#39;can_read_files&#39;: True, &#39;can_review&#39;: False, '
- '&#39;can_view&#39;: False, &#39;can_delete_draft&#39;: False, '
- '&#39;can_manage_files&#39;: False, &#39;can_manage_record_access&#39;: '
- 'False}'
+            "permissions={&#39;can_edit&#39;: False, &#39;can_new_version&#39;: False, "
+            "&#39;can_manage&#39;: False, &#39;can_update_draft&#39;: False, "
+            "&#39;can_read_files&#39;: True, &#39;can_review&#39;: False, "
+            "&#39;can_view&#39;: False, &#39;can_delete_draft&#39;: False, "
+            "&#39;can_manage_files&#39;: False, &#39;can_manage_record_access&#39;: "
+            "False}"
         ) in c.text
 
 
