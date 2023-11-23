@@ -1,5 +1,4 @@
 import copy
-import json
 from functools import partial
 
 import deepmerge
@@ -29,7 +28,7 @@ from oarepo_ui.utils import dump_empty
 # Resource
 #
 from ..proxies import current_oarepo_ui
-from .catalog import get_jinja_template, lazy_string_encoder
+from .catalog import get_jinja_template
 from .config import RecordsUIResourceConfig, UIResourceConfig
 
 request_export_args = request_parser(
@@ -104,7 +103,7 @@ class RecordsUIResource(UIResource):
         record = deepmerge.always_merger.merge(
             record, copy.deepcopy(self.config.empty_record)
         )
-        record['metadata']={}
+        record["metadata"] = {}
         self.run_components(
             "empty_record", resource_requestctx=resource_requestctx, record=record
         )

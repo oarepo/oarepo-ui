@@ -1,9 +1,10 @@
 import os
 import re
 from pathlib import Path
-from jinjax.component import Component
+
 import jinja2
 from jinjax import Catalog
+from jinjax.component import Component
 from jinjax.exceptions import ComponentNotFound
 
 DEFAULT_URL_ROOT = "/static/components/"
@@ -75,7 +76,9 @@ class OarepoCatalog(Catalog):
             f"or one following the pattern {name_dot}*{file_ext}"
         )
 
-    def _get_from_file(self, *, prefix: str, name: str, url_prefix: str, file_ext: str) -> "Component":
+    def _get_from_file(
+        self, *, prefix: str, name: str, url_prefix: str, file_ext: str
+    ) -> "Component":
         root_path, path = self._get_component_path(prefix, name, file_ext=file_ext)
         component = Component(
             name=name,
