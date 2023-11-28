@@ -60,7 +60,10 @@ def dump_empty(schema_or_field):
         return []
     if isinstance(schema_or_field, (NestedAttribute, fields.Nested)):
         field = schema_or_field
-        return dump_empty(field.nested)
+        nested_schema = field.nested
+        if callable(nested_schema):
+            nested_schema = nested_schema()
+        return dump_empty(nested_schema)
     if isinstance(schema_or_field, fields.Str):
         return ""
 
