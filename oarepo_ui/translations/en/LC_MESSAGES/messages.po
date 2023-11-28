@@ -219,3 +219,24 @@ msgstr[1] "{{count}} results"
 #: oarepo_ui/templates/DefinitionLink.jinja:2
 msgid "Open definition"
 msgstr "Open definition"
+
+msgid "YYYY"
+msgstr "YYYY"
+
+msgid "YYYY-MM"
+msgstr "YYYY-MM"
+
+msgid "YYYY-MM-DD"
+msgstr "YYYY-MM-DD"
+
+msgid "Format: YYYY-MM-DD/YYYY-MM-DD, YYYYY-MM/YYYY/MM or YYYY/YYYY."
+msgstr "Format: YYYY-MM-DD/YYYY-MM-DD, YYYY-MM/YYYY/MM or YYYY/YYYY."
+
+msgid "Select date range"
+msgstr "Select date range"
+
+msgid "Format: YYYY-MM-DD, YYYYY-MM or YYYY."
+msgstr "Format: YYYY-MM-DD, YYYY-MM or YYYY."
+
+msgid "Select date"
+msgstr "Select date"

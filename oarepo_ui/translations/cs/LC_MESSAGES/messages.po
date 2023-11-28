@@ -235,3 +235,24 @@ msgstr[2] "{{count}} výsledků"
 #: oarepo_ui/templates/DefinitionLink.jinja:2
 msgid "Open definition"
 msgstr "Otevřít definici"
+
+msgid "YYYY"
+msgstr "RRRR"
+
+msgid "YYYY-MM"
+msgstr "RRRR-MM"
+
+msgid "YYYY-MM-DD"
+msgstr "RRRR-MM-DD"
+
+msgid "Format: YYYY-MM-DD/YYYY-MM-DD, YYYYY-MM/YYYY/MM or YYYY/YYYY."
+msgstr "Formát: RRRR-MM-DD/RRRR-MM-DD, RRRR-MM/RRRR/MM nebo RRRR/RRRR."
+
+msgid "Select date range"
+msgstr "Vyberte časové období"
+
+msgid "Format: YYYY-MM-DD, YYYYY-MM or YYYY."
+msgstr "Formát: RRRR-MM-DD, RRRR-MM nebo RRRR."
+
+msgid "Select date"
+msgstr "Vyberte datum"
