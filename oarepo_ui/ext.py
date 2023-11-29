@@ -144,6 +144,10 @@ class OARepoUIState:
 
             return add_vite_tags(response)
 
+    @property
+    def vite_server_url(self):
+        return self.app.config["OAREPO_VITE_SERVER_URL"]
+
 
 class OARepoUIExtension:
     def __init__(self, app=None):
@@ -159,5 +163,5 @@ class OARepoUIExtension:
         from . import config
 
         for k in dir(config):
-            if k.startswith("OAREPO_UI_"):
+            if k.startswith("OAREPO_"):
                 app.config.setdefault(k, getattr(config, k))
