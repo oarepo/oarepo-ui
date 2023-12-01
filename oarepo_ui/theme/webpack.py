@@ -54,7 +54,9 @@ theme = WebpackThemeBundle(
                 "lodash": "^4.17.0",
                 "react-text-truncate": "^0.19.0",
             },
-            devDependencies={},
+            devDependencies={
+                "eslint-plugin-i18next":"^6.0.3"
+            },
             aliases={
                 "@translations/oarepo_ui": "translations/oarepo_ui",
                 "../../theme.config$": "less/theme.config",

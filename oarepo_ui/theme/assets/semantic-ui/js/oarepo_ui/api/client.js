@@ -144,8 +144,8 @@ export class OARepoDepositApiClient extends DepositApiClient {
    */
   readDraft = async (draftLinks) => {
     return this._createResponse(() => {
-      const response = this.axiosWithConfig.get(relativeUrl(draftLinks.self))
-      return this.recordSerializer.deserialize(response)
+      const response = this.axiosWithConfig.get(relativeUrl(draftLinks.self));
+      return this.recordSerializer.deserialize(response);
     });
   };
 
@@ -174,5 +174,70 @@ export class OARepoDepositApiClient extends DepositApiClient {
     return this._createResponse(() =>
       this.axiosWithConfig.delete(relativeUrl(draft.links.self))
     );
+  };
+}
+
+export class DepositFileApiClient {
+  constructor(additionalApiConfig) {
+    if (this.constructor === DepositFileApiClient) {
+      throw new Error("Abstract");
+    }
+    const additionalHeaders = _get(additionalApiConfig, "headers", {});
+    this.apiHeaders = Object.assign({}, BASE_HEADERS, additionalHeaders);
+
+    const apiConfig = {
+      withCredentials: true,
+      xsrfCookieName: "csrftoken",
+      xsrfHeaderName: "X-CSRFToken",
+      headers: this.apiHeaders.json,
+    };
+    this.axiosWithConfig = axios.create(apiConfig);
+  }
+
+  isCancelled(error) {
+    return axios.isCancel(error);
+  }
+
+  initializeFileUpload(initializeUploadUrl, filename) {
+    throw new Error("Not implemented.");
+  }
+
+  uploadFile(uploadUrl, file, onUploadProgress, cancel) {
+    throw new Error("Not implemented.");
+  }
+
+  finalizeFileUpload(finalizeUploadUrl) {
+    throw new Error("Not implemented.");
+  }
+
+  deleteFile(fileLinks) {
+    throw new Error("Not implemented.");
+  }
+}
+
+/**
+ * Default File API Client for deposits.
+ */
+export class OARepoDepositFileApiClient extends DepositFileApiClient {
+  _createResponse = async (axiosRequest) => {
+    let response;
+    try {
+      response = await axiosRequest();
+      const data = response.data || {};
+      return data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  getDraftFiles = async (draft) => {
+    return this._createResponse(() => {
+      const response = this.axiosWithConfig.get(relativeUrl(draft.links.files));
+      return response;
+    });
+  };
+
+  deleteFile = (fileLinks) => {
+    return this.axiosWithConfig.delete(fileLinks.self);
   };
 }
