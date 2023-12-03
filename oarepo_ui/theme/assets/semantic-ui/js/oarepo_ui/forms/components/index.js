@@ -8,3 +8,4 @@ export * from "./MultilingualTextInput";
 export * from "./BaseForm";
 export * from "./FormFeedback";
 export * from "./ArrayFieldItem";
+export * from "./EDTFDatePickerField";

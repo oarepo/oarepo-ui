@@ -55,5 +55,12 @@
     "totalResults_0": "{{count}} výsledek",
     "totalResults_1": "{{count}} výsledky",
     "totalResults_2": "{{count}} výsledků",
-    "Open definition": "Otevřít definici"
+    "Open definition": "Otevřít definici",
+    "YYYY": "RRRR",
+    "YYYY-MM": "RRRR-MM",
+    "YYYY-MM-DD": "RRRR-MM-DD",
+    "Format: YYYY-MM-DD/YYYY-MM-DD, YYYYY-MM/YYYY/MM or YYYY/YYYY.": "Formát: RRRR-MM-DD/RRRR-MM-DD, RRRR-MM/RRRR/MM nebo RRRR/RRRR.",
+    "Select date range": "Vyberte časové období",
+    "Format: YYYY-MM-DD, YYYYY-MM or YYYY.": "Formát: RRRR-MM-DD, RRRR-MM nebo RRRR.",
+    "Select date": "Vyberte datum"
 }

@@ -27,6 +27,7 @@ class SimpleMetadataSchema(ma.Schema):
     simple_arr = ma.fields.List(ma.fields.String())
     object_arr = ma.fields.List(ma.fields.Nested(NestedSchema))
     nested_obj = ma.fields.Nested(NestedSchema)
+    nested_via_func = ma.fields.Nested(lambda: NestedSchema())
 
     class Meta:
         unknown = ma.INCLUDE
@@ -57,6 +58,7 @@ def test_empty_dump():
         "links": None,
         "metadata": {
             "nested_obj": {"count": None, "title": "", "valid": None},
+            "nested_via_func": {"count": None, "title": "", "valid": None},
             "object_arr": [],
             "simple_arr": [],
             "title": "",

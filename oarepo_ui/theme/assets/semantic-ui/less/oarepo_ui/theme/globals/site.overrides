@@ -18,7 +18,7 @@
       }
     }
 
-    &:not(.computer):not(.mobile){
+    &:not(.computer):not(.mobile) {
       @media not all and (min-width: @tabletBreakpoint) and (max-width: @largestTabletScreen) {
         display: none !important;
       }

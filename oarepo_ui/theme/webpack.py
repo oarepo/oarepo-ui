@@ -30,6 +30,8 @@ theme = WebpackThemeBundle(
                 "oarepo_ui_search": "./js/oarepo_ui/search/index.js",
                 "oarepo_ui_forms": "./js/oarepo_ui/forms/index.js",
                 "oarepo_ui_theme": "./js/oarepo_ui/theme.js",
+                "oarepo_ui_components": "./js/custom-components.js",
+
             },
             dependencies={
                 "@tanstack/react-query": "^4.32.0",
@@ -53,6 +55,7 @@ theme = WebpackThemeBundle(
                 "yup": "^0.32.0",
                 "lodash": "^4.17.0",
                 "react-text-truncate": "^0.19.0",
+                "react-datepicker": "^4.21.0",
             },
             devDependencies={
                 "eslint-plugin-i18next":"^6.0.3"

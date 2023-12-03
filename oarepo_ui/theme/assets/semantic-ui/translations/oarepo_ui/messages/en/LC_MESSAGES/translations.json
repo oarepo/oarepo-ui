@@ -51,5 +51,12 @@
     "Clear all filters": "Clear all filters",
     "totalResults": "{{count}} result",
     "totalResults_plural": "{{count}} results",
-    "Open definition": "Open definition"
+    "Open definition": "Open definition",
+    "YYYY": "YYYY",
+    "YYYY-MM": "YYYY-MM",
+    "YYYY-MM-DD": "YYYY-MM-DD",
+    "Format: YYYY-MM-DD/YYYY-MM-DD, YYYYY-MM/YYYY/MM or YYYY/YYYY.": "Format: YYYY-MM-DD/YYYY-MM-DD, YYYY-MM/YYYY/MM or YYYY/YYYY.",
+    "Select date range": "Select date range",
+    "Format: YYYY-MM-DD, YYYYY-MM or YYYY.": "Format: YYYY-MM-DD, YYYY-MM or YYYY.",
+    "Select date": "Select date"
 }
