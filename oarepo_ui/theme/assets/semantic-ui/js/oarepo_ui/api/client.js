@@ -230,7 +230,7 @@ export class OARepoDepositFileApiClient extends DepositFileApiClient {
     }
   };
 
-  getDraftFiles = async (draft) => {
+  readDraftFiles = async (draft) => {
     return this._createResponse(() => {
       const response = this.axiosWithConfig.get(relativeUrl(draft.links.files));
       return response;
