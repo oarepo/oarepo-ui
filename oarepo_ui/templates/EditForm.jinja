@@ -26,6 +26,9 @@
         {%- if permissions %}
         <input id="record-permissions" type="hidden" name="record-permissions" value='{{permissions | tojson }}' />
         {%- endif %}
+        {%- if extra_context.get('files') %}
+        <input id="files" type="hidden" name="files" value='{{extra_context.files | tojson }}' />
+        {%- endif %}
         <input id="links" type="hidden" name="links" value='{{ui_links | tojson }}' />
         <div id="form-app"></div>
       {%- endblock form_main_content -%}

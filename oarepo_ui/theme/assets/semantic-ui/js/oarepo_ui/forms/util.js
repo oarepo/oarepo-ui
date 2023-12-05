@@ -21,7 +21,7 @@ import Overridable, {
  */
 
 const queryClient = new QueryClient();
-export function createFormAppInit(
+export function createFormAppInit (
   defaultComponents,
   autoInit = true,
   ContainerComponent = React.Fragment
@@ -30,6 +30,7 @@ export function createFormAppInit(
     const record = getInputFromDOM("record");
     const formConfig = getInputFromDOM("form-config");
     const recordPermissions = getInputFromDOM("record-permissions");
+    const files = getInputFromDOM('files');
     const links = getInputFromDOM("links");
 
     console.debug("Initializing Formik form app...");
@@ -40,6 +41,8 @@ export function createFormAppInit(
       formConfig,
       "\n[recordPermissions]",
       recordPermissions,
+      "\n[files]",
+      files,
       "\n[UI links]",
       links
     );
@@ -51,7 +54,7 @@ export function createFormAppInit(
             <Router>
               <OverridableContext.Provider value={overrideStore.getAll()}>
                 <FormConfigProvider
-                  value={{ record, formConfig, recordPermissions, links }}
+                  value={{ record, formConfig, recordPermissions, files, links }}
                 >
                   <Overridable id="FormApp.layout">
                     <Container fluid>
