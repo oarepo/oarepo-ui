@@ -2,7 +2,7 @@ from invenio_access.permissions import system_identity
 
 
 def test_ui_resource_create_new(app, record_ui_resource, record_service):
-    assert record_ui_resource.empty_record(None) == {"title": ''}
+    assert record_ui_resource.empty_record(None) == {"title": ""}
 
 
 def test_ui_resource_form_config(app, record_ui_resource):
