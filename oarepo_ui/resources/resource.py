@@ -173,8 +173,6 @@ class RecordsUIResource(UIResource):
         )
 
         metadata = dict(serialized_record.get("metadata", serialized_record))
-        _catalog.jinja_env.globals["current_user"] = current_user
-
 
         return _catalog.render(
             "detail",
@@ -185,6 +183,7 @@ class RecordsUIResource(UIResource):
             record=serialized_record,
             extra_context=extra_context,
             ui_links=ui_links,
+            context=_catalog.jinja_env.globals,
         )
 
     def _get_record(self, resource_requestctx, allow_draft=False):
@@ -276,6 +275,7 @@ class RecordsUIResource(UIResource):
             layout=layout,
             ui_links=ui_links,
             extra_context=extra_context,
+            context=_catalog.jinja_env.globals,
         )
 
     @request_read_args
@@ -365,7 +365,6 @@ class RecordsUIResource(UIResource):
 
         _catalog.jinja_env.globals["current_user"] = current_user
 
-
         return _catalog.render(
             "edit",
             __source=source,
@@ -374,6 +373,7 @@ class RecordsUIResource(UIResource):
             extra_context=extra_context,
             ui_links=ui_links,
             data=data,
+            context=_catalog.jinja_env.globals,
         )
 
     @login_required
@@ -422,7 +422,6 @@ class RecordsUIResource(UIResource):
 
         _catalog.jinja_env.globals["current_user"] = current_user
 
-
         return _catalog.render(
             "create",
             __source=source,
@@ -431,6 +430,7 @@ class RecordsUIResource(UIResource):
             extra_context=extra_context,
             ui_links={},
             data=empty_record,
+            context=_catalog.jinja_env.globals,
         )
 
     @property
