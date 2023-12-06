@@ -264,8 +264,6 @@ class RecordsUIResource(UIResource):
 
         search_app_config = search_config(app_id=app_id)
 
-        _catalog.jinja_env.globals["current_user"] = current_user
-
         return _catalog.render(
             "search",
             __source=source,
@@ -363,8 +361,6 @@ class RecordsUIResource(UIResource):
             "search_link": self.config.url_prefix,
         }
 
-        _catalog.jinja_env.globals["current_user"] = current_user
-
         return _catalog.render(
             "edit",
             __source=source,
@@ -419,8 +415,6 @@ class RecordsUIResource(UIResource):
         source = get_jinja_template(
             _catalog, template_def, ["record", "extra_context", "form_config", "data"]
         )
-
-        _catalog.jinja_env.globals["current_user"] = current_user
 
         return _catalog.render(
             "create",
