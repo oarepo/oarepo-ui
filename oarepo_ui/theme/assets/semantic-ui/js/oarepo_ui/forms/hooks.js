@@ -335,7 +335,8 @@ export const useDepositApiClient = (
 export const useDepositFileApiClient = (file, baseApiClient) => {
   const formik = useFormikContext();
 
-  const { isSubmitting, values, setSubmitting, setFieldValue } = formik;
+  const { isSubmitting, values, setSubmitting, setFieldValue, setValues } =
+    formik;
 
   const apiClient = baseApiClient
     ? new baseApiClient()
@@ -344,11 +345,16 @@ export const useDepositFileApiClient = (file, baseApiClient) => {
   async function read(draft) {
     return await apiClient.readDraftFiles(draft);
   }
-
-  async function _delete() {
+  // TODO: The issue is that files state is in FileUploader component, but the delete function is here=> not sure if best to keep delete func in nrdocs in uploader
+  // or like this. Or maybe to keep file state in formik's state similar like we keep the record and then delete this key before submitting
+  async function _delete(file, handleDeletionInUi) {
     setSubmitting(true);
+
     try {
-      let response = await apiClient.deleteFile(file?.links?.self);
+      let response = await apiClient.deleteFile(file?.links);
+      if (response.status === 204 && handleDeletionInUi) {
+        handleDeletionInUi(file);
+      }
       return response;
     } catch (error) {
       setFieldValue(
