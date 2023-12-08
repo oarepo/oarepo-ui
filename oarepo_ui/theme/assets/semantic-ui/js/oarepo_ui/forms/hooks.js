@@ -144,15 +144,19 @@ export const useDepositApiClient = (
     isSubmitting,
     values,
     validateForm,
-    setErrors,
     setSubmitting,
     setValues,
     setFieldError,
     setFieldValue,
+    setErrors,
   } = formik;
   const {
     formConfig: { createUrl },
   } = useFormConfig();
+
+  const [isSaving, setIsSaving] = React.useState(false);
+  const [isPublishing, setIsPublishing] = React.useState(false);
+  const [isDeleting, setIsDeleting] = React.useState(false);
 
   const recordSerializer = serializer
     ? new serializer(internalFieldsArray, keysToRemove)
@@ -166,6 +170,8 @@ export const useDepositApiClient = (
     let response;
 
     setSubmitting(true);
+    setIsSaving(true);
+    setValues(_omit(values, internalFieldsArray));
     setErrors({});
     try {
       response = await apiClient.saveOrCreateDraft(values);
@@ -220,12 +226,14 @@ export const useDepositApiClient = (
       return false;
     } finally {
       setSubmitting(false);
+      setIsSaving(false);
     }
   }
 
   async function publish() {
     // call save and if save returns false, exit
     const saveResult = await save();
+
     if (!saveResult) {
       setFieldValue(
         "BEvalidationErrors.errorMessage",
@@ -248,6 +256,7 @@ export const useDepositApiClient = (
       return;
     }
     setSubmitting(true);
+    setIsPublishing(true);
     let response;
     try {
       response = await apiClient.publishDraft(saveResult);
@@ -282,6 +291,7 @@ export const useDepositApiClient = (
       return false;
     } finally {
       setSubmitting(false);
+      setIsPublishing(false);
     }
   }
 
@@ -295,6 +305,7 @@ export const useDepositApiClient = (
         "You must provide url where to be redirected after deleting a draft"
       );
     setSubmitting(true);
+    setIsDeleting(true);
     try {
       let response = await apiClient.deleteDraft(values);
 
@@ -314,6 +325,7 @@ export const useDepositApiClient = (
       return false;
     } finally {
       setSubmitting(false);
+      setIsDeleting(false);
     }
   }
   // we return also recordSerializer and apiClient instances, if someone wants to use this hook
@@ -321,6 +333,9 @@ export const useDepositApiClient = (
   return {
     values,
     isSubmitting,
+    isSaving,
+    isPublishing,
+    isDeleting,
     save,
     publish,
     read,
@@ -335,7 +350,7 @@ export const useDepositApiClient = (
 export const useDepositFileApiClient = (file, baseApiClient) => {
   const formik = useFormikContext();
 
-  const { isSubmitting, values, setSubmitting, setFieldValue, setValues } =
+  const { isSubmitting, values, setFieldValue, setSubmitting, setValues } =
     formik;
 
   const apiClient = baseApiClient
@@ -348,9 +363,18 @@ export const useDepositFileApiClient = (file, baseApiClient) => {
   // TODO: The issue is that files state is in FileUploader component, but the delete function is here=> not sure if best to keep delete func in nrdocs in uploader
   // or like this. Or maybe to keep file state in formik's state similar like we keep the record and then delete this key before submitting
   async function _delete(file, handleDeletionInUi) {
-    setSubmitting(true);
+    setValues(
+      _omit(values, [
+        "errors",
+        "BEvalidationErrors",
+        "FEvalidationErrors",
+        "httpErrors",
+        "successMessage",
+      ])
+    );
 
     try {
+      setSubmitting(true);
       let response = await apiClient.deleteFile(file?.links);
       if (response.status === 204 && handleDeletionInUi) {
         handleDeletionInUi(file);
