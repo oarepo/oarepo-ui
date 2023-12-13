@@ -9,6 +9,9 @@ on:
         default: 11
         type: string
 
+env:
+  OAREPO_VERSION: ${{ inputs.oarepo }}
+
 jobs:
   build:
     runs-on: ubuntu-latest

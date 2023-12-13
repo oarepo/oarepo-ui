@@ -3,7 +3,6 @@
 set -e
 
 OAREPO_VERSION="${OAREPO_VERSION:-11}"
-OAREPO_VERSION_MAX=$((OAREPO_VERSION+1))
 
 
 VENV=".venv"
@@ -16,7 +15,8 @@ python3 -m venv $VENV
 . $VENV/bin/activate
 pip install -U setuptools pip wheel
 
-pip install "oarepo>=${OAREPO_VERSION},<${OAREPO_VERSION_MAX}"
+echo "Installing oarepo version $OAREPO_VERSION"
+pip install "oarepo==${OAREPO_VERSION}.*"
 pip install -e ".[tests]"
 
 pip uninstall -y uritemplate
