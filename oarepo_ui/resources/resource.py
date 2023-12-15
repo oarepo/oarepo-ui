@@ -32,7 +32,6 @@ if TYPE_CHECKING:
 # Resource
 #
 from ..proxies import current_oarepo_ui
-from .catalog import get_jinja_template
 from .config import RecordsUIResourceConfig, UIResourceConfig
 
 request_export_args = request_parser(
@@ -127,38 +126,30 @@ class RecordsUIResource(UIResource):
     @request_view_args
     def detail(self):
         """Returns item detail page."""
-        """Returns item detail page."""
+
         record = self._get_record(resource_requestctx, allow_draft=False)
+
         # TODO: handle permissions UI way - better response than generic error
         ui_data = self.config.ui_serializer.dump_obj(record.to_dict())
-        # make links absolute
-        if "links" in ui_data:
-            for k, v in list(ui_data["links"].items()):
-                if not isinstance(v, str):
-                    continue
-                if not v.startswith("/") and not v.startswith("https://"):
-                    v = f"/api{self.api_service.config.url_prefix}{v}"
-                    ui_data["links"][k] = v
+        ui_data.setdefault("links", {})
 
+        ui_links = self.expand_detail_links(identity=g.identity, record=record)
         export_path = request.path.split("?")[0]
         if not export_path.endswith("/"):
             export_path += "/"
         export_path += "export"
 
-        _catalog = current_oarepo_ui.catalog
+        ui_data["links"].update(
+            {
+                "ui_links": ui_links,
+                "export_path": export_path,
+                "search_link": self.config.url_prefix,
+            }
+        )
 
-        template_def = self.get_template_def("detail")
-        fields = ["metadata", "ui", "layout", "record", "extra_context"]
-        source = get_jinja_template(_catalog, template_def, fields)
+        self.make_links_absolute(ui_data["links"], self.api_service.config.url_prefix)
 
         extra_context = dict()
-        ui_links = self.expand_detail_links(identity=g.identity, record=record)
-
-        ui_data["extra_links"] = {
-            "ui_links": ui_links,
-            "export_path": export_path,
-            "search_link": self.config.url_prefix,
-        }
 
         self.run_components(
             "before_ui_detail",
@@ -171,16 +162,23 @@ class RecordsUIResource(UIResource):
             ui_links=ui_links,
         )
         metadata = dict(ui_data.get("metadata", ui_data))
-        return _catalog.render(
-            "detail",
-            # TODO: Alzbeta: why is this here? It does not seem to be used anywhere inside the library
-            __source=source,
+        return current_oarepo_ui.catalog.render(
+            self.get_template_def("detail"),
             metadata=metadata,
             ui=dict(ui_data.get("ui", ui_data)),
             record=ui_data,
             extra_context=extra_context,
             ui_links=ui_links,
         )
+
+    def make_links_absolute(self, links, api_prefix):
+        # make links absolute
+        for k, v in list(links.items()):
+            if not isinstance(v, str):
+                continue
+            if not v.startswith("/") and not v.startswith("https://"):
+                v = f"/api{api_prefix}{v}"
+                links[k] = v
 
     def _get_record(self, resource_requestctx, allow_draft=False):
         if allow_draft:
@@ -202,19 +200,6 @@ class RecordsUIResource(UIResource):
 
     @request_search_args
     def search(self):
-        _catalog = current_oarepo_ui.catalog
-
-        template_def = self.get_template_def("search")
-        app_id = template_def["app_id"]
-        fields = [
-            "search_app_config",
-            "ui_layout",
-            "layout",
-            "ui_links",
-            "extra_content",
-        ]
-        source = get_jinja_template(_catalog, template_def, fields)
-
         page = resource_requestctx.args.get("page", 1)
         size = resource_requestctx.args.get("size", 10)
         pagination = Pagination(
@@ -249,11 +234,10 @@ class RecordsUIResource(UIResource):
 
         search_config = partial(self.config.search_app_config, **search_options)
 
-        search_app_config = search_config(app_id=app_id)
+        search_app_config = search_config(app_id=self.config.search_app_id)
 
-        return _catalog.render(
-            "search",
-            __source=source,
+        return current_oarepo_ui.catalog.render(
+            self.get_template_def("search"),
             search_app_config=search_app_config,
             ui_config=self.config,
             ui_resource=self,
@@ -331,20 +315,13 @@ class RecordsUIResource(UIResource):
             extra_context=extra_context,
         )
 
-        template_def = self.get_template_def("edit")
-
-        _catalog = current_oarepo_ui.catalog
-        source = get_jinja_template(
-            _catalog, template_def, ["record", "extra_context", "form_config", "data"]
-        )
         ui_record["extra_links"] = {
             "ui_links": ui_links,
             "search_link": self.config.url_prefix,
         }
 
-        return _catalog.render(
-            "edit",
-            __source=source,
+        return current_oarepo_ui.catalog.render(
+            self.get_template_def("edit"),
             record=ui_record,
             form_config=form_config,
             extra_context=extra_context,
@@ -383,16 +360,9 @@ class RecordsUIResource(UIResource):
             identity=g.identity,
             extra_context=extra_context,
         )
-        template_def = self.get_template_def("create")
-        _catalog = current_oarepo_ui.catalog
 
-        source = get_jinja_template(
-            _catalog, template_def, ["record", "extra_context", "form_config", "data"]
-        )
-
-        return _catalog.render(
-            "create",
-            __source=source,
+        return current_oarepo_ui.catalog.render(
+            self.get_template_def("create"),
             record=empty_record,
             form_config=form_config,
             extra_context=extra_context,

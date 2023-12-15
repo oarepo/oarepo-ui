@@ -87,8 +87,8 @@ class ModelUIResourceConfig(RecordsUIResourceConfig):
     ui_serializer_class = ModelUISerializer
     templates = {
         **RecordsUIResourceConfig.templates,
-        "detail": {"layout": "TestDetail.jinja", "blocks": {}},
-        "search": {"layout": "TestSearch.jinja", "app_id": "SimpleModel.Search"},
+        "detail": "TestDetail",
+        "search": "TestSearch",
     }
 
     components = [BabelComponent, PermissionsComponent]

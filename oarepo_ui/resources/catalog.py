@@ -91,30 +91,6 @@ class OarepoCatalog(Catalog):
         return component
 
 
-def get_jinja_template(_catalog, template_def, fields=None):
-    if fields is None:
-        fields = []
-    jinja_content = None
-    for component in _catalog.jinja_env.loader.searchpath:
-        if component["component_file"].endswith(template_def["layout"]):
-            with open(component["component_file"], "r") as file:
-                jinja_content = file.read()
-    if not jinja_content:
-        raise Exception("%s was not found" % (template_def["layout"]))
-    assembled_template = [jinja_content]
-    if "blocks" in template_def:
-        for blk_name, blk in template_def["blocks"].items():
-            component_content = ""
-            for field in fields:
-                component_content = component_content + "%s={%s} " % (field, field)
-            component_str = "<%s %s> </%s>" % (blk, component_content, blk)
-            assembled_template.append(
-                "{%% block %s %%}%s{%% endblock %%}" % (blk_name, component_str)
-            )
-    assembled_template = "\n".join(assembled_template)
-    return assembled_template
-
-
 def lazy_string_encoder(obj):
     if isinstance(obj, list):
         return [lazy_string_encoder(item) for item in obj]

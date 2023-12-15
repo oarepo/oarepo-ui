@@ -60,6 +60,9 @@ class RecordsUIResourceConfig(UIResourceConfig):
     api_service = None
     """Name of the API service as registered inside the service registry"""
 
+    search_app_id = None
+    """ID of the app used for rendering the search config"""
+
     templates = {
         "detail": None,
         "search": None,
