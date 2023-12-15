@@ -61,16 +61,12 @@ class RecordsUIResourceConfig(UIResourceConfig):
     """Name of the API service as registered inside the service registry"""
 
     templates = {
-        "detail": {
-            "layout": "oarepo_ui/detail.html",
-        },
-        "search": {
-            "layout": "oarepo_ui/search.html",
-        },
-        "edit": {"layout": "oarepo_ui/form.html"},
-        "create": {"layout": "oarepo_ui/form.html"},
+        "detail": None,
+        "search": None,
+        "edit": None,
+        "create": None,
     }
-    layout = "sample"
+    """Templates used for rendering the UI. It is a name of a jinjax macro that renders the UI"""
 
     empty_record = {}
 

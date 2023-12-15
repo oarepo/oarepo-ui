@@ -1,5 +1,6 @@
 import copy
 from functools import partial
+from typing import Iterator, TYPE_CHECKING
 
 import deepmerge
 from flask import abort, g, redirect, request
@@ -23,6 +24,9 @@ from invenio_records_resources.resources.records.resource import (
 from invenio_records_resources.services import LinksTemplate
 
 from oarepo_ui.utils import dump_empty
+
+if TYPE_CHECKING:
+    from .components import UIResourceComponent
 
 #
 # Resource
@@ -56,7 +60,7 @@ class UIResource(Resource):
     # Pluggable components
     #
     @property
-    def components(self):
+    def components(self) -> Iterator["UIResourceComponent"]:
         """Return initialized service components."""
         return (c(self) for c in self.config.components or [])
 
@@ -96,27 +100,27 @@ class RecordsUIResource(UIResource):
 
     def empty_record(self, resource_requestctx, **kwargs):
         """Create an empty record with default values."""
-        record = dump_empty(self.api_config.schema)
+        empty_data = dump_empty(self.api_config.schema)
         files_field = getattr(self.api_config.record_cls, "files", None)
         if files_field and isinstance(files_field, FilesField):
-            record["files"] = {"enabled": False}
-        record = deepmerge.always_merger.merge(
-            record, copy.deepcopy(self.config.empty_record)
+            empty_data["files"] = {"enabled": False}
+        empty_data = deepmerge.always_merger.merge(
+            empty_data, copy.deepcopy(self.config.empty_record)
         )
         self.run_components(
-            "empty_record", resource_requestctx=resource_requestctx, record=record
+            "empty_record", resource_requestctx=resource_requestctx, empty_data=empty_data
         )
-        return record
+        return empty_data
 
     def as_blueprint(self, **options):
         blueprint = super().as_blueprint(**options)
-        blueprint.app_context_processor(lambda: self.register_context_processor())
+        blueprint.app_context_processor(lambda: self.fill_jinja_context())
         return blueprint
 
-    def register_context_processor(self):
+    def fill_jinja_context(self):
         """function providing flask template app context processors"""
         ret = {}
-        self.run_components("register_context_processor", context_processors=ret)
+        self.run_components("fill_jinja_context", context=ret)
         return ret
 
     @request_read_args
@@ -126,32 +130,31 @@ class RecordsUIResource(UIResource):
         """Returns item detail page."""
         record = self._get_record(resource_requestctx, allow_draft=False)
         # TODO: handle permissions UI way - better response than generic error
-        serialized_record = self.config.ui_serializer.dump_obj(record.to_dict())
+        ui_data = self.config.ui_serializer.dump_obj(record.to_dict())
         # make links absolute
-        if "links" in serialized_record:
-            for k, v in list(serialized_record["links"].items()):
+        if "links" in ui_data:
+            for k, v in list(ui_data["links"].items()):
                 if not isinstance(v, str):
                     continue
                 if not v.startswith("/") and not v.startswith("https://"):
                     v = f"/api{self.api_service.config.url_prefix}{v}"
-                    serialized_record["links"][k] = v
+                    ui_data["links"][k] = v
 
         export_path = request.path.split("?")[0]
         if not export_path.endswith("/"):
             export_path += "/"
         export_path += "export"
 
-        layout = current_oarepo_ui.get_layout(self.get_layout_name())
         _catalog = current_oarepo_ui.catalog
 
-        template_def = self.get_template_def("detail")
+        template_def =
         fields = ["metadata", "ui", "layout", "record", "extra_context"]
         source = get_jinja_template(_catalog, template_def, fields)
 
         extra_context = dict()
         ui_links = self.expand_detail_links(identity=g.identity, record=record)
 
-        serialized_record["extra_links"] = {
+        ui_data["extra_links"] = {
             "ui_links": ui_links,
             "export_path": export_path,
             "search_link": self.config.url_prefix,
@@ -159,27 +162,22 @@ class RecordsUIResource(UIResource):
 
         self.run_components(
             "before_ui_detail",
-            resource=self,
-            record=serialized_record,
+            record=record,
+            ui_data=ui_data,
             identity=g.identity,
             extra_context=extra_context,
             args=resource_requestctx.args,
             view_args=resource_requestctx.view_args,
             ui_links=ui_links,
-            ui_config=self.config,
-            ui_resource=self,
-            layout=layout,
-            component_key="search",
         )
-
-        metadata = dict(serialized_record.get("metadata", serialized_record))
+        metadata = dict(ui_data.get("metadata", ui_data))
         return _catalog.render(
             "detail",
+            # TODO: Alzbeta: why is this here? It does not seem to be used anywhere inside the library
             __source=source,
             metadata=metadata,
-            ui=dict(serialized_record.get("ui", serialized_record)),
-            layout=dict(layout),
-            record=serialized_record,
+            ui=dict(ui_data.get("ui", ui_data)),
+            record=ui_data,
             extra_context=extra_context,
             ui_links=ui_links,
         )
@@ -217,8 +215,6 @@ class RecordsUIResource(UIResource):
         ]
         source = get_jinja_template(_catalog, template_def, fields)
 
-        layout = current_oarepo_ui.get_layout(self.get_layout_name())
-
         page = resource_requestctx.args.get("page", 1)
         size = resource_requestctx.args.get("size", 10)
         pagination = Pagination(
@@ -239,22 +235,15 @@ class RecordsUIResource(UIResource):
         )
 
         extra_context = dict()
-        links = self.expand_search_links(
-            g.identity, pagination, resource_requestctx.args
-        )
 
         self.run_components(
             "before_ui_search",
-            resource=self,
             identity=g.identity,
             search_options=search_options,
             args=resource_requestctx.args,
             view_args=resource_requestctx.view_args,
             ui_config=self.config,
-            ui_resource=self,
             ui_links=ui_links,
-            layout=layout,
-            component_key="search",
             extra_context=extra_context,
         )
 
@@ -268,7 +257,6 @@ class RecordsUIResource(UIResource):
             search_app_config=search_app_config,
             ui_config=self.config,
             ui_resource=self,
-            layout=layout,
             ui_links=ui_links,
             extra_context=extra_context,
         )
@@ -300,8 +288,6 @@ class RecordsUIResource(UIResource):
         }
         return (exported_record, 200, headers)
 
-    def get_layout_name(self):
-        return self.config.layout
 
     def get_template_def(self, template_type):
         return self.config.templates[template_type]
@@ -312,8 +298,7 @@ class RecordsUIResource(UIResource):
     def edit(self):
         record = self._get_record(resource_requestctx, allow_draft=True)
         data = record.to_dict()
-        serialized_record = self.config.ui_serializer.dump_obj(record.to_dict())
-        layout = current_oarepo_ui.get_layout(self.get_layout_name())
+        ui_record = self.config.ui_serializer.dump_obj(record.to_dict())
         form_config = self.config.form_config(
             identity=g.identity, updateUrl=record.links.get("self", None)
         )
@@ -324,22 +309,19 @@ class RecordsUIResource(UIResource):
 
         self.run_components(
             "form_config",
-            layout=layout,
-            resource=self,
             record=record,
-            data=record,
+            data=data,
+            identity=g.identity,
             form_config=form_config,
             args=resource_requestctx.args,
             view_args=resource_requestctx.view_args,
-            identity=g.identity,
             ui_links=ui_links,
             extra_context=extra_context,
         )
         self.run_components(
             "before_ui_edit",
-            layout=layout,
             resource=self,
-            record=serialized_record,
+            record=ui_record,
             data=data,
             form_config=form_config,
             args=resource_requestctx.args,
@@ -348,12 +330,14 @@ class RecordsUIResource(UIResource):
             identity=g.identity,
             extra_context=extra_context,
         )
+
         template_def = self.get_template_def("edit")
+
         _catalog = current_oarepo_ui.catalog
         source = get_jinja_template(
             _catalog, template_def, ["record", "extra_context", "form_config", "data"]
         )
-        serialized_record["extra_links"] = {
+        ui_record["extra_links"] = {
             "ui_links": ui_links,
             "search_link": self.config.url_prefix,
         }
@@ -361,7 +345,7 @@ class RecordsUIResource(UIResource):
         return _catalog.render(
             "edit",
             __source=source,
-            record=serialized_record,
+            record=ui_record,
             form_config=form_config,
             extra_context=extra_context,
             ui_links=ui_links,
@@ -373,7 +357,6 @@ class RecordsUIResource(UIResource):
     @request_view_args
     def create(self):
         empty_record = self.empty_record(resource_requestctx)
-        layout = current_oarepo_ui.get_layout(self.get_layout_name())
         form_config = self.config.form_config(
             identity=g.identity,
             # TODO: use api service create link when available
@@ -383,9 +366,7 @@ class RecordsUIResource(UIResource):
 
         self.run_components(
             "form_config",
-            layout=layout,
-            resource=self,
-            record=empty_record,
+            record=None,
             data=empty_record,
             form_config=form_config,
             args=resource_requestctx.args,
@@ -395,9 +376,6 @@ class RecordsUIResource(UIResource):
         )
         self.run_components(
             "before_ui_create",
-            layout=layout,
-            resource=self,
-            record=empty_record,
             data=empty_record,
             form_config=form_config,
             args=resource_requestctx.args,

@@ -144,6 +144,9 @@ class OARepoUIState:
 
             return add_vite_tags(response)
 
+    @property
+    def record_actions(self):
+        return self.app.config["OAREPO_UI_RECORD_ACTIONS"]
 
 class OARepoUIExtension:
     def __init__(self, app=None):
