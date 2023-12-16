@@ -1,4 +1,5 @@
 import functools
+
 from flask import Response, current_app
 
 import oarepo_ui.cli  # noqa

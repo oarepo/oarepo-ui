@@ -1,4 +1,3 @@
-import os
 import re
 from collections import namedtuple
 from functools import cached_property
@@ -8,7 +7,6 @@ from typing import Dict, Tuple
 import jinja2
 from flask import current_app
 from jinjax import Catalog
-from jinjax.component import Component
 from jinjax.exceptions import ComponentNotFound
 
 DEFAULT_URL_ROOT = "/static/components/"
@@ -21,7 +19,10 @@ PROP_ATTRS = "attrs"
 PROP_CONTENT = "content"
 
 
-SearchPathItem = namedtuple("SearchPath", ["template_name", "absolute_path", "relative_path", "priority"])
+SearchPathItem = namedtuple(
+    "SearchPath", ["template_name", "absolute_path", "relative_path", "priority"]
+)
+
 
 class OarepoCatalog(Catalog):
     singleton_check = None
@@ -59,7 +60,12 @@ class OarepoCatalog(Catalog):
         """
         paths: Dict[str, Tuple[Path, Path, int]] = {}
 
-        for template_name, absolute_template_path, relative_template_path, priority in self.list_templates():
+        for (
+            template_name,
+            absolute_template_path,
+            relative_template_path,
+            priority,
+        ) in self.list_templates():
             split_template_name = template_name.split(DELIMITER)
 
             for idx in range(0, len(split_template_name)):
@@ -71,7 +77,11 @@ class OarepoCatalog(Catalog):
                     partial_template_name not in paths
                     or partial_priority > paths[template_name][2]
                 ):
-                    paths[partial_template_name] = (absolute_template_path, relative_template_path, partial_priority)
+                    paths[partial_template_name] = (
+                        absolute_template_path,
+                        relative_template_path,
+                        partial_priority,
+                    )
 
         return {k: (v[0], v[1]) for k, v in paths.items()}
 
@@ -84,7 +94,6 @@ class OarepoCatalog(Catalog):
             priority = int(filename[:3])
             filename = filename[4:]
         return filename, priority
-
 
     def _get_component_path(
         self, prefix: str, name: str, file_ext: "TFileExt" = ""
@@ -116,7 +125,8 @@ class OarepoCatalog(Catalog):
             jinja_template = self.jinja_env.loader.load(self.jinja_env, path)
             absolute_path = Path(jinja_template.filename)
             template_name, stripped = strip_app_theme(jinja_template.name, app_theme)
-            template_name = template_name.rstrip(DEFAULT_EXTENSION)
+
+            template_name = template_name[: -len(DEFAULT_EXTENSION)]
             template_name = template_name.replace(SLASH, DELIMITER)
 
             # extract priority
@@ -127,7 +137,9 @@ class OarepoCatalog(Catalog):
             if stripped:
                 priority += 10
 
-            searchpath.append(SearchPathItem(template_name, absolute_path, path, priority))
+            searchpath.append(
+                SearchPathItem(template_name, absolute_path, path, priority)
+            )
 
         return searchpath
 
@@ -136,5 +148,5 @@ def strip_app_theme(template_name, app_theme):
     if app_theme:
         for theme in app_theme:
             if template_name.startswith(f"{theme}/"):
-                return template_name[len(theme) + 1:], True
+                return template_name[len(theme) + 1 :], True
     return template_name, False

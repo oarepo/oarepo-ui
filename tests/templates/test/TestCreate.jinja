@@ -1,0 +1,8 @@
+{# def data, extra_context, form_config, record, ui_links  #}
+{
+    "data": {{ data|tojson|safe }},
+    "extra_context": {{ extra_context|tojson|safe }},
+    "form_config": {{ form_config|tojson|safe }},
+    "record": {{ record|tojson|safe }},
+    "ui_links": {{ ui_links|tojson|safe }}
+}

@@ -129,19 +129,19 @@ class RecordsUIResource(UIResource):
     def detail(self):
         """Returns item detail page."""
 
-        record = self._get_record(resource_requestctx, allow_draft=False)
+        api_record = self._get_record(resource_requestctx, allow_draft=False)
 
         # TODO: handle permissions UI way - better response than generic error
-        ui_data = self.config.ui_serializer.dump_obj(record.to_dict())
-        ui_data.setdefault("links", {})
+        record = self.config.ui_serializer.dump_obj(api_record.to_dict())
+        record.setdefault("links", {})
 
-        ui_links = self.expand_detail_links(identity=g.identity, record=record)
+        ui_links = self.expand_detail_links(identity=g.identity, record=api_record)
         export_path = request.path.split("?")[0]
         if not export_path.endswith("/"):
             export_path += "/"
         export_path += "export"
 
-        ui_data["links"].update(
+        record["links"].update(
             {
                 "ui_links": ui_links,
                 "export_path": export_path,
@@ -149,21 +149,21 @@ class RecordsUIResource(UIResource):
             }
         )
 
-        self.make_links_absolute(ui_data["links"], self.api_service.config.url_prefix)
+        self.make_links_absolute(record["links"], self.api_service.config.url_prefix)
 
         extra_context = dict()
 
         self.run_components(
             "before_ui_detail",
-            api_record=record,
-            record=ui_data,
+            api_record=api_record,
+            record=record,
             identity=g.identity,
             extra_context=extra_context,
             args=resource_requestctx.args,
             view_args=resource_requestctx.view_args,
             ui_links=ui_links,
         )
-        metadata = dict(ui_data.get("metadata", ui_data))
+        metadata = dict(record.get("metadata", record))
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro(
                 "detail",
@@ -172,9 +172,9 @@ class RecordsUIResource(UIResource):
                 view_args=resource_requestctx.view_args,
             ),
             metadata=metadata,
-            ui=dict(ui_data.get("ui", ui_data)),
-            record=ui_data,
-            api_record=record,
+            ui=dict(record.get("ui", record)),
+            record=record,
+            api_record=api_record,
             extra_context=extra_context,
             ui_links=ui_links,
         )
@@ -296,22 +296,23 @@ class RecordsUIResource(UIResource):
     @request_read_args
     @request_view_args
     def edit(self):
-        record = self._get_record(resource_requestctx, allow_draft=True)
-        data = record.to_dict()
-        ui_data = self.config.ui_serializer.dump_obj(record.to_dict())
+        api_record = self._get_record(resource_requestctx, allow_draft=True)
+        self.api_service.require_permission(g.identity, "update", record=api_record)
+        data = api_record.to_dict()
+        record = self.config.ui_serializer.dump_obj(api_record.to_dict())
         form_config = self.config.form_config(
-            identity=g.identity, updateUrl=record.links.get("self", None)
+            identity=g.identity, updateUrl=api_record.links.get("self", None)
         )
 
-        ui_links = self.expand_detail_links(identity=g.identity, record=record)
+        ui_links = self.expand_detail_links(identity=g.identity, record=api_record)
 
         extra_context = dict()
 
         self.run_components(
             "form_config",
-            api_record=record,
+            api_record=api_record,
             data=data,
-            ui_data=ui_data,
+            record=record,
             identity=g.identity,
             form_config=form_config,
             args=resource_requestctx.args,
@@ -321,8 +322,8 @@ class RecordsUIResource(UIResource):
         )
         self.run_components(
             "before_ui_edit",
-            api_record=record,
-            ui_data=ui_data,
+            api_record=api_record,
+            record=record,
             data=data,
             form_config=form_config,
             args=resource_requestctx.args,
@@ -332,7 +333,7 @@ class RecordsUIResource(UIResource):
             extra_context=extra_context,
         )
 
-        ui_data["extra_links"] = {
+        record["extra_links"] = {
             "ui_links": ui_links,
             "search_link": self.config.url_prefix,
         }
@@ -344,8 +345,8 @@ class RecordsUIResource(UIResource):
                 args=resource_requestctx.args,
                 view_args=resource_requestctx.view_args,
             ),
-            record=ui_data,
-            api_record=record,
+            record=record,
+            api_record=api_record,
             form_config=form_config,
             extra_context=extra_context,
             ui_links=ui_links,
@@ -356,6 +357,7 @@ class RecordsUIResource(UIResource):
     @request_read_args
     @request_view_args
     def create(self):
+        self.api_service.require_permission(g.identity, "create", record=None)
         empty_record = self.empty_record(resource_requestctx)
         form_config = self.config.form_config(
             identity=g.identity,
@@ -363,6 +365,8 @@ class RecordsUIResource(UIResource):
             createUrl=f"/api{self.api_service.config.url_prefix}",
         )
         extra_context = dict()
+
+        ui_links = {}
 
         self.run_components(
             "form_config",
@@ -374,6 +378,7 @@ class RecordsUIResource(UIResource):
             view_args=resource_requestctx.view_args,
             identity=g.identity,
             extra_context=extra_context,
+            ui_links=ui_links,
         )
         self.run_components(
             "before_ui_create",
@@ -385,6 +390,7 @@ class RecordsUIResource(UIResource):
             view_args=resource_requestctx.view_args,
             identity=g.identity,
             extra_context=extra_context,
+            ui_links=ui_links,
         )
 
         return current_oarepo_ui.catalog.render(
@@ -398,7 +404,7 @@ class RecordsUIResource(UIResource):
             api_record=None,
             form_config=form_config,
             extra_context=extra_context,
-            ui_links={},
+            ui_links=ui_links,
             data=empty_record,
         )
 

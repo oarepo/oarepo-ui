@@ -3,7 +3,11 @@ import sys
 from pathlib import Path
 
 import pytest
+from flask_security import login_user
+from flask_security.utils import hash_password
+from invenio_access import ActionUsers, current_access
 from invenio_access.permissions import system_identity
+from invenio_accounts.testutils import login_user_via_session
 from invenio_app.factory import create_app as _create_app
 
 from tests.model import ModelUIResource, ModelUIResourceConfig
@@ -86,3 +90,30 @@ def simple_record(app, db, search_clear, record_service):
     )
     ModelRecord.index.refresh()
     return record
+
+
+@pytest.fixture()
+def user(app, db):
+    """Create example user."""
+    with db.session.begin_nested():
+        datastore = app.extensions["security"].datastore
+        _user = datastore.create_user(
+            email="info@inveniosoftware.org",
+            password=hash_password("password"),
+            active=True,
+        )
+    db.session.commit()
+    return _user
+
+
+@pytest.fixture()
+def client_with_credentials(db, client, user):
+    """Log in a user to the client."""
+
+    action = current_access.actions["superuser-access"]
+    db.session.add(ActionUsers.allow(action, user_id=user.id))
+
+    login_user(user, remember=True)
+    login_user_via_session(client, email=user.email)
+
+    return client

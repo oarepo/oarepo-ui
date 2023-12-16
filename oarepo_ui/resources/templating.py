@@ -1,7 +1,3 @@
-from jinja2 import Environment
-from jinja2.loaders import BaseLoader
-
-
 class TemplateRegistry:
     def __init__(self, app, ui_state) -> None:
         self.app = app
