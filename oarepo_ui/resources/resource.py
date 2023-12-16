@@ -153,8 +153,8 @@ class RecordsUIResource(UIResource):
 
         self.run_components(
             "before_ui_detail",
-            record=record,
-            ui_data=ui_data,
+            api_record=record,
+            record=ui_data,
             identity=g.identity,
             extra_context=extra_context,
             args=resource_requestctx.args,
@@ -167,6 +167,7 @@ class RecordsUIResource(UIResource):
             metadata=metadata,
             ui=dict(ui_data.get("ui", ui_data)),
             record=ui_data,
+            api_record=record,
             extra_context=extra_context,
             ui_links=ui_links,
         )
@@ -282,7 +283,7 @@ class RecordsUIResource(UIResource):
     def edit(self):
         record = self._get_record(resource_requestctx, allow_draft=True)
         data = record.to_dict()
-        ui_record = self.config.ui_serializer.dump_obj(record.to_dict())
+        ui_data = self.config.ui_serializer.dump_obj(record.to_dict())
         form_config = self.config.form_config(
             identity=g.identity, updateUrl=record.links.get("self", None)
         )
@@ -293,8 +294,9 @@ class RecordsUIResource(UIResource):
 
         self.run_components(
             "form_config",
-            record=record,
+            api_record=record,
             data=data,
+            ui_data=ui_data,
             identity=g.identity,
             form_config=form_config,
             args=resource_requestctx.args,
@@ -304,8 +306,8 @@ class RecordsUIResource(UIResource):
         )
         self.run_components(
             "before_ui_edit",
-            resource=self,
-            record=ui_record,
+            api_record=record,
+            ui_data=ui_data,
             data=data,
             form_config=form_config,
             args=resource_requestctx.args,
@@ -315,14 +317,15 @@ class RecordsUIResource(UIResource):
             extra_context=extra_context,
         )
 
-        ui_record["extra_links"] = {
+        ui_data["extra_links"] = {
             "ui_links": ui_links,
             "search_link": self.config.url_prefix,
         }
 
         return current_oarepo_ui.catalog.render(
             self.get_template_def("edit"),
-            record=ui_record,
+            record=ui_data,
+            api_record=record,
             form_config=form_config,
             extra_context=extra_context,
             ui_links=ui_links,
@@ -343,6 +346,7 @@ class RecordsUIResource(UIResource):
 
         self.run_components(
             "form_config",
+            api_record=None,
             record=None,
             data=empty_record,
             form_config=form_config,
@@ -354,6 +358,8 @@ class RecordsUIResource(UIResource):
         self.run_components(
             "before_ui_create",
             data=empty_record,
+            record=None,
+            api_record=None,
             form_config=form_config,
             args=resource_requestctx.args,
             view_args=resource_requestctx.view_args,
@@ -364,6 +370,7 @@ class RecordsUIResource(UIResource):
         return current_oarepo_ui.catalog.render(
             self.get_template_def("create"),
             record=empty_record,
+            api_record=None,
             form_config=form_config,
             extra_context=extra_context,
             ui_links={},

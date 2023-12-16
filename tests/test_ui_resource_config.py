@@ -12,6 +12,7 @@ def test_ui_resource_form_config(app, record_ui_resource):
         form_config=fc,
         layout="",
         resource=record_ui_resource,
+        api_record=None,
         record={},
         data={},
         args={},

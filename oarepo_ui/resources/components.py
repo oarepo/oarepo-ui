@@ -22,9 +22,9 @@ class UIResourceComponent:
     the resource configuration.
 
     Naming convention for parameters:
-        * record - the record being displayed, always is an instance of RecordItem
+        * api_record - the record being displayed, always is an instance of RecordItem
+        * record - UI serialization of the record as comes from the ui serializer. A dictionary
         * data - data serialized by the API service serializer. A dictionary
-        * ui_data - UI serialization of the record as comes from the ui serializer. A dictionary
         * empty_data - empty record data, compatible with the API service serializer. A dictionary
     """
 
@@ -57,8 +57,8 @@ class UIResourceComponent:
     def before_ui_detail(
         self,
         *,
-            record: RecordItem,
-            ui_data: Dict,
+            api_record: RecordItem,
+            record: Dict,
             identity: Identity,
             args: Dict,
             view_args: Dict,
@@ -69,8 +69,8 @@ class UIResourceComponent:
         """
         Called before the detail page is rendered.
 
-        :param record: the record being displayed
-        :param ui_data: UI serialization of the record
+        :param api_record: the record being displayed
+        :param record: UI serialization of the record
         :param identity: the current user identity
         :param args: query parameters
         :param view_args: view arguments
@@ -100,7 +100,8 @@ class UIResourceComponent:
         """
 
     def form_config(self, *,
-    record: RecordItem,
+    api_record: RecordItem,
+    record: Dict,
     data: Dict,
     identity: Identity,
     form_config: Dict,
@@ -112,7 +113,8 @@ class UIResourceComponent:
         """
         Called to fill form_config for the create/edit page.
 
-        :param record: the record being edited. Can be None if creating a new record.
+        :param api_record: the record being edited. Can be None if creating a new record.
+        :param record: UI serialization of the record
         :param data: data serialized by the API service serializer. If a record is being edited,
                      this is the serialized record data. If a new record is being created, this is empty_data
                      after being processed by the empty_record method on registered UI components.
@@ -125,9 +127,9 @@ class UIResourceComponent:
         """
 
     def before_ui_edit(self, *,
-                       record: RecordItem,
+                       api_record: RecordItem,
+                       record: Dict,
                        data: Dict,
-                       ui_data: Dict,
                        identity: Identity,
                        form_config: Dict,
                        args: Dict,
@@ -138,9 +140,9 @@ class UIResourceComponent:
         """
         Called before the edit page is rendered, after form_config has been filled.
 
-        :param record: the record being edited
+        :param api_record: the API record being edited
         :param data: data serialized by the API service serializer. This is the serialized record data.
-        :param ui_data: UI serialization of the record (localized). The ui data can be used in the edit
+        :param record: UI serialization of the record (localized). The ui data can be used in the edit
                         template to display, for example, the localized record title.
         :param identity: the current user identity
         :param form_config: form configuration dictionary
@@ -192,11 +194,11 @@ class BabelComponent(UIResourceComponent):
 
 
 class PermissionsComponent(UIResourceComponent):
-    def before_ui_detail(self, *, record, extra_context, identity, **kwargs):
-        self.fill_permissions(record.data, extra_context, identity)
+    def before_ui_detail(self, *, api_record, extra_context, identity, **kwargs):
+        self.fill_permissions(api_record.data, extra_context, identity)
 
-    def before_ui_edit(self, *, record, extra_context, identity, **kwargs):
-        self.fill_permissions(record.data, extra_context, identity)
+    def before_ui_edit(self, *, api_record, extra_context, identity, **kwargs):
+        self.fill_permissions(api_record.data, extra_context, identity)
 
     def before_ui_create(self, *, extra_context, identity, **kwargs):
         self.fill_permissions(None, extra_context, identity)
@@ -215,14 +217,14 @@ class PermissionsComponent(UIResourceComponent):
         search_options["permissions"] = extra_context["permissions"]
 
     def form_config(
-        self, *, form_config, record, identity, **kwargs
+        self, *, form_config, api_record, identity, **kwargs
     ):
-        self.fill_permissions(record, form_config, identity)
+        self.fill_permissions(api_record.data if api_record else None, form_config, identity)
 
     def get_record_permissions(self, actions, service, identity, data):
         """Helper for generating (default) record action permissions."""
         return {
-            f"can_{action}": service.check_permission(identity, action, record=data)
+            f"can_{action}": service.check_permission(identity, action, record=data or {})
             for action in actions
         }
 
@@ -240,15 +242,15 @@ class PermissionsComponent(UIResourceComponent):
 
 
 class FilesComponent(UIResourceComponent):
-    def before_ui_edit(self, *, record, extra_context, identity, **kwargs):
+    def before_ui_edit(self, *, api_record, extra_context, identity, **kwargs):
         from .resource import RecordsUIResource
         if not isinstance(self.resource, RecordsUIResource):
             return
 
         file_service = get_file_service_for_record_service(
-            self.resource.api_service, record=record
+            self.resource.api_service, record=api_record
         )
-        files = file_service.list_files(identity, record["id"])
+        files = file_service.list_files(identity, api_record["id"])
         extra_context["files"] = files.to_dict()
 
     def before_ui_detail(self, **kwargs):
