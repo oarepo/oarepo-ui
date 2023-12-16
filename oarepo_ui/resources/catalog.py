@@ -105,23 +105,6 @@ class OarepoCatalog(Catalog):
 
         raise ComponentNotFound(f"Unable to find a file named {name}")
 
-    def _get_from_file(
-        self, *, prefix: str, name: str, url_prefix: str, file_ext: str
-    ) -> "Component":
-        return super()._get_from_file(
-            prefix=prefix, name=name, url_prefix=url_prefix, file_ext=file_ext
-        )
-        root_path, path = self._get_component_path(prefix, name, file_ext=file_ext)
-        component = Component(
-            name=name,
-            url_prefix=url_prefix,
-            path=path,
-        )
-        tmpl_name = str(path.relative_to(root_path))
-
-        component.tmpl = self.jinja_env.get_template(tmpl_name)
-        return component
-
     def list_templates(self):
         searchpath = []
 
@@ -147,16 +130,6 @@ class OarepoCatalog(Catalog):
             searchpath.append(SearchPathItem(template_name, absolute_path, path, priority))
 
         return searchpath
-
-
-def lazy_string_encoder(obj):
-    if isinstance(obj, list):
-        return [lazy_string_encoder(item) for item in obj]
-    elif isinstance(obj, dict):
-        return {key: lazy_string_encoder(value) for key, value in obj.items()}
-    else:
-        return str(obj)
-
 
 
 def strip_app_theme(template_name, app_theme):

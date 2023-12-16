@@ -35,7 +35,6 @@ class OARepoUIState:
         catalog.jinja_env.filters.update(env.filters)
         catalog.jinja_env.policies.update(env.policies)
 
-        # env.loader.searchpath = list_templates(catalog.jinja_env)
         catalog.prefixes[""] = catalog.jinja_env.loader
 
         return catalog
