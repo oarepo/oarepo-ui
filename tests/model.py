@@ -44,6 +44,9 @@ class ModelPermissionPolicy(RecordPermissionPolicy):
     can_read = [AnyUser(), SystemProcess()]
     can_update = [AuthenticatedUser(), SystemProcess()]
 
+    # the default has changed between RDM 11 and RDM 12, making it explicit
+    can_read_deleted_files = [AuthenticatedUser(), SystemProcess()]
+
 
 class ModelSchema(ma.Schema):
     title = ma.fields.String()

@@ -39,7 +39,7 @@ def test_ui_resource_form_config(app, record_ui_resource):
                  'can_manage_record_access': False,
                  'can_new_version': False,
                  'can_read': True,
-                 'can_read_deleted_files': False,
+                 'can_read_deleted_files': True,
                  'can_read_files': False,
                  'can_review': False,
                  'can_search': True,
