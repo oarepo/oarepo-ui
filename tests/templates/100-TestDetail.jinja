@@ -1,7 +1,9 @@
 {#def record, extra_context #}
 
-{%- for link_name, link in record.links.ui_links.items() -%}
-  {{link_name}}:{{link}}
-{% endfor-%}
-permissions={{ extra_context.permissions }}
-{{ 1|dummy }}
+{
+    "ui_links": {{ record.links.ui_links|tojson|safe }},
+    "permissions": {{ extra_context.permissions|tojson|safe }},
+    "dummy_filter": {{ 1|dummy|tojson|safe }}
+}
+
+

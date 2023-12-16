@@ -1,12 +1,12 @@
-import os
 import re
+from collections import namedtuple
 from functools import cached_property
 from pathlib import Path
 from typing import Dict, Tuple
 
 import jinja2
+from flask import current_app
 from jinjax import Catalog
-from jinjax.component import Component
 from jinjax.exceptions import ComponentNotFound
 
 DEFAULT_URL_ROOT = "/static/components/"
@@ -17,6 +17,11 @@ DELIMITER = "."
 SLASH = "/"
 PROP_ATTRS = "attrs"
 PROP_CONTENT = "content"
+
+
+SearchPathItem = namedtuple(
+    "SearchPath", ["template_name", "absolute_path", "relative_path", "priority"]
+)
 
 
 class OarepoCatalog(Catalog):
@@ -35,34 +40,48 @@ class OarepoCatalog(Catalog):
     def component_paths(self) -> Dict[str, Tuple[Path, Path]]:
         """
         Returns a cache of component-name => (root_path, component_path).
+        The component name is either the filename without the '.jinja' suffix
+        (such as "DetailPage"), or it is a namespaced name (such as
+        "oarepo_vocabularies.DetailPage").
+
+        Note: current theme (such as semantic-ui) is stripped from the namespace.
+
         To invalidate the cache, call `del self.component_paths`.
+
+        Example keys:
+            * "DetailPage" -> DetailPage.jinja
+            * "oarepo_vocabularies.DetailPage" -> oarepo_vocabularies/DetailPage.jinja
+            * "oarepo_vocabularies.DetailPage" -> semantic-ui/oarepo_vocabularies/DetailPage.jinja
+
+        The method also adds partial keys to the cache with lower priority (-10 for each omitted segment),
+        so that the following are also added:
+
+            * "DetailPage" -> oarepo_vocabularies/DetailPage.jinja (priority -10)
         """
         paths: Dict[str, Tuple[Path, Path, int]] = {}
 
-        # paths known by the current jinja environment
-        search_paths = {
-            Path(searchpath["component_file"])
-            for searchpath in self.jinja_env.loader.searchpath
-        }
+        for (
+            template_name,
+            absolute_template_path,
+            relative_template_path,
+            priority,
+        ) in self.list_templates():
+            split_template_name = template_name.split(DELIMITER)
 
-        for root_path, namespace, template_path in self._get_all_template_files():
-            # if the file is known to the current jinja environment,
-            # get the priority and add it to known components
-            if template_path in search_paths:
-                template_filename = os.path.basename(template_path)
-                template_filename, priority = self._extract_priority(template_filename)
-
-                if namespace:
-                    relative_filepath = f"{namespace}/{template_filename}"
-                else:
-                    relative_filepath = template_filename
+            for idx in range(0, len(split_template_name)):
+                partial_template_name = DELIMITER.join(split_template_name[idx:])
+                partial_priority = priority - idx * 10
 
                 # if the priority is greater, replace the path
                 if (
-                    relative_filepath not in paths
-                    or priority > paths[relative_filepath][2]
+                    partial_template_name not in paths
+                    or partial_priority > paths[template_name][2]
                 ):
-                    paths[relative_filepath] = (root_path, template_path, priority)
+                    paths[partial_template_name] = (
+                        absolute_template_path,
+                        relative_template_path,
+                        partial_priority,
+                    )
 
         return {k: (v[0], v[1]) for k, v in paths.items()}
 
@@ -76,32 +95,10 @@ class OarepoCatalog(Catalog):
             filename = filename[4:]
         return filename, priority
 
-    def _get_all_template_files(self):
-        for prefix in self.prefixes:
-            root_paths = self.prefixes[prefix].searchpath
-
-            for root_path_rec in root_paths:
-                component_path = root_path_rec["component_path"]
-                root_path = Path(root_path_rec["root_path"])
-
-                for file_absolute_folder, _folders, files in os.walk(
-                    component_path, topdown=False, followlinks=True
-                ):
-                    namespace = os.path.relpath(
-                        file_absolute_folder, component_path
-                    ).strip(".")
-                    for filename in files:
-                        yield root_path, namespace, Path(
-                            file_absolute_folder
-                        ) / filename
-
     def _get_component_path(
         self, prefix: str, name: str, file_ext: "TFileExt" = ""
     ) -> "tuple[Path, Path]":
-        file_ext = file_ext or self.file_ext
-        if not file_ext.startswith("."):
-            file_ext = "." + file_ext
-        name = name.replace(SLASH, DELIMITER) + file_ext
+        name = name.replace(SLASH, DELIMITER)
 
         paths = self.component_paths
         if name in paths:
@@ -117,25 +114,39 @@ class OarepoCatalog(Catalog):
 
         raise ComponentNotFound(f"Unable to find a file named {name}")
 
-    def _get_from_file(
-        self, *, prefix: str, name: str, url_prefix: str, file_ext: str
-    ) -> "Component":
-        root_path, path = self._get_component_path(prefix, name, file_ext=file_ext)
-        component = Component(
-            name=name,
-            url_prefix=url_prefix,
-            path=path,
-        )
-        tmpl_name = str(path.relative_to(root_path))
+    def list_templates(self):
+        searchpath = []
 
-        component.tmpl = self.jinja_env.get_template(tmpl_name)
-        return component
+        app_theme = current_app.config.get("APP_THEME", None)
+
+        for path in self.jinja_env.loader.list_templates():
+            if not path.endswith(DEFAULT_EXTENSION):
+                continue
+            jinja_template = self.jinja_env.loader.load(self.jinja_env, path)
+            absolute_path = Path(jinja_template.filename)
+            template_name, stripped = strip_app_theme(jinja_template.name, app_theme)
+
+            template_name = template_name[: -len(DEFAULT_EXTENSION)]
+            template_name = template_name.replace(SLASH, DELIMITER)
+
+            # extract priority
+            split_name = list(template_name.rsplit(DELIMITER, 1))
+            split_name[-1], priority = self._extract_priority(split_name[-1])
+            template_name = DELIMITER.join(split_name)
+
+            if stripped:
+                priority += 10
+
+            searchpath.append(
+                SearchPathItem(template_name, absolute_path, path, priority)
+            )
+
+        return searchpath
 
 
-def lazy_string_encoder(obj):
-    if isinstance(obj, list):
-        return [lazy_string_encoder(item) for item in obj]
-    elif isinstance(obj, dict):
-        return {key: lazy_string_encoder(value) for key, value in obj.items()}
-    else:
-        return str(obj)
+def strip_app_theme(template_name, app_theme):
+    if app_theme:
+        for theme in app_theme:
+            if template_name.startswith(f"{theme}/"):
+                return template_name[len(theme) + 1 :], True
+    return template_name, False

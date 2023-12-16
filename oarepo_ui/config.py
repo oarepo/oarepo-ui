@@ -9,15 +9,25 @@ THEME_HEADER_LOGIN_TEMPLATE = "oarepo_ui/header_login.html"
 
 OAREPO_UI_JINJAX_FILTERS = {}
 
-OAREPO_UI_RECORD_ACTIONS = [
+# TODO: make sure that permissions here are correct and complete
+OAREPO_UI_RECORD_ACTIONS = {
+    # permissions from records
+    "search",
+    "create",
+    "read",
+    "update",
+    "delete",
+    "read_files",
+    "update_files",
+    "read_deleted_files",
+    # permissions from drafts
     "edit",
     "new_version",
     "manage",
     "update_draft",
-    "read_files",
     "review",
     "view",
     "delete_draft",
     "manage_files",
     "manage_record_access",
-]
+}
