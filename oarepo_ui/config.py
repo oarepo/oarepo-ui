@@ -8,3 +8,16 @@ OAREPO_UI_DEVELOPMENT_MODE = False
 THEME_HEADER_LOGIN_TEMPLATE = "oarepo_ui/header_login.html"
 
 OAREPO_UI_JINJAX_FILTERS = {}
+
+OAREPO_UI_RECORD_ACTIONS = [
+    "edit",
+    "new_version",
+    "manage",
+    "update_draft",
+    "read_files",
+    "review",
+    "view",
+    "delete_draft",
+    "manage_files",
+    "manage_record_access",
+]

@@ -101,7 +101,10 @@ class OARepoUIState:
         env.policies.setdefault("json.dumps_kwargs", {}).setdefault("default", str)
         self.app.update_template_context(context)
         catalog.jinja_env.loader = env.loader
-        catalog.jinja_env.autoescape = env.autoescape
+
+        # autoescape everything (this catalogue is used just for html jinjax components, so can do that) ...
+        catalog.jinja_env.autoescape = True
+
         context.update(catalog.jinja_env.globals)
         context.update(env.globals)
         catalog.jinja_env.globals = context
@@ -143,6 +146,10 @@ class OARepoUIState:
             from oarepo_ui.vite import add_vite_tags
 
             return add_vite_tags(response)
+
+    @property
+    def record_actions(self):
+        return self.app.config["OAREPO_UI_RECORD_ACTIONS"]
 
 
 class OARepoUIExtension:
