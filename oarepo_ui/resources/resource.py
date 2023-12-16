@@ -1,6 +1,6 @@
 import copy
 from functools import partial
-from typing import Iterator, TYPE_CHECKING
+from typing import TYPE_CHECKING, Iterator
 
 import deepmerge
 from flask import abort, g, redirect, request
@@ -107,7 +107,9 @@ class RecordsUIResource(UIResource):
             empty_data, copy.deepcopy(self.config.empty_record)
         )
         self.run_components(
-            "empty_record", resource_requestctx=resource_requestctx, empty_data=empty_data
+            "empty_record",
+            resource_requestctx=resource_requestctx,
+            empty_data=empty_data,
         )
         return empty_data
 
@@ -272,7 +274,6 @@ class RecordsUIResource(UIResource):
             "Content-Disposition": f"attachment; filename={filename}",
         }
         return (exported_record, 200, headers)
-
 
     def get_template_def(self, template_type):
         return self.config.templates[template_type]

@@ -41,11 +41,11 @@ class OarepoCatalog(Catalog):
 
         # paths known by the current jinja environment
         search_paths = {
-            Path(searchpath["component_file"]) for searchpath in self.jinja_env.loader.searchpath
+            Path(searchpath["component_file"])
+            for searchpath in self.jinja_env.loader.searchpath
         }
 
         for root_path, namespace, template_path in self._get_all_template_files():
-
             # if the file is known to the current jinja environment,
             # get the priority and add it to known components
             if template_path in search_paths:
@@ -58,15 +58,13 @@ class OarepoCatalog(Catalog):
                     relative_filepath = template_filename
 
                 # if the priority is greater, replace the path
-                if relative_filepath not in paths or priority > paths[relative_filepath][2]:
-                    paths[relative_filepath] = (
-                        root_path,
-                        template_path,
-                        priority)
+                if (
+                    relative_filepath not in paths
+                    or priority > paths[relative_filepath][2]
+                ):
+                    paths[relative_filepath] = (root_path, template_path, priority)
 
-        return {
-            k: (v[0], v[1]) for k, v in paths.items()
-        }
+        return {k: (v[0], v[1]) for k, v in paths.items()}
 
     def _extract_priority(self, filename):
         # check if there is a priority on the file, if not, take default 0
@@ -87,17 +85,19 @@ class OarepoCatalog(Catalog):
                 root_path = Path(root_path_rec["root_path"])
 
                 for file_absolute_folder, _folders, files in os.walk(
-                        component_path, topdown=False, followlinks=True
+                    component_path, topdown=False, followlinks=True
                 ):
-                    namespace = os.path.relpath(file_absolute_folder, component_path).strip(".")
+                    namespace = os.path.relpath(
+                        file_absolute_folder, component_path
+                    ).strip(".")
                     for filename in files:
-                        yield root_path, namespace, Path(file_absolute_folder) / filename
-
+                        yield root_path, namespace, Path(
+                            file_absolute_folder
+                        ) / filename
 
     def _get_component_path(
         self, prefix: str, name: str, file_ext: "TFileExt" = ""
     ) -> "tuple[Path, Path]":
-
         file_ext = file_ext or self.file_ext
         if not file_ext.startswith("."):
             file_ext = "." + file_ext
@@ -115,10 +115,7 @@ class OarepoCatalog(Catalog):
             if name in paths:
                 return paths[name]
 
-        raise ComponentNotFound(
-            f"Unable to find a file named {name}"
-        )
-
+        raise ComponentNotFound(f"Unable to find a file named {name}")
 
     def _get_from_file(
         self, *, prefix: str, name: str, url_prefix: str, file_ext: str

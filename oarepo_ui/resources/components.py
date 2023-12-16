@@ -1,9 +1,10 @@
+from typing import TYPE_CHECKING, Dict
+
 from flask import current_app
 from flask_principal import Identity
 from invenio_i18n.ext import current_i18n
 from invenio_records_resources.services.records.results import RecordItem
 from oarepo_runtime.datastreams.utils import get_file_service_for_record_service
-from typing import Dict, TYPE_CHECKING
 
 from ..proxies import current_oarepo_ui
 
@@ -57,14 +58,14 @@ class UIResourceComponent:
     def before_ui_detail(
         self,
         *,
-            api_record: RecordItem,
-            record: Dict,
-            identity: Identity,
-            args: Dict,
-            view_args: Dict,
-            ui_links: Dict,
-            extra_context: Dict,
-            **kwargs,
+        api_record: RecordItem,
+        record: Dict,
+        identity: Identity,
+        args: Dict,
+        view_args: Dict,
+        ui_links: Dict,
+        extra_context: Dict,
+        **kwargs,
     ):
         """
         Called before the detail page is rendered.
@@ -77,14 +78,18 @@ class UIResourceComponent:
         :param ui_links: UI links for the record, a dictionary of link name -> link url
         :param extra_context: will be passed to the template as the "extra_context" variable
         """
-    def before_ui_search(self, *,
-                         identity: Identity,
-                         search_options: Dict,
-                         args: Dict,
-                         view_args: Dict,
-                         ui_links: Dict,
-                         extra_context: Dict,
-                         **kwargs):
+
+    def before_ui_search(
+        self,
+        *,
+        identity: Identity,
+        search_options: Dict,
+        args: Dict,
+        view_args: Dict,
+        ui_links: Dict,
+        extra_context: Dict,
+        **kwargs,
+    ):
         """
         Called before the search page is rendered.
         Note: search results are fetched via AJAX, so are not available in this method.
@@ -99,17 +104,20 @@ class UIResourceComponent:
         :param extra_context: will be passed to the template as the "extra_context" variable
         """
 
-    def form_config(self, *,
-    api_record: RecordItem,
-    record: Dict,
-    data: Dict,
-    identity: Identity,
-    form_config: Dict,
-    args: Dict,
-    view_args: Dict,
-    ui_links: Dict,
-    extra_context: Dict,
-                    **kwargs):
+    def form_config(
+        self,
+        *,
+        api_record: RecordItem,
+        record: Dict,
+        data: Dict,
+        identity: Identity,
+        form_config: Dict,
+        args: Dict,
+        view_args: Dict,
+        ui_links: Dict,
+        extra_context: Dict,
+        **kwargs,
+    ):
         """
         Called to fill form_config for the create/edit page.
 
@@ -126,17 +134,20 @@ class UIResourceComponent:
         :param extra_context: will be passed to the template as the "extra_context" variable
         """
 
-    def before_ui_edit(self, *,
-                       api_record: RecordItem,
-                       record: Dict,
-                       data: Dict,
-                       identity: Identity,
-                       form_config: Dict,
-                       args: Dict,
-                       view_args: Dict,
-                       ui_links: Dict,
-                       extra_context: Dict,
-                       **kwargs):
+    def before_ui_edit(
+        self,
+        *,
+        api_record: RecordItem,
+        record: Dict,
+        data: Dict,
+        identity: Identity,
+        form_config: Dict,
+        args: Dict,
+        view_args: Dict,
+        ui_links: Dict,
+        extra_context: Dict,
+        **kwargs,
+    ):
         """
         Called before the edit page is rendered, after form_config has been filled.
 
@@ -152,15 +163,18 @@ class UIResourceComponent:
         :param extra_context: will be passed to the template as the "extra_context" variable
         """
 
-    def before_ui_create(self, *,
-                         data: Dict,
-                         identity: Identity,
-                         form_config: Dict,
-                         args: Dict,
-                         view_args: Dict,
-                         ui_links: Dict,
-                         extra_context: Dict,
-                         **kwargs):
+    def before_ui_create(
+        self,
+        *,
+        data: Dict,
+        identity: Identity,
+        form_config: Dict,
+        args: Dict,
+        view_args: Dict,
+        ui_links: Dict,
+        extra_context: Dict,
+        **kwargs,
+    ):
         """
         Called before the create page is rendered, after form_config has been filled
 
@@ -175,9 +189,7 @@ class UIResourceComponent:
 
 
 class BabelComponent(UIResourceComponent):
-    def form_config(
-        self, *, form_config, **kwargs
-    ):
+    def form_config(self, *, form_config, **kwargs):
         conf = current_app.config
         locales = []
         for l in current_i18n.get_locales():
@@ -203,10 +215,9 @@ class PermissionsComponent(UIResourceComponent):
     def before_ui_create(self, *, extra_context, identity, **kwargs):
         self.fill_permissions(None, extra_context, identity)
 
-    def before_ui_search(
-        self, *, extra_context, identity, search_options, **kwargs
-    ):
+    def before_ui_search(self, *, extra_context, identity, search_options, **kwargs):
         from .resource import RecordsUIResource
+
         if not isinstance(self.resource, RecordsUIResource):
             return
 
@@ -216,20 +227,23 @@ class PermissionsComponent(UIResourceComponent):
 
         search_options["permissions"] = extra_context["permissions"]
 
-    def form_config(
-        self, *, form_config, api_record, identity, **kwargs
-    ):
-        self.fill_permissions(api_record.data if api_record else None, form_config, identity)
+    def form_config(self, *, form_config, api_record, identity, **kwargs):
+        self.fill_permissions(
+            api_record.data if api_record else None, form_config, identity
+        )
 
     def get_record_permissions(self, actions, service, identity, data):
         """Helper for generating (default) record action permissions."""
         return {
-            f"can_{action}": service.check_permission(identity, action, record=data or {})
+            f"can_{action}": service.check_permission(
+                identity, action, record=data or {}
+            )
             for action in actions
         }
 
     def fill_permissions(self, data, extra_context, identity):
         from .resource import RecordsUIResource
+
         if not isinstance(self.resource, RecordsUIResource):
             return
 
@@ -244,6 +258,7 @@ class PermissionsComponent(UIResourceComponent):
 class FilesComponent(UIResourceComponent):
     def before_ui_edit(self, *, api_record, extra_context, identity, **kwargs):
         from .resource import RecordsUIResource
+
         if not isinstance(self.resource, RecordsUIResource):
             return
 

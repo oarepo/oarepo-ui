@@ -31,7 +31,6 @@ theme = WebpackThemeBundle(
                 "oarepo_ui_forms": "./js/oarepo_ui/forms/index.js",
                 "oarepo_ui_theme": "./js/oarepo_ui/theme.js",
                 "oarepo_ui_components": "./js/custom-components.js",
-
             },
             dependencies={
                 "@tanstack/react-query": "^4.32.0",

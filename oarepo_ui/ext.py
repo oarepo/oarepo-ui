@@ -151,6 +151,7 @@ class OARepoUIState:
     def record_actions(self):
         return self.app.config["OAREPO_UI_RECORD_ACTIONS"]
 
+
 class OARepoUIExtension:
     def __init__(self, app=None):
         if app:
