@@ -4,7 +4,7 @@ import json
 def test_create(
     app, record_ui_resource, simple_record, client_with_credentials, fake_manifest
 ):
-    with client_with_credentials.get(f"/simple-model/_new") as c:
+    with client_with_credentials.get("/simple-model/_new") as c:
         assert json.loads(c.text) == {
             "data": {"title": ""},
             "extra_context": {

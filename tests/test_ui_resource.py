@@ -61,7 +61,7 @@ def test_no_permissions_on_search(
 def test_permissions_on_search(
     app, record_ui_resource, simple_record, fake_manifest, client_with_credentials
 ):
-    with client_with_credentials.get(f"/simple-model/") as c:
+    with client_with_credentials.get("/simple-model/") as c:
         assert c.status_code == 200
         data = json.loads(c.text)
         assert data['permissions'] == {
