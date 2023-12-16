@@ -44,7 +44,41 @@ class OarepoCatalog(Catalog):
             Path(searchpath["component_file"]) for searchpath in self.jinja_env.loader.searchpath
         }
 
-        # iterate all the files inside prefixes
+        for root_path, namespace, template_path in self._get_all_template_files():
+
+            # if the file is known to the current jinja environment,
+            # get the priority and add it to known components
+            if template_path in search_paths:
+                template_filename = os.path.basename(template_path)
+                template_filename, priority = self._extract_priority(template_filename)
+
+                if namespace:
+                    relative_filepath = f"{namespace}/{template_filename}"
+                else:
+                    relative_filepath = template_filename
+
+                # if the priority is greater, replace the path
+                if relative_filepath not in paths or priority > paths[relative_filepath][2]:
+                    paths[relative_filepath] = (
+                        root_path,
+                        template_path,
+                        priority)
+
+        return {
+            k: (v[0], v[1]) for k, v in paths.items()
+        }
+
+    def _extract_priority(self, filename):
+        # check if there is a priority on the file, if not, take default 0
+        prefix_pattern = re.compile(r"^\d{3}-")
+        priority = 0
+        if prefix_pattern.match(filename):
+            # Remove the priority from the filename
+            priority = int(filename[:3])
+            filename = filename[4:]
+        return filename, priority
+
+    def _get_all_template_files(self):
         for prefix in self.prefixes:
             root_paths = self.prefixes[prefix].searchpath
 
@@ -52,41 +86,13 @@ class OarepoCatalog(Catalog):
                 component_path = root_path_rec["component_path"]
                 root_path = Path(root_path_rec["root_path"])
 
-                for curr_folder, _folders, files in os.walk(
-                    component_path, topdown=False, followlinks=True
+                for file_absolute_folder, _folders, files in os.walk(
+                        component_path, topdown=False, followlinks=True
                 ):
-                    # the file might be in a subfolder of the component_path, so get the subfolder name
-                    relfolder = os.path.relpath(curr_folder, component_path).strip(".")
-
+                    namespace = os.path.relpath(file_absolute_folder, component_path).strip(".")
                     for filename in files:
+                        yield root_path, namespace, Path(file_absolute_folder) / filename
 
-                        # if the file is known to the current jinja environment,
-                        # get the priority and add it to known components
-                        absolute_filepath = Path(curr_folder) / filename
-                        if absolute_filepath in search_paths:
-
-                            # check if there is a priority on the file, if not, take default 0
-                            prefix_pattern = re.compile(r"^\d{3}-")
-                            priority = 0
-                            if prefix_pattern.match(filename):
-                                # Remove the priority from the filename
-                                priority = int(filename[:3])
-                                filename = filename[4:]
-
-                            if relfolder:
-                                relative_filepath = f"{relfolder}/{filename}"
-                            else:
-                                relative_filepath = filename
-
-                            # if the priority is greater, replace the path
-                            if relative_filepath not in paths or priority > paths[relative_filepath][2]:
-                                paths[relative_filepath] = (
-                                    root_path,
-                                    absolute_filepath,
-                                    priority)
-        return {
-            k: (v[0], v[1]) for k, v in paths.items()
-        }
 
     def _get_component_path(
         self, prefix: str, name: str, file_ext: "TFileExt" = ""

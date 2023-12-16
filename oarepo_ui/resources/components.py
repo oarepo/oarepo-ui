@@ -211,7 +211,7 @@ class PermissionsComponent(UIResourceComponent):
             return
 
         extra_context["permissions"] = {
-            f"can_create": self.resource.api_service.check_permission(identity, "create")
+            "can_create": self.resource.api_service.check_permission(identity, "create")
         }
 
         search_options["permissions"] = extra_context["permissions"]
