@@ -55,8 +55,3 @@ class TemplateRegistry:
 
 def id_filter(x):
     return id(x)
-
-
-def to_dict(value=None):
-    if value:
-        return value
