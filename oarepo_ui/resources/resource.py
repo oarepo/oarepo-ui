@@ -165,7 +165,12 @@ class RecordsUIResource(UIResource):
         )
         metadata = dict(ui_data.get("metadata", ui_data))
         return current_oarepo_ui.catalog.render(
-            self.get_template_def("detail"),
+            self.get_jinjax_macro(
+                "detail",
+                identity=g.identity,
+                args=resource_requestctx.args,
+                view_args=resource_requestctx.view_args,
+            ),
             metadata=metadata,
             ui=dict(ui_data.get("ui", ui_data)),
             record=ui_data,
@@ -240,7 +245,12 @@ class RecordsUIResource(UIResource):
         search_app_config = search_config(app_id=self.config.search_app_id)
 
         return current_oarepo_ui.catalog.render(
-            self.get_template_def("search"),
+            self.get_jinjax_macro(
+                "search",
+                identity=g.identity,
+                args=resource_requestctx.args,
+                view_args=resource_requestctx.view_args,
+            ),
             search_app_config=search_app_config,
             ui_config=self.config,
             ui_resource=self,
@@ -275,7 +285,11 @@ class RecordsUIResource(UIResource):
         }
         return (exported_record, 200, headers)
 
-    def get_template_def(self, template_type):
+    def get_jinjax_macro(self, template_type, identity=None, args=None, view_args=None):
+        """
+        Returns which jinjax macro (name of the macro, including optional namespace in the form of "namespace.Macro")
+        should be used for rendering the template.
+        """
         return self.config.templates[template_type]
 
     @login_required
@@ -324,7 +338,12 @@ class RecordsUIResource(UIResource):
         }
 
         return current_oarepo_ui.catalog.render(
-            self.get_template_def("edit"),
+            self.get_jinjax_macro(
+                "edit",
+                identity=g.identity,
+                args=resource_requestctx.args,
+                view_args=resource_requestctx.view_args,
+            ),
             record=ui_data,
             api_record=record,
             form_config=form_config,
@@ -369,7 +388,12 @@ class RecordsUIResource(UIResource):
         )
 
         return current_oarepo_ui.catalog.render(
-            self.get_template_def("create"),
+            self.get_jinjax_macro(
+                "create",
+                identity=g.identity,
+                args=resource_requestctx.args,
+                view_args=resource_requestctx.view_args,
+            ),
             record=empty_record,
             api_record=None,
             form_config=form_config,
