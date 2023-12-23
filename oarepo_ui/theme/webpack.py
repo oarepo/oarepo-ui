@@ -46,8 +46,11 @@ if oarepo_version.startswith("11."):
         "react-datepicker": "^4.21.0",
     }
 else:
-    # RDM 12 webpack dependencies are already included in the oarepo python package
-    dependencies = {}
+    # RDM 12 webpack dependencies are already included in the oarepo python package, so we just include
+    # those used in our own components here
+    dependencies = {
+        "react-datepicker": "^4.21.0",
+    }
 
 theme = WebpackThemeBundle(
     __name__,
@@ -72,8 +75,13 @@ theme = WebpackThemeBundle(
                 # search and edit
                 "@less/oarepo_ui": "less/oarepo_ui",
                 "@js/oarepo_ui": "js/oarepo_ui",
+
                 # hack for communities being dependent on RDM
                 "@translations/invenio_app_rdm/i18next": "translations/oarepo_ui/i18next.js",
+
+                # hack for vocabularies being dependent on RDM
+                "@translations/invenio_rdm_records/i18next": "translations/oarepo_ui/i18next.js",
+
                 # another hack for communities
                 "@templates/custom_fields": "js/custom_fields",
             },
