@@ -45,12 +45,19 @@ if oarepo_version.startswith("11."):
         "react-text-truncate": "^0.19.0",
         "react-datepicker": "^4.21.0",
     }
+    aliases = {
+        "../../theme.config$": "less/theme.config",
+        "../../less/site": "less/site",
+        "../../less": "less",
+    }
+
 else:
     # RDM 12 webpack dependencies are already included in the oarepo python package, so we just include
     # those used in our own components here
     dependencies = {
         "react-datepicker": "^4.21.0",
     }
+    aliases = {}
 
 theme = WebpackThemeBundle(
     __name__,
@@ -68,10 +75,10 @@ theme = WebpackThemeBundle(
             dependencies=dependencies,
             devDependencies={},
             aliases={
+                **aliases,
+
                 "@translations/oarepo_ui": "translations/oarepo_ui",
-                "../../theme.config$": "less/theme.config",
-                "../../less/site": "less/site",
-                "../../less": "less",
+
                 # search and edit
                 "@less/oarepo_ui": "less/oarepo_ui",
                 "@js/oarepo_ui": "js/oarepo_ui",
