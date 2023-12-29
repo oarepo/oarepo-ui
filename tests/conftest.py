@@ -10,7 +10,7 @@ from invenio_access.permissions import system_identity
 from invenio_accounts.testutils import login_user_via_session
 from invenio_app.factory import create_app as _create_app
 
-from tests.model import ModelUIResource, ModelUIResourceConfig
+from tests.model import ModelUIResource, ModelUIResourceConfig, TitlePageUIResource, TitlePageUIResourceConfig
 
 
 @pytest.fixture(scope="module")
@@ -63,6 +63,15 @@ def record_ui_resource_config(app):
 @pytest.fixture(scope="module")
 def record_ui_resource(app, record_ui_resource_config, record_service):
     ui_resource = ModelUIResource(record_ui_resource_config)
+    app.register_blueprint(
+        ui_resource.as_blueprint(template_folder=Path(__file__).parent / "templates")
+    )
+    return ui_resource
+
+
+@pytest.fixture(scope="module")
+def titlepage_ui_resource(app, ):
+    ui_resource = TitlePageUIResource(TitlePageUIResourceConfig())
     app.register_blueprint(
         ui_resource.as_blueprint(template_folder=Path(__file__).parent / "templates")
     )

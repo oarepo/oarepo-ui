@@ -53,7 +53,9 @@ class UIResource(Resource):
             template_folder = self.config.get_template_folder()
             if template_folder:
                 options["template_folder"] = template_folder
-        return super().as_blueprint(**options)
+        blueprint = super().as_blueprint(**options)
+        blueprint.app_context_processor(lambda: self.fill_jinja_context())
+        return blueprint
 
     #
     # Pluggable components
@@ -69,6 +71,12 @@ class UIResource(Resource):
         for component in self.components:
             if hasattr(component, action):
                 getattr(component, action)(*args, **kwargs)
+
+    def fill_jinja_context(self):
+        """function providing flask template app context processors"""
+        ret = {}
+        self.run_components("fill_jinja_context", context=ret)
+        return ret
 
 
 class RecordsUIResource(UIResource):
@@ -112,17 +120,6 @@ class RecordsUIResource(UIResource):
             empty_data=empty_data,
         )
         return empty_data
-
-    def as_blueprint(self, **options):
-        blueprint = super().as_blueprint(**options)
-        blueprint.app_context_processor(lambda: self.fill_jinja_context())
-        return blueprint
-
-    def fill_jinja_context(self):
-        """function providing flask template app context processors"""
-        ret = {}
-        self.run_components("fill_jinja_context", context=ret)
-        return ret
 
     @request_read_args
     @request_view_args
@@ -430,3 +427,43 @@ class RecordsUIResource(UIResource):
             {"config": self.config, "url_prefix": self.config.url_prefix, "args": args},
         )
         return tpl.expand(identity, pagination)
+
+
+class TemplatePageUIResource(UIResource):
+
+    def create_url_rules(self):
+        """Create the URL rules for the record resource."""
+        route_config = self.config.routes
+        routes = []
+        for route_name, route_path in route_config.items():
+            handler = getattr(self, route_name, None) or partial(self.render, page=route_name)
+            if not hasattr(handler, '__name__'):
+                handler.__name__ = self.render.__name__
+            if not hasattr(handler, '__self__'):
+                handler.__self__ = self
+
+            routes.append(
+                route("GET", route_path, handler),
+            )
+        return routes
+
+    @request_view_args
+    def render(self, page, *args, **kwargs):
+        extra_context = dict()
+
+        self.run_components(
+            "before_render",
+            identity=g.identity,
+            args=resource_requestctx.args,
+            view_args=resource_requestctx.view_args,
+            ui_config=self.config,
+            extra_context=extra_context,
+            page=page,
+        )
+
+        return current_oarepo_ui.catalog.render(
+            page,
+            ui_config=self.config,
+            ui_resource=self,
+            extra_context=extra_context,
+        )
