@@ -41,6 +41,10 @@ class UIResourceConfig(ResourceConfig):
     request_view_args = {}
 
 
+class TemplatePageUIResourceConfig(UIResourceConfig):
+    routes = {}
+
+
 class RecordsUIResourceConfig(UIResourceConfig):
     routes = {
         "search": "",
