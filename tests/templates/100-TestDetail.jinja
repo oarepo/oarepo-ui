@@ -1,6 +1,7 @@
-{#def extra_context, ui_links #}
+{#def record, extra_context #}
+
 {
-    "ui_links": {{ ui_links|tojson|safe }},
+    "ui_links": {{ record.links.ui_links|tojson|safe }},
     "permissions": {{ extra_context.permissions|tojson|safe }},
     "dummy_filter": {{ 1|dummy|tojson|safe }}
 }

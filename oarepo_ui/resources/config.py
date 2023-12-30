@@ -41,6 +41,10 @@ class UIResourceConfig(ResourceConfig):
     request_view_args = {}
 
 
+class TemplatePageUIResourceConfig(UIResourceConfig):
+    routes = {}
+
+
 class RecordsUIResourceConfig(UIResourceConfig):
     routes = {
         "search": "",
@@ -60,17 +64,16 @@ class RecordsUIResourceConfig(UIResourceConfig):
     api_service = None
     """Name of the API service as registered inside the service registry"""
 
+    search_app_id = None
+    """ID of the app used for rendering the search config"""
+
     templates = {
-        "detail": {
-            "layout": "oarepo_ui/detail.html",
-        },
-        "search": {
-            "layout": "oarepo_ui/search.html",
-        },
-        "edit": {"layout": "oarepo_ui/form.html"},
-        "create": {"layout": "oarepo_ui/form.html"},
+        "detail": None,
+        "search": None,
+        "edit": None,
+        "create": None,
     }
-    layout = "sample"
+    """Templates used for rendering the UI. It is a name of a jinjax macro that renders the UI"""
 
     empty_record = {}
 

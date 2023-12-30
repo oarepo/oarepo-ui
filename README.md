@@ -16,7 +16,7 @@ functions to render layouts from model configuration.
 
 See also [JinjaX documentation](https://jinjax.scaletti.dev/).
 
-Oarepo supports the use of components within Jinja templates using the JinjaX library.
+Oarepo builds its static UI pages on top of the JinjaX library.
 To load a Jinja application, a JinjaX component is expected on the input. 
 The relative path to the component is taken from the configuration
 
@@ -27,20 +27,14 @@ To work with parameters within components, you need to define them in the templa
 
 Example of component specification in config:
 
-```json
+```python
 templates = {
-        "detail": {
-            "layout": "docs_app/DetailRoot.html.jinja",
-            "blocks": {
-                "record_main_content": "Main",
-                "record_sidebar": "Sidebar",
-            },
-        },
-        "search": {"layout": "docs_app/search.html"},
+        "detail": "DetailPage",
+        "search": "SearchPage"
     }
 ```
 
-Example of possible contents of the DetailRoot component:
+Example of possible contents of the DetailPage component, contained inside `templates/DetailPage.jinja`
 
 ```json
 {#def metadata, ui, layout #}
@@ -53,17 +47,16 @@ Example of possible contents of the DetailRoot component:
 {{ webpack['docs_app_components.css']}}
 
 {%- endblock %}
-```
 
-Based on the definition from the config, the block content is then automatically added to the component content:
-```json
 {% block record_main_content %}
     <Main metadata={{metadata}}></Main>
 {% endblock %}
+
 {% block record_sidebar %}
     <Sidebar metadata={{metadata}}></Sidebar>
 {% endblock %}
 ```
+
 
 Sample of possible contents of Main component:
 ```json
@@ -74,9 +67,22 @@ Sample of possible contents of Main component:
 
 ```
 
+You can also namespace your ui components, by using dot notation:
+
+```python
+templates = {
+        "detail": "myrepo.DetailPage",
+        "search": "myrepo.SearchPage"
+    }
+```
+
+Then, the component will be loaded from the `templates/myrepo/DetailPage.jinja` file.
+
+
 #### JinjaX components
 
 Within the Oarepo-ui library, basic components are defined in the `templates` folder.
+
 ### React
 
 To render a custom layout in a React app (e. g. records search result page), this package provides the `useLayout` hook and an entrypoint

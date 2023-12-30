@@ -1,10 +1,12 @@
-import os
 import re
+from collections import namedtuple
+from functools import cached_property
 from pathlib import Path
+from typing import Dict, Tuple
 
 import jinja2
+from flask import current_app
 from jinjax import Catalog
-from jinjax.component import Component
 from jinjax.exceptions import ComponentNotFound
 
 DEFAULT_URL_ROOT = "/static/components/"
@@ -15,6 +17,11 @@ DELIMITER = "."
 SLASH = "/"
 PROP_ATTRS = "attrs"
 PROP_CONTENT = "content"
+
+
+SearchPathItem = namedtuple(
+    "SearchPath", ["template_name", "absolute_path", "relative_path", "priority"]
+)
 
 
 class OarepoCatalog(Catalog):
@@ -29,96 +36,117 @@ class OarepoCatalog(Catalog):
         _root_path, path = self._get_component_path(prefix, name, file_ext=file_ext)
         return Path(path).read_text()
 
+    @cached_property
+    def component_paths(self) -> Dict[str, Tuple[Path, Path]]:
+        """
+        Returns a cache of component-name => (root_path, component_path).
+        The component name is either the filename without the '.jinja' suffix
+        (such as "DetailPage"), or it is a namespaced name (such as
+        "oarepo_vocabularies.DetailPage").
+
+        Note: current theme (such as semantic-ui) is stripped from the namespace.
+
+        To invalidate the cache, call `del self.component_paths`.
+
+        Example keys:
+            * "DetailPage" -> DetailPage.jinja
+            * "oarepo_vocabularies.DetailPage" -> oarepo_vocabularies/DetailPage.jinja
+            * "oarepo_vocabularies.DetailPage" -> semantic-ui/oarepo_vocabularies/DetailPage.jinja
+
+        The method also adds partial keys to the cache with lower priority (-10 for each omitted segment),
+        so that the following are also added:
+
+            * "DetailPage" -> oarepo_vocabularies/DetailPage.jinja (priority -10)
+        """
+        paths: Dict[str, Tuple[Path, Path, int]] = {}
+
+        for (
+            template_name,
+            absolute_template_path,
+            relative_template_path,
+            priority,
+        ) in self.list_templates():
+            split_template_name = template_name.split(DELIMITER)
+
+            for idx in range(0, len(split_template_name)):
+                partial_template_name = DELIMITER.join(split_template_name[idx:])
+                partial_priority = priority - idx * 10
+
+                # if the priority is greater, replace the path
+                if (
+                    partial_template_name not in paths
+                    or partial_priority > paths[template_name][2]
+                ):
+                    paths[partial_template_name] = (
+                        absolute_template_path,
+                        relative_template_path,
+                        partial_priority,
+                    )
+
+        return {k: (v[0], v[1]) for k, v in paths.items()}
+
+    def _extract_priority(self, filename):
+        # check if there is a priority on the file, if not, take default 0
+        prefix_pattern = re.compile(r"^\d{3}-")
+        priority = 0
+        if prefix_pattern.match(filename):
+            # Remove the priority from the filename
+            priority = int(filename[:3])
+            filename = filename[4:]
+        return filename, priority
+
     def _get_component_path(
         self, prefix: str, name: str, file_ext: "TFileExt" = ""
     ) -> "tuple[Path, Path]":
-        name = name.replace(DELIMITER, SLASH)
-        name_dot = f"{name}."
-        file_ext = file_ext or self.file_ext
-        root_paths = self.prefixes[prefix].searchpath
+        name = name.replace(SLASH, DELIMITER)
 
-        for root_path in root_paths:
-            component_path = root_path["component_path"]
-            for curr_folder, _folders, files in os.walk(
-                component_path, topdown=False, followlinks=True
-            ):
-                relfolder = os.path.relpath(curr_folder, component_path).strip(".")
-                if relfolder and not name_dot.startswith(relfolder):
-                    continue
+        paths = self.component_paths
+        if name in paths:
+            return paths[name]
 
-                for filename in files:
-                    _filepath = curr_folder + "/" + filename
-                    in_searchpath = False
-                    for searchpath in self.jinja_env.loader.searchpath:
-                        if _filepath == searchpath["component_file"]:
-                            in_searchpath = True
-                            break
-                    if in_searchpath:
-                        prefix_pattern = re.compile(r"^\d{3}-")
-                        without_prefix_filename = filename
-                        if prefix_pattern.match(filename):
-                            # Remove the prefix
-                            without_prefix_filename = prefix_pattern.sub("", filename)
-                        if relfolder:
-                            filepath = f"{relfolder}/{without_prefix_filename}"
-                        else:
-                            filepath = without_prefix_filename
-                        if filepath.startswith(name_dot) and filepath.endswith(
-                            file_ext
-                        ):
-                            return (
-                                Path(root_path["root_path"]),
-                                Path(curr_folder) / filename,
-                            )
+        if self.jinja_env.auto_reload:
+            # clear cache
+            del self.component_paths
 
-        raise ComponentNotFound(
-            f"Unable to find a file named {name}{file_ext} "
-            f"or one following the pattern {name_dot}*{file_ext}"
-        )
+            paths = self.component_paths
+            if name in paths:
+                return paths[name]
 
-    def _get_from_file(
-        self, *, prefix: str, name: str, url_prefix: str, file_ext: str
-    ) -> "Component":
-        root_path, path = self._get_component_path(prefix, name, file_ext=file_ext)
-        component = Component(
-            name=name,
-            url_prefix=url_prefix,
-            path=path,
-        )
-        tmpl_name = str(path.relative_to(root_path))
+        raise ComponentNotFound(name)
 
-        component.tmpl = self.jinja_env.get_template(tmpl_name)
-        return component
+    def list_templates(self):
+        searchpath = []
 
+        app_theme = current_app.config.get("APP_THEME", None)
 
-def get_jinja_template(_catalog, template_def, fields=None):
-    if fields is None:
-        fields = []
-    jinja_content = None
-    for component in _catalog.jinja_env.loader.searchpath:
-        if component["component_file"].endswith(template_def["layout"]):
-            with open(component["component_file"], "r") as file:
-                jinja_content = file.read()
-    if not jinja_content:
-        raise Exception("%s was not found" % (template_def["layout"]))
-    assembled_template = [jinja_content]
-    if "blocks" in template_def:
-        for blk_name, blk in template_def["blocks"].items():
-            component_content = ""
-            for field in fields:
-                component_content = component_content + "%s={%s} " % (field, field)
-            component_str = "<%s %s> </%s>" % (blk, component_content, blk)
-            assembled_template.append(
-                "{%% block %s %%}%s{%% endblock %%}" % (blk_name, component_str)
+        for path in self.jinja_env.loader.list_templates():
+            if not path.endswith(DEFAULT_EXTENSION):
+                continue
+            jinja_template = self.jinja_env.loader.load(self.jinja_env, path)
+            absolute_path = Path(jinja_template.filename)
+            template_name, stripped = strip_app_theme(jinja_template.name, app_theme)
+
+            template_name = template_name[: -len(DEFAULT_EXTENSION)]
+            template_name = template_name.replace(SLASH, DELIMITER)
+
+            # extract priority
+            split_name = list(template_name.rsplit(DELIMITER, 1))
+            split_name[-1], priority = self._extract_priority(split_name[-1])
+            template_name = DELIMITER.join(split_name)
+
+            if stripped:
+                priority += 10
+
+            searchpath.append(
+                SearchPathItem(template_name, absolute_path, path, priority)
             )
-    assembled_template = "\n".join(assembled_template)
-    return assembled_template
+
+        return searchpath
 
 
-def lazy_string_encoder(obj):
-    if isinstance(obj, list):
-        return [lazy_string_encoder(item) for item in obj]
-    elif isinstance(obj, dict):
-        return {key: lazy_string_encoder(value) for key, value in obj.items()}
-    else:
-        return str(obj)
+def strip_app_theme(template_name, app_theme):
+    if app_theme:
+        for theme in app_theme:
+            if template_name.startswith(f"{theme}/"):
+                return template_name[len(theme) + 1 :], True
+    return template_name, False

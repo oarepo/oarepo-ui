@@ -18,6 +18,46 @@ You include one of the bundles in a page like the example below (using
 """
 
 from invenio_assets.webpack import WebpackThemeBundle
+from oarepo import __version__ as oarepo_version
+
+if oarepo_version.startswith("11."):
+    dependencies = {
+        "@tanstack/react-query": "^4.32.0",
+        "@babel/runtime": "^7.9.0",
+        "@ckeditor/ckeditor5-build-classic": "^16.0.0",
+        "@ckeditor/ckeditor5-react": "^2.1.0",
+        "formik": "^2.1.0",
+        "i18next": "^20.3.0",
+        "i18next-browser-languagedetector": "^6.1.0",
+        "luxon": "^1.23.0",
+        "path": "^0.12.7",
+        "prop-types": "^15.7.2",
+        "react-copy-to-clipboard": "^5.0.0",
+        "react-dnd": "^11.1.0",
+        "react-dnd-html5-backend": "^11.1.0",
+        "react-dropzone": "^11.0.0",
+        "react-i18next": "^11.11.0",
+        "react-invenio-deposit": "^1.0.0",
+        "react-invenio-forms": "^1.0.0",
+        "react-searchkit": "^2.0.0",
+        "yup": "^0.32.0",
+        "lodash": "^4.17.0",
+        "react-text-truncate": "^0.19.0",
+        "react-datepicker": "^4.21.0",
+    }
+    aliases = {
+        "../../theme.config$": "less/theme.config",
+        "../../less/site": "less/site",
+        "../../less": "less",
+    }
+
+else:
+    # RDM 12 webpack dependencies are already included in the oarepo python package, so we just include
+    # those used in our own components here
+    dependencies = {
+        "react-datepicker": "^4.21.0",
+    }
+    aliases = {}
 
 theme = WebpackThemeBundle(
     __name__,
@@ -31,45 +71,26 @@ theme = WebpackThemeBundle(
                 "oarepo_ui_forms": "./js/oarepo_ui/forms/index.js",
                 "oarepo_ui_theme": "./js/oarepo_ui/theme.js",
                 "oarepo_ui_components": "./js/custom-components.js",
-
             },
-            dependencies={
-                "@tanstack/react-query": "^4.32.0",
-                "@babel/runtime": "^7.9.0",
-                "@ckeditor/ckeditor5-build-classic": "^16.0.0",
-                "@ckeditor/ckeditor5-react": "^2.1.0",
-                "formik": "^2.1.0",
-                "i18next": "^20.3.0",
-                "i18next-browser-languagedetector": "^6.1.0",
-                "luxon": "^1.23.0",
-                "path": "^0.12.7",
-                "prop-types": "^15.7.2",
-                "react-copy-to-clipboard": "^5.0.0",
-                "react-dnd": "^11.1.0",
-                "react-dnd-html5-backend": "^11.1.0",
-                "react-dropzone": "^11.0.0",
-                "react-i18next": "^11.11.0",
-                "react-invenio-deposit": "^1.0.0",
-                "react-invenio-forms": "^1.0.0",
-                "react-searchkit": "^2.0.0",
-                "yup": "^0.32.0",
-                "lodash": "^4.17.0",
-                "react-text-truncate": "^0.19.0",
-                "react-datepicker": "^4.21.0",
-            },
+            dependencies=dependencies,
             devDependencies={
                 "eslint-plugin-i18next":"^6.0.3"
             },
             aliases={
+                **aliases,
+
                 "@translations/oarepo_ui": "translations/oarepo_ui",
-                "../../theme.config$": "less/theme.config",
-                "../../less/site": "less/site",
-                "../../less": "less",
+
                 # search and edit
                 "@less/oarepo_ui": "less/oarepo_ui",
                 "@js/oarepo_ui": "js/oarepo_ui",
+
                 # hack for communities being dependent on RDM
                 "@translations/invenio_app_rdm/i18next": "translations/oarepo_ui/i18next.js",
+
+                # hack for vocabularies being dependent on RDM
+                "@translations/invenio_rdm_records/i18next": "translations/oarepo_ui/i18next.js",
+
                 # another hack for communities
                 "@templates/custom_fields": "js/custom_fields",
             },
