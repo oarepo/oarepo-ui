@@ -438,7 +438,7 @@ class TemplatePageUIResource(UIResource):
         pages_config = self.config.pages
         routes = []
         for page_url_path, page_template_name in pages_config.items():
-            handler = getattr(self, page_template_name, None) or partial(self.render, page=page_template_name)
+            handler = getattr(self, f"render_{page_template_name}", None) or partial(self.render, page=page_template_name)
             if not hasattr(handler, '__name__'):
                 handler.__name__ = self.render.__name__
             if not hasattr(handler, '__self__'):
