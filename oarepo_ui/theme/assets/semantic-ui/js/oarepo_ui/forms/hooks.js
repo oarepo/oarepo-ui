@@ -349,7 +349,6 @@ export const useDepositApiClient = (
 
 export const useDepositFileApiClient = (baseApiClient) => {
   const formik = useFormikContext();
-  const [isDeleting, setIsDeleting] = React.useState(false);
 
   const { isSubmitting, values, setFieldValue, setSubmitting, setValues } =
     formik;
@@ -361,11 +360,7 @@ export const useDepositFileApiClient = (baseApiClient) => {
   async function read(draft) {
     return await apiClient.readDraftFiles(draft);
   }
-  async function _delete(file, handleDeletionInUi) {
-    if (!handleDeletionInUi)
-      throw new Error(
-        "You must provide callback function to remove file from UI"
-      );
+  async function _delete(file) {
     setValues(
       _omit(values, [
         "errors",
@@ -376,19 +371,14 @@ export const useDepositFileApiClient = (baseApiClient) => {
       ])
     );
     setSubmitting(true);
-    setIsDeleting(true);
     try {
       let response = await apiClient.deleteFile(file?.links);
-      if (response.status === 204 && handleDeletionInUi) {
-        handleDeletionInUi(file);
-      }
-      return response;
+      return Promise.resolve(response);
     } catch (error) {
       setFieldValue(
         "httpErrors",
         error?.response?.data?.message ?? error.message
       );
-      setIsDeleting(false);
       return false;
     } finally {
       setSubmitting(false);
@@ -402,6 +392,5 @@ export const useDepositFileApiClient = (baseApiClient) => {
     apiClient,
     formik,
     setFieldValue,
-    isDeleting,
   };
 };
