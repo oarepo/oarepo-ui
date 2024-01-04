@@ -41,6 +41,15 @@ class UIResourceConfig(ResourceConfig):
     request_view_args = {}
 
 
+class TemplatePageUIResourceConfig(UIResourceConfig):
+    pages = {}
+    """
+       Templates used for rendering the UI. 
+       The key in the dictionary is URL path (relative to url_prefix), 
+       value is a jinjax macro that renders the UI
+   """
+
+
 class RecordsUIResourceConfig(UIResourceConfig):
     routes = {
         "search": "",
