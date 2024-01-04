@@ -465,6 +465,7 @@ class TemplatePageUIResource(UIResource):
 
         return current_oarepo_ui.catalog.render(
             page,
+            **kwargs,
             ui_config=self.config,
             ui_resource=self,
             extra_context=extra_context,
