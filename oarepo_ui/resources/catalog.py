@@ -112,7 +112,7 @@ class OarepoCatalog(Catalog):
             if name in paths:
                 return paths[name]
 
-        raise ComponentNotFound(f"Unable to find a file named {name}")
+        raise ComponentNotFound(name)
 
     def list_templates(self):
         searchpath = []

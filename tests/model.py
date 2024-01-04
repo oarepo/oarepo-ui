@@ -24,6 +24,8 @@ from oarepo_ui.resources import (
     RecordsUIResourceConfig,
 )
 from oarepo_ui.resources.components import PermissionsComponent
+from oarepo_ui.resources.config import TemplatePageUIResourceConfig
+from oarepo_ui.resources.resource import TemplatePageUIResource
 
 
 class ModelRecordIdProvider(RecordIdProviderV2):
@@ -109,3 +111,15 @@ class ModelUIResource(RecordsUIResource):
         # we are not testing drafts here, so always return published record
         # tests for drafts should be in oarepo-model-builder-drafts
         return super()._get_record(resource_requestctx, allow_draft=False)
+
+
+class TitlePageUIResourceConfig(TemplatePageUIResourceConfig):
+    blueprint_name = 'titlepage'
+    url_prefix = '/'
+    routes = {
+        'TitlePage': ''
+    }
+
+
+class TitlePageUIResource(TemplatePageUIResource):
+    pass
