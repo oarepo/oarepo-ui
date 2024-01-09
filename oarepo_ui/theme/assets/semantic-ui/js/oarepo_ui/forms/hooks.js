@@ -171,17 +171,18 @@ export const useDepositApiClient = (
 
     setSubmitting(true);
     setIsSaving(true);
-    setValues(_omit(values, internalFieldsArray));
+    //  purge any existing errors in internal fields before making save action
+    const valuesWithoutInternalFields = _omit(values, internalFieldsArray);
     setErrors({});
     try {
-      response = await apiClient.saveOrCreateDraft(values);
+      response = await apiClient.saveOrCreateDraft(valuesWithoutInternalFields);
       // when I am creating a new draft, it saves the response into formik's state, so that I would have access
       // to the draft and draft links in the app. I we don't do that then each time I click on save it will
       // create new draft, as I don't actually refresh the page, so the record from html is still empty. Invenio,
       // solves this by keeping record in the store, but the idea here is to not create some central state,
       // but use formik as some sort of auxiliary state.
 
-      if (!values.id) {
+      if (!valuesWithoutInternalFields.id) {
         window.history.replaceState(
           undefined,
           "",
