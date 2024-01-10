@@ -32,7 +32,7 @@ if TYPE_CHECKING:
 # Resource
 #
 from ..proxies import current_oarepo_ui
-from .config import RecordsUIResourceConfig, UIResourceConfig
+from .config import RecordsUIResourceConfig, UIResourceConfig, TemplatePageUIResourceConfig
 
 request_export_args = request_parser(
     from_conf("request_export_args"), location="view_args"
@@ -433,17 +433,19 @@ class TemplatePageUIResource(UIResource):
 
     def create_url_rules(self):
         """Create the URL rules for the record resource."""
-        route_config = self.config.routes
+        self.config: TemplatePageUIResourceConfig
+
+        pages_config = self.config.pages
         routes = []
-        for route_name, route_path in route_config.items():
-            handler = getattr(self, route_name, None) or partial(self.render, page=route_name)
+        for page_url_path, page_template_name in pages_config.items():
+            handler = getattr(self, f"render_{page_template_name}", None) or partial(self.render, page=page_template_name)
             if not hasattr(handler, '__name__'):
                 handler.__name__ = self.render.__name__
             if not hasattr(handler, '__self__'):
                 handler.__self__ = self
 
             routes.append(
-                route("GET", route_path, handler),
+                route("GET", page_url_path, handler),
             )
         return routes
 
@@ -463,6 +465,7 @@ class TemplatePageUIResource(UIResource):
 
         return current_oarepo_ui.catalog.render(
             page,
+            **kwargs,
             ui_config=self.config,
             ui_resource=self,
             extra_context=extra_context,

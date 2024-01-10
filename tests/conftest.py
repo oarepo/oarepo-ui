@@ -34,6 +34,8 @@ def app_config(app_config):
     app_config["APP_THEME"] = ["semantic-ui"]
     app_config["THEME_SEARCHBAR"] = False
     app_config["THEME_HEADER_TEMPLATE"] = "oarepo_ui/header.html"
+    app_config["THEME_HEADER_LOGIN_TEMPLATE"] = "oarepo_ui/header_login.html"
+
     app_config["OAREPO_UI_JINJAX_FILTERS"] = {"dummy": lambda *args, **kwargs: "dummy"}
 
     return app_config
