@@ -219,7 +219,7 @@ export const EDTFSingleDatePicker = ({
   icon,
   helpText,
   required,
-  placeholderText,
+  placeholder,
   calendarControlButtonClassName,
   calendarControlIconName,
   clearIconClassName,
@@ -249,6 +249,7 @@ export const EDTFSingleDatePicker = ({
           fieldPath={fieldPath}
           required={required}
           autoComplete="off"
+          placeholder={placeholder}
           label={<FieldLabel htmlFor={fieldPath} icon={icon} label={label} />}
           icon={
             field?.value ? (
@@ -281,7 +282,6 @@ export const EDTFSingleDatePicker = ({
                 {...props}
               />
             )}
-            placeholderText={placeholderText}
             {...datePickerProps}
           />
         )}
@@ -310,7 +310,7 @@ EDTFSingleDatePicker.propTypes = {
   helpText: PropTypes.string,
   datePickerProps: PropTypes.object,
   required: PropTypes.bool,
-  placeholderText: PropTypes.string,
+  placeholder: PropTypes.string,
   calendarControlButtonClassName: PropTypes.string,
   calendarControlIconName: PropTypes.string,
   clearIconClassName: PropTypes.string,
@@ -320,7 +320,7 @@ EDTFSingleDatePicker.defaultProps = {
   icon: "calendar",
   helpText: i18next.t("Format: YYYY-MM-DD, YYYYY-MM or YYYY."),
   required: false,
-  placeholderText: i18next.t(
+  placeholder: i18next.t(
     "Write a date or click on the calendar icon to select it"
   ),
   calendarControlButtonClassName: "calendar-control-button",
