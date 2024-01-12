@@ -114,11 +114,9 @@ class ModelUIResource(RecordsUIResource):
 
 
 class TitlePageUIResourceConfig(TemplatePageUIResourceConfig):
-    blueprint_name = 'titlepage'
-    url_prefix = '/'
-    pages = {
-        '': 'TitlePage'
-    }
+    blueprint_name = "titlepage"
+    url_prefix = "/"
+    pages = {"": "TitlePage"}
 
 
 class TitlePageUIResource(TemplatePageUIResource):

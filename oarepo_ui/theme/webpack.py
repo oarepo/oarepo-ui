@@ -76,19 +76,14 @@ theme = WebpackThemeBundle(
             devDependencies={},
             aliases={
                 **aliases,
-
                 "@translations/oarepo_ui": "translations/oarepo_ui",
-
                 # search and edit
                 "@less/oarepo_ui": "less/oarepo_ui",
                 "@js/oarepo_ui": "js/oarepo_ui",
-
                 # hack for communities being dependent on RDM
                 "@translations/invenio_app_rdm/i18next": "translations/oarepo_ui/i18next.js",
-
                 # hack for vocabularies being dependent on RDM
                 "@translations/invenio_rdm_records/i18next": "translations/oarepo_ui/i18next.js",
-
                 # another hack for communities
                 "@templates/custom_fields": "js/custom_fields",
             },

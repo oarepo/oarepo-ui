@@ -118,8 +118,8 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
     def search_active_facets(self, api_config, identity):
         """Return list of active facets that will be displayed by search app.
-           By default, all facets are active but a repository can, for performance reasons,
-           display only a subset of facets.
+        By default, all facets are active but a repository can, for performance reasons,
+        display only a subset of facets.
         """
         return list(self.search_available_facets(api_config, identity).keys())
 

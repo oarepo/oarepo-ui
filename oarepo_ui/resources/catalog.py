@@ -1,13 +1,17 @@
 import re
 from collections import namedtuple
 from functools import cached_property
+from itertools import chain
 from pathlib import Path
 from typing import Dict, Tuple
 
+import flask
 import jinja2
 from flask import current_app
+from flask.globals import request
 from jinjax import Catalog
 from jinjax.exceptions import ComponentNotFound
+from jinjax.jinjax import JinjaX
 
 DEFAULT_URL_ROOT = "/static/components/"
 ALLOWED_EXTENSIONS = (".css", ".js")
@@ -27,9 +31,94 @@ SearchPathItem = namedtuple(
 class OarepoCatalog(Catalog):
     singleton_check = None
 
-    def __init__(self):
-        super().__init__()
-        self.jinja_env.undefined = jinja2.Undefined
+    def __init__(
+        self,
+        *,
+        globals: "dict[str, t.Any] | None" = None,
+        filters: "dict[str, t.Any] | None" = None,
+        tests: "dict[str, t.Any] | None" = None,
+        extensions: "list | None" = None,
+        jinja_env: "jinja2.Environment | None" = None,
+        root_url: str = DEFAULT_URL_ROOT,
+        file_ext: "TFileExt" = DEFAULT_EXTENSION,
+        use_cache: bool = True,
+        auto_reload: bool = True,
+    ) -> None:
+        self.prefixes: "dict[str, jinja2.FileSystemLoader]" = {}
+        self.collected_css: "list[str]" = []
+        self.collected_js: "list[str]" = []
+        self.file_ext = file_ext
+        self.use_cache = use_cache
+        self.auto_reload = auto_reload
+
+        root_url = root_url.strip().rstrip(SLASH)
+        self.root_url = f"{root_url}{SLASH}"
+
+        env = flask.templating.Environment(undefined=jinja2.Undefined, app=current_app)
+        extensions = [*(extensions or []), "jinja2.ext.do", JinjaX]
+        globals = globals or {}
+        filters = filters or {}
+        tests = tests or {}
+
+        if jinja_env:
+            env.extensions.update(jinja_env.extensions)
+            globals.update(jinja_env.globals)
+            filters.update(jinja_env.filters)
+            tests.update(jinja_env.tests)
+            jinja_env.globals["catalog"] = self
+            jinja_env.filters["catalog"] = self
+
+        globals["catalog"] = self
+        filters["catalog"] = self
+
+        for ext in extensions:
+            env.add_extension(ext)
+        env.globals.update(globals)
+        env.filters.update(filters)
+        env.tests.update(tests)
+        env.extend(catalog=self)
+
+        self.jinja_env = env
+
+        self._cache: "dict[str, dict]" = {}
+
+    def update_template_context(self, context: dict) -> None:
+        """Update the template context with some commonly used variables.
+        This injects request, session, config and g into the template
+        context as well as everything template context processors want
+        to inject.  Note that the as of Flask 0.6, the original values
+        in the context will not be overridden if a context processor
+        decides to return a value with the same key.
+
+        :param context: the context as a dictionary that is updated in place
+                        to add extra variables.
+        """
+        names: t.Iterable[t.Optional[str]] = (None,)
+
+        # A template may be rendered outside a request context.
+        if request:
+            names = chain(names, reversed(request.blueprints))
+
+        # The values passed to render_template take precedence. Keep a
+        # copy to re-apply after all context functions.
+
+        for name in names:
+            if name in self.jinja_env.app.template_context_processors:
+                for func in self.jinja_env.app.template_context_processors[name]:
+                    context.update(func())
+
+    def render(
+        self,
+        __name: str,
+        *,
+        caller: "t.Callable | None" = None,
+        **kw,
+    ) -> str:
+        self.collected_css = []
+        self.collected_js = []
+        if "context" in kw:
+            self.update_template_context(kw["context"])
+        return self.irender(__name, caller=caller, **kw)
 
     def get_source(self, cname: str, file_ext: "TFileExt" = "") -> str:
         prefix, name = self._split_name(cname)
