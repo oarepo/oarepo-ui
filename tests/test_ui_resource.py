@@ -12,7 +12,8 @@ def test_ui_resource_form_config(app, record_ui_resource):
 
 
 def test_permissions_on_detail(
-    app, record_ui_resource, simple_record, client, fake_manifest, users):
+    app, record_ui_resource, simple_record, client, fake_manifest, users
+):
     with client.get(f"/simple-model/{simple_record.id}") as c:
         assert c.status_code == 200
         assert (
@@ -24,14 +25,18 @@ def test_permissions_on_detail(
             "False}"
         ) in c.text
 
-def test_current_user(app, record_ui_resource, simple_record, client, fake_manifest, users ):
+
+def test_current_user(
+    app, record_ui_resource, simple_record, client, fake_manifest, users
+):
     with client.get(f"/simple-model/{simple_record.id}") as c:
-        assert  ("Current user: &lt;flask_security.core.AnonymousUser") in c.text
+        assert ("Current user: &lt;flask_security.core.AnonymousUser") in c.text
 
     login_user_via_session(client, email=users[0].email)
 
     with client.get(f"/simple-model/{simple_record.id}") as c:
-        assert  ("Current user: User &lt;id=1, email=user1@example.org&gt;") in c.text
+        assert ("Current user: User &lt;id=1, email=user1@example.org&gt;") in c.text
+
 
 def test_filter_on_detail(
     app, record_ui_resource, simple_record, client, fake_manifest

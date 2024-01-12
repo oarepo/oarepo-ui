@@ -1,14 +1,16 @@
 import shutil
 import sys
 from pathlib import Path
-from invenio_accounts.models import Role
+
 import pytest
 from flask_security.utils import hash_password
-from invenio_access.permissions import system_identity
-from invenio_app.factory import create_app as _create_app
-from tests.model import ModelUIResource, ModelUIResourceConfig
 from invenio_access.models import ActionRoles
-from invenio_access.permissions import superuser_access
+from invenio_access.permissions import superuser_access, system_identity
+from invenio_accounts.models import Role
+from invenio_app.factory import create_app as _create_app
+
+from tests.model import ModelUIResource, ModelUIResourceConfig
+
 
 @pytest.fixture(scope="module")
 def extra_entry_points():
@@ -76,6 +78,7 @@ def fake_manifest(app):
         Path(__file__).parent / "manifest.json", manifest_path / "manifest.json"
     )
 
+
 @pytest.fixture(scope="module")
 def users(app):
     """Create example users."""
@@ -107,6 +110,7 @@ def users(app):
 
     db.session.commit()
     return [user1, user2, admin]
+
 
 @pytest.fixture
 def simple_record(app, db, search_clear, record_service):
