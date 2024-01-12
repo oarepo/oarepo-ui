@@ -44,12 +44,15 @@ def test_current_user(
     app, record_ui_resource, simple_record, client, fake_manifest, users
 ):
     with client.get(f"/simple-model/{simple_record.id}") as c:
-        assert ("Current user: &lt;flask_security.core.AnonymousUser") in c.text
+        print(c.text)
+        data = json.loads(c.text)
+        assert "&lt;flask_security.core.AnonymousUser" in data["current_user"]
 
     login_user_via_session(client, email=users[0].email)
 
     with client.get(f"/simple-model/{simple_record.id}") as c:
-        assert ("Current user: User &lt;id=1, email=user1@example.org&gt;") in c.text
+        data = json.loads(c.text)
+        assert "User &lt;id=1, email=user1@example.org&gt;" in data["current_user"]
 
 
 def test_filter_on_detail(
