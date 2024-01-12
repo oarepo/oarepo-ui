@@ -41,6 +41,15 @@ class UIResourceConfig(ResourceConfig):
     request_view_args = {}
 
 
+class TemplatePageUIResourceConfig(UIResourceConfig):
+    pages = {}
+    """
+       Templates used for rendering the UI. 
+       The key in the dictionary is URL path (relative to url_prefix), 
+       value is a jinjax macro that renders the UI
+   """
+
+
 class RecordsUIResourceConfig(UIResourceConfig):
     routes = {
         "search": "",
@@ -60,17 +69,16 @@ class RecordsUIResourceConfig(UIResourceConfig):
     api_service = None
     """Name of the API service as registered inside the service registry"""
 
+    search_app_id = None
+    """ID of the app used for rendering the search config"""
+
     templates = {
-        "detail": {
-            "layout": "oarepo_ui/detail.html",
-        },
-        "search": {
-            "layout": "oarepo_ui/search.html",
-        },
-        "edit": {"layout": "oarepo_ui/form.html"},
-        "create": {"layout": "oarepo_ui/form.html"},
+        "detail": None,
+        "search": None,
+        "edit": None,
+        "create": None,
     }
-    layout = "sample"
+    """Templates used for rendering the UI. It is a name of a jinjax macro that renders the UI"""
 
     empty_record = {}
 
@@ -109,7 +117,11 @@ class RecordsUIResourceConfig(UIResourceConfig):
         return api_config.search.sort_options
 
     def search_active_facets(self, api_config, identity):
-        return list([])
+        """Return list of active facets that will be displayed by search app.
+        By default, all facets are active but a repository can, for performance reasons,
+        display only a subset of facets.
+        """
+        return list(self.search_available_facets(api_config, identity).keys())
 
     def search_active_sort_options(self, api_config, identity):
         return list(api_config.search.sort_options.keys())

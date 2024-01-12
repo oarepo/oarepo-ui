@@ -4,7 +4,11 @@ from flask_resources.serializers import JSONSerializer
 from invenio_pidstore.providers.recordid_v2 import RecordIdProviderV2
 from invenio_records.models import RecordMetadata
 from invenio_records_permissions import RecordPermissionPolicy
-from invenio_records_permissions.generators import AnyUser, SystemProcess
+from invenio_records_permissions.generators import (
+    AnyUser,
+    AuthenticatedUser,
+    SystemProcess,
+)
 from invenio_records_resources.records.api import Record
 from invenio_records_resources.records.systemfields import IndexField, PIDField
 from invenio_records_resources.records.systemfields.pid import PIDFieldContext
@@ -20,6 +24,8 @@ from oarepo_ui.resources import (
     RecordsUIResourceConfig,
 )
 from oarepo_ui.resources.components import PermissionsComponent
+from oarepo_ui.resources.config import TemplatePageUIResourceConfig
+from oarepo_ui.resources.resource import TemplatePageUIResource
 
 
 class ModelRecordIdProvider(RecordIdProviderV2):
@@ -35,9 +41,13 @@ class ModelRecord(Record):
 
 
 class ModelPermissionPolicy(RecordPermissionPolicy):
-    can_create = [AnyUser(), SystemProcess()]
+    can_create = [AuthenticatedUser(), SystemProcess()]
     can_search = [AnyUser(), SystemProcess()]
     can_read = [AnyUser(), SystemProcess()]
+    can_update = [AuthenticatedUser(), SystemProcess()]
+
+    # the default has changed between RDM 11 and RDM 12, making it explicit
+    can_read_deleted_files = [AuthenticatedUser(), SystemProcess()]
 
 
 class ModelSchema(ma.Schema):
@@ -87,12 +97,27 @@ class ModelUIResourceConfig(RecordsUIResourceConfig):
     ui_serializer_class = ModelUISerializer
     templates = {
         **RecordsUIResourceConfig.templates,
-        "detail": {"layout": "TestDetail.jinja", "blocks": {}},
-        "search": {"layout": "TestSearch.jinja", "app_id": "SimpleModel.Search"},
+        "detail": "TestDetail",
+        "search": "TestSearch",
+        "create": "test.TestCreate",
+        "edit": "TestEdit",
     }
 
     components = [BabelComponent, PermissionsComponent]
 
 
 class ModelUIResource(RecordsUIResource):
+    def _get_record(self, resource_requestctx, allow_draft=False):
+        # we are not testing drafts here, so always return published record
+        # tests for drafts should be in oarepo-model-builder-drafts
+        return super()._get_record(resource_requestctx, allow_draft=False)
+
+
+class TitlePageUIResourceConfig(TemplatePageUIResourceConfig):
+    blueprint_name = "titlepage"
+    url_prefix = "/"
+    pages = {"": "TitlePage"}
+
+
+class TitlePageUIResource(TemplatePageUIResource):
     pass
