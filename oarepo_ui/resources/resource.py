@@ -32,7 +32,11 @@ if TYPE_CHECKING:
 # Resource
 #
 from ..proxies import current_oarepo_ui
-from .config import RecordsUIResourceConfig, UIResourceConfig, TemplatePageUIResourceConfig
+from .config import (
+    RecordsUIResourceConfig,
+    TemplatePageUIResourceConfig,
+    UIResourceConfig,
+)
 
 request_export_args = request_parser(
     from_conf("request_export_args"), location="view_args"
@@ -174,6 +178,7 @@ class RecordsUIResource(UIResource):
             api_record=api_record,
             extra_context=extra_context,
             ui_links=ui_links,
+            context=current_oarepo_ui.catalog.jinja_env.globals,
         )
 
     def make_links_absolute(self, links, api_prefix):
@@ -253,6 +258,7 @@ class RecordsUIResource(UIResource):
             ui_resource=self,
             ui_links=ui_links,
             extra_context=extra_context,
+            context=current_oarepo_ui.catalog.jinja_env.globals,
         )
 
     @request_read_args
@@ -348,6 +354,7 @@ class RecordsUIResource(UIResource):
             extra_context=extra_context,
             ui_links=ui_links,
             data=data,
+            context=current_oarepo_ui.catalog.jinja_env.globals,
         )
 
     @login_required
@@ -403,6 +410,7 @@ class RecordsUIResource(UIResource):
             extra_context=extra_context,
             ui_links=ui_links,
             data=empty_record,
+            context=current_oarepo_ui.catalog.jinja_env.globals,
         )
 
     @property
@@ -430,7 +438,6 @@ class RecordsUIResource(UIResource):
 
 
 class TemplatePageUIResource(UIResource):
-
     def create_url_rules(self):
         """Create the URL rules for the record resource."""
         self.config: TemplatePageUIResourceConfig
@@ -438,10 +445,12 @@ class TemplatePageUIResource(UIResource):
         pages_config = self.config.pages
         routes = []
         for page_url_path, page_template_name in pages_config.items():
-            handler = getattr(self, f"render_{page_template_name}", None) or partial(self.render, page=page_template_name)
-            if not hasattr(handler, '__name__'):
+            handler = getattr(self, f"render_{page_template_name}", None) or partial(
+                self.render, page=page_template_name
+            )
+            if not hasattr(handler, "__name__"):
                 handler.__name__ = self.render.__name__
-            if not hasattr(handler, '__self__'):
+            if not hasattr(handler, "__self__"):
                 handler.__self__ = self
 
             routes.append(

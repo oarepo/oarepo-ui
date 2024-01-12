@@ -117,7 +117,11 @@ class RecordsUIResourceConfig(UIResourceConfig):
         return api_config.search.sort_options
 
     def search_active_facets(self, api_config, identity):
-        return list([])
+        """Return list of active facets that will be displayed by search app.
+        By default, all facets are active but a repository can, for performance reasons,
+        display only a subset of facets.
+        """
+        return list(self.search_available_facets(api_config, identity).keys())
 
     def search_active_sort_options(self, api_config, identity):
         return list(api_config.search.sort_options.keys())

@@ -1,6 +1,7 @@
 import json
 
 from invenio_access.permissions import system_identity
+from invenio_accounts.testutils import login_user_via_session
 
 
 def test_ui_resource_create_new(app, record_ui_resource, record_service):
@@ -13,7 +14,7 @@ def test_ui_resource_form_config(app, record_ui_resource):
 
 
 def test_permissions_on_detail(
-    app, record_ui_resource, simple_record, client, fake_manifest
+    app, record_ui_resource, simple_record, client, fake_manifest, users
 ):
     with client.get(f"/simple-model/{simple_record.id}") as c:
         assert c.status_code == 200
@@ -37,6 +38,21 @@ def test_permissions_on_detail(
             "can_update_files": False,
             "can_view": False,
         }
+
+
+def test_current_user(
+    app, record_ui_resource, simple_record, client, fake_manifest, users
+):
+    with client.get(f"/simple-model/{simple_record.id}") as c:
+        print(c.text)
+        data = json.loads(c.text)
+        assert "&lt;flask_security.core.AnonymousUser" in data["current_user"]
+
+    login_user_via_session(client, email=users[0].email)
+
+    with client.get(f"/simple-model/{simple_record.id}") as c:
+        data = json.loads(c.text)
+        assert "User &lt;id=1, email=user1@example.org&gt;" in data["current_user"]
 
 
 def test_filter_on_detail(

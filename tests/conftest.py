@@ -6,11 +6,18 @@ import pytest
 from flask_security import login_user
 from flask_security.utils import hash_password
 from invenio_access import ActionUsers, current_access
-from invenio_access.permissions import system_identity
+from invenio_access.models import ActionRoles
+from invenio_access.permissions import superuser_access, system_identity
+from invenio_accounts.models import Role
 from invenio_accounts.testutils import login_user_via_session
 from invenio_app.factory import create_app as _create_app
 
-from tests.model import ModelUIResource, ModelUIResourceConfig, TitlePageUIResource, TitlePageUIResourceConfig
+from tests.model import (
+    ModelUIResource,
+    ModelUIResourceConfig,
+    TitlePageUIResource,
+    TitlePageUIResourceConfig,
+)
 
 
 @pytest.fixture(scope="module")
@@ -72,7 +79,9 @@ def record_ui_resource(app, record_ui_resource_config, record_service):
 
 
 @pytest.fixture(scope="module")
-def titlepage_ui_resource(app, ):
+def titlepage_ui_resource(
+    app,
+):
     ui_resource = TitlePageUIResource(TitlePageUIResourceConfig())
     app.register_blueprint(
         ui_resource.as_blueprint(template_folder=Path(__file__).parent / "templates")
@@ -89,6 +98,39 @@ def fake_manifest(app):
     shutil.copy(
         Path(__file__).parent / "manifest.json", manifest_path / "manifest.json"
     )
+
+
+@pytest.fixture(scope="module")
+def users(app):
+    """Create example users."""
+    # This is a convenient way to get a handle on db that, as opposed to the
+    # fixture, won't cause a DB rollback after the test is run in order
+    # to help with test performance (creating users is a module -if not higher-
+    # concern)
+    from invenio_db import db
+
+    with db.session.begin_nested():
+        datastore = app.extensions["security"].datastore
+
+        su_role = Role(name="superuser-access")
+        db.session.add(su_role)
+
+        su_action_role = ActionRoles.create(action=superuser_access, role=su_role)
+        db.session.add(su_action_role)
+
+        user1 = datastore.create_user(
+            email="user1@example.org", password=hash_password("password"), active=True
+        )
+        user2 = datastore.create_user(
+            email="user2@example.org", password=hash_password("password"), active=True
+        )
+        admin = datastore.create_user(
+            email="admin@example.org", password=hash_password("password"), active=True
+        )
+        admin.roles.append(su_role)
+
+    db.session.commit()
+    return [user1, user2, admin]
 
 
 @pytest.fixture
