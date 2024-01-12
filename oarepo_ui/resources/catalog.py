@@ -48,7 +48,6 @@ class OarepoCatalog(Catalog):
         root_url = root_url.strip().rstrip(SLASH)
         self.root_url = f"{root_url}{SLASH}"
 
-        # env = jinja2.Environment(undefined=jinja2.StrictUndefined)
         env = flask.templating.Environment(undefined=jinja2.Undefined, app=current_app)
         extensions = [*(extensions or []), "jinja2.ext.do", JinjaX]
         globals = globals or {}
