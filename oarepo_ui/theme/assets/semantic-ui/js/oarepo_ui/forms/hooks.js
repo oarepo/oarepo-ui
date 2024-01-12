@@ -1,6 +1,10 @@
 import * as React from "react";
 import { FormConfigContext } from "./contexts";
-import { OARepoDepositApiClient, OARepoDepositSerializer } from "../api";
+import {
+  OARepoDepositApiClient,
+  OARepoDepositSerializer,
+  OARepoDepositFileApiClient,
+} from "../api";
 import _get from "lodash/get";
 import _set from "lodash/set";
 import { useFormikContext, getIn } from "formik";
@@ -46,8 +50,8 @@ export const useDefaultLocale = () => {
     formConfig: { default_locale },
   } = useFormConfig();
 
-  return { defaultLocale: default_locale }
-}
+  return { defaultLocale: default_locale };
+};
 
 export const useVocabularyOptions = (vocabularyType) => {
   const {
@@ -66,15 +70,26 @@ export const useConfirmationModal = () => {
   return { isModalOpen, handleCloseModal, handleOpenModal };
 };
 
-export const useFormFieldValue = ({ subValuesPath, defaultValue, subValuesUnique = true }) => {
+export const useFormFieldValue = ({
+  subValuesPath,
+  defaultValue,
+  subValuesUnique = true,
+}) => {
   const usedSubValues = (value) =>
     value && typeof Array.isArray(value)
       ? value.map((val) => _get(val, "lang")) || []
       : [];
-  const defaultNewValue = (initialVal, usedSubValues = []) => _set({ ...initialVal }, subValuesPath, !usedSubValues?.includes(defaultValue) || !subValuesUnique ? defaultValue : "")
+  const defaultNewValue = (initialVal, usedSubValues = []) =>
+    _set(
+      { ...initialVal },
+      subValuesPath,
+      !usedSubValues?.includes(defaultValue) || !subValuesUnique
+        ? defaultValue
+        : ""
+    );
 
-  return { usedSubValues, defaultNewValue }
-}
+  return { usedSubValues, defaultNewValue };
+};
 
 export const useShowEmptyValue = (
   fieldPath,
@@ -129,15 +144,19 @@ export const useDepositApiClient = (
     isSubmitting,
     values,
     validateForm,
-    setErrors,
     setSubmitting,
     setValues,
     setFieldError,
     setFieldValue,
+    setErrors,
   } = formik;
   const {
     formConfig: { createUrl },
   } = useFormConfig();
+
+  const [isSaving, setIsSaving] = React.useState(false);
+  const [isPublishing, setIsPublishing] = React.useState(false);
+  const [isDeleting, setIsDeleting] = React.useState(false);
 
   const recordSerializer = serializer
     ? new serializer(internalFieldsArray, keysToRemove)
@@ -147,20 +166,23 @@ export const useDepositApiClient = (
     ? new baseApiClient(createUrl, recordSerializer)
     : new OARepoDepositApiClient(createUrl, recordSerializer);
 
-  async function save () {
+  async function save(saveWithoutDisplayingValidationErrors = false) {
     let response;
 
     setSubmitting(true);
+    setIsSaving(true);
+    //  purge any existing errors in internal fields before making save action
+    const valuesWithoutInternalFields = _omit(values, internalFieldsArray);
     setErrors({});
     try {
-      response = await apiClient.saveOrCreateDraft(values);
+      response = await apiClient.saveOrCreateDraft(valuesWithoutInternalFields);
       // when I am creating a new draft, it saves the response into formik's state, so that I would have access
       // to the draft and draft links in the app. I we don't do that then each time I click on save it will
       // create new draft, as I don't actually refresh the page, so the record from html is still empty. Invenio,
       // solves this by keeping record in the store, but the idea here is to not create some central state,
       // but use formik as some sort of auxiliary state.
 
-      if (!values.id) {
+      if (!valuesWithoutInternalFields.id) {
         window.history.replaceState(
           undefined,
           "",
@@ -178,7 +200,7 @@ export const useDepositApiClient = (
 
       // save accepts posts/puts even with validation errors. Here I check if there are some errors in the response
       // body. Here I am setting the individual error messages to the field
-      if (response.errors) {
+      if (!saveWithoutDisplayingValidationErrors && response.errors) {
         response.errors.forEach((error) =>
           setFieldError(error.field, error.messages[0])
         );
@@ -191,7 +213,8 @@ export const useDepositApiClient = (
         });
         return false;
       }
-      setFieldValue("successMessage", i18next.t("Draft saved successfully."));
+      if (!saveWithoutDisplayingValidationErrors)
+        setFieldValue("successMessage", i18next.t("Draft saved successfully."));
       return response;
     } catch (error) {
       // handle 400 errors. Normally, axios would put messages in error.response. But for example
@@ -204,12 +227,14 @@ export const useDepositApiClient = (
       return false;
     } finally {
       setSubmitting(false);
+      setIsSaving(false);
     }
   }
 
-  async function publish () {
+  async function publish() {
     // call save and if save returns false, exit
     const saveResult = await save();
+
     if (!saveResult) {
       setFieldValue(
         "BEvalidationErrors.errorMessage",
@@ -232,6 +257,7 @@ export const useDepositApiClient = (
       return;
     }
     setSubmitting(true);
+    setIsPublishing(true);
     let response;
     try {
       response = await apiClient.publishDraft(saveResult);
@@ -266,19 +292,21 @@ export const useDepositApiClient = (
       return false;
     } finally {
       setSubmitting(false);
+      setIsPublishing(false);
     }
   }
 
-  async function read (recordUrl) {
+  async function read(recordUrl) {
     return await apiClient.readDraft({ self: recordUrl });
   }
 
-  async function _delete (redirectUrl) {
+  async function _delete(redirectUrl) {
     if (!redirectUrl)
       throw new Error(
         "You must provide url where to be redirected after deleting a draft"
       );
     setSubmitting(true);
+    setIsDeleting(true);
     try {
       let response = await apiClient.deleteDraft(values);
 
@@ -298,6 +326,7 @@ export const useDepositApiClient = (
       return false;
     } finally {
       setSubmitting(false);
+      setIsDeleting(false);
     }
   }
   // we return also recordSerializer and apiClient instances, if someone wants to use this hook
@@ -305,6 +334,9 @@ export const useDepositApiClient = (
   return {
     values,
     isSubmitting,
+    isSaving,
+    isPublishing,
+    isDeleting,
     save,
     publish,
     read,
@@ -313,5 +345,53 @@ export const useDepositApiClient = (
     apiClient,
     createUrl,
     formik,
+  };
+};
+
+export const useDepositFileApiClient = (baseApiClient) => {
+  const formik = useFormikContext();
+
+  const { isSubmitting, values, setFieldValue, setSubmitting, setValues } =
+    formik;
+
+  const apiClient = baseApiClient
+    ? new baseApiClient()
+    : new OARepoDepositFileApiClient();
+
+  async function read(draft) {
+    return await apiClient.readDraftFiles(draft);
+  }
+  async function _delete(file) {
+    setValues(
+      _omit(values, [
+        "errors",
+        "BEvalidationErrors",
+        "FEvalidationErrors",
+        "httpErrors",
+        "successMessage",
+      ])
+    );
+    setSubmitting(true);
+    try {
+      let response = await apiClient.deleteFile(file?.links);
+      return Promise.resolve(response);
+    } catch (error) {
+      setFieldValue(
+        "httpErrors",
+        error?.response?.data?.message ?? error.message
+      );
+      return false;
+    } finally {
+      setSubmitting(false);
+    }
+  }
+  return {
+    values,
+    isSubmitting,
+    _delete,
+    read,
+    apiClient,
+    formik,
+    setFieldValue,
   };
 };

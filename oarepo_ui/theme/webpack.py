@@ -73,7 +73,9 @@ theme = WebpackThemeBundle(
                 "oarepo_ui_components": "./js/custom-components.js",
             },
             dependencies=dependencies,
-            devDependencies={},
+            devDependencies={
+                "eslint-plugin-i18next":"^6.0.3"
+            },
             aliases={
                 **aliases,
                 "@translations/oarepo_ui": "translations/oarepo_ui",

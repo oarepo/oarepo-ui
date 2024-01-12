@@ -27,6 +27,7 @@ export const MultilingualTextInput = ({
   addButtonLabel,
   lngFieldWidth,
   showEmptyValue,
+  prefillLanguageWithDefaultLocale,
   ...uiProps
 }) => {
   const { defaultLocale } = useDefaultLocale();
@@ -43,7 +44,11 @@ export const MultilingualTextInput = ({
   return (
     <ArrayField
       addButtonLabel={addButtonLabel}
-      defaultNewValue={getNewValue(defaultNewValue, usedLanguages)}
+      defaultNewValue={
+        prefillLanguageWithDefaultLocale
+          ? getNewValue(defaultNewValue, usedLanguages)
+          : defaultNewValue
+      }
       fieldPath={fieldPath}
       label={
         <FieldLabel htmlFor={fieldPath} icon={labelIcon ?? ""} label={label} />
@@ -106,6 +111,7 @@ MultilingualTextInput.propTypes = {
   rich: PropTypes.bool,
   defaultNewValue: PropTypes.object,
   showEmptyValue: PropTypes.bool,
+  prefillLanguageWithDefaultLocale: PropTypes.bool,
 };
 
 MultilingualTextInput.defaultProps = {
@@ -117,4 +123,5 @@ MultilingualTextInput.defaultProps = {
   label: undefined,
   addButtonLabel: i18next.t("Add another language"),
   showEmptyValue: false,
+  prefillLanguageWithDefaultLocale: false,
 };

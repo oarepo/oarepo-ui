@@ -114,7 +114,7 @@ class RecordsUIResource(UIResource):
         empty_data = dump_empty(self.api_config.schema)
         files_field = getattr(self.api_config.record_cls, "files", None)
         if files_field and isinstance(files_field, FilesField):
-            empty_data["files"] = {"enabled": False}
+            empty_data["files"] = {"enabled": True}
         empty_data = deepmerge.always_merger.merge(
             empty_data, copy.deepcopy(self.config.empty_record)
         )
