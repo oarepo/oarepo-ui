@@ -12,7 +12,7 @@ if test -d $VENV ; then
   rm -rf $VENV
 fi
 
-python3 -m venv $VENV
+python3.9 -m venv $VENV
 . $VENV/bin/activate
 pip install -U setuptools pip wheel
 
