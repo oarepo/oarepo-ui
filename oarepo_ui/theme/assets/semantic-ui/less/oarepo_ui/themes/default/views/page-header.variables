@@ -4,3 +4,4 @@
 @pageHeaderPaddingLeftRight: 0;
 @pageHeaderMainNavLinkLargeScreen: lightblue;
 @pageHeaderMinHeight: 10rem;
+@borderRadius: 0.3rem;

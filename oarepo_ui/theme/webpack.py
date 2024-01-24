@@ -71,6 +71,7 @@ theme = WebpackThemeBundle(
                 "oarepo_ui_forms": "./js/oarepo_ui/forms/index.js",
                 "oarepo_ui_theme": "./js/oarepo_ui/theme.js",
                 "oarepo_ui_components": "./js/oarepo_ui/custom-components.js",
+                "oarepo_ui_header": "./js/oarepo_ui/pageheader.js"
             },
             dependencies=dependencies,
             devDependencies={
