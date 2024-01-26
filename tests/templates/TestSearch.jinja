@@ -1,8 +1,9 @@
-{#def extra_context, ui_links #}
+{#def extra_context, ui_links, search_app_config #}
 {
     "ui_links": {{ ui_links|tojson|safe }},
     "permissions": {{ extra_context.permissions|tojson|safe }},
-    "dummy_filter": {{ 1|dummy|tojson|safe }}
+    "dummy_filter": {{ 1|dummy|tojson|safe }},
+    "search_config": {{ search_app_config|tojson|safe }}
 }
 
 
