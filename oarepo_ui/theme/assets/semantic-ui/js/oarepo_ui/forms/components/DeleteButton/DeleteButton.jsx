@@ -1,76 +1,72 @@
 import React from "react";
-import { Button, Modal, Icon, Message } from "semantic-ui-react";
+import { Button, Icon } from "semantic-ui-react";
 import { i18next } from "@translations/i18next";
 import {
   useConfirmationModal,
   useFormConfig,
   useDepositApiClient,
+  ConfirmationModal,
 } from "@js/oarepo_ui";
 import PropTypes from "prop-types";
 
 export const DeleteButton = React.memo(
   ({ modalMessage, modalHeader, redirectUrl }) => {
-    const { isModalOpen, handleCloseModal, handleOpenModal } =
-      useConfirmationModal();
+    const {
+      isOpen: isModalOpen,
+      close: closeModal,
+      open: openModal,
+    } = useConfirmationModal();
     const {
       formConfig: { permissions },
     } = useFormConfig();
     const { values, isSubmitting, _delete, isDeleting } = useDepositApiClient();
 
     return (
-      <React.Fragment>
+      <>
         {values.id && permissions?.can_delete_draft && (
-          <Button
-            name="delete"
-            color="red"
-            onClick={handleOpenModal}
-            icon="delete"
-            labelPosition="left"
-            content={i18next.t("Delete")}
-            type="button"
-            disabled={isSubmitting}
-            loading={isDeleting}
-            fluid
+          <ConfirmationModal
+            header={modalHeader}
+            content={modalMessage}
+            isOpen={isModalOpen}
+            close={closeModal}
+            trigger={
+              <Button
+                name="delete"
+                color="red"
+                onClick={openModal}
+                icon="delete"
+                labelPosition="left"
+                content={i18next.t("Delete")}
+                type="button"
+                disabled={isSubmitting}
+                loading={isDeleting}
+                fluid
+              />
+            }
+            actions={
+              <>
+                <Button onClick={closeModal} floated="left">
+                  {i18next.t("Cancel")}
+                </Button>
+                <Button
+                  name="delete"
+                  disabled={isSubmitting}
+                  loading={isDeleting}
+                  color="red"
+                  onClick={() => {
+                    _delete(redirectUrl);
+                    closeModal();
+                  }}
+                  icon="delete"
+                  labelPosition="left"
+                  content={i18next.t("Delete")}
+                  type="button"
+                />
+              </>
+            }
           />
         )}
-        <Modal
-          open={isModalOpen}
-          onClose={handleCloseModal}
-          size="small"
-          closeIcon
-          closeOnDimmerClick={false}
-        >
-          <Modal.Header>{modalHeader}</Modal.Header>
-          {modalMessage && (
-            <Modal.Content>
-              <Message visible warning>
-                <p>
-                  <Icon name="warning sign" /> {modalMessage}
-                </p>
-              </Message>
-            </Modal.Content>
-          )}
-          <Modal.Actions>
-            <Button onClick={handleCloseModal} floated="left">
-              {i18next.t("Cancel")}
-            </Button>
-            <Button
-              name="delete"
-              disabled={isSubmitting}
-              loading={isDeleting}
-              color="red"
-              onClick={() => {
-                _delete(redirectUrl);
-                handleCloseModal();
-              }}
-              icon="delete"
-              labelPosition="left"
-              content={i18next.t("Delete")}
-              type="button"
-            />
-          </Modal.Actions>
-        </Modal>
-      </React.Fragment>
+      </>
     );
   }
 );

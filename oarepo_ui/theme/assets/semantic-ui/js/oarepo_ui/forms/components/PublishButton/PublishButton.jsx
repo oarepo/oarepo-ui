@@ -1,47 +1,44 @@
 import React from "react";
-import { Button, Modal, Message, Icon } from "semantic-ui-react";
+import { Button } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import { useConfirmationModal, useDepositApiClient } from "@js/oarepo_ui";
+import {
+  useConfirmationModal,
+  useDepositApiClient,
+  ConfirmationModal,
+} from "@js/oarepo_ui";
 import PropTypes from "prop-types";
 
 export const PublishButton = React.memo(({ modalMessage, modalHeader }) => {
-  const { isModalOpen, handleCloseModal, handleOpenModal } =
-    useConfirmationModal();
+  const {
+    isOpen: isModalOpen,
+    close: closeModal,
+    open: openModal,
+  } = useConfirmationModal();
   const { isSubmitting, publish } = useDepositApiClient();
 
   return (
-    <React.Fragment>
-      <Button
-        name="publish"
-        color="green"
-        onClick={handleOpenModal}
-        icon="upload"
-        labelPosition="left"
-        content={i18next.t("Publish")}
-        type="button"
-        disabled={isSubmitting}
-        loading={isSubmitting}
-        fluid
-      />
-      <Modal
-        open={isModalOpen}
-        onClose={handleCloseModal}
-        size="small"
-        closeIcon
-        closeOnDimmerClick={false}
-      >
-        <Modal.Header>{modalHeader}</Modal.Header>
-        {modalMessage && (
-          <Modal.Content>
-            <Message visible warning>
-              <p>
-                <Icon name="warning sign" /> {modalMessage}
-              </p>
-            </Message>
-          </Modal.Content>
-        )}
-        <Modal.Actions>
-          <Button onClick={handleCloseModal} floated="left">
+    <ConfirmationModal
+      header={modalHeader}
+      content={modalMessage}
+      isOpen={isModalOpen}
+      close={closeModal}
+      trigger={
+        <Button
+          name="publish"
+          color="green"
+          onClick={openModal}
+          icon="upload"
+          labelPosition="left"
+          content={i18next.t("Publish")}
+          type="button"
+          disabled={isSubmitting}
+          loading={isSubmitting}
+          fluid
+        />
+      }
+      actions={
+        <>
+          <Button onClick={closeModal} floated="left">
             {i18next.t("Cancel")}
           </Button>
           <Button
@@ -51,16 +48,16 @@ export const PublishButton = React.memo(({ modalMessage, modalHeader }) => {
             color="green"
             onClick={() => {
               publish();
-              handleCloseModal();
+              closeModal();
             }}
             icon="upload"
             labelPosition="left"
             content={i18next.t("Publish")}
             type="submit"
           />
-        </Modal.Actions>
-      </Modal>
-    </React.Fragment>
+        </>
+      }
+    />
   );
 });
 

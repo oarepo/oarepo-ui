@@ -70,5 +70,6 @@
     "Validate form": "Zkontrolovat formulář",
     "Delete": "Smazat",
     "Are you sure you wish delete this draft?": "Jste si jistý, že chcete smazat tento koncept?",
-    "If you delete the draft, the work you have done on it will be lost.": "Pokud koncept smažete, práce, kterou jste na něm vykonali, bude ztracena."
+    "If you delete the draft, the work you have done on it will be lost.": "Pokud koncept smažete, práce, kterou jste na něm vykonali, bude ztracena.",
+    "Cancel": "Zrušit"
 }
