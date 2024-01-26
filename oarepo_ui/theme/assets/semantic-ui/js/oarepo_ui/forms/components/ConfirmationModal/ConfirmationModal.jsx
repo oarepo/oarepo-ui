@@ -1,5 +1,6 @@
 import React from "react";
 import { Modal, Icon, Message } from "semantic-ui-react";
+import PropTypes from "prop-types";
 
 export function ConfirmationModal({
   header,
@@ -34,5 +35,14 @@ export function ConfirmationModal({
     </>
   );
 }
+
+ConfirmationModal.propTypes = {
+  header: PropTypes.string,
+  content: PropTypes.string,
+  trigger: PropTypes.element,
+  actions: PropTypes.node,
+  isOpen: PropTypes.bool,
+  close: PropTypes.func,
+};
 
 export default ConfirmationModal;
