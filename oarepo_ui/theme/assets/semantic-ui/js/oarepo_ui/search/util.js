@@ -34,20 +34,21 @@ export function createSearchAppInit ({
             rootElement.dataset[_camelCase(autoInitDataAttr)]
         );
 
+        const componentPrefix = multi ? `${appId}.` : ''
         const SearchAppSearchbarContainerWithConfig = parametrize(SearchAppSearchbarContainer, { appName: appId })
         const internalComponentDefaults = {
-            [`${appId}.ActiveFilters.element`]: ActiveFiltersElement,
-            [`${appId}.BucketAggregation.element`]: BucketAggregationElement,
-            [`${appId}.BucketAggregationValues.element`]: BucketAggregationValuesElement,
-            [`${appId}.Count.element`]: CountElement,
-            [`${appId}.EmptyResults.element`]: EmptyResultsElement,
-            [`${appId}.Error.element`]: ErrorElement,
-            [`${appId}.SearchApp.facets`]: SearchAppFacets,
-            [`${appId}.SearchApp.layout`]: SearchAppLayout,
-            [`${appId}.SearchApp.resultOptions`]: SearchAppResultOptions,
-            [`${appId}.SearchApp.searchbarContainer`]: SearchAppSearchbarContainerWithConfig,
-            [`${appId}.SearchFilters.Toggle.element`]: SearchFiltersToggleElement,
-            [`${appId}.SearchApp.sort`]: SearchAppSort,
+            [`${componentPrefix}ActiveFilters.element`]: ActiveFiltersElement,
+            [`${componentPrefix}BucketAggregation.element`]: BucketAggregationElement,
+            [`${componentPrefix}BucketAggregationValues.element`]: BucketAggregationValuesElement,
+            [`${componentPrefix}Count.element`]: CountElement,
+            [`${componentPrefix}EmptyResults.element`]: EmptyResultsElement,
+            [`${componentPrefix}Error.element`]: ErrorElement,
+            [`${componentPrefix}SearchApp.facets`]: SearchAppFacets,
+            [`${componentPrefix}SearchApp.layout`]: SearchAppLayout,
+            [`${componentPrefix}SearchApp.resultOptions`]: SearchAppResultOptions,
+            [`${componentPrefix}SearchApp.searchbarContainer`]: SearchAppSearchbarContainerWithConfig,
+            [`${componentPrefix}SearchFilters.Toggle.element`]: SearchFiltersToggleElement,
+            [`${componentPrefix}SearchApp.sort`]: SearchAppSort,
         };
 
         loadComponents(appId, {
