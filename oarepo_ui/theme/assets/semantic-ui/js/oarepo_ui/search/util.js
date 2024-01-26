@@ -11,14 +11,13 @@ export function createSearchAppInit ({
     defaultComponentOverrides,
     autoInit = true,
     autoInitDataAttr = "invenio-search-config",
-    multi = false,
+    multi = true,
     ContainerComponent = React.Fragment
 }) {
     const initSearchApp = (rootElement) => {
         const { appId, ...config } = JSON.parse(
             rootElement.dataset[_camelCase(autoInitDataAttr)]
         );
-
         loadComponents(appId, { ...config.defaultComponents, ...defaultComponentOverrides }).then((res) => {
             ReactDOM.render(
                 <ContainerComponent>
