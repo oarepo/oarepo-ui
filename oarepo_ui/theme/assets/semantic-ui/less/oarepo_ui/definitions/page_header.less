@@ -50,11 +50,10 @@ name of the component from above)
   }
 
   #invenio-nav {
-    background-color: @pageHeaderBackgroundColor;
     border-radius: 0;
     min-height: @pageHeaderMinHeight;
     .search-bar {
-      min-width: 50%;
+      min-width: 40%;
     }
     .ui.icon.input {
       width: 100%;
@@ -107,6 +106,9 @@ name of the component from above)
     .item {
       &.logo {
         padding-right: 1rem;
+        img {
+          height: @pageHeaderLogoHeight;
+        }
       }
 
       &.search-bar {

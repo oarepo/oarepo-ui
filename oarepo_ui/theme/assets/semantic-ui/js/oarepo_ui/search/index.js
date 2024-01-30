@@ -13,3 +13,4 @@ export { SearchAppResults } from "./SearchAppResults";
 export { EmptyResultsElement } from "./EmptyResultsElement";
 export { ResultsPerPageLabel } from "./ResultsPerPageLabel";
 export { ClearFiltersButton } from "./ClearFiltersButton";
+export { SearchappSearchbarElement } from "./SearchappSearchbarElement";
