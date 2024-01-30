@@ -62,5 +62,14 @@
     "Format: YYYY-MM-DD/YYYY-MM-DD, YYYYY-MM/YYYY/MM or YYYY/YYYY.": "Formát: RRRR-MM-DD/RRRR-MM-DD, RRRR-MM/RRRR/MM nebo RRRR/RRRR.",
     "Select date range": "Vyberte časové období",
     "Format: YYYY-MM-DD, YYYYY-MM or YYYY.": "Formát: RRRR-MM-DD, RRRR-MM nebo RRRR.",
-    "Select date": "Vyberte datum"
+    "Select date": "Vyberte datum",
+    "Save": "Uložit",
+    "Preview": "Náhled",
+    "Publish": "Publikovat",
+    "Are you sure you wish to publish this draft?": "Jste si jistý, že chcete tento koncept publikovat?",
+    "Validate form": "Zkontrolovat formulář",
+    "Delete": "Smazat",
+    "Are you sure you wish delete this draft?": "Jste si jistý, že chcete smazat tento koncept?",
+    "If you delete the draft, the work you have done on it will be lost.": "Pokud koncept smažete, práce, kterou jste na něm vykonali, bude ztracena.",
+    "Cancel": "Zrušit"
 }

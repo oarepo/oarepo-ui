@@ -62,12 +62,12 @@ export const useVocabularyOptions = (vocabularyType) => {
 };
 
 export const useConfirmationModal = () => {
-  const [isModalOpen, setIsModalOopen] = React.useState(false);
+  const [isOpen, setIsOpen] = React.useState(false);
 
-  const handleCloseModal = () => setIsModalOopen(false);
-  const handleOpenModal = () => setIsModalOopen(true);
+  const close = React.useCallback(() => setIsOpen(false));
+  const open = React.useCallback(() => setIsOpen(true));
 
-  return { isModalOpen, handleCloseModal, handleOpenModal };
+  return { isOpen, close, open };
 };
 
 export const useFormFieldValue = ({
@@ -166,7 +166,7 @@ export const useDepositApiClient = (
     ? new baseApiClient(createUrl, recordSerializer)
     : new OARepoDepositApiClient(createUrl, recordSerializer);
 
-  async function save(saveWithoutDisplayingValidationErrors = false) {
+  async function save (saveWithoutDisplayingValidationErrors = false) {
     let response;
 
     setSubmitting(true);
@@ -231,7 +231,7 @@ export const useDepositApiClient = (
     }
   }
 
-  async function publish() {
+  async function publish () {
     // call save and if save returns false, exit
     const saveResult = await save();
 
@@ -296,11 +296,11 @@ export const useDepositApiClient = (
     }
   }
 
-  async function read(recordUrl) {
+  async function read (recordUrl) {
     return await apiClient.readDraft({ self: recordUrl });
   }
 
-  async function _delete(redirectUrl) {
+  async function _delete (redirectUrl) {
     if (!redirectUrl)
       throw new Error(
         "You must provide url where to be redirected after deleting a draft"
@@ -358,10 +358,10 @@ export const useDepositFileApiClient = (baseApiClient) => {
     ? new baseApiClient()
     : new OARepoDepositFileApiClient();
 
-  async function read(draft) {
+  async function read (draft) {
     return await apiClient.readDraftFiles(draft);
   }
-  async function _delete(file) {
+  async function _delete (file) {
     setValues(
       _omit(values, [
         "errors",
