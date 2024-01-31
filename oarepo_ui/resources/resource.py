@@ -226,7 +226,11 @@ class RecordsUIResource(UIResource):
         search_options = dict(
             api_config=self.api_service.config,
             identity=g.identity,
-            overrides={"ui_endpoint": self.config.url_prefix, "ui_links": ui_links},
+            overrides={
+                "ui_endpoint": self.config.url_prefix,
+                "ui_links": ui_links,
+                "defaultComponents": {},
+            },
         )
 
         extra_context = dict()
