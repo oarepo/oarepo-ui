@@ -1,4 +1,4 @@
 @pageFooterMinHeight: 6rem;
 @pageFooterBackgroundColor: #ffffff;
-@pageFooterTopBackgroundColor: #ffffff;
+@pageFooterPadding: 1rem;
 @pageFooterBottomBackgroundColor: #ffffff;
