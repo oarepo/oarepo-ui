@@ -27,7 +27,7 @@
     {%- if plus_menu_items %}
       <div
         id="quick-create-dropdown"
-        class="rdm-plus-menu rdm-plus-menu-responsive ui dropdown pr-15 computer only"
+        class="ui dropdown pr-15 computer only"
       >
         <a
           id="quick-create-dropdown-btn"
@@ -43,7 +43,7 @@
 
         <div role="menu" aria-labelledby="quick-create-dropdown-btn" id="quick-create-menu" class="menu">
           {%- for item in plus_menu_items if item.visible %}
-            <a role="menuitem" class="item" href="{{ item.url }}">{{ item.text|safe }}</a>
+            <a role="menuitem" class="item" href="{{ item.url }}">{{ item.text }}</a>
           {%- endfor %}             
         </div>
       </div>
@@ -55,7 +55,7 @@
           {%- for item in plus_menu_items if item.visible %}
             <a role="menuitem" class="item" href="{{ item.url }}">
               <i class="plus icon"></i>
-              {{ item.text|safe }}
+              {{ item.text }}
             </a>
           {%- endfor %}
         </div>
