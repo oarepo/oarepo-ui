@@ -13,5 +13,6 @@ export { SearchAppResults } from "./SearchAppResults";
 export { EmptyResultsElement } from "./EmptyResultsElement";
 export { ResultsPerPageLabel } from "./ResultsPerPageLabel";
 export { ClearFiltersButton } from "./ClearFiltersButton";
-export { DynamicResultsListItem } from "./DynamicResultsListItem"
-export * from './util'
+export { DynamicResultsListItem } from "./DynamicResultsListItem";
+export { SearchappSearchbarElement } from "./SearchappSearchbarElement";
+export * from "./util";

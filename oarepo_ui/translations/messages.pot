@@ -1,116 +1,280 @@
 # Translations template for PROJECT.
-# Copyright (C) 2023 ORGANIZATION
+# Copyright (C) 2024 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-11-22 10:51+0100\n"
+"POT-Creation-Date: 2024-01-31 15:23+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.14.0\n"
 
-#: oarepo_ui/for_translations_only.py:4
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/for_translations_only.py:4
 msgid "api.draft"
 msgstr ""
 
-#: oarepo_ui/for_translations_only.py:5
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/for_translations_only.py:5
 msgid "api.latest"
 msgstr ""
 
-#: oarepo_ui/for_translations_only.py:6
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/for_translations_only.py:6
 msgid "api.latest_html"
 msgstr ""
 
-#: oarepo_ui/for_translations_only.py:7
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/for_translations_only.py:7
 msgid "api.publish"
 msgstr ""
 
-#: oarepo_ui/for_translations_only.py:8
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/for_translations_only.py:8
 msgid "api.record"
 msgstr ""
 
-#: oarepo_ui/for_translations_only.py:9
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/for_translations_only.py:9
 msgid "api.self_html"
 msgstr ""
 
-#: oarepo_ui/for_translations_only.py:10
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/for_translations_only.py:10
 msgid "api.versions"
 msgstr ""
 
-#: oarepo_ui/resources/config.py:81
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/resources/config.py:89
 msgid "JSON"
 msgstr ""
 
-#: oarepo_ui/templates/DefinitionLink.jinja:2
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/DefinitionLink.jinja:2
 msgid "Open definition"
 msgstr ""
 
-#: oarepo_ui/templates/EditForm.jinja:3 oarepo_ui/templates/EditForm.jinja:18
-#: oarepo_ui/templates/oarepo_ui/form.html:16
-#: oarepo_ui/templates/oarepo_ui/form.html:31
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:3
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:18
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:16
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:31
 msgid "New item"
 msgstr ""
 
-#: oarepo_ui/templates/EditForm.jinja:5
-#: oarepo_ui/templates/oarepo_ui/form.html:18
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:5
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:18
 msgid "Edit item "
 msgstr ""
 
-#: oarepo_ui/templates/oarepo_ui/detail.html:20
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:5
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:6
+msgid "All document records"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:6
+msgid "in"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:14
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:15
+msgid "Search"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/detail.html:20
 msgid "Record details"
 msgstr ""
 
-#: oarepo_ui/templates/oarepo_ui/footer.html:7
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/footer.html:15
+msgid "Contact"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/footer.html:33
 #, python-format
 msgid ""
 "Powered by\n"
-"          <a href=\"%(link)s\">Invenio</a>"
+"            <a href=\"%(link)s\">Invenio</a>"
 msgstr ""
 
-#: oarepo_ui/templates/oarepo_ui/header.html:45
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:44
 msgid "Menu"
 msgstr ""
 
-#: oarepo_ui/templates/oarepo_ui/header.html:64
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:63
 msgid "Close menu"
 msgstr ""
 
-#: oarepo_ui/templates/oarepo_ui/header.html:116
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:115
 msgid "Requests"
 msgstr ""
 
-#: oarepo_ui/templates/oarepo_ui/header.html:118
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:117
 msgid "Inbox"
 msgstr ""
 
-#: oarepo_ui/templates/oarepo_ui/header_login.html:15
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:15
 msgid "Log in"
 msgstr ""
 
-#: oarepo_ui/templates/oarepo_ui/header_login.html:19
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:19
 msgid "Sign up"
 msgstr ""
 
-#: oarepo_ui/templates/oarepo_ui/header_login.html:31
-#: oarepo_ui/templates/oarepo_ui/header_login.html:72
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:36
+msgid "Quick create"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:53
+msgid "Actions"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:72
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:113
 msgid "My account"
 msgstr ""
 
-#: oarepo_ui/templates/oarepo_ui/header_login.html:66
-#: oarepo_ui/templates/oarepo_ui/header_login.html:95
-#: oarepo_ui/templates/oarepo_ui/header_login.html:102
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:107
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:136
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:143
 msgid "Log out"
 msgstr ""
 
-#: oarepo_ui/templates/oarepo_ui/search.html:2
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/search.html:2
 msgid "Search results"
 msgstr ""
 
+msgid "Remove field"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Are you sure you wish delete this draft?"
+msgstr ""
+
+msgid "If you delete the draft, the work you have done on it will be lost."
+msgstr ""
+
+msgid "Previous Month"
+msgstr ""
+
+msgid "Next Month"
+msgstr ""
+
+msgid "YYYY"
+msgstr ""
+
+msgid "YYYY-MM"
+msgstr ""
+
+msgid "YYYY-MM-DD"
+msgstr ""
+
+msgid "Choose a date range"
+msgstr ""
+
+msgid "Format: YYYY-MM-DD/YYYY-MM-DD, YYYYY-MM/YYYY/MM or YYYY/YYYY."
+msgstr ""
+
+msgid "Write a date range or click on the calendar icon to select it"
+msgstr ""
+
+msgid "Format: YYYY-MM-DD, YYYYY-MM or YYYY."
+msgstr ""
+
+msgid "Write a date or click on the calendar icon to select it"
+msgstr ""
+
+msgid "Language"
+msgstr ""
+
+msgid "Search for a language by name (e.g \"eng\", \"fr\" or \"Polish\")"
+msgstr ""
+
+msgid "Add another language"
+msgstr ""
+
+msgid "Preview"
+msgstr ""
+
+msgid "Publish"
+msgstr ""
+
+msgid "Are you sure you wish to publish this draft?"
+msgstr ""
+
+msgid "We couldn't find any matches for "
+msgstr ""
+
+msgid "search"
+msgstr ""
+
+msgid "Choose"
+msgstr ""
+
+msgid "Selected records"
+msgstr ""
+
+msgid "Something went wrong..."
+msgstr ""
+
+msgid "Search..."
+msgstr ""
+
+msgid "No results found"
+msgstr ""
+
+msgid "Loading..."
+msgstr ""
+
+msgid "Search External Database"
+msgstr ""
+
+msgid "Search results from external API"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Validate form"
+msgstr ""
+
+msgid ""
+"Draft saved with validation errors. Fields listed below that failed "
+"validation were not saved to the server"
+msgstr ""
+
+msgid "Draft saved successfully."
+msgstr ""
+
+msgid ""
+"Draft was saved but could not be published due to following validation "
+"errors"
+msgstr ""
+
+msgid "Draft published successfully. Redirecting to record's detail page ..."
+msgstr ""
+
+msgid "Draft deleted successfully. Redirecting to the main page ..."
+msgstr ""
+
+msgid "Clear all filters"
+msgstr ""
+
+msgid "Start over"
+msgstr ""
+
+msgid "totalResults"
+msgid_plural "totalResults"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "resultsPerPage"
+msgstr ""
+
+msgid "Filter results"
+msgstr ""
+
+msgid "Sort"
+msgstr ""

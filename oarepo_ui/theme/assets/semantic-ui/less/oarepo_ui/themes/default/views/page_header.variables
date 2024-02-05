@@ -1,0 +1,9 @@
+@pageHeaderBackgroundColor: #ffffff;
+@pageHeaderTextColor: black;
+@pageHeaderPaddingTopBottom: 0;
+@pageHeaderPaddingLeftRight: 0;
+@pageHeaderMainNavLinkLargeScreen: lightblue;
+@pageHeaderMinHeight: 6rem;
+@pageHeaderLogoHeight:@pageHeaderMinHeight - 2rem;
+@borderRadius: 0.3rem;
+@pageheaderbottomborder:1px solid black;

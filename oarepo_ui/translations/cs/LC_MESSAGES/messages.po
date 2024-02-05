@@ -256,3 +256,79 @@ msgstr "Formát: RRRR-MM-DD, RRRR-MM nebo RRRR."
 
 msgid "Select date"
 msgstr "Vyberte datum"
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:5
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:6
+msgid "All document records"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:6
+msgid "in"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:14
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:15
+msgid "Search"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/footer.html:15
+msgid "Contact"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/footer.html:33
+#, python-format
+msgid ""
+"Powered by\n"
+"            <a href=\"%(link)s\">Invenio</a>"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:36
+msgid "Quick create"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:53
+msgid "Actions"
+msgstr "Akce"
+
+msgid "Delete"
+msgstr "Zmazat"
+
+msgid "Cancel"
+msgstr "Zrušit"
+
+msgid "Are you sure you wish delete this draft?"
+msgstr "Jste si jisti chcete tento koncept smazat?"
+
+msgid "If you delete the draft, the work you have done on it will be lost."
+msgstr ""
+"Pokud koncept smažete, práce, kterou jste na něm vykonali, bude ztracena."
+
+msgid "Previous Month"
+msgstr "Předchozí měsíc"
+
+msgid "Next Month"
+msgstr "Příští měsíc"
+
+msgid "Choose a date range"
+msgstr "Vyberte časové období"
+
+msgid "Write a date range or click on the calendar icon to select it"
+msgstr "Napište časové období nebo jej vyberte kliknutím na ikonu kalendáře."
+
+msgid "Write a date or click on the calendar icon to select it"
+msgstr "Napište datum nebo jej vyberte kliknutím na ikonu kalendáře."
+
+msgid "Preview"
+msgstr "Náhled"
+
+msgid "Publish"
+msgstr "Publikovat"
+
+msgid "Are you sure you wish to publish this draft?"
+msgstr "Jste si jisti že chcete tento koncept publikovat?"
+
+msgid "Save"
+msgstr "Uložit"
+
+msgid "Validate form"
+msgstr "Zkontrolovat formulář"

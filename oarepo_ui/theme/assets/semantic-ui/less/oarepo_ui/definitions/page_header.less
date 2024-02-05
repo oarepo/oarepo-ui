@@ -1,0 +1,249 @@
+/*******************************
+            Theme
+*******************************/
+
+/*
+  The type is the type of the component as defined in semantic-ui - element, collection, view, module
+  For simple component, 'element' is the correct type
+*/
+@type: "view";
+
+/*
+  This is the name of the component - though not required, keep it the same as the filename
+*/
+@element: "page_header";
+
+/*******************************
+
+    DO NOT FORGET !!!
+
+Edit *theme.config* in your site 
+and add (replace 'sample' with the
+name of the component from above)
+
+@sample : 'default';
+
+*******************************/
+
+@import (multiple) "../../theme.config";
+
+/*
+  This is the styling of your component. The class should start with .ui.<component-name>
+
+  Note: use variables here, not the exact values. Placing the values to another file (sample.variables)
+  will allow users to override these values.
+ */
+
+.ui.page-header {
+  margin-top: 0;
+  background-color: @pageHeaderBackgroundColor;
+  border-bottom: @pageHeaderBottomBorder;
+  width: 100%;
+  color: @pageHeaderTextColor;
+  #header-search-bar {
+    width: 100%;
+    .ui.input {
+      width: 100% !important;
+    }
+  }
+  .invenio-header-container {
+    padding: @pageHeaderPaddingTopBottom @pageHeaderPaddingLeftRight;
+  }
+
+  #invenio-nav {
+    border-radius: 0;
+    min-height: @pageHeaderMinHeight;
+    .search-bar {
+      min-width: 40%;
+    }
+    .ui.icon.input {
+      width: 100%;
+    }
+  }
+
+  #invenio-menu {
+    box-shadow: none;
+    gap: 1rem;
+
+    .item.main-nav-links a {
+      color: @pageHeaderTextColor !important;
+      font-size: 1.2rem;
+    }
+    .item.main-nav-links a:hover {
+      border-radius: @borderRadius;
+      @media all and (min-width: @largestTabletScreen) {
+        background-color: @pageHeaderMainNavLinkLargeScreen !important;
+      }
+    }
+  }
+
+  @media all and (max-width: @largestTabletScreen) {
+    #invenio-nav.ui.menu {
+      &.active #invenio-menu.ui.menu {
+        flex-direction: column;
+        position: fixed;
+        right: 0;
+        max-width: 25rem;
+        box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.2);
+        background-color: rgb(255, 255, 255);
+        height: 100vh;
+        z-index: 3;
+        padding: 2rem 1.5rem 1.5rem 1.5rem;
+        overflow-y: scroll;
+
+        .item {
+          width: 100%;
+          padding: 0.5rem 0;
+
+          a:not(.ui.button) {
+            color: @textColor;
+            padding: 0;
+          }
+
+          &.search-bar {
+            width: 100%;
+
+            .ui.input {
+              width: 99% !important;
+            }
+          }
+
+          .icon.inverted {
+            color: @textColor;
+          }
+
+          &.right.menu {
+            padding: 0;
+            margin-left: unset !important;
+            flex-direction: column;
+            align-items: flex-start;
+
+            .sub-menu {
+              width: 100%;
+              margin: 2rem 0 0 0;
+
+              .ui.heading {
+                color: @textColor;
+              }
+
+              .item {
+                padding: 0.5rem 1rem;
+              }
+            }
+
+            form {
+              margin-top: 1rem;
+            }
+          }
+        }
+
+        #invenio-close-burger-menu-icon {
+          margin-left: auto;
+          margin-bottom: 2rem;
+
+          .navicon {
+            background: transparent;
+
+            &:before {
+              transform: rotate(-45deg);
+            }
+
+            &:after {
+              transform: rotate(45deg);
+            }
+          }
+        }
+      }
+
+      &:not(.active) {
+        .mobile-hidden {
+          display: none;
+        }
+      }
+    }
+  }
+
+  #additional-details {
+    .ui.top.attached.menu {
+      @media screen and (max-width: @largestTabletScreen) {
+        flex-wrap: wrap;
+      }
+
+      &:not(.tabular) {
+        @media screen and (max-width: @largestTabletScreen) {
+          border-bottom: 0;
+        }
+      }
+
+      .item {
+        flex: 1 0 auto;
+
+        @media screen and (max-width: @largestTabletScreen) {
+          border-bottom: 1px solid #d4d4d5;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+
+  @media all and (min-width: @computerBreakpoint) {
+    #invenio-nav #invenio-burger-toggle,
+    #invenio-menu #invenio-close-burger-menu-icon {
+      display: none;
+    }
+  }
+
+  /* menu icon (Hamburger icon) */
+
+  #invenio-burger-menu-icon,
+  #invenio-close-burger-menu-icon {
+    .navicon {
+      background: @darkGray;
+      display: block;
+      height: 2px;
+      position: relative;
+      transition: background 0.2s ease-out;
+      width: 18px;
+
+      &:before,
+      &:after {
+        display: block;
+        background: @darkGray;
+        content: "";
+        height: 100%;
+        position: absolute;
+        transition: all 0.2s ease-out;
+        width: 100%;
+      }
+    }
+  }
+
+  #invenio-burger-toggle {
+    font-size: 20px;
+    position: absolute;
+    right: -1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+
+    #invenio-burger-menu-icon {
+      cursor: pointer;
+      display: inline-block;
+      float: right;
+      padding: 2rem 1.5rem;
+      position: relative;
+      user-select: none;
+
+      .navicon {
+        &::before {
+          top: 5px;
+        }
+
+        &:after {
+          top: -5px;
+        }
+      }
+    }
+  }
+}
+
+.loadUIOverrides();
