@@ -164,7 +164,7 @@ class OarepoCatalog(Catalog):
                 # if the priority is greater, replace the path
                 if (
                     partial_template_name not in paths
-                    or partial_priority > paths[template_name][2]
+                    or partial_priority > paths[partial_template_name][2]
                 ):
                     paths[partial_template_name] = (
                         absolute_template_path,
