@@ -14,8 +14,10 @@ export const SearchappSearchbarElement = withState(
     currentQueryState,
     iconName,
     iconColor,
-    placeholderText,
+    placeholder: passedPlaceholder,
   }) => {
+    const placeholder = passedPlaceholder || i18next.t("Search");
+
     const onSearch = () => {
       updateQueryState({ ...currentQueryState, queryString });
     };
@@ -36,8 +38,8 @@ export const SearchappSearchbarElement = withState(
           "aria-label": i18next.t("Search"),
         }}
         fluid
-        placeholder={placeholderText}
-        aria-label={placeholderText}
+        placeholder={placeholder}
+        aria-label={placeholder}
         onChange={(event, { value }) => {
           onInputChange(value);
         }}
@@ -49,7 +51,7 @@ export const SearchappSearchbarElement = withState(
 );
 
 SearchappSearchbarElement.propTypes = {
-  placeholderText: PropTypes.string,
+  placeholder: PropTypes.string,
   queryString: PropTypes.string,
   onInputChange: PropTypes.func,
   updateQueryState: PropTypes.func,
@@ -59,7 +61,7 @@ SearchappSearchbarElement.propTypes = {
 };
 
 SearchappSearchbarElement.defaultProps = {
-  placeholderText: i18next.t("Search"),
+  placeholder: i18next.t("Search"),
   iconName: "search",
   iconColor: "green",
 };
