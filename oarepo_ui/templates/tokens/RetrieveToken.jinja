@@ -2,22 +2,6 @@
 {# -*- coding: utf-8 -*-
     Extension of the invenio_oauth2server settings page to include the retrieval of the personal access token
     via the API.
-
-    Principle:
-
-    1. Client application generates a uuid and passes it to this url as a query parameter uuid,
-       and passes a token name as a query parameter name.
-    2. User must log in
-    3. The page generates a unique 10 characters string - one time password. It also generates
-       a personal access token with the name provided by the client application.
-    4. It encrypts the token with a key "<passed uuid>-<one time password>" and stores the encrypted token
-       in the cache under the key "generated-token-<uuid>"
-    5. User is presented the one time password and instructed to enter it to the client application.
-
-    6. Client application calls /api/token with the uuid parameter. The server retrieves the encrypted token
-       from the cache and returns it to the client application.
-    7. The client application decrypts the token with the key "<uuid>-<one time password>", stores it locally
-       and uses it to authenticate with the server.
 #}
 
 {%- extends "invenio_oauth2server/settings/index.html" %}
