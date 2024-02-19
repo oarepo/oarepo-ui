@@ -1,4 +1,6 @@
 import copy
+import functools
+import re
 from functools import partial
 from typing import TYPE_CHECKING, Iterator
 
@@ -449,13 +451,22 @@ class TemplatePageUIResource(UIResource):
         pages_config = self.config.pages
         routes = []
         for page_url_path, page_template_name in pages_config.items():
-            handler = getattr(self, f"render_{page_template_name}", None) or partial(
-                self.render, page=page_template_name
-            )
-            if not hasattr(handler, "__name__"):
-                handler.__name__ = self.render.__name__
-            if not hasattr(handler, "__self__"):
-                handler.__self__ = self
+            handler = getattr(self, f"render_{page_template_name}", None)
+            if not handler:
+                last_template_part = page_template_name.split('.')[-1]
+                # convert from camelcase to snake_case
+                handler_name = re.sub(r'(?<!^)(?=[A-Z])', '_', last_template_part).lower()
+                handler = getattr(self, f"render_{handler_name}", None)
+            if not handler:
+                handler = functools.wraps(self.render)(partial(
+                    self.render, page=page_template_name
+                ))
+
+                if not hasattr(handler, "__name__"):
+                    handler.__name__ = self.render.__name__
+
+                if not hasattr(handler, "__self__"):
+                    handler.__self__ = self
 
             routes.append(
                 route("GET", page_url_path, handler),
