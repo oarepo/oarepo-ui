@@ -14,7 +14,7 @@ export const CountElement = ({ totalResults }) => {
 };
 
 export const ResultCount = ({ currentResultsState = {} }) => {
-  const { total } = currentResultsState.data;
+  const total = currentResultsState?.data?.total;
   const { loading } = currentResultsState;
   // determine if we are in searchApp context or pure searchkit
   const searchAppContext = useContext(SearchConfigurationContext);
@@ -34,5 +34,7 @@ export const ResultCount = ({ currentResultsState = {} }) => {
 CountElement.propTypes = {
   totalResults: PropTypes.number.isRequired,
 };
-
+ResultCount.propTypes = {
+  currentResultsState: PropTypes.object,
+};
 export const ResultCountWithState = withState(ResultCount);
