@@ -1,16 +1,13 @@
-import base64
-
 from flask_login import login_required, current_user
 from flask_resources import request_parser, from_conf, resource_requestctx
-from invenio_cache import current_cache
 from invenio_db import db
 from invenio_oauth2server.models import Token, Client
-from nacl import pwhash, utils, secret
 
 from oarepo_ui.resources.config import TemplatePageUIResourceConfig
 from oarepo_ui.resources.resource import TemplatePageUIResource
 
 import marshmallow as ma
+
 
 class TokenUIResourceConfig(TemplatePageUIResourceConfig):
     pages = {
