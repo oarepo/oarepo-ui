@@ -208,6 +208,8 @@ class RecordsUIResource(UIResource):
         else:
             return redirect(path_with_slash + "?" + split_path[1], code=302)
 
+
+
     @request_search_args
     def search(self):
         page = resource_requestctx.args.get("page", 1)
@@ -223,13 +225,20 @@ class RecordsUIResource(UIResource):
             g.identity, pagination, resource_requestctx.args
         )
 
+        overridable_id_prefix = f"{self.config.search_app_id}.Search"
+        
+        defaultComponents = {}
+        if hasattr(self.config, 'search_app_result_item') and self.config.search_app_result_item:
+            defaultComponents[f"{overridable_id_prefix}.ResultsList.item"] = self.config.search_app_result_item
+
         search_options = dict(
             api_config=self.api_service.config,
             identity=g.identity,
             overrides={
                 "ui_endpoint": self.config.url_prefix,
                 "ui_links": ui_links,
-                "defaultComponents": {},
+                "overridableIdPrefix": overridable_id_prefix,
+                "defaultComponents": defaultComponents,
             },
         )
 

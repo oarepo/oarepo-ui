@@ -3,80 +3,94 @@ import { SearchApp } from "@js/invenio_search_ui/components";
 import { loadComponents } from "@js/invenio_theme/templates";
 import _camelCase from "lodash/camelCase";
 import ReactDOM from "react-dom";
-import { parametrize } from 'react-overridable'
+import { parametrize } from "react-overridable";
 
 import {
-    ActiveFiltersElement,
-    BucketAggregationElement,
-    BucketAggregationValuesElement,
-    CountElement,
-    EmptyResultsElement,
-    ErrorElement,
-    SearchAppFacets,
-    SearchAppLayout,
-    SearchAppResultOptions,
-    SearchAppSearchbarContainer,
-    SearchFiltersToggleElement,
-    SearchAppSort,
+  ActiveFiltersElement,
+  BucketAggregationElement,
+  BucketAggregationValuesElement,
+  CountElement,
+  EmptyResultsElement,
+  ErrorElement,
+  SearchAppFacets,
+  SearchAppLayout,
+  SearchAppResultOptions,
+  SearchAppSearchbarContainer,
+  SearchFiltersToggleElement,
+  SearchAppSort,
 } from "@js/oarepo_ui/search";
 
+export function parseSearchAppConfigs(
+  autoInitDataAttr = "invenio-search-config"
+) {
+  const searchAppRoots = [
+    ...document.querySelectorAll(`[data-${autoInitDataAttr}]`),
+  ];
 
+  return searchAppRoots.map((rootEl) => {
+    const config = JSON.parse(rootEl.dataset[_camelCase(autoInitDataAttr)]);
+    return {
+      rootEl,
+      ...config,
+    };
+  });
+}
 
-export function createSearchAppInit ({
-    defaultComponentOverrides,
-    autoInit = true,
-    autoInitDataAttr = "invenio-search-config",
-    multi = true,
-    ContainerComponent = React.Fragment,
-}) {
-    const initSearchApp = (rootElement) => {
-        const { appId, ...config } = JSON.parse(
-            rootElement.dataset[_camelCase(autoInitDataAttr)]
-        );
+export function createSearchAppsInit({
+  defaultComponentOverrides = {},
+  autoInit = true,
+  ContainerComponent = React.Fragment,
+} = {}) {
+  const initSearchApp = ({ rootEl, overridableIdPrefix, ...config }) => {
+    const SearchAppSearchbarContainerWithConfig = parametrize(
+      SearchAppSearchbarContainer,
+      { appName: overridableIdPrefix }
+    );
 
-        const componentPrefix = multi ? `${appId}.` : ''
-        const SearchAppSearchbarContainerWithConfig = parametrize(SearchAppSearchbarContainer, { appName: appId })
-        const internalComponentDefaults = {
-            [`${componentPrefix}ActiveFilters.element`]: ActiveFiltersElement,
-            [`${componentPrefix}BucketAggregation.element`]: BucketAggregationElement,
-            [`${componentPrefix}BucketAggregationValues.element`]: BucketAggregationValuesElement,
-            [`${componentPrefix}Count.element`]: CountElement,
-            [`${componentPrefix}EmptyResults.element`]: EmptyResultsElement,
-            [`${componentPrefix}Error.element`]: ErrorElement,
-            [`${componentPrefix}SearchApp.facets`]: SearchAppFacets,
-            [`${componentPrefix}SearchApp.layout`]: SearchAppLayout,
-            [`${componentPrefix}SearchApp.resultOptions`]: SearchAppResultOptions,
-            [`${componentPrefix}SearchApp.searchbarContainer`]: SearchAppSearchbarContainerWithConfig,
-            [`${componentPrefix}SearchFilters.Toggle.element`]: SearchFiltersToggleElement,
-            [`${componentPrefix}SearchApp.sort`]: SearchAppSort,
-        };
-
-        loadComponents(appId, {
-            ...internalComponentDefaults,
-            ...config.defaultComponents,
-            ...defaultComponentOverrides,
-        }).then((res) => {
-            ReactDOM.render(
-                <ContainerComponent>
-                    <SearchApp
-                        config={config}
-                        // Use appName to namespace application components when overriding
-                        {...(multi && { appName: appId })}
-                    />
-                </ContainerComponent>,
-                rootElement
-            );
-        });
+    const internalComponentDefaults = {
+      [`${overridableIdPrefix}.ActiveFilters.element`]: ActiveFiltersElement,
+      [`${overridableIdPrefix}.BucketAggregation.element`]:
+        BucketAggregationElement,
+      [`${overridableIdPrefix}.BucketAggregationValues.element`]:
+        BucketAggregationValuesElement,
+      [`${overridableIdPrefix}.Count.element`]: CountElement,
+      [`${overridableIdPrefix}.EmptyResults.element`]: EmptyResultsElement,
+      [`${overridableIdPrefix}.Error.element`]: ErrorElement,
+      [`${overridableIdPrefix}.SearchApp.facets`]: SearchAppFacets,
+      [`${overridableIdPrefix}.SearchApp.layout`]: SearchAppLayout,
+      [`${overridableIdPrefix}.SearchApp.resultOptions`]:
+        SearchAppResultOptions,
+      [`${overridableIdPrefix}.SearchApp.searchbarContainer`]:
+        SearchAppSearchbarContainerWithConfig,
+      [`${overridableIdPrefix}.SearchFilters.Toggle.element`]:
+        SearchFiltersToggleElement,
+      [`${overridableIdPrefix}.SearchApp.sort`]: SearchAppSort,
     };
 
-    if (autoInit) {
-        const searchAppElements = document.querySelectorAll(
-            `[data-${autoInitDataAttr}]`
-        );
-        for (const appRootElement of searchAppElements) {
-            initSearchApp(appRootElement);
-        }
-    } else {
-        return initSearchApp;
-    }
+    const components = {
+      ...internalComponentDefaults,
+      ...config.defaultComponents,
+      ...defaultComponentOverrides,
+    };
+
+    loadComponents(overridableIdPrefix, components).then((res) => {
+      ReactDOM.render(
+        <ContainerComponent>
+          <SearchApp
+            config={config}
+            // Use appName to namespace application components when overriding
+            appName={overridableIdPrefix}
+          />
+        </ContainerComponent>,
+        rootEl
+      );
+    });
+  };
+
+  if (autoInit) {
+    const searchAppConfigs = parseSearchAppConfigs();
+    searchAppConfigs.forEach((config) => initSearchApp(config));
+  } else {
+    return initSearchApp;
+  }
 }
