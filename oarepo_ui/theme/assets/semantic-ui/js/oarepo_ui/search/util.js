@@ -21,10 +21,10 @@ import {
 } from "@js/oarepo_ui/search";
 
 export function parseSearchAppConfigs(
-  autoInitDataAttr = "invenio-search-config"
+  configDataAttr = "invenio-search-config"
 ) {
   const searchAppRoots = [
-    ...document.querySelectorAll(`[data-${autoInitDataAttr}]`),
+    ...document.querySelectorAll(`[data-${configDataAttr}]`),
   ];
 
   return searchAppRoots.map((rootEl) => {

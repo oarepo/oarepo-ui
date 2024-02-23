@@ -12,6 +12,17 @@ import Overridable, {
   overrideStore,
 } from "react-overridable";
 
+export function parseFormAppConfig(rootElementId = "form-app") {
+  const rootEl = document.getElementById(rootElementId);
+  const record = getInputFromDOM("record");
+  const formConfig = getInputFromDOM("form-config");
+  const recordPermissions = getInputFromDOM("record-permissions");
+  const files = getInputFromDOM("files");
+  const links = getInputFromDOM("links");
+
+  return { rootEl, record, formConfig, recordPermissions, files, links };
+}
+
 /**
  * Initialize Formik form application.
  * @function
@@ -19,44 +30,34 @@ import Overridable, {
  * @param {boolean} autoInit - if true then the application is getting registered to the DOM.
  * @returns {object} renderable React object
  */
-
 const queryClient = new QueryClient();
-export function createFormAppInit (
-  defaultComponents,
+export function createFormAppInit({
   autoInit = true,
-  ContainerComponent = React.Fragment
-) {
-  const initFormApp = (rootElement) => {
-    const record = getInputFromDOM("record");
-    const formConfig = getInputFromDOM("form-config");
-    const recordPermissions = getInputFromDOM("record-permissions");
-    const files = getInputFromDOM('files');
-    const links = getInputFromDOM("links");
-
+  ContainerComponent = React.Fragment,
+  defaultComponentOverrides = {},
+} = {}) {
+  const initFormApp = ({ rootEl, ...config }) => {
     console.debug("Initializing Formik form app...");
-    console.debug(
-      "[record]:",
-      record,
-      "\n[formConfig]",
-      formConfig,
-      "\n[recordPermissions]",
-      recordPermissions,
-      "\n[files]",
-      files,
-      "\n[UI links]",
-      links
-    );
+    console.debug(...config);
 
-    loadComponents("", defaultComponents).then((res) => {
+    const overridableIdPrefix = config.formConfig.overridableIdPrefix;
+
+    const internalComponentDefaults = {};
+
+    components = {
+      ...internalComponentDefaults,
+      ...config.formConfig.defaultComponents,
+      ...defaultComponentOverrides,
+    };
+
+    loadComponents(overridableIdPrefix, components).then((res) => {
       ReactDOM.render(
         <ContainerComponent>
           <QueryClientProvider client={queryClient}>
             <Router>
               <OverridableContext.Provider value={overrideStore.getAll()}>
-                <FormConfigProvider
-                  value={{ record, formConfig, recordPermissions, files, links }}
-                >
-                  <Overridable id="FormApp.layout">
+                <FormConfigProvider value={config}>
+                  <Overridable id={`${overridableIdPrefix}.FormApp.layout`}>
                     <Container fluid>
                       <p>
                         Provide your form components here by overriding
@@ -69,14 +70,14 @@ export function createFormAppInit (
             </Router>
           </QueryClientProvider>
         </ContainerComponent>,
-        rootElement
+        rootEl
       );
     });
   };
 
   if (autoInit) {
-    const appRoot = document.getElementById("form-app");
-    initFormApp(appRoot);
+    const appConfig = parseFormAppConfig();
+    initFormApp(appConfig);
   } else {
     return initFormApp;
   }

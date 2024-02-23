@@ -70,7 +70,10 @@ class RecordsUIResourceConfig(UIResourceConfig):
     """Name of the API service as registered inside the service registry"""
 
     search_app_id = None
-    """ID of the app used for rendering the search config"""
+    """Namespace of the app used for rendering the search ui"""
+
+    form_app_id = None
+    """Namespace of the app used for rendering forms"""
 
     templates = {
         "detail": None,
@@ -182,5 +185,6 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
         return dict(
             custom_fields=self.custom_fields,
+            overridableIdPrefix = f"{self.config.form_app_id}.Form"
             **kwargs,
         )
