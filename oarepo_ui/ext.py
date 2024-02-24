@@ -1,6 +1,11 @@
 import functools
+import json
+from pathlib import Path
+
+from importlib_metadata import entry_points
 
 from flask import Response, current_app
+from invenio_base.utils import obj_or_import_string
 
 import oarepo_ui.cli  # noqa
 from oarepo_ui.resources.templating.catalog import OarepoCatalog as Catalog
@@ -66,6 +71,16 @@ class OARepoUIState:
     @property
     def record_actions(self):
         return self.app.config["OAREPO_UI_RECORD_ACTIONS"]
+
+    @functools.cached_property
+    def ui_models(self):
+        # load all models from json files registered in oarepo.ui entry point
+        ret = {}
+        eps = entry_points(group="oarepo.ui")
+        for ep in eps:
+            path = Path(obj_or_import_string(ep.module).__file__).parent / ep.attr
+            ret[ep.name] = json.loads(path.read_text())
+        return ret
 
 
 class OARepoUIExtension:

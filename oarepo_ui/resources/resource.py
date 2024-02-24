@@ -127,6 +127,10 @@ class RecordsUIResource(UIResource):
         )
         return empty_data
 
+    @property
+    def ui_model(self):
+        return current_oarepo_ui.ui_models.get(self.config.api_service.replace('-', '_'), {})
+
     @request_read_args
     @request_view_args
     def detail(self):
@@ -181,7 +185,7 @@ class RecordsUIResource(UIResource):
             extra_context=extra_context,
             ui_links=ui_links,
             context=current_oarepo_ui.catalog.jinja_env.globals,
-            d=FieldData(record, {}),  # TODO: pass ui here
+            d=FieldData(record, self.ui_model),
         )
 
     def make_links_absolute(self, links, api_prefix):
@@ -362,6 +366,7 @@ class RecordsUIResource(UIResource):
             ui_links=ui_links,
             data=data,
             context=current_oarepo_ui.catalog.jinja_env.globals,
+            d=FieldData(record, self.ui_model)
         )
 
     @login_required
