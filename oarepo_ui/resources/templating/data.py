@@ -31,14 +31,18 @@ class FieldData:
 
         if isinstance(self.__data, dict):
             if name in self.__data:
-                return FieldData(self.__data.get(name), self.__ui.get(name, {}), self.__path + [name])
+                return FieldData(
+                    self.__data.get(name), self.__ui.get(name, {}), self.__path + [name]
+                )
             else:
                 return EMPTY_FIELD_DATA
 
         if isinstance(self.__data, list):
             idx = int(name)
             if idx < len(self.__data):
-                return FieldData(self.__data[idx], self.__ui.get('items', {}), self.__path + [idx])
+                return FieldData(
+                    self.__data[idx], self.__ui.get("items", {}), self.__path + [idx]
+                )
             return EMPTY_FIELD_DATA
 
         return EMPTY_FIELD_DATA
@@ -56,7 +60,7 @@ class FieldData:
         ret = []
         if isinstance(self.__data, list):
             for val in self.__data:
-                ret.append(FieldData(val, self.__ui.get('items', {})))
+                ret.append(FieldData(val, self.__ui.get("items", {})))
         elif isinstance(self.__data, dict):
             for key, val in self.__data.items():
                 ret.append(FieldData(val, self.__ui.get(key, {})))

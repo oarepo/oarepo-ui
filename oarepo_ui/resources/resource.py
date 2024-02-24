@@ -23,8 +23,8 @@ from invenio_records_resources.resources.records.resource import (
 )
 from invenio_records_resources.services import LinksTemplate
 
-import oarepo_ui.resources.templating.filters
 from oarepo_ui.utils import dump_empty
+
 from .templating.data import FieldData
 
 if TYPE_CHECKING:
@@ -181,7 +181,7 @@ class RecordsUIResource(UIResource):
             extra_context=extra_context,
             ui_links=ui_links,
             context=current_oarepo_ui.catalog.jinja_env.globals,
-            d=FieldData(record, {}) # TODO: pass ui here
+            d=FieldData(record, {}),  # TODO: pass ui here
         )
 
     def make_links_absolute(self, links, api_prefix):

@@ -16,8 +16,10 @@ class OARepoUIState:
     def reinitialize_catalog(self):
         self._catalog = None
         try:
-            del self.catalog     # noqa - this is a documented method of clearing the cache
-        except AttributeError:   # but does not work if the cache is not initialized yet, thus the try/except
+            del self.catalog  # noqa - this is a documented method of clearing the cache
+        except (
+            AttributeError
+        ):  # but does not work if the cache is not initialized yet, thus the try/except
             pass
 
     @functools.cached_property
@@ -84,7 +86,7 @@ class OARepoUIExtension:
                 app.config.setdefault(k, getattr(config, k))
 
         # merge in default filters and globals if they have not been overridden
-        for k in ('OAREPO_UI_JINJAX_FILTERS', 'OAREPO_UI_JINJAX_GLOBALS'):
+        for k in ("OAREPO_UI_JINJAX_FILTERS", "OAREPO_UI_JINJAX_GLOBALS"):
             for name, val in getattr(config, k).items():
                 if name not in app.config[k]:
                     app.config[k][name] = val

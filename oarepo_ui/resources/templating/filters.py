@@ -46,7 +46,12 @@ def ichain(*iterables, remove_empty=False):
         elif it is not None:
             ret.extend(ensure_array(it))
     if remove_empty:
-        ret = [x for x in ret if (isinstance(x, FieldData) or not x._is_empty) or x]
+        ret = [
+            x
+            for x in ret
+            if (isinstance(x, FieldData) and not x._is_empty)
+            or (not isinstance(x, FieldData) and x)
+        ]
     return ret
 
 
