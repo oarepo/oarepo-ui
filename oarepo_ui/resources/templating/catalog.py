@@ -12,6 +12,7 @@ from flask.globals import request
 from jinjax import Catalog
 from jinjax.exceptions import ComponentNotFound
 from jinjax.jinjax import JinjaX
+import typing as t
 
 DEFAULT_URL_ROOT = "/static/components/"
 ALLOWED_EXTENSIONS = (".css", ".js")

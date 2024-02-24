@@ -6,6 +6,7 @@ from invenio_i18n.ext import current_i18n
 from invenio_records_resources.services.records.results import RecordItem
 from oarepo_runtime.datastreams.utils import get_file_service_for_record_service
 
+import oarepo_ui.resources.templating.filters
 from ..proxies import current_oarepo_ui
 
 if TYPE_CHECKING:

@@ -23,7 +23,9 @@ from invenio_records_resources.resources.records.resource import (
 )
 from invenio_records_resources.services import LinksTemplate
 
+import oarepo_ui.resources.templating.filters
 from oarepo_ui.utils import dump_empty
+from .templating.data import FieldData
 
 if TYPE_CHECKING:
     from .components import UIResourceComponent
@@ -179,6 +181,7 @@ class RecordsUIResource(UIResource):
             extra_context=extra_context,
             ui_links=ui_links,
             context=current_oarepo_ui.catalog.jinja_env.globals,
+            d=FieldData(record, {}) # TODO: pass ui here
         )
 
     def make_links_absolute(self, links, api_prefix):
@@ -306,7 +309,7 @@ class RecordsUIResource(UIResource):
         api_record = self._get_record(resource_requestctx, allow_draft=True)
         self.api_service.require_permission(g.identity, "update", record=api_record)
         data = api_record.to_dict()
-        record = self.config.ui_serializer.dump_obj(api_record.to_dict())
+        record = self.config.ui_serializer.dump_obj(data)
         form_config = self.config.form_config(
             identity=g.identity, updateUrl=api_record.links.get("self", None)
         )

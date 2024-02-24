@@ -3,22 +3,27 @@ import functools
 from flask import Response, current_app
 
 import oarepo_ui.cli  # noqa
-from oarepo_ui.resources.catalog import OarepoCatalog as Catalog
-from oarepo_ui.resources.templating import TemplateRegistry
+from oarepo_ui.resources.templating.catalog import OarepoCatalog as Catalog
 
 
 class OARepoUIState:
     def __init__(self, app):
         self.app = app
-        self.templates = TemplateRegistry(app, self)
         self._resources = []
         self.init_builder_plugin()
         self._catalog = None
 
+    def reinitialize_catalog(self):
+        self._catalog = None
+        try:
+            del self.catalog     # noqa - this is a documented method of clearing the cache
+        except AttributeError:   # but does not work if the cache is not initialized yet, thus the try/except
+            pass
+
     @functools.cached_property
     def catalog(self):
         self._catalog = Catalog()
-        return self._catalog_config(self._catalog, self.templates.jinja_env)
+        return self._catalog_config(self._catalog, self.app.jinja_env)
 
     def _catalog_config(self, catalog, env):
         context = {}
@@ -77,3 +82,9 @@ class OARepoUIExtension:
         for k in dir(config):
             if k.startswith("OAREPO_UI_"):
                 app.config.setdefault(k, getattr(config, k))
+
+        # merge in default filters and globals if they have not been overridden
+        for k in ('OAREPO_UI_JINJAX_FILTERS', 'OAREPO_UI_JINJAX_GLOBALS'):
+            for name, val in getattr(config, k).items():
+                if name not in app.config[k]:
+                    app.config[k][name] = val
