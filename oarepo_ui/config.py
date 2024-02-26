@@ -17,7 +17,7 @@ OAREPO_UI_JINJAX_FILTERS = {
 
 OAREPO_UI_JINJAX_GLOBALS = {
     "array": "oarepo_ui.resources.templating.filters:ichain",
-    "scalar": "oarepo_ui.resources.templating.filters:scalar",
+    "field_value": "oarepo_ui.resources.templating.filters:field_value",
 }
 
 

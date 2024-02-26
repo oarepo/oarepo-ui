@@ -86,8 +86,20 @@ class FieldData:
         return not bool(self.__data)
 
     @property
+    def _has_value(self):
+        return bool(self.__data)
+
+    @property
     def _is_array(self):
         return isinstance(self.__data, (list, tuple))
+
+    @property
+    def _is_dict(self):
+        return isinstance(self.__data, dict)
+
+    @property
+    def _is_primitive(self):
+        return self._has_value and not self._is_array and not self._is_dict
 
 
 EMPTY_FIELD_DATA = FieldData({}, {})

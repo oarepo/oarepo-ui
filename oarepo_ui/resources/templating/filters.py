@@ -25,7 +25,7 @@ def type_filter(x):
 
 
 def keys_filter(x):
-    x = scalar(x)
+    x = field_value(x)
     if not isinstance(x, dict):
         return []
     return x.keys()
@@ -55,11 +55,11 @@ def ichain(*iterables, remove_empty=False):
     return ret
 
 
-def scalar(value):
+def field_value(value):
     if isinstance(value, FieldData):
         if value._is_empty:
             return None
-        return value.value
+        return value._ui_value
     return value
 
 
