@@ -18,7 +18,7 @@ class FieldData:
     @staticmethod
     def translate(x):
         if not x:
-            return x
+            return ""
         return gettext(x)
 
     @property
