@@ -83,7 +83,9 @@ class FieldData:
 
     @property
     def _is_empty(self):
-        return not bool(self.__data)
+        if not self.__data:
+            return False
+        return True
 
     @property
     def _has_value(self):

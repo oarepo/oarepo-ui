@@ -1,5 +1,5 @@
 {# def d #}
 
-{% if array(d, remove_empty=True) | length -%}
+{% if d._has_value -%}
     {{ content }}
 {%- endif %}
