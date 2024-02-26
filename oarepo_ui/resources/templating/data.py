@@ -23,15 +23,15 @@ class FieldData:
 
     @property
     def _ui_label(self):
-        return self.translate(self.__ui.get("label"))
+        return self.translate(self.__ui.get("label", None))
 
     @property
     def _ui_hint(self):
-        return self.translate(self.__ui.get("hint"))
+        return self.translate(self.__ui.get("hint", None))
 
     @property
     def _ui_help(self):
-        return self.translate(self.__ui.get("help"))
+        return self.translate(self.__ui.get("help", None))
 
     def __str__(self):
         return str(self._ui_value)
