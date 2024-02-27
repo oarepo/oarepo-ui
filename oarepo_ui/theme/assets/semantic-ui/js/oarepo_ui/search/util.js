@@ -28,7 +28,7 @@ export function parseSearchAppConfigs(
   ];
 
   return searchAppRoots.map((rootEl) => {
-    const config = JSON.parse(rootEl.dataset[_camelCase(autoInitDataAttr)]);
+    const config = JSON.parse(rootEl.dataset[_camelCase(configDataAttr)]);
     return {
       rootEl,
       ...config,
