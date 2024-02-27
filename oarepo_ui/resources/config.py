@@ -185,6 +185,6 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
         return dict(
             custom_fields=self.custom_fields,
-            overridableIdPrefix = f"{self.config.form_app_id}.Form"
+            overridableIdPrefix = f"{self.form_app_id}.Form"
             **kwargs,
         )

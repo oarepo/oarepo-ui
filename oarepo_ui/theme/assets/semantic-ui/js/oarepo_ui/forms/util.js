@@ -44,7 +44,7 @@ export function createFormAppInit({
 
     const internalComponentDefaults = {};
 
-    components = {
+    const components = {
       ...internalComponentDefaults,
       ...config.formConfig.defaultComponents,
       ...defaultComponentOverrides,
