@@ -225,7 +225,7 @@ class RecordsUIResource(UIResource):
             g.identity, pagination, resource_requestctx.args
         )
 
-        overridable_id_prefix = f"{self.config.search_app_id}.Search"
+        overridable_id_prefix = f"{self.config.search_app_id or 'Default'}.Search"
         
         defaultComponents = {}
         if hasattr(self.config, 'search_app_result_item') and self.config.search_app_result_item:
