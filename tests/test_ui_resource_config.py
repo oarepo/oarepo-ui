@@ -7,6 +7,8 @@ def test_ui_resource_form_config(app, record_ui_resource):
         custom_fields={"ui": {}},
     )
 
+    record_ui_resource.form_app_id = 'Test'
+
     record_ui_resource.run_components(
         "form_config",
         form_config=fc,
@@ -29,6 +31,7 @@ def test_ui_resource_form_config(app, record_ui_resource):
         ],
         default_locale="en",
         custom_fields={"ui": {}},
+        overridableIdPrefix='Test.Form',
         permissions={
             "can_create": True,
             "can_delete": False,
