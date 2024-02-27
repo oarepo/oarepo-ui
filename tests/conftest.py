@@ -77,6 +77,21 @@ def record_ui_resource(app, record_ui_resource_config, record_service):
     )
     return ui_resource
 
+@pytest.fixture(scope="module")
+def test_record_ui_resource_config():
+    config = ModelUIResourceConfig()
+    config.search_app_id = 'Test'
+    config.form_app_id = 'Test'
+
+
+@pytest.fixture(scope="module")
+def test_record_ui_resource(app, test_record_ui_resource_config, record):
+    ui_resource = ModelUIResource(test_record_ui_resource_config)
+    app.register_blueprint(
+        ui_resource.as_blueprint(template_folder=Path(__file__).parent / "templates")
+    )
+    return ui_resource
+
 
 @pytest.fixture(scope="module")
 def titlepage_ui_resource(

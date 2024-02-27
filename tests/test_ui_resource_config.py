@@ -1,20 +1,19 @@
 from invenio_access.permissions import system_identity
 
 
-def test_ui_resource_form_config(app, record_ui_resource):
-    fc = record_ui_resource.config.form_config()
+def test_ui_resource_form_config(app, test_record_ui_resource):
+    # Special instance of record resource
+    fc = test_record_ui_resource.config.form_config()
     assert fc == dict(
         custom_fields={"ui": {}},
         overridableIdPrefix='Test.Form',
     )
 
-    record_ui_resource.form_app_id = 'Test'
-
-    record_ui_resource.run_components(
+    test_record_ui_resource.run_components(
         "form_config",
         form_config=fc,
         layout="",
-        resource=record_ui_resource,
+        resource=test_record_ui_resource,
         api_record=None,
         record={},
         data={},
