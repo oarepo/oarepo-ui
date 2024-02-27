@@ -5,6 +5,7 @@ def test_ui_resource_form_config(app, record_ui_resource):
     fc = record_ui_resource.config.form_config()
     assert fc == dict(
         custom_fields={"ui": {}},
+        overridableIdPrefix='Test.Form',
     )
 
     record_ui_resource.form_app_id = 'Test'
