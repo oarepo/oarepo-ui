@@ -82,6 +82,7 @@ def test_record_ui_resource_config():
     config = ModelUIResourceConfig()
     config.search_app_id = 'Test'
     config.form_app_id = 'Test'
+    return config
 
 
 @pytest.fixture(scope="module")
