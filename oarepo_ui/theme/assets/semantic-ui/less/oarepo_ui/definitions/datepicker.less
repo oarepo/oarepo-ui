@@ -34,9 +34,11 @@ name of the component from above)
   will allow users to override these values.
  */
 .ui.datepicker {
-  position: relative;
-  .field {
-    padding: 0 !important;
+  .clear-icon {
+    cursor: pointer !important;
+    pointer-events: all !important;
+    opacity: 1 !important;
+    background-color: transparent !important;
   }
   .react-datepicker__year-read-view--down-arrow,
   .react-datepicker__month-read-view--down-arrow,
@@ -58,7 +60,6 @@ name of the component from above)
     margin-left: -4px;
     position: absolute;
     width: 0;
-    transform: translate3d(60px, 0px, 0px) !important;
   }
   .react-datepicker-popper[data-placement^="top"]
     .react-datepicker__triangle::before,
@@ -129,9 +130,10 @@ name of the component from above)
   }
 
   .react-datepicker-wrapper {
-    display: none;
+    display: inline-block;
     padding: 0;
     border: 0;
+    flex: 1;
     width: 100%;
   }
 
@@ -164,8 +166,7 @@ name of the component from above)
   }
 
   .react-datepicker-popper {
-    z-index: 3;
-    transform: translate3d(100%, 80px, 0px) !important;
+    z-index: 1;
   }
   .react-datepicker-popper[data-placement^="bottom"] {
     padding-top: 10px;
@@ -487,18 +488,37 @@ name of the component from above)
   .react-datepicker__week-number.react-datepicker__week-number--clickable {
     cursor: pointer;
   }
-  .react-datepicker__week-number.react-datepicker__week-number--clickable:hover {
+  .react-datepicker__week-number.react-datepicker__week-number--clickable:not(
+      .react-datepicker__week-number--selected,
+      .react-datepicker__week-number--keyboard-selected
+    ):hover {
     border-radius: 0.3rem;
     background-color: #f0f0f0;
   }
-
-  .react-datepicker__day-names,
-  .react-datepicker__week {
-    white-space: nowrap;
+  .react-datepicker__week-number--selected {
+    border-radius: 0.3rem;
+    background-color: #216ba5;
+    color: #fff;
+  }
+  .react-datepicker__week-number--selected:hover {
+    background-color: #1d5d90;
+  }
+  .react-datepicker__week-number--keyboard-selected {
+    border-radius: 0.3rem;
+    background-color: #2a87d0;
+    color: #fff;
+  }
+  .react-datepicker__week-number--keyboard-selected:hover {
+    background-color: #1d5d90;
   }
 
   .react-datepicker__day-names {
+    white-space: nowrap;
     margin-bottom: -8px;
+  }
+
+  .react-datepicker__week {
+    white-space: nowrap;
   }
 
   .react-datepicker__day-name,
@@ -885,14 +905,20 @@ name of the component from above)
     height: 16px;
     width: 16px;
     padding: 2px;
-    padding-right: 12px;
-    font-size: 18px;
+    font-size: 1.3rem;
+    font-weight: 900;
     line-height: 1;
     text-align: center;
     display: table-cell;
     vertical-align: middle;
     content: "×";
-    font-weight: 1000;
+  }
+  .react-datepicker__close-icon--disabled {
+    cursor: default;
+  }
+  .react-datepicker__close-icon--disabled::after {
+    cursor: default;
+    background-color: #ccc;
   }
 
   .react-datepicker__today-button {
@@ -960,74 +986,6 @@ name of the component from above)
     width: 1em;
     height: 1em;
     vertical-align: -0.125em;
-  }
-
-  .react-datepicker__tab-loop {
-    .ui.dropdown {
-      background-color: #f0f0f0 !important;
-
-      div.item {
-        font-size: 0.8rem !important;
-      }
-    }
-  }
-
-  label.helptext {
-    font-size: 1rem !important;
-  }
-
-  .fields.invenio-group-field {
-    flex-wrap: nowrap !important;
-    background-color: transparent !important;
-    padding-bottom: 0 !important;
-  }
-
-  .calendar-control-button {
-    background-color: transparent;
-    margin-top: 1.75rem;
-  }
-
-  .clear-icon {
-    cursor: pointer !important;
-    pointer-events: all !important;
-    opacity: 1 !important;
-  }
-}
-
-.error.field.ui.datepicker .ui.dropdown .menu {
-  div.selected.active.item {
-    background-color: #f0f0f0 !important;
-    span.text {
-      background-color: inherit !important;
-    }
-  }
-}
-
-.error.field.ui.datepicker {
-  .react-datepicker__header.react-datepicker__header--custom {
-    div.divider.text {
-      background-color: #f0f0f0 !important;
-      color: black !important;
-    }
-    div.item,
-    span.text {
-      color: black !important;
-      background-color: white !important;
-    }
-
-    div.item:hover {
-      color: black !important;
-      background-color: #f0f0f0 !important;
-      span.text {
-        color: inherit !important;
-        background-color: inherit !important;
-      }
-    }
-
-    div.selected.active.item {
-      color: black !important;
-      background-color: #f0f0f0 !important;
-    }
   }
 }
 
