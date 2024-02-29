@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import DatePicker from "react-datepicker";
 import { useField, useFormikContext } from "formik";
 import { DatePickerHeader } from "./DatePickerHeader";
 import PropTypes from "prop-types";
-import { FieldLabel, TextField, GroupField } from "react-invenio-forms";
-import { Form, Button, Icon } from "semantic-ui-react";
+import { FieldLabel } from "react-invenio-forms";
+import { Form } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import {
   edtfDateFormatOptions,
@@ -13,6 +13,7 @@ import {
   getDateFormatStringFromEdtfFormat,
 } from "./utils";
 import { useInitialDateEdtfFormat, useLoadLocaleObjects } from "./hooks";
+import { InputElement } from "./InputElement";
 
 export const EDTFSingleDatePicker = ({
   fieldPath,
@@ -22,8 +23,6 @@ export const EDTFSingleDatePicker = ({
   helpText,
   required,
   placeholder,
-  calendarControlButtonClassName,
-  calendarControlIconName,
   clearButtonClassName,
   ...datePickerProps
 }) => {
@@ -36,10 +35,13 @@ export const EDTFSingleDatePicker = ({
   const handleChange = (date) => {
     setFieldValue(fieldPath, serializeDate(date, dateEdtfFormat));
   };
+  const handleClear = () => {
+    handleChange(null);
+  };
   useLoadLocaleObjects();
   return (
     <div className="ui datepicker field">
-      <Form.Field className="ui datepicker field">
+      <Form.Field className="ui datepicker field" required={required}>
         <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />
         <DatePicker
           locale={i18next.language}
@@ -57,16 +59,21 @@ export const EDTFSingleDatePicker = ({
           )}
           showYearPicker={dateEdtfFormat === "yyyy"}
           showMonthYearPicker={dateEdtfFormat === "yyyy-mm"}
-          isClearable={date !== null}
           autoComplete="off"
           dateFormat={getDateFormatStringFromEdtfFormat(dateEdtfFormat)}
-          calendarControlButtonClassName={calendarControlButtonClassName}
-          calendarControlIconName={calendarControlIconName}
           clearButtonClassName={clearButtonClassName}
           showPopperArrow={false}
+          customInput={
+            <InputElement
+              handleClear={handleClear}
+              fieldPath={fieldPath}
+              clearButtonClassName={clearButtonClassName}
+            />
+          }
+          placeholderText={placeholder}
           {...datePickerProps}
         />
-        <label className="helptext">{helpText}</label>
+        <label className="helptext rel-mt-1">{helpText}</label>
       </Form.Field>
     </div>
   );
@@ -81,19 +88,15 @@ EDTFSingleDatePicker.propTypes = {
   datePickerProps: PropTypes.object,
   required: PropTypes.bool,
   placeholder: PropTypes.string,
-  calendarControlButtonClassName: PropTypes.string,
-  calendarControlIconName: PropTypes.string,
   clearButtonClassName: PropTypes.string,
 };
 
 EDTFSingleDatePicker.defaultProps = {
   icon: "calendar",
-  helpText: i18next.t("Format: YYYY-MM-DD, YYYYY-MM or YYYY."),
-  required: false,
-  placeholder: i18next.t(
-    "Write a date or click on the calendar icon to select it"
+  helpText: i18next.t(
+    "Choose a date from the calendar by clicking on the input."
   ),
-  calendarControlButtonClassName: "calendar-control-button",
-  calendarControlIconName: "calendar",
+  required: false,
+  placeholder: i18next.t("Choose a date."),
   clearButtonClassName: "clear-icon",
 };

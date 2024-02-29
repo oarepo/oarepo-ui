@@ -37,8 +37,15 @@ name of the component from above)
   .clear-icon {
     cursor: pointer !important;
     pointer-events: all !important;
-    opacity: 1 !important;
+    opacity: 0.8 !important;
     background-color: transparent !important;
+    font-size: 0.8rem;
+  }
+  .clear-icon:hover {
+    opacity: 1 !important;
+  }
+  label.helptext::after {
+    content: "" !important;
   }
   .react-datepicker__year-read-view--down-arrow,
   .react-datepicker__month-read-view--down-arrow,
@@ -905,8 +912,6 @@ name of the component from above)
     height: 16px;
     width: 16px;
     padding: 2px;
-    font-size: 1.3rem;
-    font-weight: 900;
     line-height: 1;
     text-align: center;
     display: table-cell;
