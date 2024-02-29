@@ -69,7 +69,10 @@ export function createSearchAppsInit({
       [`${overridableIdPrefix}.SearchApp.sort`]: SearchAppSort,
     };
 
-    const dynamicComponents = await loadDynamicComponents(overridableIdPrefix, overridableComponentIds)
+    const dynamicComponents = await loadDynamicComponents(
+      overridableIdPrefix,
+      overridableComponentIds
+    );
 
     const components = {
       ...internalComponentDefaults,

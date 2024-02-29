@@ -39,18 +39,21 @@ export function createFormAppInit({
 } = {}) {
   const initFormApp = async ({ rootEl, ...config }) => {
     console.debug("Initializing Formik form app...");
-    console.debug({...config});
+    console.debug({ ...config });
 
     const overridableIdPrefix = config.formConfig.overridableIdPrefix;
 
     const internalComponentDefaults = {};
-    const dynamicComponents = await loadDynamicComponents(overridableIdPrefix, overridableComponentIds)
+    const dynamicComponents = await loadDynamicComponents(
+      overridableIdPrefix,
+      overridableComponentIds
+    );
 
     const components = {
       ...internalComponentDefaults,
       ...config.formConfig.defaultComponents,
       ...defaultComponentOverrides,
-      ...dynamicComponents
+      ...dynamicComponents,
     };
 
     loadComponents(overridableIdPrefix, components).then((res) => {
