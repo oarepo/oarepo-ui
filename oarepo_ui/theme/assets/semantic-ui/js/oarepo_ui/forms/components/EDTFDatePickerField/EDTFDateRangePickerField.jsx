@@ -177,7 +177,6 @@ export const EDTFDaterangePicker = ({
                   fieldPath={fieldPath}
                   clearButtonClassName={clearButtonClassName}
                   label={i18next.t("From")}
-                  className="rel-mr-1"
                 />
               }
               {...datePickerProps}
@@ -214,7 +213,6 @@ export const EDTFDaterangePicker = ({
                   fieldPath={fieldPath}
                   clearButtonClassName={clearButtonClassName}
                   label={i18next.t("To")}
-                  className="rel-ml-1"
                   placeholder={endDateInputPlaceholder}
                 />
               }

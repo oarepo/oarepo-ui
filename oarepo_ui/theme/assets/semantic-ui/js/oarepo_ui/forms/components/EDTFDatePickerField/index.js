@@ -1,2 +1,2 @@
 export * from "./EDTFDateRangePickerField";
-export * from "./EDTFSingleDatePicker";
+export * from "./EDTFSingleDatePickerField";

@@ -14,6 +14,7 @@ export const InputElement = forwardRef(
       className,
       clearButtonClassName,
       handleClear,
+      onKeyDown,
     },
     ref
   ) => {
@@ -25,6 +26,7 @@ export const InputElement = forwardRef(
         // attached to the input
         error={inputError ? inputError : undefined}
         onClick={onClick}
+        onKeyDown={onKeyDown}
         label={label}
         value={value}
         placeholder={placeholder}
@@ -52,6 +54,7 @@ InputElement.propTypes = {
   label: PropTypes.string,
   className: PropTypes.string,
   placeholder: PropTypes.string,
+  onKeyDown: PropTypes.func,
 };
 
 InputElement.defaultProps = {
