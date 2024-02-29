@@ -332,3 +332,51 @@ msgstr "Uložit"
 
 msgid "Validate form"
 msgstr "Zkontrolovat formulář"
+
+msgid "Select: "
+msgstr "Vyberte: "
+
+msgid "Choose start and end date."
+msgstr "Vyberte datum zahájení a ukončení."
+
+msgid "Choose one date as start and end date."
+msgstr "Vyberte jedno datum jako počáteční a koncové datum."
+
+msgid "From"
+msgstr "Od"
+
+msgid "To"
+msgstr "Do"
+
+msgid ""
+"Choose the time interval in which the event took place. If start and end "
+"date are the same, choose same date twice.You can also use the button above "
+"to select just the one date."
+msgstr ""
+"Vyberte časový interval, ve kterém se událost odehrála. Pokud jsou počáteční"
+" a koncové datum stejné, vyberte stejné datum dvakrát. Můžete také použít "
+"tlačítko výše k výběru pouze jednoho data."
+
+msgid "Starting date"
+msgstr "Počáteční datum"
+
+msgid "Ending date"
+msgstr "Datum ukončení"
+
+msgid "Choose one date"
+msgstr "Vyberte jedno datum."
+
+msgid "Choose a date from the calendar by clicking on the input."
+msgstr "Vyberte datum z kalendáře kliknutím na pole."
+
+msgid "Choose a date."
+msgstr "Vyberte datum."
+
+msgid "Year"
+msgstr "Rok"
+
+msgid "Year and month"
+msgstr "Rok a měsíc"
+
+msgid "Year, month and date"
+msgstr "Rok, měsíc a den"

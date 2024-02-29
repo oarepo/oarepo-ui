@@ -315,3 +315,48 @@ msgstr ""
 
 msgid "Validate form"
 msgstr ""
+
+msgid "Select: "
+msgstr ""
+
+msgid "Choose start and end date."
+msgstr ""
+
+msgid "Choose one date as start and end date."
+msgstr ""
+
+msgid "From"
+msgstr ""
+
+msgid "To"
+msgstr ""
+
+msgid ""
+"Choose the time interval in which the event took place. If start and end "
+"date are the same, choose same date twice.You can also use the button above "
+"to select just the one date."
+msgstr ""
+
+msgid "Starting date"
+msgstr ""
+
+msgid "Ending date"
+msgstr ""
+
+msgid "Choose one date"
+msgstr ""
+
+msgid "Choose a date from the calendar by clicking on the input."
+msgstr ""
+
+msgid "Choose a date."
+msgstr ""
+
+msgid "Year"
+msgstr ""
+
+msgid "Year and month"
+msgstr ""
+
+msgid "Year, month and date"
+msgstr ""
