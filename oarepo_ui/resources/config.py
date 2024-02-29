@@ -69,11 +69,8 @@ class RecordsUIResourceConfig(UIResourceConfig):
     api_service = None
     """Name of the API service as registered inside the service registry"""
 
-    search_app_id = None
-    """Namespace of the app used for rendering the search ui"""
-
-    form_app_id = None
-    """Namespace of the app used for rendering forms"""
+    application_id = 'Default'
+    """Namespace of the React app components related to this resource."""
 
     templates = {
         "detail": None,
@@ -185,6 +182,6 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
         return dict(
             custom_fields=self.custom_fields,
-            overridableIdPrefix = f"{self.form_app_id or 'Default'}.Form",
+            overridableIdPrefix = f"{self.application_id.capitalize()}.Form",
             **kwargs,
         )

@@ -57,11 +57,11 @@ export function createFormAppInit({
             <Router>
               <OverridableContext.Provider value={overrideStore.getAll()}>
                 <FormConfigProvider value={config}>
-                  <Overridable id={`${overridableIdPrefix}.FormApp.layout`}>
+                  <Overridable id={`${overridableIdPrefix}.layout`}>
                     <Container fluid>
                       <p>
                         Provide your form components here by overriding
-                        component id "FormApp.layout"
+                        component id "{`${overridableIdPrefix}.layout`}"
                       </p>
                     </Container>
                   </Overridable>

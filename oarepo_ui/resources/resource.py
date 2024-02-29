@@ -225,7 +225,7 @@ class RecordsUIResource(UIResource):
             g.identity, pagination, resource_requestctx.args
         )
 
-        overridable_id_prefix = f"{self.config.search_app_id or 'Default'}.Search"
+        overridable_id_prefix = f"{self.config.application_id.capitalize()}.Search"
         
         defaultComponents = {}
         if hasattr(self.config, 'search_app_result_item') and self.config.search_app_result_item:
@@ -257,7 +257,7 @@ class RecordsUIResource(UIResource):
 
         search_config = partial(self.config.search_app_config, **search_options)
 
-        search_app_config = search_config(app_id=self.config.search_app_id)
+        search_app_config = search_config(app_id=self.config.application_id.capitalize())
 
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro(

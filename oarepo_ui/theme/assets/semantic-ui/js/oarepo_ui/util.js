@@ -1,5 +1,7 @@
 import _map from "lodash/map";
 import _reduce from "lodash/reduce";
+import _capitalize from "lodash/capitalize";
+import { importTemplate } from "@js/invenio_theme/templates";
 
 export const getInputFromDOM = (elementName) => {
   const element = document.getElementsByName(elementName);
@@ -48,4 +50,37 @@ export const absoluteUrl = (urlString) => {
 export const relativeUrl = (urlString) => {
   const {pathname, search} = absoluteUrl(urlString)
   return `${pathname}${search}`
+}
+
+export async function dynamicLoadComponents(overridableIdPrefix, componentIds) {
+  const asyncImportTemplate = async (componentId, path) => {
+    console.log(`Searching for component '${componentId}' in ${path}`)
+    try {
+      return {
+        componentId,
+        component: await importTemplate(path),
+      };
+    } catch (err) {
+      return null;
+    }
+  };
+
+  const components = componentIds.map((componentId) => {
+    const componentFilename = componentId
+      .split(".")
+      .map((part) => _capitalize(part))
+      .join("");
+    return asyncImportTemplate(
+      `${overridableIdPrefix}.${componentId}`,
+      `${overridableIdPrefix}/${componentFilename}.jsx`
+    );
+  });
+
+  const loadedComponents = await Promise.all(components);
+  return loadedComponents
+    .filter((component) => component !== null)
+    .reduce((res, { componentId, component }) => {
+      res[componentId] = component;
+      return res;
+    }, {});
 }

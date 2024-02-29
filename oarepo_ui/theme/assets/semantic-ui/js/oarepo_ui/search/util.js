@@ -1,9 +1,11 @@
 import React from "react";
 import { SearchApp } from "@js/invenio_search_ui/components";
-import { loadComponents } from "@js/invenio_theme/templates";
 import _camelCase from "lodash/camelCase";
 import ReactDOM from "react-dom";
 import { parametrize } from "react-overridable";
+import { overridableComponentIds } from "./constants";
+import { dynamicLoadComponents } from "../util";
+import { loadComponents } from "@js/invenio_theme/templates";
 
 import {
   ActiveFiltersElement,
@@ -71,7 +73,10 @@ export function createSearchAppsInit({
       ...internalComponentDefaults,
       ...config.defaultComponents,
       ...defaultComponentOverrides,
+      ...dynamicLoadComponents(overridableIdPrefix, overridableComponentIds),
     };
+
+    console.log({components})
 
     loadComponents(overridableIdPrefix, components).then((res) => {
       ReactDOM.render(

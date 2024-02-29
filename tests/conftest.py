@@ -80,8 +80,7 @@ def record_ui_resource(app, record_ui_resource_config, record_service):
 @pytest.fixture(scope="module")
 def test_record_ui_resource_config():
     config = ModelUIResourceConfig()
-    config.search_app_id = 'Test'
-    config.form_app_id = 'Test'
+    config.application_id = 'Test'
     return config
 
 
