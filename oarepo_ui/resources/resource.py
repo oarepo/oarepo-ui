@@ -228,8 +228,6 @@ class RecordsUIResource(UIResource):
         overridable_id_prefix = f"{self.config.application_id.capitalize()}.Search"
         
         defaultComponents = {}
-        if hasattr(self.config, 'search_app_result_item') and self.config.search_app_result_item:
-            defaultComponents[f"{overridable_id_prefix}.ResultsList.item"] = self.config.search_app_result_item
 
         search_options = dict(
             api_config=self.api_service.config,
