@@ -13,6 +13,7 @@ import Overridable, {
   OverridableContext,
   overrideStore,
 } from "react-overridable";
+import { BaseFormLayout } from "./components/BaseFormLayout";
 
 export function parseFormAppConfig(rootElementId = "form-app") {
   const rootEl = document.getElementById(rootElementId);
@@ -66,10 +67,7 @@ export function createFormAppInit({
                 <FormConfigProvider value={config}>
                   <Overridable id={`${overridableIdPrefix}.FormApp.layout`}>
                     <Container fluid>
-                      <p>
-                        Provide your form page layout component here by providing
-                        component id "{`${overridableIdPrefix}.FormApp.layout`}"
-                      </p>
+                      <BaseFormLayout />
                     </Container>
                   </Overridable>
                 </FormConfigProvider>
