@@ -96,6 +96,7 @@ export const DatePickerHeader = ({
       <div>
         <span>{i18next.t("Select: ")}</span>
         <Dropdown
+          className="datepicker-dropdown"
           options={edtfDateFormatOptions}
           onChange={(e, data) => setDateEdtfFormat(data.value)}
           value={dateEdtfFormat}

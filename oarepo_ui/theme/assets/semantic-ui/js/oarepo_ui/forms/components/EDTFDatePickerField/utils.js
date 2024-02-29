@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import _padStart from "lodash/padStart";
 import { i18next } from "@translations/oarepo_ui/i18next";
 
@@ -32,7 +31,6 @@ export const deserializeDate = (edtfDateString) => {
   if (edtfDateString) {
     try {
       const dateObject = new Date(edtfDateString);
-      console.log(dateObject);
       // Check if the dateObject is valid
       if (isNaN(dateObject.getTime())) {
         throw new Error("Invalid date string");
