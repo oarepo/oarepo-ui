@@ -4,7 +4,7 @@ import _camelCase from "lodash/camelCase";
 import ReactDOM from "react-dom";
 import { parametrize } from "react-overridable";
 import { overridableComponentIds } from "./constants";
-import { dynamicLoadComponents } from "../util";
+import { loadDynamicComponents } from "../util";
 import { loadComponents } from "@js/invenio_theme/templates";
 
 import {
@@ -43,7 +43,7 @@ export function createSearchAppsInit({
   autoInit = true,
   ContainerComponent = React.Fragment,
 } = {}) {
-  const initSearchApp = ({ rootEl, overridableIdPrefix, ...config }) => {
+  const initSearchApp = async ({ rootEl, overridableIdPrefix, ...config }) => {
     const SearchAppSearchbarContainerWithConfig = parametrize(
       SearchAppSearchbarContainer,
       { appName: overridableIdPrefix }
@@ -69,14 +69,14 @@ export function createSearchAppsInit({
       [`${overridableIdPrefix}.SearchApp.sort`]: SearchAppSort,
     };
 
+    const dynamicComponents = await loadDynamicComponents(overridableIdPrefix, overridableComponentIds)
+
     const components = {
       ...internalComponentDefaults,
       ...config.defaultComponents,
       ...defaultComponentOverrides,
-      ...dynamicLoadComponents(overridableIdPrefix, overridableComponentIds),
+      ...dynamicComponents,
     };
-
-    console.log({components})
 
     loadComponents(overridableIdPrefix, components).then((res) => {
       ReactDOM.render(

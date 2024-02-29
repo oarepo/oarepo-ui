@@ -1,6 +1,7 @@
 import _map from "lodash/map";
 import _reduce from "lodash/reduce";
-import _capitalize from "lodash/capitalize";
+import _camelCase from "lodash/camelCase";
+import _startCase from "lodash/startCase";
 import { importTemplate } from "@js/invenio_theme/templates";
 
 export const getInputFromDOM = (elementName) => {
@@ -44,17 +45,17 @@ export const array2object = (arr, keyName, valueName) =>
   );
 
 export const absoluteUrl = (urlString) => {
-  return new URL(urlString, window.location.origin)
-}
+  return new URL(urlString, window.location.origin);
+};
 
 export const relativeUrl = (urlString) => {
-  const {pathname, search} = absoluteUrl(urlString)
-  return `${pathname}${search}`
-}
+  const { pathname, search } = absoluteUrl(urlString);
+  return `${pathname}${search}`;
+};
 
-export async function dynamicLoadComponents(overridableIdPrefix, componentIds) {
+export async function loadDynamicComponents(overridableIdPrefix, componentIds) {
   const asyncImportTemplate = async (componentId, path) => {
-    console.log(`Searching for component '${componentId}' in ${path}`)
+    console.log(`Searching for component ID '${componentId}' in ${path}`);
     try {
       return {
         componentId,
@@ -66,21 +67,28 @@ export async function dynamicLoadComponents(overridableIdPrefix, componentIds) {
   };
 
   const components = componentIds.map((componentId) => {
-    const componentFilename = componentId
+    const componentFilename = _startCase(_camelCase(componentId)).replace(
+      / /g,
+      ""
+    );
+
+    const baseDir = overridableIdPrefix
       .split(".")
-      .map((part) => _capitalize(part))
-      .join("");
+      .map((dir) => dir.toLowerCase())
+      .join("/");
     return asyncImportTemplate(
       `${overridableIdPrefix}.${componentId}`,
-      `${overridableIdPrefix}/${componentFilename}.jsx`
+      `${baseDir}/${componentFilename}.jsx`
     );
   });
 
   const loadedComponents = await Promise.all(components);
-  return loadedComponents
+  const componentOverrides = loadedComponents
     .filter((component) => component !== null)
     .reduce((res, { componentId, component }) => {
       res[componentId] = component;
       return res;
     }, {});
+
+  return componentOverrides;
 }
