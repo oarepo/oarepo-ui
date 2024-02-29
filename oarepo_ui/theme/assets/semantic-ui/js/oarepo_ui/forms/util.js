@@ -8,6 +8,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { loadDynamicComponents } from "../util";
 import { overridableComponentIds } from "./constants";
+import { buildUID } from "react-searchkit";
 
 import Overridable, {
   OverridableContext,
@@ -65,7 +66,7 @@ export function createFormAppInit({
             <Router>
               <OverridableContext.Provider value={overrideStore.getAll()}>
                 <FormConfigProvider value={config}>
-                  <Overridable id={`${overridableIdPrefix}.FormApp.layout`}>
+                  <Overridable id={buildUID(overridableIdPrefix, 'FormApp.layout')}>
                     <Container fluid>
                       <BaseFormLayout />
                     </Container>
