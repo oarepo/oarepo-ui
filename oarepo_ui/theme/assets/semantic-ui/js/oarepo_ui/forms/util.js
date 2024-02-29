@@ -6,6 +6,7 @@ import { FormConfigProvider } from "./contexts";
 import { Container } from "semantic-ui-react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { loadDynamicComponents } from "../util";
 
 import Overridable, {
   OverridableContext,
@@ -36,18 +37,20 @@ export function createFormAppInit({
   ContainerComponent = React.Fragment,
   defaultComponentOverrides = {},
 } = {}) {
-  const initFormApp = ({ rootEl, ...config }) => {
+  const initFormApp = async ({ rootEl, ...config }) => {
     console.debug("Initializing Formik form app...");
     console.debug({...config});
 
     const overridableIdPrefix = config.formConfig.overridableIdPrefix;
 
     const internalComponentDefaults = {};
+    const dynamicComponents = await loadDynamicComponents(overridableIdPrefix, overridableComponentIds)
 
     const components = {
       ...internalComponentDefaults,
       ...config.formConfig.defaultComponents,
       ...defaultComponentOverrides,
+      ...dynamicComponents
     };
 
     loadComponents(overridableIdPrefix, components).then((res) => {
