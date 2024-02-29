@@ -7,6 +7,7 @@ import { Container } from "semantic-ui-react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { loadDynamicComponents } from "../util";
+import { overridableComponentIds } from "./constants";
 
 import Overridable, {
   OverridableContext,
@@ -63,11 +64,11 @@ export function createFormAppInit({
             <Router>
               <OverridableContext.Provider value={overrideStore.getAll()}>
                 <FormConfigProvider value={config}>
-                  <Overridable id={`${overridableIdPrefix}.layout`}>
+                  <Overridable id={`${overridableIdPrefix}.FormApp.layout`}>
                     <Container fluid>
                       <p>
-                        Provide your form components here by overriding
-                        component id "{`${overridableIdPrefix}.layout`}"
+                        Provide your form page layout component here by providing
+                        component id "{`${overridableIdPrefix}.FormApp.layout`}"
                       </p>
                     </Container>
                   </Overridable>
