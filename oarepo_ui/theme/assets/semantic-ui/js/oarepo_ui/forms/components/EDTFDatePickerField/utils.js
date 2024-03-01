@@ -1,7 +1,7 @@
 import _padStart from "lodash/padStart";
 import { i18next } from "@translations/oarepo_ui/i18next";
-
-
+import { parse } from "edtf";
+import _trim from "lodash/trim";
 
 export const edtfDateFormatOptions = [
   { value: "yyyy", text: i18next.t("Year") },
@@ -50,4 +50,23 @@ export const getDateFormatStringFromEdtfFormat = (dateEdtfFormat) => {
   if (dateEdtfFormat === "yyyy-mm-dd") return "PPP";
   if (dateEdtfFormat === "yyyy-mm") return "MMMM yyyy";
   if (dateEdtfFormat === "yyyy") return "yyyy";
+};
+
+export const getInitialEdtfDateFormat = (fieldValue) => {
+  let dateEdtfFormat;
+  if (fieldValue) {
+    const value = fieldValue.includes("/")
+      ? fieldValue.split("/")[0] || fieldValue.split("/")[1]
+      : fieldValue;
+    if (parse(_trim(value)).values.length === 1) {
+      dateEdtfFormat = "yyyy";
+    } else if (parse(_trim(value)).values.length === 2) {
+      dateEdtfFormat = "yyyy-mm";
+    } else {
+      dateEdtfFormat = "yyyy-mm-dd";
+    }
+  } else {
+    dateEdtfFormat = "yyyy-mm-dd";
+  }
+  return dateEdtfFormat;
 };

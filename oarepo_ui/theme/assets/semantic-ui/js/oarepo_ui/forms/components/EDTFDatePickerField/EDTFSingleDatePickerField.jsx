@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import { useField, useFormikContext } from "formik";
 import { DatePickerHeader } from "./DatePickerHeader";
@@ -11,8 +11,9 @@ import {
   serializeDate,
   deserializeDate,
   getDateFormatStringFromEdtfFormat,
+  getInitialEdtfDateFormat,
 } from "./utils";
-import { useInitialDateEdtfFormat, useLoadLocaleObjects } from "./hooks";
+import { useLoadLocaleObjects } from "./hooks";
 import { InputElement } from "./InputElement";
 
 export const EDTFSingleDatePicker = ({
@@ -28,9 +29,8 @@ export const EDTFSingleDatePicker = ({
 }) => {
   const { setFieldValue } = useFormikContext();
   const [field] = useField(fieldPath);
-  const [dateEdtfFormat, setDateEdtfFormat] = useInitialDateEdtfFormat(
-    field?.value
-  );
+  const initialEdtfDateFormat = getInitialEdtfDateFormat(field?.value);
+  const [dateEdtfFormat, setDateEdtfFormat] = useState(initialEdtfDateFormat);
   const date = field?.value ? deserializeDate(field?.value) : null;
   const handleChange = (date) => {
     setFieldValue(fieldPath, serializeDate(date, dateEdtfFormat));

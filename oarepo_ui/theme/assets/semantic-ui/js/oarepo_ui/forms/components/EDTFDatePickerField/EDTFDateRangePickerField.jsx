@@ -12,8 +12,9 @@ import {
   serializeDate,
   deserializeDate,
   getDateFormatStringFromEdtfFormat,
+  getInitialEdtfDateFormat,
 } from "./utils";
-import { useInitialDateEdtfFormat, useLoadLocaleObjects } from "./hooks";
+import { useLoadLocaleObjects } from "./hooks";
 import { InputElement } from "./InputElement";
 
 export const EDTFDaterangePicker = ({
@@ -32,9 +33,8 @@ export const EDTFDaterangePicker = ({
   // TODO: The datepickers shall recieve needed locales from form config (set in Invenio.cfg)
   const { setFieldValue } = useFormikContext();
   const [field] = useField(fieldPath);
-  const [dateEdtfFormat, setDateEdtfFormat] = useInitialDateEdtfFormat(
-    field?.value
-  );
+  const initialEdtfDateFormat = getInitialEdtfDateFormat(field?.value);
+  const [dateEdtfFormat, setDateEdtfFormat] = useState(initialEdtfDateFormat);
   const [showSingleDatePicker, setShowSingleDatePicker] = useState(false);
   let dates;
   if (field?.value) {
