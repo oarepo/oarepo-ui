@@ -3,9 +3,7 @@ import { SearchApp } from "@js/invenio_search_ui/components";
 import _camelCase from "lodash/camelCase";
 import ReactDOM from "react-dom";
 import { parametrize } from "react-overridable";
-import { overridableComponentIds } from "./constants";
-import { loadDynamicComponents } from "../util";
-import { loadComponents } from "@js/invenio_theme/templates";
+import { overridableComponentIds as componentIds } from "./constants";
 
 import {
   ActiveFiltersElement,
@@ -21,6 +19,7 @@ import {
   SearchFiltersToggleElement,
   SearchAppSort,
 } from "@js/oarepo_ui/search";
+import { loadAppComponents } from "../util";
 
 export function parseSearchAppConfigs(
   configDataAttr = "invenio-search-config"
@@ -39,7 +38,7 @@ export function parseSearchAppConfigs(
 }
 
 export function createSearchAppsInit({
-  defaultComponentOverrides = {},
+  componentOverrides = {},
   autoInit = true,
   ContainerComponent = React.Fragment,
 } = {}) {
@@ -49,7 +48,7 @@ export function createSearchAppsInit({
       { appName: overridableIdPrefix }
     );
 
-    const internalComponentDefaults = {
+    const defaultComponents = {
       [`${overridableIdPrefix}.ActiveFilters.element`]: ActiveFiltersElement,
       [`${overridableIdPrefix}.BucketAggregation.element`]:
         BucketAggregationElement,
@@ -69,19 +68,13 @@ export function createSearchAppsInit({
       [`${overridableIdPrefix}.SearchApp.sort`]: SearchAppSort,
     };
 
-    const dynamicComponents = await loadDynamicComponents(
+    loadAppComponents({
       overridableIdPrefix,
-      overridableComponentIds
-    );
-
-    const components = {
-      ...internalComponentDefaults,
-      ...config.defaultComponents,
-      ...defaultComponentOverrides,
-      ...dynamicComponents,
-    };
-
-    loadComponents(overridableIdPrefix, components).then((res) => {
+      componentIds,
+      defaultComponents,
+      resourceConfigComponents: config.defaultComponents,
+      componentOverrides,
+    }).then(() => {
       ReactDOM.render(
         <ContainerComponent>
           <SearchApp

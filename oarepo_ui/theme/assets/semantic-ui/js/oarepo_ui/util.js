@@ -2,7 +2,7 @@ import _map from "lodash/map";
 import _reduce from "lodash/reduce";
 import _camelCase from "lodash/camelCase";
 import _startCase from "lodash/startCase";
-import { importTemplate } from "@js/invenio_theme/templates";
+import { importTemplate, loadComponents } from "@js/invenio_theme/templates";
 
 export const getInputFromDOM = (elementName) => {
   const element = document.getElementsByName(elementName);
@@ -53,7 +53,10 @@ export const relativeUrl = (urlString) => {
   return `${pathname}${search}`;
 };
 
-export async function loadDynamicComponents(overridableIdPrefix, componentIds) {
+export async function loadTemplateComponents(
+  overridableIdPrefix,
+  componentIds
+) {
   const asyncImportTemplate = async (componentId, path) => {
     console.log(`Searching for component ID '${componentId}' in ${path}`);
     try {
@@ -91,4 +94,26 @@ export async function loadDynamicComponents(overridableIdPrefix, componentIds) {
     }, {});
 
   return componentOverrides;
+}
+
+export async function loadAppComponents({
+  overridableIdPrefix,
+  componentIds = [],
+  defaultComponents = {},
+  resourceConfigComponents = {},
+  componentOverrides = {},
+}) {
+  const templateComponents = await loadTemplateComponents(
+    overridableIdPrefix,
+    componentIds
+  );
+
+  const components = {
+    ...defaultComponents,
+    ...resourceConfigComponents,
+    ...componentOverrides,
+    ...templateComponents,
+  };
+
+  return loadComponents(overridableIdPrefix, components);
 }
