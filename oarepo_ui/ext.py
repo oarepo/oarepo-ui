@@ -6,6 +6,8 @@ from importlib_metadata import entry_points
 
 from flask import Response, current_app
 from invenio_base.utils import obj_or_import_string
+from flask_login import  user_logged_in, user_logged_out
+from .signals import handle_user_change
 
 import oarepo_ui.cli  # noqa
 from oarepo_ui.resources.templating.catalog import OarepoCatalog as Catalog
@@ -90,6 +92,7 @@ class OARepoUIExtension:
 
     def init_app(self, app):
         self.init_config(app)
+        self.connect_signals(app)
         app.extensions["oarepo_ui"] = OARepoUIState(app)
 
     def init_config(self, app):
@@ -105,3 +108,10 @@ class OARepoUIExtension:
             for name, val in getattr(config, k).items():
                 if name not in app.config[k]:
                     app.config[k][name] = val
+
+   
+
+    def connect_signals(self, app):
+        """Register signal handlers."""
+        user_logged_in.connect(handle_user_change, app)
+        user_logged_out.connect(handle_user_change, app)
