@@ -109,8 +109,6 @@ class OARepoUIExtension:
                 if name not in app.config[k]:
                     app.config[k][name] = val
 
-   
-
     def connect_signals(self, app):
         """Register signal handlers."""
         user_logged_in.connect(handle_user_change, app)
