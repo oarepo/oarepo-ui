@@ -12,7 +12,7 @@ export const allEmptyStrings = (arr) => arr.every((element) => element === "");
 export const serializeDate = (dateObj, dateEdtfFormat) => {
   if (dateObj === null) return "";
 
-  if (dateEdtfFormat === "yyyy") return `${dateObj.getFullYear()}`;
+  if (dateEdtfFormat === "yyyy") return dateObj.getFullYear();
   if (dateEdtfFormat === "yyyy-mm")
     return `${dateObj.getFullYear()}-${_padStart(
       dateObj.getMonth() + 1,

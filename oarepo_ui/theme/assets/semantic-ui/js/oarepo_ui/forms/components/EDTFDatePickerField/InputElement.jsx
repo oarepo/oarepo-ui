@@ -19,12 +19,10 @@ export const InputElement = forwardRef(
     ref
   ) => {
     const { errors } = useFormikContext();
-    const inputError = getIn(errors, fieldPath, "");
+    const inputError = getIn(errors, fieldPath, undefined);
     return (
       <Form.Input
-        // need to explicitly set it as undefined, because otherwise it shows empty errors
-        // attached to the input
-        error={inputError ? inputError : undefined}
+        error={inputError}
         onClick={onClick}
         onKeyDown={onKeyDown}
         label={label}
