@@ -39,12 +39,13 @@ export const BaseFormLayout = ({ formikProps }) => {
               </Overridable>
             </Sticky>
             <Overridable
-              id={buildUID(overridableIdPrefix, "InputFields.container")}
+              id={buildUID(overridableIdPrefix, "FormFields.container")}
+              record={record}
             >
               <>
                 <pre>
                   Add your form input fields here by overriding{" "}
-                  {buildUID(overridableIdPrefix, "FormApp.inputs")} component
+                  {buildUID(overridableIdPrefix, "FormFields.container")} component
                 </pre>
                 <FormikStateLogger render={true} />
               </>
@@ -56,6 +57,7 @@ export const BaseFormLayout = ({ formikProps }) => {
             <Sticky context={sidebarRef} offset={20}>
               <Overridable
                 id={buildUID(overridableIdPrefix, "FormActions.container")}
+                record={record}
               >
                 <Card fluid>
                   <Card.Content>
