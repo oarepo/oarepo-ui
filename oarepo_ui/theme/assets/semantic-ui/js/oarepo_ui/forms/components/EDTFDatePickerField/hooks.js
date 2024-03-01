@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { registerLocale } from "react-datepicker";
+import { parse } from "edtf";
+import _trim from "lodash/trim";
 
 export const useInitialDateEdtfFormat = (fieldValue) => {
   let dateEdtfFormat;
@@ -7,9 +9,9 @@ export const useInitialDateEdtfFormat = (fieldValue) => {
     const value = fieldValue.includes("/")
       ? fieldValue.split("/")[0]
       : fieldValue;
-    if (value.length === 4) {
+    if (parse(_trim(value)).values.length === 1) {
       dateEdtfFormat = "yyyy";
-    } else if (value.length === 7) {
+    } else if (parse(_trim(value)).values.length === 2) {
       dateEdtfFormat = "yyyy-mm";
     } else {
       dateEdtfFormat = "yyyy-mm-dd";
