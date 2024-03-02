@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Iterator
 
 import deepmerge
 from flask import abort, g, redirect, request
+from flask_principal import PermissionDenied
 from flask_resources import (
     Resource,
     from_conf,
@@ -22,6 +23,7 @@ from invenio_records_resources.resources.records.resource import (
     request_view_args,
 )
 from invenio_records_resources.services import LinksTemplate
+from werkzeug.exceptions import Forbidden
 
 from oarepo_ui.utils import dump_empty
 
@@ -198,14 +200,17 @@ class RecordsUIResource(UIResource):
                 links[k] = v
 
     def _get_record(self, resource_requestctx, allow_draft=False):
-        if allow_draft:
-            read_method = (
-                getattr(self.api_service, "read_draft") or self.api_service.read
-            )
-        else:
-            read_method = self.api_service.read
+        try:
+            if allow_draft:
+                read_method = (
+                    getattr(self.api_service, "read_draft") or self.api_service.read
+                )
+            else:
+                read_method = self.api_service.read
 
-        return read_method(g.identity, resource_requestctx.view_args["pid_value"])
+            return read_method(g.identity, resource_requestctx.view_args["pid_value"])
+        except PermissionDenied as e:
+            raise Forbidden() from e
 
     def search_without_slash(self):
         split_path = request.full_path.split("?", maxsplit=1)
@@ -311,7 +316,11 @@ class RecordsUIResource(UIResource):
     @request_view_args
     def edit(self):
         api_record = self._get_record(resource_requestctx, allow_draft=True)
-        self.api_service.require_permission(g.identity, "update", record=api_record)
+        try:
+            self.api_service.require_permission(g.identity, "update", record=api_record)
+        except PermissionDenied as e:
+            raise Forbidden() from e
+
         data = api_record.to_dict()
         record = self.config.ui_serializer.dump_obj(data)
         form_config = self.config.form_config(
@@ -373,7 +382,11 @@ class RecordsUIResource(UIResource):
     @request_read_args
     @request_view_args
     def create(self):
-        self.api_service.require_permission(g.identity, "create", record=None)
+        try:
+            self.api_service.require_permission(g.identity, "create", record=None)
+        except PermissionDenied as e:
+            raise Forbidden() from e
+
         empty_record = self.empty_record(resource_requestctx)
         form_config = self.config.form_config(
             identity=g.identity,
