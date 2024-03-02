@@ -1,7 +1,7 @@
 {# def custom_fields, d #}
 
-{% set safe_cf=field_data(current_app.config.get(custom_fields, []).languages) %}
-
+{% set safe_cf=field_data(field_get(current_app.config, custom_fields)) %}
+{% if safe_cf._has_value %}
 <div class="ICustomField">
     {% for cf_section in array(safe_cf) %}
         <ISection title={cf_section.section} title_hidden={cf_section.hidden}>
@@ -20,3 +20,4 @@
         </ISection>
     {% endfor %}
 </div>
+{% endif %}
