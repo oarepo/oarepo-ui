@@ -106,7 +106,10 @@ class OarepoCatalog(Catalog):
         for name in names:
             if name in self.jinja_env.app.template_context_processors:
                 for func in self.jinja_env.app.template_context_processors[name]:
-                    context.update(func())
+                    extra_context = func()
+                    for k, v in (extra_context or {}).items():
+                        if k not in context:
+                            context[k] = v
 
     def render(
         self,
@@ -117,8 +120,6 @@ class OarepoCatalog(Catalog):
     ) -> str:
         self.collected_css = []
         self.collected_js = []
-        if "context" in kw:
-            self.update_template_context(kw["context"])
         return self.irender(__name, caller=caller, **kw)
 
     def get_source(self, cname: str, file_ext: "TFileExt" = "") -> str:
@@ -232,6 +233,32 @@ class OarepoCatalog(Catalog):
             )
 
         return searchpath
+
+    # component handling: currently Component class is not replaceable, so we need to override the following
+    # methods to add global context to the component rendering
+
+    def _get_from_source(self, *, name: str, url_prefix: str, source: str) -> "Component":
+        return KeepGlobalContextComponent(self, super()._get_from_source(name=name, url_prefix=url_prefix, source=source))
+
+    def _get_from_cache(self, *, prefix: str, name: str, url_prefix: str, file_ext: str) -> "Component":
+        return KeepGlobalContextComponent(self, super()._get_from_cache(prefix=prefix, name=name, url_prefix=url_prefix, file_ext=file_ext))
+
+    def _get_from_file(self, *, prefix: str, name: str, url_prefix: str, file_ext: str) -> "Component":
+        return KeepGlobalContextComponent(self, super()._get_from_file(prefix=prefix, name=name, url_prefix=url_prefix, file_ext=file_ext))
+
+
+class KeepGlobalContextComponent:
+    def __init__(self, __catalogue, __component):
+        self.__component = __component
+        self.__catalogue = __catalogue
+
+    def filter_args(self, kwargs):
+        props, extras = self.__component.filter_args(kwargs)
+        self.__catalogue.update_template_context(props)
+        return props, extras
+
+    def __getattr__(self, item):
+        return getattr(self.__component, item)
 
 
 def strip_app_theme(template_name, app_theme):
