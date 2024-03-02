@@ -1,0 +1,10 @@
+{# def title=None, title_hidden=False #}
+
+<div>
+    {% if field_value(title) and not field_value(title_hidden) %}
+    <h2 class="ui dividing header">
+        {{ title }}
+    </h2>
+    {% endif %}
+    {{ content }}
+</div>
