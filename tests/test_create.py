@@ -33,6 +33,7 @@ def test_create(
                 "current_locale": "en",
                 "custom_fields": {"ui": {}},
                 "default_locale": "en",
+                'overridableIdPrefix': 'Default.Form',
                 "locales": [
                     {"text": "English", "value": "en"},
                     {"text": "\u010de\u0161tina", "value": "cs"},
