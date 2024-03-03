@@ -23,7 +23,10 @@ from tests.model import (
 @pytest.fixture(scope="module")
 def extra_entry_points():
     """Extra entry points to load the mock_module features."""
-    return {"invenio_i18n.translations": ["1000-test = tests"]}
+    return {
+        "invenio_i18n.translations": ["1000-test = tests"],
+        "oarepo.ui": ["simple_model = tests:simple_model.json"],
+    }
 
 
 @pytest.fixture(scope="module")
