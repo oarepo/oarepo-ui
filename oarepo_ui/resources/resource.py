@@ -173,7 +173,9 @@ class RecordsUIResource(UIResource):
             args=resource_requestctx.args,
             view_args=resource_requestctx.view_args,
             ui_links=ui_links,
+            custom_fields =self._get_detail_custom_fields(api_record)
         )
+
         metadata = dict(record.get("metadata", record))
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro(
@@ -191,6 +193,9 @@ class RecordsUIResource(UIResource):
             context=current_oarepo_ui.catalog.jinja_env.globals,
             d=FieldData(record, self.ui_model),
         )
+
+    def _get_detail_custom_fields(self, api_record):
+        return self.config.custom_fields()
 
     def make_links_absolute(self, links, api_prefix):
         # make links absolute
