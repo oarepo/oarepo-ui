@@ -10,10 +10,22 @@ export const ArrayFieldItem = ({
   children,
   className,
   removeButton: RemoveButton,
+  displayRemoveButton,
   removeButtonProps,
   ...uiProps
 }) => {
   const [highlighted, setHighlighted] = useState(false);
+
+  if (!displayRemoveButton) {
+    return (
+      <GroupField
+        className={`${highlighted ? "highlighted" : ""} ${className}`}
+        {...uiProps}
+      >
+        {children}
+      </GroupField>
+    );
+  }
   return (
     <GroupField
       className={`${highlighted ? "highlighted" : ""} ${className}`}
@@ -54,10 +66,12 @@ ArrayFieldItem.propTypes = {
   className: PropTypes.string,
   removeButton: PropTypes.node,
   removeButtonProps: PropTypes.object,
+  displayRemoveButton: PropTypes.bool,
 };
 
 ArrayFieldItem.defaultProps = {
   className: "invenio-group-field",
   removeButton: undefined,
   removeButtonProps: {},
+  displayRemoveButton: true,
 };
