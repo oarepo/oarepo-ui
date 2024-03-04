@@ -70,15 +70,11 @@ def field_data(value, ui=None):
 
 
 def field_get(value, key):
-    print(f"field_get({key})")
-    if isinstance(key, FieldData):
-        key = field_value(key)
-    print("key", key)
+    key = field_value(key)
     if key is None:
         return value
 
-    if not isinstance(value, FieldData):
-        value = FieldData(value, {})
+    value = field_data(value)
 
     for key in key.split("."):
         value = getattr(value, key, EMPTY_FIELD_DATA)
