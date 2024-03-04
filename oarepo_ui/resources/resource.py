@@ -220,6 +220,8 @@ class RecordsUIResource(UIResource):
         else:
             return redirect(path_with_slash + "?" + split_path[1], code=302)
 
+
+
     @request_search_args
     def search(self):
         page = resource_requestctx.args.get("page", 1)
@@ -235,13 +237,18 @@ class RecordsUIResource(UIResource):
             g.identity, pagination, resource_requestctx.args
         )
 
+        overridable_id_prefix = f"{self.config.application_id.capitalize()}.Search"
+        
+        defaultComponents = {}
+
         search_options = dict(
             api_config=self.api_service.config,
             identity=g.identity,
             overrides={
                 "ui_endpoint": self.config.url_prefix,
                 "ui_links": ui_links,
-                "defaultComponents": {},
+                "overridableIdPrefix": overridable_id_prefix,
+                "defaultComponents": defaultComponents,
             },
         )
 
@@ -260,7 +267,7 @@ class RecordsUIResource(UIResource):
 
         search_config = partial(self.config.search_app_config, **search_options)
 
-        search_app_config = search_config(app_id=self.config.search_app_id)
+        search_app_config = search_config(app_id=self.config.application_id.capitalize())
 
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro(
