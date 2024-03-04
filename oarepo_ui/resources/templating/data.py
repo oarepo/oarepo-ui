@@ -1,6 +1,7 @@
 import html
-from oarepo_runtime.i18n import gettext
 from typing import Union
+
+from oarepo_runtime.i18n import gettext
 
 
 class FieldData:
@@ -43,11 +44,12 @@ class FieldData:
         return html.escape(str(self._ui_value))
 
     def __get(self, name: Union[str, int]):
-
         if isinstance(self.__data, dict):
             if name in self.__data:
                 return FieldData(
-                    self.__data.get(name), self.__ui.get("children", {}).get(name, {}), self.__path + [name]
+                    self.__data.get(name),
+                    self.__ui.get("children", {}).get(name, {}),
+                    self.__path + [name],
                 )
             else:
                 return EMPTY_FIELD_DATA

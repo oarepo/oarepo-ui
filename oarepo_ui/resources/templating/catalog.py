@@ -237,14 +237,33 @@ class OarepoCatalog(Catalog):
     # component handling: currently Component class is not replaceable, so we need to override the following
     # methods to add global context to the component rendering
 
-    def _get_from_source(self, *, name: str, url_prefix: str, source: str) -> "Component":
-        return KeepGlobalContextComponent(self, super()._get_from_source(name=name, url_prefix=url_prefix, source=source))
+    def _get_from_source(
+        self, *, name: str, url_prefix: str, source: str
+    ) -> "Component":
+        return KeepGlobalContextComponent(
+            self,
+            super()._get_from_source(name=name, url_prefix=url_prefix, source=source),
+        )
 
-    def _get_from_cache(self, *, prefix: str, name: str, url_prefix: str, file_ext: str) -> "Component":
-        return KeepGlobalContextComponent(self, super()._get_from_cache(prefix=prefix, name=name, url_prefix=url_prefix, file_ext=file_ext))
+    def _get_from_cache(
+        self, *, prefix: str, name: str, url_prefix: str, file_ext: str
+    ) -> "Component":
+        return KeepGlobalContextComponent(
+            self,
+            super()._get_from_cache(
+                prefix=prefix, name=name, url_prefix=url_prefix, file_ext=file_ext
+            ),
+        )
 
-    def _get_from_file(self, *, prefix: str, name: str, url_prefix: str, file_ext: str) -> "Component":
-        return KeepGlobalContextComponent(self, super()._get_from_file(prefix=prefix, name=name, url_prefix=url_prefix, file_ext=file_ext))
+    def _get_from_file(
+        self, *, prefix: str, name: str, url_prefix: str, file_ext: str
+    ) -> "Component":
+        return KeepGlobalContextComponent(
+            self,
+            super()._get_from_file(
+                prefix=prefix, name=name, url_prefix=url_prefix, file_ext=file_ext
+            ),
+        )
 
 
 class KeepGlobalContextComponent:

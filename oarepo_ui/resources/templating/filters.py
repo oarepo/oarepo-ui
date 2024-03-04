@@ -1,4 +1,4 @@
-from oarepo_ui.resources.templating.data import FieldData, EMPTY_FIELD_DATA
+from oarepo_ui.resources.templating.data import EMPTY_FIELD_DATA, FieldData
 
 
 def id_filter(x):

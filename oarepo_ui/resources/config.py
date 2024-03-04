@@ -2,10 +2,13 @@ import inspect
 from pathlib import Path
 
 import marshmallow as ma
+from flask import current_app
 from flask_resources import ResourceConfig
 from invenio_base.utils import obj_or_import_string
+from invenio_records_resources.proxies import current_service_registry
 from invenio_records_resources.services import Link, pagination_links
 from invenio_search_ui.searchconfig import FacetsConfig, SearchAppConfig, SortConfig
+from oarepo_runtime.services.custom_fields import CustomFields, InlinedCustomFields
 
 from oarepo_ui.resources.links import UIRecordLink
 
@@ -69,7 +72,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
     api_service = None
     """Name of the API service as registered inside the service registry"""
 
-    application_id = 'Default'
+    application_id = "Default"
     """Namespace of the React app components related to this resource."""
 
     templates = {
@@ -170,18 +173,56 @@ class RecordsUIResourceConfig(UIResourceConfig):
         opts.update(kwargs)
         return SearchAppConfig.generate(opts, **overrides)
 
-    @property
-    def custom_fields(self):
-        # TODO: currently used by forms only, implement custom fields loading
-        return {
-            "ui": {},
+    def custom_fields(self, **kwargs):
+        api_service = current_service_registry.get(self.api_service)
+        # get the record class
+        record_class = getattr(api_service, "record_cls", None) or getattr(
+            api_service, "draft_cls", None
+        )
+        ui = []
+        ret = {
+            "ui": ui,
         }
+        if not record_class:
+            return ret
+
+        # try to get custom fields from the record
+        for fld_name, fld in sorted(inspect.getmembers(record_class)):
+            if isinstance(fld, InlinedCustomFields):
+                prefix = ""
+            elif isinstance(fld, CustomFields):
+                prefix = fld.key + "."
+            else:
+                continue
+
+            ui_config = self._get_custom_fields_ui_config(fld.config_key, **kwargs)
+
+            if not ui_config:
+                continue
+
+            for section in ui_config:
+                ui.append(
+                    {
+                        **section,
+                        "fields": [
+                            {
+                                **field,
+                                "field": prefix + field["field"],
+                            }
+                            for field in section.get("fields", [])
+                        ],
+                    }
+                )
+        return ret
+
+    def _get_custom_fields_ui_config(self, key, **kwargs):
+        return current_app.config.get(f"{key}_UI", [])
 
     def form_config(self, identity=None, **kwargs):
         """Get the react form configuration."""
 
         return dict(
-            custom_fields=self.custom_fields,
-            overridableIdPrefix = f"{self.application_id.capitalize()}.Form",
+            custom_fields=self.custom_fields(identity=identity, **kwargs),
+            overridableIdPrefix=f"{self.application_id.capitalize()}.Form",
             **kwargs,
         )

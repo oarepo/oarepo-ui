@@ -1,12 +1,10 @@
 from flask import Blueprint
 from invenio_base.utils import obj_or_import_string
 
-def create_blueprint(app):
 
+def create_blueprint(app):
     blueprint = Blueprint("oarepo_ui", __name__, template_folder="templates")
-    blueprint.app_context_processor(lambda: ({
-        'current_app': app
-    }))
+    blueprint.app_context_processor(lambda: ({"current_app": app}))
 
     def add_jinja_filters(state):
         app = state.app
@@ -30,7 +28,6 @@ def create_blueprint(app):
 
         # the catalogue should not have been used at this point but if it was, we need to reinitialize it
         ext.reinitialize_catalog()
-
 
     blueprint.record_once(add_jinja_filters)
 

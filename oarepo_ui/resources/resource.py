@@ -131,7 +131,9 @@ class RecordsUIResource(UIResource):
 
     @property
     def ui_model(self):
-        return current_oarepo_ui.ui_models.get(self.config.api_service.replace('-', '_'), {})
+        return current_oarepo_ui.ui_models.get(
+            self.config.api_service.replace("-", "_"), {}
+        )
 
     @request_read_args
     @request_view_args
@@ -220,8 +222,6 @@ class RecordsUIResource(UIResource):
         else:
             return redirect(path_with_slash + "?" + split_path[1], code=302)
 
-
-
     @request_search_args
     def search(self):
         page = resource_requestctx.args.get("page", 1)
@@ -238,7 +238,7 @@ class RecordsUIResource(UIResource):
         )
 
         overridable_id_prefix = f"{self.config.application_id.capitalize()}.Search"
-        
+
         defaultComponents = {}
 
         search_options = dict(
@@ -267,7 +267,9 @@ class RecordsUIResource(UIResource):
 
         search_config = partial(self.config.search_app_config, **search_options)
 
-        search_app_config = search_config(app_id=self.config.application_id.capitalize())
+        search_app_config = search_config(
+            app_id=self.config.application_id.capitalize()
+        )
 
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro(
@@ -330,9 +332,9 @@ class RecordsUIResource(UIResource):
 
         data = api_record.to_dict()
         record = self.config.ui_serializer.dump_obj(data)
-        form_config = self.config.form_config(
-            identity=g.identity, updateUrl=api_record.links.get("self", None)
-        )
+        form_config = self._get_form_config(g.identity, resource_requestctx,
+                                            updateUrl=api_record.links.get("self", None),
+                                            api_record=api_record)
 
         ui_links = self.expand_detail_links(identity=g.identity, record=api_record)
 
@@ -382,7 +384,12 @@ class RecordsUIResource(UIResource):
             ui_links=ui_links,
             data=data,
             context=current_oarepo_ui.catalog.jinja_env.globals,
-            d=FieldData(record, self.ui_model)
+            d=FieldData(record, self.ui_model),
+        )
+
+    def _get_form_config(self, identity, resource_requestctx, api_record=None, **kwargs):
+        return self.config.form_config(
+            identity=identity, **kwargs
         )
 
     @login_required
@@ -395,11 +402,10 @@ class RecordsUIResource(UIResource):
             raise Forbidden() from e
 
         empty_record = self.empty_record(resource_requestctx)
-        form_config = self.config.form_config(
-            identity=g.identity,
-            # TODO: use api service create link when available
-            createUrl=f"/api{self.api_service.config.url_prefix}",
-        )
+
+        # TODO: use api service create link when available
+        form_config = self._get_form_config(g.identity, resource_requestctx,
+                                            createUrl=f"/api{self.api_service.config.url_prefix}")
         extra_context = dict()
 
         ui_links = {}
