@@ -222,7 +222,6 @@ class RecordsUIResourceConfig(UIResourceConfig):
         """Get the react form configuration."""
 
         return dict(
-            custom_fields=self.custom_fields(identity=identity, **kwargs),
             overridableIdPrefix=f"{self.application_id.capitalize()}.Form",
             **kwargs,
         )

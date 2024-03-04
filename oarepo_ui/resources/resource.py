@@ -173,7 +173,7 @@ class RecordsUIResource(UIResource):
             args=resource_requestctx.args,
             view_args=resource_requestctx.view_args,
             ui_links=ui_links,
-            custom_fields =self._get_detail_custom_fields(api_record)
+            custom_fields =self._get_custom_fields(api_record=api_record)
         )
 
         metadata = dict(record.get("metadata", record))
@@ -193,9 +193,6 @@ class RecordsUIResource(UIResource):
             context=current_oarepo_ui.catalog.jinja_env.globals,
             d=FieldData(record, self.ui_model),
         )
-
-    def _get_detail_custom_fields(self, api_record):
-        return self.config.custom_fields()
 
     def make_links_absolute(self, links, api_prefix):
         # make links absolute
@@ -337,9 +334,10 @@ class RecordsUIResource(UIResource):
 
         data = api_record.to_dict()
         record = self.config.ui_serializer.dump_obj(data)
-        form_config = self._get_form_config(g.identity, resource_requestctx,
-                                            updateUrl=api_record.links.get("self", None),
-                                            api_record=api_record)
+        form_config = self._get_form_config(g.identity,
+                                            updateUrl=api_record.links.get("self", None))
+
+        form_config['custom_fields'] = self._get_custom_fields(api_record=api_record)
 
         ui_links = self.expand_detail_links(identity=g.identity, record=api_record)
 
@@ -392,10 +390,15 @@ class RecordsUIResource(UIResource):
             d=FieldData(record, self.ui_model),
         )
 
-    def _get_form_config(self, identity, resource_requestctx, api_record=None, **kwargs):
+    def _get_custom_fields(self, **kwargs):
+        return self.config.custom_fields(
+            identity=g.identity, **kwargs)
+
+    def _get_form_config(self, identity, **kwargs):
         return self.config.form_config(
             identity=identity, **kwargs
         )
+
 
     @login_required
     @request_read_args
@@ -409,8 +412,11 @@ class RecordsUIResource(UIResource):
         empty_record = self.empty_record(resource_requestctx)
 
         # TODO: use api service create link when available
-        form_config = self._get_form_config(g.identity, resource_requestctx,
+        form_config = self._get_form_config(g.identity,
                                             createUrl=f"/api{self.api_service.config.url_prefix}")
+
+        form_config['custom_fields'] = self._get_custom_fields(resource_requestctx=resource_requestctx)
+
         extra_context = dict()
 
         ui_links = {}
