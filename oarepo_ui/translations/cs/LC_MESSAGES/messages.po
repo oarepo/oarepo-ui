@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: oarepo-ui 4.0.0\n"
 "Report-Msgid-Bugs-To: info@oarepo.org\n"
 "POT-Creation-Date: 2023-10-25 13:15+0200\n"
-"PO-Revision-Date: 2023-11-21 10:28+0100\n"
+"PO-Revision-Date: 2024-03-01 16:24+0100\n"
 "Last-Translator: \n"
 "Language-Team: cs <LL@li.org>\n"
 "Language: cs\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
 "Generated-By: Babel 2.10.3\n"
-"X-Generator: Poedit 3.4.1\n"
+"X-Generator: Poedit 3.4.2\n"
 
 #: oarepo_ui/for_translations_only.py:4
 msgid "api.draft"
@@ -333,50 +333,6 @@ msgstr "Uložit"
 msgid "Validate form"
 msgstr "Zkontrolovat formulář"
 
-msgid "Select: "
-msgstr "Vyberte: "
-
-msgid "Choose start and end date."
-msgstr "Vyberte datum zahájení a ukončení."
-
-msgid "Choose one date as start and end date."
-msgstr "Vyberte jedno datum jako počáteční a koncové datum."
-
-msgid "From"
-msgstr "Od"
-
-msgid "To"
-msgstr "Do"
-
-msgid ""
-"Choose the time interval in which the event took place. If start and end "
-"date are the same, choose same date twice.You can also use the button above "
-"to select just the one date."
-msgstr ""
-"Vyberte časový interval, ve kterém se událost odehrála. Pokud jsou počáteční"
-" a koncové datum stejné, vyberte stejné datum dvakrát. Můžete také použít "
-"tlačítko výše k výběru pouze jednoho data."
-
-msgid "Starting date"
-msgstr "Počáteční datum"
-
-msgid "Ending date"
-msgstr "Datum ukončení"
-
-msgid "Choose one date"
-msgstr "Vyberte jedno datum."
-
-msgid "Choose a date from the calendar by clicking on the input."
-msgstr "Vyberte datum z kalendáře kliknutím na pole."
-
-msgid "Choose a date."
-msgstr "Vyberte datum."
-
-msgid "Year"
-msgstr "Rok"
-
-msgid "Year and month"
-msgstr "Rok a měsíc"
-
-msgid "Year, month and date"
-msgstr "Rok, měsíc a den"
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/for_translations_only.py:6
+msgid "api.files"
+msgstr "API souborů"

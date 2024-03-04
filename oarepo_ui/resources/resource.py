@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Iterator
 
 import deepmerge
 from flask import abort, g, redirect, request
+from flask_principal import PermissionDenied
 from flask_resources import (
     Resource,
     from_conf,
@@ -22,8 +23,11 @@ from invenio_records_resources.resources.records.resource import (
     request_view_args,
 )
 from invenio_records_resources.services import LinksTemplate
+from werkzeug.exceptions import Forbidden
 
 from oarepo_ui.utils import dump_empty
+
+from .templating.data import FieldData
 
 if TYPE_CHECKING:
     from .components import UIResourceComponent
@@ -125,6 +129,10 @@ class RecordsUIResource(UIResource):
         )
         return empty_data
 
+    @property
+    def ui_model(self):
+        return current_oarepo_ui.ui_models.get(self.config.api_service.replace('-', '_'), {})
+
     @request_read_args
     @request_view_args
     def detail(self):
@@ -179,6 +187,7 @@ class RecordsUIResource(UIResource):
             extra_context=extra_context,
             ui_links=ui_links,
             context=current_oarepo_ui.catalog.jinja_env.globals,
+            d=FieldData(record, self.ui_model),
         )
 
     def make_links_absolute(self, links, api_prefix):
@@ -191,14 +200,17 @@ class RecordsUIResource(UIResource):
                 links[k] = v
 
     def _get_record(self, resource_requestctx, allow_draft=False):
-        if allow_draft:
-            read_method = (
-                getattr(self.api_service, "read_draft") or self.api_service.read
-            )
-        else:
-            read_method = self.api_service.read
+        try:
+            if allow_draft:
+                read_method = (
+                    getattr(self.api_service, "read_draft") or self.api_service.read
+                )
+            else:
+                read_method = self.api_service.read
 
-        return read_method(g.identity, resource_requestctx.view_args["pid_value"])
+            return read_method(g.identity, resource_requestctx.view_args["pid_value"])
+        except PermissionDenied as e:
+            raise Forbidden() from e
 
     def search_without_slash(self):
         split_path = request.full_path.split("?", maxsplit=1)
@@ -207,6 +219,8 @@ class RecordsUIResource(UIResource):
             return redirect(path_with_slash, code=302)
         else:
             return redirect(path_with_slash + "?" + split_path[1], code=302)
+
+
 
     @request_search_args
     def search(self):
@@ -223,13 +237,18 @@ class RecordsUIResource(UIResource):
             g.identity, pagination, resource_requestctx.args
         )
 
+        overridable_id_prefix = f"{self.config.application_id.capitalize()}.Search"
+        
+        defaultComponents = {}
+
         search_options = dict(
             api_config=self.api_service.config,
             identity=g.identity,
             overrides={
                 "ui_endpoint": self.config.url_prefix,
                 "ui_links": ui_links,
-                "defaultComponents": {},
+                "overridableIdPrefix": overridable_id_prefix,
+                "defaultComponents": defaultComponents,
             },
         )
 
@@ -248,7 +267,7 @@ class RecordsUIResource(UIResource):
 
         search_config = partial(self.config.search_app_config, **search_options)
 
-        search_app_config = search_config(app_id=self.config.search_app_id)
+        search_app_config = search_config(app_id=self.config.application_id.capitalize())
 
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro(
@@ -304,9 +323,13 @@ class RecordsUIResource(UIResource):
     @request_view_args
     def edit(self):
         api_record = self._get_record(resource_requestctx, allow_draft=True)
-        self.api_service.require_permission(g.identity, "update", record=api_record)
+        try:
+            self.api_service.require_permission(g.identity, "update", record=api_record)
+        except PermissionDenied as e:
+            raise Forbidden() from e
+
         data = api_record.to_dict()
-        record = self.config.ui_serializer.dump_obj(api_record.to_dict())
+        record = self.config.ui_serializer.dump_obj(data)
         form_config = self.config.form_config(
             identity=g.identity, updateUrl=api_record.links.get("self", None)
         )
@@ -359,13 +382,18 @@ class RecordsUIResource(UIResource):
             ui_links=ui_links,
             data=data,
             context=current_oarepo_ui.catalog.jinja_env.globals,
+            d=FieldData(record, self.ui_model)
         )
 
     @login_required
     @request_read_args
     @request_view_args
     def create(self):
-        self.api_service.require_permission(g.identity, "create", record=None)
+        try:
+            self.api_service.require_permission(g.identity, "create", record=None)
+        except PermissionDenied as e:
+            raise Forbidden() from e
+
         empty_record = self.empty_record(resource_requestctx)
         form_config = self.config.form_config(
             identity=g.identity,

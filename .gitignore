@@ -60,7 +60,6 @@ target/
 venv/
 .envrc
 .venv/
-messages.mo
 
 .vscode
 # node modules

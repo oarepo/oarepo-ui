@@ -23,7 +23,10 @@ from tests.model import (
 @pytest.fixture(scope="module")
 def extra_entry_points():
     """Extra entry points to load the mock_module features."""
-    return {"invenio_i18n.translations": ["1000-test = tests"]}
+    return {
+        "invenio_i18n.translations": ["1000-test = tests"],
+        "oarepo.ui": ["simple_model = tests:simple_model.json"],
+    }
 
 
 @pytest.fixture(scope="module")
@@ -72,6 +75,21 @@ def record_ui_resource_config(app):
 @pytest.fixture(scope="module")
 def record_ui_resource(app, record_ui_resource_config, record_service):
     ui_resource = ModelUIResource(record_ui_resource_config)
+    app.register_blueprint(
+        ui_resource.as_blueprint(template_folder=Path(__file__).parent / "templates")
+    )
+    return ui_resource
+
+@pytest.fixture(scope="module")
+def test_record_ui_resource_config():
+    config = ModelUIResourceConfig()
+    config.application_id = 'Test'
+    return config
+
+
+@pytest.fixture(scope="module")
+def test_record_ui_resource(app, test_record_ui_resource_config, record_service):
+    ui_resource = ModelUIResource(test_record_ui_resource_config)
     app.register_blueprint(
         ui_resource.as_blueprint(template_folder=Path(__file__).parent / "templates")
     )

@@ -38,6 +38,7 @@ def test_edit(
                 "current_locale": "en",
                 "custom_fields": {"ui": {}},
                 "default_locale": "en",
+                'overridableIdPrefix': 'Default.Form',
                 "locales": [
                     {"text": "English", "value": "en"},
                     {"text": "čeština", "value": "cs"},

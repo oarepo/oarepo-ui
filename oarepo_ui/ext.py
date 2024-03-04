@@ -1,24 +1,36 @@
 import functools
+import json
+from pathlib import Path
+
+from importlib_metadata import entry_points
 
 from flask import Response, current_app
+from invenio_base.utils import obj_or_import_string
 
 import oarepo_ui.cli  # noqa
-from oarepo_ui.resources.catalog import OarepoCatalog as Catalog
-from oarepo_ui.resources.templating import TemplateRegistry
+from oarepo_ui.resources.templating.catalog import OarepoCatalog as Catalog
 
 
 class OARepoUIState:
     def __init__(self, app):
         self.app = app
-        self.templates = TemplateRegistry(app, self)
         self._resources = []
         self.init_builder_plugin()
         self._catalog = None
 
+    def reinitialize_catalog(self):
+        self._catalog = None
+        try:
+            del self.catalog  # noqa - this is a documented method of clearing the cache
+        except (
+            AttributeError
+        ):  # but does not work if the cache is not initialized yet, thus the try/except
+            pass
+
     @functools.cached_property
     def catalog(self):
         self._catalog = Catalog()
-        return self._catalog_config(self._catalog, self.templates.jinja_env)
+        return self._catalog_config(self._catalog, self.app.jinja_env)
 
     def _catalog_config(self, catalog, env):
         context = {}
@@ -60,6 +72,16 @@ class OARepoUIState:
     def record_actions(self):
         return self.app.config["OAREPO_UI_RECORD_ACTIONS"]
 
+    @functools.cached_property
+    def ui_models(self):
+        # load all models from json files registered in oarepo.ui entry point
+        ret = {}
+        eps = entry_points(group="oarepo.ui")
+        for ep in eps:
+            path = Path(obj_or_import_string(ep.module).__file__).parent / ep.attr
+            ret[ep.name] = json.loads(path.read_text())
+        return ret
+
 
 class OARepoUIExtension:
     def __init__(self, app=None):
@@ -77,3 +99,9 @@ class OARepoUIExtension:
         for k in dir(config):
             if k.startswith("OAREPO_UI_"):
                 app.config.setdefault(k, getattr(config, k))
+
+        # merge in default filters and globals if they have not been overridden
+        for k in ("OAREPO_UI_JINJAX_FILTERS", "OAREPO_UI_JINJAX_GLOBALS"):
+            for name, val in getattr(config, k).items():
+                if name not in app.config[k]:
+                    app.config[k][name] = val

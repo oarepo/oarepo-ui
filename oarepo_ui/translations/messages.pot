@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-02-29 08:37+0100\n"
+"POT-Creation-Date: 2024-03-01 16:27+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,118 +17,122 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.14.0\n"
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/for_translations_only.py:4
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/for_translations_only.py:4
 msgid "api.draft"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/for_translations_only.py:5
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/for_translations_only.py:5
 msgid "api.latest"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/for_translations_only.py:6
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/for_translations_only.py:6
+msgid "api.files"
+msgstr ""
+
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/for_translations_only.py:7
 msgid "api.latest_html"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/for_translations_only.py:7
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/for_translations_only.py:8
 msgid "api.publish"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/for_translations_only.py:8
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/for_translations_only.py:9
 msgid "api.record"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/for_translations_only.py:9
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/for_translations_only.py:10
 msgid "api.self_html"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/for_translations_only.py:10
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/for_translations_only.py:11
 msgid "api.versions"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/resources/config.py:89
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/resources/config.py:89
 msgid "JSON"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/DefinitionLink.jinja:2
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/components/DefinitionLink.jinja:2
 msgid "Open definition"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:3
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:18
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:16
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:31
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:3
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:18
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:16
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:31
 msgid "New item"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:5
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:18
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:5
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:18
 msgid "Edit item "
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:6
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:7
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:6
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:7
 msgid "Search"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/detail.html:20
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/detail.html:20
 msgid "Record details"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/footer.html:15
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/footer.html:15
 msgid "Contact"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/footer.html:33
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/footer.html:33
 #, python-format
 msgid ""
 "Powered by\n"
 "            <a href=\"%(link)s\">Invenio</a>"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:44
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:44
 msgid "Menu"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:63
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:63
 msgid "Close menu"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:115
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:115
 msgid "Requests"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:117
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:117
 msgid "Inbox"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:15
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:15
 msgid "Log in"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:19
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:19
 msgid "Sign up"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:36
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:36
 msgid "Quick create"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:53
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:53
 msgid "Actions"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:72
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:113
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:72
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:113
 msgid "My account"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:107
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:136
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:143
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:107
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:136
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:143
 msgid "Log out"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/search.html:2
+#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/search.html:2
 msgid "Search results"
 msgstr ""
 
