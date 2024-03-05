@@ -185,7 +185,6 @@ class RecordsUIResourceConfig(UIResourceConfig):
         }
         if not record_class:
             return ret
-
         # try to get custom fields from the record
         for fld_name, fld in sorted(inspect.getmembers(record_class)):
             if isinstance(fld, InlinedCustomFields):
@@ -196,7 +195,6 @@ class RecordsUIResourceConfig(UIResourceConfig):
                 continue
 
             ui_config = self._get_custom_fields_ui_config(fld.config_key, **kwargs)
-
             if not ui_config:
                 continue
 

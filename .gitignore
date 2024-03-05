@@ -68,5 +68,6 @@ yarn.lock
 package-lock.json
 
 .venv-builder/
+node_modules
 
 

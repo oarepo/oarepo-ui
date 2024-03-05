@@ -11,9 +11,13 @@ import { Grid, Ref, Sticky, Card } from "semantic-ui-react";
 import { useFormConfig } from "@js/oarepo_ui";
 import { buildUID } from "react-searchkit";
 import Overridable from "react-overridable";
+import { CustomFields } from "react-invenio-forms";
 
 export const BaseFormLayout = ({ formikProps }) => {
-  const { record, formConfig: {overridableIdPrefix} } = useFormConfig();
+  const {
+    record,
+    formConfig: { overridableIdPrefix },
+  } = useFormConfig();
   const sidebarRef = React.useRef(null);
   const formFeedbackRef = React.useRef(null);
 
@@ -45,10 +49,16 @@ export const BaseFormLayout = ({ formikProps }) => {
               <>
                 <pre>
                   Add your form input fields here by overriding{" "}
-                  {buildUID(overridableIdPrefix, "FormFields.container")} component
+                  {buildUID(overridableIdPrefix, "FormFields.container")}{" "}
+                  component
                 </pre>
                 <FormikStateLogger render={true} />
               </>
+            </Overridable>
+            <Overridable
+              id={buildUID(overridableIdPrefix, "CustomFields.container")}
+            >
+              <CustomFields loader />
             </Overridable>
           </Grid.Column>
         </Ref>
