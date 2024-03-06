@@ -1,8 +1,8 @@
-import React, { useContext } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import _isEmpty from "lodash/isEmpty";
 import Overridable from "react-overridable";
-import { withState, ActiveFilters } from "react-searchkit";
+import { withState, ActiveFilters, buildUID } from "react-searchkit";
 import { GridResponsiveSidebarColumn } from "react-invenio-forms";
 import { Container, Grid, Button } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
@@ -10,17 +10,18 @@ import {
   SearchAppFacets,
   SearchAppResultsPane,
   SearchBar,
-  SearchConfigurationContext,
 } from "@js/invenio_search_ui/components";
 import { ResultOptions } from "@js/invenio_search_ui/components/Results";
 import { ClearFiltersButton } from "./ClearFiltersButton";
+import { parseSearchAppConfigs } from "@js/oarepo_ui";
 
 const ResultOptionsWithState = withState(ResultOptions);
 
 export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
   const [sidebarVisible, setSidebarVisible] = React.useState(false);
-  const { appName, buildUID } = useContext(SearchConfigurationContext);
   const facetsAvailable = !_isEmpty(config.aggs);
+  const [searchAppConfig, ...otherSearchAppConfigs] = parseSearchAppConfigs();
+  const { overridableIdPrefix } = searchAppConfig;
 
   let columnsAmount;
   let resultsPaneLayoutFacets;
@@ -100,11 +101,13 @@ export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
 
   return (
     <Container fluid>
-      <Overridable id={buildUID("SearchApp.searchbarContainer", "", appName)}>
+      <Overridable
+        id={buildUID(overridableIdPrefix, "SearchApp.searchbarContainer")}
+      >
         <Grid relaxed padded>
           <Grid.Row>
             <Grid.Column width={12} floated="right">
-              <SearchBar buildUID={buildUID} appName={appName} />
+              <SearchBar buildUID={buildUID} appName={overridableIdPrefix} />
             </Grid.Column>
           </Grid.Row>
         </Grid>
@@ -160,7 +163,7 @@ export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
             >
               <SearchAppFacets
                 aggs={config.aggs}
-                appName={appName}
+                appName={overridableIdPrefix}
                 buildUID={buildUID}
               />
             </GridResponsiveSidebarColumn>
@@ -168,7 +171,7 @@ export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
           <Grid.Column {...resultsPaneLayout}>
             <SearchAppResultsPane
               layoutOptions={config.layoutOptions}
-              appName={appName}
+              appName={overridableIdPrefix}
               buildUID={buildUID}
             />
           </Grid.Column>
@@ -181,7 +184,10 @@ export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
               widescreen={4}
             >
               <Overridable
-                id={buildUID("SearchApp.buttonSidebarContainer", "", appName)}
+                id={buildUID(
+                  overridableIdPrefix,
+                  "SearchApp.buttonSidebarContainer"
+                )}
               ></Overridable>
             </Grid.Column>
           )}
@@ -192,6 +198,7 @@ export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
 };
 
 SearchAppLayout.propTypes = {
+  hasButtonSidebar: PropTypes.bool,
   config: PropTypes.shape({
     searchApi: PropTypes.object.isRequired, // same as ReactSearchKit.searchApi
     initialQueryState: PropTypes.shape({

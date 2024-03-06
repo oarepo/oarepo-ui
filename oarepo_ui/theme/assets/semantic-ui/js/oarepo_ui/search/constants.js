@@ -25,4 +25,5 @@ export const overridableComponentIds = [
   "Sort.element",
   "SortBy.element",
   "SortOrder.element",
+  "SearchApp.buttonSidebarContainer",
 ];
