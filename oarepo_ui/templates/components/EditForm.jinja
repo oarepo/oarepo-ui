@@ -13,7 +13,7 @@
       <div class="column">
       {%- block form_main_content %}
         {%- if form_config.updateUrl %}
-        <h1 class="mt-20 ui header">{{ record.title.capitalize() }}</h1>
+        <h1 class="mt-20 ui header">{{ (record.title or record.metadata.title).capitalize() if record.title or record.metadata.title else '' }}</h1>
         {%- elif form_config.createUrl -%}
         <h1 class="mt-20 ui header">{{ _("New item") }}</h1>
         {%- endif %}
