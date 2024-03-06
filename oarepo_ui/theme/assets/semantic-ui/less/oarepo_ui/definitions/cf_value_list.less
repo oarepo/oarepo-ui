@@ -22,6 +22,34 @@
   will allow users to override these values.
  */
 .ui.cf-value-list {
+  dl {
+    display: flex;
+    flex-flow: row wrap;
+
+    & > dt {
+      flex-basis: 20%;
+      padding: 0px 4px;
+      font-weight: 600;
+      min-width: 20em;
+    }
+
+    & > dd {
+      flex-basis: 65%;
+      flex-grow: 1;
+      margin-bottom: 1em;
+      break-after: always;
+    }
+
+    @media only screen and (max-width: @largestMobileScreen) {
+      & > dt {
+        flex-basis: 100%;
+      }
+
+      & > dd {
+        flex-basis: 100%;
+      }
+    }
+  }
 }
 
 /*

@@ -20,7 +20,9 @@ export const BaseFormLayout = ({ formikProps }) => {
   } = useFormConfig();
   const sidebarRef = React.useRef(null);
   const formFeedbackRef = React.useRef(null);
-
+  const {
+    formConfig: { custom_fields: customFields },
+  } = useFormConfig();
   return (
     <BaseForm
       onSubmit={() => {}}
@@ -58,7 +60,13 @@ export const BaseFormLayout = ({ formikProps }) => {
             <Overridable
               id={buildUID(overridableIdPrefix, "CustomFields.container")}
             >
-              <CustomFields loader />
+              <CustomFields
+                config={customFields.ui}
+                templateLoaders={[
+                  (widget) => import(`@templates/custom_fields/${widget}.js`),
+                  (widget) => import(`react-invenio-forms`),
+                ]}
+              />
             </Overridable>
           </Grid.Column>
         </Ref>

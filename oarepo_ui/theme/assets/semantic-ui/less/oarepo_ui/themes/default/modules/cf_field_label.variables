@@ -11,7 +11,7 @@
 /*
   This is the name of the component - though not required, keep it the same as the filename
 */
-@element: "cf_field";
+@element: "cf_field_label";
 
 @import (multiple) "../../theme.config";
 
@@ -21,7 +21,7 @@
   Note: use variables here, not the exact values. Placing the values to another file (sample.variables)
   will allow users to override these values.
  */
-.ui.cf-field {
+.ui.cf-field-label {
 }
 
 /*
