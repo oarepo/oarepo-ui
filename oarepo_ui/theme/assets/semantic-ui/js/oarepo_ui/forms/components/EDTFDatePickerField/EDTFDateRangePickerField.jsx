@@ -1,26 +1,21 @@
 import React, { useState } from "react";
-import DatePicker from "react-datepicker";
 import { useField, useFormikContext } from "formik";
-import { DatePickerHeader } from "./DatePickerHeader";
 import PropTypes from "prop-types";
 import { FieldLabel, GroupField } from "react-invenio-forms";
 import { Form, Radio } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import {
-  edtfDateFormatOptions,
   allEmptyStrings,
   serializeDate,
   deserializeDate,
   getDateFormatStringFromEdtfFormat,
   getInitialEdtfDateFormat,
 } from "./utils";
-import { useLoadLocaleObjects } from "./hooks";
-import { InputElement } from "./InputElement";
+import { EDTFDatePickerWrapper } from "./EDTFDatePickerWrapper";
 
 export const EDTFDaterangePicker = ({
   fieldPath,
   label,
-  htmlFor,
   icon,
   helpText,
   required,
@@ -28,7 +23,6 @@ export const EDTFDaterangePicker = ({
   startDateInputPlaceholder,
   endDateInputPlaceholder,
   singleDateInputPlaceholder,
-  ...datePickerProps
 }) => {
   // TODO: The datepickers shall recieve needed locales from form config (set in Invenio.cfg)
   const { setFieldValue } = useFormikContext();
@@ -42,6 +36,8 @@ export const EDTFDaterangePicker = ({
   } else {
     dates = [null, null];
   }
+
+  const dateFormat = getDateFormatStringFromEdtfFormat(dateEdtfFormat);
 
   const startDate = dates[0];
   const endDate = dates[1];
@@ -57,21 +53,39 @@ export const EDTFDaterangePicker = ({
     }
   };
 
+  const handleStartDateChange = (date) => {
+    dates = [...dates];
+    dates[0] = date;
+    handleChange(dates);
+  };
+
+  const handleEndDateChange = (date) => {
+    dates = [...dates];
+    dates[1] = date;
+    handleChange(dates);
+  };
+
   const handleSingleDateChange = (date) => {
-    handleChange([date, date]);
+    dates = [...dates];
+    dates = [date, date];
+    handleChange(dates);
   };
 
   const handleClearStartDate = () => {
+    dates = [...dates];
     dates[0] = null;
     handleChange(dates);
   };
   const handleClearEndDate = () => {
+    dates = [...dates];
     dates[1] = null;
     handleChange(dates);
   };
 
   const handleClearSingleDate = () => {
-    handleChange([null, null]);
+    dates = [...dates];
+    dates = [null, null];
+    handleChange(dates);
   };
   // handle situation if someone selected just one date, when switching to the single input
   // to fill it with one of the selected values
@@ -89,7 +103,6 @@ export const EDTFDaterangePicker = ({
     }
     setShowSingleDatePicker(true);
   };
-  useLoadLocaleObjects();
   return (
     <React.Fragment>
       <Form.Field className="ui datepicker field mb-0" required={required}>
@@ -112,111 +125,55 @@ export const EDTFDaterangePicker = ({
         </Form.Field>
         {showSingleDatePicker ? (
           <div>
-            <DatePicker
-              locale={i18next.language}
-              selected={startDate}
-              onChange={(date) => {
-                handleSingleDateChange(date);
-              }}
-              renderCustomHeader={(props) => (
-                <DatePickerHeader
-                  dateEdtfFormat={dateEdtfFormat}
-                  setDateEdtfFormat={setDateEdtfFormat}
-                  edtfDateFormatOptions={edtfDateFormatOptions}
-                  {...props}
-                />
-              )}
-              showYearPicker={dateEdtfFormat === "yyyy"}
-              showMonthYearPicker={dateEdtfFormat === "yyyy-mm"}
-              autoComplete="off"
-              dateFormat={getDateFormatStringFromEdtfFormat(dateEdtfFormat)}
+            <EDTFDatePickerWrapper
+              fieldPath={fieldPath}
+              handleChange={handleSingleDateChange}
+              handleClear={handleClearSingleDate}
+              placeholder={singleDateInputPlaceholder}
+              dateEdtfFormat={dateEdtfFormat}
+              setDateEdtfFormat={setDateEdtfFormat}
+              dateFormat={dateFormat}
               clearButtonClassName={clearButtonClassName}
-              placeholderText={singleDateInputPlaceholder}
-              showPopperArrow={false}
-              customInput={
-                <InputElement
-                  handleClear={handleClearSingleDate}
-                  fieldPath={fieldPath}
-                  clearButtonClassName={clearButtonClassName}
-                />
-              }
-              {...datePickerProps}
+              datePickerProps={{ selected: startDate }}
+              helpText={helpText}
             />
           </div>
         ) : (
           <GroupField>
-            <DatePicker
-              locale={i18next.language}
-              selected={startDate}
-              onChange={(date) => {
-                dates[0] = date;
-                handleChange(dates);
-              }}
-              selectsStart
-              startDate={startDate}
-              endDate={endDate}
-              renderCustomHeader={(props) => (
-                <DatePickerHeader
-                  dateEdtfFormat={dateEdtfFormat}
-                  setDateEdtfFormat={setDateEdtfFormat}
-                  edtfDateFormatOptions={edtfDateFormatOptions}
-                  {...props}
-                />
-              )}
-              showYearPicker={dateEdtfFormat === "yyyy"}
-              showMonthYearPicker={dateEdtfFormat === "yyyy-mm"}
-              autoComplete="off"
-              dateFormat={getDateFormatStringFromEdtfFormat(dateEdtfFormat)}
-              maxDate={endDate ?? endDate}
+            <EDTFDatePickerWrapper
+              fieldPath={fieldPath}
+              handleChange={handleStartDateChange}
+              handleClear={handleClearStartDate}
+              placeholder={startDateInputPlaceholder}
+              dateEdtfFormat={dateEdtfFormat}
+              setDateEdtfFormat={setDateEdtfFormat}
+              dateFormat={dateFormat}
               clearButtonClassName={clearButtonClassName}
-              showPopperArrow={false}
-              placeholderText={startDateInputPlaceholder}
-              customInput={
-                <InputElement
-                  handleClear={handleClearStartDate}
-                  fieldPath={fieldPath}
-                  clearButtonClassName={clearButtonClassName}
-                  label={i18next.t("From")}
-                />
-              }
-              {...datePickerProps}
+              datePickerProps={{
+                selected: startDate,
+                startDate: startDate,
+                endDate: endDate,
+                selectsStart: true,
+              }}
+              customInputProps={{ label: i18next.t("From") }}
             />
-            <DatePicker
-              locale={i18next.language}
-              selected={endDate}
-              onChange={(date) => {
-                dates[1] = date;
-                handleChange(dates);
-              }}
-              selectsEnd
-              startDate={startDate}
-              endDate={endDate}
-              minDate={startDate}
-              renderCustomHeader={(props) => (
-                <DatePickerHeader
-                  dateEdtfFormat={dateEdtfFormat}
-                  setDateEdtfFormat={setDateEdtfFormat}
-                  edtfDateFormatOptions={edtfDateFormatOptions}
-                  {...props}
-                />
-              )}
-              showYearPicker={dateEdtfFormat === "yyyy"}
-              showMonthYearPicker={dateEdtfFormat === "yyyy-mm"}
-              autoComplete="off"
-              dateFormat={getDateFormatStringFromEdtfFormat(dateEdtfFormat)}
+            <EDTFDatePickerWrapper
+              fieldPath={fieldPath}
+              handleChange={handleEndDateChange}
+              handleClear={handleClearEndDate}
+              placeholder={endDateInputPlaceholder}
+              dateEdtfFormat={dateEdtfFormat}
+              setDateEdtfFormat={setDateEdtfFormat}
+              dateFormat={dateFormat}
               clearButtonClassName={clearButtonClassName}
-              placeholderText={endDateInputPlaceholder}
-              showPopperArrow={false}
-              customInput={
-                <InputElement
-                  handleClear={handleClearEndDate}
-                  fieldPath={fieldPath}
-                  clearButtonClassName={clearButtonClassName}
-                  label={i18next.t("To")}
-                  placeholder={endDateInputPlaceholder}
-                />
-              }
-              {...datePickerProps}
+              datePickerProps={{
+                selected: endDate,
+                startDate: startDate,
+                endDate: endDate,
+                selectsEnd: true,
+                minDate: startDate,
+              }}
+              customInputProps={{ label: i18next.t("To") }}
             />
           </GroupField>
         )}
@@ -229,10 +186,8 @@ export const EDTFDaterangePicker = ({
 EDTFDaterangePicker.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
-  htmlFor: PropTypes.string,
   icon: PropTypes.string,
   helpText: PropTypes.string,
-  datePickerProps: PropTypes.object,
   required: PropTypes.bool,
   clearButtonClassName: PropTypes.string,
   startDateInputPlaceholder: PropTypes.string,

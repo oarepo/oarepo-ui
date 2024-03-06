@@ -1,31 +1,27 @@
 import React, { useState } from "react";
-import DatePicker from "react-datepicker";
 import { useField, useFormikContext } from "formik";
-import { DatePickerHeader } from "./DatePickerHeader";
 import PropTypes from "prop-types";
 import { FieldLabel } from "react-invenio-forms";
 import { Form } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import {
-  edtfDateFormatOptions,
   serializeDate,
   deserializeDate,
   getDateFormatStringFromEdtfFormat,
   getInitialEdtfDateFormat,
 } from "./utils";
-import { useLoadLocaleObjects } from "./hooks";
-import { InputElement } from "./InputElement";
+import { EDTFDatePickerWrapper } from "./EDTFDatePickerWrapper";
 
 export const EDTFSingleDatePicker = ({
   fieldPath,
   label,
-  htmlFor,
   icon,
   helpText,
   required,
   placeholder,
   clearButtonClassName,
-  ...datePickerProps
+  datePickerProps,
+  customInputProps,
 }) => {
   const { setFieldValue } = useFormikContext();
   const [field] = useField(fieldPath);
@@ -38,40 +34,22 @@ export const EDTFSingleDatePicker = ({
   const handleClear = () => {
     handleChange(null);
   };
-  useLoadLocaleObjects();
   return (
     <div className="ui datepicker field">
       <Form.Field className="ui datepicker field" required={required}>
         <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />
-        <DatePicker
-          locale={i18next.language}
-          selected={date}
-          onChange={(date) => {
-            handleChange(date);
-          }}
-          renderCustomHeader={(props) => (
-            <DatePickerHeader
-              dateEdtfFormat={dateEdtfFormat}
-              setDateEdtfFormat={setDateEdtfFormat}
-              edtfDateFormatOptions={edtfDateFormatOptions}
-              {...props}
-            />
-          )}
-          showYearPicker={dateEdtfFormat === "yyyy"}
-          showMonthYearPicker={dateEdtfFormat === "yyyy-mm"}
-          autoComplete="off"
+        <EDTFDatePickerWrapper
+          fieldPath={fieldPath}
+          handleChange={handleChange}
+          handleClear={handleClear}
+          placeholder={placeholder}
+          dateEdtfFormat={dateEdtfFormat}
+          setDateEdtfFormat={setDateEdtfFormat}
           dateFormat={getDateFormatStringFromEdtfFormat(dateEdtfFormat)}
           clearButtonClassName={clearButtonClassName}
-          showPopperArrow={false}
-          customInput={
-            <InputElement
-              handleClear={handleClear}
-              fieldPath={fieldPath}
-              clearButtonClassName={clearButtonClassName}
-            />
-          }
-          placeholderText={placeholder}
-          {...datePickerProps}
+          datePickerProps={{ selected: date, ...datePickerProps }}
+          helpText={helpText}
+          customInputProps={customInputProps}
         />
         <label className="helptext rel-mt-1">{helpText}</label>
       </Form.Field>
@@ -82,13 +60,13 @@ export const EDTFSingleDatePicker = ({
 EDTFSingleDatePicker.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
-  htmlFor: PropTypes.string,
   icon: PropTypes.string,
   helpText: PropTypes.string,
   datePickerProps: PropTypes.object,
   required: PropTypes.bool,
   placeholder: PropTypes.string,
   clearButtonClassName: PropTypes.string,
+  customInputProps: PropTypes.object,
 };
 
 EDTFSingleDatePicker.defaultProps = {
