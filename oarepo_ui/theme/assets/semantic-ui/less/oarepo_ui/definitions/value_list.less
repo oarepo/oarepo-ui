@@ -11,7 +11,7 @@
 /*
   This is the name of the component - though not required, keep it the same as the filename
 */
-@element: "cf_field_label";
+@element: "value_list";
 
 @import (multiple) "../../theme.config";
 
@@ -21,7 +21,35 @@
   Note: use variables here, not the exact values. Placing the values to another file (sample.variables)
   will allow users to override these values.
  */
-.ui.cf-field-label {
+.ui.value-list {
+  dl {
+    display: flex;
+    flex-flow: row wrap;
+
+    & > dt {
+      flex-basis: 20%;
+      padding: 0px 4px;
+      font-weight: 600;
+      min-width: 20em;
+    }
+
+    & > dd {
+      flex-basis: 65%;
+      flex-grow: 1;
+      margin-bottom: 1em;
+      break-after: always;
+    }
+
+    @media only screen and (max-width: @largestMobileScreen) {
+      & > dt {
+        flex-basis: 100%;
+      }
+
+      & > dd {
+        flex-basis: 100%;
+      }
+    }
+  }
 }
 
 /*
