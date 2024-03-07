@@ -18,6 +18,8 @@ OAREPO_UI_JINJAX_FILTERS = {
 OAREPO_UI_JINJAX_GLOBALS = {
     "array": "oarepo_ui.resources.templating.filters:ichain",
     "field_value": "oarepo_ui.resources.templating.filters:field_value",
+    "field_data": "oarepo_ui.resources.templating.filters:field_data",
+    "field_get": "oarepo_ui.resources.templating.filters:field_get",
 }
 
 

@@ -18,6 +18,7 @@ import {
   SearchAppSearchbarContainer,
   SearchFiltersToggleElement,
   SearchAppSort,
+  SearchAppResults,
 } from "@js/oarepo_ui/search";
 import { loadAppComponents } from "../util";
 
@@ -66,6 +67,7 @@ export function createSearchAppsInit({
       [`${overridableIdPrefix}.SearchFilters.Toggle.element`]:
         SearchFiltersToggleElement,
       [`${overridableIdPrefix}.SearchApp.sort`]: SearchAppSort,
+      [`${overridableIdPrefix}.SearchApp.results`]: SearchAppResults,
     };
 
     loadAppComponents({
