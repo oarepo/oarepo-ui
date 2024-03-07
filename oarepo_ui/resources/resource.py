@@ -416,7 +416,6 @@ class RecordsUIResource(UIResource):
         form_config = self._get_form_config(
             g.identity, createUrl=f"/api{self.api_service.config.url_prefix}"
         )
-
         form_config["custom_fields"] = self._get_custom_fields(
             resource_requestctx=resource_requestctx
         )
