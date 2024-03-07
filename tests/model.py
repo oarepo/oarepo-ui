@@ -17,6 +17,7 @@ from invenio_records_resources.services import (
     RecordService,
     RecordServiceConfig,
 )
+from oarepo_runtime.services.custom_fields import CustomFields, InlinedCustomFields
 
 from oarepo_ui.resources import (
     BabelComponent,
@@ -38,6 +39,8 @@ class ModelRecord(Record):
     pid = PIDField(
         provider=ModelRecordIdProvider, context_cls=PIDFieldContext, create=True
     )
+    nested_cf = CustomFields(config_key="NESTED_CF")
+    inline_cf = InlinedCustomFields(config_key="INLINE_CF")
 
 
 class ModelPermissionPolicy(RecordPermissionPolicy):

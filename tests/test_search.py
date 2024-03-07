@@ -8,4 +8,4 @@ def test_default_components(
         txt = json.loads(c.text)
         search_config = txt["search_config"]
 
-        assert search_config['defaultComponents'] == {}
+        assert search_config["defaultComponents"] == {}

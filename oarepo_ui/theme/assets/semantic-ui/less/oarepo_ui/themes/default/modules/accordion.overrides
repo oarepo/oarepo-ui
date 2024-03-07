@@ -1,0 +1,32 @@
+.ui.accordion .active.title .icon:not(.button),
+.ui.accordion .accordion .active.title .icon:not(.button) {
+  transform: rotate(90deg);
+}
+
+/* use these classes to change accordion title when up/down */
+
+.ui.accordion {
+  &.invenio-accordion-field {
+    margin-bottom: 2rem;
+
+    .title {
+      background-color: @backgroundColor;
+      color: white;
+      padding: 1em;
+      font-size: 1rem;
+      border-radius: @defaultBorderRadius;
+      margin-bottom: 1rem;
+
+      .icon {
+        float: right;
+        font-size: 1.5em;
+      }
+    }
+
+    &.error {
+      .title {
+        background-color: @red;
+      }
+    }
+  }
+}
