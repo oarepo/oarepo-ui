@@ -224,8 +224,8 @@ class PermissionsComponent(UIResourceComponent):
         extra_context["permissions"] = {
             "can_create": self.resource.api_service.check_permission(identity, "create")
         }
-
-        search_options["permissions"] = extra_context["permissions"]
+        # fixes issue with permissions not propagating down to template
+        search_options["overrides"]["permissions"] = extra_context["permissions"]
 
     def form_config(self, *, form_config, api_record, identity, **kwargs):
         self.fill_permissions(

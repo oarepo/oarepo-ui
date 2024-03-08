@@ -4,19 +4,19 @@ import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
 
 export const DatePickerHeader = ({
-  dateFormat,
+  dateEdtfFormat,
   monthDate,
   decreaseMonth,
   increaseMonth,
   increaseYear,
   decreaseYear,
   date,
-  setDateFormat,
+  setDateEdtfFormat,
   edtfDateFormatOptions,
 }) => {
   return (
     <div>
-      {(dateFormat === "yyyy-mm" || dateFormat === "yyyy-mm-dd") && (
+      {(dateEdtfFormat === "yyyy-mm" || dateEdtfFormat === "yyyy-mm-dd") && (
         <div>
           <button
             aria-label={i18next.t("Previous Month")}
@@ -56,7 +56,7 @@ export const DatePickerHeader = ({
           </button>
         </div>
       )}
-      {dateFormat === "yyyy" && (
+      {dateEdtfFormat === "yyyy" && (
         <div>
           <button
             aria-label={i18next.t("Previous Month")}
@@ -94,10 +94,12 @@ export const DatePickerHeader = ({
         </div>
       )}
       <div>
+        <span>{i18next.t("Select: ")}</span>
         <Dropdown
+          className="datepicker-dropdown"
           options={edtfDateFormatOptions}
-          onChange={(e, data) => setDateFormat(data.value)}
-          value={dateFormat}
+          onChange={(e, data) => setDateEdtfFormat(data.value)}
+          value={dateEdtfFormat}
         />
       </div>
     </div>
@@ -105,14 +107,14 @@ export const DatePickerHeader = ({
 };
 
 DatePickerHeader.propTypes = {
-  dateFormat: PropTypes.string.isRequired,
+  dateEdtfFormat: PropTypes.string.isRequired,
   monthDate: PropTypes.instanceOf(Date),
   decreaseMonth: PropTypes.func.isRequired,
   increaseMonth: PropTypes.func.isRequired,
   increaseYear: PropTypes.func.isRequired,
   decreaseYear: PropTypes.func.isRequired,
   date: PropTypes.instanceOf(Date).isRequired,
-  setDateFormat: PropTypes.func.isRequired,
+  setDateEdtfFormat: PropTypes.func.isRequired,
   edtfDateFormatOptions: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.string.isRequired,

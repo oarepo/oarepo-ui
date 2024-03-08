@@ -44,6 +44,7 @@ if oarepo_version.startswith("11."):
         "lodash": "^4.17.0",
         "react-text-truncate": "^0.19.0",
         "react-datepicker": "^4.21.0",
+        "edtf": "^4.0.0",
     }
     aliases = {
         "../../theme.config$": "less/theme.config",
@@ -56,6 +57,7 @@ else:
     # those used in our own components here
     dependencies = {
         "react-datepicker": "^4.21.0",
+        "edtf": "^4.0.0",
     }
     aliases = {}
 

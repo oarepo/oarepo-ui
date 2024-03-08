@@ -53,8 +53,7 @@ msgstr "JSON"
 
 #: oarepo_ui/templates/oarepo_ui/detail.html:20
 msgid "Record details"
-msgstr ""
-
+msgstr ""Code
 #: oarepo_ui/templates/oarepo_ui/footer.html:7
 #, python-format
 msgid ""
@@ -314,6 +313,96 @@ msgid "Save"
 msgstr ""
 
 msgid "Validate form"
+msgstr ""
+
+msgid "Select: "
+msgstr ""
+
+msgid "Choose start and end date."
+msgstr ""
+
+msgid "Choose one date as start and end date."
+msgstr ""
+
+msgid "From"
+msgstr ""
+
+msgid "To"
+msgstr ""
+
+msgid ""
+"Choose the time interval in which the event took place. If start and end "
+"date are the same, choose same date twice.You can also use the button above "
+"to select just the one date."
+msgstr ""
+
+msgid "Starting date"
+msgstr ""
+
+msgid "Ending date"
+msgstr ""
+
+msgid "Choose one date"
+msgstr ""
+
+msgid "Choose a date from the calendar by clicking on the input."
+msgstr ""
+
+msgid "Choose a date."
+msgstr ""
+
+msgid "Year"
+msgstr ""
+
+msgid "Year and month"
+msgstr ""
+
+msgid "Year, month and date"
+msgstr ""
+
+msgid "Select: "
+msgstr ""
+
+msgid "Choose start and end date."
+msgstr ""
+
+msgid "Choose one date as start and end date."
+msgstr ""
+
+msgid "From"
+msgstr ""
+
+msgid "To"
+msgstr ""
+
+msgid ""
+"Choose the time interval in which the event took place. If start and end "
+"date are the same, choose same date twice.You can also use the button above "
+"to select just the one date."
+msgstr ""
+
+msgid "Starting date"
+msgstr ""
+
+msgid "Ending date"
+msgstr ""
+
+msgid "Choose one date"
+msgstr ""
+
+msgid "Choose a date from the calendar by clicking on the input."
+msgstr ""
+
+msgid "Choose a date."
+msgstr ""
+
+msgid "Year"
+msgstr ""
+
+msgid "Year and month"
+msgstr ""
+
+msgid "Year, month and date"
 msgstr ""
 
 #: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/for_translations_only.py:6
