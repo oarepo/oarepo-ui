@@ -66,7 +66,7 @@ export const ArrayWidget = ({
               <Form.Field>
                 <Button
                   aria-label={"Remove field"}
-                  className="close-btn mt-5"
+                  className={`close-btn ${item_props.label ? "mt-25" : "mt-5"}`}
                   icon
                   onClick={() => handleRemove({ value: index })}
                   type="button"
