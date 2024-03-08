@@ -3,4 +3,5 @@ export const overridableComponentIds = [
   "FormActions.container",
   "FormApp.layout",
   "FormFields.container",
+  "CustomFields.container",
 ];

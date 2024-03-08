@@ -2,9 +2,8 @@ import functools
 import json
 from pathlib import Path
 
-from importlib_metadata import entry_points
-
 from flask import Response, current_app
+from importlib_metadata import entry_points
 from invenio_base.utils import obj_or_import_string
 
 import oarepo_ui.cli  # noqa

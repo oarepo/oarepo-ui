@@ -13,9 +13,9 @@
       <div class="column">
       {%- block form_main_content %}
         {%- if form_config.updateUrl %}
-        <h1 class="mt-20 ui header" style="text-transform: capitalize">{{ record.title }}</h1>
+        <h1 class="mt-20 ui header">{{ (record.title or record.metadata.title).capitalize() if record.title or record.metadata.title else _("Missing title") }}</h1>
         {%- elif form_config.createUrl -%}
-        <h1 class="mt-20 ui header" >{{ _("New item") }}</h1>
+        <h1 class="mt-20 ui header">{{ _("New item") }}</h1>
         {%- endif %}
         {%- if record %}
         <input id="record" type="hidden" name="record" value='{{data | tojson }}' />

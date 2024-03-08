@@ -36,9 +36,22 @@ def test_edit(
             },
             "form_config": {
                 "current_locale": "en",
-                "custom_fields": {"ui": {}},
+                "custom_fields": {
+                    "ui": [
+                        {
+                            "fields": [{"field": "bbb", "ui_widget": "Input"}],
+                            "section": "B",
+                        },
+                        {
+                            "fields": [
+                                {"field": "nested_cf.aaa", "ui_widget": "Input"}
+                            ],
+                            "section": "A",
+                        },
+                    ]
+                },
                 "default_locale": "en",
-                'overridableIdPrefix': 'Default.Form',
+                "overridableIdPrefix": "Default.Form",
                 "locales": [
                     {"text": "English", "value": "en"},
                     {"text": "čeština", "value": "cs"},

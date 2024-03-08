@@ -11,6 +11,7 @@ from invenio_access.permissions import superuser_access, system_identity
 from invenio_accounts.models import Role
 from invenio_accounts.testutils import login_user_via_session
 from invenio_app.factory import create_app as _create_app
+from invenio_records_resources.services.custom_fields import KeywordCF
 
 from tests.model import (
     ModelUIResource,
@@ -48,6 +49,18 @@ def app_config(app_config):
 
     app_config["OAREPO_UI_JINJAX_FILTERS"] = {"dummy": lambda *args, **kwargs: "dummy"}
 
+    app_config["NESTED_CF"] = [KeywordCF("aaa")]
+
+    app_config["INLINE_CF"] = [KeywordCF("bbb")]
+
+    app_config["NESTED_CF_UI"] = [
+        {"section": "A", "fields": [{"field": "aaa", "ui_widget": "Input"}]}
+    ]
+
+    app_config["INLINE_CF_UI"] = [
+        {"section": "B", "fields": [{"field": "bbb", "ui_widget": "Input"}]}
+    ]
+
     return app_config
 
 
@@ -80,10 +93,11 @@ def record_ui_resource(app, record_ui_resource_config, record_service):
     )
     return ui_resource
 
+
 @pytest.fixture(scope="module")
 def test_record_ui_resource_config():
     config = ModelUIResourceConfig()
-    config.application_id = 'Test'
+    config.application_id = "Test"
     return config
 
 
@@ -188,3 +202,10 @@ def client_with_credentials(db, client, user):
     login_user_via_session(client, email=user.email)
 
     return client
+
+
+@pytest.fixture()
+def record_cf(app, db, cache):
+    from oarepo_runtime.services.custom_fields.mappings import prepare_cf_indices
+
+    prepare_cf_indices()

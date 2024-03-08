@@ -31,9 +31,22 @@ def test_create(
             "form_config": {
                 "createUrl": "/api/simple-model",
                 "current_locale": "en",
-                "custom_fields": {"ui": {}},
+                "custom_fields": {
+                    "ui": [
+                        {
+                            "fields": [{"field": "bbb", "ui_widget": "Input"}],
+                            "section": "B",
+                        },
+                        {
+                            "fields": [
+                                {"field": "nested_cf.aaa", "ui_widget": "Input"}
+                            ],
+                            "section": "A",
+                        },
+                    ]
+                },
                 "default_locale": "en",
-                'overridableIdPrefix': 'Default.Form',
+                "overridableIdPrefix": "Default.Form",
                 "locales": [
                     {"text": "English", "value": "en"},
                     {"text": "\u010de\u0161tina", "value": "cs"},

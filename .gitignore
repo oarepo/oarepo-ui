@@ -69,5 +69,6 @@ package-lock.json
 node_modules
 
 .venv-builder/
+node_modules
 
 

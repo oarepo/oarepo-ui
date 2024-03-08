@@ -5,8 +5,7 @@ def test_ui_resource_form_config(app, test_record_ui_resource):
     # Special instance of record resource
     fc = test_record_ui_resource.config.form_config()
     assert fc == dict(
-        custom_fields={"ui": {}},
-        overridableIdPrefix='Test.Form',
+        overridableIdPrefix="Test.Form",
     )
 
     test_record_ui_resource.run_components(
@@ -30,8 +29,7 @@ def test_ui_resource_form_config(app, test_record_ui_resource):
             {"value": "cs", "text": "čeština"},
         ],
         default_locale="en",
-        custom_fields={"ui": {}},
-        overridableIdPrefix='Test.Form',
+        overridableIdPrefix="Test.Form",
         permissions={
             "can_create": True,
             "can_delete": False,

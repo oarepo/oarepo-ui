@@ -1,4 +1,4 @@
-from oarepo_ui.resources.templating.data import FieldData
+from oarepo_ui.resources.templating.data import EMPTY_FIELD_DATA, FieldData
 
 
 def id_filter(x):
@@ -60,6 +60,25 @@ def field_value(value):
         if value._is_empty:
             return None
         return value._ui_value
+    return value
+
+
+def field_data(value, ui=None):
+    if isinstance(value, FieldData):
+        return value
+    return FieldData(value, ui=ui or {})
+
+
+def field_get(value, key):
+    key = field_value(key)
+    if key is None:
+        return value
+
+    value = field_data(value)
+
+    for key in key.split("."):
+        value = getattr(value, key, EMPTY_FIELD_DATA)
+
     return value
 
 
