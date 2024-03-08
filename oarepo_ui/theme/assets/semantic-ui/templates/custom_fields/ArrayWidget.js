@@ -46,7 +46,7 @@ export const ArrayWidget = ({
   const handleAdd = () => {
     const newIndex = existingValues.length;
     const newFieldPath = `${fieldPath}[${newIndex}]`;
-    setFieldValue(newFieldPath, item_initial_value ?? null);
+    setFieldValue(newFieldPath, item_initial_value ?? "");
   };
 
   if (!importedComponent) {
@@ -59,7 +59,7 @@ export const ArrayWidget = ({
       <Grid>
         <Grid.Column width={16}>
           {existingValues.map((value, index) => (
-            <GroupField width={16} verticalAlign="middle" key={index}>
+            <GroupField width={16} key={index}>
               <Form.Field width={15}>
                 {importedComponent.component(index)}
               </Form.Field>
