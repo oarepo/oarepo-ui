@@ -57,7 +57,7 @@ export const ArrayWidget = ({
     <>
       <Header as="h3">{label}</Header>
       <Grid>
-        <Grid.Column width={16}>
+       {existingValues.length>0 && <Grid.Column width={16}>
           {existingValues.map((value, index) => (
             <GroupField width={16} key={index}>
               <Form.Field width={15}>
@@ -76,8 +76,8 @@ export const ArrayWidget = ({
               </Form.Field>
             </GroupField>
           ))}
-        </Grid.Column>
-        <Grid.Row>
+        </Grid.Column>}
+        <Grid.Row className={existingValues.length>0 ? "row pt-0" : "row"}>
           <Grid.Column>
             <Button
               primary
