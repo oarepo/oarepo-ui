@@ -20,5 +20,10 @@ class ComplexCF(BaseListCF):
 
     @property
     def mapping(self):
-        return {cf.name: cf.mapping for cf in self.nested_custom_fields}
+        return {
+            "type": "object",
+            "properties": {
+                cf.name: cf.mapping for cf in self.nested_custom_fields
+            }
+        }
 
