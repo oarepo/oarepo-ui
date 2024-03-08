@@ -4,8 +4,8 @@ from marshmallow import fields
 
 class ComplexCF(BaseListCF):
 
-    def __init__(self, name, nestedCFs, multiple=False, **kwargs):
-        nested_fields = {cf.name: cf.field for cf in nestedCFs}
+    def __init__(self, name, nested_custom_fields, multiple=False, **kwargs):
+        nested_fields = {cf.name: cf.field for cf in nested_custom_fields}
 
         super().__init__(
             name,
@@ -16,9 +16,9 @@ class ComplexCF(BaseListCF):
             multiple=multiple,
             **kwargs
         )
-        self.nestedCFs = nestedCFs
+        self.nested_custom_fields = nested_custom_fields
 
     @property
     def mapping(self):
-        return {cf.name: cf.mapping for cf in self.nestedCFs}
+        return {cf.name: cf.mapping for cf in self.nested_custom_fields}
 
