@@ -70,3 +70,11 @@ export const getInitialEdtfDateFormat = (fieldValue) => {
   }
   return dateEdtfFormat;
 };
+
+const getInitialDatePickerSelectionType = (dates) => {
+  if (dates[0] && dates[1] && dates[0].getTime() === dates[1].getTime()) {
+    return true;
+  } else {
+    return false;
+  }
+};

@@ -29,13 +29,16 @@ export const EDTFDaterangePicker = ({
   const [field] = useField(fieldPath);
   const initialEdtfDateFormat = getInitialEdtfDateFormat(field?.value);
   const [dateEdtfFormat, setDateEdtfFormat] = useState(initialEdtfDateFormat);
-  const [showSingleDatePicker, setShowSingleDatePicker] = useState(false);
   let dates;
   if (field?.value) {
     dates = field.value.split("/").map((date) => deserializeDate(date));
   } else {
     dates = [null, null];
   }
+
+  const [showSingleDatePicker, setShowSingleDatePicker] = useState(
+    dates[0] && dates[1] && dates[0].getTime() === dates[1].getTime()
+  );
 
   const dateFormat = getDateFormatStringFromEdtfFormat(dateEdtfFormat);
 
@@ -109,14 +112,14 @@ export const EDTFDaterangePicker = ({
         <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />
         <Form.Field className="mb-0">
           <Radio
-            label={i18next.t("Choose start and end date.")}
+            label={i18next.t("Date range.")}
             name="startAndEnd"
             checked={!showSingleDatePicker}
             onChange={() => setShowSingleDatePicker(false)}
             className="rel-mr-1"
           />
           <Radio
-            label={i18next.t("Choose one date as start and end date.")}
+            label={i18next.t("Single date.")}
             name="oneDate"
             checked={showSingleDatePicker}
             onChange={() => handleSingleDatePickerSelection()}
@@ -154,6 +157,7 @@ export const EDTFDaterangePicker = ({
                 startDate: startDate,
                 endDate: endDate,
                 selectsStart: true,
+                maxDate: endDate ?? undefined,
               }}
               customInputProps={{ label: i18next.t("From") }}
             />
@@ -198,7 +202,7 @@ EDTFDaterangePicker.propTypes = {
 EDTFDaterangePicker.defaultProps = {
   icon: "calendar",
   helpText: i18next.t(
-    "Choose the time interval in which the event took place. If start and end date are the same, choose same date twice.You can also use the button above to select just the one date."
+    "Choose the time interval in which the event took place."
   ),
   required: false,
   clearButtonClassName: "clear-icon",
