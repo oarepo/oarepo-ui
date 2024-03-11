@@ -39,7 +39,6 @@ export const EDTFDatePickerWrapper = ({
       autoComplete="off"
       dateFormat={dateFormat}
       clearButtonClassName={clearButtonClassName}
-      showPopperArrow={false}
       customInput={
         <InputElement
           handleClear={handleClear}
@@ -49,6 +48,16 @@ export const EDTFDatePickerWrapper = ({
         />
       }
       placeholderText={placeholder}
+      popperModifiers={[
+        {
+          name: "arrow",
+          options: {
+            padding: ({ popper, reference, placement }) => ({
+              right: Math.min(popper.width, reference.width) - 24,
+            }),
+          },
+        },
+      ]}
       {...datePickerProps}
     />
   );

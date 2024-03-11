@@ -181,8 +181,8 @@ export const EDTFDaterangePicker = ({
             />
           </GroupField>
         )}
+        <label className="helptext">{helpText}</label>
       </Form.Field>
-      <label className="helptext">{helpText}</label>
     </React.Fragment>
   );
 };
