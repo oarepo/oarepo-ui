@@ -13,7 +13,6 @@ export const EDTFDatePickerWrapper = ({
   clearButtonClassName,
   dateEdtfFormat,
   setDateEdtfFormat,
-  handleChange,
   handleClear,
   datePickerProps,
   customInputProps,
@@ -23,9 +22,6 @@ export const EDTFDatePickerWrapper = ({
   return (
     <DatePicker
       locale={i18next.language}
-      onChange={(date) => {
-        handleChange(date);
-      }}
       renderCustomHeader={(props) => (
         <DatePickerHeader
           dateEdtfFormat={dateEdtfFormat}
