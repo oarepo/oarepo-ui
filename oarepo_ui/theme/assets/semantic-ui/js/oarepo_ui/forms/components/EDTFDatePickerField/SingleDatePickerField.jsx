@@ -1,15 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { useField, useFormikContext } from "formik";
 import PropTypes from "prop-types";
 import { FieldLabel } from "react-invenio-forms";
 import { Form } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import {
-  serializeDate,
-  deserializeDate,
-  getDateFormatStringFromEdtfFormat,
-  getInitialEdtfDateFormat,
-} from "./utils";
 import { EDTFDatePickerWrapper } from "./EDTFDatePickerWrapper";
 
 export const SingleDatePicker = ({
