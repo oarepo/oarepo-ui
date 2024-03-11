@@ -1,0 +1,6 @@
+// to prevent last input stacking on top of the accordion (for example in case of custom fields)
+// SUI sets last of child margin to be 0
+
+.ui.form #main-content > .field {
+  margin-bottom: @fieldLastChildBottomMargin;
+}

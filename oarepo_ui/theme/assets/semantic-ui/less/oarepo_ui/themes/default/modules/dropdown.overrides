@@ -1,0 +1,7 @@
+.ui.dropdown {
+  &.datepicker-dropdown {
+    .menu {
+      box-shadow: none;
+    }
+  }
+}

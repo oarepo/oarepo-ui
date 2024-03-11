@@ -157,28 +157,49 @@ msgstr ""
 msgid "Next Month"
 msgstr ""
 
-msgid "YYYY"
+msgid "Select: "
 msgstr ""
 
-msgid "YYYY-MM"
+msgid "Choose start and end date."
 msgstr ""
 
-msgid "YYYY-MM-DD"
+msgid "Choose one date as start and end date."
 msgstr ""
 
-msgid "Choose a date range"
+msgid "From"
 msgstr ""
 
-msgid "Format: YYYY-MM-DD/YYYY-MM-DD, YYYYY-MM/YYYY/MM or YYYY/YYYY."
+msgid "To"
 msgstr ""
 
-msgid "Write a date range or click on the calendar icon to select it"
+msgid ""
+"Choose the time interval in which the event took place. If start and end "
+"date are the same, choose same date twice.You can also use the button above "
+"to select just the one date."
 msgstr ""
 
-msgid "Format: YYYY-MM-DD, YYYYY-MM or YYYY."
+msgid "Starting date"
 msgstr ""
 
-msgid "Write a date or click on the calendar icon to select it"
+msgid "Ending date"
+msgstr ""
+
+msgid "Choose one date"
+msgstr ""
+
+msgid "Choose a date from the calendar by clicking on the input."
+msgstr ""
+
+msgid "Choose a date."
+msgstr ""
+
+msgid "Year"
+msgstr ""
+
+msgid "Year and month"
+msgstr ""
+
+msgid "Year, month and date"
 msgstr ""
 
 msgid "Language"
