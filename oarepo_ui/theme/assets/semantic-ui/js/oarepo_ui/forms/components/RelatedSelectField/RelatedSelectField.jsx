@@ -38,6 +38,12 @@ export const RelatedSelectField = ({
   ...uiProps
 }) => {
   const { values } = useFormikContext();
+  // console.log(multiple);
+  // console.log(
+  //   deserializeValue
+  //     ? deserializeValue(getIn(values, fieldPath, multiple ? [] : {}))
+  //     : getIn(values, fieldPath, "")
+  // );
   return (
     <RelatedSelectFieldInternal
       fluid
@@ -57,21 +63,25 @@ export const RelatedSelectField = ({
       preSearchChange={preSearchChange}
       search={search}
       multiple={multiple}
-      onValueChange={({ e, data, formikProps }) => {
-        formikProps.form.setFieldValue(
-          fieldPath,
-          serializeSelectedItem ? serializeSelectedItem(data.value) : data.value
-        );
-      }}
+      // onValueChange={({ e, data, formikProps }) => {
+      //   console.log("onvaluechange");
+      //   console.log(data.value);
+      //   console.log(serializeSelectedItem(data.value));
+      //   formikProps.form.setFieldValue(
+      //     fieldPath,
+      //     serializeSelectedItem ? serializeSelectedItem(data.value) : data.value
+      //   );
+      // }}
       externalSuggestionApi={externalSuggestionApi}
       serializeExternalApiSuggestions={serializeExternalApiSuggestions}
       externalApiButtonContent={externalApiButtonContent}
       externalApiModalTitle={externalApiModalTitle}
-      value={
-        deserializeValue
-          ? deserializeValue(getIn(values, fieldPath, multiple ? [] : {}))
-          : getIn(values, fieldPath, '')
-      }
+      value={{}}
+      // value={
+      //   deserializeValue
+      //     ? deserializeValue(getIn(values, fieldPath, multiple ? [] : {}))
+      //     : getIn(values, fieldPath, "")
+      // }
       {...uiProps}
     />
   );

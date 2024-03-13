@@ -10,14 +10,13 @@ import _isEmpty from "lodash/isEmpty";
 export class RelatedSelectFieldInternal extends RemoteSelectField {
   constructor(props) {
     super(props);
+    const initialSuggestions = props.initialSuggestions
+      ? props.serializeSuggestions(props.initialSuggestions)
+      : [];
     this.state = {
       ...this.state,
       isModalOpen: false,
-      suggestions: props.initialSuggestions?.length
-        ? props.initialSuggestions
-        : props.value
-        ? props.serializeSuggestions(props.value)
-        : [],
+      suggestions: initialSuggestions,
     };
     this.handleModal = this.handleModal.bind(this);
   }
@@ -62,6 +61,29 @@ export class RelatedSelectFieldInternal extends RemoteSelectField {
     this.setState({
       suggestions: [...externalApiSuggestions],
     });
+  };
+
+  onSelectValue = (event, { options, value }, callbackFunc) => {
+    const { multiple } = this.props;
+    console.log(multiple);
+    console.log(options);
+    console.log(value);
+    let newSelectedSuggestions = options;
+    if (multiple) {
+      newSelectedSuggestions = options.filter((item) =>
+        value.includes(item.value)
+      );
+    }
+
+    this.setState(
+      {
+        selectedSuggestions: newSelectedSuggestions,
+        searchQuery: null,
+        error: false,
+        open: !!multiple,
+      },
+      () => callbackFunc(newSelectedSuggestions)
+    );
   };
 
   getProps = () => {
@@ -150,7 +172,6 @@ export class RelatedSelectFieldInternal extends RemoteSelectField {
     return (
       <React.Fragment>
         <SelectField
-          {...uiProps}
           allowAdditions={this.error ? false : uiProps.allowAdditions}
           fieldPath={compProps.fieldPath}
           options={this.state.suggestions}
@@ -189,6 +210,7 @@ export class RelatedSelectFieldInternal extends RemoteSelectField {
           }}
           loading={this.isFetching}
           className="invenio-remote-select-field"
+          {...uiProps}
         />
         {externalSuggestionApi && (
           <ExternalApiModal
