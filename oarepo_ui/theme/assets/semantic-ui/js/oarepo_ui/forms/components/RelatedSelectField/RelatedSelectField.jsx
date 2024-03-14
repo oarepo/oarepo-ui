@@ -38,6 +38,11 @@ export const RelatedSelectField = ({
   ...uiProps
 }) => {
   const { values } = useFormikContext();
+  const startingSuggestions = multiple
+    ? getIn(values, fieldPath, [])
+    : _isEmpty(getIn(values, fieldPath, {}))
+    ? []
+    : [getIn(values, fieldPath)];
 
   return (
     <RelatedSelectFieldInternal
@@ -49,7 +54,9 @@ export const RelatedSelectField = ({
       suggestionAPIHeaders={suggestionAPIHeaders}
       serializeSuggestions={serializeSuggestions}
       serializeAddedValue={serializeAddedValue}
-      initialSuggestions={initialSuggestions}
+      initialSuggestions={
+        initialSuggestions.length > 0 ? initialSuggestions : startingSuggestions
+      }
       debounceTime={debounceTime}
       noResultsMessage={noResultsMessage}
       loadingMessage={loadingMessage}
