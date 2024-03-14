@@ -63,29 +63,6 @@ export class RelatedSelectFieldInternal extends RemoteSelectField {
     });
   };
 
-  onSelectValue = (event, { options, value }, callbackFunc) => {
-    const { multiple } = this.props;
-    console.log(multiple);
-    console.log(options);
-    console.log(value);
-    let newSelectedSuggestions = options;
-    if (multiple) {
-      newSelectedSuggestions = options.filter((item) =>
-        value.includes(item.value)
-      );
-    }
-
-    this.setState(
-      {
-        selectedSuggestions: newSelectedSuggestions,
-        searchQuery: null,
-        error: false,
-        open: !!multiple,
-      },
-      () => callbackFunc(newSelectedSuggestions)
-    );
-  };
-
   getProps = () => {
     const {
       // allow to pass a different serializer to transform data from external API in case it is needed
@@ -143,7 +120,6 @@ export class RelatedSelectFieldInternal extends RemoteSelectField {
     } = this.props;
 
     const { compProps, uiProps } = this.getProps();
-
     const searchConfig = {
       searchApi: {
         axios: {
