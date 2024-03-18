@@ -260,20 +260,20 @@ msgstr "Vyberte datum"
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:5
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:6
 msgid "All document records"
-msgstr ""
+msgstr "Všechny záznamy s dokumentem"
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:6
 msgid "in"
-msgstr ""
+msgstr "v"
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:14
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:15
 msgid "Search"
-msgstr ""
+msgstr "Vyhledávání"
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/footer.html:15
 msgid "Contact"
-msgstr ""
+msgstr "Kontakt"
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/footer.html:33
 #, python-format
@@ -284,7 +284,7 @@ msgstr ""
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:36
 msgid "Quick create"
-msgstr ""
+msgstr "Rychlé vytvoření"
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:53
 msgid "Actions"
@@ -336,3 +336,51 @@ msgstr "Zkontrolovat formulář"
 #: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/for_translations_only.py:6
 msgid "api.files"
 msgstr "API souborů"
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:16
+msgid "Missing title"
+msgstr "Chybí název"
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/translations/jinjax_messages.jinja:1
+#: oarepo_ui/translations/jinjax_messages.jinja:1
+msgid "Not set"
+msgstr "Není poskytnuto"
+
+msgid "Select: "
+msgstr "Vybrat: "
+
+msgid "Choose a date."
+msgstr "Vyberte datum."
+
+msgid "Date range."
+msgstr "Časové období."
+
+msgid "Single date."
+msgstr "Jediné datum."
+
+msgid "Choose the time interval in which the event took place."
+msgstr "Vyberte časový interval, ve kterém se událost odehrála."
+
+msgid "Choose one date."
+msgstr "Vyberte jedno datum."
+
+msgid "Choose date range (From - To)."
+msgstr "Vyberte časové období (Od - Do)."
+
+msgid "Choose a date from the calendar by clicking on the input."
+msgstr "Vyberte datum z kalendáře kliknutím na vstup."
+
+msgid "Year"
+msgstr "Rok"
+
+msgid "Year and month"
+msgstr "Rok a měsíc"
+
+msgid "Year, month and date"
+msgstr "Rok, měsíc a datum"
+
+msgid "is a required field"
+msgstr "je povinné pole"
+
+msgid "Items must be unique"
+msgstr "Položky musí být jedinečné"
