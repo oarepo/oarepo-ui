@@ -35,25 +35,26 @@ export const EDTFSingleDatePicker = ({
     handleChange(null);
   };
   return (
-    <div className="ui datepicker field">
-      <Form.Field className="ui datepicker field" required={required}>
-        <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />
-        <EDTFDatePickerWrapper
-          fieldPath={fieldPath}
-          handleChange={handleChange}
-          handleClear={handleClear}
-          placeholder={placeholder}
-          dateEdtfFormat={dateEdtfFormat}
-          setDateEdtfFormat={setDateEdtfFormat}
-          dateFormat={getDateFormatStringFromEdtfFormat(dateEdtfFormat)}
-          clearButtonClassName={clearButtonClassName}
-          datePickerProps={{ selected: date, ...datePickerProps }}
-          helpText={helpText}
-          customInputProps={customInputProps}
-        />
-        <label className="helptext rel-mt-1">{helpText}</label>
-      </Form.Field>
-    </div>
+    <Form.Field className="ui datepicker field" required={required}>
+      <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />
+      <EDTFDatePickerWrapper
+        fieldPath={fieldPath}
+        handleClear={handleClear}
+        placeholder={placeholder}
+        dateEdtfFormat={dateEdtfFormat}
+        setDateEdtfFormat={setDateEdtfFormat}
+        dateFormat={getDateFormatStringFromEdtfFormat(dateEdtfFormat)}
+        clearButtonClassName={clearButtonClassName}
+        datePickerProps={{
+          selected: date,
+          onChange: handleChange,
+          ...datePickerProps,
+        }}
+        helpText={helpText}
+        customInputProps={customInputProps}
+      />
+      <label className="helptext rel-mt-1">{helpText}</label>
+    </Form.Field>
   );
 };
 

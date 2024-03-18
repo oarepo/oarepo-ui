@@ -3,6 +3,8 @@ import { Message } from "semantic-ui-react";
 import { useFormikContext, getIn } from "formik";
 import _isEmpty from "lodash/isEmpty";
 import _startCase from "lodash/startCase";
+import _cloneDeep from "lodash/cloneDeep";
+import _omit from "lodash/omit";
 
 // component to be used downstream of Formik that plugs into Formik's state and displays any errors
 // that apiClient sent to formik in auxilary keys. The keys are later removed when submitting the form
@@ -12,8 +14,19 @@ const titleCase = (fieldPath) =>
   _startCase(fieldPath.split(".")[fieldPath.split(".").length - 1]);
 
 const CustomMessage = ({ children, ...uiProps }) => {
+  const { values, setValues } = useFormikContext();
+  const formikValuesCopy = _cloneDeep(values);
+  const handleDismiss = () => {
+    const valuesWithoutInternalErrorFields = _omit(formikValuesCopy, [
+      "BEvalidationErrors",
+      "FEvalidationErrors",
+      "httpErrors",
+      "successMessage",
+    ]);
+    setValues(valuesWithoutInternalErrorFields);
+  };
   return (
-    <Message className="rel-mb-2" {...uiProps}>
+    <Message onDismiss={handleDismiss} className="rel-mb-2" {...uiProps}>
       {children}
     </Message>
   );
@@ -27,6 +40,7 @@ export const FormFeedback = () => {
     httpError = httpError?.response?.data.message;
   }
   const successMessage = getIn(values, "successMessage", "");
+
   if (!_isEmpty(beValidationErrors))
     return (
       <CustomMessage negative color="orange">
