@@ -158,6 +158,9 @@ export const getTitleFromMultilingualObject = (multilingualObject) => {
   if (!multilingualObject) {
     return null;
   }
+  if (typeof multilingualObject === "string") {
+    return multilingualObject;
+  }
   const localizedValue =
     multilingualObject[i18next.language] ||
     multilingualObject[i18next.options.fallbackLng] ||
