@@ -88,7 +88,7 @@ export const RelatedSelectField = ({
               vocabularyItemWithoutText
             );
           } else {
-            formikProps.form.setFieldValue(fieldPath, {});
+            formikProps.form.setFieldValue(fieldPath, "");
           }
         }
       }}
@@ -98,10 +98,10 @@ export const RelatedSelectField = ({
       externalApiModalTitle={externalApiModalTitle}
       value={
         multiple
-          ? getIn(values, fieldPath, []).map((item) => item.id)
+          ? getIn(values, fieldPath, []).map((item) => item.id || item)
           : !_isEmpty(getIn(values, fieldPath, {}))
-          ? getIn(values, fieldPath, {}).id
-          : ""
+          ? getIn(values, fieldPath, {}).id || getIn(values, fieldPath, "")
+          : getIn(values, fieldPath, "")
       }
       {...uiProps}
     />
