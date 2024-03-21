@@ -26,10 +26,21 @@ const CustomMessage = ({ children, ...uiProps }) => {
     setValues(valuesWithoutInternalErrorFields);
   };
   return (
-    <Message onDismiss={handleDismiss} className="rel-mb-2" {...uiProps}>
+    <Message
+      onDismiss={handleDismiss}
+      className="rel-mb-2 form-feedback"
+      {...uiProps}
+    >
       {children}
     </Message>
   );
+};
+
+const scrollToField = (fieldName) => {
+  const element = document.querySelector(`label[for="${fieldName}"]`);
+  if (element) {
+    element.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
 };
 export const FormFeedback = () => {
   const { values } = useFormikContext();
@@ -40,16 +51,16 @@ export const FormFeedback = () => {
     httpError = httpError?.response?.data.message;
   }
   const successMessage = getIn(values, "successMessage", "");
-
   if (!_isEmpty(beValidationErrors))
     return (
       <CustomMessage negative color="orange">
         <Message.Header>{beValidationErrors?.errorMessage}</Message.Header>
         <Message.List>
           {beValidationErrors?.errors?.map((error, index) => (
-            <Message.Item key={`${error.field}-${index}`}>{`${titleCase(
-              error.field
-            )}: ${error.messages[0]}`}</Message.Item>
+            <Message.Item
+              onClick={() => scrollToField(error.field)}
+              key={`${error.field}-${index}`}
+            >{`${titleCase(error.field)}: ${error.messages[0]}`}</Message.Item>
           ))}
         </Message.List>
       </CustomMessage>
@@ -59,9 +70,17 @@ export const FormFeedback = () => {
       <CustomMessage negative color="orange">
         <Message.Header>{feValidationErrors?.errorMessage}</Message.Header>
         <Message.List>
-          {feValidationErrors?.errors?.map((error, index) => (
-            <Message.Item key={`${error.field}-${index}`}>{error}</Message.Item>
-          ))}
+          {feValidationErrors?.errors?.map((error, index) => {
+            const [key, value] = Object.entries(error)[0];
+            return (
+              <Message.Item
+                onClick={() => scrollToField(`metadata.${key}`)}
+                key={`${key}-${index}`}
+              >
+                {value}
+              </Message.Item>
+            );
+          })}
         </Message.List>
       </CustomMessage>
     );
