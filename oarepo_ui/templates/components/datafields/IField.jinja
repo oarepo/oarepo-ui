@@ -1,6 +1,6 @@
 {# def d=True, label=None, placeholder=None, keep=false, field_class=None #}
 
-{%- if d._has_value or keep -%}
+{%- if d is true or d._has_value or keep -%}
     <IBaseField label={label or d._ui_label} field_class={field_class}>
         {%- if content is not none and ((content is not string) or content.strip()) -%}
             {{ content }}
