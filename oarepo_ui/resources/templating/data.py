@@ -1,3 +1,4 @@
+import json
 import html
 from typing import Union
 
@@ -64,8 +65,7 @@ class FieldData:
                     )
                 return EMPTY_FIELD_DATA
             except ValueError:
-                return EMPTY_FIELD_DATA
-                # return self._select(name)
+                return self._select(name)
 
         return EMPTY_FIELD_DATA
 
@@ -142,6 +142,16 @@ class FieldData:
     @property
     def _is_primitive(self):
         return self._has_value and not self._is_array and not self._is_dict
+
+    def __eq__(self, other):
+        if isinstance(other, FieldData):
+            return self.__data == other.__data
+        return False
+
+    def __lt__(self, other):
+        if isinstance(other, FieldData):
+            return json.dumps(self.__data, sort_keys=True) < json.dumps(other.__data, sort_keys=True)
+        return False
 
 
 EMPTY_FIELD_DATA = FieldData({}, {})
