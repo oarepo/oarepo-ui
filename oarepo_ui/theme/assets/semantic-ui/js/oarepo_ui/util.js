@@ -149,3 +149,10 @@ export const unique = (value, context, path, errorString) => {
   }
   return true;
 };
+
+export const scrollToElement = (querySelector) => {
+  const element = document.querySelector(querySelector);
+  if (element) {
+    element.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+};

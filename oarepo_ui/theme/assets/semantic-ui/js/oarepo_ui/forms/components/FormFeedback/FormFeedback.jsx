@@ -5,6 +5,8 @@ import _isEmpty from "lodash/isEmpty";
 import _startCase from "lodash/startCase";
 import _cloneDeep from "lodash/cloneDeep";
 import _omit from "lodash/omit";
+import { scrollToElement } from "@js/oarepo_ui";
+import PropTypes from "prop-types";
 
 // component to be used downstream of Formik that plugs into Formik's state and displays any errors
 // that apiClient sent to formik in auxilary keys. The keys are later removed when submitting the form
@@ -36,12 +38,10 @@ const CustomMessage = ({ children, ...uiProps }) => {
   );
 };
 
-const scrollToField = (fieldName) => {
-  const element = document.querySelector(`label[for="${fieldName}"]`);
-  if (element) {
-    element.scrollIntoView({ behavior: "smooth", block: "center" });
-  }
+CustomMessage.propTypes = {
+  children: PropTypes.node,
 };
+
 export const FormFeedback = () => {
   const { values } = useFormikContext();
   const beValidationErrors = getIn(values, "BEvalidationErrors", {});
@@ -58,7 +58,7 @@ export const FormFeedback = () => {
         <Message.List>
           {beValidationErrors?.errors?.map((error, index) => (
             <Message.Item
-              onClick={() => scrollToField(error.field)}
+              onClick={() => scrollToElement(`label[for="${error.field}"]`)}
               key={`${error.field}-${index}`}
             >{`${titleCase(error.field)}: ${error.messages[0]}`}</Message.Item>
           ))}
@@ -74,7 +74,7 @@ export const FormFeedback = () => {
             const [key, value] = Object.entries(error)[0];
             return (
               <Message.Item
-                onClick={() => scrollToField(`metadata.${key}`)}
+                onClick={() => scrollToField(`label[for="metadata.${key}"]`)}
                 key={`${key}-${index}`}
               >
                 {value}
