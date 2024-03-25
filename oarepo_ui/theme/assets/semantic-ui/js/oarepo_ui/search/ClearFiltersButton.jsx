@@ -5,7 +5,7 @@ import { i18next } from "@translations/oarepo_ui/i18next";
 import PropTypes from "prop-types";
 import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
 
-// in some cases, there are some permanent facets i.e. in requests open/closed, 
+// in some cases, there are some permanent facets i.e. in requests open/closed,
 // so we have button not remove those initial filters
 const ClearFiltersButtonComponent = ({
   updateQueryState,
@@ -25,7 +25,7 @@ const ClearFiltersButtonComponent = ({
         onClick={() =>
           updateQueryState({
             ...currentQueryState,
-            filters: currentQueryState.filters.filter((f) =>
+            filters: filters.filter((f) =>
               initialFilters.map((f) => f[0]).includes(f[0])
             ),
           })
