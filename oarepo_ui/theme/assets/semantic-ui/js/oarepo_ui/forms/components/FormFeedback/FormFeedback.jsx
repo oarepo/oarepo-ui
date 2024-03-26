@@ -74,7 +74,7 @@ export const FormFeedback = () => {
             const [key, value] = Object.entries(error)[0];
             return (
               <Message.Item
-                onClick={() => scrollToField(`label[for="metadata.${key}"]`)}
+                onClick={() => scrollToElement(`label[for="metadata.${key}"]`)}
                 key={`${key}-${index}`}
               >
                 {value}
