@@ -73,7 +73,6 @@
 
             {# Navigation links #}
             {%- block navbar_nav %}
-            {#
               {%- for item in current_menu.submenu('main').children|sort(attribute='order') if item.visible recursive %}
                 {%- if item.children %}
                   <div class="item">
@@ -103,7 +102,6 @@
                   <a role="menuitem" href="{{ item.url }}">{{ item.text|safe }}</a>
                 </div>
               {% endfor %}
-            #}
             {%- endblock navbar_nav %}
 
 

@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useEffect, useCallback, useState, useContext } from "react";
 import { FormConfigContext } from "./contexts";
 import {
   OARepoDepositApiClient,
@@ -15,28 +15,38 @@ import _isObject from "lodash/isObject";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { relativeUrl } from "../util";
 
-const extractFEErrorMessages = (obj) => {
+export const extractFEErrorMessages = (obj) => {
   const errorMessages = [];
 
-  const traverse = (obj) => {
+  const traverse = (obj, parentKey = "") => {
     if (typeof obj === "string") {
-      errorMessages.push(obj);
+      errorMessages.push({ [parentKey]: obj });
     } else if (Array.isArray(obj)) {
-      obj.forEach((item) => traverse(item));
+      obj.forEach((item, index) => traverse(item, `${parentKey}.${index}`));
     } else if (typeof obj === "object") {
       for (const key in obj) {
-        traverse(obj[key]);
+        if (obj.hasOwnProperty(key)) {
+          const newKey = parentKey ? `${parentKey}.${key}` : key;
+          traverse(obj[key], newKey);
+        }
       }
     }
   };
 
   traverse(obj);
-  const uniqueErrorMessages = [...new Set(errorMessages)];
+
+  // Deduplicate error messages based on the keys
+  const uniqueErrorMessages = errorMessages.reduce((acc, obj) => {
+    const key = Object.keys(obj)[0];
+    const found = acc.some((item) => Object.keys(item)[0] === key);
+    if (!found) acc.push(obj);
+    return acc;
+  }, []);
   return uniqueErrorMessages;
 };
 
 export const useFormConfig = () => {
-  const context = React.useContext(FormConfigContext);
+  const context = useContext(FormConfigContext);
   if (!context) {
     throw new Error(
       "useFormConfig must be used inside FormConfigContext.Provider"
@@ -62,10 +72,10 @@ export const useVocabularyOptions = (vocabularyType) => {
 };
 
 export const useConfirmationModal = () => {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const close = React.useCallback(() => setIsOpen(false));
-  const open = React.useCallback(() => setIsOpen(true));
+  const close = useCallback(() => setIsOpen(false), []);
+  const open = useCallback(() => setIsOpen(true), []);
 
   return { isOpen, close, open };
 };
@@ -98,7 +108,7 @@ export const useShowEmptyValue = (
 ) => {
   const { values, setFieldValue } = useFormikContext();
   const currentFieldValue = getIn(values, fieldPath, []);
-  React.useEffect(() => {
+  useEffect(() => {
     if (!showEmptyValue) return;
     if (!_isEmpty(currentFieldValue)) return;
     if (defaultNewValue === undefined) {
@@ -154,9 +164,9 @@ export const useDepositApiClient = (
     formConfig: { createUrl },
   } = useFormConfig();
 
-  const [isSaving, setIsSaving] = React.useState(false);
-  const [isPublishing, setIsPublishing] = React.useState(false);
-  const [isDeleting, setIsDeleting] = React.useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const recordSerializer = serializer
     ? new serializer(internalFieldsArray, keysToRemove)
@@ -166,7 +176,7 @@ export const useDepositApiClient = (
     ? new baseApiClient(createUrl, recordSerializer)
     : new OARepoDepositApiClient(createUrl, recordSerializer);
 
-  async function save (saveWithoutDisplayingValidationErrors = false) {
+  async function save(saveWithoutDisplayingValidationErrors = false) {
     let response;
 
     setSubmitting(true);
@@ -231,7 +241,7 @@ export const useDepositApiClient = (
     }
   }
 
-  async function publish () {
+  async function publish() {
     // call save and if save returns false, exit
     const saveResult = await save();
 
@@ -296,11 +306,11 @@ export const useDepositApiClient = (
     }
   }
 
-  async function read (recordUrl) {
+  async function read(recordUrl) {
     return await apiClient.readDraft({ self: recordUrl });
   }
 
-  async function _delete (redirectUrl) {
+  async function _delete(redirectUrl) {
     if (!redirectUrl)
       throw new Error(
         "You must provide url where to be redirected after deleting a draft"
@@ -358,10 +368,10 @@ export const useDepositFileApiClient = (baseApiClient) => {
     ? new baseApiClient()
     : new OARepoDepositFileApiClient();
 
-  async function read (draft) {
+  async function read(draft) {
     return await apiClient.readDraftFiles(draft);
   }
-  async function _delete (file) {
+  async function _delete(file) {
     setValues(
       _omit(values, [
         "errors",

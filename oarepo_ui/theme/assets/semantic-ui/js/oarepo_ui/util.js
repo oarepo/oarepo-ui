@@ -150,10 +150,15 @@ export const unique = (value, context, path, errorString) => {
   return true;
 };
 
+export const scrollToElement = (querySelector) => {
+  const element = document.querySelector(querySelector);
+  if (element) {
+    element.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
 //In some instances the I18nString component is problematic to use,
 // because it is actually a React node and not a string (i.e. text value
 // for drop down options)
-
 export const getTitleFromMultilingualObject = (multilingualObject) => {
   if (!multilingualObject) {
     return null;

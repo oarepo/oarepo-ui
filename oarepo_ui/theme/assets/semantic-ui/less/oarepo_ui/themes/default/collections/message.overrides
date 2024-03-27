@@ -1,0 +1,8 @@
+.ui.message {
+  &.form-feedback {
+    .content:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+}

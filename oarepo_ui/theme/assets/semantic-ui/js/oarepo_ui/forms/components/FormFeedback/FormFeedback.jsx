@@ -5,6 +5,8 @@ import _isEmpty from "lodash/isEmpty";
 import _startCase from "lodash/startCase";
 import _cloneDeep from "lodash/cloneDeep";
 import _omit from "lodash/omit";
+import { scrollToElement } from "@js/oarepo_ui";
+import PropTypes from "prop-types";
 
 // component to be used downstream of Formik that plugs into Formik's state and displays any errors
 // that apiClient sent to formik in auxilary keys. The keys are later removed when submitting the form
@@ -26,11 +28,20 @@ const CustomMessage = ({ children, ...uiProps }) => {
     setValues(valuesWithoutInternalErrorFields);
   };
   return (
-    <Message onDismiss={handleDismiss} className="rel-mb-2" {...uiProps}>
+    <Message
+      onDismiss={handleDismiss}
+      className="rel-mb-2 form-feedback"
+      {...uiProps}
+    >
       {children}
     </Message>
   );
 };
+
+CustomMessage.propTypes = {
+  children: PropTypes.node,
+};
+
 export const FormFeedback = () => {
   const { values } = useFormikContext();
   const beValidationErrors = getIn(values, "BEvalidationErrors", {});
@@ -40,16 +51,16 @@ export const FormFeedback = () => {
     httpError = httpError?.response?.data.message;
   }
   const successMessage = getIn(values, "successMessage", "");
-
   if (!_isEmpty(beValidationErrors))
     return (
       <CustomMessage negative color="orange">
         <Message.Header>{beValidationErrors?.errorMessage}</Message.Header>
         <Message.List>
           {beValidationErrors?.errors?.map((error, index) => (
-            <Message.Item key={`${error.field}-${index}`}>{`${titleCase(
-              error.field
-            )}: ${error.messages[0]}`}</Message.Item>
+            <Message.Item
+              onClick={() => scrollToElement(`label[for="${error.field}"]`)}
+              key={`${error.field}-${index}`}
+            >{`${titleCase(error.field)}: ${error.messages[0]}`}</Message.Item>
           ))}
         </Message.List>
       </CustomMessage>
@@ -59,9 +70,17 @@ export const FormFeedback = () => {
       <CustomMessage negative color="orange">
         <Message.Header>{feValidationErrors?.errorMessage}</Message.Header>
         <Message.List>
-          {feValidationErrors?.errors?.map((error, index) => (
-            <Message.Item key={`${error.field}-${index}`}>{error}</Message.Item>
-          ))}
+          {feValidationErrors?.errors?.map((error, index) => {
+            const [key, value] = Object.entries(error)[0];
+            return (
+              <Message.Item
+                onClick={() => scrollToElement(`label[for="metadata.${key}"]`)}
+                key={`${key}-${index}`}
+              >
+                {value}
+              </Message.Item>
+            );
+          })}
         </Message.List>
       </CustomMessage>
     );
