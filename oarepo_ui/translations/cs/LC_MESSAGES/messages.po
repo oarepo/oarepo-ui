@@ -384,3 +384,18 @@ msgstr "je povinné pole"
 
 msgid "Items must be unique"
 msgstr "Položky musí být jedinečné"
+
+#: /Users/m/w/cesnet/oarepo-ui/oarepo_ui/templates/oarepo_ui/Tombstone.jinja:11
+msgid "Gone"
+msgstr "Záznam smazán"
+
+#: /Users/m/w/cesnet/oarepo-ui/oarepo_ui/templates/oarepo_ui/Tombstone.jinja:16
+#, python-format
+msgid ""
+"\n"
+"      The record you are trying to access was removed from %(sitename)s. The\n"
+"      metadata of the record is kept for archival purposes."
+msgstr ""
+"\n"
+"      Záznam, který se snažíte zobrazit, byl smazán z repozitáře %(sitename)s. <br>Metadata\n"
+"      záznamu jsou uložena pro archivní účely. <br>Potřebujete-li je, obraťte se na správce repozitáře."

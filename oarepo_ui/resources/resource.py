@@ -14,6 +14,7 @@ from flask_resources import (
 )
 from flask_security import login_required
 from invenio_base.utils import obj_or_import_string
+from invenio_pidstore.errors import PIDDeletedError
 from invenio_records_resources.pagination import Pagination
 from invenio_records_resources.proxies import current_service_registry
 from invenio_records_resources.records.systemfields import FilesField
@@ -139,8 +140,19 @@ class RecordsUIResource(UIResource):
     @request_view_args
     def detail(self):
         """Returns item detail page."""
-
-        api_record = self._get_record(resource_requestctx, allow_draft=False)
+        try:
+            api_record = self._get_record(resource_requestctx, allow_draft=False)
+        except PIDDeletedError as e:
+            return current_oarepo_ui.catalog.render(
+                self.get_jinjax_macro(
+                    "tombstone",
+                    identity=g.identity,
+                    args=resource_requestctx.args,
+                    view_args=resource_requestctx.view_args,
+                    default_macro="Tombstone"
+                ),
+                pid=resource_requestctx.view_args["pid_value"],
+            )
 
         # TODO: handle permissions UI way - better response than generic error
         record = self.config.ui_serializer.dump_obj(api_record.to_dict())
@@ -317,11 +329,13 @@ class RecordsUIResource(UIResource):
         }
         return (exported_record, 200, headers)
 
-    def get_jinjax_macro(self, template_type, identity=None, args=None, view_args=None):
+    def get_jinjax_macro(self, template_type, identity=None, args=None, view_args=None, default_macro=None):
         """
         Returns which jinjax macro (name of the macro, including optional namespace in the form of "namespace.Macro")
         should be used for rendering the template.
         """
+        if default_macro:
+            return self.config.templates.get(template_type, default_macro)
         return self.config.templates[template_type]
 
     @login_required
