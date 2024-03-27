@@ -10,14 +10,13 @@ import _isEmpty from "lodash/isEmpty";
 export class RelatedSelectFieldInternal extends RemoteSelectField {
   constructor(props) {
     super(props);
+    const initialSuggestions = props.initialSuggestions
+      ? props.serializeSuggestions(props.initialSuggestions)
+      : [];
     this.state = {
       ...this.state,
       isModalOpen: false,
-      suggestions: props.initialSuggestions?.length
-        ? props.initialSuggestions
-        : props.value
-        ? props.serializeSuggestions(props.value)
-        : [],
+      suggestions: initialSuggestions,
     };
     this.handleModal = this.handleModal.bind(this);
   }
@@ -63,7 +62,6 @@ export class RelatedSelectFieldInternal extends RemoteSelectField {
       suggestions: [...externalApiSuggestions],
     });
   };
-
   getProps = () => {
     const {
       // allow to pass a different serializer to transform data from external API in case it is needed
@@ -121,7 +119,6 @@ export class RelatedSelectFieldInternal extends RemoteSelectField {
     } = this.props;
 
     const { compProps, uiProps } = this.getProps();
-
     const searchConfig = {
       searchApi: {
         axios: {
@@ -150,14 +147,13 @@ export class RelatedSelectFieldInternal extends RemoteSelectField {
     return (
       <React.Fragment>
         <SelectField
-          {...uiProps}
           allowAdditions={this.error ? false : uiProps.allowAdditions}
           fieldPath={compProps.fieldPath}
           options={this.state.suggestions}
           noResultsMessage={this.getNoResultsMessage()}
           search={compProps.search}
           lazyLoad
-          open={this.open}
+          open={this.state.open}
           onClose={this.onClose}
           onFocus={this.onFocus}
           onBlur={this.onBlur}
@@ -171,6 +167,10 @@ export class RelatedSelectFieldInternal extends RemoteSelectField {
                 );
               }
             });
+          }}
+          searchInput={{
+            id: compProps.fieldPath,
+            autoFocus: compProps.isFocused,
           }}
           onChange={({ event, data, formikProps }) => {
             this.onSelectValue(event, data, (selectedSuggestions) => {
@@ -187,8 +187,9 @@ export class RelatedSelectFieldInternal extends RemoteSelectField {
               }
             });
           }}
-          loading={this.isFetching}
+          loading={this.state.isFetching}
           className="invenio-remote-select-field"
+          {...uiProps}
         />
         {externalSuggestionApi && (
           <ExternalApiModal
@@ -222,7 +223,7 @@ RelatedSelectFieldInternal.propTypes = {
   serializeAddedValue: PropTypes.func,
   initialSuggestions: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.object),
-    PropTypes.object,
+    PropTypes.arrayOf(PropTypes.string),
   ]),
   debounceTime: PropTypes.number,
   noResultsMessage: PropTypes.node,

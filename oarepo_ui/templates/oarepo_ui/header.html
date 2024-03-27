@@ -20,8 +20,8 @@
         <nav id="invenio-nav" class="ui menu shadowless borderless stackable p-0">
           
           {# Main Site logo #}
+        {%- block navbar_header %}
           <div class="item logo p-0">
-            {%- block navbar_header %}
                 {%- block brand %}
                   {%- if config.THEME_LOGO %}
                     <a class="logo-link" href="/">
@@ -33,8 +33,9 @@
                     <a class="logo" href="/">{{ _(config.THEME_SITENAME) }}</a>
                   {%- endif %}
                 {%- endblock brand %}
-              {%- endblock navbar_header %}
           </div>
+        {%- endblock navbar_header %}
+
 
           {# Burger menu toggle for mobile menu #}
           <div id="invenio-burger-toggle">

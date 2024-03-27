@@ -149,3 +149,22 @@ export const unique = (value, context, path, errorString) => {
   }
   return true;
 };
+
+//In some instances the I18nString component is problematic to use,
+// because it is actually a React node and not a string (i.e. text value
+// for drop down options)
+
+export const getTitleFromMultilingualObject = (multilingualObject) => {
+  if (!multilingualObject) {
+    return null;
+  }
+  if (typeof multilingualObject === "string") {
+    return multilingualObject;
+  }
+  const localizedValue =
+    multilingualObject[i18next.language] ||
+    multilingualObject[i18next.options.fallbackLng] ||
+    Object.values(multilingualObject)?.shift();
+
+  return localizedValue;
+};

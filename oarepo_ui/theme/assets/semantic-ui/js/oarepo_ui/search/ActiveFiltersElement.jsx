@@ -1,9 +1,10 @@
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useContext } from "react";
 import _groupBy from "lodash/groupBy";
 import _map from "lodash/map";
 import { Label, Icon, Grid } from "semantic-ui-react";
 import { withState } from "react-searchkit";
+import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
 
 const ActiveFiltersElementComponent = ({
   filters,
@@ -13,8 +14,15 @@ const ActiveFiltersElementComponent = ({
     data: { aggregations },
   },
 }) => {
-  const groupedData = _groupBy(filters, 0);
+  const searchAppContext = useContext(SearchConfigurationContext);
 
+  const {
+    initialQueryState: { filters: initialFilters },
+  } = searchAppContext;
+  const filtersWithoutInitialFilters = filters?.filter(
+    (f) => !initialFilters.map((f) => f[0]).includes(f[0])
+  );
+  const groupedData = _groupBy(filtersWithoutInitialFilters, 0);
   return (
     <Grid>
       <Grid.Column only="computer">

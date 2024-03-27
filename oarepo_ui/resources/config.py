@@ -152,9 +152,14 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
         return FacetsConfig(facets_config, selected_facets)
 
+    def search_endpoint_url(self, identity, api_config, overrides={}, **kwargs):
+        return f"/api{api_config.url_prefix}"
+
     def search_app_config(self, identity, api_config, overrides={}, **kwargs):
         opts = dict(
-            endpoint=f"/api{api_config.url_prefix}",
+            endpoint=self.search_endpoint_url(
+                identity, api_config, overrides=overrides, **kwargs
+            ),
             headers={"Accept": "application/vnd.inveniordm.v1+json"},
             grid_view=False,
             sort=self.search_sort_config(

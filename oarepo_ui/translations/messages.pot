@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-03-01 16:27+0100\n"
+"POT-Creation-Date: 2024-03-18 20:41+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,123 +17,121 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.14.0\n"
 
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/for_translations_only.py:4
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/for_translations_only.py:4
 msgid "api.draft"
 msgstr ""
 
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/for_translations_only.py:5
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/for_translations_only.py:5
 msgid "api.latest"
 msgstr ""
 
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/for_translations_only.py:6
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/for_translations_only.py:6
 msgid "api.files"
 msgstr ""
 
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/for_translations_only.py:7
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/for_translations_only.py:7
 msgid "api.latest_html"
 msgstr ""
 
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/for_translations_only.py:8
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/for_translations_only.py:8
 msgid "api.publish"
 msgstr ""
 
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/for_translations_only.py:9
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/for_translations_only.py:9
 msgid "api.record"
 msgstr ""
 
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/for_translations_only.py:10
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/for_translations_only.py:10
 msgid "api.self_html"
 msgstr ""
 
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/for_translations_only.py:11
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/for_translations_only.py:11
 msgid "api.versions"
 msgstr ""
 
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/resources/config.py:89
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/resources/config.py:92
 msgid "JSON"
 msgstr ""
 
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/components/DefinitionLink.jinja:2
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/DefinitionLink.jinja:2
 msgid "Open definition"
 msgstr ""
 
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:3
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:18
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:16
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:31
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:3
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:18
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:16
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:31
 msgid "New item"
 msgstr ""
 
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:5
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:18
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:5
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:18
 msgid "Edit item "
 msgstr ""
 
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:6
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:7
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:16
+msgid "Missing title"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:6
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:7
 msgid "Search"
 msgstr ""
 
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/detail.html:20
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/detail.html:20
 msgid "Record details"
 msgstr ""
 
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/footer.html:15
-msgid "Contact"
-msgstr ""
-
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/footer.html:33
-#, python-format
-msgid ""
-"Powered by\n"
-"            <a href=\"%(link)s\">Invenio</a>"
-msgstr ""
-
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:44
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:44
 msgid "Menu"
 msgstr ""
 
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:63
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:63
 msgid "Close menu"
 msgstr ""
 
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:115
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:115
 msgid "Requests"
 msgstr ""
 
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:117
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:117
 msgid "Inbox"
 msgstr ""
 
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:15
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:15
 msgid "Log in"
 msgstr ""
 
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:19
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:19
 msgid "Sign up"
 msgstr ""
 
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:36
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:36
 msgid "Quick create"
 msgstr ""
 
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:53
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:53
 msgid "Actions"
 msgstr ""
 
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:72
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:113
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:72
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:113
 msgid "My account"
 msgstr ""
 
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:107
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:136
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:143
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:107
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:136
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:143
 msgid "Log out"
 msgstr ""
 
-#: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/search.html:2
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/search.html:2
 msgid "Search results"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/translations/jinjax_messages.jinja:1
+#: oarepo_ui/translations/jinjax_messages.jinja:1
+msgid "Not set"
 msgstr ""
 
 msgid "Remove field"
@@ -160,37 +158,25 @@ msgstr ""
 msgid "Select: "
 msgstr ""
 
-msgid "Choose start and end date."
+msgid "Choose a date."
 msgstr ""
 
-msgid "Choose one date as start and end date."
+msgid "Date range."
 msgstr ""
 
-msgid "From"
+msgid "Single date."
 msgstr ""
 
-msgid "To"
+msgid "Choose the time interval in which the event took place."
 msgstr ""
 
-msgid ""
-"Choose the time interval in which the event took place. If start and end "
-"date are the same, choose same date twice.You can also use the button above "
-"to select just the one date."
+msgid "Choose one date."
 msgstr ""
 
-msgid "Starting date"
-msgstr ""
-
-msgid "Ending date"
-msgstr ""
-
-msgid "Choose one date"
+msgid "Choose date range (From - To)."
 msgstr ""
 
 msgid "Choose a date from the calendar by clicking on the input."
-msgstr ""
-
-msgid "Choose a date."
 msgstr ""
 
 msgid "Year"
@@ -293,4 +279,10 @@ msgid "Filter results"
 msgstr ""
 
 msgid "Sort"
+msgstr ""
+
+msgid "is a required field"
+msgstr ""
+
+msgid "Items must be unique"
 msgstr ""
