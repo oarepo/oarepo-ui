@@ -14,7 +14,6 @@ export const LanguageSelectField = ({
   placeholder,
   clearable,
   usedLanguages,
-  value,
   ...uiProps
 }) => {
   const { values } = useFormikContext();
@@ -47,13 +46,13 @@ LanguageSelectField.propTypes = {
   clearable: PropTypes.bool,
   placeholder: PropTypes.string,
   options: PropTypes.array,
+  usedLanguages: PropTypes.array,
 };
 
 LanguageSelectField.defaultProps = {
   label: i18next.t("Language"),
   labelIcon: "globe",
   multiple: false,
-  search: true,
   clearable: true,
   placeholder: i18next.t(
     'Search for a language by name (e.g "eng", "fr" or "Polish")'

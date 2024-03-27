@@ -53,7 +53,8 @@ msgstr "JSON"
 
 #: oarepo_ui/templates/oarepo_ui/detail.html:20
 msgid "Record details"
-msgstr ""Code
+msgstr ""
+
 #: oarepo_ui/templates/oarepo_ui/footer.html:7
 #, python-format
 msgid ""
@@ -408,3 +409,33 @@ msgstr ""
 #: /Users/miroslavbauer/Code/github.com/oarepo/oarepo-ui/oarepo_ui/for_translations_only.py:6
 msgid "api.files"
 msgstr "Files API"
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:16
+msgid "Missing title"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/translations/jinjax_messages.jinja:1
+#: oarepo_ui/translations/jinjax_messages.jinja:1
+msgid "Not set"
+msgstr ""
+
+msgid "Date range."
+msgstr ""
+
+msgid "Single date."
+msgstr ""
+
+msgid "Choose the time interval in which the event took place."
+msgstr ""
+
+msgid "Choose one date."
+msgstr ""
+
+msgid "Choose date range (From - To)."
+msgstr ""
+
+msgid "is a required field"
+msgstr ""
+
+msgid "Items must be unique"
+msgstr ""

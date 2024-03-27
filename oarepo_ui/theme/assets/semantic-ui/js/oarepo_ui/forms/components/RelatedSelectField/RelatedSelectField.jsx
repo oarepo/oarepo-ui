@@ -2,8 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import { RelatedSelectFieldInternal } from "./RelatedSelectFieldInternal";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import _reverse from "lodash/reverse";
 import { getIn, useFormikContext } from "formik";
+import _isEmpty from "lodash/isEmpty";
 
 const defaultSuggestionsSerializer = (suggestions) =>
   suggestions.map((item) => ({
@@ -38,6 +38,12 @@ export const RelatedSelectField = ({
   ...uiProps
 }) => {
   const { values } = useFormikContext();
+  const startingSuggestions = multiple
+    ? getIn(values, fieldPath, [])
+    : _isEmpty(getIn(values, fieldPath, {}))
+    ? []
+    : [getIn(values, fieldPath)];
+
   return (
     <RelatedSelectFieldInternal
       fluid
@@ -48,7 +54,9 @@ export const RelatedSelectField = ({
       suggestionAPIHeaders={suggestionAPIHeaders}
       serializeSuggestions={serializeSuggestions}
       serializeAddedValue={serializeAddedValue}
-      initialSuggestions={initialSuggestions}
+      initialSuggestions={
+        initialSuggestions.length > 0 ? initialSuggestions : startingSuggestions
+      }
       debounceTime={debounceTime}
       noResultsMessage={noResultsMessage}
       loadingMessage={loadingMessage}
@@ -57,20 +65,43 @@ export const RelatedSelectField = ({
       preSearchChange={preSearchChange}
       search={search}
       multiple={multiple}
-      onValueChange={({ e, data, formikProps }) => {
-        formikProps.form.setFieldValue(
-          fieldPath,
-          serializeSelectedItem ? serializeSelectedItem(data.value) : data.value
-        );
+      onValueChange={({ e, data, formikProps }, selectedSuggestions) => {
+        if (multiple) {
+          let vocabularyItems = selectedSuggestions.filter((o) =>
+            data.value.includes(o.value)
+          );
+          // removing text because it contains react node and server does not like it
+          // maybe it should be handled in the serializer (for global serializer to just delete all react nodes it finds)
+          vocabularyItems = vocabularyItems.map((vocabularyItem) => {
+            const { text, ...vocabularyItemWithoutText } = vocabularyItem;
+            return vocabularyItemWithoutText;
+          });
+          formikProps.form.setFieldValue(fieldPath, [...vocabularyItems]);
+        } else {
+          let vocabularyItem = selectedSuggestions.find(
+            (o) => o.value === data.value
+          );
+          if (vocabularyItem) {
+            const { text, ...vocabularyItemWithoutText } = vocabularyItem;
+            formikProps.form.setFieldValue(
+              fieldPath,
+              vocabularyItemWithoutText
+            );
+          } else {
+            formikProps.form.setFieldValue(fieldPath, "");
+          }
+        }
       }}
       externalSuggestionApi={externalSuggestionApi}
       serializeExternalApiSuggestions={serializeExternalApiSuggestions}
       externalApiButtonContent={externalApiButtonContent}
       externalApiModalTitle={externalApiModalTitle}
       value={
-        deserializeValue
-          ? deserializeValue(getIn(values, fieldPath, multiple ? [] : {}))
-          : getIn(values, fieldPath, '')
+        multiple
+          ? getIn(values, fieldPath, []).map((item) => item.id || item)
+          : !_isEmpty(getIn(values, fieldPath, {}))
+          ? getIn(values, fieldPath, {}).id || getIn(values, fieldPath, "")
+          : getIn(values, fieldPath, "")
       }
       {...uiProps}
     />

@@ -1,3 +1,4 @@
+import json
 import html
 from typing import Union
 
@@ -55,12 +56,16 @@ class FieldData:
                 return EMPTY_FIELD_DATA
 
         if isinstance(self.__data, list):
-            idx = int(name)
-            if idx < len(self.__data):
-                return FieldData(
-                    self.__data[idx], self.__ui.get("child", {}), self.__path + [idx]
-                )
-            return EMPTY_FIELD_DATA
+            try:
+                idx = int(name)
+
+                if idx < len(self.__data):
+                    return FieldData(
+                        self.__data[idx], self.__ui.get("child", {}), self.__path + [idx]
+                    )
+                return EMPTY_FIELD_DATA
+            except ValueError:
+                return self._select(name)
 
         return EMPTY_FIELD_DATA
 
@@ -68,7 +73,9 @@ class FieldData:
         return self.__get(name)
 
     def __getitem__(self, name):
-        return self.__(name)
+        if isinstance(name, slice):
+            return [self.__get(i) for i in range(*name.indices(len(self.__data)))]
+        return self.__get(name)
 
     def __contains__(self, item):
         return True
@@ -82,6 +89,37 @@ class FieldData:
             for key, val in self.__data.items():
                 ret.append(FieldData(val, self.__ui.get("children", {}).get(key, {})))
         return ret
+
+    def _filter(self, **kwargs):
+        if not isinstance(self.__data, (list, tuple)):
+            return EMPTY_FIELD_DATA
+        ret = []
+        for idx in range(len(self.__data)):
+            item = self[idx]
+            for k, v in kwargs.items():
+                it = item[k]
+                if it.__data != v:
+                    break
+            else:
+                ret.append(item._ui_value)
+        return FieldData(ret, self.__ui, self.__path)
+
+    def _select(self, name):
+        if self._is_dict:
+            return self.__get(name)
+        elif self._is_array:
+            ret = []
+            for idx in range(len(self.__data)):
+                item = self[idx]
+                if item[name]._has_value:
+                    ret.append(item[name])
+            return FieldData(ret, self.__ui, self.__path)
+        return EMPTY_FIELD_DATA
+
+    def _first(self):
+        if self._is_array:
+            return self[0]
+        return self
 
     @property
     def _is_empty(self):
@@ -104,6 +142,16 @@ class FieldData:
     @property
     def _is_primitive(self):
         return self._has_value and not self._is_array and not self._is_dict
+
+    def __eq__(self, other):
+        if isinstance(other, FieldData):
+            return self.__data == other.__data
+        return False
+
+    def __lt__(self, other):
+        if isinstance(other, FieldData):
+            return json.dumps(self.__data, sort_keys=True) < json.dumps(other.__data, sort_keys=True)
+        return False
 
 
 EMPTY_FIELD_DATA = FieldData({}, {})

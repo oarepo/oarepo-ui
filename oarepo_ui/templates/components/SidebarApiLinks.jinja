@@ -1,7 +1,8 @@
 {# def links #}
 <div class="ui link list">
     {% for l in links.items() %}
-        {% if "/api" in l.1 %}
+        {# to not show draft link in published record detail page#}
+        {% if "/api" in l.1 and "draft" not in l.0%}
             <div class="item">
                 <i class="external alternate icon"></i>
                 <div class="content">
