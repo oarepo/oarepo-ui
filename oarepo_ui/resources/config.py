@@ -115,7 +115,10 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
     def search_available_facets(self, api_config, identity):
         classes = api_config.search.params_interpreters_cls
-        grouped_facets_param_class = next((cls for cls in classes if cls.__name__ == "GroupedFacetsParam"), None)
+        grouped_facets_param_class = next(
+            (cls for cls in classes if getattr(cls, "__name__", None) == "GroupedFacetsParam"),
+            None
+        )
         if not grouped_facets_param_class:
             return api_config.search.facets
         grouped_facets_param_instance = grouped_facets_param_class(api_config.search)
