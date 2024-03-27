@@ -114,7 +114,13 @@ class RecordsUIResourceConfig(UIResourceConfig):
         return obj_or_import_string(self.ui_serializer_class)()
 
     def search_available_facets(self, api_config, identity):
-        return api_config.search.facets
+        classes = api_config.search.params_interpreters_cls
+        grouped_facets_param_class = next((cls for cls in classes if cls.__name__ == "GroupedFacetsParam"), None)
+        if not grouped_facets_param_class:
+            return api_config.search.facets
+        grouped_facets_param_instance = grouped_facets_param_class(api_config.search)
+
+        return grouped_facets_param_instance.identity_facets(identity)
 
     def search_available_sort_options(self, api_config, identity):
         return api_config.search.sort_options
