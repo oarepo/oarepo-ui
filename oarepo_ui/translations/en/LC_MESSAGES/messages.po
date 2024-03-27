@@ -439,3 +439,15 @@ msgstr ""
 
 msgid "Items must be unique"
 msgstr ""
+
+#: /Users/m/w/cesnet/oarepo-ui/oarepo_ui/templates/oarepo_ui/Tombstone.jinja:11
+msgid "Gone"
+msgstr ""
+
+#: /Users/m/w/cesnet/oarepo-ui/oarepo_ui/templates/oarepo_ui/Tombstone.jinja:16
+#, python-format
+msgid ""
+"\n"
+"      The record you are trying to access was removed from %(sitename)s. The\n"
+"      metadata of the record is kept for archival purposes."
+msgstr ""
