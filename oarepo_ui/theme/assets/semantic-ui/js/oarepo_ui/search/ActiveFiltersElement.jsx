@@ -5,6 +5,7 @@ import _map from "lodash/map";
 import { Label, Icon, Grid } from "semantic-ui-react";
 import { withState } from "react-searchkit";
 import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
+import _uniq from "lodash/merge";
 
 const ActiveFiltersElementComponent = ({
   filters,
@@ -13,14 +14,20 @@ const ActiveFiltersElementComponent = ({
   currentResultsState: {
     data: { aggregations },
   },
+  ignoredFacets,
 }) => {
   const searchAppContext = useContext(SearchConfigurationContext);
-
   const {
     initialQueryState: { filters: initialFilters },
   } = searchAppContext;
+
+  const filtersToIgnore = _uniq([
+    ...initialFilters.map((f) => f[0]),
+    ...ignoredFacets,
+  ]);
+
   const filtersWithoutInitialFilters = filters?.filter(
-    (f) => !initialFilters.map((f) => f[0]).includes(f[0])
+    (f) => !filtersToIgnore.includes(f[0])
   );
   const groupedData = _groupBy(filtersWithoutInitialFilters, 0);
   return (
@@ -54,6 +61,7 @@ export const ActiveFiltersElement = withState(ActiveFiltersElementComponent);
 
 ActiveFiltersElementComponent.propTypes = {
   filters: PropTypes.array,
+  ignoredFacets: PropTypes.array,
   removeActiveFilter: PropTypes.func.isRequired,
   getLabel: PropTypes.func.isRequired,
   currentResultsState: PropTypes.shape({
@@ -62,3 +70,5 @@ ActiveFiltersElementComponent.propTypes = {
     }).isRequired,
   }).isRequired,
 };
+
+ActiveFiltersElementComponent.defaultProps = { ignoredFacets: [] };
