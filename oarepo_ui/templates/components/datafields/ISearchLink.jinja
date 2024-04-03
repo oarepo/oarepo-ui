@@ -1,0 +1,5 @@
+{#def class_name, search_link,  search_facet, title, label, value #}
+
+{% set href = search_link ~ "?q=&f=" ~ search_facet ~ ":" ~ value %}
+
+<IURL class_name={class_name} href={href} title={title} label={label}></IURL>

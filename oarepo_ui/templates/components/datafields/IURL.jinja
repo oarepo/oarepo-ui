@@ -1,0 +1,7 @@
+{# def href, title, label=None, class_name="" #}
+
+<a class="ui {{class_name}}" href="{{href}}" aria-label="{{title}}" title="{{title}}">
+    <span class="{{ class_name }} label">
+        {{label if label else title}}
+    </span>
+</a>
