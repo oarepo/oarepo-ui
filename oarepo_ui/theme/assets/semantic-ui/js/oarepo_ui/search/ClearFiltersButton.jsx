@@ -5,6 +5,7 @@ import { i18next } from "@translations/oarepo_ui/i18next";
 import PropTypes from "prop-types";
 import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
 import _uniq from "lodash/uniq";
+import { ShouldActiveFiltersRender } from "@js/oarepo_ui";
 
 // TODO: in next iteration, rethink how handling of initialFilters/ignored filters is to be handled
 // in the best way
@@ -26,7 +27,7 @@ const ClearFiltersButtonComponent = ({
     ...ignoredFilters,
   ]);
   return (
-    filters.length > initialFilters?.length && (
+    <ShouldActiveFiltersRender>
       <Button
         name="clear"
         color="orange"
@@ -42,7 +43,7 @@ const ClearFiltersButtonComponent = ({
         type="button"
         size="mini"
       />
-    )
+    </ShouldActiveFiltersRender>
   );
 };
 

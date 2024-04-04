@@ -15,4 +15,6 @@ export { ResultsPerPageLabel } from "./ResultsPerPageLabel";
 export { ClearFiltersButton } from "./ClearFiltersButton";
 export { DynamicResultsListItem } from "./DynamicResultsListItem";
 export { SearchappSearchbarElement } from "./SearchappSearchbarElement";
+export { ShouldActiveFiltersRender } from "./ShouldActiveFiltersRender";
+export * from "./ShouldRender";
 export * from "./util";
