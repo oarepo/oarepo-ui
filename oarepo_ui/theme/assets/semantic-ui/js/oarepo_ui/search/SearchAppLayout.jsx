@@ -14,6 +14,7 @@ import {
 } from "@js/invenio_search_ui/components";
 import { ResultOptions } from "@js/invenio_search_ui/components/Results";
 import { ClearFiltersButton } from "./ClearFiltersButton";
+import { ShouldActiveFiltersRender } from "@js/oarepo_ui";
 
 const ResultOptionsWithState = withState(ResultOptions);
 
@@ -134,19 +135,23 @@ export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
             </Grid.Column>
           )}
           {facetsAvailable && (
-            <Grid.Column floated="left" only="computer" width={11}>
-              <ActiveFilters />
-            </Grid.Column>
+            <ShouldActiveFiltersRender>
+              <Grid.Column floated="left" only="computer" width={11}>
+                <ActiveFilters />
+              </Grid.Column>
+            </ShouldActiveFiltersRender>
           )}
           <Grid.Column textAlign="right" floated="right" {...resultSortLayout}>
             <ResultOptionsWithState />
           </Grid.Column>
         </Grid.Row>
-        <Grid.Row>
-          <Grid.Column floated="left">
-            <ClearFiltersButton />
-          </Grid.Column>
-        </Grid.Row>
+        <ShouldActiveFiltersRender>
+          <Grid.Row>
+            <Grid.Column floated="left">
+              <ClearFiltersButton />
+            </Grid.Column>
+          </Grid.Row>
+        </ShouldActiveFiltersRender>
         <Grid.Row columns={columnsAmount}>
           {facetsAvailable && (
             <GridResponsiveSidebarColumn
