@@ -1,0 +1,14 @@
+{# def title="(no title)", title_hidden=False, level=1 #}
+
+<tr>
+    <td colspan="2">
+        <div class="ui section">
+            {% if field_value(title) and not field_value(title_hidden) %}
+            <div class="ui header">
+                <span class="level-{{level-1}}">{{ title }}</span>
+            </div>
+            {% endif %}
+        </div>
+    </td>
+</tr>
+{{ content }}

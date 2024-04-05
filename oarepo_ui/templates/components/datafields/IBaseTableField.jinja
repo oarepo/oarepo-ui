@@ -1,0 +1,7 @@
+{#def label, label_class="ui field-label", data_class="ui field-data", level=0 #}
+
+<tr>
+<th {% if label_class %}class="{{label_class}}"{% endif %}>
+    <span class="level-{{ level }}">{{ label }}</span></th>
+<td {% if data_class %}class="{{data_class}}"{% endif %}>{{ content }}</td>
+</tr>
