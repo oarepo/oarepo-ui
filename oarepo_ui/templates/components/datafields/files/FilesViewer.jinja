@@ -17,7 +17,7 @@
                 <td>
                     <a href="{{ file.links.content }}">{{ file.key }}</a>
                 </td>
-                <td>{{ file.size }}</td>
+                <td>{{ file.size|filesizeformat }}</td>
                 <td>
                     <i class="ui icon zoom"></i>
                     <a href="{{ file.links.content }}"><i class="ui icon download"></i></a>
