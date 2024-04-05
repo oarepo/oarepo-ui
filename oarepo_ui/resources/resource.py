@@ -191,6 +191,18 @@ class RecordsUIResource(UIResource):
         )
 
         metadata = dict(record.get("metadata", record))
+        render_kwargs = {
+            **extra_context,
+            'extra_context': extra_context,         # for backward compatibility
+            'metadata': metadata,
+            'ui': dict(record.get("ui", record)),
+            'record': record,
+            'api_record': api_record,
+            'ui_links': ui_links,
+            'context': current_oarepo_ui.catalog.jinja_env.globals,
+            'd': FieldData(record, self.ui_model),
+        }
+
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro(
                 "detail",
@@ -198,14 +210,7 @@ class RecordsUIResource(UIResource):
                 args=resource_requestctx.args,
                 view_args=resource_requestctx.view_args,
             ),
-            metadata=metadata,
-            ui=dict(record.get("ui", record)),
-            record=record,
-            api_record=api_record,
-            extra_context=extra_context,
-            ui_links=ui_links,
-            context=current_oarepo_ui.catalog.jinja_env.globals,
-            d=FieldData(record, self.ui_model),
+            **render_kwargs
         )
 
     def make_links_absolute(self, links, api_prefix):

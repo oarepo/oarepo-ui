@@ -1,0 +1,10 @@
+{#def value, placeholder="" #}
+
+{%- if value != null -%}
+    {% for val in array(value) %}
+        {% if not loop.first %}, {% endif %}
+        {{ val }}
+    {% endfor %}
+{%- else -%}
+    {{ placeholder }}
+{%- endif -%}
