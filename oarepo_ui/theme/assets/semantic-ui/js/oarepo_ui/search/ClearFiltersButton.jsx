@@ -5,7 +5,6 @@ import { i18next } from "@translations/oarepo_ui/i18next";
 import PropTypes from "prop-types";
 import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
 import _uniq from "lodash/uniq";
-import { ShouldActiveFiltersRender } from "@js/oarepo_ui";
 
 // TODO: in next iteration, rethink how handling of initialFilters/ignored filters is to be handled
 // in the best way
@@ -27,23 +26,21 @@ const ClearFiltersButtonComponent = ({
     ...ignoredFilters,
   ]);
   return (
-    <ShouldActiveFiltersRender>
-      <Button
-        name="clear"
-        color="orange"
-        onClick={() =>
-          updateQueryState({
-            ...currentQueryState,
-            filters: filters.filter((f) => allFiltersToIgnore.includes(f[0])),
-          })
-        }
-        icon="delete"
-        labelPosition="left"
-        content={i18next.t("Clear all filters")}
-        type="button"
-        size="mini"
-      />
-    </ShouldActiveFiltersRender>
+    <Button
+      name="clear"
+      color="orange"
+      onClick={() =>
+        updateQueryState({
+          ...currentQueryState,
+          filters: filters.filter((f) => allFiltersToIgnore.includes(f[0])),
+        })
+      }
+      icon="delete"
+      labelPosition="left"
+      content={i18next.t("Clear all filters")}
+      type="button"
+      size="mini"
+    />
   );
 };
 
