@@ -26,23 +26,21 @@ const ClearFiltersButtonComponent = ({
     ...ignoredFilters,
   ]);
   return (
-    filters.length > initialFilters?.length && (
-      <Button
-        name="clear"
-        color="orange"
-        onClick={() =>
-          updateQueryState({
-            ...currentQueryState,
-            filters: filters.filter((f) => allFiltersToIgnore.includes(f[0])),
-          })
-        }
-        icon="delete"
-        labelPosition="left"
-        content={i18next.t("Clear all filters")}
-        type="button"
-        size="mini"
-      />
-    )
+    <Button
+      name="clear"
+      color="orange"
+      onClick={() =>
+        updateQueryState({
+          ...currentQueryState,
+          filters: filters.filter((f) => allFiltersToIgnore.includes(f[0])),
+        })
+      }
+      icon="delete"
+      labelPosition="left"
+      content={i18next.t("Clear all filters")}
+      type="button"
+      size="mini"
+    />
   );
 };
 
