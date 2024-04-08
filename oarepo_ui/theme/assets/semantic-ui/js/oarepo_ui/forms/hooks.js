@@ -167,6 +167,7 @@ export const useDepositApiClient = (
   const [isSaving, setIsSaving] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isPreviewing, setIsPreviewing] = useState(false);
 
   const recordSerializer = serializer
     ? new serializer(internalFieldsArray, keysToRemove)
@@ -339,6 +340,41 @@ export const useDepositApiClient = (
       setIsDeleting(false);
     }
   }
+
+  async function preview() {
+    setSubmitting(true);
+    setIsPreviewing(true);
+    try {
+      const saveResult = await save();
+
+      if (!saveResult) {
+        setFieldValue(
+          "BEvalidationErrors.errorMessage",
+          i18next.t(
+            "Your draft was saved. If you wish to preview it, please correct the following validation errors and click preview again:"
+          )
+        );
+        return;
+      } else {
+        const params = new URLSearchParams();
+        params.append("preview", "1");
+        // TODO: draft does not containt link to detail page i.e. edit_html and self_html are the same in case of draft
+        const url = new URL(saveResult.links.self_html.replace("/edit", ""));
+        url.search = params.toString();
+        window.location.href = url.toString();
+      }
+      return saveResult;
+    } catch (error) {
+      setFieldValue(
+        "httpErrors",
+        error?.response?.data?.message ?? error.message
+      );
+      return false;
+    } finally {
+      setSubmitting(false);
+      setIsPreviewing(false);
+    }
+  }
   // we return also recordSerializer and apiClient instances, if someone wants to use this hook
   // inside of another hook, they don't have to initialize the instances manually
   return {
@@ -347,10 +383,13 @@ export const useDepositApiClient = (
     isSaving,
     isPublishing,
     isDeleting,
+    isPreviewing,
     save,
     publish,
     read,
     _delete,
+    preview,
+    setIsPreviewing,
     recordSerializer,
     apiClient,
     createUrl,
