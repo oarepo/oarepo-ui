@@ -10,9 +10,7 @@ class ComplexCF(BaseListCF):
         super().__init__(
             name,
             field_cls=fields.Nested,
-            field_args=dict(
-                nested=nested_fields
-            ),
+            field_args=dict(nested=nested_fields),
             multiple=multiple,
             **kwargs
         )
@@ -22,8 +20,5 @@ class ComplexCF(BaseListCF):
     def mapping(self):
         return {
             "type": "object",
-            "properties": {
-                cf.name: cf.mapping for cf in self.nested_custom_fields
-            }
+            "properties": {cf.name: cf.mapping for cf in self.nested_custom_fields},
         }
-

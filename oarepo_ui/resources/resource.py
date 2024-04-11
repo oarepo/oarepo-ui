@@ -149,7 +149,7 @@ class RecordsUIResource(UIResource):
                     identity=g.identity,
                     args=resource_requestctx.args,
                     view_args=resource_requestctx.view_args,
-                    default_macro="Tombstone"
+                    default_macro="Tombstone",
                 ),
                 pid=resource_requestctx.view_args["pid_value"],
             )
@@ -193,14 +193,14 @@ class RecordsUIResource(UIResource):
         metadata = dict(record.get("metadata", record))
         render_kwargs = {
             **extra_context,
-            'extra_context': extra_context,         # for backward compatibility
-            'metadata': metadata,
-            'ui': dict(record.get("ui", record)),
-            'record': record,
-            'api_record': api_record,
-            'ui_links': ui_links,
-            'context': current_oarepo_ui.catalog.jinja_env.globals,
-            'd': FieldData(record, self.ui_model),
+            "extra_context": extra_context,  # for backward compatibility
+            "metadata": metadata,
+            "ui": dict(record.get("ui", record)),
+            "record": record,
+            "api_record": api_record,
+            "ui_links": ui_links,
+            "context": current_oarepo_ui.catalog.jinja_env.globals,
+            "d": FieldData(record, self.ui_model),
         }
 
         return current_oarepo_ui.catalog.render(
@@ -210,7 +210,7 @@ class RecordsUIResource(UIResource):
                 args=resource_requestctx.args,
                 view_args=resource_requestctx.view_args,
             ),
-            **render_kwargs
+            **render_kwargs,
         )
 
     def make_links_absolute(self, links, api_prefix):
@@ -334,7 +334,14 @@ class RecordsUIResource(UIResource):
         }
         return (exported_record, 200, headers)
 
-    def get_jinjax_macro(self, template_type, identity=None, args=None, view_args=None, default_macro=None):
+    def get_jinjax_macro(
+        self,
+        template_type,
+        identity=None,
+        args=None,
+        view_args=None,
+        default_macro=None,
+    ):
         """
         Returns which jinjax macro (name of the macro, including optional namespace in the form of "namespace.Macro")
         should be used for rendering the template.
