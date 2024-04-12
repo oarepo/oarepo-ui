@@ -73,7 +73,7 @@ PublishButton.propTypes = {
 PublishButton.defaultProps = {
   modalHeader: i18next.t("Are you sure you wish to publish this draft?"),
   modalMessage: i18next.t(
-    "Once the record is published you will no longer be able to change the files in the upload! However, you will still be able to update the record's metadata later."
+    "Once the record is published you will no longer be able to change record's files! However, you will still be able to update the record's metadata later."
   ),
 };
 
