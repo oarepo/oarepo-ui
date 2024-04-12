@@ -68,9 +68,15 @@ export async function loadTemplateComponents(
         component: await importTemplate(path),
       };
     } catch (err) {
-      console.debug(
-        `Error loading component '${componentId}' from ${path}: ${err}`
-      );
+      if (err.message.startsWith("Cannot find module")) {
+        console.debug(
+          `Component '${componentId}' not found in ${path}. Skipping.`
+        );
+      } else {
+        console.error(
+          `Error loading component '${componentId}' from ${path}: ${err}`
+        );
+      }
       return null;
     }
   };
