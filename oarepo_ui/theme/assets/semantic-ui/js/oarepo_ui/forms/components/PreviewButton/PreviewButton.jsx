@@ -4,12 +4,12 @@ import { i18next } from "@translations/oarepo_ui/i18next";
 import { useDepositApiClient } from "@js/oarepo_ui";
 
 export const PreviewButton = React.memo(({ ...uiProps }) => {
-  const { preview, isPreviewing } = useDepositApiClient();
+  const { preview, isSubmitting } = useDepositApiClient();
   return (
     <Button
       name="preview"
-      disabled={isPreviewing}
-      loading={isPreviewing}
+      disabled={isSubmitting}
+      loading={isSubmitting}
       onClick={() => preview()}
       icon="eye"
       labelPosition="left"

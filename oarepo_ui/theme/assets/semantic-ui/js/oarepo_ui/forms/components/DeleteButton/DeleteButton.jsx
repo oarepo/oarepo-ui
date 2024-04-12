@@ -19,7 +19,7 @@ export const DeleteButton = React.memo(
     const {
       formConfig: { permissions },
     } = useFormConfig();
-    const { values, isSubmitting, _delete, isDeleting } = useDepositApiClient();
+    const { values, isSubmitting, _delete } = useDepositApiClient();
 
     return (
       <>
@@ -39,7 +39,7 @@ export const DeleteButton = React.memo(
                 content={i18next.t("Delete")}
                 type="button"
                 disabled={isSubmitting}
-                loading={isDeleting}
+                loading={isSubmitting}
                 fluid
               />
             }
@@ -51,7 +51,7 @@ export const DeleteButton = React.memo(
                 <Button
                   name="delete"
                   disabled={isSubmitting}
-                  loading={isDeleting}
+                  loading={isSubmitting}
                   color="red"
                   onClick={() => {
                     _delete(redirectUrl);
