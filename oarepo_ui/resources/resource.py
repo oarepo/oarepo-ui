@@ -30,6 +30,8 @@ from oarepo_ui.utils import dump_empty
 
 from .templating.data import FieldData
 
+from .decorators import pass_is_preview
+
 if TYPE_CHECKING:
     from .components import UIResourceComponent
 
@@ -136,12 +138,13 @@ class RecordsUIResource(UIResource):
             self.config.api_service.replace("-", "_"), {}
         )
 
+    @pass_is_preview
     @request_read_args
     @request_view_args
-    def detail(self):
+    def detail(self, is_preview=False):
         """Returns item detail page."""
         try:
-            api_record = self._get_record(resource_requestctx, allow_draft=False)
+            api_record = self._get_record(resource_requestctx, allow_draft=is_preview)
         except PIDDeletedError as e:
             return current_oarepo_ui.catalog.render(
                 self.get_jinjax_macro(
@@ -149,7 +152,7 @@ class RecordsUIResource(UIResource):
                     identity=g.identity,
                     args=resource_requestctx.args,
                     view_args=resource_requestctx.view_args,
-                    default_macro="Tombstone"
+                    default_macro="Tombstone",
                 ),
                 pid=resource_requestctx.view_args["pid_value"],
             )
@@ -193,14 +196,15 @@ class RecordsUIResource(UIResource):
         metadata = dict(record.get("metadata", record))
         render_kwargs = {
             **extra_context,
-            'extra_context': extra_context,         # for backward compatibility
-            'metadata': metadata,
-            'ui': dict(record.get("ui", record)),
-            'record': record,
-            'api_record': api_record,
-            'ui_links': ui_links,
-            'context': current_oarepo_ui.catalog.jinja_env.globals,
-            'd': FieldData(record, self.ui_model),
+            "extra_context": extra_context,  # for backward compatibility
+            "metadata": metadata,
+            "ui": dict(record.get("ui", record)),
+            "record": record,
+            "api_record": api_record,
+            "ui_links": ui_links,
+            "context": current_oarepo_ui.catalog.jinja_env.globals,
+            "d": FieldData(record, self.ui_model),
+            "is_preview": is_preview,
         }
 
         return current_oarepo_ui.catalog.render(
@@ -210,7 +214,7 @@ class RecordsUIResource(UIResource):
                 args=resource_requestctx.args,
                 view_args=resource_requestctx.view_args,
             ),
-            **render_kwargs
+            **render_kwargs,
         )
 
     def make_links_absolute(self, links, api_prefix):
@@ -307,13 +311,14 @@ class RecordsUIResource(UIResource):
             context=current_oarepo_ui.catalog.jinja_env.globals,
         )
 
+    @pass_is_preview
     @request_read_args
     @request_view_args
     @request_export_args
-    def export(self):
+    def export(self, is_preview):
         pid_value = resource_requestctx.view_args["pid_value"]
         export_format = resource_requestctx.view_args["export_format"]
-        record = self._get_record(resource_requestctx, allow_draft=False)
+        record = self._get_record(resource_requestctx, allow_draft=is_preview)
 
         exporter = self.config.exports.get(export_format.lower())
         if exporter is None:
@@ -334,7 +339,14 @@ class RecordsUIResource(UIResource):
         }
         return (exported_record, 200, headers)
 
-    def get_jinjax_macro(self, template_type, identity=None, args=None, view_args=None, default_macro=None):
+    def get_jinjax_macro(
+        self,
+        template_type,
+        identity=None,
+        args=None,
+        view_args=None,
+        default_macro=None,
+    ):
         """
         Returns which jinjax macro (name of the macro, including optional namespace in the form of "namespace.Macro")
         should be used for rendering the template.

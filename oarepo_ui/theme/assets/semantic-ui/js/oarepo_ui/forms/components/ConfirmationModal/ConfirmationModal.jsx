@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Icon, Message } from "semantic-ui-react";
+import { Modal, Icon, Message, Form } from "semantic-ui-react";
 import PropTypes from "prop-types";
 
 export function ConfirmationModal({
@@ -9,6 +9,7 @@ export function ConfirmationModal({
   actions,
   isOpen,
   close,
+  additionalInputs,
 }) {
   return (
     <>
@@ -21,8 +22,9 @@ export function ConfirmationModal({
         closeOnDimmerClick={false}
       >
         <Modal.Header>{header}</Modal.Header>
-        {content && (
+        {(content || additionalInputs) && (
           <Modal.Content>
+            {additionalInputs && <Form>{additionalInputs}</Form>}
             <Message visible warning>
               <p>
                 <Icon name="warning sign" /> {content}
@@ -41,6 +43,7 @@ ConfirmationModal.propTypes = {
   content: PropTypes.string,
   trigger: PropTypes.element,
   actions: PropTypes.node,
+  additionalInputs: PropTypes.node,
   isOpen: PropTypes.bool,
   close: PropTypes.func,
 };

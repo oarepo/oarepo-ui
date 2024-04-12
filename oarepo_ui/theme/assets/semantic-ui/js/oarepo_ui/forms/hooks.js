@@ -164,10 +164,6 @@ export const useDepositApiClient = (
     formConfig: { createUrl },
   } = useFormConfig();
 
-  const [isSaving, setIsSaving] = useState(false);
-  const [isPublishing, setIsPublishing] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-
   const recordSerializer = serializer
     ? new serializer(internalFieldsArray, keysToRemove)
     : new OARepoDepositSerializer(internalFieldsArray, keysToRemove);
@@ -180,7 +176,6 @@ export const useDepositApiClient = (
     let response;
 
     setSubmitting(true);
-    setIsSaving(true);
     //  purge any existing errors in internal fields before making save action
     const valuesWithoutInternalFields = _omit(values, internalFieldsArray);
     setErrors({});
@@ -237,7 +232,6 @@ export const useDepositApiClient = (
       return false;
     } finally {
       setSubmitting(false);
-      setIsSaving(false);
     }
   }
 
@@ -267,7 +261,6 @@ export const useDepositApiClient = (
       return;
     }
     setSubmitting(true);
-    setIsPublishing(true);
     let response;
     try {
       response = await apiClient.publishDraft(saveResult);
@@ -302,7 +295,6 @@ export const useDepositApiClient = (
       return false;
     } finally {
       setSubmitting(false);
-      setIsPublishing(false);
     }
   }
 
@@ -316,7 +308,6 @@ export const useDepositApiClient = (
         "You must provide url where to be redirected after deleting a draft"
       );
     setSubmitting(true);
-    setIsDeleting(true);
     try {
       let response = await apiClient.deleteDraft(values);
 
@@ -336,7 +327,39 @@ export const useDepositApiClient = (
       return false;
     } finally {
       setSubmitting(false);
-      setIsDeleting(false);
+    }
+  }
+
+  async function preview() {
+    setSubmitting(true);
+    try {
+      const saveResult = await save();
+
+      if (!saveResult) {
+        setFieldValue(
+          "BEvalidationErrors.errorMessage",
+          i18next.t(
+            "Your draft was saved. If you wish to preview it, please correct the following validation errors and click preview again:"
+          )
+        );
+        return;
+      } else {
+        const params = new URLSearchParams();
+        params.append("preview", "1");
+        // TODO: draft does not containt link to detail page i.e. edit_html and self_html are the same in case of draft
+        const url = new URL(saveResult.links.self_html.replace("/edit", ""));
+        url.search = params.toString();
+        window.location.href = url.toString();
+      }
+      return saveResult;
+    } catch (error) {
+      setFieldValue(
+        "httpErrors",
+        error?.response?.data?.message ?? error.message
+      );
+      return false;
+    } finally {
+      setSubmitting(false);
     }
   }
   // we return also recordSerializer and apiClient instances, if someone wants to use this hook
@@ -344,13 +367,11 @@ export const useDepositApiClient = (
   return {
     values,
     isSubmitting,
-    isSaving,
-    isPublishing,
-    isDeleting,
     save,
     publish,
     read,
     _delete,
+    preview,
     recordSerializer,
     apiClient,
     createUrl,

@@ -451,3 +451,29 @@ msgid ""
 "      The record you are trying to access was removed from %(sitename)s. The\n"
 "      metadata of the record is kept for archival purposes."
 msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/PreviewHeader.jinja:11
+msgid ""
+"You are previewing a new record version that has not yet been published."
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:6
+msgid "Files"
+msgstr ""
+
+msgid ""
+"Once the record is published you will no longer be able to change the files "
+"in the upload! However, you will still be able to update the record's "
+"metadata later."
+msgstr ""
+
+msgid ""
+"Your draft was saved. If you wish to preview it, please correct the "
+"following validation errors and click preview again:"
+msgstr ""
+
+msgid ""
+"Once the record is published you will no longer be able to change record's "
+"files! However, you will still be able to update the record's metadata "
+"later."
+msgstr ""
