@@ -2,8 +2,9 @@
 {%- block bypasslinks %}
 {%- endblock bypasslinks %}
 {%- block page_body %}
-
-  <PreviewHeader is_preview={is_preview} />
+  {% if is_preview %}
+    <PreviewSubheader />
+  {% endif %}
   <div class="ui main container">
     <div class="ui relaxed grid">
       {% block record_header %}
