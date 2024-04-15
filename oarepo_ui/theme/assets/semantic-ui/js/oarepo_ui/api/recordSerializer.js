@@ -8,7 +8,6 @@ import _mapValues from "lodash/mapValues";
 import _pickBy from "lodash/pickBy";
 import _forEach from "lodash/forEach";
 import _omitBy from "lodash/omitBy";
-import _defaults from "lodash/defaults";
 
 export class DepositRecordSerializer {
   constructor(defaultLocale) {
@@ -60,7 +59,10 @@ export class OARepoDepositSerializer extends DepositRecordSerializer {
       let mappedValues = _mapValues(obj, (value) =>
         this.removeEmptyValues(value)
       );
-      let pickedValues = _pickBy(mappedValues, (value) => {
+      let pickedValues = _pickBy(mappedValues, (value, key) => {
+        if (key === "metadata" && _isEmpty(value)) {
+          return true;
+        }
         if (_isArray(value) || _isObject(value)) {
           return !_isEmpty(value);
         }
@@ -145,9 +147,6 @@ export class OARepoDepositSerializer extends DepositRecordSerializer {
     );
 
     serializedRecord = this.removeEmptyValues(serializedRecord);
-    if (!this.serializeVocabularyRecord) {
-      _defaults(serializedRecord, { metadata: {} });
-    }
 
     return serializedRecord;
   };
