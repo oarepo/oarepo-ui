@@ -16,13 +16,11 @@ import { getIn, useFormikContext } from "formik";
 
 const FormTitle = () => {
   const { values } = useFormikContext();
-  return (
-    <Header as="h1">
-      {getIn(values, "metadata.title", "") ||
-        getTitleFromMultilingualObject(getIn(values, "title", "")) ||
-        ""}
-    </Header>
-  );
+  const recordTitle =
+    getIn(values, "metadata.title", "") ||
+    getTitleFromMultilingualObject(getIn(values, "title", "")) ||
+    "";
+  return recordTitle && <Header as="h1">{recordTitle}</Header>;
 };
 
 export const BaseFormLayout = ({ formikProps }) => {
