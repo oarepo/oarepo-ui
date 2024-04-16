@@ -28,15 +28,10 @@ export class DepositRecordSerializer {
 }
 
 export class OARepoDepositSerializer extends DepositRecordSerializer {
-  constructor(
-    internalFieldsArray = [],
-    keysToRemove = [],
-    serializeVocabularyRecord = false
-  ) {
+  constructor(internalFieldsArray = [], keysToRemove = []) {
     super();
     this.internalFieldsArray = internalFieldsArray;
     this.keysToRemove = keysToRemove;
-    this.serializeVocabularyRecord = serializeVocabularyRecord;
   }
 
   /**
