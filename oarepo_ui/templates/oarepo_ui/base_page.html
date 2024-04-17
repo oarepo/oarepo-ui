@@ -1,0 +1,9 @@
+{% extends "invenio_theme/page.html" %}
+
+
+{%- block css%}
+{{super()}}
+{% if config.THEME_CSS_TEMPLATE %}
+    {% include config.THEME_CSS_TEMPLATE %}
+{% endif%}
+{%- endblock css%}
