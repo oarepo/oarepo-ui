@@ -30,7 +30,7 @@ SearchPathItem = namedtuple(
 
 
 class OarepoCatalog(Catalog):
-    singleton_check = None
+    __slots__ = Catalog.__slots__ + ("_component_paths",)
 
     def __init__(
         self,
@@ -81,6 +81,7 @@ class OarepoCatalog(Catalog):
 
         self.jinja_env = env
 
+        self.tmpl_globals: t.MutableMapping[str, t.Any] | None = None
         self._cache: "dict[str, dict]" = {}
 
     def update_template_context(self, context: dict) -> None:
@@ -127,7 +128,7 @@ class OarepoCatalog(Catalog):
         _root_path, path = self._get_component_path(prefix, name, file_ext=file_ext)
         return Path(path).read_text()
 
-    @cached_property
+    @property
     def component_paths(self) -> Dict[str, Tuple[Path, Path]]:
         """
         Returns a cache of component-name => (root_path, component_path).
@@ -149,6 +150,9 @@ class OarepoCatalog(Catalog):
 
             * "DetailPage" -> oarepo_vocabularies/DetailPage.jinja (priority -10)
         """
+        if hasattr(self, "_component_paths"):
+            return self._component_paths
+
         paths: Dict[str, Tuple[Path, Path, int]] = {}
 
         for (
@@ -174,7 +178,8 @@ class OarepoCatalog(Catalog):
                         partial_priority,
                     )
 
-        return {k: (v[0], v[1]) for k, v in paths.items()}
+        self._component_paths = {k: (v[0], v[1]) for k, v in paths.items()}
+        return self._component_paths
 
     def _extract_priority(self, filename):
         # check if there is a priority on the file, if not, take default 0
