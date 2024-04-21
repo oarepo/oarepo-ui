@@ -30,23 +30,7 @@ SearchPathItem = namedtuple(
 
 
 class OarepoCatalog(Catalog):
-    singleton_check = None
-
-    __slots__ = (
-        "prefixes",
-        "root_url",
-        "file_ext",
-        "jinja_env",
-        "fingerprint",
-        "collected_css",
-        "collected_js",
-        "auto_reload",
-        "tmpl_globals",
-        "use_cache",
-        "_cache",
-        # oarepo-ui specific slots
-        "_component_paths"
-    )
+    __slots__ = Catalog.__slots__ + ("_component_paths",)
 
     def __init__(
         self,
