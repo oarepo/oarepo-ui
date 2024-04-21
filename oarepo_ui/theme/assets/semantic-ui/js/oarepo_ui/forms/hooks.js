@@ -344,12 +344,9 @@ export const useDepositApiClient = (
         );
         return;
       } else {
-        const params = new URLSearchParams();
-        params.append("preview", "1");
         // TODO: draft does not containt link to detail page i.e. edit_html and self_html are the same in case of draft
-        const url = new URL(saveResult.links.self_html.replace("/edit", ""));
-        url.search = params.toString();
-        window.location.href = url.toString();
+        const url = saveResult.links.self_html.replace("/edit", "/preview");
+        window.location.href = url;
       }
       return saveResult;
     } catch (error) {

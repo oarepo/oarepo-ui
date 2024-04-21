@@ -60,6 +60,8 @@ class RecordsUIResourceConfig(UIResourceConfig):
         "detail": "/<pid_value>",
         "edit": "/<pid_value>/edit",
         "export": "/<pid_value>/export/<export_format>",
+        "export_preview": "/<pid_value>/preview/export/<export_format>",
+        "detail_preview": "/<pid_value>/preview",
     }
     request_view_args = {"pid_value": ma.fields.Str()}
     request_export_args = {"export_format": ma.fields.Str()}
@@ -80,6 +82,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
         "search": None,
         "edit": None,
         "create": None,
+        "detail_preview": None,
     }
     """Templates used for rendering the UI. It is a name of a jinjax macro that renders the UI"""
 
@@ -116,8 +119,12 @@ class RecordsUIResourceConfig(UIResourceConfig):
     def search_available_facets(self, api_config, identity):
         classes = api_config.search.params_interpreters_cls
         grouped_facets_param_class = next(
-            (cls for cls in classes if getattr(cls, "__name__", None) == "GroupedFacetsParam"),
-            None
+            (
+                cls
+                for cls in classes
+                if getattr(cls, "__name__", None) == "GroupedFacetsParam"
+            ),
+            None,
         )
         if not grouped_facets_param_class:
             return api_config.search.facets
