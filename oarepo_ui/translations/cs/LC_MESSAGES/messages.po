@@ -424,3 +424,15 @@ msgid ""
 msgstr ""
 "Jakmile bude záznam zveřejněn, již jej nebudete moci změnit soubory! Stále "
 "však budete moci aktualizovat metadata záznamu později."
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:16
+msgid "Edit item"
+msgstr "Editace záznamu"
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:9
+msgid "File"
+msgstr "Soubor"
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:10
+msgid "Size"
+msgstr "Velikost"
