@@ -55,7 +55,9 @@ class OarepoCatalog(Catalog):
         root_url = root_url.strip().rstrip(SLASH)
         self.root_url = f"{root_url}{SLASH}"
 
-        env = flask.templating.Environment(undefined=jinja2.Undefined, app=current_app, autoescape=True)
+        env = flask.templating.Environment(
+            undefined=jinja2.Undefined, app=current_app, autoescape=True
+        )
         extensions = [*(extensions or []), "jinja2.ext.do", JinjaX]
         globals = globals or {}
         filters = filters or {}
@@ -81,7 +83,7 @@ class OarepoCatalog(Catalog):
 
         self.jinja_env = env
 
-        self.tmpl_globals: t.MutableMapping[str, t.Any] | None = None
+        # self.tmpl_globals: t.MutableMapping[str, t.Any] | None = None
         self._cache: "dict[str, dict]" = {}
 
     def update_template_context(self, context: dict) -> None:
