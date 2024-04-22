@@ -140,88 +140,42 @@ class RecordsUIResource(UIResource):
             self.config.api_service.replace("-", "_"), {}
         )
 
+    # helper function to avoid duplicating code between detail and detail_preview handler
     @request_read_args
     @request_view_args
-    def detail(self):
-        """Returns item detail page."""
-        try:
-            api_record = self._get_record(resource_requestctx)
-        except PIDDeletedError as e:
-            return current_oarepo_ui.catalog.render(
-                self.get_jinjax_macro(
-                    "tombstone",
-                    identity=g.identity,
-                    args=resource_requestctx.args,
-                    view_args=resource_requestctx.view_args,
-                    default_macro="Tombstone",
-                ),
-                pid=resource_requestctx.view_args["pid_value"],
-            )
-
-        # TODO: handle permissions UI way - better response than generic error
-        record = self.config.ui_serializer.dump_obj(api_record.to_dict())
-        record.setdefault("links", {})
-
-        ui_links = self.expand_detail_links(identity=g.identity, record=api_record)
-        export_path = request.path.split("?")[0]
-        if not export_path.endswith("/"):
-            export_path += "/"
-        export_path += "export"
-
-        record["links"].update(
-            {
-                "ui_links": ui_links,
-                "export_path": export_path,
-                "search_link": self.config.url_prefix,
-            }
-        )
-
-        self.make_links_absolute(record["links"], self.api_service.config.url_prefix)
-
-        extra_context = dict()
-
-        self.run_components(
-            "before_ui_detail",
-            api_record=api_record,
-            record=record,
-            identity=g.identity,
-            extra_context=extra_context,
-            args=resource_requestctx.args,
-            view_args=resource_requestctx.view_args,
-            ui_links=ui_links,
-            custom_fields=self._get_custom_fields(
-                api_record=api_record, resource_requestctx=resource_requestctx
-            ),
-        )
-
-        metadata = dict(record.get("metadata", record))
-        render_kwargs = {
-            **extra_context,
-            "extra_context": extra_context,  # for backward compatibility
-            "metadata": metadata,
-            "ui": dict(record.get("ui", record)),
-            "record": record,
-            "api_record": api_record,
-            "ui_links": ui_links,
-            "context": current_oarepo_ui.catalog.jinja_env.globals,
-            "d": FieldData(record, self.ui_model),
-        }
-
-        return current_oarepo_ui.catalog.render(
-            self.get_jinjax_macro(
+    def _detail(self, is_preview=False):
+        if is_preview:
+            api_record = self._get_record(resource_requestctx, allow_draft=is_preview)
+            render_method = self.get_jinjax_macro(
                 "detail",
                 identity=g.identity,
                 args=resource_requestctx.args,
                 view_args=resource_requestctx.view_args,
-            ),
-            **render_kwargs,
-        )
+            )
+        else:
+            try:
+                api_record = self._get_record(
+                    resource_requestctx, allow_draft=is_preview
+                )
+                render_method = self.get_jinjax_macro(
+                    "detail_preview",
+                    identity=g.identity,
+                    args=resource_requestctx.args,
+                    view_args=resource_requestctx.view_args,
+                    default_macro=self.config.templates["detail"],
+                )
+            except PIDDeletedError as e:
+                return current_oarepo_ui.catalog.render(
+                    self.get_jinjax_macro(
+                        "tombstone",
+                        identity=g.identity,
+                        args=resource_requestctx.args,
+                        view_args=resource_requestctx.view_args,
+                        default_macro="Tombstone",
+                    ),
+                    pid=resource_requestctx.view_args["pid_value"],
+                )
 
-    @request_read_args
-    @request_view_args
-    def detail_preview(self):
-        """Returns item detail page."""
-        api_record = self._get_record(resource_requestctx, allow_draft=True)
         # TODO: handle permissions UI way - better response than generic error
         record = self.config.ui_serializer.dump_obj(api_record.to_dict())
         record.setdefault("links", {})
@@ -256,7 +210,7 @@ class RecordsUIResource(UIResource):
             custom_fields=self._get_custom_fields(
                 api_record=api_record, resource_requestctx=resource_requestctx
             ),
-            is_preview=True,
+            is_preview=is_preview,
         )
 
         metadata = dict(record.get("metadata", record))
@@ -270,19 +224,21 @@ class RecordsUIResource(UIResource):
             "ui_links": ui_links,
             "context": current_oarepo_ui.catalog.jinja_env.globals,
             "d": FieldData(record, self.ui_model),
-            "is_preview": True,
+            "is_preview": is_preview,
         }
 
         return current_oarepo_ui.catalog.render(
-            self.get_jinjax_macro(
-                "detail_preview",
-                identity=g.identity,
-                args=resource_requestctx.args,
-                view_args=resource_requestctx.view_args,
-                default_macro=self.config.templates["detail"],
-            ),
+            render_method,
             **render_kwargs,
         )
+
+    def detail(self):
+        """Returns item detail page."""
+        return self._detail()
+
+    def detail_preview(self):
+        """Returns detail page preview."""
+        return self._detail(True)
 
     def make_links_absolute(self, links, api_prefix):
         # make links absolute
