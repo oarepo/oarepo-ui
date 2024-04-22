@@ -136,7 +136,7 @@ export const useShowEmptyValue = (
   }, [showEmptyValue, setFieldValue, fieldPath, defaultNewValue]);
 };
 
-export const useDepositApiClient = (
+export const useDepositApiClient = ({
   baseApiClient,
   serializer,
   internalFieldsArray = [
@@ -146,8 +146,8 @@ export const useDepositApiClient = (
     "httpErrors",
     "successMessage",
   ],
-  keysToRemove = ["__key"]
-) => {
+  keysToRemove = ["__key"],
+} = {}) => {
   const formik = useFormikContext();
 
   const {
@@ -166,7 +166,10 @@ export const useDepositApiClient = (
 
   const recordSerializer = serializer
     ? new serializer(internalFieldsArray, keysToRemove)
-    : new OARepoDepositSerializer(internalFieldsArray, keysToRemove);
+    : new OARepoDepositSerializer(
+        internalFieldsArray,
+        keysToRemove,
+      );
 
   const apiClient = baseApiClient
     ? new baseApiClient(createUrl, recordSerializer)

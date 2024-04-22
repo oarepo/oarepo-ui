@@ -54,7 +54,10 @@ export class OARepoDepositSerializer extends DepositRecordSerializer {
       let mappedValues = _mapValues(obj, (value) =>
         this.removeEmptyValues(value)
       );
-      let pickedValues = _pickBy(mappedValues, (value) => {
+      let pickedValues = _pickBy(mappedValues, (value, key) => {
+        if (key === "metadata" && _isEmpty(value)) {
+          return true;
+        }
         if (_isArray(value) || _isObject(value)) {
           return !_isEmpty(value);
         }
