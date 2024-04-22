@@ -25,5 +25,6 @@ def dump_empty(schema_or_field):
         return dump_empty(nested_schema)
     if isinstance(schema_or_field, fields.Str):
         return ""
-
+    if isinstance(schema_or_field, fields.Dict):
+        return {}
     return None
