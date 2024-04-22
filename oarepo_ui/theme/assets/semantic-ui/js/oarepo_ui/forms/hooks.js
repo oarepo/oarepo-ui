@@ -147,7 +147,6 @@ export const useDepositApiClient = ({
     "successMessage",
   ],
   keysToRemove = ["__key"],
-  serializeVocabularyRecord = false,
 } = {}) => {
   const formik = useFormikContext();
 
@@ -170,7 +169,6 @@ export const useDepositApiClient = ({
     : new OARepoDepositSerializer(
         internalFieldsArray,
         keysToRemove,
-        serializeVocabularyRecord
       );
 
   const apiClient = baseApiClient
