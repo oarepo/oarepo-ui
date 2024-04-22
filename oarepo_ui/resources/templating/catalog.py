@@ -83,7 +83,7 @@ class OarepoCatalog(Catalog):
 
         self.jinja_env = env
 
-        # self.tmpl_globals: t.MutableMapping[str, t.Any] | None = None
+        self.tmpl_globals: t.MutableMapping[str, t.Any] | None = None
         self._cache: "dict[str, dict]" = {}
 
     def update_template_context(self, context: dict) -> None:

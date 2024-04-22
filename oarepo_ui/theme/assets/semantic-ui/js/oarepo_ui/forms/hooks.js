@@ -346,6 +346,10 @@ export const useDepositApiClient = (
       } else {
         // TODO: draft does not containt link to detail page i.e. edit_html and self_html are the same in case of draft
         const url = saveResult.links.self_html.replace("/edit", "/preview");
+        setFieldValue(
+          "successMessage",
+          i18next.t("Your draft was saved. Redirecting to the preview page...")
+        );
         window.location.href = url;
       }
       return saveResult;
