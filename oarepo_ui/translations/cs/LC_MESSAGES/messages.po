@@ -436,3 +436,9 @@ msgstr "Soubor"
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:10
 msgid "Size"
 msgstr "Velikost"
+
+msgid "Your draft was saved. Redirecting to the preview page..."
+msgstr "Váš koncept byl uložen. Přesměrování na stránku náhledu..."
+
+msgid "Please provide an URL in valid format"
+msgstr "Zadejte prosím adresu URL v platném formátu"
