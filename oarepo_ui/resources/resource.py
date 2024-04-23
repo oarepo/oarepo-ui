@@ -143,26 +143,27 @@ class RecordsUIResource(UIResource):
     # helper function to avoid duplicating code between detail and detail_preview handler
     @request_read_args
     @request_view_args
-    def _detail(self, is_preview=False):
+    def _detail(self, *, is_preview=False):
         if is_preview:
             api_record = self._get_record(resource_requestctx, allow_draft=is_preview)
             render_method = self.get_jinjax_macro(
-                "detail",
+                "detail_preview",
                 identity=g.identity,
                 args=resource_requestctx.args,
                 view_args=resource_requestctx.view_args,
+                default_macro=self.config.templates["detail"],
             )
+
         else:
             try:
                 api_record = self._get_record(
                     resource_requestctx, allow_draft=is_preview
                 )
                 render_method = self.get_jinjax_macro(
-                    "detail_preview",
+                    "detail",
                     identity=g.identity,
                     args=resource_requestctx.args,
                     view_args=resource_requestctx.view_args,
-                    default_macro=self.config.templates["detail"],
                 )
             except PIDDeletedError as e:
                 return current_oarepo_ui.catalog.render(
@@ -238,7 +239,7 @@ class RecordsUIResource(UIResource):
 
     def detail_preview(self):
         """Returns detail page preview."""
-        return self._detail(True)
+        return self._detail(is_preview=True)
 
     def make_links_absolute(self, links, api_prefix):
         # make links absolute
