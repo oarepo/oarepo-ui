@@ -1,5 +1,6 @@
 {# def files #}
 
+{%if files.entries|length > 0 %}
 <table class="ui table striped rel-mb-1">
     <thead>
         <tr>
@@ -26,3 +27,4 @@
         {% endfor %}
     </tbody>
 </table>
+{% endif %}
