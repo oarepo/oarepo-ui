@@ -61,7 +61,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
         "edit": "/<pid_value>/edit",
         "export": "/<pid_value>/export/<export_format>",
         "export_preview": "/<pid_value>/preview/export/<export_format>",
-        "detail_preview": "/<pid_value>/preview",
+        "preview": "/<pid_value>/preview",
     }
     request_view_args = {"pid_value": ma.fields.Str()}
     request_export_args = {"export_format": ma.fields.Str()}
@@ -82,7 +82,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
         "search": None,
         "edit": None,
         "create": None,
-        "detail_preview": None,
+        "preview": None,
     }
     """Templates used for rendering the UI. It is a name of a jinjax macro that renders the UI"""
 

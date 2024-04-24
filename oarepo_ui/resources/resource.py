@@ -140,14 +140,14 @@ class RecordsUIResource(UIResource):
             self.config.api_service.replace("-", "_"), {}
         )
 
-    # helper function to avoid duplicating code between detail and detail_preview handler
+    # helper function to avoid duplicating code between detail and preview handler
     @request_read_args
     @request_view_args
     def _detail(self, *, is_preview=False):
         if is_preview:
             api_record = self._get_record(resource_requestctx, allow_draft=is_preview)
             render_method = self.get_jinjax_macro(
-                "detail_preview",
+                "preview",
                 identity=g.identity,
                 args=resource_requestctx.args,
                 view_args=resource_requestctx.view_args,
@@ -237,7 +237,7 @@ class RecordsUIResource(UIResource):
         """Returns item detail page."""
         return self._detail()
 
-    def detail_preview(self):
+    def preview(self):
         """Returns detail page preview."""
         return self._detail(is_preview=True)
 
