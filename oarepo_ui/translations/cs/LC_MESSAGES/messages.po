@@ -291,7 +291,7 @@ msgid "Actions"
 msgstr "Akce"
 
 msgid "Delete"
-msgstr "Zmazat"
+msgstr "Smazat"
 
 msgid "Cancel"
 msgstr "Zrušit"
