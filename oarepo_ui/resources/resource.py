@@ -338,10 +338,10 @@ class RecordsUIResource(UIResource):
     @request_read_args
     @request_view_args
     @request_export_args
-    def export(self):
+    def _export(self, *, is_preview=False):
         pid_value = resource_requestctx.view_args["pid_value"]
         export_format = resource_requestctx.view_args["export_format"]
-        record = self._get_record(resource_requestctx, allow_draft=True)
+        record = self._get_record(resource_requestctx, allow_draft=is_preview)
 
         exporter = self.config.exports.get(export_format.lower())
         if exporter is None:
@@ -362,8 +362,11 @@ class RecordsUIResource(UIResource):
         }
         return (exported_record, 200, headers)
 
+    def export(self):
+        return self._export()
+
     def export_preview(self):
-        return self.export()
+        return self._export(is_preview=True)
 
     def get_jinjax_macro(
         self,
