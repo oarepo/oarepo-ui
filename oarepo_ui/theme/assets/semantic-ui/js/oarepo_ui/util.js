@@ -137,6 +137,10 @@ export const requiredMessage = ({ label }) =>
 export const returnGroupError = (value, context) => {
   return i18next.t("Items must be unique");
 };
+
+export const invalidUrlMessage = i18next.t(
+  "Please provide an URL in valid format"
+);
 export const unique = (value, context, path, errorString) => {
   if (!value || value.length < 2) {
     return true;
@@ -164,7 +168,7 @@ export const scrollToElement = (querySelector) => {
   if (element) {
     element.scrollIntoView({ behavior: "smooth", block: "center" });
   }
-}
+};
 
 //In some instances the I18nString component is problematic to use,
 // because it is actually a React node and not a string (i.e. text value

@@ -489,3 +489,9 @@ msgstr ""
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:10
 msgid "Size"
 msgstr ""
+
+msgid "Your draft was saved. Redirecting to the preview page..."
+msgstr ""
+
+msgid "Please provide an URL in valid format"
+msgstr ""

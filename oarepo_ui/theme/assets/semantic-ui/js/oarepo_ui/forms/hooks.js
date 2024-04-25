@@ -166,10 +166,7 @@ export const useDepositApiClient = ({
 
   const recordSerializer = serializer
     ? new serializer(internalFieldsArray, keysToRemove)
-    : new OARepoDepositSerializer(
-        internalFieldsArray,
-        keysToRemove,
-      );
+    : new OARepoDepositSerializer(internalFieldsArray, keysToRemove);
 
   const apiClient = baseApiClient
     ? new baseApiClient(createUrl, recordSerializer)
@@ -347,12 +344,12 @@ export const useDepositApiClient = ({
         );
         return;
       } else {
-        const params = new URLSearchParams();
-        params.append("preview", "1");
-        // TODO: draft does not containt link to detail page i.e. edit_html and self_html are the same in case of draft
-        const url = new URL(saveResult.links.self_html.replace("/edit", ""));
-        url.search = params.toString();
-        window.location.href = url.toString();
+        const url = saveResult.links.self_html;
+        setFieldValue(
+          "successMessage",
+          i18next.t("Your draft was saved. Redirecting to the preview page...")
+        );
+        window.location.href = url;
       }
       return saveResult;
     } catch (error) {

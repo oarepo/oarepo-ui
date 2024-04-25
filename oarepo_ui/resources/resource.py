@@ -30,7 +30,6 @@ from oarepo_ui.utils import dump_empty
 
 from .templating.data import FieldData
 
-from .decorators import pass_is_preview
 
 if TYPE_CHECKING:
     from .components import UIResourceComponent
@@ -99,21 +98,24 @@ class RecordsUIResource(UIResource):
 
     def create_url_rules(self):
         """Create the URL rules for the record resource."""
+        routes = []
         route_config = self.config.routes
-        search_route = route_config["search"]
-        if not search_route.endswith("/"):
-            search_route += "/"
-        search_route_without_slash = search_route[:-1]
-        routes = [
-            route("GET", route_config["export"], self.export),
-            route("GET", route_config["detail"], self.detail),
-            route("GET", search_route, self.search),
-            route("GET", search_route_without_slash, self.search_without_slash),
-        ]
-        if "create" in route_config:
-            routes += [route("GET", route_config["create"], self.create)]
-        if "edit" in route_config:
-            routes += [route("GET", route_config["edit"], self.edit)]
+        for route_name, route_url in route_config.items():
+            if route_name == "search":
+                search_route = route_url
+                if not search_route.endswith("/"):
+                    search_route += "/"
+                search_route_without_slash = search_route[:-1]
+                routes.append(route("GET", search_route, self.search))
+                routes.append(
+                    route(
+                        "GET",
+                        search_route_without_slash,
+                        self.search_without_slash,
+                    )
+                )
+            else:
+                routes.append(route("GET", route_url, getattr(self, route_name)))
         return routes
 
     def empty_record(self, resource_requestctx, **kwargs):
@@ -138,24 +140,42 @@ class RecordsUIResource(UIResource):
             self.config.api_service.replace("-", "_"), {}
         )
 
-    @pass_is_preview
+    # helper function to avoid duplicating code between detail and preview handler
     @request_read_args
     @request_view_args
-    def detail(self, is_preview=False):
-        """Returns item detail page."""
-        try:
+    def _detail(self, *, is_preview=False):
+        if is_preview:
             api_record = self._get_record(resource_requestctx, allow_draft=is_preview)
-        except PIDDeletedError as e:
-            return current_oarepo_ui.catalog.render(
-                self.get_jinjax_macro(
-                    "tombstone",
+            render_method = self.get_jinjax_macro(
+                "preview",
+                identity=g.identity,
+                args=resource_requestctx.args,
+                view_args=resource_requestctx.view_args,
+                default_macro=self.config.templates["detail"],
+            )
+
+        else:
+            try:
+                api_record = self._get_record(
+                    resource_requestctx, allow_draft=is_preview
+                )
+                render_method = self.get_jinjax_macro(
+                    "detail",
                     identity=g.identity,
                     args=resource_requestctx.args,
                     view_args=resource_requestctx.view_args,
-                    default_macro="Tombstone",
-                ),
-                pid=resource_requestctx.view_args["pid_value"],
-            )
+                )
+            except PIDDeletedError as e:
+                return current_oarepo_ui.catalog.render(
+                    self.get_jinjax_macro(
+                        "tombstone",
+                        identity=g.identity,
+                        args=resource_requestctx.args,
+                        view_args=resource_requestctx.view_args,
+                        default_macro="Tombstone",
+                    ),
+                    pid=resource_requestctx.view_args["pid_value"],
+                )
 
         # TODO: handle permissions UI way - better response than generic error
         record = self.config.ui_serializer.dump_obj(api_record.to_dict())
@@ -191,6 +211,7 @@ class RecordsUIResource(UIResource):
             custom_fields=self._get_custom_fields(
                 api_record=api_record, resource_requestctx=resource_requestctx
             ),
+            is_preview=is_preview,
         )
 
         metadata = dict(record.get("metadata", record))
@@ -208,14 +229,17 @@ class RecordsUIResource(UIResource):
         }
 
         return current_oarepo_ui.catalog.render(
-            self.get_jinjax_macro(
-                "detail",
-                identity=g.identity,
-                args=resource_requestctx.args,
-                view_args=resource_requestctx.view_args,
-            ),
+            render_method,
             **render_kwargs,
         )
+
+    def detail(self):
+        """Returns item detail page."""
+        return self._detail()
+
+    def preview(self):
+        """Returns detail page preview."""
+        return self._detail(is_preview=True)
 
     def make_links_absolute(self, links, api_prefix):
         # make links absolute
@@ -311,11 +335,10 @@ class RecordsUIResource(UIResource):
             context=current_oarepo_ui.catalog.jinja_env.globals,
         )
 
-    @pass_is_preview
     @request_read_args
     @request_view_args
     @request_export_args
-    def export(self, is_preview):
+    def _export(self, *, is_preview=False):
         pid_value = resource_requestctx.view_args["pid_value"]
         export_format = resource_requestctx.view_args["export_format"]
         record = self._get_record(resource_requestctx, allow_draft=is_preview)
@@ -338,6 +361,12 @@ class RecordsUIResource(UIResource):
             "Content-Disposition": f"attachment; filename={filename}",
         }
         return (exported_record, 200, headers)
+
+    def export(self):
+        return self._export()
+
+    def export_preview(self):
+        return self._export(is_preview=True)
 
     def get_jinjax_macro(
         self,
