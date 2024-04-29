@@ -295,6 +295,7 @@ class RecordsUIResource(UIResource):
                 "ui_endpoint": self.config.url_prefix,
                 "ui_links": ui_links,
                 "overridableIdPrefix": overridable_id_prefix,
+                "defaultComponents": self.config.default_components
             },
         )
 
