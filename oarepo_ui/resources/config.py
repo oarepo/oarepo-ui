@@ -98,7 +98,8 @@ class RecordsUIResourceConfig(UIResourceConfig):
                     schema.value:
                     component
             }
-        else: {}
+        else: 
+            return {}
     
     @property
     def exports(self):
