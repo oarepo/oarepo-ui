@@ -1,8 +1,10 @@
-import React, { useEffect, useRef, useMemo } from "react";
+import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import PropTypes from "prop-types";
 import { Xaxis } from "./Xaxis.jsx";
 import { Popup } from "semantic-ui-react";
+import { format } from "date-fns";
+import { cs } from "date-fns/locale";
 
 export const Histogram = ({
   histogramData,
@@ -23,7 +25,7 @@ export const Histogram = ({
     const filters = currentQueryState.filters.filter((f) => f[0] !== aggName);
     updateQueryState({
       ...currentQueryState,
-      filters: [...filters, [aggName, `${value}/${value}`]],
+      filters: [...filters, [aggName, value]],
     });
   };
 
@@ -34,9 +36,8 @@ export const Histogram = ({
         svgContainerRef.current.clientWidth;
     }
   }, []);
-
   const [marginTop, marginRight, marginBottom, marginLeft] = svgMargins ?? [
-    20, 20, 30, 40,
+    20, 20, 70, 40,
   ];
   const width =
     svgWidth ??
@@ -44,10 +45,10 @@ export const Histogram = ({
       marginLeft +
       marginRight +
       50;
-  const height = svgHeight ?? 500;
+  const height = svgHeight ?? 550;
 
   const x = d3
-    .scaleLinear()
+    .scaleTime()
     .domain([
       histogramData[0]?.key,
       histogramData[histogramData.length - 1]?.key,
@@ -59,13 +60,20 @@ export const Histogram = ({
     .domain([0, d3.max(histogramData, (d) => d?.doc_count)])
     .range([height - marginBottom, marginTop]);
 
-  const bars = histogramData.map((d, i) => {
+  const bars = histogramData.map((d, i, array) => {
+    const intervalSize = array[1].key - array[0].key;
     return (
       <Popup
         offset={[0, 10]}
         position="top center"
         key={d.key}
-        content={`${d.key}: ${d?.doc_count}`}
+        content={`${format(array[i].key, "PPP", { locale: cs })}-${
+          array[i + 1]
+            ? format(array[i + 1].key, "PPP", { locale: cs })
+            : format(array[i].key.getTime() + intervalSize, "PPP", {
+                locale: cs,
+              })
+        }: ${d?.doc_count}`}
         trigger={
           <rect
             className={rectangleClassName}
@@ -74,7 +82,14 @@ export const Histogram = ({
             y={y(d.doc_count)}
             height={y(0) - y(d?.doc_count)}
             fill="steelblue"
-            onClick={() => handleRectangleClick(d.key)}
+            onClick={() =>
+              handleRectangleClick(
+                `${format(d.key, "yyyy-MM-dd")}/${format(
+                  array[i + 1].key,
+                  "yyyy-MM-dd"
+                )}`
+              )
+            }
           />
         }
       />
@@ -109,7 +124,7 @@ export const Histogram = ({
 Histogram.propTypes = {
   histogramData: PropTypes.arrayOf(
     PropTypes.shape({
-      key: PropTypes.string.isRequired,
+      key: PropTypes.instanceOf(Date).isRequired,
       doc_count: PropTypes.number.isRequired,
     })
   ).isRequired,

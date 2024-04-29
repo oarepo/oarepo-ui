@@ -1,18 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { Histogram } from "./histogram";
-import { arrayData } from "./data";
 import { DoubleSlider } from "./DoubleSlider";
 import { withState } from "react-searchkit";
 import _get from "lodash/get";
-
-const renderThumb = (props, state) => {
-  console.log(state);
-  return (
-    <div {...props}>
-      <div></div>
-    </div>
-  );
-};
+import { ShouldRender } from "@js/oarepo_ui";
+import { differenceInDays } from "date-fns";
 
 const _getResultBuckets = (resultsAggregations, aggName) => {
   // get buckets of this field
@@ -32,7 +24,7 @@ const _getResultBuckets = (resultsAggregations, aggName) => {
 
 const HistogramComponent = ({
   currentResultsState: {
-    data: { aggregations },
+    data: { aggregations, total },
     loading,
   },
   currentQueryState,
@@ -40,56 +32,46 @@ const HistogramComponent = ({
   aggName,
 }) => {
   // TODO: get min and max year from data
-  const MIN_YEAR = 1924;
-  const MAX_YEAR = 2024;
-  // const [sliderValue, setSliderValue] = useState([
-  //   arrayData[0].year,
-  //   arrayData[arrayData.length - 1].year,
-  // ]);
+  const MIN_YEAR = new Date(
+    "Tue Jan 01 1924 01:00:00 GMT+0100 (Central European Standard Time"
+  );
+  const MAX_YEAR = new Date(
+    "Mon Jan 01 2024 01:00:00 GMT+0100 (Central European Standard Time)"
+  );
+
+  const MIN_SLIDER_VALUE = 0;
+  const MAX_SLIDER_VALUE = differenceInDays(MAX_YEAR, MIN_YEAR);
+
   const histogramData = _getResultBuckets(aggregations, aggName).map((d) => {
-    return { ...d, key: parseInt(d.key), doc_count: d.doc_count + 200 };
+    return {
+      ...d,
+      key: new Date(d.key),
+    };
   });
-  console.log(histogramData);
-  // const handleAfterChange = (value) => {
-  //   const newData = histogramData.filter(
-  //     (d) => d.year >= value[0] && d.year <= value[1]
-  //   );
-  //   setData(newData);
-  // };
-
-  // const handleChange = (value) => {
-  //   setSliderValue(value);
-  // };
-
-  // const handleRectangleClick = (value) => {
-  //   setSliderValue([value.year, value.year]);
-  //   // setData([value]);
-  // };
 
   return (
-    !loading && (
-      <React.Fragment>
-        <Histogram
-          histogramData={histogramData}
-          svgHeight={250}
-          rectangleClassName={"histogram-rectangle"}
-          updateQueryState={updateQueryState}
-          currentQueryState={currentQueryState}
-          aggName={aggName}
-        />
-        <DoubleSlider
-          // sliderValue={sliderValue}
-          aggName={aggName}
-          className="horizontal-slider"
-          thumbClassName="thumb"
-          trackClassName="track"
-          ariaLabel={["Lower thumb", "Upper thumb"]}
-          ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
-          min={MIN_YEAR}
-          max={MAX_YEAR}
-        />
-      </React.Fragment>
-    )
+    <ShouldRender condition={!loading && total > 0}>
+      <Histogram
+        histogramData={histogramData}
+        svgHeight={250}
+        rectangleClassName={"histogram-rectangle"}
+        updateQueryState={updateQueryState}
+        currentQueryState={currentQueryState}
+        aggName={aggName}
+      />
+      <DoubleSlider
+        aggName={aggName}
+        className="horizontal-slider"
+        thumbClassName="thumb"
+        trackClassName="track"
+        ariaLabel={["Lower thumb", "Upper thumb"]}
+        ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
+        min={MIN_SLIDER_VALUE}
+        max={MAX_SLIDER_VALUE}
+        minDate={MIN_YEAR}
+        maxDate={MAX_YEAR}
+      />
+    </ShouldRender>
   );
 };
 
