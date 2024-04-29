@@ -58,6 +58,8 @@ else:
     dependencies = {
         "react-datepicker": "^4.21.0",
         "edtf": "^4.0.0",
+        "d3": "^7.8.5",
+        "react-slider": "^2.0.6",
     }
     aliases = {}
 

@@ -1004,3 +1004,61 @@ name of the component from above)
   This will load the overrides, enabling the user of your component to override your css if required
  */
 .loadUIOverrides();
+.horizontal-slider {
+  width: 100%;
+  height: 5px;
+  margin-top: 2rem;
+}
+.thumb {
+  top: -5px;
+  height: 15px;
+  line-height: 25px;
+  width: 15px;
+  text-align: center;
+  background-color: #000;
+  color: #fff;
+  border-radius: 50%;
+  cursor: grab;
+}
+
+.track {
+  top: 0;
+  bottom: 0;
+  border-radius: 999px;
+  background-color: green;
+}
+
+.track.track-0,
+.track.track-2 {
+  background-color: rgb(221, 221, 221);
+}
+
+.thumb-value {
+  color: black;
+  position: absolute;
+  width: fit-content;
+  padding: 4px;
+  top: 15px;
+  left: 0;
+  right: 0;
+  border: 1px solid black;
+}
+
+.histogram-rectangle:hover {
+  fill: red;
+  cursor: pointer;
+}
+
+.slider-values {
+  width: 100%;
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.slider-handle-value {
+  border: 2px solid black;
+  padding: 8px 32px;
+  border-radius: 8px;
+  font-weight: bold;
+}
