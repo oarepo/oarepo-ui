@@ -288,7 +288,7 @@ class RecordsUIResource(UIResource):
 
         overridable_id_prefix = f"{self.config.application_id.capitalize()}.Search"
 
-        defaultComponents = {}
+        defaultComponents = getattr(self.api_config, "search_components", {})
 
         search_options = dict(
             api_config=self.api_service.config,
