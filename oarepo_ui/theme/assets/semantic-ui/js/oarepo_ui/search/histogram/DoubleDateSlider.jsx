@@ -6,7 +6,7 @@ import { addDays, differenceInDays } from "date-fns";
 import { formatDate } from "@js/oarepo_ui";
 import { i18next } from "@translations/oarepo_ui/i18next";
 
-const DoubleSliderComponent = ({
+const DoubleDateSliderComponent = ({
   currentResultsState,
   currentQueryState,
   updateQueryState,
@@ -62,7 +62,7 @@ const DoubleSliderComponent = ({
     });
   };
   return (
-    <React.Fragment>
+    <div className="ui horizontal-slider-bla">
       <ReactSlider
         value={sliderValueState}
         className={className}
@@ -81,11 +81,11 @@ const DoubleSliderComponent = ({
         <div className="slider-handle-value">{currentStartDate}</div>
         <div className="slider-handle-value">{currentEndDate}</div>
       </div>
-    </React.Fragment>
+    </div>
   );
 };
 
-DoubleSliderComponent.propTypes = {
+DoubleDateSliderComponent.propTypes = {
   currentResultsState: PropTypes.object.isRequired,
   currentQueryState: PropTypes.object.isRequired,
   updateQueryState: PropTypes.func.isRequired,
@@ -99,10 +99,10 @@ DoubleSliderComponent.propTypes = {
   trackClassName: PropTypes.string,
 };
 
-DoubleSliderComponent.defaultProps = {
+DoubleDateSliderComponent.defaultProps = {
   className: "horizontal-slider",
   thumbClassName: "thumb",
   trackClassName: "track",
 };
 
-export const DoubleSlider = withState(DoubleSliderComponent);
+export const DoubleDateSlider = withState(DoubleDateSliderComponent);

@@ -22,18 +22,7 @@ export const Xaxis = ({ xScale, height, marginBottom, width }) => {
           transform={`translate(${xOffset}, ${height - marginBottom})`}
         >
           <line y2="6" stroke="currentColor" />
-          <text
-            key={value}
-            style={{
-              fontSize: "12px",
-              textAnchor: "start",
-              dominantBaseline: "hanging",
-              transformOrigin: "left top",
-              transform: `translate(0px, 5px) rotate(45deg)`,
-              height: "20px",
-              marginBottom: "20px",
-            }}
-          >
+          <text className="x-axis-label" key={value}>
             {formatDate(value, "dd LLLL yyyy", i18next.language)}
           </text>
         </g>

@@ -1,22 +1,21 @@
 import React from "react";
-import { Histogram } from "./histogram";
-import { DoubleSlider } from "./DoubleSlider";
+import { Histogram } from "./Histogram";
+import { DoubleDateSlider } from "./DoubleDateSlider";
 import { withState } from "react-searchkit";
 import _get from "lodash/get";
 import { ShouldRender, useLoadLocaleObjects } from "@js/oarepo_ui";
 import { differenceInDays } from "date-fns";
+import PropTypes from "prop-types";
 
 // TODO:
 // 2. Create its own less component for slider
-// 3. Create its own less component for histogram
-// 4. Create its own less component for xaxis
 // 5. figure out memory leak issue two times calling api on mouse up
 // 6. Is it possible to somehow implement similar principle as for dynamic list item
 // but for buckets
 // 8. make it possible to hover over bars with small doc count
-// 9. displaying nicely when there is only one or two bars
 // 10. get min and max year from data
 // 11. test with date modified facet too
+// 12. display formated selected filter instead of edtf format
 const _getResultBuckets = (resultsAggregations, aggName) => {
   // get buckets of this field
   const thisAggs = _get(resultsAggregations, aggName, {});
@@ -56,6 +55,7 @@ const HistogramComponent = ({
     return {
       ...d,
       key: new Date(d.key),
+      // as you narrow the range, sometimes buckets would have the same key i.e. same day
       uuid: crypto.randomUUID(),
     };
   });
@@ -70,7 +70,7 @@ const HistogramComponent = ({
         currentQueryState={currentQueryState}
         aggName={aggName}
       />
-      <DoubleSlider
+      <DoubleDateSlider
         aggName={aggName}
         thumbClassName="thumb"
         trackClassName="track"
@@ -85,4 +85,10 @@ const HistogramComponent = ({
   );
 };
 
+HistogramComponent.propTypes = {
+  currentResultsState: PropTypes.object.isRequired,
+  currentQueryState: PropTypes.object.isRequired,
+  updateQueryState: PropTypes.func.isRequired,
+  aggName: PropTypes.string.isRequired,
+};
 export const HistogramWSlider = withState(HistogramComponent);

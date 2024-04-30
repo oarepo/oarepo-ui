@@ -32,7 +32,7 @@ export const Histogram = ({
   const [marginTop, marginRight, marginBottom, marginLeft] = svgMargins ?? [
     20, 20, 70, 40,
   ];
-  const width =
+  let width =
     svgWidth ??
     histogramData.length * (rectangleWidth + rectangleSpacing) +
       marginLeft +
@@ -56,8 +56,6 @@ export const Histogram = ({
   const maxCountElement = histogramData.reduce((prev, current) =>
     prev.doc_count > current.doc_count ? prev : current
   );
-  console.log(x(maxCountElement.key));
-  console.log(maxCountElement);
 
   const bars = histogramData.map((d, i, array) => {
     let intervalSize;
@@ -74,10 +72,11 @@ export const Histogram = ({
         key={d.uuid}
         content={
           intervalSize === 0
-            ? `${formatDate(array[i].key, "PPP", i18next.language)}: ${
-                d?.doc_count
-              }`
-            : `${formatDate(array[i].key, "PPP", i18next.language)}-${
+            ? `${formatDate(array[i].key, "PPP", i18next.language)}:${i18next.t(
+                "totalResults",
+                { count: d?.doc_count }
+              )}`
+            : `${formatDate(array[i].key, "PPP", i18next.language)}/${
                 array[i + 1]
                   ? formatDate(array[i + 1].key, "PPP", i18next.language)
                   : formatDate(
@@ -87,7 +86,7 @@ export const Histogram = ({
                       "PPP",
                       i18next.language
                     )
-              }: ${d?.doc_count}`
+              }: ${i18next.t("totalResults", { count: d?.doc_count })}`
         }
         trigger={
           <rect
@@ -127,15 +126,11 @@ export const Histogram = ({
 
   return (
     <div
-      className="svg-container"
-      style={{ overflow: "auto", position: "relative" }}
+      className="ui histogram-container"
+      // style={{ overflow: "auto", position: "relative", width: "100%" }}
       ref={svgContainerRef}
     >
-      <svg
-        height={height}
-        viewBox={`0 0 ${width} ${height}`}
-        style={{ height: "auto" }}
-      >
+      <svg height={height} viewBox={`0 0 ${width} ${height}`}>
         {bars}
         <Xaxis
           xScale={x}
@@ -164,6 +159,8 @@ Histogram.propTypes = {
   rectangleSpacing: PropTypes.number,
   rectangleClassName: PropTypes.string,
   updateQueryState: PropTypes.func.isRequired,
+  currentQueryState: PropTypes.object.isRequired,
+  aggName: PropTypes.string.isRequired,
 };
 
 Histogram.defaultProps = {

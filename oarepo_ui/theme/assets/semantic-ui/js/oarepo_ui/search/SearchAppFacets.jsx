@@ -1,6 +1,6 @@
 import React from "react";
 import { BucketAggregation } from "react-searchkit";
-import { HistogramWSlider } from "./histogram/HistogramComponent";
+import { HistogramWSlider } from "./histogram/HistogramWSlider";
 
 export const SearchAppFacets = ({ aggs, appName }) => {
   const histogramAgg = aggs.find(
@@ -9,7 +9,6 @@ export const SearchAppFacets = ({ aggs, appName }) => {
   const otherAggs = aggs.filter(
     (agg) => agg.aggName !== "date_issued_histogram"
   );
-  console.log(otherAggs);
   return (
     <div className="facets-container">
       <div className="facet-list">
