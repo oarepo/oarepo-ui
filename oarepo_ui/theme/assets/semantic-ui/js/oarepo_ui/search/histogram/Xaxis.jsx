@@ -1,9 +1,7 @@
 import React, { useMemo } from "react";
 import PropTypes from "prop-types";
-import { format } from "date-fns";
+import { formatDate } from "@js/oarepo_ui";
 import { i18next } from "@translations/oarepo_ui/i18next";
-// TODO: importing locales dynamically
-import { cs } from "date-fns/locale";
 
 export const Xaxis = ({ xScale, height, marginBottom, width }) => {
   const ticks = useMemo(() => {
@@ -12,7 +10,6 @@ export const Xaxis = ({ xScale, height, marginBottom, width }) => {
       xOffset: xScale(value),
     }));
   }, [width, xScale]);
-
   return (
     <svg>
       <path
@@ -23,22 +20,21 @@ export const Xaxis = ({ xScale, height, marginBottom, width }) => {
         <g
           key={value}
           transform={`translate(${xOffset}, ${height - marginBottom})`}
-          style={{ marginBottom: "40px" }}
         >
           <line y2="6" stroke="currentColor" />
           <text
             key={value}
             style={{
-              fontSize: "10px",
-              textAnchor: "start", // Anchor set to start (left side)
-              dominantBaseline: "hanging", // Align text to top
-              transformOrigin: "left top", // Set rotation origin to top-left corner
-              transform: `translate(0px, 5px) rotate(45deg)`, // Rotate text by +45 degrees
+              fontSize: "12px",
+              textAnchor: "start",
+              dominantBaseline: "hanging",
+              transformOrigin: "left top",
+              transform: `translate(0px, 5px) rotate(45deg)`,
               height: "20px",
               marginBottom: "20px",
             }}
           >
-            {format(value, "PPP", { locale: cs })}
+            {formatDate(value, "dd LLLL yyyy", i18next.language)}
           </text>
         </g>
       ))}

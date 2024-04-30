@@ -3,8 +3,8 @@ import * as d3 from "d3";
 import PropTypes from "prop-types";
 import { Xaxis } from "./Xaxis.jsx";
 import { Popup } from "semantic-ui-react";
-import { format } from "date-fns";
-import { cs } from "date-fns/locale";
+import { i18next } from "@translations/oarepo_ui/i18next";
+import { formatDate } from "@js/oarepo_ui";
 
 export const Histogram = ({
   histogramData,
@@ -21,7 +21,7 @@ export const Histogram = ({
   const svgContainerRef = useRef();
 
   const handleRectangleClick = (value) => {
-    // if (value === sliderValue) return;
+    if (value.split("/")[0] === value.split("/")[1]) return;
     const filters = currentQueryState.filters.filter((f) => f[0] !== aggName);
     updateQueryState({
       ...currentQueryState,
@@ -29,13 +29,6 @@ export const Histogram = ({
     });
   };
 
-  useEffect(() => {
-    if (svgContainerRef.current) {
-      svgContainerRef.current.scrollLeft =
-        svgContainerRef.current.scrollWidth -
-        svgContainerRef.current.clientWidth;
-    }
-  }, []);
   const [marginTop, marginRight, marginBottom, marginLeft] = svgMargins ?? [
     20, 20, 70, 40,
   ];
@@ -60,23 +53,49 @@ export const Histogram = ({
     .domain([0, d3.max(histogramData, (d) => d?.doc_count)])
     .range([height - marginBottom, marginTop]);
 
+  const maxCountElement = histogramData.reduce((prev, current) =>
+    prev.doc_count > current.doc_count ? prev : current
+  );
+  console.log(x(maxCountElement.key));
+  console.log(maxCountElement);
+
   const bars = histogramData.map((d, i, array) => {
-    const intervalSize = array[1].key - array[0].key;
+    let intervalSize;
+    if (array.length > 1) {
+      intervalSize = array[1].key - array[0].key;
+    } else {
+      intervalSize = 0;
+    }
+    // TODO: figure out why the last bar is showing end date of + 1 day
     return (
       <Popup
         offset={[0, 10]}
         position="top center"
-        key={d.key}
-        content={`${format(array[i].key, "PPP", { locale: cs })}-${
-          array[i + 1]
-            ? format(array[i + 1].key, "PPP", { locale: cs })
-            : format(array[i].key.getTime() + intervalSize, "PPP", {
-                locale: cs,
-              })
-        }: ${d?.doc_count}`}
+        key={d.uuid}
+        content={
+          intervalSize === 0
+            ? `${formatDate(array[i].key, "PPP", i18next.language)}: ${
+                d?.doc_count
+              }`
+            : `${formatDate(array[i].key, "PPP", i18next.language)}-${
+                array[i + 1]
+                  ? formatDate(array[i + 1].key, "PPP", i18next.language)
+                  : formatDate(
+                      array[i].key.getTime() +
+                        intervalSize -
+                        24 * 60 * 60 * 1000,
+                      "PPP",
+                      i18next.language
+                    )
+              }: ${d?.doc_count}`
+        }
         trigger={
           <rect
-            className={rectangleClassName}
+            className={
+              d.uuid === maxCountElement.uuid
+                ? `${rectangleClassName} max-rect`
+                : rectangleClassName
+            }
             x={x(d.key) - rectangleWidth / 2}
             width={rectangleWidth}
             y={y(d.doc_count)}
@@ -84,8 +103,10 @@ export const Histogram = ({
             fill="steelblue"
             onClick={() =>
               handleRectangleClick(
-                `${format(d.key, "yyyy-MM-dd")}/${format(
-                  array[i + 1].key,
+                `${formatDate(d.key, "yyyy-MM-dd")}/${formatDate(
+                  array[i + 1]
+                    ? array[i + 1].key
+                    : array[i].key.getTime() + intervalSize,
                   "yyyy-MM-dd"
                 )}`
               )
@@ -95,6 +116,14 @@ export const Histogram = ({
       />
     );
   });
+
+  // to scroll into the area where the bar with highest count is
+  useEffect(() => {
+    if (svgContainerRef.current) {
+      svgContainerRef.current.scrollLeft =
+        x(maxCountElement.key) - rectangleWidth;
+    }
+  }, [maxCountElement.key, x, rectangleWidth]);
 
   return (
     <div

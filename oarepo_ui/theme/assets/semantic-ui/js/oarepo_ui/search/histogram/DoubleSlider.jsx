@@ -2,8 +2,9 @@ import ReactSlider from "react-slider";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { withState } from "react-searchkit";
-import { addDays, format, differenceInDays } from "date-fns";
-import { cs } from "date-fns/locale";
+import { addDays, differenceInDays } from "date-fns";
+import { formatDate } from "@js/oarepo_ui";
+import { i18next } from "@translations/oarepo_ui/i18next";
 
 const DoubleSliderComponent = ({
   currentResultsState,
@@ -29,14 +30,16 @@ const DoubleSliderComponent = ({
     ];
   }
   const [sliderValueState, setSliderValueState] = useState(sliderValue);
-  const currentStartDate = format(
+  const currentStartDate = formatDate(
     addDays(minDate, sliderValueState[0]),
     "PPP",
-    { locale: cs }
+    i18next.language
   );
-  const currentEndDate = format(addDays(minDate, sliderValueState[1]), "PPP", {
-    locale: cs,
-  });
+  const currentEndDate = formatDate(
+    addDays(minDate, sliderValueState[1]),
+    "PPP",
+    i18next.language
+  );
   const handleAfterChange = (value) => {
     if (value === sliderValue) return;
     const filters = currentQueryState.filters.filter((f) => f[0] !== aggName);
@@ -47,8 +50,11 @@ const DoubleSliderComponent = ({
       });
       return;
     }
-    const currentStartDate = format(addDays(minDate, value[0]), "yyyy-MM-dd");
-    const currentEndDate = format(addDays(minDate, value[1]), "yyyy-MM-dd");
+    const currentStartDate = formatDate(
+      addDays(minDate, value[0]),
+      "yyyy-MM-dd"
+    );
+    const currentEndDate = formatDate(addDays(minDate, value[1]), "yyyy-MM-dd");
 
     updateQueryState({
       ...currentQueryState,
