@@ -13,6 +13,8 @@ import PropTypes from "prop-types";
 // 6. Is it possible to somehow implement similar principle as for dynamic list item
 // but for buckets
 // 8. make it possible to hover over bars with small doc count
+// 9. display one bar in a nice way
+// 10. explore eliminating bars with 0 docs
 // 10. get min and max year from data
 // 11. test with date modified facet too
 // 12. display formated selected filter instead of edtf format

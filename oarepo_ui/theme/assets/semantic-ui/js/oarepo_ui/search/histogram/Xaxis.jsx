@@ -11,17 +11,17 @@ export const Xaxis = ({ xScale, height, marginBottom, width }) => {
     }));
   }, [width, xScale]);
   return (
-    <svg>
+    <svg className="x-axis-container">
       <path
+        className="x-axis-line"
         d={`M ${0} ${height - marginBottom} H ${width}`}
-        stroke="currentColor"
       />
       {ticks.map(({ value, xOffset }) => (
         <g
           key={value}
           transform={`translate(${xOffset}, ${height - marginBottom})`}
         >
-          <line y2="6" stroke="currentColor" />
+          <line y2="6" className="x-axis-tick" />
           <text className="x-axis-label" key={value}>
             {formatDate(value, "dd LLLL yyyy", i18next.language)}
           </text>

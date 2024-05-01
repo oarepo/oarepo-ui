@@ -62,7 +62,7 @@ const DoubleDateSliderComponent = ({
     });
   };
   return (
-    <div className="ui horizontal-slider-bla">
+    <div className="ui horizontal-slider">
       <ReactSlider
         value={sliderValueState}
         className={className}
@@ -100,7 +100,7 @@ DoubleDateSliderComponent.propTypes = {
 };
 
 DoubleDateSliderComponent.defaultProps = {
-  className: "horizontal-slider",
+  className: "slider",
   thumbClassName: "thumb",
   trackClassName: "track",
 };

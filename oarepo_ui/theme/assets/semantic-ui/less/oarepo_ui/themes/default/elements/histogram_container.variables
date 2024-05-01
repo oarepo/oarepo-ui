@@ -1,1 +1,5 @@
 @labelFontSize: 0.75rem;
+@histogramRectangleColor: steelblue;
+@histogramRectangleHoverColor: red;
+@xAxisLineStroke: currentColor;
+@xAxisTickStroke: currentColor;

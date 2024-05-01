@@ -1,0 +1,5 @@
+@sliderThumbBackgroundColor: #000;
+@sliderThumbColor: #fff;
+@sliderTrackBackgroundColor: green;
+@sliderTrackDeselectedBackgroundColor: rgb(221, 221, 221);
+@thumbValueColor: black;

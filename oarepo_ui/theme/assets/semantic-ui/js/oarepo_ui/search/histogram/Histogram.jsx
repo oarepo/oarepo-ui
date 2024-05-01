@@ -90,16 +90,11 @@ export const Histogram = ({
         }
         trigger={
           <rect
-            className={
-              d.uuid === maxCountElement.uuid
-                ? `${rectangleClassName} max-rect`
-                : rectangleClassName
-            }
+            className={rectangleClassName}
             x={x(d.key) - rectangleWidth / 2}
             width={rectangleWidth}
             y={y(d.doc_count)}
             height={y(0) - y(d?.doc_count)}
-            fill="steelblue"
             onClick={() =>
               handleRectangleClick(
                 `${formatDate(d.key, "yyyy-MM-dd")}/${formatDate(
@@ -125,11 +120,7 @@ export const Histogram = ({
   }, [maxCountElement.key, x, rectangleWidth]);
 
   return (
-    <div
-      className="ui histogram-container"
-      // style={{ overflow: "auto", position: "relative", width: "100%" }}
-      ref={svgContainerRef}
-    >
+    <div className="ui histogram-container" ref={svgContainerRef}>
       <svg height={height} viewBox={`0 0 ${width} ${height}`}>
         {bars}
         <Xaxis

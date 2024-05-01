@@ -39,14 +39,21 @@ name of the component from above)
   position: relative;
 
   width: 100%;
-
+  .histogram-rectangle {
+    fill: @histogramRectangleColor;
+  }
   .histogram-rectangle:hover {
-    fill: red;
+    fill: @histogramRectangleHoverColor;
     cursor: pointer;
   }
-
   svg {
     min-width: 100%;
+  }
+  .x-axis-line {
+    stroke: @xAxisLineStroke;
+  }
+  .x-axis-tick {
+    stroke: @xAxisTickStroke;
   }
   .x-axis-label {
     font-size: @labelFontSize;
