@@ -89,6 +89,19 @@ class RecordsUIResourceConfig(UIResourceConfig):
     empty_record = {}
 
     @property
+    def default_components(self):
+        service  = current_service_registry.get(self.api_service)
+        schema = getattr(service.record_cls, "schema", None)
+        component = getattr(self ,"search_component", None )
+        if schema and component:
+            return {
+                    schema.value:
+                    component
+            }
+        else: 
+            return {}
+    
+    @property
     def exports(self):
         return {
             "json": {
