@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import PropTypes from "prop-types";
 import _isEmpty from "lodash/isEmpty";
 import Overridable from "react-overridable";
@@ -18,8 +18,119 @@ import { ShouldActiveFiltersRender } from "@js/oarepo_ui";
 
 const ResultOptionsWithState = withState(ResultOptions);
 
+export const SearchAppResultsGrid = ({
+  columnsAmount,
+  facetsAvailable,
+  config,
+  appName,
+  buildUID,
+  resultsPaneLayout,
+  hasButtonSidebar,
+  resultSortLayout,
+}) => {
+  const [sidebarVisible, setSidebarVisible] = useState(false);
+
+  return (
+    <Grid
+      columns={columnsAmount}
+      relaxed
+      className="search-app rel-mt-2"
+      padded
+    >
+      <Grid.Row verticalAlign="middle" className="result-options">
+        {facetsAvailable && (
+          <Grid.Column
+            floated="left"
+            only="mobile tablet"
+            mobile={2}
+            tablet={2}
+            textAlign="center"
+          >
+            <Button
+              basic
+              icon="sliders"
+              onClick={() => setSidebarVisible(true)}
+              title={i18next.t("Filter results")}
+              aria-label={i18next.t("Filter results")}
+            />
+          </Grid.Column>
+        )}
+        {facetsAvailable && (
+          <ShouldActiveFiltersRender>
+            <Grid.Column floated="left" only="computer" width={11}>
+              <ActiveFilters />
+            </Grid.Column>
+          </ShouldActiveFiltersRender>
+        )}
+        <Grid.Column textAlign="right" floated="right" {...resultSortLayout}>
+          <ResultOptionsWithState />
+        </Grid.Column>
+      </Grid.Row>
+      <ShouldActiveFiltersRender>
+        <Grid.Row>
+          <Grid.Column floated="left">
+            <ClearFiltersButton />
+          </Grid.Column>
+        </Grid.Row>
+      </ShouldActiveFiltersRender>
+      <Grid.Row columns={columnsAmount}>
+        {facetsAvailable && (
+          <GridResponsiveSidebarColumn
+            mobile={4}
+            tablet={4}
+            computer={4}
+            largeScreen={4}
+            widescreen={4}
+            open={sidebarVisible}
+            onHideClick={() => setSidebarVisible(false)}
+          >
+            <SearchAppFacets
+              aggs={config.aggs}
+              appName={appName}
+              buildUID={buildUID}
+            />
+          </GridResponsiveSidebarColumn>
+        )}
+        <Grid.Column {...resultsPaneLayout}>
+          <SearchAppResultsPane
+            layoutOptions={config.layoutOptions}
+            appName={appName}
+            buildUID={buildUID}
+          />
+        </Grid.Column>
+        {hasButtonSidebar && (
+          <Grid.Column
+            mobile={16}
+            tablet={16}
+            computer={4}
+            largeScreen={4}
+            widescreen={4}
+          >
+            <Overridable
+              id={buildUID("SearchApp.buttonSidebarContainer", "", appName)}
+            ></Overridable>
+          </Grid.Column>
+        )}
+      </Grid.Row>
+    </Grid>
+  );
+};
+
+SearchAppResultsGrid.propTypes = {
+  columnsAmount: PropTypes.number.isRequired,
+
+  facetsAvailable: PropTypes.bool.isRequired,
+  config: PropTypes.shape({
+    aggs: PropTypes.array.isRequired,
+    layoutOptions: PropTypes.object,
+  }).isRequired,
+  appName: PropTypes.string.isRequired,
+  buildUID: PropTypes.func.isRequired,
+  resultsPaneLayout: PropTypes.object.isRequired,
+  hasButtonSidebar: PropTypes.bool,
+  resultSortLayout: PropTypes.object.isRequired,
+};
 export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
-  const [sidebarVisible, setSidebarVisible] = React.useState(false);
   const { appName, buildUID } = useContext(SearchConfigurationContext);
   const facetsAvailable = !_isEmpty(config.aggs);
 
@@ -110,88 +221,16 @@ export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
           </Grid.Row>
         </Grid>
       </Overridable>
-      <Grid
-        columns={columnsAmount}
-        relaxed
-        className="search-app rel-mt-2"
-        padded
-      >
-        <Grid.Row verticalAlign="middle" className="result-options">
-          {facetsAvailable && (
-            <Grid.Column
-              floated="left"
-              only="mobile tablet"
-              mobile={2}
-              tablet={2}
-              textAlign="center"
-            >
-              <Button
-                basic
-                icon="sliders"
-                onClick={() => setSidebarVisible(true)}
-                title={i18next.t("Filter results")}
-                aria-label={i18next.t("Filter results")}
-              />
-            </Grid.Column>
-          )}
-          {facetsAvailable && (
-            <ShouldActiveFiltersRender>
-              <Grid.Column floated="left" only="computer" width={11}>
-                <ActiveFilters />
-              </Grid.Column>
-            </ShouldActiveFiltersRender>
-          )}
-          <Grid.Column textAlign="right" floated="right" {...resultSortLayout}>
-            <ResultOptionsWithState />
-          </Grid.Column>
-        </Grid.Row>
-        <ShouldActiveFiltersRender>
-          <Grid.Row>
-            <Grid.Column floated="left">
-              <ClearFiltersButton />
-            </Grid.Column>
-          </Grid.Row>
-        </ShouldActiveFiltersRender>
-        <Grid.Row columns={columnsAmount}>
-          {facetsAvailable && (
-            <GridResponsiveSidebarColumn
-              mobile={4}
-              tablet={4}
-              computer={4}
-              largeScreen={4}
-              widescreen={4}
-              open={sidebarVisible}
-              onHideClick={() => setSidebarVisible(false)}
-            >
-              <SearchAppFacets
-                aggs={config.aggs}
-                appName={appName}
-                buildUID={buildUID}
-              />
-            </GridResponsiveSidebarColumn>
-          )}
-          <Grid.Column {...resultsPaneLayout}>
-            <SearchAppResultsPane
-              layoutOptions={config.layoutOptions}
-              appName={appName}
-              buildUID={buildUID}
-            />
-          </Grid.Column>
-          {hasButtonSidebar && (
-            <Grid.Column
-              mobile={16}
-              tablet={16}
-              computer={4}
-              largeScreen={4}
-              widescreen={4}
-            >
-              <Overridable
-                id={buildUID("SearchApp.buttonSidebarContainer", "", appName)}
-              ></Overridable>
-            </Grid.Column>
-          )}
-        </Grid.Row>
-      </Grid>
+      <SearchAppResultsGrid
+        columnsAmount={columnsAmount}
+        facetsAvailable={facetsAvailable}
+        config={config}
+        appName={appName}
+        buildUID={buildUID}
+        resultsPaneLayout={resultsPaneLayout}
+        hasButtonSidebar={hasButtonSidebar}
+        resultSortLayout={resultSortLayout}
+      />
     </Container>
   );
 };
@@ -208,5 +247,7 @@ SearchAppLayout.propTypes = {
       hiddenParams: PropTypes.array,
       layout: PropTypes.oneOf(["list", "grid"]),
     }),
+    aggs: PropTypes.array,
   }),
+  hasButtonSidebar: PropTypes.bool,
 };
