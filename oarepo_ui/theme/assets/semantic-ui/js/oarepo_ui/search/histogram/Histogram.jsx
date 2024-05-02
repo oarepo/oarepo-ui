@@ -46,6 +46,7 @@ export const Histogram = ({
       histogramData[0]?.key,
       histogramData[histogramData.length - 1]?.key,
     ])
+    .nice()
     .range([marginLeft, width - marginRight]);
 
   const y = d3
@@ -53,8 +54,9 @@ export const Histogram = ({
     .domain([0, d3.max(histogramData, (d) => d?.doc_count)])
     .range([height - marginBottom, marginTop]);
 
-  const maxCountElement = histogramData.reduce((prev, current) =>
-    prev.doc_count > current.doc_count ? prev : current
+  const maxCountElement = histogramData?.reduce(
+    (prev, current) => (prev.doc_count > current.doc_count ? prev : current),
+    0
   );
 
   const bars = histogramData.map((d, i, array) => {
@@ -120,19 +122,21 @@ export const Histogram = ({
   }, [maxCountElement.key, x, rectangleWidth]);
 
   return (
-    <div className="ui histogram-container" ref={svgContainerRef}>
-      <svg height={height} viewBox={`0 0 ${width} ${height}`}>
-        {bars}
-        <Xaxis
-          xScale={x}
-          height={height}
-          marginBottom={marginBottom}
-          width={width}
-          marginLeft={marginLeft}
-          histogramData={histogramData}
-        />
-      </svg>
-    </div>
+    histogramData.length > 0 && (
+      <div className="ui histogram-container" ref={svgContainerRef}>
+        <svg height={height} viewBox={`0 0 ${width} ${height}`}>
+          {bars}
+          <Xaxis
+            xScale={x}
+            height={height}
+            marginBottom={marginBottom}
+            width={width}
+            marginLeft={marginLeft}
+            histogramData={histogramData}
+          />
+        </svg>
+      </div>
+    )
   );
 };
 

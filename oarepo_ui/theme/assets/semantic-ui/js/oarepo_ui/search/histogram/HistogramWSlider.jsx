@@ -6,17 +6,14 @@ import _get from "lodash/get";
 import { ShouldRender, useLoadLocaleObjects } from "@js/oarepo_ui";
 import { differenceInDays } from "date-fns";
 import PropTypes from "prop-types";
+import { Card } from "semantic-ui-react";
 
 // TODO:
-// 2. Create its own less component for slider
-// 5. figure out memory leak issue two times calling api on mouse up
 // 6. Is it possible to somehow implement similar principle as for dynamic list item
 // but for buckets
 // 8. make it possible to hover over bars with small doc count
-// 9. display one bar in a nice way
-// 10. explore eliminating bars with 0 docs
-// 10. get min and max year from data
-// 11. test with date modified facet too
+// 9. when there is only one bar display it in a nice way
+// 10. get min and max year from data (API)
 // 12. display formated selected filter instead of edtf format
 const _getResultBuckets = (resultsAggregations, aggName) => {
   // get buckets of this field
@@ -42,6 +39,7 @@ const HistogramComponent = ({
   currentQueryState,
   updateQueryState,
   aggName,
+  aggTitle,
 }) => {
   const MIN_YEAR = new Date(
     "Tue Jan 01 1924 01:00:00 GMT+0100 (Central European Standard Time"
@@ -63,27 +61,32 @@ const HistogramComponent = ({
   });
   useLoadLocaleObjects();
   return (
-    <ShouldRender condition={!loading && total > 0}>
-      <Histogram
-        histogramData={histogramData}
-        svgHeight={250}
-        rectangleClassName={"histogram-rectangle"}
-        updateQueryState={updateQueryState}
-        currentQueryState={currentQueryState}
-        aggName={aggName}
-      />
-      <DoubleDateSlider
-        aggName={aggName}
-        thumbClassName="thumb"
-        trackClassName="track"
-        ariaLabel={["Lower thumb", "Upper thumb"]}
-        ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
-        min={MIN_SLIDER_VALUE}
-        max={MAX_SLIDER_VALUE}
-        minDate={MIN_YEAR}
-        maxDate={MAX_YEAR}
-      />
-    </ShouldRender>
+    <Card className="borderless facet">
+      <Card.Content>
+        <Card.Header as="h2">{aggTitle}</Card.Header>
+        <ShouldRender condition={!loading && total > 0}>
+          <Histogram
+            histogramData={histogramData}
+            svgHeight={250}
+            rectangleClassName={"histogram-rectangle"}
+            updateQueryState={updateQueryState}
+            currentQueryState={currentQueryState}
+            aggName={aggName}
+          />
+        </ShouldRender>
+        <DoubleDateSlider
+          aggName={aggName}
+          thumbClassName="thumb"
+          trackClassName="track"
+          ariaLabel={["Lower thumb", "Upper thumb"]}
+          ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
+          min={MIN_SLIDER_VALUE}
+          max={MAX_SLIDER_VALUE}
+          minDate={MIN_YEAR}
+          maxDate={MAX_YEAR}
+        />
+      </Card.Content>
+    </Card>
   );
 };
 
@@ -92,5 +95,6 @@ HistogramComponent.propTypes = {
   currentQueryState: PropTypes.object.isRequired,
   updateQueryState: PropTypes.func.isRequired,
   aggName: PropTypes.string.isRequired,
+  aggTitle: PropTypes.string.isRequired,
 };
 export const HistogramWSlider = withState(HistogramComponent);

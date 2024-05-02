@@ -1,6 +1,6 @@
 import ReactSlider from "react-slider";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { withState } from "react-searchkit";
 import { addDays, differenceInDays } from "date-fns";
 import { formatDate } from "@js/oarepo_ui";
@@ -30,6 +30,7 @@ const DoubleDateSliderComponent = ({
     ];
   }
   const [sliderValueState, setSliderValueState] = useState(sliderValue);
+
   const currentStartDate = formatDate(
     addDays(minDate, sliderValueState[0]),
     "PPP",
@@ -61,6 +62,14 @@ const DoubleDateSliderComponent = ({
       filters: [...filters, [aggName, `${currentStartDate}/${currentEndDate}`]],
     });
   };
+  // Need the use effect to keep the slider in sync with the selected filters i.e.
+  // in case user deletes the filters or for example applies a filter by clicking on a histogram bar
+  // I simply dont see a reasonable way to include sliderValue in dependency array without
+  // causing strange behavior
+  useEffect(() => {
+    setSliderValueState(sliderValue);
+  }, [currentFilter]);
+
   return (
     <div className="ui horizontal-slider">
       <ReactSlider
