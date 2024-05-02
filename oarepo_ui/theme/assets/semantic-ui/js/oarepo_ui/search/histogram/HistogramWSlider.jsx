@@ -3,7 +3,7 @@ import { Histogram } from "./Histogram";
 import { DoubleDateSlider } from "./DoubleDateSlider";
 import { withState } from "react-searchkit";
 import _get from "lodash/get";
-import { ShouldRender, useLoadLocaleObjects } from "@js/oarepo_ui";
+import { useLoadLocaleObjects } from "@js/oarepo_ui";
 import { differenceInDays } from "date-fns";
 import PropTypes from "prop-types";
 import { Card } from "semantic-ui-react";
@@ -61,10 +61,10 @@ const HistogramComponent = ({
   });
   useLoadLocaleObjects();
   return (
-    <Card className="borderless facet">
-      <Card.Content>
-        <Card.Header as="h2">{aggTitle}</Card.Header>
-        <ShouldRender condition={!loading && total > 0}>
+    histogramData?.length > 0 && (
+      <Card className="borderless facet">
+        <Card.Content>
+          <Card.Header as="h2">{aggTitle}</Card.Header>
           <Histogram
             histogramData={histogramData}
             svgHeight={250}
@@ -73,20 +73,20 @@ const HistogramComponent = ({
             currentQueryState={currentQueryState}
             aggName={aggName}
           />
-        </ShouldRender>
-        <DoubleDateSlider
-          aggName={aggName}
-          thumbClassName="thumb"
-          trackClassName="track"
-          ariaLabel={["Lower thumb", "Upper thumb"]}
-          ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
-          min={MIN_SLIDER_VALUE}
-          max={MAX_SLIDER_VALUE}
-          minDate={MIN_YEAR}
-          maxDate={MAX_YEAR}
-        />
-      </Card.Content>
-    </Card>
+          <DoubleDateSlider
+            aggName={aggName}
+            thumbClassName="thumb"
+            trackClassName="track"
+            ariaLabel={["Lower thumb", "Upper thumb"]}
+            ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
+            min={MIN_SLIDER_VALUE}
+            max={MAX_SLIDER_VALUE}
+            minDate={MIN_YEAR}
+            maxDate={MAX_YEAR}
+          />
+        </Card.Content>
+      </Card>
+    )
   );
 };
 
