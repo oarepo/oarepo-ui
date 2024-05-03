@@ -288,6 +288,11 @@ class RecordsUIResource(UIResource):
 
         overridable_id_prefix = f"{self.config.application_id.capitalize()}.Search"
 
+        default_components = {}
+
+        for key, value in self.config.default_components.items():
+            default_components[f"{overridable_id_prefix}.ResultList.item.{key}"] = value
+
         search_options = dict(
             api_config=self.api_service.config,
             identity=g.identity,
@@ -295,7 +300,7 @@ class RecordsUIResource(UIResource):
                 "ui_endpoint": self.config.url_prefix,
                 "ui_links": ui_links,
                 "overridableIdPrefix": overridable_id_prefix,
-                "defaultComponents": self.config.default_components
+                "defaultComponents": default_components
             },
         )
 
