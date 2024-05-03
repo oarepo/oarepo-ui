@@ -33,8 +33,7 @@ const _getResultBuckets = (resultsAggregations, aggName) => {
 
 const HistogramComponent = ({
   currentResultsState: {
-    data: { aggregations, total },
-    loading,
+    data: { aggregations },
   },
   currentQueryState,
   updateQueryState,
@@ -59,6 +58,7 @@ const HistogramComponent = ({
       uuid: crypto.randomUUID(),
     };
   });
+
   useLoadLocaleObjects();
   return (
     histogramData?.length > 0 && (
