@@ -9,8 +9,6 @@ import PropTypes from "prop-types";
 import { Card } from "semantic-ui-react";
 
 // TODO:
-// 6. Is it possible to somehow implement similar principle as for dynamic list item
-// but for buckets
 // 8. make it possible to hover over bars with small doc count
 // 9. when there is only one bar display it in a nice way
 // 10. get min and max year from data (API)

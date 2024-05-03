@@ -18,3 +18,4 @@ export { SearchappSearchbarElement } from "./SearchappSearchbarElement";
 export { ShouldActiveFiltersRender } from "./ShouldActiveFiltersRender";
 export * from "./ShouldRender";
 export * from "./util";
+export * from "./histogram";
