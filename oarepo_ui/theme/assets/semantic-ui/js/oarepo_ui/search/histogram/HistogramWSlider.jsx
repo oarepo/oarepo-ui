@@ -12,14 +12,10 @@ import { Card } from "semantic-ui-react";
 // 8. make it possible to hover over bars with small doc count
 // 9. when there is only one bar display it in a nice way
 // 10. get min and max year from data (API)
-// 12. display formated selected filter instead of edtf format
 const _getResultBuckets = (resultsAggregations, aggName) => {
-  // get buckets of this field
   const thisAggs = _get(resultsAggregations, aggName, {});
   if ("buckets" in thisAggs) {
     if (!Array.isArray(thisAggs["buckets"])) {
-      // buckets can be objects or arrays: convert to array if object
-      // to keep it consistent
       thisAggs["buckets"] = Object.entries(thisAggs["buckets"]).map(
         ([key, value]) => ({ ...value, key })
       );
@@ -28,7 +24,7 @@ const _getResultBuckets = (resultsAggregations, aggName) => {
   }
   return [];
 };
-
+// export const getDateFormat
 const HistogramComponent = ({
   currentResultsState: {
     data: { aggregations },

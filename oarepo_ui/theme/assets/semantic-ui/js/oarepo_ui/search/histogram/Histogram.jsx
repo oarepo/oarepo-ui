@@ -5,6 +5,7 @@ import { Xaxis } from "./Xaxis.jsx";
 import { Popup } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { formatDate } from "@js/oarepo_ui";
+import { differenceInDays, addDays } from "date-fns";
 
 export const Histogram = ({
   histogramData,
@@ -14,6 +15,7 @@ export const Histogram = ({
   rectangleWidth,
   rectangleSpacing,
   rectangleClassName,
+  rectangleOverlayClassName,
   updateQueryState,
   currentQueryState,
   aggName,
@@ -58,58 +60,87 @@ export const Histogram = ({
     (prev, current) => (prev.doc_count > current.doc_count ? prev : current),
     0
   );
-
   const bars = histogramData.map((d, i, array) => {
     let intervalSize;
     if (array.length > 1) {
-      intervalSize = array[1].key - array[0].key;
+      intervalSize = differenceInDays(array[1].key, array[0].key);
     } else {
       intervalSize = 0;
     }
-    // TODO: figure out why the last bar is showing end date of + 1 day
+
     return (
-      <Popup
-        offset={[0, 10]}
-        position="top center"
-        key={d.uuid}
-        content={
-          intervalSize === 0
-            ? `${formatDate(array[i].key, "PPP", i18next.language)}:${i18next.t(
-                "totalResults",
-                { count: d?.doc_count }
-              )}`
-            : `${formatDate(array[i].key, "PPP", i18next.language)}/${
-                array[i + 1]
-                  ? formatDate(array[i + 1].key, "PPP", i18next.language)
-                  : formatDate(
-                      array[i].key.getTime() +
-                        intervalSize -
-                        24 * 60 * 60 * 1000,
-                      "PPP",
-                      i18next.language
-                    )
-              }: ${i18next.t("totalResults", { count: d?.doc_count })}`
-        }
-        trigger={
-          <rect
-            className={rectangleClassName}
-            x={x(d.key) - rectangleWidth / 2}
-            width={rectangleWidth}
-            y={y(d.doc_count)}
-            height={y(0) - y(d?.doc_count)}
-            onClick={() =>
-              handleRectangleClick(
-                `${formatDate(d.key, "yyyy-MM-dd")}/${formatDate(
+      <React.Fragment key={d.uuid}>
+        <Popup
+          offset={[0, 0]}
+          position="right center"
+          content={
+            intervalSize === 0
+              ? `${formatDate(
+                  array[i].key,
+                  "PPP",
+                  i18next.language
+                )}: ${i18next.t("totalResults", { count: d?.doc_count })}`
+              : `${formatDate(array[i].key, "PPP", i18next.language)}/${
                   array[i + 1]
-                    ? array[i + 1].key
-                    : array[i].key.getTime() + intervalSize,
-                  "yyyy-MM-dd"
-                )}`
-              )
-            }
-          />
-        }
-      />
+                    ? formatDate(array[i + 1].key, "PPP", i18next.language)
+                    : formatDate(
+                        addDays(array[i].key, intervalSize),
+                        "PPP",
+                        i18next.language
+                      )
+                }: ${i18next.t("totalResults", { count: d?.doc_count })}`
+          }
+          trigger={
+            <rect
+              className={rectangleOverlayClassName}
+              x={x(d.key) - rectangleWidth / 2}
+              width={rectangleWidth}
+              y={y(maxCountElement.doc_count)}
+              height={y(0) - y(maxCountElement.doc_count)}
+            />
+          }
+        />
+        <Popup
+          offset={[0, 0]}
+          position="right center"
+          content={
+            intervalSize === 0
+              ? `${formatDate(
+                  array[i].key,
+                  "PPP",
+                  i18next.language
+                )}: ${i18next.t("totalResults", { count: d?.doc_count })}`
+              : `${formatDate(array[i].key, "PPP", i18next.language)}/${
+                  array[i + 1]
+                    ? formatDate(array[i + 1].key, "PPP", i18next.language)
+                    : formatDate(
+                        addDays(array[i].key, intervalSize),
+                        "PPP",
+                        i18next.language
+                      )
+                }: ${i18next.t("totalResults", { count: d?.doc_count })}`
+          }
+          trigger={
+            <rect
+              className={rectangleClassName}
+              x={x(d.key) - rectangleWidth / 2}
+              width={rectangleWidth}
+              y={y(d.doc_count)}
+              height={y(0) - y(d?.doc_count)}
+              onClick={() =>
+                handleRectangleClick(
+                  `${formatDate(d.key, "yyyy-MM-dd")}/${formatDate(
+                    array[i + 1]
+                      ? array[i + 1].key
+                      : array[i].key.getTime() + intervalSize,
+                    "yyyy-MM-dd"
+                  )}`
+                )
+              }
+            />
+          }
+        />
+      </React.Fragment>
     );
   });
 
@@ -153,6 +184,7 @@ Histogram.propTypes = {
   rectangleWidth: PropTypes.number,
   rectangleSpacing: PropTypes.number,
   rectangleClassName: PropTypes.string,
+  rectangleOverlayClassName: PropTypes.string,
   updateQueryState: PropTypes.func.isRequired,
   currentQueryState: PropTypes.object.isRequired,
   aggName: PropTypes.string.isRequired,
@@ -162,4 +194,5 @@ Histogram.defaultProps = {
   rectangleWidth: 12,
   rectangleSpacing: 2,
   rectangleClassName: "histogram-rectangle",
+  rectangleOverlayClassName: "histogram-rectangle-overlay",
 };

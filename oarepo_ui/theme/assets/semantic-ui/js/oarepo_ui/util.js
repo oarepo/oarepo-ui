@@ -190,17 +190,10 @@ export const getTitleFromMultilingualObject = (multilingualObject) => {
 
 // Date utils
 
-export const getLocaleScope = () => {
-  // Use this cast to avoid messing with users globalThis (like window) and the rest of keys in the globalThis object we don't care about
-  // const scope = typeof window !== "undefined" ? window : globalThis;
-
-  return window;
-};
-
 export function getLocaleObject(localeSpec) {
   if (typeof localeSpec === "string") {
     // Treat it as a locale name registered by registerLocale
-    const scope = getLocaleScope();
+    const scope = window;
     // Null was replaced with undefined to avoid type coercion
     return scope.__localeData__ ? scope.__localeData__[localeSpec] : undefined;
   } else {
@@ -210,7 +203,7 @@ export function getLocaleObject(localeSpec) {
 }
 
 export function getDefaultLocale() {
-  const scope = getLocaleScope();
+  const scope = window;
 
   return scope.__localeId__;
 }
