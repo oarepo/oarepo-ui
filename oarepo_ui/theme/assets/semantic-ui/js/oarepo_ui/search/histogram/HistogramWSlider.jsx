@@ -34,15 +34,15 @@ const HistogramComponent = ({
   aggName,
   aggTitle,
 }) => {
-  const MIN_YEAR = new Date(
+  const MIN_DATE = new Date(
     "Tue Jan 01 1924 01:00:00 GMT+0100 (Central European Standard Time"
   );
-  const MAX_YEAR = new Date(
+  const MAX_DATE = new Date(
     "Mon Jan 01 2024 01:00:00 GMT+0100 (Central European Standard Time)"
   );
 
   const MIN_SLIDER_VALUE = 0;
-  const MAX_SLIDER_VALUE = differenceInDays(MAX_YEAR, MIN_YEAR);
+  const MAX_SLIDER_VALUE = differenceInDays(MAX_DATE, MIN_DATE);
 
   const histogramData = _getResultBuckets(aggregations, aggName).map((d) => {
     return {
@@ -75,8 +75,8 @@ const HistogramComponent = ({
             ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
             min={MIN_SLIDER_VALUE}
             max={MAX_SLIDER_VALUE}
-            minDate={MIN_YEAR}
-            maxDate={MAX_YEAR}
+            minDate={MIN_DATE}
+            maxDate={MAX_DATE}
           />
         </Card.Content>
       </Card>
