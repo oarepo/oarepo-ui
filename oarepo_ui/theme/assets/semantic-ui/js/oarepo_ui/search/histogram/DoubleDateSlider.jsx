@@ -42,6 +42,13 @@ const DoubleDateSliderComponent = ({
     i18next.language
   );
   const handleAfterChange = (value) => {
+    // very annoying bug where the thumb would stay focused (and therefore enlarged)
+    // after the change until you click somewhere else - seems impossible to fix otherwise
+    const thumbElements = Array.from(document.getElementsByClassName("thumb"));
+
+    thumbElements.forEach((element) => {
+      element.blur();
+    });
     if (value === sliderValue) return;
     const filters = currentQueryState.filters.filter((f) => f[0] !== aggName);
     if (value[0] === min && value[1] === max) {
