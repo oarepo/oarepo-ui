@@ -2,29 +2,18 @@ import React from "react";
 import { Histogram } from "./Histogram";
 import { DoubleDateSlider } from "./DoubleDateSlider";
 import { withState } from "react-searchkit";
-import _get from "lodash/get";
-import { useLoadLocaleObjects } from "@js/oarepo_ui";
+import {
+  useLoadLocaleObjects,
+  _getResultsStats,
+  _getResultBuckets,
+} from "@js/oarepo_ui";
 import { differenceInDays } from "date-fns";
 import PropTypes from "prop-types";
 import { Card } from "semantic-ui-react";
 
 // TODO:
-// 8. make it possible to hover over bars with small doc count
 // 9. when there is only one bar display it in a nice way
-// 10. get min and max year from data (API)
-const _getResultBuckets = (resultsAggregations, aggName) => {
-  const thisAggs = _get(resultsAggregations, aggName, {});
-  if ("buckets" in thisAggs) {
-    if (!Array.isArray(thisAggs["buckets"])) {
-      thisAggs["buckets"] = Object.entries(thisAggs["buckets"]).map(
-        ([key, value]) => ({ ...value, key })
-      );
-    }
-    return thisAggs["buckets"];
-  }
-  return [];
-};
-// export const getDateFormat
+
 const HistogramComponent = ({
   currentResultsState: {
     data: { aggregations },
@@ -33,13 +22,11 @@ const HistogramComponent = ({
   updateQueryState,
   aggName,
   aggTitle,
+  minDateAggName,
+  maxDateAggName,
 }) => {
-  const MIN_DATE = new Date(
-    "Tue Jan 01 1924 01:00:00 GMT+0100 (Central European Standard Time"
-  );
-  const MAX_DATE = new Date(
-    "Mon Jan 01 2024 01:00:00 GMT+0100 (Central European Standard Time)"
-  );
+  const MIN_DATE = new Date(_getResultsStats(aggregations, minDateAggName));
+  const MAX_DATE = new Date(_getResultsStats(aggregations, maxDateAggName));
 
   const MIN_SLIDER_VALUE = 0;
   const MAX_SLIDER_VALUE = differenceInDays(MAX_DATE, MIN_DATE);
@@ -90,5 +77,7 @@ HistogramComponent.propTypes = {
   updateQueryState: PropTypes.func.isRequired,
   aggName: PropTypes.string.isRequired,
   aggTitle: PropTypes.string.isRequired,
+  minDateAggName: PropTypes.string.isRequired,
+  maxDateAggName: PropTypes.string.isRequired,
 };
 export const HistogramWSlider = withState(HistogramComponent);
