@@ -216,11 +216,11 @@ export function formatDate(date, formatStr, locale) {
     });
   }
   let localeObj = locale ? getLocaleObject(locale) : undefined;
-  if (locale && !localeObj) {
-    console.warn(
-      `A locale object was not found for the provided string ["${locale}"].`
-    );
-  }
+  // if (locale && !localeObj) {
+  //   console.warn(
+  //     `A locale object was not found for the provided string ["${locale}"].`
+  //   );
+  // }
   if (
     !localeObj &&
     !!getDefaultLocale() &&

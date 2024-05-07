@@ -8,6 +8,8 @@ import { differenceInDays } from "date-fns";
 import PropTypes from "prop-types";
 import { Card } from "semantic-ui-react";
 
+
+
 // TODO:
 // 8. make it possible to hover over bars with small doc count
 // 9. when there is only one bar display it in a nice way
