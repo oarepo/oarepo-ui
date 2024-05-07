@@ -4,6 +4,7 @@ import _camelCase from "lodash/camelCase";
 import ReactDOM from "react-dom";
 import { parametrize } from "react-overridable";
 import { overridableComponentIds as componentIds } from "./constants";
+import _get from "lodash/get";
 
 import {
   ActiveFiltersElement,
@@ -97,3 +98,21 @@ export function createSearchAppsInit({
     return initSearchApp;
   }
 }
+
+export const _getResultBuckets = (resultsAggregations, aggName) => {
+  const thisAggs = _get(resultsAggregations, aggName, {});
+  if ("buckets" in thisAggs) {
+    if (!Array.isArray(thisAggs["buckets"])) {
+      thisAggs["buckets"] = Object.entries(thisAggs["buckets"]).map(
+        ([key, value]) => ({ ...value, key })
+      );
+    }
+    return thisAggs["buckets"];
+  }
+  return [];
+};
+
+export const _getResultsStats = (resultsAggregations, aggName) => {
+  const thisAggs = _get(resultsAggregations, aggName, {});
+  return thisAggs.value;
+};
