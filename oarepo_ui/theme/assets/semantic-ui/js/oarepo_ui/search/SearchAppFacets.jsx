@@ -1,5 +1,6 @@
 import React from "react";
 import { BucketAggregation } from "react-searchkit";
+import PropTypes from "prop-types";
 
 export const SearchAppFacets = ({ aggs, appName }) => {
   return (
@@ -11,4 +12,9 @@ export const SearchAppFacets = ({ aggs, appName }) => {
       </div>
     </div>
   );
+};
+
+SearchAppFacets.propTypes = {
+  aggs: PropTypes.array.isRequired,
+  appName: PropTypes.string.isRequired,
 };
