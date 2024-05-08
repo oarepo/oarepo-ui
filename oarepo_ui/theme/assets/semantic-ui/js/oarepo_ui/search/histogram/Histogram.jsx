@@ -67,29 +67,35 @@ export const Histogram = ({
     } else {
       intervalSize = 0;
     }
+    const popupContent =
+      intervalSize === 0
+        ? `${formatDate(array[i].key, "PPP", i18next.language)}: ${i18next.t(
+            "totalResults",
+            { count: d?.doc_count }
+          )}`
+        : `${formatDate(array[i].key, "PPP", i18next.language)}/${
+            array[i + 1]
+              ? formatDate(array[i + 1].key, "PPP", i18next.language)
+              : formatDate(
+                  addDays(array[i].key, intervalSize),
+                  "PPP",
+                  i18next.language
+                )
+          }: ${i18next.t("totalResults", { count: d?.doc_count })}`;
 
+    const rectangleClickValue = `${formatDate(
+      d.key,
+      "yyyy-MM-dd"
+    )}/${formatDate(
+      array[i + 1] ? array[i + 1].key : addDays(array[i].key, intervalSize),
+      "yyyy-MM-dd"
+    )}`;
     return (
       <React.Fragment key={d.uuid}>
         <Popup
           offset={[0, 0]}
           position="right center"
-          content={
-            intervalSize === 0
-              ? `${formatDate(
-                  array[i].key,
-                  "PPP",
-                  i18next.language
-                )}: ${i18next.t("totalResults", { count: d?.doc_count })}`
-              : `${formatDate(array[i].key, "PPP", i18next.language)}/${
-                  array[i + 1]
-                    ? formatDate(array[i + 1].key, "PPP", i18next.language)
-                    : formatDate(
-                        addDays(array[i].key, intervalSize),
-                        "PPP",
-                        i18next.language
-                      )
-                }: ${i18next.t("totalResults", { count: d?.doc_count })}`
-          }
+          content={popupContent}
           trigger={
             <rect
               className={rectangleOverlayClassName}
@@ -97,29 +103,14 @@ export const Histogram = ({
               width={rectangleWidth}
               y={y(maxCountElement.doc_count)}
               height={y(0) - y(maxCountElement.doc_count)}
+              onClick={() => handleRectangleClick(rectangleClickValue)}
             />
           }
         />
         <Popup
           offset={[0, 0]}
           position="right center"
-          content={
-            intervalSize === 0
-              ? `${formatDate(
-                  array[i].key,
-                  "PPP",
-                  i18next.language
-                )}: ${i18next.t("totalResults", { count: d?.doc_count })}`
-              : `${formatDate(array[i].key, "PPP", i18next.language)}/${
-                  array[i + 1]
-                    ? formatDate(array[i + 1].key, "PPP", i18next.language)
-                    : formatDate(
-                        addDays(array[i].key, intervalSize),
-                        "PPP",
-                        i18next.language
-                      )
-                }: ${i18next.t("totalResults", { count: d?.doc_count })}`
-          }
+          content={popupContent}
           trigger={
             <rect
               className={rectangleClassName}
@@ -127,16 +118,9 @@ export const Histogram = ({
               width={rectangleWidth}
               y={y(d.doc_count)}
               height={y(0) - y(d?.doc_count)}
-              onClick={() =>
-                handleRectangleClick(
-                  `${formatDate(d.key, "yyyy-MM-dd")}/${formatDate(
-                    array[i + 1]
-                      ? array[i + 1].key
-                      : array[i].key.getTime() + intervalSize,
-                    "yyyy-MM-dd"
-                  )}`
-                )
-              }
+              onClick={() => {
+                handleRectangleClick(rectangleClickValue);
+              }}
             />
           }
         />

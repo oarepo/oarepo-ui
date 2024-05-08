@@ -11,10 +11,9 @@ import { differenceInDays } from "date-fns";
 import PropTypes from "prop-types";
 import { Card } from "semantic-ui-react";
 
-
-
 // TODO:
 // 9. when there is only one bar display it in a nice way
+// 10 get min max from api
 
 const HistogramComponent = ({
   currentResultsState: {
@@ -27,13 +26,20 @@ const HistogramComponent = ({
   minDateAggName,
   maxDateAggName,
 }) => {
-  const MIN_DATE = new Date(_getResultsStats(aggregations, minDateAggName));
-  const MAX_DATE = new Date(_getResultsStats(aggregations, maxDateAggName));
+  // const MIN_DATE = new Date(_getResultsStats(aggregations, minDateAggName));
+  // const MAX_DATE = new Date(_getResultsStats(aggregations, maxDateAggName));
+
+  const MIN_DATE = new Date(
+    "Tue Jan 01 1924 01:00:00 GMT+0100 (Central European Standard Time"
+  );
+  const MAX_DATE = new Date(
+    "Mon Jan 01 2024 01:00:00 GMT+0100 (Central European Standard Time)"
+  );
 
   const MIN_SLIDER_VALUE = 0;
   const MAX_SLIDER_VALUE = differenceInDays(MAX_DATE, MIN_DATE);
 
-  const histogramData = _getResultBuckets(aggregations, aggName).map((d) => {
+  let histogramData = _getResultBuckets(aggregations, aggName).map((d) => {
     return {
       ...d,
       key: new Date(d.key),
