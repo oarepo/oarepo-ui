@@ -191,7 +191,7 @@ export const useDepositApiClient = ({
         window.history.replaceState(
           undefined,
           "",
-          relativeUrl(response.links.self_html)
+          relativeUrl(response.links.edit_html)
         );
       }
 
@@ -264,7 +264,10 @@ export const useDepositApiClient = ({
     let response;
     try {
       response = await apiClient.publishDraft(saveResult);
-
+      // to remove edit url from the history so when you click back you are taken to the main page instead
+      // of the page throwin error as the record is already published. TODO: maybe should be search_html that
+      // takes to main search app
+      window.history.replaceState(null, "", "/");
       window.location.href = response.links.self_html;
       setFieldValue(
         "successMessage",
@@ -349,7 +352,10 @@ export const useDepositApiClient = ({
           "successMessage",
           i18next.t("Your draft was saved. Redirecting to the preview page...")
         );
-        window.location.href = url;
+        setTimeout(() => {
+          setFieldValue("successMessage", "");
+          window.location.href = url;
+        }, 1000);
       }
       return saveResult;
     } catch (error) {

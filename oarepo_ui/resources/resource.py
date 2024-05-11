@@ -1,5 +1,6 @@
 import copy
 from functools import partial
+from os.path import splitext
 from typing import TYPE_CHECKING, Iterator
 
 import deepmerge
@@ -14,7 +15,7 @@ from flask_resources import (
 )
 from flask_security import login_required
 from invenio_base.utils import obj_or_import_string
-from invenio_pidstore.errors import PIDDeletedError
+from invenio_previewer import current_previewer
 from invenio_records_resources.pagination import Pagination
 from invenio_records_resources.proxies import current_service_registry
 from invenio_records_resources.records.systemfields import FilesField
@@ -27,8 +28,10 @@ from invenio_records_resources.services import LinksTemplate
 from werkzeug.exceptions import Forbidden
 
 from oarepo_ui.utils import dump_empty
+from oarepo_runtime.datastreams.utils import get_file_service_for_record_class
 
 from .templating.data import FieldData
+from invenio_previewer.extensions import default as default_previewer
 
 
 if TYPE_CHECKING:
@@ -48,6 +51,9 @@ request_export_args = request_parser(
     from_conf("request_export_args"), location="view_args"
 )
 
+request_file_view_args = request_parser(from_conf("request_file_view_args"), location="view_args")
+
+
 
 class UIResource(Resource):
     """Record resource."""
@@ -65,6 +71,12 @@ class UIResource(Resource):
                 options["template_folder"] = template_folder
         blueprint = super().as_blueprint(**options)
         blueprint.app_context_processor(lambda: self.fill_jinja_context())
+
+        for exception_class, handler in self.config.error_handlers.items():
+            if isinstance(handler, str):
+                handler = getattr(self, handler)
+            blueprint.register_error_handler(exception_class, handler)
+
         return blueprint
 
     #
@@ -155,27 +167,15 @@ class RecordsUIResource(UIResource):
             )
 
         else:
-            try:
-                api_record = self._get_record(
-                    resource_requestctx, allow_draft=is_preview
-                )
-                render_method = self.get_jinjax_macro(
-                    "detail",
-                    identity=g.identity,
-                    args=resource_requestctx.args,
-                    view_args=resource_requestctx.view_args,
-                )
-            except PIDDeletedError as e:
-                return current_oarepo_ui.catalog.render(
-                    self.get_jinjax_macro(
-                        "tombstone",
-                        identity=g.identity,
-                        args=resource_requestctx.args,
-                        view_args=resource_requestctx.view_args,
-                        default_macro="Tombstone",
-                    ),
-                    pid=resource_requestctx.view_args["pid_value"],
-                )
+            api_record = self._get_record(
+                resource_requestctx, allow_draft=is_preview
+            )
+            render_method = self.get_jinjax_macro(
+                "detail",
+                identity=g.identity,
+                args=resource_requestctx.args,
+                view_args=resource_requestctx.view_args,
+            )
 
         # TODO: handle permissions UI way - better response than generic error
         record = self.config.ui_serializer.dump_obj(api_record.to_dict())
@@ -236,6 +236,29 @@ class RecordsUIResource(UIResource):
     def detail(self):
         """Returns item detail page."""
         return self._detail()
+
+    @request_read_args
+    @request_file_view_args
+    def file_preview(self, *args, is_preview=False, **kwargs):
+        pid_value = resource_requestctx.view_args["pid_value"]
+        filepath = resource_requestctx.view_args["filepath"]
+        record = self._get_record(resource_requestctx, allow_draft=is_preview)._record
+        file_service = get_file_service_for_record_class(type(record))
+        file_metadata = file_service.read_file_metadata(g.identity, pid_value, filepath)
+
+        file_previewer = file_metadata.data.get("previewer")
+
+        url = file_metadata.links['content']
+
+        # Find a suitable previewer
+        fileobj = PreviewFile(file_metadata, pid_value, record, url)
+        for plugin in current_previewer.iter_previewers(
+                previewers=[file_previewer] if file_previewer else None
+        ):
+            if plugin.can_preview(fileobj):
+                return plugin.preview(fileobj)
+
+        return default_previewer.preview(fileobj)
 
     def preview(self):
         """Returns detail page preview."""
@@ -550,6 +573,73 @@ class RecordsUIResource(UIResource):
             {"config": self.config, "url_prefix": self.config.url_prefix, "args": args},
         )
         return tpl.expand(identity, pagination)
+
+
+    def tombstone(self, error, *args, **kwargs):
+        return current_oarepo_ui.catalog.render(
+            self.get_jinjax_macro(
+                "tombstone",
+                identity=g.identity,
+                default_macro="Tombstone",
+            ),
+            pid=getattr(error, 'pid_value', None) or getattr(error, "pid", None)
+        )
+
+    def not_found(self, error, *args, **kwargs):
+        return current_oarepo_ui.catalog.render(
+            self.get_jinjax_macro(
+                "not_found",
+                identity=g.identity,
+                default_macro="NotFound",
+            ),
+            pid=getattr(error, 'pid_value', None) or getattr(error, "pid", None)
+        )
+
+    def permission_denied(self, error, *args, **kwargs):
+        return current_oarepo_ui.catalog.render(
+            self.get_jinjax_macro(
+                "permission_denied",
+                identity=g.identity,
+                default_macro="PermissionDenied",
+            ),
+            pid=getattr(error, 'pid_value', None) or getattr(error, "pid", None)
+        )
+
+
+# ported from https://github.com/inveniosoftware/invenio-app-rdm/blob/b1951f436027ad87214912e17c176727270e5e87/invenio_app_rdm/records_ui/views/records.py#L337
+class PreviewFile:
+    """Preview file implementation for InvenioRDM.
+
+    This class was apparently created because of subtle differences with
+    `invenio_previewer.api.PreviewFile`.
+    """
+
+    def __init__(self, file_item, record_pid_value, record=None, url=None):
+        """Create a new PreviewFile."""
+        self.file = file_item
+        self.data = file_item.data
+        self.record = record
+        self.size = self.data["size"]
+        self.filename = self.data["key"]
+        self.bucket = self.data["bucket_id"]
+        assert url is not None
+        self.uri = url
+
+    def is_local(self):
+        """Check if file is local."""
+        return True
+
+    def has_extensions(self, *exts):
+        """Check if file has one of the extensions.
+
+        Each `exts` has the format `.{file type}` e.g. `.txt` .
+        """
+        file_ext = splitext(self.data["key"])[1].lower()
+        return file_ext in exts
+
+    def open(self):
+        """Open the file."""
+        return self.file._file.file.storage().open()
 
 
 class TemplatePageUIResource(UIResource):
