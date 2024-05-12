@@ -1,19 +1,19 @@
-import React, { useEffect, useRef } from "react";
+import React, { useLayoutEffect, useState, useRef } from "react";
 import * as d3 from "d3";
 import PropTypes from "prop-types";
 import { Xaxis } from "./Xaxis.jsx";
 import { Popup } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { formatDate } from "@js/oarepo_ui";
-import { differenceInDays, addDays } from "date-fns";
+import { differenceInDays, addDays, max } from "date-fns";
 
 export const Histogram = ({
   histogramData,
   svgWidth,
   svgHeight,
   svgMargins,
-  rectangleWidth,
-  rectangleSpacing,
+  // rectangleWidth,
+  // rectangleSpacing,
   rectangleClassName,
   rectangleOverlayClassName,
   updateQueryState,
@@ -32,21 +32,24 @@ export const Histogram = ({
   };
 
   const [marginTop, marginRight, marginBottom, marginLeft] = svgMargins ?? [
-    20, 20, 70, 40,
+    20, 20, 20, 20,
   ];
-  let width =
-    svgWidth ??
-    histogramData.length * (rectangleWidth + rectangleSpacing) +
-      marginLeft +
-      marginRight +
-      50;
-  const height = svgHeight ?? 550;
 
+  const [width, setWidth] = useState(300);
+  // let width =
+  //   svgWidth ??
+  //   histogramData.length * (rectangleWidth + rectangleSpacing) +
+  //     marginLeft +
+  //     marginRight +
+  //     50;
+  const height = svgHeight ?? 550;
+  const rectangleWidth = width / (histogramData.length + 5);
+  console.log(rectangleWidth);
   const x = d3
     .scaleTime()
     .domain([
-      histogramData[0]?.key,
-      histogramData[histogramData.length - 1]?.key,
+      histogramData[0]?.start,
+      histogramData[histogramData.length - 1]?.start,
     ])
     .nice()
     .range([marginLeft, width - marginRight]);
@@ -55,41 +58,30 @@ export const Histogram = ({
     .scaleLinear()
     .domain([0, d3.max(histogramData, (d) => d?.doc_count)])
     .range([height - marginBottom, marginTop]);
-
   const maxCountElement = histogramData?.reduce(
     (prev, current) => (prev.doc_count > current.doc_count ? prev : current),
     0
   );
   const bars = histogramData.map((d, i, array) => {
-    let intervalSize;
-    if (array.length > 1) {
-      intervalSize = differenceInDays(array[1].key, array[0].key);
-    } else {
-      intervalSize = 0;
-    }
-    const popupContent =
-      intervalSize === 0
-        ? `${formatDate(array[i].key, "PPP", i18next.language)}: ${i18next.t(
-            "totalResults",
-            { count: d?.doc_count }
-          )}`
-        : `${formatDate(array[i].key, "PPP", i18next.language)}/${
-            array[i + 1]
-              ? formatDate(array[i + 1].key, "PPP", i18next.language)
-              : formatDate(
-                  addDays(array[i].key, intervalSize),
-                  "PPP",
-                  i18next.language
-                )
-          }: ${i18next.t("totalResults", { count: d?.doc_count })}`;
+    // let intervalSize;
+    // if (array.length > 1) {
+    //   intervalSize = differenceInDays(array[1].key, array[0].key);
+    // } else {
+    //   intervalSize = 0;
+    // }
+    const popupContent = `${formatDate(
+      array[i].start,
+      "PPP",
+      i18next.language
+    )}/${formatDate(array[i].end, "PPP", i18next.language)}: ${i18next.t(
+      "totalResults",
+      { count: d?.doc_count }
+    )}`;
 
     const rectangleClickValue = `${formatDate(
-      d.key,
+      d.start,
       "yyyy-MM-dd"
-    )}/${formatDate(
-      array[i + 1] ? array[i + 1].key : addDays(array[i].key, intervalSize),
-      "yyyy-MM-dd"
-    )}`;
+    )}/${formatDate(d.end, "yyyy-MM-dd")}`;
     return (
       <React.Fragment key={d.uuid}>
         <Popup
@@ -98,26 +90,11 @@ export const Histogram = ({
           content={popupContent}
           trigger={
             <rect
-              className={rectangleOverlayClassName}
-              x={x(d.key) - rectangleWidth / 2}
-              width={rectangleWidth}
-              y={y(maxCountElement.doc_count)}
-              height={y(0) - y(maxCountElement.doc_count)}
-              onClick={() => handleRectangleClick(rectangleClickValue)}
-            />
-          }
-        />
-        <Popup
-          offset={[0, 0]}
-          position="right center"
-          content={popupContent}
-          trigger={
-            <rect
               className={rectangleClassName}
-              x={x(d.key) - rectangleWidth / 2}
+              x={x(d.start) - rectangleWidth / 2}
               width={rectangleWidth}
-              y={y(d.doc_count)}
-              height={y(0) - y(d?.doc_count)}
+              y={y(d.doc_count + maxCountElement.doc_count / 15)}
+              height={y(0) - y(d?.doc_count + maxCountElement.doc_count / 15)}
               onClick={() => {
                 handleRectangleClick(rectangleClickValue);
               }}
@@ -129,12 +106,11 @@ export const Histogram = ({
   });
 
   // to scroll into the area where the bar with highest count is
-  useEffect(() => {
-    if (svgContainerRef.current) {
-      svgContainerRef.current.scrollLeft =
-        x(maxCountElement.key) - rectangleWidth;
-    }
-  }, [maxCountElement.key, x, rectangleWidth]);
+  useLayoutEffect(() => {
+    setWidth(
+      svgContainerRef.current.clientWidth ?? 300 - marginLeft - marginRight
+    );
+  }, [marginLeft, marginRight]);
 
   return (
     histogramData.length > 0 && (
@@ -175,8 +151,8 @@ Histogram.propTypes = {
 };
 
 Histogram.defaultProps = {
-  rectangleWidth: 12,
-  rectangleSpacing: 2,
+  rectangleWidth: 4,
+  rectangleSpacing: 0.5,
   rectangleClassName: "histogram-rectangle",
   rectangleOverlayClassName: "histogram-rectangle-overlay",
 };

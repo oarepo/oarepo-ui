@@ -28,7 +28,6 @@ const HistogramComponent = ({
 }) => {
   // const MIN_DATE = new Date(_getResultsStats(aggregations, minDateAggName));
   // const MAX_DATE = new Date(_getResultsStats(aggregations, maxDateAggName));
-
   const MIN_DATE = new Date(
     "Tue Jan 01 1924 01:00:00 GMT+0100 (Central European Standard Time"
   );
@@ -42,12 +41,14 @@ const HistogramComponent = ({
   let histogramData = _getResultBuckets(aggregations, aggName).map((d) => {
     return {
       ...d,
-      key: new Date(d.key),
+      start: new Date(d.start),
+      end: new Date(d.end),
       // as you narrow the range, sometimes buckets would have the same key i.e. same day
       uuid: crypto.randomUUID(),
     };
   });
-
+  console.log("LENGTH", histogramData.length);
+  console.log(histogramData);
   useLoadLocaleObjects();
   return (
     histogramData?.length > 0 && (

@@ -30,7 +30,7 @@ const DoubleDateSliderComponent = ({
     ];
   }
   const [sliderValueState, setSliderValueState] = useState(sliderValue);
-
+  console.log(sliderValueState);
   const currentStartDate = formatDate(
     addDays(minDate, sliderValueState[0]),
     "PPP",
@@ -67,6 +67,7 @@ const DoubleDateSliderComponent = ({
   // I simply dont see a reasonable way to include sliderValue in dependency array without
   // causing strange behavior
   useEffect(() => {
+    console.log("useEffect", sliderValue);
     setSliderValueState(sliderValue);
   }, [currentFilter]);
 

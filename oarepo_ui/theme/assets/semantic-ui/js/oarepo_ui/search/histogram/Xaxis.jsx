@@ -17,7 +17,7 @@ export const Xaxis = ({ xScale, height, marginBottom, width }) => {
         className="x-axis-line"
         d={`M ${0} ${height - marginBottom} H ${width}`}
       />
-      {ticks.map(({ value, xOffset }) => {
+      {/* {ticks.map(({ value, xOffset }) => {
         return (
           <g
             key={value}
@@ -29,7 +29,7 @@ export const Xaxis = ({ xScale, height, marginBottom, width }) => {
             </text>
           </g>
         );
-      })}
+      })} */}
     </svg>
   );
 };
