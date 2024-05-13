@@ -2,9 +2,9 @@ import ReactSlider from "react-slider";
 import PropTypes from "prop-types";
 import React, { useState, useEffect } from "react";
 import { withState } from "react-searchkit";
-import { addDays, differenceInDays } from "date-fns";
 import { formatDate } from "@js/oarepo_ui";
 import { i18next } from "@translations/oarepo_ui/i18next";
+import { Icon, Button } from "semantic-ui-react";
 
 const DoubleDateSliderComponent = ({
   currentResultsState,
@@ -17,30 +17,38 @@ const DoubleDateSliderComponent = ({
   thumbClassName,
   trackClassName,
   minDate,
-  maxDate,
+  addFunc,
+  diffFunc,
+  formatString,
 }) => {
-  let currentFilter;
+  const currentFilter = currentQueryState.filters?.find(
+    (f) => f[0] === aggName
+  );
+
   let sliderValue = [min, max];
-  currentFilter = currentQueryState.filters?.find((f) => f[0] === aggName);
+
   if (currentFilter) {
     const [start, end] = currentFilter[1].split("/");
     sliderValue = [
-      start ? differenceInDays(new Date(start), minDate) : min,
-      end ? differenceInDays(new Date(end), minDate) : max,
+      start ? diffFunc(new Date(start), minDate) : min,
+      end ? diffFunc(new Date(end), minDate) : max,
     ];
   }
   const [sliderValueState, setSliderValueState] = useState(sliderValue);
-  console.log(sliderValueState);
+  const [sliderMin, setSliderMin] = useState(min);
+  const [sliderMax, setSliderMax] = useState(max);
   const currentStartDate = formatDate(
-    addDays(minDate, sliderValueState[0]),
-    "PPP",
+    addFunc(minDate, sliderValueState[0]),
+    formatString,
     i18next.language
   );
+
   const currentEndDate = formatDate(
-    addDays(minDate, sliderValueState[1]),
-    "PPP",
+    addFunc(minDate, sliderValueState[1]),
+    formatString,
     i18next.language
   );
+
   const handleAfterChange = (value) => {
     if (value === sliderValue) return;
     const filters = currentQueryState.filters.filter((f) => f[0] !== aggName);
@@ -52,11 +60,17 @@ const DoubleDateSliderComponent = ({
       return;
     }
     const currentStartDate = formatDate(
-      addDays(minDate, value[0]),
+      addFunc(minDate, value[0]),
       "yyyy-MM-dd"
     );
-    const currentEndDate = formatDate(addDays(minDate, value[1]), "yyyy-MM-dd");
+    const currentEndDate = formatDate(addFunc(minDate, value[1]), "yyyy-MM-dd");
 
+    if (sliderValue[0] !== value[0]) {
+      setSliderMin(sliderValueState[0]);
+    }
+    if (sliderValue[1] !== value[1]) {
+      setSliderMax(sliderValueState[1]);
+    }
     updateQueryState({
       ...currentQueryState,
       filters: [...filters, [aggName, `${currentStartDate}/${currentEndDate}`]],
@@ -67,9 +81,10 @@ const DoubleDateSliderComponent = ({
   // I simply dont see a reasonable way to include sliderValue in dependency array without
   // causing strange behavior
   useEffect(() => {
-    console.log("useEffect", sliderValue);
     setSliderValueState(sliderValue);
-  }, [currentFilter]);
+    setSliderMin(sliderValue[0]);
+    setSliderMax(sliderValue[1]);
+  }, [currentQueryState.filters, min, max]);
 
   return (
     <div className="ui horizontal-slider">
@@ -84,11 +99,23 @@ const DoubleDateSliderComponent = ({
         onAfterChange={handleAfterChange}
         ariaLabel={["Lower thumb", "Upper thumb"]}
         ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
-        min={min}
-        max={max}
+        min={sliderMin}
+        max={sliderMax}
       />
       <div className="slider-values">
         <div className="slider-handle-value">{currentStartDate}</div>
+        {(sliderMin !== min || sliderMax !== max) && (
+          <Button
+            type="button"
+            className="transparent"
+            onClick={() => {
+              setSliderMin(min);
+              setSliderMax(max);
+            }}
+          >
+            <Icon className="m-0" aria-hidden="true" name="zoom-out" />
+          </Button>
+        )}
         <div className="slider-handle-value">{currentEndDate}</div>
       </div>
     </div>
@@ -103,10 +130,12 @@ DoubleDateSliderComponent.propTypes = {
   min: PropTypes.number.isRequired,
   max: PropTypes.number.isRequired,
   minDate: PropTypes.instanceOf(Date).isRequired,
-  maxDate: PropTypes.instanceOf(Date).isRequired,
   className: PropTypes.string,
   thumbClassName: PropTypes.string,
   trackClassName: PropTypes.string,
+  addFunc: PropTypes.func.isRequired,
+  diffFunc: PropTypes.func.isRequired,
+  formatString: PropTypes.string.isRequired,
 };
 
 DoubleDateSliderComponent.defaultProps = {

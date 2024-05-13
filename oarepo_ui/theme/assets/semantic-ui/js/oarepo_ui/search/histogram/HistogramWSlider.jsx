@@ -7,13 +7,10 @@ import {
   _getResultsStats,
   _getResultBuckets,
 } from "@js/oarepo_ui";
-import { differenceInDays } from "date-fns";
 import PropTypes from "prop-types";
 import { Card } from "semantic-ui-react";
-
-// TODO:
-// 9. when there is only one bar display it in a nice way
-// 10 get min max from api
+import _get from "lodash/get";
+import { getAddFunc, getDiffFunc, getFormatString } from "./utils";
 
 const HistogramComponent = ({
   currentResultsState: {
@@ -34,9 +31,13 @@ const HistogramComponent = ({
   const MAX_DATE = new Date(
     "Mon Jan 01 2024 01:00:00 GMT+0100 (Central European Standard Time)"
   );
+  const histogramInterval = _get(aggregations, aggName, {})?.interval;
 
+  const addFunc = getAddFunc(histogramInterval);
+  const diffFunc = getDiffFunc(histogramInterval);
+  const formatString = getFormatString(histogramInterval);
   const MIN_SLIDER_VALUE = 0;
-  const MAX_SLIDER_VALUE = differenceInDays(MAX_DATE, MIN_DATE);
+  const MAX_SLIDER_VALUE = diffFunc(MAX_DATE, MIN_DATE);
 
   let histogramData = _getResultBuckets(aggregations, aggName).map((d) => {
     return {
@@ -47,8 +48,6 @@ const HistogramComponent = ({
       uuid: crypto.randomUUID(),
     };
   });
-  console.log("LENGTH", histogramData.length);
-  console.log(histogramData);
   useLoadLocaleObjects();
   return (
     histogramData?.length > 0 && (
@@ -64,6 +63,9 @@ const HistogramComponent = ({
             aggName={aggName}
           />
           <DoubleDateSlider
+            addFunc={addFunc}
+            diffFunc={diffFunc}
+            formatString={formatString}
             aggName={aggName}
             thumbClassName="thumb"
             trackClassName="track"

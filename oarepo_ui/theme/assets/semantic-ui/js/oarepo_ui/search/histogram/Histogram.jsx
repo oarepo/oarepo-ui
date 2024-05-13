@@ -5,24 +5,20 @@ import { Xaxis } from "./Xaxis.jsx";
 import { Popup } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { formatDate } from "@js/oarepo_ui";
-import { differenceInDays, addDays, max } from "date-fns";
 
 export const Histogram = ({
   histogramData,
-  svgWidth,
   svgHeight,
   svgMargins,
-  // rectangleWidth,
-  // rectangleSpacing,
   rectangleClassName,
-  rectangleOverlayClassName,
   updateQueryState,
   currentQueryState,
   aggName,
 }) => {
   const svgContainerRef = useRef();
 
-  const handleRectangleClick = (value) => {
+  const handleRectangleClick = (value, d) => {
+    if (d.doc_count === 0) return;
     if (value.split("/")[0] === value.split("/")[1]) return;
     const filters = currentQueryState.filters.filter((f) => f[0] !== aggName);
     updateQueryState({
@@ -35,16 +31,10 @@ export const Histogram = ({
     20, 20, 20, 20,
   ];
 
-  const [width, setWidth] = useState(300);
-  // let width =
-  //   svgWidth ??
-  //   histogramData.length * (rectangleWidth + rectangleSpacing) +
-  //     marginLeft +
-  //     marginRight +
-  //     50;
+  const [width, setWidth] = useState(400);
+
   const height = svgHeight ?? 550;
   const rectangleWidth = width / (histogramData.length + 5);
-  console.log(rectangleWidth);
   const x = d3
     .scaleTime()
     .domain([
@@ -63,12 +53,6 @@ export const Histogram = ({
     0
   );
   const bars = histogramData.map((d, i, array) => {
-    // let intervalSize;
-    // if (array.length > 1) {
-    //   intervalSize = differenceInDays(array[1].key, array[0].key);
-    // } else {
-    //   intervalSize = 0;
-    // }
     const popupContent = `${formatDate(
       array[i].start,
       "PPP",
@@ -96,7 +80,7 @@ export const Histogram = ({
               y={y(d.doc_count + maxCountElement.doc_count / 15)}
               height={y(0) - y(d?.doc_count + maxCountElement.doc_count / 15)}
               onClick={() => {
-                handleRectangleClick(rectangleClickValue);
+                handleRectangleClick(rectangleClickValue, d);
               }}
             />
           }
@@ -105,10 +89,13 @@ export const Histogram = ({
     );
   });
 
-  // to scroll into the area where the bar with highest count is
   useLayoutEffect(() => {
     setWidth(
-      svgContainerRef.current.clientWidth ?? 300 - marginLeft - marginRight
+      (svgContainerRef.current.clientWidth > 0
+        ? svgContainerRef.current.clientWidth
+        : 250) -
+        marginLeft -
+        marginRight
     );
   }, [marginLeft, marginRight]);
 
@@ -134,25 +121,19 @@ export const Histogram = ({
 Histogram.propTypes = {
   histogramData: PropTypes.arrayOf(
     PropTypes.shape({
-      key: PropTypes.instanceOf(Date).isRequired,
+      start: PropTypes.instanceOf(Date).isRequired,
+      end: PropTypes.instanceOf(Date).isRequired,
       doc_count: PropTypes.number.isRequired,
     })
   ).isRequired,
-  svgWidth: PropTypes.number,
   svgHeight: PropTypes.number,
   svgMargins: PropTypes.arrayOf(PropTypes.number.isRequired),
-  rectangleWidth: PropTypes.number,
-  rectangleSpacing: PropTypes.number,
   rectangleClassName: PropTypes.string,
-  rectangleOverlayClassName: PropTypes.string,
   updateQueryState: PropTypes.func.isRequired,
   currentQueryState: PropTypes.object.isRequired,
   aggName: PropTypes.string.isRequired,
 };
 
 Histogram.defaultProps = {
-  rectangleWidth: 4,
-  rectangleSpacing: 0.5,
   rectangleClassName: "histogram-rectangle",
-  rectangleOverlayClassName: "histogram-rectangle-overlay",
 };

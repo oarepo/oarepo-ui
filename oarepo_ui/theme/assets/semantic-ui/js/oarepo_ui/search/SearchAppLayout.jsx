@@ -22,7 +22,6 @@ export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
   const [sidebarVisible, setSidebarVisible] = React.useState(false);
   const { appName, buildUID } = useContext(SearchConfigurationContext);
   const facetsAvailable = !_isEmpty(config.aggs);
-
   let columnsAmount;
   let resultsPaneLayoutFacets;
 
