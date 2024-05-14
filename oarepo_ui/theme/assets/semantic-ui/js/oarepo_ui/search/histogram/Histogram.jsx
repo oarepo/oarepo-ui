@@ -14,6 +14,7 @@ export const Histogram = ({
   updateQueryState,
   currentQueryState,
   aggName,
+  noClientWidth,
 }) => {
   const svgContainerRef = useRef();
 
@@ -93,11 +94,11 @@ export const Histogram = ({
     setWidth(
       (svgContainerRef.current.clientWidth > 0
         ? svgContainerRef.current.clientWidth
-        : 250) -
+        : noClientWidth) -
         marginLeft -
         marginRight
     );
-  }, [marginLeft, marginRight]);
+  }, [marginLeft, marginRight, noClientWidth]);
 
   return (
     histogramData.length > 0 && (
@@ -132,8 +133,10 @@ Histogram.propTypes = {
   updateQueryState: PropTypes.func.isRequired,
   currentQueryState: PropTypes.object.isRequired,
   aggName: PropTypes.string.isRequired,
+  noClientWidth: PropTypes.number,
 };
 
 Histogram.defaultProps = {
   rectangleClassName: "histogram-rectangle",
+  noClientWidth: 250,
 };
