@@ -5,8 +5,10 @@ import marshmallow as ma
 from flask import current_app
 from flask_resources import ResourceConfig
 from invenio_base.utils import obj_or_import_string
+from invenio_pidstore.errors import PIDDeletedError, PIDDoesNotExistError, PIDUnregistered
 from invenio_records_resources.proxies import current_service_registry
 from invenio_records_resources.services import Link, pagination_links
+from invenio_records_resources.services.errors import FileKeyNotFoundError, PermissionDeniedError
 from invenio_search_ui.searchconfig import FacetsConfig, SearchAppConfig, SortConfig
 from oarepo_runtime.services.custom_fields import CustomFields, InlinedCustomFields
 
@@ -62,8 +64,10 @@ class RecordsUIResourceConfig(UIResourceConfig):
         "export": "/<pid_value>/export/<export_format>",
         "export_preview": "/<pid_value>/preview/export/<export_format>",
         "preview": "/<pid_value>/preview",
+        "file_preview": "/<pid_value>/preview/<path:filepath>",
     }
     request_view_args = {"pid_value": ma.fields.Str()}
+    request_file_view_args = {**request_view_args, "filepath": ma.fields.Str()}
     request_export_args = {"export_format": ma.fields.Str()}
     request_search_args = {"page": ma.fields.Integer(), "size": ma.fields.Integer()}
 
@@ -87,6 +91,15 @@ class RecordsUIResourceConfig(UIResourceConfig):
     """Templates used for rendering the UI. It is a name of a jinjax macro that renders the UI"""
 
     empty_record = {}
+
+    error_handlers = {
+        PIDDeletedError: "tombstone",
+        PIDDoesNotExistError: "not_found",
+        PIDUnregistered: "not_found",
+        KeyError: "not_found",
+        FileKeyNotFoundError: "not_found",
+        PermissionDeniedError: "permission_denied",
+    }
 
     @property
     def default_components(self):
