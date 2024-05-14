@@ -1,0 +1,2 @@
+@headerContainerBackground: white;
+@headerContainerPadding: 1rem 4rem;

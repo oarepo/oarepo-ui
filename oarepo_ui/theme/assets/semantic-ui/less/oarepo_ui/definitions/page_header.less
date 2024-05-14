@@ -46,9 +46,6 @@ name of the component from above)
       width: 100% !important;
     }
   }
-  .invenio-header-container {
-    padding: @pageHeaderPaddingTopBottom @pageHeaderPaddingLeftRight;
-  }
 
   #invenio-nav {
     flex-direction: row !important;
@@ -65,6 +62,7 @@ name of the component from above)
   #invenio-menu {
     box-shadow: none;
     gap: 1rem;
+    justify-content: flex-end;
 
     .item.main-nav-links a {
       color: @pageHeaderTextColor !important;
@@ -215,33 +213,6 @@ name of the component from above)
         position: absolute;
         transition: all 0.2s ease-out;
         width: 100%;
-      }
-    }
-  }
-
-  #invenio-burger-toggle {
-    font-size: 20px;
-    position: absolute;
-    right: -1.5rem;
-    top: 50%;
-    transform: translateY(-50%);
-
-    #invenio-burger-menu-icon {
-      cursor: pointer;
-      display: inline-block;
-      float: right;
-      padding: 2rem 1.5rem;
-      position: relative;
-      user-select: none;
-
-      .navicon {
-        &::before {
-          top: 5px;
-        }
-
-        &:after {
-          top: -5px;
-        }
       }
     }
   }

@@ -38,7 +38,7 @@
 
 
           {# Burger menu toggle for mobile menu #}
-          <div id="invenio-burger-toggle">
+          <div id="invenio-burger-toggle" class="ui menu_burger">
             <button
               id="invenio-burger-menu-icon"
               class="ui button transparent"
@@ -107,7 +107,7 @@
 
             {# User Account menu #}
             {%- block navbar_right %}
-              <div class="right menu item">
+              <div class="ui right menu item">
                 {%- if config.ACCOUNTS and current_user.is_authenticated %}
                   {% for item in current_menu.submenu('notifications').children|sort(attribute='order') if item.visible recursive %}
                     <div class="item inbox">
