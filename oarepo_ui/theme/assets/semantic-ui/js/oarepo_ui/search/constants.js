@@ -3,6 +3,7 @@ export const overridableComponentIds = [
   "AutocompleteSearchBar.element",
   "BucketAggregation.element",
   "BucketAggregationContainer.element",
+  "BucketAggregationValues.element",
   "Count.Element",
   "Error.element",
   "Pagination.element",
