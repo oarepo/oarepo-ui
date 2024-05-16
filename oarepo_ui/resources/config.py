@@ -64,7 +64,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
         "export": "/<pid_value>/export/<export_format>",
         "export_preview": "/<pid_value>/preview/export/<export_format>",
         "preview": "/<pid_value>/preview",
-        "file_preview": "/<pid_value>/preview/<path:filepath>",
+        "file_preview": "/<pid_value>/files/<path:filepath>/preview",
     }
     request_view_args = {"pid_value": ma.fields.Str()}
     request_file_view_args = {**request_view_args, "filepath": ma.fields.Str()}
