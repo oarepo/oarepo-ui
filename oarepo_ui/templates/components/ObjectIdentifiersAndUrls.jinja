@@ -1,0 +1,49 @@
+{# def originalRecordUrl=None, objectIdentifiers=None #}
+
+<section aria-label='{{ _("Object identifiers and URLs") }}' class="ui segment">
+  <h2 class="ui small header detail-sidebar-header">{{_('Object identifiers and URLs')}}</h2>
+  <div class="ui link list">
+    {% if objectIdentifiers %}
+      {% for objectIdentifier in objectIdentifiers %}
+      {% if objectIdentifier.url%}
+        <div class="item">
+          <i class="external alternate icon"></i>
+          <div class="content">
+          {% set _data = {
+              "href": objectIdentifier.url,
+              "title": objectIdentifier.identifier,
+              "label": objectIdentifier.identifier
+          }%}
+            <div class="flex header">
+              <span class="mr-5">{{ objectIdentifier.scheme }}:</span> 
+              <URL target={"_blank"} rel="noopener noreferrer" className="header" data = {_data}></URL>
+            </div>
+          </div>
+        </div>
+      {% else %}
+      <div class="item">
+        <i class="id card icon"></i>
+        <div class="content header">
+          <span>{{ objectIdentifier.scheme }}:</span>
+          <span>{{ objectIdentifier.identifier }}</span>
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+    {% endif %}
+
+    {% if originalRecordUrl %}
+    <div class="item">
+      <i class="external alternate icon"></i>
+      <div class="content">
+      {% set _data = {
+          "href": originalRecordUrl,
+          "title": _('metadata/originalRecord.label'),
+          "label": _('metadata/originalRecord.label')
+      }%}
+        <URL target={"_blank"} rel="noopener noreferrer" className="link" data = {_data}></URL>
+      </div>
+    </div>
+    {% endif %}
+   </div>
+</section>
