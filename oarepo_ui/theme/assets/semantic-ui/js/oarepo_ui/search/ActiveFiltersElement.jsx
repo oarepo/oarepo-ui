@@ -38,6 +38,7 @@ const ActiveFiltersElementComponent = ({
           <Label.Group key={key}>
             <Label pointing="right">{aggregations[key]?.label}</Label>
             {filters.map((filter, index) => {
+              console.log(filter);
               const { label, activeFilter } = getLabel(filter);
               return (
                 <Label

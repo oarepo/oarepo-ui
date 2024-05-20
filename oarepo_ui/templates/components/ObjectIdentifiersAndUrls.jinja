@@ -1,9 +1,9 @@
 {# def originalRecordUrl=None, objectIdentifiers=None #}
 
-<section aria-label='{{ _("Object identifiers and URLs") }}' class="ui segment">
-  <h2 class="ui small header detail-sidebar-header">{{_('Object identifiers and URLs')}}</h2>
+<section aria-label='{{ _("Identifiers and links") }}' class="ui segment">
+  <h2 class="ui small header detail-sidebar-header">{{_('Identifiers and links')}}</h2>
   <div class="ui link list">
-    {% if objectIdentifiers %}
+    {% if objectIdentifiers|length > 0 %}
       {% for objectIdentifier in objectIdentifiers %}
       {% if objectIdentifier.url%}
         <div class="item">
@@ -14,10 +14,14 @@
               "title": objectIdentifier.identifier,
               "label": objectIdentifier.identifier
           }%}
-            <div class="flex header">
+            <div class="flex wrap header">
               <span class="mr-5">{{ objectIdentifier.scheme }}:</span> 
-              <URL target={"_blank"} rel="noopener noreferrer" className="header" data = {_data}></URL>
+              <URL target="_blank" rel="noopener noreferrer" className="header" data = {_data}></URL>
+              <button class="ui icon button transparent rel-ml-1 copy-btn" onClick="copyToClipboard('{{objectIdentifier.url}}',event)">
+                <i class="copy icon"></i>
+              </button>
             </div>
+           
           </div>
         </div>
       {% else %}
@@ -35,13 +39,13 @@
     {% if originalRecordUrl %}
     <div class="item">
       <i class="external alternate icon"></i>
-      <div class="content">
+      <div class="content header">
       {% set _data = {
           "href": originalRecordUrl,
           "title": _('metadata/originalRecord.label'),
           "label": _('metadata/originalRecord.label')
       }%}
-        <URL target={"_blank"} rel="noopener noreferrer" className="link" data = {_data}></URL>
+        <URL target="_blank" rel="noopener noreferrer" className="link" data = {_data}></URL>
       </div>
     </div>
     {% endif %}
