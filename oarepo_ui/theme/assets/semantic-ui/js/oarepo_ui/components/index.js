@@ -1,1 +1,1 @@
-import "./burgermenu"
+import "./burgermenu";

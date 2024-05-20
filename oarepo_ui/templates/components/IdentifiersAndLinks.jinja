@@ -1,6 +1,6 @@
 {# def originalRecordUrl=None, objectIdentifiers=None #}
 
-<section aria-label='{{ _("Identifiers and links") }}' class="ui segment">
+<section aria-label='{{ _("Identifiers and links") }}' class="ui segment identifiers-and-links">
   <h2 class="ui small header detail-sidebar-header">{{_('Identifiers and links')}}</h2>
   <div class="ui link list">
     {% if objectIdentifiers|length > 0 %}
@@ -14,10 +14,10 @@
               "title": objectIdentifier.identifier,
               "label": objectIdentifier.identifier
           }%}
-            <div class="flex wrap header">
-              <span class="mr-5">{{ objectIdentifier.scheme }}:</span> 
+            <div class="header identifier">
+              <span class="mr-5 identifier-type">{{ objectIdentifier.scheme }}:</span> 
               <URL target="_blank" rel="noopener noreferrer" className="header" data = {_data}></URL>
-              <button class="ui icon button transparent rel-ml-1 copy-btn" onClick="copyToClipboard('{{objectIdentifier.url}}',event)">
+              <button class="ui icon button transparent copy-btn" data-clipboard-text="{{objectIdentifier.url}}">
                 <i class="copy icon"></i>
               </button>
             </div>

@@ -62,12 +62,27 @@ export const SearchAppResultsGrid = ({
             </Grid.Column>
           </ShouldActiveFiltersRender>
         )}
-        <Grid.Column textAlign="right" floated="right" {...resultSortLayout}>
+        <ShouldActiveFiltersRender>
+          <Grid.Column width={3} only="mobile">
+            <ClearFiltersButton />
+          </Grid.Column>
+        </ShouldActiveFiltersRender>
+        <Grid.Column
+          textAlign="right"
+          floated="right"
+          {...{
+            mobile: 8,
+            tablet: 8,
+            computer: 5,
+            largeScreen: 5,
+            widescreen: 5,
+          }}
+        >
           <ResultOptionsWithState />
         </Grid.Column>
       </Grid.Row>
       <ShouldActiveFiltersRender>
-        <Grid.Row>
+        <Grid.Row only="computer tablet">
           <Grid.Column floated="left">
             <ClearFiltersButton />
           </Grid.Column>

@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { withState } from "react-searchkit";
-import { Button } from "semantic-ui-react";
+import { Button, Icon } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import PropTypes from "prop-types";
 import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
@@ -26,21 +26,42 @@ const ClearFiltersButtonComponent = ({
     ...ignoredFilters,
   ]);
   return (
-    <Button
-      name="clear"
-      color="orange"
-      onClick={() =>
-        updateQueryState({
-          ...currentQueryState,
-          filters: filters.filter((f) => allFiltersToIgnore.includes(f[0])),
-        })
-      }
-      icon="delete"
-      labelPosition="left"
-      content={i18next.t("Clear all filters")}
-      type="button"
-      size="mini"
-    />
+    <React.Fragment>
+      <Button
+        className="computer tablet only"
+        name="clear"
+        color="orange"
+        onClick={() =>
+          updateQueryState({
+            ...currentQueryState,
+            filters: filters.filter((f) => allFiltersToIgnore.includes(f[0])),
+          })
+        }
+        icon="delete"
+        labelPosition="left"
+        content={i18next.t("Clear all filters")}
+        type="button"
+        size="mini"
+      />
+      <Button
+        className="mobile only"
+        style={{ backgroundColor: "red" }}
+        type="button"
+        size="mini"
+        onClick={() =>
+          updateQueryState({
+            ...currentQueryState,
+            filters: filters.filter((f) => allFiltersToIgnore.includes(f[0])),
+          })
+        }
+      >
+        <Icon
+          aria-hidden="true"
+          name="filter"
+          style={{ margin: 0, opacity: "1" }}
+        />
+      </Button>
+    </React.Fragment>
   );
 };
 
