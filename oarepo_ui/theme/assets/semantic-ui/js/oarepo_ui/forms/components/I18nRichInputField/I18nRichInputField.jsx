@@ -1,8 +1,15 @@
 import * as React from "react";
 import { LanguageSelectField } from "@js/oarepo_ui";
-import { RichInputField, GroupField, FieldLabel } from "react-invenio-forms";
+import {
+  RichInputField,
+  GroupField,
+  FieldLabel,
+  RichEditor,
+} from "react-invenio-forms";
 import PropTypes from "prop-types";
 import { Form } from "semantic-ui-react";
+import { useFormikContext } from "formik";
+import { decode } from "html-entities";
 
 export const I18nRichInputField = ({
   fieldPath,
@@ -16,6 +23,22 @@ export const I18nRichInputField = ({
   usedLanguages,
   ...uiProps
 }) => {
+  const { values, setFieldValue, setFieldTouched } = useFormikContext();
+
+  const convertHTMLToTags = (htmlString) => {
+    const regex = /<(?!\/?(strong|b|div|br|p|i|li)\b)[^>]*>[^<]*<\/.*?>/gi;
+    const decodedString = decode(htmlString);
+    const cleanedContent = decodedString.replace(regex, "");
+    const noTags = cleanedContent.replace(/<[^>]*>?/gm, "");
+    return noTags;
+  };
+
+  const getNestedValue = (obj, path) => {
+    return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+  };
+  
+  const fieldValue = getNestedValue(values, `${fieldPath}.value`);
+
   return (
     <GroupField fieldPath={fieldPath} optimized>
       <LanguageSelectField
@@ -27,9 +50,6 @@ export const I18nRichInputField = ({
 
       <Form.Field width={13}>
         <RichInputField
-          editorConfig={editorConfig}
-          // TODO: hacky fix for SUI alignment bug for case with
-          // field groups with empty field label on one of inputs
           className={`${!label ? "mt-25" : ""}`}
           fieldPath={`${fieldPath}.value`}
           label={
@@ -42,6 +62,20 @@ export const I18nRichInputField = ({
           required={required}
           optimized={optimized}
           placeholder={placeholder}
+          editor={
+            <RichEditor
+              value={fieldValue}
+              optimized
+              editorConfig={editorConfig}
+              onBlur={async (event, editor) => {
+                const cleanedContent = await convertHTMLToTags(
+                  editor.getContent()
+                );
+                setFieldValue(`${fieldPath}.value`, cleanedContent);
+                setFieldTouched(`${fieldPath}.value`, true);
+              }}
+            />
+          }
           {...uiProps}
         />
       </Form.Field>
