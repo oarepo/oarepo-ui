@@ -15,6 +15,7 @@ import Overridable, {
   overrideStore,
 } from "react-overridable";
 import { BaseFormLayout } from "./components/BaseFormLayout";
+import { decode } from "html-entities";
 
 export function parseFormAppConfig(rootElementId = "form-app") {
   const rootEl = document.getElementById(rootElementId);
@@ -26,6 +27,18 @@ export function parseFormAppConfig(rootElementId = "form-app") {
 
   return { rootEl, record, formConfig, recordPermissions, files, links };
 }
+
+export const convertHTMLToTags = (htmlString) => {
+  const regex = /<(?!\/?(strong|b|div|br|p|i|li)\b)[^>]*>[^<]*<\/.*?>/gi;
+  const decodedString = decode(htmlString);
+  const cleanedContent = decodedString.replace(regex, "");
+  const noTags = cleanedContent.replace(/<[^>]*>?/gm, "");
+  return noTags;
+};
+
+export const getNestedValue = (obj, path) => {
+  return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+};
 
 /**
  * Initialize Formik form application.
@@ -82,3 +95,4 @@ export function createFormAppInit({
     return initFormApp;
   }
 }
+

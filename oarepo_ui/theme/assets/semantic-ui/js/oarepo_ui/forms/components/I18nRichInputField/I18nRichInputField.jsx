@@ -9,7 +9,7 @@ import {
 import PropTypes from "prop-types";
 import { Form } from "semantic-ui-react";
 import { useFormikContext } from "formik";
-import { decode } from "html-entities";
+import { convertHTMLToTags, getNestedValue } from "../../util";
 
 export const I18nRichInputField = ({
   fieldPath,
@@ -25,18 +25,6 @@ export const I18nRichInputField = ({
 }) => {
   const { values, setFieldValue, setFieldTouched } = useFormikContext();
 
-  const convertHTMLToTags = (htmlString) => {
-    const regex = /<(?!\/?(strong|b|div|br|p|i|li)\b)[^>]*>[^<]*<\/.*?>/gi;
-    const decodedString = decode(htmlString);
-    const cleanedContent = decodedString.replace(regex, "");
-    const noTags = cleanedContent.replace(/<[^>]*>?/gm, "");
-    return noTags;
-  };
-
-  const getNestedValue = (obj, path) => {
-    return path.split('.').reduce((acc, part) => acc && acc[part], obj);
-  };
-  
   const fieldValue = getNestedValue(values, `${fieldPath}.value`);
 
   return (
