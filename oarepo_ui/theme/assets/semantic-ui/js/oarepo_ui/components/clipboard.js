@@ -25,8 +25,9 @@ clipboard.on("success", (e) => {
 clipboard.on("error", (e) => {
   $(".copy-btn").css("opacity", 0.3);
   const target = $(e.trigger);
-  setTooltip(i18next.t("Failed!"), target);
+  setTooltip(i18next.t("Copy to clipboard failed!"), target);
   hideTooltip(target);
+  target.css("opacity", 1);
 });
 
 $(".copy-btn").on("mouseleave", function () {

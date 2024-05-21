@@ -1,18 +1,19 @@
 .ui.segment {
   &.identifiers-and-links {
     .identifier {
-      border: 2px solid @primaryColor;
       display: flex;
       flex-wrap: wrap;
-      border-radius: 4px;
       .copy-btn {
-        margin-left: auto;
         opacity: 0.3;
         transition: opacity 0.3s;
+        margin-left: auto;
       }
     }
     .identifier-type {
       background-color: @primaryColor;
+    }
+    .identifier-icon {
+      color: rgba(0, 0, 0, 0.4);
     }
   }
 }

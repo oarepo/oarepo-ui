@@ -6,30 +6,31 @@
     {% if objectIdentifiers|length > 0 %}
       {% for objectIdentifier in objectIdentifiers %}
       {% if objectIdentifier.url%}
-        <div class="item">
-          <i class="external alternate icon"></i>
-          <div class="content">
+        <div class="item content">
           {% set _data = {
               "href": objectIdentifier.url,
               "title": objectIdentifier.identifier,
               "label": objectIdentifier.identifier
           }%}
             <div class="header identifier">
+              <i class="external alternate icon identifier-icon"></i>
               <span class="mr-5 identifier-type">{{ objectIdentifier.scheme }}:</span> 
-              <URL target="_blank" rel="noopener noreferrer" className="header" data = {_data}></URL>
-              <button class="ui icon button transparent copy-btn" data-clipboard-text="{{objectIdentifier.url}}">
+              <URL target="_blank" rel="noopener noreferrer" className="inline" data = {_data}></URL>
+              <button class="ui icon button transparent copy-btn inline" data-clipboard-text="{{objectIdentifier.url}}">
                 <i class="copy icon"></i>
               </button>
             </div>
            
-          </div>
         </div>
       {% else %}
-      <div class="item">
-        <i class="id card icon"></i>
-        <div class="content header">
-          <span>{{ objectIdentifier.scheme }}:</span>
+      <div class="item content">
+        <div class="header identifier">
+          <i class="id card icon identifier-icon"></i>
+          <span class="mr-5 identifier-type">{{ objectIdentifier.scheme }}:</span>
           <span>{{ objectIdentifier.identifier }}</span>
+          <button class="ui icon button transparent copy-btn inline" data-clipboard-text="{{objectIdentifier.identifier}}">
+            <i class="copy icon"></i>
+          </button>
         </div>
       </div>
       {% endif %}
@@ -38,7 +39,7 @@
 
     {% if originalRecordUrl %}
     <div class="item">
-      <i class="external alternate icon"></i>
+      <i class="external alternate icon identifier-icon"></i>
       <div class="content header">
       {% set _data = {
           "href": originalRecordUrl,
