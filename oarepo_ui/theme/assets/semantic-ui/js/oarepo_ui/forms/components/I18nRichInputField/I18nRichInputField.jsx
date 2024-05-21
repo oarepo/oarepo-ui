@@ -9,7 +9,7 @@ import {
 import PropTypes from "prop-types";
 import { Form } from "semantic-ui-react";
 import { useFormikContext } from "formik";
-import { convertHTMLToTags, getNestedValue } from "../../util";
+import { sanitizeInput, getFieldValue } from "../../util";
 
 export const I18nRichInputField = ({
   fieldPath,
@@ -25,7 +25,7 @@ export const I18nRichInputField = ({
 }) => {
   const { values, setFieldValue, setFieldTouched } = useFormikContext();
 
-  const fieldValue = getNestedValue(values, `${fieldPath}.value`);
+  const fieldValue = getFieldValue(values, `${fieldPath}.value`);
 
   return (
     <GroupField fieldPath={fieldPath} optimized>
@@ -55,10 +55,8 @@ export const I18nRichInputField = ({
               value={fieldValue}
               optimized
               editorConfig={editorConfig}
-              onBlur={async (event, editor) => {
-                const cleanedContent = await convertHTMLToTags(
-                  editor.getContent()
-                );
+              onBlur={(event, editor) => {
+                const cleanedContent = sanitizeInput(editor.getContent());
                 setFieldValue(`${fieldPath}.value`, cleanedContent);
                 setFieldTouched(`${fieldPath}.value`, true);
               }}

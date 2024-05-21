@@ -58,7 +58,8 @@ else:
     dependencies = {
         "react-datepicker": "^4.21.0",
         "edtf": "^4.0.0",
-        "html-entities": "2.5.2"
+        "html-entities": "2.5.2",
+        "sanitize-html": "2.13.0"
     }
     aliases = {}
 
