@@ -29,6 +29,7 @@ const ClearFiltersButtonComponent = ({
     <React.Fragment>
       <Button
         className="computer tablet only"
+        aria-label={i18next.t("Clear all filters")}
         name="clear"
         color="orange"
         onClick={() =>
@@ -45,7 +46,8 @@ const ClearFiltersButtonComponent = ({
       />
       <Button
         className="mobile only"
-        style={{ backgroundColor: "red" }}
+        aria-label={i18next.t("Clear all filters")}
+        color="orange"
         type="button"
         size="mini"
         onClick={() =>
@@ -55,11 +57,7 @@ const ClearFiltersButtonComponent = ({
           })
         }
       >
-        <Icon
-          aria-hidden="true"
-          name="filter"
-          style={{ margin: 0, opacity: "1" }}
-        />
+        <Icon aria-hidden="true" name="filter" className="m-0" />
       </Button>
     </React.Fragment>
   );

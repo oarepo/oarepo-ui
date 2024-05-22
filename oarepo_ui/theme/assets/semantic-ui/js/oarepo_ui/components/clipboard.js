@@ -15,11 +15,11 @@ const hideTooltip = (element) => {
 const clipboard = new Clipboard(".copy-btn");
 
 clipboard.on("success", (e) => {
-  $(".copy-btn").css("opacity", 0.3);
+  $(".copy-btn").removeClass("selected");
   const target = $(e.trigger);
   setTooltip(i18next.t("Copied!"), target);
   hideTooltip(target);
-  target.css("opacity", 1);
+  target.addClass("selected");
 });
 
 clipboard.on("error", (e) => {

@@ -1,18 +1,25 @@
 .ui.segment {
   &.identifiers-and-links {
-    .identifier {
+    .list-item {
       display: flex;
       flex-wrap: wrap;
+      align-items: center;
       .copy-btn {
         opacity: 0.3;
         transition: opacity 0.3s;
         margin-left: auto;
       }
+      .copy-btn.selected {
+        opacity: 1;
+        color: @primaryColor;
+      }
+      .copy-btn:hover {
+        opacity: 1;
+        background-color: none;
+      }
     }
-    .identifier-type {
-      background-color: @primaryColor;
-    }
-    .identifier-icon {
+
+    .link-icon {
       color: rgba(0, 0, 0, 0.4);
     }
   }

@@ -1,5 +1,4 @@
 import $ from "jquery";
-import "./clipboard";
 
 /* Burger menu */
 const $burgerIcon = $("#invenio-burger-menu-icon");

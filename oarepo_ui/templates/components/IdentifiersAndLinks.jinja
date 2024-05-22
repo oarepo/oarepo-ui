@@ -12,9 +12,9 @@
               "title": objectIdentifier.identifier,
               "label": objectIdentifier.identifier
           }%}
-            <div class="header identifier">
-              <i class="external alternate icon identifier-icon"></i>
-              <span class="mr-5 identifier-type">{{ objectIdentifier.scheme }}:</span> 
+            <div class="header list-item">
+              <i class="external alternate icon link-icon mb-5"></i>
+              <span class="mr-5 identifier-type ui green label mini">{{ objectIdentifier.scheme }}:</span> 
               <URL target="_blank" rel="noopener noreferrer" className="inline" data = {_data}></URL>
               <button class="ui icon button transparent copy-btn inline" data-clipboard-text="{{objectIdentifier.url}}">
                 <i class="copy icon"></i>
@@ -24,9 +24,9 @@
         </div>
       {% else %}
       <div class="item content">
-        <div class="header identifier">
-          <i class="id card icon identifier-icon"></i>
-          <span class="mr-5 identifier-type">{{ objectIdentifier.scheme }}:</span>
+        <div class="header list-item">
+          <i class="id card icon link-icon"></i>
+          <span class="mr-5 identifier-type ui green label mini">{{ objectIdentifier.scheme }}:</span>
           <span>{{ objectIdentifier.identifier }}</span>
           <button class="ui icon button transparent copy-btn inline" data-clipboard-text="{{objectIdentifier.identifier}}">
             <i class="copy icon"></i>
@@ -38,14 +38,14 @@
     {% endif %}
 
     {% if originalRecordUrl %}
-    <div class="item">
-      <i class="external alternate icon identifier-icon"></i>
-      <div class="content header">
+    <div class="item content">
+      <div class="header list-item">
       {% set _data = {
           "href": originalRecordUrl,
           "title": _('metadata/originalRecord.label'),
           "label": _('metadata/originalRecord.label')
       }%}
+        <i class="external alternate icon link-icon mb-5"></i>
         <URL target="_blank" rel="noopener noreferrer" className="link" data = {_data}></URL>
       </div>
     </div>
