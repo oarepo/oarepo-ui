@@ -1,5 +1,15 @@
 import React, { useMemo } from "react";
-import { Header, Grid, Icon, Label, List, Container } from "semantic-ui-react";
+import {
+  Divider,
+  Header,
+  Grid,
+  Icon,
+  Label,
+  Image,
+  List,
+  Container,
+  Checkbox,
+} from "semantic-ui-react";
 import { withState } from "react-searchkit";
 import PropTypes from "prop-types";
 import Overridable from "react-overridable";
@@ -31,9 +41,13 @@ export const ExternalApiResultsList = withState(
         serializeExternalApiSuggestions={serializeExternalApiSuggestions}
       >
         <Container>
-          <List celled divided relaxed="very" selection>
+          <List animated selection>
             {serializedSuggestions.map((record) => {
-              const { text: title, value } = record;
+              const {
+                text: title,
+                value,
+                data: { props },
+              } = record;
               return multiple ? (
                 <List.Item
                   onClick={() => {
@@ -41,7 +55,31 @@ export const ExternalApiResultsList = withState(
                   }}
                   key={value}
                 >
-                  {title}
+                  <Image avatar>
+                    <Checkbox
+                      checked={externalApiRecords
+                        .map((r) => r.value)
+                        .includes(record.value)}
+                    />
+                  </Image>
+                  <List.Content>
+                    <List.Header as="a">{title}</List.Header>
+                    <List.Description>
+                      {Object.entries(props)
+                        .filter(([propName]) => propName !== "external")
+                        .map(([propName, propValue]) => (
+                          <Label
+                            basic
+                            key={propName}
+                            size="mini"
+                            className="rel-mt-1"
+                          >
+                            {propName}
+                            <Label.Detail>{propValue}</Label.Detail>
+                          </Label>
+                        ))}
+                    </List.Description>
+                  </List.Content>
                 </List.Item>
               ) : (
                 <List.Item
@@ -58,19 +96,22 @@ export const ExternalApiResultsList = withState(
             })}
           </List>
           {externalApiRecords.length > 0 && multiple && (
-            <Grid.Column width={10}>
-              <Header as="h3">{i18next.t("Selected records")}</Header>
-              {externalApiRecords.map((record) => (
-                <Label
-                  image
-                  key={record.value}
-                  onClick={() => handleExternalRecordChange(record)}
-                >
-                  {record.text}
-                  <Icon name="delete" />
-                </Label>
-              ))}
-            </Grid.Column>
+            <>
+              <Divider />
+              <Grid.Column width={10}>
+                <Header as="h3">{i18next.t("Selected records")}</Header>
+                {externalApiRecords.map((record) => (
+                  <Label
+                    image
+                    key={record.value}
+                    onClick={() => handleExternalRecordChange(record)}
+                  >
+                    {record.text}
+                    <Icon name="delete" />
+                  </Label>
+                ))}
+              </Grid.Column>
+            </>
           )}
         </Container>
       </Overridable>

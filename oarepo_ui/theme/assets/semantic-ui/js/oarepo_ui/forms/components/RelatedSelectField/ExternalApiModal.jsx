@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import { Modal, Button, Grid, Header, Segment, Icon } from "semantic-ui-react";
+import { Modal, Button, Grid, Header, Icon, Segment } from "semantic-ui-react";
 import { OverridableContext } from "react-overridable";
 import {
   EmptyResults,
   Error,
+  Pagination,
   ReactSearchKit,
   ResultsLoader,
   SearchBar,
   InvenioSearchApi,
-  Pagination,
-  ResultsPerPage,
 } from "react-searchkit";
 import { ExternalApiResultsList } from "./ExternalApiResultsList";
 import { useFormikContext } from "formik";
@@ -77,25 +76,21 @@ export const ExternalApiModal = ({
   };
   return (
     <Modal open={open} onClose={onClose} closeIcon className="rel-mt-2">
-      <Modal.Header as="h6" className="pt-10 pb-10">
-        <Grid>
-          <Grid.Column floated="left">
-            <Header as="h2">{externalApiModalTitle}</Header>
-          </Grid.Column>
-        </Grid>
-      </Modal.Header>
-      <Modal.Content>
-        <OverridableContext.Provider value={overriddenComponents}>
-          <ReactSearchKit
-            searchApi={searchApi}
-            initialQueryState={searchConfig.initialQueryState}
-            urlHandlerApi={{ enabled: false }}
-          >
-            <Grid celled="internally">
-              <Grid.Row>
-                <Grid.Column width={8} floated="left" verticalAlign="middle">
+      <OverridableContext.Provider value={overriddenComponents}>
+        <ReactSearchKit
+          searchApi={searchApi}
+          initialQueryState={searchConfig.initialQueryState}
+          urlHandlerApi={{ enabled: false }}
+        >
+          <>
+            <Modal.Header className="pt-10 pb-10">
+              <Grid columns={2}>
+                <Grid.Column verticalAlign="middle">
+                  <Header as="h2">{externalApiModalTitle}</Header>
+                </Grid.Column>
+                <Grid.Column verticalAlign="middle">
                   <SearchBar
-                    placeholder={i18next.t("search")}
+                    placeholder={i18next.t("Search")}
                     autofocus
                     actionProps={{
                       icon: "search",
@@ -104,8 +99,10 @@ export const ExternalApiModal = ({
                     }}
                   />
                 </Grid.Column>
-              </Grid.Row>
-              <Grid.Row verticalAlign="middle">
+              </Grid>
+            </Modal.Header>
+            <Modal.Content scrolling>
+              <Grid>
                 <Grid.Column>
                   <ResultsLoader>
                     <EmptyResults />
@@ -125,43 +122,39 @@ export const ExternalApiModal = ({
                     />
                   </ResultsLoader>
                 </Grid.Column>
-              </Grid.Row>
-              <Grid.Row verticalAlign="middle">
-                <Grid.Column>
-                  <Pagination options={{ size: "tiny" }} />
-                </Grid.Column>
-
-                <Grid.Column floated="right" width={3}>
-                  <ResultsPerPage
-                    values={searchConfig.paginationOptions.resultsPerPage}
-                    label={ResultsPerPageLabel}
-                  />
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
-          </ReactSearchKit>
-        </OverridableContext.Provider>
-      </Modal.Content>
-      <Modal.Actions>
-        {multiple && (
-          <Button
-            disabled={_isEmpty(externalApiRecords)}
-            primary
-            icon="checkmark"
-            labelPosition="left"
-            content={i18next.t("Choose")}
-            onClick={() => {
-              handleAddingExternalApiSuggestion(externalApiRecords);
-              setFieldValue(
-                fieldPath,
-                externalApiRecords.map((record) => ({ id: record.value }))
-              );
-              setExternalApiRecords([]);
-              onClose();
-            }}
-          />
-        )}
-      </Modal.Actions>
+              </Grid>
+            </Modal.Content>
+            <Modal.Actions>
+              <Pagination
+                options={{
+                  size: "mini",
+                  boundaryRangeCount: 0,
+                  showFirst: false,
+                  showLast: false,
+                }}
+              />
+              {multiple && (
+                <Button
+                  disabled={_isEmpty(externalApiRecords)}
+                  primary
+                  icon="checkmark"
+                  labelPosition="left"
+                  content={i18next.t("Choose")}
+                  onClick={() => {
+                    handleAddingExternalApiSuggestion(externalApiRecords);
+                    setFieldValue(
+                      fieldPath,
+                      externalApiRecords.map((record) => ({ id: record.value }))
+                    );
+                    setExternalApiRecords([]);
+                    onClose();
+                  }}
+                />
+              )}
+            </Modal.Actions>
+          </>
+        </ReactSearchKit>
+      </OverridableContext.Provider>
     </Modal>
   );
 };
