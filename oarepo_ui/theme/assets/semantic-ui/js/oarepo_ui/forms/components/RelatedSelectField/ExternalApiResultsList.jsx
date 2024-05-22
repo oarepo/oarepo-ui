@@ -65,19 +65,19 @@ export const ExternalApiResultsList = withState(
                   <List.Content>
                     <List.Header as="a">{title}</List.Header>
                     <List.Description>
-                      {Object.entries(props)
-                        .filter(([propName]) => propName !== "external")
-                        .map(([propName, propValue]) => (
-                          <Label
-                            basic
-                            key={propName}
-                            size="mini"
-                            className="rel-mt-1"
-                          >
-                            {propName}
-                            <Label.Detail>{propValue}</Label.Detail>
-                          </Label>
-                        ))}
+                      <List divided horizontal size="mini">
+                        {Object.entries(props)
+                          .filter(([propName]) => propName !== "external")
+                          .map(([propName, propValue]) => (
+                            <List.Item
+                              className="truncated"
+                              as="div"
+                              key={propName}
+                            >
+                              {propValue}
+                            </List.Item>
+                          ))}
+                      </List>
                     </List.Description>
                   </List.Content>
                 </List.Item>

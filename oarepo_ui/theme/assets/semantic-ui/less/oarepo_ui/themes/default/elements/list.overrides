@@ -1,0 +1,11 @@
+.ui.list {
+
+    .item {
+        &.truncated {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            text-wrap: nowrap;
+            max-width: 60ch;
+        }
+    }
+}
