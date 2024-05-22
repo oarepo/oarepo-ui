@@ -21,6 +21,7 @@ export const I18nRichInputField = ({
   editorConfig,
   lngFieldWidth,
   usedLanguages,
+  validTags,
   ...uiProps
 }) => {
   const { values, setFieldValue, setFieldTouched } = useFormikContext();
@@ -56,7 +57,10 @@ export const I18nRichInputField = ({
               optimized
               editorConfig={editorConfig}
               onBlur={(event, editor) => {
-                const cleanedContent = sanitizeInput(editor.getContent());
+                const cleanedContent = sanitizeInput(
+                  editor.getContent(),
+                  validTags
+                );
                 setFieldValue(`${fieldPath}.value`, cleanedContent);
                 setFieldTouched(`${fieldPath}.value`, true);
               }}
@@ -83,6 +87,7 @@ I18nRichInputField.propTypes = {
   languageOptions: PropTypes.array,
   lngFieldWidth: PropTypes.number,
   usedLanguages: PropTypes.array,
+  validTags: PropTypes.array,
 };
 
 I18nRichInputField.defaultProps = {

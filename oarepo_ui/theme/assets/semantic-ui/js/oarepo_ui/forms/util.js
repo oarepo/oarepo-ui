@@ -29,10 +29,10 @@ export function parseFormAppConfig(rootElementId = "form-app") {
   return { rootEl, record, formConfig, recordPermissions, files, links };
 }
 
-export const sanitizeInput = (htmlString) => {
+export const sanitizeInput = (htmlString, validTags) => {
   const decodedString = decode(htmlString);
   const cleanInput = sanitizeHtml(decodedString, {
-    allowedTags: ["b", "i", "em", "strong", "a"],
+    allowedTags: validTags || ["b", "i", "em", "strong", "a", "div", "li", "p"],
     allowedAttributes: {
       a: ["href"],
     },

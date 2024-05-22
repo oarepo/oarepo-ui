@@ -14,6 +14,7 @@ export const I18nTextInputField = ({
   placeholder,
   lngFieldWidth,
   usedLanguages,
+  validTags,
   ...uiProps
 }) => {
   const { values, setFieldValue, setFieldTouched } = useFormikContext();
@@ -45,7 +46,8 @@ export const I18nTextInputField = ({
         width={13}
         onBlur={() => {
           const cleanedContent = sanitizeInput(
-            getIn(values, `${fieldPath}.value`)
+            getIn(values, `${fieldPath}.value`),
+            validTags
           );
           setFieldValue(`${fieldPath}.value`, cleanedContent);
           setFieldTouched(`${fieldPath}.value`, true);
@@ -69,6 +71,7 @@ I18nTextInputField.propTypes = {
   languageOptions: PropTypes.array,
   lngFieldWidth: PropTypes.number,
   usedLanguages: PropTypes.array,
+  validTags: PropTypes.array,
 };
 
 I18nTextInputField.defaultProps = {
