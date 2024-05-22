@@ -1,13 +1,9 @@
 import * as React from "react";
 import { LanguageSelectField } from "@js/oarepo_ui";
-import {
-  TextField,
-  GroupField,
-  FieldLabel,
-} from "react-invenio-forms";
+import { TextField, GroupField, FieldLabel } from "react-invenio-forms";
 import PropTypes from "prop-types";
-import { useFormikContext } from "formik";
-import { sanitizeInput, getFieldValue } from "../../util";
+import { useFormikContext, getIn } from "formik";
+import { sanitizeInput } from "../../util";
 
 export const I18nTextInputField = ({
   fieldPath,
@@ -21,8 +17,6 @@ export const I18nTextInputField = ({
   ...uiProps
 }) => {
   const { values, setFieldValue, setFieldTouched } = useFormikContext();
-
-  const fieldValue = getFieldValue(values, `${fieldPath}.value`);
 
   return (
     <GroupField fieldPath={fieldPath} optimized>
@@ -50,7 +44,9 @@ export const I18nTextInputField = ({
         placeholder={placeholder}
         width={13}
         onBlur={() => {
-          const cleanedContent = sanitizeInput(fieldValue);
+          const cleanedContent = sanitizeInput(
+            getIn(values, `${fieldPath}.value`)
+          );
           setFieldValue(`${fieldPath}.value`, cleanedContent);
           setFieldTouched(`${fieldPath}.value`, true);
         }}

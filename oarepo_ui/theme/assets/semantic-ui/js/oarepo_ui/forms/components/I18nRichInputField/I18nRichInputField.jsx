@@ -8,8 +8,8 @@ import {
 } from "react-invenio-forms";
 import PropTypes from "prop-types";
 import { Form } from "semantic-ui-react";
-import { useFormikContext } from "formik";
-import { sanitizeInput, getFieldValue } from "../../util";
+import { useFormikContext, getIn } from "formik";
+import { sanitizeInput } from "../../util";
 
 export const I18nRichInputField = ({
   fieldPath,
@@ -25,7 +25,7 @@ export const I18nRichInputField = ({
 }) => {
   const { values, setFieldValue, setFieldTouched } = useFormikContext();
 
-  const fieldValue = getFieldValue(values, `${fieldPath}.value`);
+  const fieldValue = getIn(values, `${fieldPath}.value`);
 
   return (
     <GroupField fieldPath={fieldPath} optimized>

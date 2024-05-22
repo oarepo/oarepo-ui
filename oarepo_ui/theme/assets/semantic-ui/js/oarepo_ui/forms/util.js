@@ -40,10 +40,6 @@ export const sanitizeInput = (htmlString) => {
   return cleanInput;
 };
 
-export const getFieldValue = (obj, path) => {
-  return path.split(".").reduce((acc, part) => acc && acc[part], obj);
-};
-
 /**
  * Initialize Formik form application.
  * @function
