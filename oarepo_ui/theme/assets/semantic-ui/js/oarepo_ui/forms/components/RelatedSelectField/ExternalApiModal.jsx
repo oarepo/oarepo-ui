@@ -1,7 +1,17 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import { Modal, Button, Grid, Header, Icon, Segment } from "semantic-ui-react";
+import {
+  Modal,
+  Button,
+  Grid,
+  Header,
+  Icon,
+  Segment,
+  Placeholder,
+  Dimmer,
+  Loader,
+} from "semantic-ui-react";
 import { OverridableContext } from "react-overridable";
 import {
   EmptyResults,
@@ -15,7 +25,6 @@ import {
 import { ExternalApiResultsList } from "./ExternalApiResultsList";
 import { useFormikContext } from "formik";
 import _isEmpty from "lodash/isEmpty";
-import { ResultsPerPageLabel } from "@js/oarepo_ui/search/";
 
 export const EmptyResultsElement = ({ queryString }) => {
   return (
@@ -39,8 +48,27 @@ EmptyResultsElement.propTypes = {
   extraContent: PropTypes.node,
 };
 
+const LightResultsLoader = () => {
+  return (
+    <Segment basic placeholder textAlign="center">
+      <Dimmer inverted active>
+        <Loader size="large" />
+      </Dimmer>
+      <Placeholder fluid>
+        {Array.from({ length: 10 }).map((_, index) => (
+          <Placeholder.Header image>
+          <Placeholder.Line length='medium' />
+          <Placeholder.Line length='full' />
+        </Placeholder.Header>
+        ))}
+      </Placeholder>
+    </Segment>
+  );
+};
+
 const overriddenComponents = {
-  ["EmptyResults.element"]: EmptyResultsElement,
+  "EmptyResults.element": EmptyResultsElement,
+  "ResultsLoader.element": LightResultsLoader,
 };
 
 export const ExternalApiModal = ({

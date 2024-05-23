@@ -129,7 +129,7 @@ export class RelatedSelectFieldInternal extends RemoteSelectField {
       },
       initialQueryState: {
         queryString: this.state.searchQuery,
-        size: 10,
+        size: 20,
       },
       paginationOptions: {
         defaultValue: 10,
