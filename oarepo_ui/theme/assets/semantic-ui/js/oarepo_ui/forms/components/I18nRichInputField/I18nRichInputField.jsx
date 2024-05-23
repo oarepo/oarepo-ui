@@ -1,5 +1,5 @@
 import * as React from "react";
-import { LanguageSelectField } from "@js/oarepo_ui";
+import { LanguageSelectField, useFormConfig } from "@js/oarepo_ui";
 import { RichInputField, GroupField, FieldLabel } from "react-invenio-forms";
 import PropTypes from "prop-types";
 import { Form } from "semantic-ui-react";
@@ -16,6 +16,9 @@ export const I18nRichInputField = ({
   usedLanguages,
   ...uiProps
 }) => {
+  const {
+    formConfig: { getFieldData },
+  } = useFormConfig();
   return (
     <GroupField fieldPath={fieldPath} optimized>
       <LanguageSelectField
@@ -32,16 +35,17 @@ export const I18nRichInputField = ({
           // field groups with empty field label on one of inputs
           className={`${!label ? "mt-25" : ""}`}
           fieldPath={`${fieldPath}.value`}
-          label={
-            <FieldLabel
-              htmlFor={`${fieldPath}.value`}
-              icon={labelIcon}
-              label={label}
-            />
-          }
+          // label={
+          //   <FieldLabel
+          //     htmlFor={`${fieldPath}.value`}
+          //     icon={labelIcon}
+          //     label={label}
+          //   />
+          // }
           required={required}
           optimized={optimized}
-          placeholder={placeholder}
+          // placeholder={placeholder}
+          {...getFieldData(`${fieldPath}.value`)}
           {...uiProps}
         />
       </Form.Field>

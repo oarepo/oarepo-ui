@@ -1,4 +1,3 @@
-import { loadComponents } from "@js/invenio_theme/templates";
 import React from "react";
 import ReactDOM from "react-dom";
 import { getInputFromDOM } from "@js/oarepo_ui";
@@ -9,7 +8,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { loadAppComponents } from "../util";
 import { overridableComponentIds as componentIds } from "./constants";
 import { buildUID } from "react-searchkit";
-
+import _get from "lodash/get";
+import { FieldLabel } from "react-invenio-forms";
+import { i18next } from "@translations/i18next";
 import Overridable, {
   OverridableContext,
   overrideStore,
@@ -23,6 +24,7 @@ export function parseFormAppConfig(rootElementId = "form-app") {
   const recordPermissions = getInputFromDOM("record-permissions");
   const files = getInputFromDOM("files");
   const links = getInputFromDOM("links");
+  formConfig.getFieldData = getFieldData(formConfig.ui_model);
 
   return { rootEl, record, formConfig, recordPermissions, files, links };
 }
@@ -81,4 +83,43 @@ export function createFormAppInit({
   } else {
     return initFormApp;
   }
+}
+
+export const getFieldData = (uiMetadata) => {
+  // explore options of using context to pass the data from ui json to nested fields in modal
+  return (fieldPath, icon = "pencil") => {
+    const path = transformPath(fieldPath);
+    const { help, label, hint } = _get(uiMetadata, path);
+    // full representation meaning jsx or small space representation (no helptext, label with helptext in popup)
+    // text only without react elements
+    return {
+      helpText: i18next.t(help),
+      label: (
+        <FieldLabel htmlFor={fieldPath} icon={icon} label={i18next.t(label)} />
+      ),
+      placeholder: i18next.t(hint),
+    };
+  };
+};
+
+export function transformPath(path) {
+  // Split the path into components
+  const parts = path.split(".");
+
+  // Use reduce to build the new path
+  const transformedParts = parts.map((part, index, array) => {
+    if (index === 0) {
+      return `children.${part}.children`;
+    } else if (index === array.length - 1) {
+      return part;
+    } else if (!isNaN(parseInt(part))) {
+      return `child.children`;
+    } else if (!isNaN(parseInt(array[index + 1]))) {
+      return part;
+    } else {
+      return `${part}.children`;
+    }
+  });
+  // Join the transformed parts back into a single string
+  return transformedParts.join(".");
 }
