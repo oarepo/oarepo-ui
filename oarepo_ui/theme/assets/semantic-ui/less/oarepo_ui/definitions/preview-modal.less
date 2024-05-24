@@ -33,11 +33,16 @@ name of the component from above)
   Note: use variables here, not the exact values. Placing the values to another file (sample.variables)
   will allow users to override these values.
  */
-.ui.modal#preview-modal{
+.ui.modal#preview-modal {
   & .fileIframe {
     width: 100%;
     height: 80vh;
     margin-bottom: 10px;
+  }
+  & .close.icon {
+    right: 5px;
+    top: 5px;
+    position: fixed;
   }
 }
 

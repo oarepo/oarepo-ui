@@ -4,8 +4,7 @@ $("#preview-modal").modal();
 const iframe = document.querySelector(".fileIframe");
 
 function openModal(event) {
-  const fileTitle = event.target.dataset.title;
-  iframe.src = window.location.href + "/files/" + fileTitle + "/preview";
+  iframe.src = event.target.dataset.link;
   $("#preview-modal").modal("show");
 }
 

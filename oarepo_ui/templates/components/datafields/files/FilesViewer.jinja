@@ -1,6 +1,4 @@
-{# def files #} 
-
-{% if files.entries|length > 0 %}
+{# def files #} {% if files.entries|length > 0 %}
 
 <table class="ui table striped rel-mb-1">
   <thead>
@@ -23,7 +21,7 @@
       </td>
       <td>{{ file.size | filesizeformat }}</td>
       <td>
-        <i class="ui icon zoom openPreviewIcon" data-title="{{ file.key }}"></i>
+        <i class="ui icon zoom openPreviewIcon" data-link="{{ file.links.preview }}"></i>
         <a href="{{ file.links.content }}"><i class="ui icon download"></i></a>
       </td>
     </tr>
@@ -32,11 +30,8 @@
 
   <div class="ui modal" id="preview-modal">
     <div class="modal-content">
-      <iframe
-        class="fileIframe"
-        title="File Preview"
-      ></iframe>
       <i class="close icon"></i>
+      <iframe class="fileIframe" title="File Preview"></iframe>
     </div>
   </div>
 </table>

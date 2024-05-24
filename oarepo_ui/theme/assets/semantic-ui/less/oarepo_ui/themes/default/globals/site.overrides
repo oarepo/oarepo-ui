@@ -30,4 +30,11 @@
       display: none !important;
     }
   }
+  
 }
+.rel-mb-1{
+    & .openPreviewIcon:hover{
+      color: @openPreviewIconOnHoverColor;
+      cursor: pointer;
+    }
+  }
