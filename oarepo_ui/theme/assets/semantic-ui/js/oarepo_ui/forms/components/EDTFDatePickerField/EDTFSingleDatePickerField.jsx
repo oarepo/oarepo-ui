@@ -21,6 +21,7 @@ export const EDTFSingleDatePicker = ({
   clearButtonClassName,
   datePickerProps,
   customInputProps,
+  icon,
 }) => {
   const { setFieldValue } = useFormikContext();
   const [field] = useField(fieldPath);
@@ -35,7 +36,7 @@ export const EDTFSingleDatePicker = ({
   };
   return (
     <Form.Field className="ui datepicker field" required={required}>
-      <FieldLabel htmlFor={fieldPath} label={label} />
+      {label ?? <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />}
       <EDTFDatePickerWrapper
         fieldPath={fieldPath}
         handleClear={handleClear}
@@ -59,22 +60,22 @@ export const EDTFSingleDatePicker = ({
 
 EDTFSingleDatePicker.propTypes = {
   fieldPath: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
-  icon: PropTypes.string,
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
   helpText: PropTypes.string,
   datePickerProps: PropTypes.object,
   required: PropTypes.bool,
   placeholder: PropTypes.string,
   clearButtonClassName: PropTypes.string,
   customInputProps: PropTypes.object,
+  icon: PropTypes.string,
 };
 
 EDTFSingleDatePicker.defaultProps = {
-  icon: "calendar",
   helpText: i18next.t(
     "Choose a date from the calendar by clicking on the input."
   ),
   required: false,
   placeholder: i18next.t("Choose a date."),
   clearButtonClassName: "clear-icon",
+  icon: "calendar",
 };
