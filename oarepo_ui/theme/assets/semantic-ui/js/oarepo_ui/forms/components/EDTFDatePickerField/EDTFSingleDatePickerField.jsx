@@ -15,7 +15,6 @@ import { EDTFDatePickerWrapper } from "./EDTFDatePickerWrapper";
 export const EDTFSingleDatePicker = ({
   fieldPath,
   label,
-  icon,
   helpText,
   required,
   placeholder,
@@ -36,7 +35,7 @@ export const EDTFSingleDatePicker = ({
   };
   return (
     <Form.Field className="ui datepicker field" required={required}>
-      <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />
+      <FieldLabel htmlFor={fieldPath} label={label} />
       <EDTFDatePickerWrapper
         fieldPath={fieldPath}
         handleClear={handleClear}

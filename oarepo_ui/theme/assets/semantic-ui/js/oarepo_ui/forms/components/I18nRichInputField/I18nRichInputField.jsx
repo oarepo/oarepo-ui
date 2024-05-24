@@ -1,6 +1,6 @@
 import * as React from "react";
 import { LanguageSelectField, useFormConfig } from "@js/oarepo_ui";
-import { RichInputField, GroupField, FieldLabel } from "react-invenio-forms";
+import { RichInputField, GroupField } from "react-invenio-forms";
 import PropTypes from "prop-types";
 import { Form } from "semantic-ui-react";
 
@@ -14,6 +14,7 @@ export const I18nRichInputField = ({
   editorConfig,
   lngFieldWidth,
   usedLanguages,
+  useModelData,
   ...uiProps
 }) => {
   const {
@@ -26,6 +27,9 @@ export const I18nRichInputField = ({
         required
         width={lngFieldWidth}
         usedLanguages={usedLanguages}
+        {...(useModelData
+          ? getFieldData(`${fieldPath}.lang`, "web").compactRepresentation
+          : {})}
       />
 
       <Form.Field width={13}>
@@ -35,17 +39,13 @@ export const I18nRichInputField = ({
           // field groups with empty field label on one of inputs
           className={`${!label ? "mt-25" : ""}`}
           fieldPath={`${fieldPath}.value`}
-          // label={
-          //   <FieldLabel
-          //     htmlFor={`${fieldPath}.value`}
-          //     icon={labelIcon}
-          //     label={label}
-          //   />
-          // }
+          label={label}
           required={required}
           optimized={optimized}
-          // placeholder={placeholder}
-          {...getFieldData(`${fieldPath}.value`)}
+          placeholder={placeholder}
+          {...(useModelData
+            ? getFieldData(`${fieldPath}.value`).compactRepresentation
+            : {})}
           {...uiProps}
         />
       </Form.Field>
@@ -67,6 +67,7 @@ I18nRichInputField.propTypes = {
   languageOptions: PropTypes.array,
   lngFieldWidth: PropTypes.number,
   usedLanguages: PropTypes.array,
+  useModelData: PropTypes.bool,
 };
 
 I18nRichInputField.defaultProps = {
@@ -93,4 +94,5 @@ I18nRichInputField.defaultProps = {
     ],
   },
   lngFieldWidth: 3,
+  useModelData: true,
 };

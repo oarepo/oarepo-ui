@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { getInputFromDOM } from "@js/oarepo_ui";
+import { getInputFromDOM, CompactFieldLabel } from "@js/oarepo_ui";
 import { FormConfigProvider } from "./contexts";
 import { Container } from "semantic-ui-react";
 import { BrowserRouter as Router } from "react-router-dom";
@@ -28,7 +28,6 @@ export function parseFormAppConfig(rootElementId = "form-app") {
 
   return { rootEl, record, formConfig, recordPermissions, files, links };
 }
-
 /**
  * Initialize Formik form application.
  * @function
@@ -89,15 +88,39 @@ export const getFieldData = (uiMetadata) => {
   // explore options of using context to pass the data from ui json to nested fields in modal
   return (fieldPath, icon = "pencil") => {
     const path = transformPath(fieldPath);
-    const { help, label, hint } = _get(uiMetadata, path);
+    const { help, label, hint, required } = _get(uiMetadata, path);
     // full representation meaning jsx or small space representation (no helptext, label with helptext in popup)
     // text only without react elements
     return {
-      helpText: i18next.t(help),
-      label: (
-        <FieldLabel htmlFor={fieldPath} icon={icon} label={i18next.t(label)} />
-      ),
-      placeholder: i18next.t(hint),
+      fullRepresentation: {
+        helpText: i18next.t(help),
+        label: (
+          <FieldLabel
+            htmlFor={fieldPath}
+            icon={icon}
+            label={i18next.t(label)}
+          />
+        ),
+        placeholder: i18next.t(hint),
+        required,
+      },
+      compactRepresentation: {
+        helptext: undefined,
+        label: (
+          <CompactFieldLabel
+            htmlFor={fieldPath}
+            icon=""
+            label={i18next.t(label)}
+            popupHelpText={i18next.t(help)}
+          />
+        ),
+        placeholder: i18next.t(hint),
+      },
+      textRepresentation: {
+        helpText: i18next.t(help),
+        label: i18next.t(label),
+        placeholder: i18next.t(hint),
+      },
     };
   };
 };

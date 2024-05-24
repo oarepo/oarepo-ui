@@ -28,9 +28,11 @@ export const MultilingualTextInput = ({
   lngFieldWidth,
   showEmptyValue,
   prefillLanguageWithDefaultLocale,
+  useModelData,
   ...uiProps
 }) => {
   const { defaultLocale } = useDefaultLocale();
+
   const { values } = useFormikContext();
   const { usedSubValues, defaultNewValue: getNewValue } = useFormFieldValue({
     defaultValue: defaultLocale,
@@ -75,6 +77,7 @@ export const MultilingualTextInput = ({
                   required={required}
                   usedLanguages={usedLanguages}
                   lngFieldWidth={lngFieldWidth}
+                  useModelData={useModelData}
                   {...uiProps}
                 />
               ) : (
@@ -85,6 +88,7 @@ export const MultilingualTextInput = ({
                   required={required}
                   usedLanguages={usedLanguages}
                   lngFieldWidth={lngFieldWidth}
+                  useModelData={useModelData}
                   {...uiProps}
                 />
               )}
@@ -112,6 +116,8 @@ MultilingualTextInput.propTypes = {
   defaultNewValue: PropTypes.object,
   showEmptyValue: PropTypes.bool,
   prefillLanguageWithDefaultLocale: PropTypes.bool,
+  // whether or not the nested components shall call to get input information from the model
+  useModelData: PropTypes.bool,
 };
 
 MultilingualTextInput.defaultProps = {
@@ -124,4 +130,5 @@ MultilingualTextInput.defaultProps = {
   addButtonLabel: i18next.t("Add another language"),
   showEmptyValue: false,
   prefillLanguageWithDefaultLocale: false,
+  useModelData: true,
 };

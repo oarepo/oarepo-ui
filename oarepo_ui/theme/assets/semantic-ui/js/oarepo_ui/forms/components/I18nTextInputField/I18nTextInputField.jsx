@@ -1,5 +1,5 @@
 import * as React from "react";
-import { LanguageSelectField } from "@js/oarepo_ui";
+import { LanguageSelectField, useFormConfig } from "@js/oarepo_ui";
 import { TextField, GroupField, FieldLabel } from "react-invenio-forms";
 import PropTypes from "prop-types";
 
@@ -12,8 +12,12 @@ export const I18nTextInputField = ({
   placeholder,
   lngFieldWidth,
   usedLanguages,
+  useModelData,
   ...uiProps
 }) => {
+  const {
+    formConfig: { getFieldData },
+  } = useFormConfig();
   return (
     <GroupField fieldPath={fieldPath} optimized>
       <LanguageSelectField
@@ -22,6 +26,9 @@ export const I18nTextInputField = ({
         required
         width={lngFieldWidth}
         usedLanguages={usedLanguages}
+        {...(useModelData
+          ? getFieldData(`${fieldPath}.lang`, "web").compactRepresentation
+          : {})}
       />
       <TextField
         // TODO: hacky fix for SUI alignment bug for case with
@@ -39,6 +46,9 @@ export const I18nTextInputField = ({
         optimized={optimized}
         placeholder={placeholder}
         width={13}
+        {...(useModelData
+          ? getFieldData(`${fieldPath}.value`, "web").compactRepresentation
+          : {})}
         {...uiProps}
       />
     </GroupField>
@@ -58,6 +68,7 @@ I18nTextInputField.propTypes = {
   languageOptions: PropTypes.array,
   lngFieldWidth: PropTypes.number,
   usedLanguages: PropTypes.array,
+  useModelData: PropTypes.bool,
 };
 
 I18nTextInputField.defaultProps = {
@@ -70,4 +81,5 @@ I18nTextInputField.defaultProps = {
   optimized: true,
   required: false,
   lngFieldWidth: 3,
+  useModelData: true,
 };

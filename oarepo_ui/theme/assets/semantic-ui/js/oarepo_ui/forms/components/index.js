@@ -16,3 +16,4 @@ export * from "./SaveButton";
 export * from "./ValidateButton";
 export * from "./ConfirmationModal";
 export * from "./BaseFormLayout";
+export * from "./CompactFieldLabel";

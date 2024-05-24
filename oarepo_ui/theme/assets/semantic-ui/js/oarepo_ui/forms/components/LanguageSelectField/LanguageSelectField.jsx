@@ -4,7 +4,6 @@ import { LocalVocabularySelectField } from "@js/oarepo_vocabularies";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import PropTypes from "prop-types";
 import { useFormikContext, getIn } from "formik";
-import { useFormConfig } from "@js/oarepo_ui";
 
 export const LanguageSelectField = ({
   fieldPath,
@@ -18,25 +17,21 @@ export const LanguageSelectField = ({
   ...uiProps
 }) => {
   const { values } = useFormikContext();
-  const {
-    formConfig: { getFieldData },
-  } = useFormConfig();
   return (
     <LocalVocabularySelectField
       deburr
       fieldPath={fieldPath}
-      // placeholder={placeholder}
+      placeholder={placeholder}
       required={required}
       clearable={clearable}
       multiple={multiple}
-      // label={<FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />}
+      label={<FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />}
       optionsListName="languages"
       usedOptions={usedLanguages}
       onChange={({ e, data, formikProps }) => {
         formikProps.form.setFieldValue(fieldPath, data.value);
       }}
       value={getIn(values, fieldPath, "") ?? ""}
-      {...getFieldData(fieldPath)}
       {...uiProps}
     />
   );
