@@ -432,3 +432,16 @@ export const useDepositFileApiClient = (baseApiClient) => {
     setFieldValue,
   };
 };
+
+export const handleValidateAndBlur = (validateField, setFieldTouched) => {
+  return (fieldPath) => {
+    setFieldTouched(fieldPath, true);
+    validateField(fieldPath);
+  };
+};
+
+export const useValidateOnBlur = () => {
+  const { validateField, setFieldTouched } = useFormikContext();
+
+  return handleValidateAndBlur(validateField, setFieldTouched);
+};

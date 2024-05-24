@@ -1,4 +1,3 @@
-import { loadComponents } from "@js/invenio_theme/templates";
 import React from "react";
 import ReactDOM from "react-dom";
 import { getInputFromDOM } from "@js/oarepo_ui";
@@ -9,7 +8,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { loadAppComponents } from "../util";
 import { overridableComponentIds as componentIds } from "./constants";
 import { buildUID } from "react-searchkit";
-
 import Overridable, {
   OverridableContext,
   overrideStore,
