@@ -70,13 +70,11 @@ export const SearchAppResultsGrid = ({
         <Grid.Column
           textAlign="right"
           floated="right"
-          {...{
-            mobile: 8,
-            tablet: 8,
-            computer: 5,
-            largeScreen: 5,
-            widescreen: 5,
-          }}
+          mobile={8}
+          tablet={8}
+          computer={5}
+          largeScreen={5}
+          widescreen={5}
         >
           <ResultOptionsWithState />
         </Grid.Column>

@@ -1,4 +1,3 @@
-import Clipboard from "clipboard";
 import $ from "jquery";
 import { i18next } from "@translations/oarepo_ui/i18next";
 
@@ -8,26 +7,32 @@ const setTooltip = (message, element) => {
 
 const hideTooltip = (element) => {
   setTimeout(() => {
-    element.removeAttr("data-tooltip");
+    element.removeClass("selected").removeAttr("data-tooltip");
   }, 2000);
 };
 
-const clipboard = new Clipboard(".copy-btn");
+const copyTextToClipboard = async (text, trigger) => {
+  try {
+    await navigator.clipboard.writeText(text);
+    $(".copy-btn").removeClass("selected");
+    const target = $(trigger);
+    setTooltip(i18next.t("Copied!"), target);
+    hideTooltip(target);
+    target.addClass("selected");
+  } catch (err) {
+    $(".copy-btn").css("opacity", 0.3);
+    const target = $(trigger);
+    setTooltip(i18next.t("Copy to clipboard failed!"), target);
+    hideTooltip(target);
+    target.css("opacity", 1);
+  }
+};
 
-clipboard.on("success", (e) => {
-  $(".copy-btn").removeClass("selected");
-  const target = $(e.trigger);
-  setTooltip(i18next.t("Copied!"), target);
-  hideTooltip(target);
-  target.addClass("selected");
-});
-
-clipboard.on("error", (e) => {
-  $(".copy-btn").css("opacity", 0.3);
-  const target = $(e.trigger);
-  setTooltip(i18next.t("Copy to clipboard failed!"), target);
-  hideTooltip(target);
-  target.css("opacity", 1);
+$(".copy-btn").on("click", function () {
+  const textToCopy = $(this).data("clipboard-text");
+  if (textToCopy) {
+    copyTextToClipboard(textToCopy, this);
+  }
 });
 
 $(".copy-btn").on("mouseleave", function () {

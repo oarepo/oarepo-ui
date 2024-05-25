@@ -6,7 +6,6 @@
       align-items: center;
       .copy-btn {
         opacity: 0.3;
-        transition: opacity 0.3s;
         margin-left: auto;
       }
       .copy-btn.selected {

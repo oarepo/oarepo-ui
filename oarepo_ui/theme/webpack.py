@@ -58,7 +58,6 @@ else:
     dependencies = {
         "react-datepicker": "^4.21.0",
         "edtf": "^4.0.0",
-        "clipboard": "^2.0.11",
     }
     aliases = {}
 
