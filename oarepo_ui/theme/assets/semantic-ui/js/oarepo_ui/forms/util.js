@@ -33,6 +33,7 @@ export const sanitizeInput = (htmlString, validTags) => {
   const decodedString = decode(htmlString);
   const cleanInput = sanitizeHtml(decodedString, {
     allowedTags: validTags || ["b", "i", "em", "strong", "a", "div", "li", "p"],
+    disallowedTagsMode: 'completelyDiscard',
     allowedAttributes: {
       a: ["href"],
     },
