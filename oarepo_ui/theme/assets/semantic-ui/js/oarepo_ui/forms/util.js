@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { getInputFromDOM, CompactFieldLabel } from "@js/oarepo_ui";
-import { FormConfigProvider } from "./contexts";
+import { FormConfigProvider, FieldDataProvider } from "./contexts";
 import { Container } from "semantic-ui-react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -24,7 +24,7 @@ export function parseFormAppConfig(rootElementId = "form-app") {
   const recordPermissions = getInputFromDOM("record-permissions");
   const files = getInputFromDOM("files");
   const links = getInputFromDOM("links");
-  formConfig.getFieldData = getFieldData(formConfig.ui_model);
+  // formConfig.getFieldData = getFieldData(formConfig.ui_model);
 
   return { rootEl, record, formConfig, recordPermissions, files, links };
 }
@@ -59,13 +59,19 @@ export function createFormAppInit({
             <Router>
               <OverridableContext.Provider value={overrideStore.getAll()}>
                 <FormConfigProvider value={config}>
-                  <Overridable
-                    id={buildUID(overridableIdPrefix, "FormApp.layout")}
+                  <FieldDataProvider
+                    value={{
+                      getFieldData: getFieldData(config.formConfig.ui_model),
+                    }}
                   >
-                    <Container fluid>
-                      <BaseFormLayout />
-                    </Container>
-                  </Overridable>
+                    <Overridable
+                      id={buildUID(overridableIdPrefix, "FormApp.layout")}
+                    >
+                      <Container fluid>
+                        <BaseFormLayout />
+                      </Container>
+                    </Overridable>
+                  </FieldDataProvider>
                 </FormConfigProvider>
               </OverridableContext.Provider>
             </Router>
@@ -84,10 +90,13 @@ export function createFormAppInit({
   }
 }
 
-export const getFieldData = (uiMetadata) => {
+export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
   // explore options of using context to pass the data from ui json to nested fields in modal
   return (fieldPath, icon = "pencil") => {
-    const path = transformPath(fieldPath);
+    const fieldPathWithPrefix = fieldPathPrefix
+      ? `${fieldPathPrefix}.${fieldPath}`
+      : fieldPath;
+    const path = transformPath(fieldPathWithPrefix);
     const { help, label, hint, required } = _get(uiMetadata, path);
     // full representation meaning jsx or small space representation (no helptext, label with helptext in popup)
     // text only without react elements

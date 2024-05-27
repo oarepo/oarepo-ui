@@ -9,3 +9,13 @@ export const FormConfigProvider = ({ children, value }) => {
     </FormConfigContext.Provider>
   );
 };
+
+export const FieldDataContext = React.createContext();
+
+export const FieldDataProvider = ({ children, value }) => {
+  return (
+    <FieldDataContext.Provider value={value}>
+      {children}
+    </FieldDataContext.Provider>
+  );
+};

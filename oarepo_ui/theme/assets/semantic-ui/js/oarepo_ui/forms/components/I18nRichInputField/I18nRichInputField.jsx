@@ -1,5 +1,9 @@
 import * as React from "react";
-import { LanguageSelectField, useFormConfig } from "@js/oarepo_ui";
+import {
+  LanguageSelectField,
+  useFormConfig,
+  useFieldData,
+} from "@js/oarepo_ui";
 import { RichInputField, GroupField } from "react-invenio-forms";
 import PropTypes from "prop-types";
 import { Form } from "semantic-ui-react";
@@ -17,9 +21,7 @@ export const I18nRichInputField = ({
   useModelData,
   ...uiProps
 }) => {
-  const {
-    formConfig: { getFieldData },
-  } = useFormConfig();
+  const { getFieldData } = useFieldData();
   return (
     <GroupField fieldPath={fieldPath} optimized>
       <LanguageSelectField
