@@ -1,40 +1,39 @@
 :not(.ui.grid).only {
   &.mobile:not(.tablet) {
     @media all and (min-width: @tabletBreakpoint) {
-      display: none !important;
+      display: none !important                        ;
     }
   }
 
   &.tablet {
     &.mobile {
       @media all and (min-width: @computerBreakpoint) {
-        display: none !important;
+        display: none !important                          ;
       }
     }
 
     &.computer {
       @media all and (max-width: @largestMobileScreen) {
-        display: none !important;
+        display: none !important                           ;
       }
     }
 
     &:not(.computer):not(.mobile) {
       @media not all and (min-width: @tabletBreakpoint) and (max-width: @largestTabletScreen) {
-        display: none !important;
+        display: none !important                                                                  ;
       }
     }
   }
 
   &.computer:not(.tablet) {
     @media all and (max-width: @largestTabletScreen) {
-      display: none !important;
+      display: none !important                           ;
     }
   }
-  
 }
-.rel-mb-1{
-    & .openPreviewIcon:hover{
-      color: @openPreviewIconOnHoverColor;
-      cursor: pointer;
-    }
+.rel-mb-1 {
+  & .ui.button {
+    background: none;
+    padding: 5px;
   }
+}

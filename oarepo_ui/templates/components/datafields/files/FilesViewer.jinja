@@ -21,16 +21,25 @@
       </td>
       <td>{{ file.size | filesizeformat }}</td>
       <td>
-        <i class="ui icon zoom openPreviewIcon" data-link="{{ file.links.preview }}"></i>
-        <a href="{{ file.links.content }}"><i class="ui icon download"></i></a>
+        <button class="ui button">
+          <i
+            class="ui icon zoom openPreviewIcon"
+            data-link="{{ file.links.preview }}"
+          ></i>
+        </button>
+        <button class="ui button">
+          <a href="{{ file.links.content }}"
+            ><i class="ui icon download"></i
+          ></a>
+        </button>
       </td>
     </tr>
     {% endfor %}
   </tbody>
 
-  <div class="ui modal" id="preview-modal">
-    <div class="modal-content">
-      <i class="close icon"></i>
+  <div class="ui modal">
+    <i class="close icon"></i>
+    <div class="content">
       <iframe class="fileIframe" title="File Preview"></iframe>
     </div>
   </div>
