@@ -36,13 +36,9 @@
     </tr>
     {% endfor %}
   </tbody>
-
-  <div class="ui modal">
-    <i class="close icon"></i>
-    <div class="content">
-      <iframe class="fileIframe" title="File Preview"></iframe>
-    </div>
-  </div>
 </table>
-
+<div class="ui modal fullscreen" id="preview-modal">
+  <i class="close icon"></i>
+  <iframe class="content fileIframe" title="File Preview"></iframe>
+</div>
 {% endif %}

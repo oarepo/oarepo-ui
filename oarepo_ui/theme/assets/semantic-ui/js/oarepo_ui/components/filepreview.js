@@ -1,7 +1,13 @@
 import $ from "jquery";
 
-$("#preview-modal").modal();
 const iframe = document.querySelector(".fileIframe");
+
+$("#preview-modal").modal({
+  onShow: function () {
+    const contentHeight = window.innerHeight * 0.8;
+    iframe.style.height = `${contentHeight - 60}px`;
+  },
+});
 
 function openModal(event) {
   iframe.src = event.target.dataset.link;
