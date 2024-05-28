@@ -16,3 +16,4 @@ import "./sample-component.js"
 import "../../less/oarepo_ui/custom-components.less";
 
 import "./components/burgermenu.js";
+
