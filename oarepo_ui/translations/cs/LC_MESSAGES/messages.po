@@ -291,7 +291,7 @@ msgid "Actions"
 msgstr "Akce"
 
 msgid "Delete"
-msgstr "Zmazat"
+msgstr "Smazat"
 
 msgid "Cancel"
 msgstr "Zrušit"
@@ -399,3 +399,46 @@ msgstr ""
 "\n"
 "      Záznam, který se snažíte zobrazit, byl smazán z repozitáře %(sitename)s. <br>Metadata\n"
 "      záznamu jsou uložena pro archivní účely. <br>Potřebujete-li je, obraťte se na správce repozitáře."
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/PreviewHeader.jinja:11
+msgid ""
+"You are previewing a new record version that has not yet been published."
+msgstr ""
+"Prohlížíte si náhled nové verze záznamu, která ještě nebyla publikována."
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:6
+msgid "Files"
+msgstr "Soubory"
+
+msgid ""
+"Your draft was saved. If you wish to preview it, please correct the "
+"following validation errors and click preview again:"
+msgstr ""
+"Váš koncept byl uložen. Pokud chcete zobrazit jeho náhled, opravte "
+"následující chyby ověření a znovu klikněte na náhled:"
+
+msgid ""
+"Once the record is published you will no longer be able to change record's "
+"files! However, you will still be able to update the record's metadata "
+"later."
+msgstr ""
+"Jakmile bude záznam zveřejněn, již jej nebudete moci změnit soubory! Stále "
+"však budete moci aktualizovat metadata záznamu později."
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:16
+msgid "Edit item"
+msgstr "Editace záznamu"
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:9
+msgid "File"
+msgstr "Soubor"
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:10
+msgid "Size"
+msgstr "Velikost"
+
+msgid "Your draft was saved. Redirecting to the preview page..."
+msgstr "Váš koncept byl uložen. Přesměrování na stránku náhledu..."
+
+msgid "Please provide an URL in valid format"
+msgstr "Zadejte prosím adresu URL v platném formátu"

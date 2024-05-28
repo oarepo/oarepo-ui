@@ -136,7 +136,7 @@ export const useShowEmptyValue = (
   }, [showEmptyValue, setFieldValue, fieldPath, defaultNewValue]);
 };
 
-export const useDepositApiClient = (
+export const useDepositApiClient = ({
   baseApiClient,
   serializer,
   internalFieldsArray = [
@@ -146,8 +146,8 @@ export const useDepositApiClient = (
     "httpErrors",
     "successMessage",
   ],
-  keysToRemove = ["__key"]
-) => {
+  keysToRemove = ["__key"],
+} = {}) => {
   const formik = useFormikContext();
 
   const {
@@ -164,10 +164,6 @@ export const useDepositApiClient = (
     formConfig: { createUrl },
   } = useFormConfig();
 
-  const [isSaving, setIsSaving] = useState(false);
-  const [isPublishing, setIsPublishing] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-
   const recordSerializer = serializer
     ? new serializer(internalFieldsArray, keysToRemove)
     : new OARepoDepositSerializer(internalFieldsArray, keysToRemove);
@@ -180,7 +176,6 @@ export const useDepositApiClient = (
     let response;
 
     setSubmitting(true);
-    setIsSaving(true);
     //  purge any existing errors in internal fields before making save action
     const valuesWithoutInternalFields = _omit(values, internalFieldsArray);
     setErrors({});
@@ -196,7 +191,7 @@ export const useDepositApiClient = (
         window.history.replaceState(
           undefined,
           "",
-          relativeUrl(response.links.self_html)
+          relativeUrl(response.links.edit_html)
         );
       }
 
@@ -237,7 +232,6 @@ export const useDepositApiClient = (
       return false;
     } finally {
       setSubmitting(false);
-      setIsSaving(false);
     }
   }
 
@@ -267,11 +261,13 @@ export const useDepositApiClient = (
       return;
     }
     setSubmitting(true);
-    setIsPublishing(true);
     let response;
     try {
       response = await apiClient.publishDraft(saveResult);
-
+      // to remove edit url from the history so when you click back you are taken to the main page instead
+      // of the page throwin error as the record is already published. TODO: maybe should be search_html that
+      // takes to main search app
+      window.history.replaceState(null, "", "/");
       window.location.href = response.links.self_html;
       setFieldValue(
         "successMessage",
@@ -302,7 +298,6 @@ export const useDepositApiClient = (
       return false;
     } finally {
       setSubmitting(false);
-      setIsPublishing(false);
     }
   }
 
@@ -316,7 +311,6 @@ export const useDepositApiClient = (
         "You must provide url where to be redirected after deleting a draft"
       );
     setSubmitting(true);
-    setIsDeleting(true);
     try {
       let response = await apiClient.deleteDraft(values);
 
@@ -336,7 +330,42 @@ export const useDepositApiClient = (
       return false;
     } finally {
       setSubmitting(false);
-      setIsDeleting(false);
+    }
+  }
+
+  async function preview() {
+    setSubmitting(true);
+    try {
+      const saveResult = await save();
+
+      if (!saveResult) {
+        setFieldValue(
+          "BEvalidationErrors.errorMessage",
+          i18next.t(
+            "Your draft was saved. If you wish to preview it, please correct the following validation errors and click preview again:"
+          )
+        );
+        return;
+      } else {
+        const url = saveResult.links.self_html;
+        setFieldValue(
+          "successMessage",
+          i18next.t("Your draft was saved. Redirecting to the preview page...")
+        );
+        setTimeout(() => {
+          setFieldValue("successMessage", "");
+          window.location.href = url;
+        }, 1000);
+      }
+      return saveResult;
+    } catch (error) {
+      setFieldValue(
+        "httpErrors",
+        error?.response?.data?.message ?? error.message
+      );
+      return false;
+    } finally {
+      setSubmitting(false);
     }
   }
   // we return also recordSerializer and apiClient instances, if someone wants to use this hook
@@ -344,13 +373,11 @@ export const useDepositApiClient = (
   return {
     values,
     isSubmitting,
-    isSaving,
-    isPublishing,
-    isDeleting,
     save,
     publish,
     read,
     _delete,
+    preview,
     recordSerializer,
     apiClient,
     createUrl,
@@ -404,4 +431,17 @@ export const useDepositFileApiClient = (baseApiClient) => {
     formik,
     setFieldValue,
   };
+};
+
+export const handleValidateAndBlur = (validateField, setFieldTouched) => {
+  return (fieldPath) => {
+    setFieldTouched(fieldPath, true);
+    validateField(fieldPath);
+  };
+};
+
+export const useValidateOnBlur = () => {
+  const { validateField, setFieldTouched } = useFormikContext();
+
+  return handleValidateAndBlur(validateField, setFieldTouched);
 };

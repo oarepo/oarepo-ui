@@ -1,5 +1,6 @@
 import copy
 from functools import partial
+from os.path import splitext
 from typing import TYPE_CHECKING, Iterator
 
 import deepmerge
@@ -14,7 +15,7 @@ from flask_resources import (
 )
 from flask_security import login_required
 from invenio_base.utils import obj_or_import_string
-from invenio_pidstore.errors import PIDDeletedError
+from invenio_previewer import current_previewer
 from invenio_records_resources.pagination import Pagination
 from invenio_records_resources.proxies import current_service_registry
 from invenio_records_resources.records.systemfields import FilesField
@@ -27,8 +28,11 @@ from invenio_records_resources.services import LinksTemplate
 from werkzeug.exceptions import Forbidden
 
 from oarepo_ui.utils import dump_empty
+from oarepo_runtime.datastreams.utils import get_file_service_for_record_class
 
 from .templating.data import FieldData
+from invenio_previewer.extensions import default as default_previewer
+
 
 if TYPE_CHECKING:
     from .components import UIResourceComponent
@@ -47,6 +51,9 @@ request_export_args = request_parser(
     from_conf("request_export_args"), location="view_args"
 )
 
+request_file_view_args = request_parser(from_conf("request_file_view_args"), location="view_args")
+
+
 
 class UIResource(Resource):
     """Record resource."""
@@ -64,6 +71,12 @@ class UIResource(Resource):
                 options["template_folder"] = template_folder
         blueprint = super().as_blueprint(**options)
         blueprint.app_context_processor(lambda: self.fill_jinja_context())
+
+        for exception_class, handler in self.config.error_handlers.items():
+            if isinstance(handler, str):
+                handler = getattr(self, handler)
+            blueprint.register_error_handler(exception_class, handler)
+
         return blueprint
 
     #
@@ -97,21 +110,24 @@ class RecordsUIResource(UIResource):
 
     def create_url_rules(self):
         """Create the URL rules for the record resource."""
+        routes = []
         route_config = self.config.routes
-        search_route = route_config["search"]
-        if not search_route.endswith("/"):
-            search_route += "/"
-        search_route_without_slash = search_route[:-1]
-        routes = [
-            route("GET", route_config["export"], self.export),
-            route("GET", route_config["detail"], self.detail),
-            route("GET", search_route, self.search),
-            route("GET", search_route_without_slash, self.search_without_slash),
-        ]
-        if "create" in route_config:
-            routes += [route("GET", route_config["create"], self.create)]
-        if "edit" in route_config:
-            routes += [route("GET", route_config["edit"], self.edit)]
+        for route_name, route_url in route_config.items():
+            if route_name == "search":
+                search_route = route_url
+                if not search_route.endswith("/"):
+                    search_route += "/"
+                search_route_without_slash = search_route[:-1]
+                routes.append(route("GET", search_route, self.search))
+                routes.append(
+                    route(
+                        "GET",
+                        search_route_without_slash,
+                        self.search_without_slash,
+                    )
+                )
+            else:
+                routes.append(route("GET", route_url, getattr(self, route_name)))
         return routes
 
     def empty_record(self, resource_requestctx, **kwargs):
@@ -136,22 +152,29 @@ class RecordsUIResource(UIResource):
             self.config.api_service.replace("-", "_"), {}
         )
 
+    # helper function to avoid duplicating code between detail and preview handler
     @request_read_args
     @request_view_args
-    def detail(self):
-        """Returns item detail page."""
-        try:
-            api_record = self._get_record(resource_requestctx, allow_draft=False)
-        except PIDDeletedError as e:
-            return current_oarepo_ui.catalog.render(
-                self.get_jinjax_macro(
-                    "tombstone",
-                    identity=g.identity,
-                    args=resource_requestctx.args,
-                    view_args=resource_requestctx.view_args,
-                    default_macro="Tombstone"
-                ),
-                pid=resource_requestctx.view_args["pid_value"],
+    def _detail(self, *, is_preview=False):
+        if is_preview:
+            api_record = self._get_record(resource_requestctx, allow_draft=is_preview)
+            render_method = self.get_jinjax_macro(
+                "preview",
+                identity=g.identity,
+                args=resource_requestctx.args,
+                view_args=resource_requestctx.view_args,
+                default_macro=self.config.templates["detail"],
+            )
+
+        else:
+            api_record = self._get_record(
+                resource_requestctx, allow_draft=is_preview
+            )
+            render_method = self.get_jinjax_macro(
+                "detail",
+                identity=g.identity,
+                args=resource_requestctx.args,
+                view_args=resource_requestctx.view_args,
             )
 
         # TODO: handle permissions UI way - better response than generic error
@@ -188,30 +211,58 @@ class RecordsUIResource(UIResource):
             custom_fields=self._get_custom_fields(
                 api_record=api_record, resource_requestctx=resource_requestctx
             ),
+            is_preview=is_preview,
         )
 
         metadata = dict(record.get("metadata", record))
         render_kwargs = {
             **extra_context,
-            'extra_context': extra_context,         # for backward compatibility
-            'metadata': metadata,
-            'ui': dict(record.get("ui", record)),
-            'record': record,
-            'api_record': api_record,
-            'ui_links': ui_links,
-            'context': current_oarepo_ui.catalog.jinja_env.globals,
-            'd': FieldData(record, self.ui_model),
+            "extra_context": extra_context,  # for backward compatibility
+            "metadata": metadata,
+            "ui": dict(record.get("ui", record)),
+            "record": record,
+            "api_record": api_record,
+            "ui_links": ui_links,
+            "context": current_oarepo_ui.catalog.jinja_env.globals,
+            "d": FieldData(record, self.ui_model),
+            "is_preview": is_preview,
         }
 
         return current_oarepo_ui.catalog.render(
-            self.get_jinjax_macro(
-                "detail",
-                identity=g.identity,
-                args=resource_requestctx.args,
-                view_args=resource_requestctx.view_args,
-            ),
-            **render_kwargs
+            render_method,
+            **render_kwargs,
         )
+
+    def detail(self):
+        """Returns item detail page."""
+        return self._detail()
+
+    @request_read_args
+    @request_file_view_args
+    def file_preview(self, *args, is_preview=False, **kwargs):
+        pid_value = resource_requestctx.view_args["pid_value"]
+        filepath = resource_requestctx.view_args["filepath"]
+        record = self._get_record(resource_requestctx, allow_draft=is_preview)._record
+        file_service = get_file_service_for_record_class(type(record))
+        file_metadata = file_service.read_file_metadata(g.identity, pid_value, filepath)
+
+        file_previewer = file_metadata.data.get("previewer")
+
+        url = file_metadata.links['content']
+
+        # Find a suitable previewer
+        fileobj = PreviewFile(file_metadata, pid_value, record, url)
+        for plugin in current_previewer.iter_previewers(
+                previewers=[file_previewer] if file_previewer else None
+        ):
+            if plugin.can_preview(fileobj):
+                return plugin.preview(fileobj)
+
+        return default_previewer.preview(fileobj)
+
+    def preview(self):
+        """Returns detail page preview."""
+        return self._detail(is_preview=True)
 
     def make_links_absolute(self, links, api_prefix):
         # make links absolute
@@ -260,7 +311,10 @@ class RecordsUIResource(UIResource):
 
         overridable_id_prefix = f"{self.config.application_id.capitalize()}.Search"
 
-        defaultComponents = {}
+        default_components = {}
+
+        for key, value in self.config.default_components.items():
+            default_components[f"{overridable_id_prefix}.ResultList.item.{key}"] = value
 
         search_options = dict(
             api_config=self.api_service.config,
@@ -269,7 +323,7 @@ class RecordsUIResource(UIResource):
                 "ui_endpoint": self.config.url_prefix,
                 "ui_links": ui_links,
                 "overridableIdPrefix": overridable_id_prefix,
-                "defaultComponents": defaultComponents,
+                "defaultComponents": default_components
             },
         )
 
@@ -310,10 +364,10 @@ class RecordsUIResource(UIResource):
     @request_read_args
     @request_view_args
     @request_export_args
-    def export(self):
+    def _export(self, *, is_preview=False):
         pid_value = resource_requestctx.view_args["pid_value"]
         export_format = resource_requestctx.view_args["export_format"]
-        record = self._get_record(resource_requestctx, allow_draft=False)
+        record = self._get_record(resource_requestctx, allow_draft=is_preview)
 
         exporter = self.config.exports.get(export_format.lower())
         if exporter is None:
@@ -334,7 +388,20 @@ class RecordsUIResource(UIResource):
         }
         return (exported_record, 200, headers)
 
-    def get_jinjax_macro(self, template_type, identity=None, args=None, view_args=None, default_macro=None):
+    def export(self):
+        return self._export()
+
+    def export_preview(self):
+        return self._export(is_preview=True)
+
+    def get_jinjax_macro(
+        self,
+        template_type,
+        identity=None,
+        args=None,
+        view_args=None,
+        default_macro=None,
+    ):
         """
         Returns which jinjax macro (name of the macro, including optional namespace in the form of "namespace.Macro")
         should be used for rendering the template.
@@ -506,6 +573,73 @@ class RecordsUIResource(UIResource):
             {"config": self.config, "url_prefix": self.config.url_prefix, "args": args},
         )
         return tpl.expand(identity, pagination)
+
+
+    def tombstone(self, error, *args, **kwargs):
+        return current_oarepo_ui.catalog.render(
+            self.get_jinjax_macro(
+                "tombstone",
+                identity=g.identity,
+                default_macro="Tombstone",
+            ),
+            pid=getattr(error, 'pid_value', None) or getattr(error, "pid", None)
+        )
+
+    def not_found(self, error, *args, **kwargs):
+        return current_oarepo_ui.catalog.render(
+            self.get_jinjax_macro(
+                "not_found",
+                identity=g.identity,
+                default_macro="NotFound",
+            ),
+            pid=getattr(error, 'pid_value', None) or getattr(error, "pid", None)
+        )
+
+    def permission_denied(self, error, *args, **kwargs):
+        return current_oarepo_ui.catalog.render(
+            self.get_jinjax_macro(
+                "permission_denied",
+                identity=g.identity,
+                default_macro="PermissionDenied",
+            ),
+            pid=getattr(error, 'pid_value', None) or getattr(error, "pid", None)
+        )
+
+
+# ported from https://github.com/inveniosoftware/invenio-app-rdm/blob/b1951f436027ad87214912e17c176727270e5e87/invenio_app_rdm/records_ui/views/records.py#L337
+class PreviewFile:
+    """Preview file implementation for InvenioRDM.
+
+    This class was apparently created because of subtle differences with
+    `invenio_previewer.api.PreviewFile`.
+    """
+
+    def __init__(self, file_item, record_pid_value, record=None, url=None):
+        """Create a new PreviewFile."""
+        self.file = file_item
+        self.data = file_item.data
+        self.record = record
+        self.size = self.data["size"]
+        self.filename = self.data["key"]
+        self.bucket = self.data["bucket_id"]
+        assert url is not None
+        self.uri = url
+
+    def is_local(self):
+        """Check if file is local."""
+        return True
+
+    def has_extensions(self, *exts):
+        """Check if file has one of the extensions.
+
+        Each `exts` has the format `.{file type}` e.g. `.txt` .
+        """
+        file_ext = splitext(self.data["key"])[1].lower()
+        return file_ext in exts
+
+    def open(self):
+        """Open the file."""
+        return self.file._file.file.storage().open()
 
 
 class TemplatePageUIResource(UIResource):

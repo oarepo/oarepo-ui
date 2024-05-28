@@ -68,9 +68,15 @@ export async function loadTemplateComponents(
         component: await importTemplate(path),
       };
     } catch (err) {
-      console.debug(
-        `Error loading component '${componentId}' from ${path}: ${err}`
-      );
+      if (err.message.startsWith("Cannot find module")) {
+        console.debug(
+          `Component '${componentId}' not found in ${path}. Skipping.`
+        );
+      } else {
+        console.error(
+          `Error loading component '${componentId}' from ${path}: ${err}`
+        );
+      }
       return null;
     }
   };
@@ -131,6 +137,10 @@ export const requiredMessage = ({ label }) =>
 export const returnGroupError = (value, context) => {
   return i18next.t("Items must be unique");
 };
+
+export const invalidUrlMessage = i18next.t(
+  "Please provide an URL in valid format"
+);
 export const unique = (value, context, path, errorString) => {
   if (!value || value.length < 2) {
     return true;
@@ -158,7 +168,7 @@ export const scrollToElement = (querySelector) => {
   if (element) {
     element.scrollIntoView({ behavior: "smooth", block: "center" });
   }
-}
+};
 
 //In some instances the I18nString component is problematic to use,
 // because it is actually a React node and not a string (i.e. text value

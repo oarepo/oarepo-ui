@@ -80,6 +80,9 @@ class FieldData:
     def __contains__(self, item):
         return True
 
+    def __bool__(self):
+        return bool(self._ui_value)
+
     def _as_array(self):
         ret = []
         if isinstance(self.__data, list):

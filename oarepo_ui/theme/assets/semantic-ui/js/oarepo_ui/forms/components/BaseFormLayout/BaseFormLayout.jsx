@@ -7,11 +7,21 @@ import { SaveButton } from "../SaveButton";
 import { PublishButton } from "../PublishButton";
 import { PreviewButton } from "../PreviewButton";
 import { ValidateButton } from "../ValidateButton";
-import { Grid, Ref, Sticky, Card } from "semantic-ui-react";
-import { useFormConfig } from "@js/oarepo_ui";
+import { Grid, Ref, Sticky, Card, Header } from "semantic-ui-react";
+import { useFormConfig, getTitleFromMultilingualObject } from "@js/oarepo_ui";
 import { buildUID } from "react-searchkit";
 import Overridable from "react-overridable";
 import { CustomFields } from "react-invenio-forms";
+import { getIn, useFormikContext } from "formik";
+
+const FormTitle = () => {
+  const { values } = useFormikContext();
+  const recordTitle =
+    getIn(values, "metadata.title", "") ||
+    getTitleFromMultilingualObject(getIn(values, "title", "")) ||
+    "";
+  return recordTitle && <Header as="h1">{recordTitle}</Header>;
+};
 
 export const BaseFormLayout = ({ formikProps }) => {
   const {
@@ -37,6 +47,7 @@ export const BaseFormLayout = ({ formikProps }) => {
       <Grid>
         <Ref innerRef={formFeedbackRef}>
           <Grid.Column id="main-content" mobile={16} tablet={16} computer={11}>
+            <FormTitle />
             <Sticky context={formFeedbackRef} offset={20}>
               <Overridable
                 id={buildUID(overridableIdPrefix, "Errors.container")}

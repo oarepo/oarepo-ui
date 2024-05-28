@@ -1,0 +1,22 @@
+{# def pid #}
+
+{% extends "oarepo_ui/detail.html" %}
+
+{% block record_main_content %}
+
+<div class="container centered rel-pt-2">
+  <h1 class="ui header inline-block">
+    <i class="icon lightning" aria-hidden="true"></i>
+    <div class="content pl-0 rel-pr-1">
+      {{ _('Not found') }}
+    </div>
+  </h1>
+
+  <p>
+    {%- trans sitename=config.THEME_SITENAME %}
+      The record you are trying to access does not exist in this repository.
+    {%- endtrans %}
+  </p>
+</div>
+
+{% endblock %}
