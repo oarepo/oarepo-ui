@@ -24,7 +24,7 @@
         <button class="ui button">
           <i
             class="ui icon zoom openPreviewIcon"
-            data-link="{{ file.links.preview }}"
+            data-preview-link="{{ file.links.preview }}"
           ></i>
         </button>
         <button class="ui button">
@@ -37,8 +37,9 @@
     {% endfor %}
   </tbody>
 </table>
+
 <div class="ui modal fullscreen" id="preview-modal">
   <i class="close icon"></i>
-  <iframe class="content fileIframe" title="File Preview"></iframe>
+  <iframe class="content" title="File Preview"></iframe>
 </div>
 {% endif %}

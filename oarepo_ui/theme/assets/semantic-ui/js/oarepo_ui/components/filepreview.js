@@ -1,17 +1,13 @@
 import $ from "jquery";
 
-const iframe = document.querySelector(".fileIframe");
-
-$("#preview-modal").modal({
-  onShow: function () {
-    const contentHeight = window.innerHeight * 0.8;
-    iframe.style.height = `${contentHeight - 60}px`;
-  },
-});
+const iframe = document.querySelector("#preview-modal .content");
 
 function openModal(event) {
-  iframe.src = event.target.dataset.link;
-  $("#preview-modal").modal("show");
+  const previewLink = event.target.getAttribute("data-preview-link");
+  if (previewLink) {
+    iframe.src = previewLink;
+    $("#preview-modal").modal("show");
+  }
 }
 
 document.querySelectorAll(".openPreviewIcon").forEach(function (icon) {
