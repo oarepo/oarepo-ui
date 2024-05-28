@@ -35,6 +35,7 @@ export const RelatedSelectField = ({
   serializeExternalApiSuggestions,
   externalApiButtonContent,
   externalApiModalTitle,
+  helpText,
   ...uiProps
 }) => {
   const { values } = useFormikContext();
@@ -43,68 +44,73 @@ export const RelatedSelectField = ({
     : _isEmpty(getIn(values, fieldPath, {}))
     ? []
     : [getIn(values, fieldPath)];
-
+  console.log(startingSuggestions);
   return (
-    <RelatedSelectFieldInternal
-      fluid
-      fieldPath={fieldPath}
-      suggestionAPIUrl={suggestionAPIUrl}
-      selectOnBlur={false}
-      suggestionAPIQueryParams={suggestionAPIQueryParams}
-      suggestionAPIHeaders={suggestionAPIHeaders}
-      serializeSuggestions={serializeSuggestions}
-      serializeAddedValue={serializeAddedValue}
-      initialSuggestions={
-        initialSuggestions.length > 0 ? initialSuggestions : startingSuggestions
-      }
-      debounceTime={debounceTime}
-      noResultsMessage={noResultsMessage}
-      loadingMessage={loadingMessage}
-      suggestionsErrorMessage={suggestionsErrorMessage}
-      noQueryMessage={noQueryMessage}
-      preSearchChange={preSearchChange}
-      search={search}
-      multiple={multiple}
-      onValueChange={({ e, data, formikProps }, selectedSuggestions) => {
-        if (multiple) {
-          let vocabularyItems = selectedSuggestions.filter((o) =>
-            data.value.includes(o.value)
-          );
-          // removing text because it contains react node and server does not like it
-          // maybe it should be handled in the serializer (for global serializer to just delete all react nodes it finds)
-          vocabularyItems = vocabularyItems.map((vocabularyItem) => {
-            const { text, ...vocabularyItemWithoutText } = vocabularyItem;
-            return vocabularyItemWithoutText;
-          });
-          formikProps.form.setFieldValue(fieldPath, [...vocabularyItems]);
-        } else {
-          let vocabularyItem = selectedSuggestions.find(
-            (o) => o.value === data.value
-          );
-          if (vocabularyItem) {
-            const { text, ...vocabularyItemWithoutText } = vocabularyItem;
-            formikProps.form.setFieldValue(
-              fieldPath,
-              vocabularyItemWithoutText
-            );
-          } else {
-            formikProps.form.setFieldValue(fieldPath, "");
-          }
+    <React.Fragment>
+      <RelatedSelectFieldInternal
+        fluid
+        fieldPath={fieldPath}
+        suggestionAPIUrl={suggestionAPIUrl}
+        selectOnBlur={false}
+        suggestionAPIQueryParams={suggestionAPIQueryParams}
+        suggestionAPIHeaders={suggestionAPIHeaders}
+        serializeSuggestions={serializeSuggestions}
+        serializeAddedValue={serializeAddedValue}
+        initialSuggestions={
+          initialSuggestions.length > 0
+            ? initialSuggestions
+            : startingSuggestions
         }
-      }}
-      externalSuggestionApi={externalSuggestionApi}
-      serializeExternalApiSuggestions={serializeExternalApiSuggestions}
-      externalApiButtonContent={externalApiButtonContent}
-      externalApiModalTitle={externalApiModalTitle}
-      value={
-        multiple
-          ? getIn(values, fieldPath, []).map((item) => item.id || item)
-          : !_isEmpty(getIn(values, fieldPath, {}))
-          ? getIn(values, fieldPath, {}).id || getIn(values, fieldPath, "")
-          : getIn(values, fieldPath, "")
-      }
-      {...uiProps}
-    />
+        debounceTime={debounceTime}
+        noResultsMessage={noResultsMessage}
+        loadingMessage={loadingMessage}
+        suggestionsErrorMessage={suggestionsErrorMessage}
+        noQueryMessage={noQueryMessage}
+        preSearchChange={preSearchChange}
+        search={search}
+        multiple={multiple}
+        onValueChange={({ e, data, formikProps }, selectedSuggestions) => {
+          if (multiple) {
+            let vocabularyItems = selectedSuggestions.filter((o) =>
+              data.value.includes(o.value)
+            );
+            // removing text because it contains react node and server does not like it
+            // maybe it should be handled in the serializer (for global serializer to just delete all react nodes it finds)
+            vocabularyItems = vocabularyItems.map((vocabularyItem) => {
+              const { text, ...vocabularyItemWithoutText } = vocabularyItem;
+              return vocabularyItemWithoutText;
+            });
+            formikProps.form.setFieldValue(fieldPath, [...vocabularyItems]);
+          } else {
+            let vocabularyItem = selectedSuggestions.find(
+              (o) => o.value === data.value
+            );
+            if (vocabularyItem) {
+              const { text, ...vocabularyItemWithoutText } = vocabularyItem;
+              formikProps.form.setFieldValue(
+                fieldPath,
+                vocabularyItemWithoutText
+              );
+            } else {
+              formikProps.form.setFieldValue(fieldPath, "");
+            }
+          }
+        }}
+        externalSuggestionApi={externalSuggestionApi}
+        serializeExternalApiSuggestions={serializeExternalApiSuggestions}
+        externalApiButtonContent={externalApiButtonContent}
+        externalApiModalTitle={externalApiModalTitle}
+        value={
+          multiple
+            ? getIn(values, fieldPath, []).map((item) => item.id || item)
+            : !_isEmpty(getIn(values, fieldPath, {}))
+            ? getIn(values, fieldPath, {}).id || getIn(values, fieldPath, "")
+            : getIn(values, fieldPath, "")
+        }
+        {...uiProps}
+      />
+      {helpText && <label className="helptext">{helpText}</label>}
+    </React.Fragment>
   );
 };
 
@@ -138,6 +144,7 @@ RelatedSelectField.propTypes = {
   serializeExternalApiSuggestions: PropTypes.func,
   externalApiButtonContent: PropTypes.string,
   externalApiModalTitle: PropTypes.string,
+  helpText: PropTypes.string,
 };
 
 // DefaultProps (Optional)
