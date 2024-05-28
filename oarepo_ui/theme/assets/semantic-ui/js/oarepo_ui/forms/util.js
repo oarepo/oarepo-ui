@@ -1,4 +1,3 @@
-import { loadComponents } from "@js/invenio_theme/templates";
 import React from "react";
 import ReactDOM from "react-dom";
 import { getInputFromDOM } from "@js/oarepo_ui";
@@ -9,12 +8,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { loadAppComponents } from "../util";
 import { overridableComponentIds as componentIds } from "./constants";
 import { buildUID } from "react-searchkit";
-
 import Overridable, {
   OverridableContext,
   overrideStore,
 } from "react-overridable";
 import { BaseFormLayout } from "./components/BaseFormLayout";
+import { decode } from "html-entities";
+import sanitizeHtml from "sanitize-html";
 
 export function parseFormAppConfig(rootElementId = "form-app") {
   const rootEl = document.getElementById(rootElementId);
@@ -26,6 +26,18 @@ export function parseFormAppConfig(rootElementId = "form-app") {
 
   return { rootEl, record, formConfig, recordPermissions, files, links };
 }
+
+export const sanitizeInput = (htmlString, validTags) => {
+  const decodedString = decode(htmlString);
+  const cleanInput = sanitizeHtml(decodedString, {
+    allowedTags: validTags || ["b", "i", "em", "strong", "a", "div", "li", "p"],
+    disallowedTagsMode: 'completelyDiscard',
+    allowedAttributes: {
+      a: ["href"],
+    },
+  });
+  return cleanInput;
+};
 
 /**
  * Initialize Formik form application.
