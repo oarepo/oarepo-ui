@@ -7,7 +7,7 @@ import Overridable from "react-overridable";
 
 export const CountElement = ({ totalResults }) => {
   return (
-    <label className="rel-mr-1">
+    <label className="rel-mr-1" data-test-id="aggregation-count">
       {i18next.t("totalResults", { count: totalResults })}
     </label>
   );
@@ -25,7 +25,7 @@ export const ResultCount = ({ currentResultsState = {} }) => {
   return (
     resultsLoaded && (
       <Overridable id={buildUID("Count.element")} totalResults={total}>
-        <CountElement totalResults={total} />
+        <CountElement totalResults={total}/>
       </Overridable>
     )
   );

@@ -91,9 +91,13 @@
                     </div>
                   </div>
                 {%- else %}
-                  <div class="{{' item main-nav-links active' if item.active and loop.depth == 0 else ' item main-nav-links' }}">
-                    <a role="menuitem" href="{{ item.url }}">{{ item.text|safe }}</a>
-                  </div>
+                <div class="{{ 'item main-nav-links active' if item.active and loop.depth == 0 else 'item main-nav-links' }}">
+                  <a role="menuitem" href="{{ item.url }}"
+                     data-test-id="{{ 'dashboard-redir-btn' if item.text == 'Dashboard' else '' }}">
+                      {{ item.text|safe }}
+                  </a>
+              </div>
+              
                 {%- endif %}
               {%- endfor %}
 
