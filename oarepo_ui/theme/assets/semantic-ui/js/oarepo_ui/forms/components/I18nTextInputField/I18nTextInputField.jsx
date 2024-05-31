@@ -6,6 +6,8 @@ import {
 } from "@js/oarepo_ui";
 import { TextField, GroupField, FieldLabel } from "react-invenio-forms";
 import PropTypes from "prop-types";
+import { useFormikContext, getIn } from "formik";
+import { sanitizeInput } from "../../util";
 
 export const I18nTextInputField = ({
   fieldPath,
@@ -17,8 +19,11 @@ export const I18nTextInputField = ({
   lngFieldWidth,
   usedLanguages,
   useModelData,
+  validTags,
   ...uiProps
 }) => {
+  const { values, setFieldValue, setFieldTouched } = useFormikContext();
+
   const { getFieldData } = useFieldData();
 
   return (
@@ -49,6 +54,14 @@ export const I18nTextInputField = ({
         optimized={optimized}
         placeholder={placeholder}
         width={13}
+        onBlur={() => {
+          const cleanedContent = sanitizeInput(
+            getIn(values, `${fieldPath}.value`),
+            validTags
+          );
+          setFieldValue(`${fieldPath}.value`, cleanedContent);
+          setFieldTouched(`${fieldPath}.value`, true);
+        }}
         {...(useModelData
           ? getFieldData(`${fieldPath}.value`, "web").compactRepresentation
           : {})}
@@ -71,7 +84,7 @@ I18nTextInputField.propTypes = {
   languageOptions: PropTypes.array,
   lngFieldWidth: PropTypes.number,
   usedLanguages: PropTypes.array,
-  useModelData: PropTypes.bool,
+  validTags: PropTypes.array,
 };
 
 I18nTextInputField.defaultProps = {
