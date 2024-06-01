@@ -111,7 +111,6 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
     const fieldPathWithPrefix = fieldPathPrefix
       ? `${fieldPathPrefix}.${fieldPath}`
       : fieldPath;
-    console.log(fieldPathWithPrefix);
     const path = transformPath(fieldPathWithPrefix);
     const { help, label, hint, required } = _get(uiMetadata, path);
     // full representation meaning jsx or small space representation (no helptext, label with helptext in popup)
