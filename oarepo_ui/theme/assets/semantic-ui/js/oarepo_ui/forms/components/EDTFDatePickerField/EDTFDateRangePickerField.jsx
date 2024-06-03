@@ -128,10 +128,9 @@ export const EDTFDaterangePicker = ({
           dateFormat={dateFormat}
           clearButtonClassName={clearButtonClassName}
           datePickerProps={{ ...pickerProps, ...datePickerPropsOverrides }}
-          helpText={helpText}
         />
       </Form.Field>
-      <label className="helptext">{helpText}</label>
+      {helpText && <label className="helptext">{helpText}</label>}
     </Form.Field>
   );
 };
