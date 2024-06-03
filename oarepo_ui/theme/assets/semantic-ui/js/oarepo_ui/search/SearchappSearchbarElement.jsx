@@ -45,6 +45,7 @@ export const SearchappSearchbarElement = withState(
         }}
         value={queryString}
         onKeyPress={onKeyPress}
+        data-testid="searchbar"
       />
     );
   }
