@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
+import { getFieldData, useFormConfig } from "@js/oarepo_ui";
 
 export const FormConfigContext = React.createContext();
 
@@ -12,9 +13,14 @@ export const FormConfigProvider = ({ children, value }) => {
 
 export const FieldDataContext = React.createContext();
 
-export const FieldDataProvider = ({ children, value }) => {
+export const FieldDataProvider = ({ children, fieldPathPrefix = "" }) => {
+  const {
+    formConfig: { ui_model },
+  } = useFormConfig();
   return (
-    <FieldDataContext.Provider value={value}>
+    <FieldDataContext.Provider
+      value={{ getFieldData: getFieldData(ui_model, fieldPathPrefix) }}
+    >
       {children}
     </FieldDataContext.Provider>
   );
