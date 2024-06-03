@@ -54,7 +54,7 @@
         <div role="menu">
           {%- for item in plus_menu_items if item.visible %}
             <a role="menuitem" class="item" href="{{ item.url }}" 
-               {% if item.text == 'New upload' %} data-test-id="newupload-button" {% endif %}>
+               {% if item.text == 'New upload' %} data-testid="newupload-button" {% endif %}>
               <i class="plus icon"></i>
               {{ item.text }}
             </a>
@@ -132,7 +132,7 @@
         <div class="ui divider"></div>
       {% endif %}  
 
-      <a role="menuitem" class="item" href="{{ url_for_security('logout') }}" data-test-id="signout-button">
+      <a role="menuitem" class="item" href="{{ url_for_security('logout') }}" data-testid="signout-button">
           <i class="sign-out icon"></i>
           {{ _('Log out') }}
       </a>
