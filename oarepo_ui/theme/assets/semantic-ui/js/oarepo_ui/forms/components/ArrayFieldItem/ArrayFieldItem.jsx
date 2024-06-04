@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { GroupField } from "react-invenio-forms";
+import { GroupField, FieldLabel } from "react-invenio-forms";
 import { Form, Button, Icon } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import PropTypes from "prop-types";
@@ -12,6 +12,7 @@ export const ArrayFieldItem = ({
   removeButton: RemoveButton,
   displayRemoveButton,
   removeButtonProps,
+  removeButtonLabelClassName,
   ...uiProps
 }) => {
   const [highlighted, setHighlighted] = useState(false);
@@ -33,6 +34,15 @@ export const ArrayFieldItem = ({
     >
       {children}
       <Form.Field>
+        <FieldLabel
+          label={i18next.t("Remove")}
+          htmlFor={indexPath}
+          className={
+            removeButtonLabelClassName
+              ? `visually-hidden ${removeButtonLabelClassName}`
+              : "visually-hidden"
+          }
+        />
         {RemoveButton ? (
           <RemoveButton
             arrayHelpers={arrayHelpers}
@@ -41,10 +51,11 @@ export const ArrayFieldItem = ({
           />
         ) : (
           <Button
-            style={{ marginTop: "1.75rem" }}
             aria-label={i18next.t("Remove field")}
             className="close-btn"
+            type="button"
             icon
+            id={indexPath}
             onClick={() => {
               arrayHelpers.remove(indexPath);
             }}
@@ -67,6 +78,7 @@ ArrayFieldItem.propTypes = {
   removeButton: PropTypes.node,
   removeButtonProps: PropTypes.object,
   displayRemoveButton: PropTypes.bool,
+  removeButtonLabelClassName: PropTypes.string,
 };
 
 ArrayFieldItem.defaultProps = {
