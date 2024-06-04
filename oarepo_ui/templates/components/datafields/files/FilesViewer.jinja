@@ -21,7 +21,7 @@
       </td>
       <td>{{ file.size | filesizeformat }}</td>
       <td>
-        {% if file.links.preview  %}
+        {% if file.links.preview %}
         <button class="ui button">
           <i
             class="ui icon zoom openPreviewIcon"
@@ -41,7 +41,9 @@
 </table>
 
 <div class="ui modal fullscreen" id="preview-modal">
-  <i class="close icon"></i>
+  <button class="ui button close transparent">
+    <i class="close icon"></i>
+  </button>
   <iframe class="content" title="File Preview"></iframe>
 </div>
 {% endif %}
