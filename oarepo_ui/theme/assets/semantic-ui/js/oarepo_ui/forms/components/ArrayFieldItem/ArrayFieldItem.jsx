@@ -10,14 +10,13 @@ export const ArrayFieldItem = ({
   children,
   className,
   removeButton: RemoveButton,
-  displayRemoveButton,
+  displayFirstInputRemoveButton,
   removeButtonProps,
   removeButtonLabelClassName,
   ...uiProps
 }) => {
   const [highlighted, setHighlighted] = useState(false);
-
-  if (!displayRemoveButton) {
+  if (!displayFirstInputRemoveButton && indexPath === 0) {
     return (
       <GroupField
         className={`${highlighted ? "highlighted" : ""} ${className}`}
@@ -77,7 +76,7 @@ ArrayFieldItem.propTypes = {
   className: PropTypes.string,
   removeButton: PropTypes.node,
   removeButtonProps: PropTypes.object,
-  displayRemoveButton: PropTypes.bool,
+  displayFirstInputRemoveButton: PropTypes.bool,
   removeButtonLabelClassName: PropTypes.string,
 };
 
@@ -85,5 +84,6 @@ ArrayFieldItem.defaultProps = {
   className: "invenio-group-field",
   removeButton: undefined,
   removeButtonProps: {},
-  displayRemoveButton: true,
+  // by default all inputs in array field can be removed, but in some instances this is not desirable.
+  displayFirstInputRemoveButton: true,
 };
