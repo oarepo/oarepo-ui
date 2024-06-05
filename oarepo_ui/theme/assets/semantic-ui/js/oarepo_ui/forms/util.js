@@ -14,7 +14,7 @@ import Overridable, {
 } from "react-overridable";
 import { BaseFormLayout } from "./components/BaseFormLayout";
 import { decode } from "html-entities";
-import sanitizeHtml from "sanitize-html";
+import DOMPurify from "dompurify";
 
 export function parseFormAppConfig(rootElementId = "form-app") {
   const rootEl = document.getElementById(rootElementId);
@@ -29,12 +29,17 @@ export function parseFormAppConfig(rootElementId = "form-app") {
 
 export const sanitizeInput = (htmlString, validTags) => {
   const decodedString = decode(htmlString);
-  const cleanInput = sanitizeHtml(decodedString, {
-    allowedTags: validTags || ["b", "i", "em", "strong", "a", "div", "li", "p"],
-    disallowedTagsMode: 'completelyDiscard',
-    allowedAttributes: {
-      a: ["href"],
-    },
+  const cleanInput = DOMPurify.sanitize(decodedString, {
+    ALLOWED_TAGS: validTags || [
+      "b",
+      "i",
+      "em",
+      "strong",
+      "a",
+      "div",
+      "li",
+      "p",
+    ],
   });
   return cleanInput;
 };
