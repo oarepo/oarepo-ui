@@ -495,3 +495,48 @@ msgstr ""
 
 msgid "Please provide an URL in valid format"
 msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:3
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:4
+msgid "Identifiers and links"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:46
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:47
+msgid "metadata/originalRecord.label"
+msgstr "Link to original record"
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/SidebarApiLinks.jinja:5
+msgid "API"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/SidebarApiLinks.jinja:5
+msgid "Links"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/NotFound.jinja:11
+msgid "Not found"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/NotFound.jinja:16
+msgid ""
+"\n"
+"      The record you are trying to access does not exist in this repository."
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/PermissionDenied.jinja:11
+msgid "Permission denied"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/PermissionDenied.jinja:16
+#, python-format
+msgid ""
+"\n"
+"      You do not have permissions to access this page on %(sitename)s."
+msgstr ""
+
+msgid "Copied!"
+msgstr ""
+
+msgid "Copy to clipboard failed!"
+msgstr ""
