@@ -1,0 +1,6 @@
+.rel-mb-1 {
+  & .ui.button {
+    background: none;
+    padding: 5px;
+  }
+}
