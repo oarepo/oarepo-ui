@@ -248,18 +248,7 @@ export const useDepositApiClient = ({
       );
       return;
     }
-    // imperative form validation, if fails exit
-    const FEvalidationErrors = await validateForm();
-    // show also front end validation errors grouped on the top similar to BE validation errors for consistency
-    if (!_isEmpty(FEvalidationErrors)) {
-      setFieldValue("FEvalidationErrors", {
-        errors: extractFEErrorMessages(FEvalidationErrors.metadata),
-        errorMessage: i18next.t(
-          "Draft was saved but could not be published due to following validation errors"
-        ),
-      });
-      return;
-    }
+
     setSubmitting(true);
     let response;
     try {
