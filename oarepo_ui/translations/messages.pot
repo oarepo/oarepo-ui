@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-04-24 10:26+0200\n"
+"POT-Creation-Date: 2024-05-21 10:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,7 +49,7 @@ msgstr ""
 msgid "api.versions"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/resources/config.py:95
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/resources/config.py:121
 msgid "JSON"
 msgstr ""
 
@@ -73,6 +73,16 @@ msgstr ""
 msgid "Edit item"
 msgstr ""
 
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:3
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:4
+msgid "Identifiers and links"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:46
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:47
+msgid "metadata/originalRecord.label"
+msgstr ""
+
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:5
 msgid "Preview"
 msgstr ""
@@ -87,27 +97,56 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/SidebarApiLinks.jinja:5
+msgid "API"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/SidebarApiLinks.jinja:5
+msgid "Links"
+msgstr ""
+
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/datafields/ICustomFields.jinja:11
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/translations/jinjax_messages.jinja:1
 #: oarepo_ui/translations/jinjax_messages.jinja:1
 msgid "Not set"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:6
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:7
 msgid "Files"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:9
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:10
 msgid "File"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:10
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:11
 msgid "Size"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:11
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:12
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:53
 msgid "Actions"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/NotFound.jinja:11
+msgid "Not found"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/NotFound.jinja:16
+msgid ""
+"\n"
+"      The record you are trying to access does not exist in this repository."
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/PermissionDenied.jinja:11
+msgid "Permission denied"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/PermissionDenied.jinja:16
+#, python-format
+msgid ""
+"\n"
+"      You do not have permissions to access this page on %(sitename)s."
 msgstr ""
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/Tombstone.jinja:11
@@ -178,6 +217,12 @@ msgstr ""
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/search.html:2
 msgid "Search results"
+msgstr ""
+
+msgid "Copied!"
+msgstr ""
+
+msgid "Copy to clipboard failed!"
 msgstr ""
 
 msgid "Remove field"
