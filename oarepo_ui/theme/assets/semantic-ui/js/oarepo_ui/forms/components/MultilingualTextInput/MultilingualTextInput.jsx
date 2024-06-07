@@ -67,6 +67,7 @@ export const MultilingualTextInput = ({
             arrayHelpers={arrayHelpers}
             removeButtonLabelClassName={removeButtonLabelClassName}
             displayFirstInputRemoveButton={displayFirstInputRemoveButton}
+            fieldPathPrefix={fieldPathPrefix}
           >
             <Form.Field width={16}>
               {rich ? (
