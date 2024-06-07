@@ -1,4 +1,4 @@
-{#def className="", search_link,  searchFacet, data #}
+{#def className=None, search_link,  searchFacet, data, hasTooltip=True #}
 {% set data_dict = data | to_dict %}
 {% set href = search_link ~ "?q=&f=" ~ searchFacet ~ ":" ~ data_dict.value %}
 
@@ -8,4 +8,4 @@
     "label": data_dict.label
 } %}
 
-<URL className={className} data = {url_data}></URL>
+<URL className={className} data = {url_data} hasTooltip={hasTooltip}></URL>

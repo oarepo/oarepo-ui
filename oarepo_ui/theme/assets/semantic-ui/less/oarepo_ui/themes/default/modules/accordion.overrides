@@ -29,4 +29,13 @@
       }
     }
   }
+  &.sidebar-api-links {
+    h2 {
+      margin-bottom: 0rem;
+      padding-bottom: 0rem;
+    }
+    .links-list {
+      border-top: 1px solid lightgrey;
+    }
+  }
 }

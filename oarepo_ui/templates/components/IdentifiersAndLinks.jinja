@@ -1,0 +1,54 @@
+{# def originalRecordUrl=None, objectIdentifiers=None #}
+
+<section aria-label='{{ _("Identifiers and links") }}' class="ui segment identifiers-and-links">
+  <h2 class="ui small header detail-sidebar-header">{{_('Identifiers and links')}}</h2>
+  <div class="ui link list">
+    {% if objectIdentifiers|length > 0 %}
+      {% for objectIdentifier in objectIdentifiers %}
+      {% if objectIdentifier.url%}
+        <div class="item content">
+          {% set _data = {
+              "href": objectIdentifier.url,
+              "title": objectIdentifier.identifier,
+              "label": objectIdentifier.identifier
+          }%}
+            <div class="header list-item">
+              <i class="external alternate icon link-icon mb-5"></i>
+              <span class="mr-5 identifier-type ui green label mini">{{ objectIdentifier.scheme }}:</span> 
+              <URL target="_blank" rel="noopener noreferrer" className="inline" data = {_data}></URL>
+              <button class="ui icon button transparent copy-btn inline" data-clipboard-text="{{objectIdentifier.url}}">
+                <i class="copy icon"></i>
+              </button>
+            </div>
+           
+        </div>
+      {% else %}
+      <div class="item content">
+        <div class="header list-item">
+          <i class="id card icon link-icon"></i>
+          <span class="mr-5 identifier-type ui green label mini">{{ objectIdentifier.scheme }}:</span>
+          <span>{{ objectIdentifier.identifier }}</span>
+          <button class="ui icon button transparent copy-btn inline" data-clipboard-text="{{objectIdentifier.identifier}}">
+            <i class="copy icon"></i>
+          </button>
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+    {% endif %}
+
+    {% if originalRecordUrl %}
+    <div class="item content">
+      <div class="header list-item">
+      {% set _data = {
+          "href": originalRecordUrl,
+          "title": _('metadata/originalRecord.label'),
+          "label": _('metadata/originalRecord.label')
+      }%}
+        <i class="external alternate icon link-icon mb-5"></i>
+        <URL target="_blank" rel="noopener noreferrer" className="link" data = {_data}></URL>
+      </div>
+    </div>
+    {% endif %}
+   </div>
+</section>
