@@ -16,5 +16,6 @@ export { ClearFiltersButton } from "./ClearFiltersButton";
 export { DynamicResultsListItem } from "./DynamicResultsListItem";
 export { SearchappSearchbarElement } from "./SearchappSearchbarElement";
 export { ShouldActiveFiltersRender } from "./ShouldActiveFiltersRender";
+export { FoldableBucketAggregationElement } from "./FoldableBucketAggregationElement";
 export * from "./ShouldRender";
 export * from "./util";
