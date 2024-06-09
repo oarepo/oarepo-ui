@@ -17,6 +17,7 @@ export const ArrayFieldItem = ({
   ...uiProps
 }) => {
   const [highlighted, setHighlighted] = useState(false);
+  const removeButtonId = `${fieldPathPrefix}.remove-button`;
   if (!displayFirstInputRemoveButton && indexPath === 0) {
     return (
       <GroupField
@@ -36,7 +37,7 @@ export const ArrayFieldItem = ({
       <Form.Field>
         <FieldLabel
           label={i18next.t("Remove")}
-          htmlFor={fieldPathPrefix}
+          htmlFor={removeButtonId}
           className={
             removeButtonLabelClassName
               ? `visually-hidden ${removeButtonLabelClassName}`
@@ -47,6 +48,7 @@ export const ArrayFieldItem = ({
           <RemoveButton
             arrayHelpers={arrayHelpers}
             indexPath={indexPath}
+            removeButtonId={removeButtonId}
             {...removeButtonProps}
           />
         ) : (
@@ -55,7 +57,7 @@ export const ArrayFieldItem = ({
             className="close-btn"
             type="button"
             icon
-            id={fieldPathPrefix}
+            id={removeButtonId}
             onClick={() => {
               arrayHelpers.remove(indexPath);
             }}
@@ -79,7 +81,7 @@ ArrayFieldItem.propTypes = {
   removeButtonProps: PropTypes.object,
   displayFirstInputRemoveButton: PropTypes.bool,
   removeButtonLabelClassName: PropTypes.string,
-  fieldPathPrefix: PropTypes.string,
+  fieldPathPrefix: PropTypes.string.isRequired,
 };
 
 ArrayFieldItem.defaultProps = {
