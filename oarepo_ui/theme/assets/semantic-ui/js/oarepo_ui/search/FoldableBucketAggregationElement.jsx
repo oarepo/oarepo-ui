@@ -50,23 +50,23 @@ export const FoldableBucketAggregationElement = ({
             <Header className="mb-0" as="h3">
               {title}
             </Header>
-            <Icon name="angle right" className="ml-5" align-self-end />
-
-            {hasSelections() && (
-              <Button
-                inline
-                basic
-                icon
-                size="mini"
-                // floated="right"
-                onClick={clearFacets}
-                aria-label={i18next.t("Clear selection")}
-                title={i18next.t("Clear selection")}
-                className="align-self-end"
-              >
-                {i18next.t("Clear")}
-              </Button>
-            )}
+            <div className="align-self-end">
+              <Icon name="angle right" className="ml-5" />
+              {hasSelections() && (
+                <Button
+                  inline
+                  basic
+                  icon
+                  size="mini"
+                  // floated="right"
+                  onClick={clearFacets}
+                  aria-label={i18next.t("Clear selection")}
+                  title={i18next.t("Clear selection")}
+                >
+                  {i18next.t("Clear")}
+                </Button>
+              )}
+            </div>
           </div>
         </Accordion.Title>
         <Transition visible={isActive} animation="fade down" duration={200}>
