@@ -15,6 +15,36 @@ import _isObject from "lodash/isObject";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { relativeUrl } from "../util";
 
+export const extractFEErrorMessages = (obj) => {
+  const errorMessages = [];
+
+  const traverse = (obj, parentKey = "") => {
+    if (typeof obj === "string") {
+      errorMessages.push({ [parentKey]: obj });
+    } else if (Array.isArray(obj)) {
+      obj.forEach((item, index) => traverse(item, `${parentKey}.${index}`));
+    } else if (typeof obj === "object") {
+      for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          const newKey = parentKey ? `${parentKey}.${key}` : key;
+          traverse(obj[key], newKey);
+        }
+      }
+    }
+  };
+
+  traverse(obj);
+
+  // Deduplicate error messages based on the keys
+  const uniqueErrorMessages = errorMessages.reduce((acc, obj) => {
+    const key = Object.keys(obj)[0];
+    const found = acc.some((item) => Object.keys(item)[0] === key);
+    if (!found) acc.push(obj);
+    return acc;
+  }, []);
+  return uniqueErrorMessages;
+};
+
 export const useFormConfig = () => {
   const context = useContext(FormConfigContext);
   if (!context) {
@@ -123,6 +153,7 @@ export const useDepositApiClient = ({
   const {
     isSubmitting,
     values,
+    validateForm,
     setSubmitting,
     setValues,
     setFieldError,
@@ -204,7 +235,7 @@ export const useDepositApiClient = ({
     }
   }
 
-  async function publish() {
+  async function publish({ validateForm = false } = {}) {
     // call save and if save returns false, exit
     const saveResult = await save();
 
@@ -216,6 +247,20 @@ export const useDepositApiClient = ({
         )
       );
       return;
+    }
+    if (validateForm) {
+      // imperative form validation, if fails exit
+      const FEvalidationErrors = await validateForm();
+      // show also front end validation errors grouped on the top similar to BE validation errors for consistency
+      if (!_isEmpty(FEvalidationErrors)) {
+        setFieldValue("FEvalidationErrors", {
+          errors: extractFEErrorMessages(FEvalidationErrors.metadata),
+          errorMessage: i18next.t(
+            "Draft was saved but could not be published due to following validation errors"
+          ),
+        });
+        return;
+      }
     }
 
     setSubmitting(true);

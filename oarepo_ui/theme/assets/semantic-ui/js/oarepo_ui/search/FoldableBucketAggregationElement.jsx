@@ -6,26 +6,29 @@ import {
   Button,
   Card,
   Icon,
-  Checkbox,
-  Label,
-  List,
   Transition,
 } from "semantic-ui-react";
-import Overridable from "react-overridable";
 import PropTypes from "prop-types";
-import { BucketAggregation, Toggle, buildUID } from "react-searchkit";
+import { withState } from "react-searchkit";
 
-export const FoldableBucketAggregationElement = ({
+const FoldableBucketAggregationElementComponent = ({
+  currentQueryState,
   agg,
   title,
   containerCmp,
   updateQueryFilters,
+  updateQueryState,
 }) => {
   const [isActive, setIsActive] = useState(false);
 
-  const clearFacets = () => {
+  const clearFacets = (e) => {
+    e.stopPropagation();
     if (containerCmp.props.selectedFilters.length) {
-      updateQueryFilters([agg.aggName, ""], containerCmp.props.selectedFilters);
+      const queryFilters = currentQueryState.filters?.filter(
+        (f) => f[0] !== agg.aggName
+      );
+      updateQueryState({ ...currentQueryState, filters: queryFilters });
+      setIsActive(false);
     }
   };
 
@@ -54,12 +57,10 @@ export const FoldableBucketAggregationElement = ({
               <Icon name="angle right" className="ml-5" />
               {hasSelections() && (
                 <Button
-                  inline
                   basic
                   icon
                   size="mini"
-                  // floated="right"
-                  onClick={clearFacets}
+                  onClick={(e) => clearFacets(e)}
                   aria-label={i18next.t("Clear selection")}
                   title={i18next.t("Clear selection")}
                 >
@@ -79,13 +80,19 @@ export const FoldableBucketAggregationElement = ({
   );
 };
 
-FoldableBucketAggregationElement.propTypes = {
+export const FoldableBucketAggregationElement = withState(
+  FoldableBucketAggregationElementComponent
+);
+
+FoldableBucketAggregationElementComponent.propTypes = {
   agg: PropTypes.object.isRequired,
   title: PropTypes.string.isRequired,
   containerCmp: PropTypes.node,
   updateQueryFilters: PropTypes.func.isRequired,
+  updateQueryState: PropTypes.func.isRequired,
+  currentQueryState: PropTypes.object.isRequired,
 };
 
-FoldableBucketAggregationElement.defaultProps = {
+FoldableBucketAggregationElementComponent.defaultProps = {
   containerCmp: null,
 };
