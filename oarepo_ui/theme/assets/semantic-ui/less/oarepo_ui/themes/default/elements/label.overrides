@@ -1,0 +1,14 @@
+.ui.label {
+  &.active-filter-label {
+    font-weight: normal;
+  }
+}
+
+.ui.labels {
+  &.active-filters-group > .label {
+    margin: 0;
+    margin-right: 0.5rem;
+    // margin-top: 0.5rem;
+  }
+  line-height: 3rem;
+}

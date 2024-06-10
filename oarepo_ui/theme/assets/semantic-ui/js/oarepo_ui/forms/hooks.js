@@ -153,7 +153,7 @@ export const useDepositApiClient = ({
   const {
     isSubmitting,
     values,
-    validateForm,
+    validateForm: formikValidateForm,
     setSubmitting,
     setValues,
     setFieldError,
@@ -250,7 +250,7 @@ export const useDepositApiClient = ({
     }
     if (validateForm) {
       // imperative form validation, if fails exit
-      const FEvalidationErrors = await validateForm();
+      const FEvalidationErrors = await formikValidateForm();
       // show also front end validation errors grouped on the top similar to BE validation errors for consistency
       if (!_isEmpty(FEvalidationErrors)) {
         setFieldValue("FEvalidationErrors", {

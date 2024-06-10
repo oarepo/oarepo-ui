@@ -1,40 +1,15 @@
-import { i18next } from "@translations/invenio_search_ui/i18next";
 import React, { useState } from "react";
-import {
-  Accordion,
-  Header,
-  Button,
-  Card,
-  Icon,
-  Transition,
-} from "semantic-ui-react";
+import { Accordion, Header, Card, Icon, Transition } from "semantic-ui-react";
 import PropTypes from "prop-types";
-import { withState } from "react-searchkit";
 
-const FoldableBucketAggregationElementComponent = ({
-  currentQueryState,
+export const FoldableBucketAggregationElement = ({
   agg,
   title,
   containerCmp,
   updateQueryFilters,
-  updateQueryState,
 }) => {
   const [isActive, setIsActive] = useState(false);
 
-  const clearFacets = (e) => {
-    e.stopPropagation();
-    if (containerCmp.props.selectedFilters.length) {
-      const queryFilters = currentQueryState.filters?.filter(
-        (f) => f[0] !== agg.aggName
-      );
-      updateQueryState({ ...currentQueryState, filters: queryFilters });
-      setIsActive(false);
-    }
-  };
-
-  const hasSelections = () => {
-    return !!containerCmp.props.selectedFilters.length;
-  };
   const handleClick = () => setIsActive((prevState) => !prevState);
   return (
     <Card className="borderless facet rel-ml-1">
@@ -54,19 +29,7 @@ const FoldableBucketAggregationElementComponent = ({
               {title}
             </Header>
             <div className="align-self-end">
-              <Icon name="angle right" className="ml-5" />
-              {hasSelections() && (
-                <Button
-                  basic
-                  icon
-                  size="mini"
-                  onClick={(e) => clearFacets(e)}
-                  aria-label={i18next.t("Clear selection")}
-                  title={i18next.t("Clear selection")}
-                >
-                  {i18next.t("Clear")}
-                </Button>
-              )}
+              <Icon name="angle right" />
             </div>
           </div>
         </Accordion.Title>
@@ -80,19 +43,13 @@ const FoldableBucketAggregationElementComponent = ({
   );
 };
 
-export const FoldableBucketAggregationElement = withState(
-  FoldableBucketAggregationElementComponent
-);
-
-FoldableBucketAggregationElementComponent.propTypes = {
+FoldableBucketAggregationElement.propTypes = {
   agg: PropTypes.object.isRequired,
   title: PropTypes.string.isRequired,
   containerCmp: PropTypes.node,
   updateQueryFilters: PropTypes.func.isRequired,
-  updateQueryState: PropTypes.func.isRequired,
-  currentQueryState: PropTypes.object.isRequired,
 };
 
-FoldableBucketAggregationElementComponent.defaultProps = {
+FoldableBucketAggregationElement.defaultProps = {
   containerCmp: null,
 };
