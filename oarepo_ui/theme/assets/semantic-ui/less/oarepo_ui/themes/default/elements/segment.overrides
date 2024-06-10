@@ -1,0 +1,25 @@
+.ui.segment {
+  &.identifiers-and-links {
+    .list-item {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      .copy-btn {
+        opacity: 0.3;
+        margin-left: auto;
+      }
+      .copy-btn.selected {
+        opacity: 1;
+        color: @primaryColor;
+      }
+      .copy-btn:hover {
+        opacity: 1;
+        background-color: none;
+      }
+    }
+
+    .link-icon {
+      color: rgba(0, 0, 0, 0.4);
+    }
+  }
+}
