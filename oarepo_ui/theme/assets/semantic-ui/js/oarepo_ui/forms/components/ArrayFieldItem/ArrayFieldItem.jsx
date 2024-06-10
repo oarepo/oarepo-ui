@@ -14,7 +14,6 @@ export const ArrayFieldItem = ({
   removeButtonProps,
   removeButtonLabelClassName,
   fieldPathPrefix,
-  array,
   ...uiProps
 }) => {
   const [highlighted, setHighlighted] = useState(false);
@@ -49,7 +48,7 @@ export const ArrayFieldItem = ({
           <RemoveButton
             arrayHelpers={arrayHelpers}
             indexPath={indexPath}
-            removeButtonId={removeButtonId}
+            id={removeButtonId}
             {...removeButtonProps}
           />
         ) : (
@@ -83,7 +82,6 @@ ArrayFieldItem.propTypes = {
   displayFirstInputRemoveButton: PropTypes.bool,
   removeButtonLabelClassName: PropTypes.string,
   fieldPathPrefix: PropTypes.string.isRequired,
-  array: PropTypes.array,
 };
 
 ArrayFieldItem.defaultProps = {

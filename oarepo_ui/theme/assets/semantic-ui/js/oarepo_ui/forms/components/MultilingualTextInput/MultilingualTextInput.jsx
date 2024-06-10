@@ -57,13 +57,12 @@ export const MultilingualTextInput = ({
       }
       helpText={helpText}
     >
-      {({ indexPath, array, arrayHelpers }) => {
+      {({ indexPath, arrayHelpers }) => {
         const fieldPathPrefix = `${fieldPath}.${indexPath}`;
 
         return (
           <ArrayFieldItem
             indexPath={indexPath}
-            array={array}
             arrayHelpers={arrayHelpers}
             removeButtonLabelClassName={removeButtonLabelClassName}
             displayFirstInputRemoveButton={displayFirstInputRemoveButton}
