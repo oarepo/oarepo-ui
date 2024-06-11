@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { GroupField } from "react-invenio-forms";
+import { GroupField, FieldLabel } from "react-invenio-forms";
 import { Form, Button, Icon } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import PropTypes from "prop-types";
@@ -10,13 +10,15 @@ export const ArrayFieldItem = ({
   children,
   className,
   removeButton: RemoveButton,
-  displayRemoveButton,
+  displayFirstInputRemoveButton,
   removeButtonProps,
+  removeButtonLabelClassName,
+  fieldPathPrefix,
   ...uiProps
 }) => {
   const [highlighted, setHighlighted] = useState(false);
-
-  if (!displayRemoveButton) {
+  const removeButtonId = `${fieldPathPrefix}.remove-button`;
+  if (!displayFirstInputRemoveButton && indexPath === 0) {
     return (
       <GroupField
         className={`${highlighted ? "highlighted" : ""} ${className}`}
@@ -33,18 +35,29 @@ export const ArrayFieldItem = ({
     >
       {children}
       <Form.Field>
+        <FieldLabel
+          label={i18next.t("Remove")}
+          htmlFor={removeButtonId}
+          className={
+            removeButtonLabelClassName
+              ? `visually-hidden ${removeButtonLabelClassName}`
+              : "visually-hidden"
+          }
+        />
         {RemoveButton ? (
           <RemoveButton
             arrayHelpers={arrayHelpers}
             indexPath={indexPath}
+            id={removeButtonId}
             {...removeButtonProps}
           />
         ) : (
           <Button
-            style={{ marginTop: "1.75rem" }}
             aria-label={i18next.t("Remove field")}
             className="close-btn"
+            type="button"
             icon
+            id={removeButtonId}
             onClick={() => {
               arrayHelpers.remove(indexPath);
             }}
@@ -66,12 +79,15 @@ ArrayFieldItem.propTypes = {
   className: PropTypes.string,
   removeButton: PropTypes.node,
   removeButtonProps: PropTypes.object,
-  displayRemoveButton: PropTypes.bool,
+  displayFirstInputRemoveButton: PropTypes.bool,
+  removeButtonLabelClassName: PropTypes.string,
+  fieldPathPrefix: PropTypes.string.isRequired,
 };
 
 ArrayFieldItem.defaultProps = {
   className: "invenio-group-field",
   removeButton: undefined,
   removeButtonProps: {},
-  displayRemoveButton: true,
+  // by default all inputs in array field can be removed, but in some instances this is not desirable.
+  displayFirstInputRemoveButton: true,
 };
