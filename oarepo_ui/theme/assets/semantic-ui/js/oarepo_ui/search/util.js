@@ -7,7 +7,6 @@ import { overridableComponentIds as componentIds } from "./constants";
 
 import {
   ActiveFiltersElement,
-  BucketAggregationElement,
   BucketAggregationValuesElement,
   CountElement,
   EmptyResultsElement,

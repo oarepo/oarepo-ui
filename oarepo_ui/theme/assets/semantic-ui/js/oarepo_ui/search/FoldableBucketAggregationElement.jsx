@@ -12,7 +12,7 @@ export const FoldableBucketAggregationElement = ({
 
   const handleClick = () => setIsActive((prevState) => !prevState);
   return (
-    <Card className="borderless facet rel-ml-1">
+    <Card className="borderless facet foldable rel-ml-1">
       <Accordion>
         <Accordion.Title
           onKeyDown={(e) => {

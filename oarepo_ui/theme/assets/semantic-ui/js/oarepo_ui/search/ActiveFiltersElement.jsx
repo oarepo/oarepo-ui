@@ -67,7 +67,6 @@ const ActiveFiltersElementComponent = ({
                     key={activeFilter}
                     onClick={() => removeActiveFilter(activeFilter)}
                   >
-                    {/* <Icon name="filter" /> */}
                     {label}
                     <Icon name="delete" />
                   </Label>
@@ -75,7 +74,7 @@ const ActiveFiltersElementComponent = ({
               })}
             </Label.Group>
           ))}
-          <ClearFiltersButton />
+          <ClearFiltersButton ignoredFilters={ignoredFilters} />
         </div>
       </Grid.Column>
     </Grid>
