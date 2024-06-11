@@ -83,7 +83,12 @@ const HistogramComponent = ({
               minDate={MIN_DATE}
               maxDate={MAX_DATE}
             />
-            <EDTFDaterangePicker fieldPath="fromto" />
+            <EDTFDaterangePicker
+              fieldPath="fromto"
+              updateQueryState={updateQueryState}
+              currentQueryState={currentQueryState}
+              aggName={aggName}
+            />
           </Card.Content>
         </Card>
       )}

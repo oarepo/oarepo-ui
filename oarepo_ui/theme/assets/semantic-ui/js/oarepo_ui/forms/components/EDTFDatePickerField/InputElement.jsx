@@ -18,6 +18,7 @@ export const InputElement = forwardRef(
     },
     ref
   ) => {
+    console.log(value);
     const { errors } = useFormikContext();
     const inputError = getIn(errors, fieldPath, undefined);
     return (

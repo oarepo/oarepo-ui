@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useField, useFormikContext } from "formik";
 import PropTypes from "prop-types";
 import { FieldLabel, GroupField } from "react-invenio-forms";
-import { Form } from "semantic-ui-react";
+import { Form, Button } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import {
   serializeDate,
@@ -12,6 +12,8 @@ import {
   allEmptyStrings,
 } from "@js/oarepo_ui/forms/components/EDTFDatePickerField/utils";
 import { EDTFDatePickerWrapper } from "@js/oarepo_ui/forms";
+import { formatDate } from "@js/oarepo_ui";
+import { InputElement } from "@js/oarepo_ui/forms/components/EDTFDatePickerField/InputElement";
 
 export const EDTFDaterangePicker = ({
   fieldPath,
@@ -24,6 +26,9 @@ export const EDTFDaterangePicker = ({
   startDateInputPlaceholder,
   endDateInputPlaceholder,
   singleDateInputPlaceholder,
+  updateQueryState,
+  currentQueryState,
+  aggName,
   ...datePickerProps
 }) => {
   // TODO: The datepickers shall recieve needed locales from form config (set in Invenio.cfg)
@@ -39,12 +44,13 @@ export const EDTFDaterangePicker = ({
   }
   console.log(dates);
   const dateFormat = getDateFormatStringFromEdtfFormat(dateEdtfFormat);
+  console.log(dateFormat);
 
   const startDate = dates[0];
   const endDate = dates[1];
 
-  const handleChange = (dates) => {
-    const serializedDates = dates.map((date) =>
+  const handleStartChange = (date) => {
+    const serializedDates = [date, dates[1]].map((date) =>
       serializeDate(date, dateEdtfFormat)
     );
     if (allEmptyStrings(serializedDates)) {
@@ -53,7 +59,32 @@ export const EDTFDaterangePicker = ({
       setFieldValue(fieldPath, serializedDates.join("/"));
     }
   };
+  const handleEndChange = (date) => {
+    const serializedDates = [dates[0], date].map((date) =>
+      serializeDate(date, dateEdtfFormat)
+    );
+    if (allEmptyStrings(serializedDates)) {
+      setFieldValue(fieldPath, "");
+    } else {
+      setFieldValue(fieldPath, serializedDates.join("/"));
+    }
+  };
+  const startDatePickerProps = {
+    selected: startDate,
+    onChange: handleStartChange,
+  };
+  const endDatePickerProps = {
+    selected: endDate,
+    onChange: handleEndChange,
+  };
 
+  const handleFilterSelection = () => {
+    const filters = currentQueryState.filters.filter((f) => f[0] !== aggName);
+    updateQueryState({
+      ...currentQueryState,
+      filters: [...filters, [aggName, field.value]],
+    });
+  };
   return (
     <React.Fragment>
       <Form.Field className="ui datepicker field mb-0" required={required}>
@@ -61,34 +92,32 @@ export const EDTFDaterangePicker = ({
 
         <GroupField>
           <EDTFDatePickerWrapper
-            fieldPath={`${fieldPath}.from`}
+            fieldPath={fieldPath}
             locale={i18next.language}
             selected={startDate}
-            onChange={(date) => {
-              dates[0] = date;
-              handleChange(dates);
-            }}
+            // onChange={(date) => {
+            //   dates[0] = date;
+            //   handleChange(dates);
+            // }}
             selectsStart
-            startDate={startDate}
             showYearPicker={dateEdtfFormat === "yyyy"}
             showMonthYearPicker={dateEdtfFormat === "yyyy-mm"}
             clearButtonClassName={clearButtonClassName}
             placeholderText={startDateInputPlaceholder}
             setDateEdtfFormat={setDateEdtfFormat}
             dateFormat={dateFormat}
-            {...datePickerProps}
+            dateEdtfFormat={dateEdtfFormat}
+            datePickerProps={startDatePickerProps}
           />
           <EDTFDatePickerWrapper
-            fieldPath={`${fieldPath}.to`}
+            fieldPath={fieldPath}
             locale={i18next.language}
             selected={endDate}
-            onChange={(date) => {
-              dates[1] = date;
-              handleChange(dates);
-            }}
+            // onChange={(date) => {
+            //   dates[1] = date;
+            //   handleChange(dates);
+            // }}
             selectsEnd
-            startDate={startDate}
-            endDate={endDate}
             minDate={startDate}
             showYearPicker={dateEdtfFormat === "yyyy"}
             showMonthYearPicker={dateEdtfFormat === "yyyy-mm"}
@@ -96,11 +125,14 @@ export const EDTFDaterangePicker = ({
             placeholderText={endDateInputPlaceholder}
             setDateEdtfFormat={setDateEdtfFormat}
             dateFormat={dateFormat}
+            dateEdtfFormat={dateEdtfFormat}
+            datePickerProps={endDatePickerProps}
             {...datePickerProps}
           />
         </GroupField>
       </Form.Field>
       <label className="helptext">{helpText}</label>
+      <Button onClick={handleFilterSelection}>Apply filter</Button>
     </React.Fragment>
   );
 };
