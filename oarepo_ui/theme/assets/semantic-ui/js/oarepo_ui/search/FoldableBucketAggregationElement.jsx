@@ -2,12 +2,7 @@ import React, { useState } from "react";
 import { Accordion, Header, Card, Icon, Transition } from "semantic-ui-react";
 import PropTypes from "prop-types";
 
-export const FoldableBucketAggregationElement = ({
-  agg,
-  title,
-  containerCmp,
-  updateQueryFilters,
-}) => {
+export const FoldableBucketAggregationElement = ({ title, containerCmp }) => {
   const [isActive, setIsActive] = useState(false);
 
   const handleClick = () => setIsActive((prevState) => !prevState);
@@ -44,12 +39,6 @@ export const FoldableBucketAggregationElement = ({
 };
 
 FoldableBucketAggregationElement.propTypes = {
-  agg: PropTypes.object.isRequired,
   title: PropTypes.string.isRequired,
-  containerCmp: PropTypes.node,
-  updateQueryFilters: PropTypes.func.isRequired,
-};
-
-FoldableBucketAggregationElement.defaultProps = {
-  containerCmp: null,
+  containerCmp: PropTypes.node.isRequired,
 };
