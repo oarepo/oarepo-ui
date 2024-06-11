@@ -1,14 +1,17 @@
 .ui.label {
   &.active-filter-label {
     font-weight: normal;
+    color: black;
   }
+  padding: 0.5rem 1rem;
 }
 
 .ui.labels {
   &.active-filters-group > .label {
+    color: black;
     margin: 0;
     margin-right: 0.5rem;
-    // margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
   }
   line-height: 3rem;
 }

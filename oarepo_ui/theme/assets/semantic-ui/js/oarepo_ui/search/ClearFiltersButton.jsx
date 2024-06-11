@@ -15,6 +15,7 @@ const ClearFiltersButtonComponent = ({
   currentQueryState,
   currentResultsState,
   ignoredFilters,
+  clearFiltersButtonClassName,
   ...uiProps
 }) => {
   const { filters } = currentQueryState;
@@ -30,7 +31,7 @@ const ClearFiltersButtonComponent = ({
   return (
     <React.Fragment>
       <Button
-        className="computer tablet only"
+        className={`computer only ${clearFiltersButtonClassName}`}
         aria-label={i18next.t("Clear all filters")}
         name="clear"
         onClick={() =>
@@ -47,7 +48,7 @@ const ClearFiltersButtonComponent = ({
         {...uiProps}
       />
       <Button
-        className="mobile only"
+        className={`mobile tablet only ${clearFiltersButtonClassName}`}
         aria-label={i18next.t("Clear all filters")}
         type="button"
         size="mini"
@@ -72,6 +73,10 @@ ClearFiltersButtonComponent.propTypes = {
   currentQueryState: PropTypes.object.isRequired,
   ignoredFilters: PropTypes.array,
   currentResultsState: PropTypes.object.isRequired,
+  clearFiltersButtonClassName: PropTypes.string,
 };
 
-ClearFiltersButtonComponent.defaultProps = { ignoredFilters: [] };
+ClearFiltersButtonComponent.defaultProps = {
+  ignoredFilters: [],
+  clearFiltersButtonClassName: "clear-filters-button",
+};

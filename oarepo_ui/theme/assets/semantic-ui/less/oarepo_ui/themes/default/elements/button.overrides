@@ -4,3 +4,12 @@
     padding: 5px;
   }
 }
+
+.ui.button {
+  &.clear-filters-button {
+    color: black;
+  }
+  &.clear-filters-button.computer.only {
+    padding: 0.5rem 1rem;
+  }
+}

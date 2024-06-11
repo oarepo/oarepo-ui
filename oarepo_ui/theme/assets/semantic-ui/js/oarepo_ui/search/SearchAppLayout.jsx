@@ -68,7 +68,7 @@ export const SearchAppResultsGrid = ({
           </ShouldActiveFiltersRender>
         )}
         <ShouldActiveFiltersRender>
-          <Grid.Column verticalAlign="middle" width={3} only="mobile">
+          <Grid.Column verticalAlign="middle" width={3} only="mobile tablet">
             <ClearFiltersButton />
           </Grid.Column>
         </ShouldActiveFiltersRender>
@@ -84,13 +84,6 @@ export const SearchAppResultsGrid = ({
           <ResultOptionsWithState />
         </Grid.Column>
       </Grid.Row>
-      {/* <ShouldActiveFiltersRender>
-        <Grid.Row className="p-0" only="computer tablet">
-          <Grid.Column floated="left">
-            <ClearFiltersButton />
-          </Grid.Column>
-        </Grid.Row>
-      </ShouldActiveFiltersRender> */}
       <Grid.Row columns={columnsAmount}>
         {facetsAvailable && (
           <GridResponsiveSidebarColumn
