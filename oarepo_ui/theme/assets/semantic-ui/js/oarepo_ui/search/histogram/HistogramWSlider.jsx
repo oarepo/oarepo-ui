@@ -11,6 +11,8 @@ import PropTypes from "prop-types";
 import { Card } from "semantic-ui-react";
 import _get from "lodash/get";
 import { getAddFunc, getDiffFunc, getFormatString } from "./utils";
+import { EDTFDaterangePicker } from "./Datepicker";
+import { Formik } from "formik";
 
 const HistogramComponent = ({
   currentResultsState: {
@@ -38,6 +40,10 @@ const HistogramComponent = ({
   const formatString = getFormatString(histogramInterval);
   const MIN_SLIDER_VALUE = 0;
   const MAX_SLIDER_VALUE = diffFunc(MAX_DATE, MIN_DATE);
+  let currentFilter;
+  currentFilter =
+    currentQueryState.filters?.find((f) => f[0] === aggName) ||
+    "1924-01-01/2024-01-01";
 
   let histogramData = _getResultBuckets(aggregations, aggName).map((d) => {
     return {
@@ -50,35 +56,38 @@ const HistogramComponent = ({
   });
   useLoadLocaleObjects();
   return (
-    histogramData?.length > 0 && (
-      <Card className="borderless facet">
-        <Card.Content>
-          <Card.Header as="h2">{aggTitle}</Card.Header>
-          <Histogram
-            histogramData={histogramData}
-            svgHeight={250}
-            rectangleClassName={"histogram-rectangle"}
-            updateQueryState={updateQueryState}
-            currentQueryState={currentQueryState}
-            aggName={aggName}
-          />
-          <DoubleDateSlider
-            addFunc={addFunc}
-            diffFunc={diffFunc}
-            formatString={formatString}
-            aggName={aggName}
-            thumbClassName="thumb"
-            trackClassName="track"
-            ariaLabel={["Lower thumb", "Upper thumb"]}
-            ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
-            min={MIN_SLIDER_VALUE}
-            max={MAX_SLIDER_VALUE}
-            minDate={MIN_DATE}
-            maxDate={MAX_DATE}
-          />
-        </Card.Content>
-      </Card>
-    )
+    <Formik initialValues={{ fromto: currentFilter }}>
+      {histogramData?.length > 0 && (
+        <Card className="borderless facet">
+          <Card.Content>
+            <Card.Header as="h2">{aggTitle}</Card.Header>
+            <Histogram
+              histogramData={histogramData}
+              svgHeight={250}
+              rectangleClassName={"histogram-rectangle"}
+              updateQueryState={updateQueryState}
+              currentQueryState={currentQueryState}
+              aggName={aggName}
+            />
+            <DoubleDateSlider
+              addFunc={addFunc}
+              diffFunc={diffFunc}
+              formatString={formatString}
+              aggName={aggName}
+              thumbClassName="thumb"
+              trackClassName="track"
+              ariaLabel={["Lower thumb", "Upper thumb"]}
+              ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
+              min={MIN_SLIDER_VALUE}
+              max={MAX_SLIDER_VALUE}
+              minDate={MIN_DATE}
+              maxDate={MAX_DATE}
+            />
+            <EDTFDaterangePicker fieldPath="fromto" />
+          </Card.Content>
+        </Card>
+      )}
+    </Formik>
   );
 };
 
