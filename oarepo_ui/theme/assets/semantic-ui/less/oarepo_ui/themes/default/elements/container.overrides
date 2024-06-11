@@ -1,6 +1,14 @@
-.ui.container.fluid.ml-0-mobile.mr-0-mobile {
-  @media only screen and (max-width: 767px) {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+.ui.container {
+  &.fluid.ml-0-mobile.mr-0-mobile {
+    @media only screen and (max-width: 767px) {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
   }
+  &:has(.coverpage) {
+    width: 100%;
+  }
+  &.invenio-header-container {
+    padding: 1rem 4rem 0;
+}
 }

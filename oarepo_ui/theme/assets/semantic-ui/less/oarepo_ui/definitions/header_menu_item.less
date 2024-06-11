@@ -6,12 +6,12 @@
   The type is the type of the component as defined in semantic-ui - element, collection, view, module
   For simple component, 'element' is the correct type
 */
-@type: "view";
+@type: "element";
 
 /*
   This is the name of the component - though not required, keep it the same as the filename
 */
-@element: "coverpage";
+@element: "header_menu_item";
 
 /*******************************
 
@@ -34,9 +34,9 @@ name of the component from above)
   will allow users to override these values.
  */
 
-.ui.coverpage {
-  min-height: @coverMinHeight;
-  background-color: rgba(13, 95, 137, 0.8);
-  display: flex;
+.ui.header_menu_item {
+  &.right.menu.item .item {
+    width: 50%;
+  }
 }
 .loadUIOverrides();
