@@ -28,6 +28,8 @@ export const MultilingualTextInput = ({
   lngFieldWidth,
   showEmptyValue,
   prefillLanguageWithDefaultLocale,
+  removeButtonLabelClassName,
+  displayFirstInputRemoveButton,
   ...uiProps
 }) => {
   const { defaultLocale } = useDefaultLocale();
@@ -55,14 +57,16 @@ export const MultilingualTextInput = ({
       }
       helpText={helpText}
     >
-      {({ indexPath, array, arrayHelpers }) => {
+      {({ indexPath, arrayHelpers }) => {
         const fieldPathPrefix = `${fieldPath}.${indexPath}`;
 
         return (
           <ArrayFieldItem
             indexPath={indexPath}
-            array={array}
             arrayHelpers={arrayHelpers}
+            removeButtonLabelClassName={removeButtonLabelClassName}
+            displayFirstInputRemoveButton={displayFirstInputRemoveButton}
+            fieldPathPrefix={fieldPathPrefix}
           >
             <Form.Field width={16}>
               {rich ? (
@@ -112,6 +116,8 @@ MultilingualTextInput.propTypes = {
   defaultNewValue: PropTypes.object,
   showEmptyValue: PropTypes.bool,
   prefillLanguageWithDefaultLocale: PropTypes.bool,
+  removeButtonLabelClassName: PropTypes.string,
+  displayFirstInputRemoveButton: PropTypes.bool,
 };
 
 MultilingualTextInput.defaultProps = {
@@ -124,4 +130,5 @@ MultilingualTextInput.defaultProps = {
   addButtonLabel: i18next.t("Add another language"),
   showEmptyValue: false,
   prefillLanguageWithDefaultLocale: false,
+  displayFirstInputRemoveButton: true,
 };

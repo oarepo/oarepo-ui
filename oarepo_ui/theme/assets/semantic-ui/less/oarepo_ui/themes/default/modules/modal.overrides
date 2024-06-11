@@ -1,0 +1,5 @@
+.ui.modal {
+  &#preview-modal .content {
+    height: 80vh;
+  }
+}
