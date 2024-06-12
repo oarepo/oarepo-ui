@@ -2,8 +2,8 @@
   &.active-filter-label {
     font-weight: normal;
     color: black;
+    padding: 0.5rem 1rem;
   }
-  padding: 0.5rem 1rem;
 }
 
 .ui.labels {
@@ -13,5 +13,7 @@
     margin-right: 0.5rem;
     padding: 0.5rem 1rem;
   }
-  line-height: 3rem;
+  &.active-filters-group {
+    line-height: 3rem;
+  }
 }

@@ -153,7 +153,7 @@ export const useDepositApiClient = ({
   const {
     isSubmitting,
     values,
-    validateForm: formikValidateForm,
+    validateForm,
     setSubmitting,
     setValues,
     setFieldError,
@@ -235,7 +235,7 @@ export const useDepositApiClient = ({
     }
   }
 
-  async function publish({ validateForm = false } = {}) {
+  async function publish({ validate = false } = {}) {
     // call save and if save returns false, exit
     const saveResult = await save();
 
@@ -248,9 +248,9 @@ export const useDepositApiClient = ({
       );
       return;
     }
-    if (validateForm) {
+    if (validate) {
       // imperative form validation, if fails exit
-      const FEvalidationErrors = await formikValidateForm();
+      const FEvalidationErrors = await validateForm();
       // show also front end validation errors grouped on the top similar to BE validation errors for consistency
       if (!_isEmpty(FEvalidationErrors)) {
         setFieldValue("FEvalidationErrors", {
