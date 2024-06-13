@@ -183,6 +183,10 @@ class OarepoCatalog(Catalog):
         self._component_paths = {k: (v[0], v[1]) for k, v in paths.items()}
         return self._component_paths
 
+    @component_paths.deleter
+    def component_paths(self):
+        self._component_paths = {}
+
     def _extract_priority(self, filename):
         # check if there is a priority on the file, if not, take default 0
         prefix_pattern = re.compile(r"^\d{3}-")

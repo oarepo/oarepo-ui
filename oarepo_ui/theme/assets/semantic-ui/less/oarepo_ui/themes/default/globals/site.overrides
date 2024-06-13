@@ -1,6 +1,6 @@
 :not(.ui.grid).only {
   &.mobile:not(.tablet) {
-    @media all and (min-width: @tabletBreakpoint) {
+    @media all and (min-width: (@tabletBreakpoint - 1px)) {
       display: none !important;
     }
   }
@@ -30,4 +30,8 @@
       display: none !important;
     }
   }
+}
+
+.visually-hidden {
+  visibility: hidden;
 }

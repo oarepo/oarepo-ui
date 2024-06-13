@@ -1,8 +1,15 @@
 import * as React from "react";
 import { LanguageSelectField } from "@js/oarepo_ui";
-import { RichInputField, GroupField, FieldLabel } from "react-invenio-forms";
+import {
+  RichInputField,
+  GroupField,
+  FieldLabel,
+  RichEditor,
+} from "react-invenio-forms";
 import PropTypes from "prop-types";
 import { Form } from "semantic-ui-react";
+import { useFormikContext, getIn } from "formik";
+import { sanitizeInput } from "../../util";
 
 export const I18nRichInputField = ({
   fieldPath,
@@ -14,8 +21,13 @@ export const I18nRichInputField = ({
   editorConfig,
   lngFieldWidth,
   usedLanguages,
+  validTags,
   ...uiProps
 }) => {
+  const { values, setFieldValue, setFieldTouched } = useFormikContext();
+
+  const fieldValue = getIn(values, `${fieldPath}.value`);
+
   return (
     <GroupField fieldPath={fieldPath} optimized>
       <LanguageSelectField
@@ -27,9 +39,6 @@ export const I18nRichInputField = ({
 
       <Form.Field width={13}>
         <RichInputField
-          editorConfig={editorConfig}
-          // TODO: hacky fix for SUI alignment bug for case with
-          // field groups with empty field label on one of inputs
           className={`${!label ? "mt-25" : ""}`}
           fieldPath={`${fieldPath}.value`}
           label={
@@ -42,6 +51,21 @@ export const I18nRichInputField = ({
           required={required}
           optimized={optimized}
           placeholder={placeholder}
+          editor={
+            <RichEditor
+              value={fieldValue}
+              optimized
+              editorConfig={editorConfig}
+              onBlur={(event, editor) => {
+                const cleanedContent = sanitizeInput(
+                  editor.getContent(),
+                  validTags
+                );
+                setFieldValue(`${fieldPath}.value`, cleanedContent);
+                setFieldTouched(`${fieldPath}.value`, true);
+              }}
+            />
+          }
           {...uiProps}
         />
       </Form.Field>
@@ -63,6 +87,7 @@ I18nRichInputField.propTypes = {
   languageOptions: PropTypes.array,
   lngFieldWidth: PropTypes.number,
   usedLanguages: PropTypes.array,
+  validTags: PropTypes.array,
 };
 
 I18nRichInputField.defaultProps = {
