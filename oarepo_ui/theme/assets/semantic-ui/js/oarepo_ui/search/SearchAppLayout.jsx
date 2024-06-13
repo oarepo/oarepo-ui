@@ -4,7 +4,7 @@ import _isEmpty from "lodash/isEmpty";
 import Overridable from "react-overridable";
 import { withState, ActiveFilters } from "react-searchkit";
 import { GridResponsiveSidebarColumn } from "react-invenio-forms";
-import { Container, Grid, Button } from "semantic-ui-react";
+import { Container, Grid, Button, Label, Icon } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import {
   SearchAppFacets,
@@ -48,11 +48,13 @@ export const SearchAppResultsGrid = ({
           >
             <Button
               basic
-              icon="sliders"
               onClick={() => setSidebarVisible(true)}
               title={i18next.t("Filter results")}
               aria-label={i18next.t("Filter results")}
-            />
+            >
+              <Icon name="filter"></Icon>
+              <Label floating>2</Label>
+            </Button>
           </Grid.Column>
         )}
         {facetsAvailable && (
@@ -67,11 +69,11 @@ export const SearchAppResultsGrid = ({
             </Grid.Column>
           </ShouldActiveFiltersRender>
         )}
-        <ShouldActiveFiltersRender>
+        {/* <ShouldActiveFiltersRender>
           <Grid.Column verticalAlign="middle" width={3} only="mobile tablet">
             <ClearFiltersButton />
           </Grid.Column>
-        </ShouldActiveFiltersRender>
+        </ShouldActiveFiltersRender> */}
         <Grid.Column
           textAlign="right"
           floated="right"
@@ -95,6 +97,9 @@ export const SearchAppResultsGrid = ({
             open={sidebarVisible}
             onHideClick={() => setSidebarVisible(false)}
           >
+            <ShouldActiveFiltersRender>
+              <ClearFiltersButton />
+            </ShouldActiveFiltersRender>
             <SearchAppFacets
               aggs={config.aggs}
               appName={appName}

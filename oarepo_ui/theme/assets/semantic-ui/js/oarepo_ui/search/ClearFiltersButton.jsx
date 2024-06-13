@@ -31,7 +31,7 @@ const ClearFiltersButtonComponent = ({
   return (
     <div className="clear-filters-button-container">
       <Button
-        className={`computer only ${clearFiltersButtonClassName}`}
+        className={clearFiltersButtonClassName}
         aria-label={i18next.t("Clear all filters")}
         name="clear"
         onClick={() =>
@@ -47,7 +47,7 @@ const ClearFiltersButtonComponent = ({
         size="mini"
         {...uiProps}
       />
-      <Button
+      {/* <Button
         className={`mobile tablet only ${clearFiltersButtonClassName}`}
         aria-label={i18next.t("Clear all filters")}
         type="button"
@@ -61,7 +61,7 @@ const ClearFiltersButtonComponent = ({
         {...uiProps}
       >
         <Icon aria-hidden="true" name="filter" className="m-0" />
-      </Button>
+      </Button> */}
     </div>
   );
 };
