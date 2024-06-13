@@ -3,6 +3,7 @@
     font-weight: normal;
     color: black;
     padding: 0.5rem 1rem;
+    cursor: pointer;
   }
 }
 

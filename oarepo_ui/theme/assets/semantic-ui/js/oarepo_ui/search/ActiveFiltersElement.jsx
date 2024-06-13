@@ -66,15 +66,25 @@ const ActiveFiltersElementComponent = ({
                     className="active-filter-label"
                     key={activeFilter}
                     onClick={() => removeActiveFilter(activeFilter)}
+                    type="button"
+                    tabIndex="0"
+                    aria-label={`Remove filter ${label}`}
+                    onKeyPress={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        removeActiveFilter(activeFilter);
+                      }
+                    }}
                   >
                     {label}
-                    <Icon name="delete" />
+                    <Icon name="delete" aria-hidden="true" />
                   </Label>
                 );
               })}
             </Label.Group>
           ))}
-          <ClearFiltersButton ignoredFilters={ignoredFilters} />
+          <div style={{ display: "inline-block", lineHeight: "3rem" }}>
+            <ClearFiltersButton ignoredFilters={ignoredFilters} />
+          </div>
         </div>
       </Grid.Column>
     </Grid>

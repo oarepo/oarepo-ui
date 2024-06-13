@@ -29,7 +29,7 @@ const ClearFiltersButtonComponent = ({
     ...ignoredFilters,
   ]);
   return (
-    <React.Fragment>
+    <div className="clear-filters-button-container">
       <Button
         className={`computer only ${clearFiltersButtonClassName}`}
         aria-label={i18next.t("Clear all filters")}
@@ -62,7 +62,7 @@ const ClearFiltersButtonComponent = ({
       >
         <Icon aria-hidden="true" name="filter" className="m-0" />
       </Button>
-    </React.Fragment>
+    </div>
   );
 };
 

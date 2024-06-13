@@ -12,4 +12,8 @@
   &.clear-filters-button.computer.only {
     padding: 0.5rem 1rem;
   }
+  &.clear-filters-button-container {
+    line-height: 3rem;
+    display: inline-block;
+  }
 }
