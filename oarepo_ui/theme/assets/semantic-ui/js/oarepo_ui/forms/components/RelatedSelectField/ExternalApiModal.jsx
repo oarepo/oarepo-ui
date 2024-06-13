@@ -56,10 +56,10 @@ const LightResultsLoader = () => {
       </Dimmer>
       <Placeholder fluid>
         {Array.from({ length: 10 }).map((_, index) => (
-          <Placeholder.Header image>
-          <Placeholder.Line length='medium' />
-          <Placeholder.Line length='full' />
-        </Placeholder.Header>
+          <Placeholder.Header key={index} image>
+            <Placeholder.Line length='medium' />
+            <Placeholder.Line length='full' />
+          </Placeholder.Header>
         ))}
       </Placeholder>
     </Segment>
