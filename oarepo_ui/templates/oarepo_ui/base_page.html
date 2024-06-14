@@ -1,7 +1,16 @@
 {% extends "invenio_theme/page.html" %}
 
+{% set embedded = request.args.get("embed") == "true" %}
+
+{%- block page_header %}
+{% if not embedded %}{{ super() }}{% endif %}
+{% endblock page_header %}
+
+{%- block page_footer %}
+{% if not embedded %}{{ super() }}{% endif %}
+{% endblock page_footer %}
 
 {%- block css%}
-{{super()}}
+{{ super() }}
 {% include config.THEME_CSS_TEMPLATE %}
 {%- endblock css%}

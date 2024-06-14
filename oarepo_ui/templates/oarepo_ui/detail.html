@@ -9,16 +9,17 @@
     <div class="ui relaxed grid">
       {% block record_header %}
       {% endblock record_header %}
-      <div class="two column row">
+      <div class="{% if not embedded %}two column {% endif %}row">
         {# Main content #}
         <article
-          class="sixteen wide tablet twelve wide computer column main-record-content"
+          class="sixteen wide{% if not embedded %} tablet twelve wide computer{% endif %} column main-record-content"
         >
           {% block record_main_content %}
           {% endblock record_main_content %}
         </article>
 
         {# Sidebar #}
+        {% if not embedded %}
         <aside
           class="sixteen wide tablet four wide computer column sidebar"
           aria-label="{{ _('Record details') }}"
@@ -26,6 +27,7 @@
           {% block record_sidebar %}
           {% endblock record_sidebar %}
         </aside>
+        {% endif %}
       </div>
     </div>
 
