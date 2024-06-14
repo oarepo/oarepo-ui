@@ -154,7 +154,7 @@ export const ExternalApiModal = ({
               handleAddingExternalApiSuggestion(externalApiRecords);
               setFieldValue(
                 fieldPath,
-                externalApiRecords.map((record) => ({ id: record.value, title:record.title }))
+                externalApiRecords.map((record) => ({ id: record.value }))
               );
               setExternalApiRecords([]);
               onClose();

@@ -29,25 +29,23 @@ const ClearFiltersButtonComponent = ({
     ...ignoredFilters,
   ]);
   return (
-    <div className="clear-filters-button-container">
-      <Button
-        className={clearFiltersButtonClassName}
-        aria-label={i18next.t("Clear all filters")}
-        name="clear"
-        onClick={() =>
-          updateQueryState({
-            ...currentQueryState,
-            filters: filters.filter((f) => allFiltersToIgnore.includes(f[0])),
-          })
-        }
-        icon="delete"
-        labelPosition="left"
-        content={i18next.t("Clear all filters")}
-        type="button"
-        size="mini"
-        {...uiProps}
-      />
-    </div>
+    <Button
+      className={clearFiltersButtonClassName}
+      aria-label={i18next.t("Clear all filters")}
+      name="clear"
+      onClick={() =>
+        updateQueryState({
+          ...currentQueryState,
+          filters: filters.filter((f) => allFiltersToIgnore.includes(f[0])),
+        })
+      }
+      icon="delete"
+      labelPosition="left"
+      content={i18next.t("Clear all filters")}
+      type="button"
+      size="mini"
+      {...uiProps}
+    />
   );
 };
 
