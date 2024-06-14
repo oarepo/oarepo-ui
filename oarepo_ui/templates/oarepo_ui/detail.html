@@ -33,3 +33,8 @@
 
   {% endblock page_body %}
 
+  {%- block javascript %}
+  {{super()}}
+  {{webpack["record_export.js"]}}
+  {%- endblock javascript %}
+
