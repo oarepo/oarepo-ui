@@ -5,7 +5,7 @@
   {% if is_preview %}
     <PreviewSubheader />
   {% endif %}
-  <div class="ui main container">
+  <div class="ui{% if not embedded %} main{% endif %} container">
     <div class="ui relaxed grid">
       {% block record_header %}
       {% endblock record_header %}
