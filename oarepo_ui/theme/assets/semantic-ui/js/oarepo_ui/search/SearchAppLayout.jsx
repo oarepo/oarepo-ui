@@ -18,6 +18,17 @@ import { ShouldActiveFiltersRender } from "@js/oarepo_ui";
 
 const ResultOptionsWithState = withState(ResultOptions);
 
+export const ActiveFiltersCountLabel = ({ filters, initialFilters }) => (
+  <Label floating circular size="mini" className="active-filters-count-label">
+    {filters.length - initialFilters.length}
+  </Label>
+);
+
+ActiveFiltersCountLabel.propTypes = {
+  filters: PropTypes.array.isRequired,
+  initialFilters: PropTypes.array.isRequired,
+};
+
 export const SearchAppResultsGrid = ({
   columnsAmount,
   facetsAvailable,
@@ -51,9 +62,12 @@ export const SearchAppResultsGrid = ({
               onClick={() => setSidebarVisible(true)}
               title={i18next.t("Filter results")}
               aria-label={i18next.t("Filter results")}
+              className="facets-sidebar-open-button"
             >
               <Icon name="filter"></Icon>
-              <Label floating>2</Label>
+              <ShouldActiveFiltersRender>
+                <ActiveFiltersCountLabel />
+              </ShouldActiveFiltersRender>
             </Button>
           </Grid.Column>
         )}
@@ -69,16 +83,11 @@ export const SearchAppResultsGrid = ({
             </Grid.Column>
           </ShouldActiveFiltersRender>
         )}
-        {/* <ShouldActiveFiltersRender>
-          <Grid.Column verticalAlign="middle" width={3} only="mobile tablet">
-            <ClearFiltersButton />
-          </Grid.Column>
-        </ShouldActiveFiltersRender> */}
         <Grid.Column
           textAlign="right"
           floated="right"
-          mobile={8}
-          tablet={8}
+          mobile={13}
+          tablet={13}
           computer={5}
           largeScreen={5}
           widescreen={5}
@@ -98,7 +107,9 @@ export const SearchAppResultsGrid = ({
             onHideClick={() => setSidebarVisible(false)}
           >
             <ShouldActiveFiltersRender>
-              <ClearFiltersButton />
+              <ClearFiltersButton
+                className={"clear-filters-button mobile tablet only"}
+              />
             </ShouldActiveFiltersRender>
             <SearchAppFacets
               aggs={config.aggs}

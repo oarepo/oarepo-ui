@@ -82,9 +82,7 @@ const ActiveFiltersElementComponent = ({
               })}
             </Label.Group>
           ))}
-          <div style={{ display: "inline-block", lineHeight: "3rem" }}>
-            <ClearFiltersButton ignoredFilters={ignoredFilters} />
-          </div>
+          <ClearFiltersButton ignoredFilters={ignoredFilters} />
         </div>
       </Grid.Column>
     </Grid>

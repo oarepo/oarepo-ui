@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { withState } from "react-searchkit";
-import { Button, Icon } from "semantic-ui-react";
+import { Button } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import PropTypes from "prop-types";
 import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
@@ -47,21 +47,6 @@ const ClearFiltersButtonComponent = ({
         size="mini"
         {...uiProps}
       />
-      {/* <Button
-        className={`mobile tablet only ${clearFiltersButtonClassName}`}
-        aria-label={i18next.t("Clear all filters")}
-        type="button"
-        size="mini"
-        onClick={() =>
-          updateQueryState({
-            ...currentQueryState,
-            filters: filters.filter((f) => allFiltersToIgnore.includes(f[0])),
-          })
-        }
-        {...uiProps}
-      >
-        <Icon aria-hidden="true" name="filter" className="m-0" />
-      </Button> */}
     </div>
   );
 };

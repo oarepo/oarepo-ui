@@ -16,4 +16,11 @@
     line-height: 3rem;
     display: inline-block;
   }
+  &.facets-sidebar-open-button {
+    position: relative;
+    padding: 0.7rem;
+    .icon {
+      margin: 0 !important;
+    }
+  }
 }
