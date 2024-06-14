@@ -8,7 +8,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Grid, Dropdown, Button } from "semantic-ui-react";
-import { i18next } from "@translations/invenio_app_rdm/i18next";
+import { i18next } from "@translations/oarepo_ui/i18next";
 
 export const ExportDropdown = ({
   recordExportInfo: { formatOptions, exportBaseUrl },
@@ -18,7 +18,7 @@ export const ExportDropdown = ({
   );
   return (
     <Grid>
-      <Grid.Column width={11}>
+      <Grid.Column width={10}>
         <Dropdown
           aria-label={i18next.t("Export selection")}
           selection
@@ -29,13 +29,14 @@ export const ExportDropdown = ({
           defaultValue={selectedExportFormat}
         />
       </Grid.Column>
-      <Grid.Column width={5} className="pl-0">
+      <Grid.Column width={6} className="pl-0">
         <Button
           as="a"
           type="button"
           fluid
           href={`${exportBaseUrl}/${selectedExportFormat}`}
           title={i18next.t("Download file")}
+          className="pl-5 pr-5"
         >
           {i18next.t("Export")}
         </Button>
