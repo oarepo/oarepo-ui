@@ -61,6 +61,9 @@ const allowed_tags = [
   "ul",
 ];
 
+export const validTags =
+  "a[href|title|name|target|rel],abbr[title],acronym[title],b,blockquote,br,code,div,table,tbody,td,th,tr,em,h1,h2,h3,h4,h5,i,li,ol,p,pre,span,strike,strong,sub,sup,u,ul";
+  
 export const sanitizeInput = (htmlString, validTags) => {
   const decodedString = decode(htmlString);
   const cleanInput = sanitizeHtml(decodedString, {
