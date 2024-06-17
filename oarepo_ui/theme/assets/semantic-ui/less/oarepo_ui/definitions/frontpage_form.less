@@ -35,9 +35,15 @@ name of the component from above)
  */
 
 .ui.frontpage_form {
-  @media only screen and (min-width: 530px) {
+  margin: 0 auto;
+  @media only screen and (min-width: @tabletBreakpoint) {
+    max-width: 40%;
+  }
+  @media only screen and (min-width: @largestMobileScreen) and (max-width: @tabletBreakpoint) {
     max-width: 50%;
-    margin: 0 auto;
+  }
+  @media only screen and (max-width: @tabletBreakpoint) {
+    width: 50vw;
   }
 }
 
