@@ -6,6 +6,7 @@ import { Message } from "semantic-ui-react";
 import { ExternalApiModal } from "./ExternalApiModal";
 import { NoResultsMessage } from "./NoResultsMessage";
 import _isEmpty from "lodash/isEmpty";
+import _uniqBy from "lodash/uniqBy"
 
 export class RelatedSelectFieldInternal extends RemoteSelectField {
   constructor(props) {
@@ -18,54 +19,24 @@ export class RelatedSelectFieldInternal extends RemoteSelectField {
       isModalOpen: false,
       suggestions: initialSuggestions,
     };
-    this.handleModal = this.handleModal.bind(this);
+    this.toggleExternalModal = this.toggleExternalModal.bind(this);
   }
 
-  handleModal = () => {
+  toggleExternalModal = () => {
     this.setState({
       isModalOpen: !this.state.isModalOpen,
     });
   };
 
-  getNoResultsMessage = () => {
-    const {
-      loadingMessage,
-      suggestionsErrorMessage,
-      noQueryMessage,
-      externalSuggestionApi,
-      noResultsMessage,
-      externalApiButtonContent,
-    } = this.props;
-    const { isFetching, error, searchQuery } = this.state;
-    if (isFetching) {
-      return loadingMessage;
-    }
-    if (error) {
-      return <Message negative size="mini" content={suggestionsErrorMessage} />;
-    }
-    if (!searchQuery) {
-      return noQueryMessage;
-    }
-    return externalSuggestionApi ? (
-      <NoResultsMessage
-        noResultsMessage={i18next.t("No results found")}
-        handleModal={this.handleModal}
-        externalApiButtonContent={externalApiButtonContent}
-      />
-    ) : (
-      noResultsMessage
-    );
-  };
-
   handleAddingExternalApiSuggestion = (externalApiSuggestions) => {
-    this.setState({
-      suggestions: [...externalApiSuggestions],
-    });
+    this.setState(({suggestions: previousSuggestions}) => ({
+      suggestions: _uniqBy([...previousSuggestions, ...externalApiSuggestions], "value")
+    }));
   };
   getProps = () => {
     const {
       // allow to pass a different serializer to transform data from external API in case it is needed
-      externalApiButtonContent,
+      externalApiAdditionLabel,
       externalApiModalTitle,
       serializeExternalApiSuggestions,
       externalSuggestionApi,
@@ -113,6 +84,7 @@ export class RelatedSelectFieldInternal extends RemoteSelectField {
       fieldPath,
       suggestionAPIHeaders,
       externalSuggestionApi,
+      externalApiAdditionLabel,
       serializeExternalApiSuggestions,
       externalApiModalTitle,
       multiple,
@@ -148,6 +120,7 @@ export class RelatedSelectFieldInternal extends RemoteSelectField {
       <React.Fragment>
         <SelectField
           allowAdditions={this.error ? false : uiProps.allowAdditions}
+          additionLabel={externalApiAdditionLabel}
           fieldPath={compProps.fieldPath}
           options={this.state.suggestions}
           noResultsMessage={this.getNoResultsMessage()}
@@ -159,14 +132,18 @@ export class RelatedSelectFieldInternal extends RemoteSelectField {
           onBlur={this.onBlur}
           onSearchChange={this.onSearchChange}
           onAddItem={({ event, data, formikProps }) => {
-            this.handleAddition(event, data, (selectedSuggestions) => {
-              if (compProps.onValueChange) {
-                compProps.onValueChange(
-                  { event, data, formikProps },
-                  selectedSuggestions
-                );
-              }
-            });
+            if (externalSuggestionApi) {
+              this.toggleExternalModal()
+            } else {
+              this.handleAddition(event, data, (selectedSuggestions) => {
+                if (compProps.onValueChange) {
+                  compProps.onValueChange(
+                      {event, data, formikProps},
+                      selectedSuggestions
+                  );
+                }
+              });
+            }
           }}
           searchInput={{
             id: compProps.fieldPath,
@@ -195,7 +172,7 @@ export class RelatedSelectFieldInternal extends RemoteSelectField {
           <ExternalApiModal
             searchConfig={searchConfig}
             open={this.state.isModalOpen}
-            onClose={this.handleModal}
+            onClose={this.toggleExternalModal}
             serializeExternalApiSuggestions={
               serializeExternalApiSuggestions
                 ? serializeExternalApiSuggestions
@@ -239,7 +216,7 @@ RelatedSelectFieldInternal.propTypes = {
   multiple: PropTypes.bool,
   externalSuggestionApi: PropTypes.string,
   serializeExternalApiSuggestions: PropTypes.func,
-  externalApiButtonContent: PropTypes.string,
+  externalApiAdditionLabel: PropTypes.string,
   externalApiModalTitle: PropTypes.string,
 };
 
@@ -258,7 +235,7 @@ RelatedSelectFieldInternal.defaultProps = {
   suggestionAPIHeaders: {
     Accept: "application/vnd.inveniordm.v1+json",
   },
-  externalApiButtonContent: i18next.t("Search External Database"),
+  externalApiAdditionLabel: i18next.t("Search External Database"),
   externalApiModalTitle: i18next.t("Search results from external API"),
   serializeExternalApiSuggestions: undefined,
 };

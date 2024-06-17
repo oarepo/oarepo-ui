@@ -33,7 +33,7 @@ export const RelatedSelectField = ({
   multiple,
   externalSuggestionApi,
   serializeExternalApiSuggestions,
-  externalApiButtonContent,
+  externalApiAdditionLabel,
   externalApiModalTitle,
   ...uiProps
 }) => {
@@ -94,7 +94,7 @@ export const RelatedSelectField = ({
       }}
       externalSuggestionApi={externalSuggestionApi}
       serializeExternalApiSuggestions={serializeExternalApiSuggestions}
-      externalApiButtonContent={externalApiButtonContent}
+      externalApiAdditionLabel={externalApiAdditionLabel}
       externalApiModalTitle={externalApiModalTitle}
       value={
         multiple
@@ -136,7 +136,7 @@ RelatedSelectField.propTypes = {
   multiple: PropTypes.bool,
   externalSuggestionApi: PropTypes.string,
   serializeExternalApiSuggestions: PropTypes.func,
-  externalApiButtonContent: PropTypes.string,
+  externalApiAdditionLabel: PropTypes.string,
   externalApiModalTitle: PropTypes.string,
 };
 
@@ -157,7 +157,7 @@ RelatedSelectField.defaultProps = {
   suggestionAPIHeaders: {
     Accept: "application/vnd.inveniordm.v1+json",
   },
-  externalApiButtonContent: i18next.t("Search External Database"),
+  externalApiAdditionLabel: i18next.t("Search External Database"),
   externalApiModalTitle: i18next.t("Search results from external API"),
   serializeExternalApiSuggestions: undefined,
 };

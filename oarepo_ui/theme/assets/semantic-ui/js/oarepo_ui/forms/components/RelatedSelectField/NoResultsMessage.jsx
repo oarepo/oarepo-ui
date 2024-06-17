@@ -5,7 +5,7 @@ import { Message, Grid, Button } from "semantic-ui-react";
 export const NoResultsMessage = ({
   noResultsMessage,
   handleModal,
-  externalApiButtonContent,
+  externalApiAdditionLabel,
 }) => {
   return (
     <Message>
@@ -21,7 +21,7 @@ export const NoResultsMessage = ({
               color="green"
               icon="search"
               labelPosition="left"
-              content={externalApiButtonContent}
+              content={externalApiAdditionLabel}
               type="button"
               onClick={handleModal}
             />
