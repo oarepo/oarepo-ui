@@ -6,7 +6,6 @@ import { FormikStateLogger } from "../FormikStateLogger";
 import { SaveButton } from "../SaveButton";
 import { PublishButton } from "../PublishButton";
 import { PreviewButton } from "../PreviewButton";
-import { ValidateButton } from "../ValidateButton";
 import { Grid, Ref, Sticky, Card, Header } from "semantic-ui-react";
 import { useFormConfig, getTitleFromMultilingualObject } from "@js/oarepo_ui";
 import { buildUID } from "react-searchkit";
@@ -107,9 +106,6 @@ export const BaseFormLayout = ({ formikProps }) => {
                       </Grid.Column>
                       <Grid.Column width={16} className="pt-10">
                         <PublishButton />
-                      </Grid.Column>
-                      <Grid.Column width={16} className="pt-10">
-                        <ValidateButton />
                       </Grid.Column>
                       {/* TODO:see if there is a way to provide URL here, seems that UI links are empty in the form */}
                       {/* <Grid.Column width={16} className="pt-10">
