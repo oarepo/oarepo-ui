@@ -14,7 +14,7 @@ const ShouldActiveFiltersRenderComponent = ({
     initialQueryState: { filters: initialFilters },
   } = searchAppContext;
   return (
-    <ShouldRender condition={filters.length > initialFilters?.length}>
+    <ShouldRender condition={filters?.length > initialFilters?.length}>
       {children}
     </ShouldRender>
   );

@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { withState } from "react-searchkit";
-import { Button, Icon } from "semantic-ui-react";
+import { Button } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import PropTypes from "prop-types";
 import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
@@ -13,7 +13,10 @@ import _uniq from "lodash/uniq";
 const ClearFiltersButtonComponent = ({
   updateQueryState,
   currentQueryState,
+  currentResultsState,
   ignoredFilters,
+  clearFiltersButtonClassName,
+  ...uiProps
 }) => {
   const { filters } = currentQueryState;
   const searchAppContext = useContext(SearchConfigurationContext);
@@ -26,40 +29,23 @@ const ClearFiltersButtonComponent = ({
     ...ignoredFilters,
   ]);
   return (
-    <React.Fragment>
-      <Button
-        className="computer tablet only"
-        aria-label={i18next.t("Clear all filters")}
-        name="clear"
-        color="orange"
-        onClick={() =>
-          updateQueryState({
-            ...currentQueryState,
-            filters: filters.filter((f) => allFiltersToIgnore.includes(f[0])),
-          })
-        }
-        icon="delete"
-        labelPosition="left"
-        content={i18next.t("Clear all filters")}
-        type="button"
-        size="mini"
-      />
-      <Button
-        className="mobile only"
-        aria-label={i18next.t("Clear all filters")}
-        color="orange"
-        type="button"
-        size="mini"
-        onClick={() =>
-          updateQueryState({
-            ...currentQueryState,
-            filters: filters.filter((f) => allFiltersToIgnore.includes(f[0])),
-          })
-        }
-      >
-        <Icon aria-hidden="true" name="filter" className="m-0" />
-      </Button>
-    </React.Fragment>
+    <Button
+      className={clearFiltersButtonClassName}
+      aria-label={i18next.t("Clear all filters")}
+      name="clear"
+      onClick={() =>
+        updateQueryState({
+          ...currentQueryState,
+          filters: filters.filter((f) => allFiltersToIgnore.includes(f[0])),
+        })
+      }
+      icon="delete"
+      labelPosition="left"
+      content={i18next.t("Clear all filters")}
+      type="button"
+      size="mini"
+      {...uiProps}
+    />
   );
 };
 
@@ -69,6 +55,11 @@ ClearFiltersButtonComponent.propTypes = {
   updateQueryState: PropTypes.func.isRequired,
   currentQueryState: PropTypes.object.isRequired,
   ignoredFilters: PropTypes.array,
+  currentResultsState: PropTypes.object.isRequired,
+  clearFiltersButtonClassName: PropTypes.string,
 };
 
-ClearFiltersButtonComponent.defaultProps = { ignoredFilters: [] };
+ClearFiltersButtonComponent.defaultProps = {
+  ignoredFilters: [],
+  clearFiltersButtonClassName: "clear-filters-button",
+};
