@@ -61,14 +61,17 @@ const allowed_tags = [
   "ul",
 ];
 
-export const validTags = (
-  tags= allowed_tags,
-  specialAttributes = {
-    a: "href|title|name|target|rel",
-    abbr: "title",
-    acronym: "title",
-  }
-) => {
+const allowed_attr = {
+  a: ["href", "title", "name", "target", "rel"],
+  abbr: ["title"],
+  acronym: ["title"],
+};
+
+export const validTags = (tags = allowed_tags, attr = allowed_attr) => {
+  const specialAttributes = Object.fromEntries(
+    Object.entries(attr).map(([key, value]) => [key, value.join("|")])
+  );
+
   return tags
     .map((tag) => {
       return specialAttributes[tag] ? `${tag}[${specialAttributes[tag]}]` : tag;
@@ -80,11 +83,7 @@ export const sanitizeInput = (htmlString, validTags) => {
   const decodedString = decode(htmlString);
   const cleanInput = sanitizeHtml(decodedString, {
     allowedTags: validTags || allowed_tags,
-    allowedAttributes: {
-      a: ["href", "title", "name", "target", "rel"],
-      abbr: ["title"],
-      acronym: ["title"],
-    },
+    allowedAttributes: allowed_attr,
   });
   return cleanInput;
 };
