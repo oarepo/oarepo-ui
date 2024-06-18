@@ -15,9 +15,7 @@ const ShouldActiveFiltersRenderComponent = ({
   } = searchAppContext;
   return (
     <ShouldRender condition={filters?.length > initialFilters?.length}>
-      {React.Children.map(children, (child) =>
-        React.cloneElement(child, { filters, initialFilters })
-      )}
+      {children}
     </ShouldRender>
   );
 };

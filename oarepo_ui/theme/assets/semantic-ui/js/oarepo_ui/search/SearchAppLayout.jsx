@@ -18,25 +18,34 @@ import { ShouldActiveFiltersRender } from "@js/oarepo_ui";
 
 const ResultOptionsWithState = withState(ResultOptions);
 
-export const ActiveFiltersCountFloatingLabel = ({
-  filters,
-  initialFilters,
+export const ActiveFiltersCountFloatingLabelComponent = ({
+  currentQueryState,
   className,
-}) => (
-  <Label floating circular size="mini" className={className}>
-    {filters.length - initialFilters.length}
-  </Label>
-);
-
-ActiveFiltersCountFloatingLabel.propTypes = {
-  filters: PropTypes.array.isRequired,
-  initialFilters: PropTypes.array.isRequired,
-  className: PropTypes.string,
+}) => {
+  const { filters } = currentQueryState;
+  const searchAppContext = useContext(SearchConfigurationContext);
+  const {
+    initialQueryState: { filters: initialFilters },
+  } = searchAppContext;
+  return (
+    <Label floating circular size="mini" className={className}>
+      {filters.length - initialFilters.length}
+    </Label>
+  );
 };
 
-ActiveFiltersCountFloatingLabel.defaultProps = {
+ActiveFiltersCountFloatingLabelComponent.propTypes = {
+  className: PropTypes.string,
+  currentQueryState: PropTypes.object.isRequired,
+};
+
+ActiveFiltersCountFloatingLabelComponent.defaultProps = {
   className: "active-filters-count-label",
 };
+
+export const ActiveFiltersCountFloatingLabel = withState(
+  ActiveFiltersCountFloatingLabelComponent
+);
 
 export const SearchAppResultsGrid = ({
   columnsAmount,
