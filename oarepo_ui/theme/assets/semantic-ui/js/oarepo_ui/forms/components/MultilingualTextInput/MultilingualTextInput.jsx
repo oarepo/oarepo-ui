@@ -56,6 +56,7 @@ export const MultilingualTextInput = ({
         <FieldLabel htmlFor={fieldPath} icon={labelIcon ?? ""} label={label} />
       }
       helpText={helpText}
+      addButtonClassName="array-field-add-button"
     >
       {({ indexPath, arrayHelpers }) => {
         const fieldPathPrefix = `${fieldPath}.${indexPath}`;
