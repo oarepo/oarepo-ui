@@ -35,11 +35,15 @@ name of the component from above)
  */
 
 .ui.header_menu_item {
-  &.menu:not(.vertical){
+  &.menu:not(.vertical) {
     justify-content: flex-end;
   }
-  &.right.menu.item .item {
-    width: 50%;
+  &.right.menu.item {
+    width: auto;
+    border: none;
+    & .item {
+      width: auto;
+    }
   }
 }
 .loadUIOverrides();
