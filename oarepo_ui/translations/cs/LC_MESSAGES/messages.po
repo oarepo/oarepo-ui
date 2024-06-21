@@ -487,3 +487,17 @@ msgstr "Zkopírováno!"
 
 msgid "Copy to clipboard failed!"
 msgstr "Kopírování se nezdařilo!"
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/RecordExport.jinja:13
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/RecordExport.jinja:14
+msgid "Export"
+msgstr "Exportovat"
+
+msgid "Export selection"
+msgstr "Exportovat výběr"
+
+msgid "Download file"
+msgstr "Stáhnout soubor"
+
+msgid "Remove"
+msgstr "Odstranit"
