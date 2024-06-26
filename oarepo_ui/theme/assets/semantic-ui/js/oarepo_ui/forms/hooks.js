@@ -14,6 +14,8 @@ import _isEmpty from "lodash/isEmpty";
 import _isObject from "lodash/isObject";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { relativeUrl } from "../util";
+import { decode } from "html-entities";
+import sanitizeHtml from "sanitize-html";
 
 export const extractFEErrorMessages = (obj) => {
   const errorMessages = [];
@@ -447,4 +449,25 @@ export const useValidateOnBlur = () => {
   const { validateField, setFieldTouched } = useFormikContext();
 
   return handleValidateAndBlur(validateField, setFieldTouched);
+};
+
+const sanitizeInput = (allowedHtmlTags, allowedHtmlAttrs) => (htmlString) => {
+  const decodedString = decode(htmlString);
+  const cleanInput = sanitizeHtml(decodedString, {
+    allowedTags: allowedHtmlTags,
+    allowedAttributes: allowedHtmlAttrs,
+  });
+  return cleanInput;
+};
+
+export const useSanitizeInput = () => {
+  const {
+    formConfig: { allowedHtmlAttrs, allowedHtmlTags, validEditorTags },
+  } = useFormConfig();
+  return {
+    sanitizeInput: sanitizeInput(allowedHtmlTags, allowedHtmlAttrs),
+    allowedHtmlAttrs,
+    allowedHtmlTags,
+    validEditorTags,
+  };
 };

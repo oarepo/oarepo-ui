@@ -4,7 +4,7 @@ from os.path import splitext
 from typing import TYPE_CHECKING, Iterator
 
 import deepmerge
-from flask import abort, g, redirect, request
+from flask import abort, g, redirect, request, current_app
 from flask_principal import PermissionDenied
 from flask_resources import (
     Resource,
@@ -32,6 +32,7 @@ from oarepo_runtime.datastreams.utils import get_file_service_for_record_class
 
 from .templating.data import FieldData
 from invenio_previewer.extensions import default as default_previewer
+from invenio_config.default import ALLOWED_HTML_TAGS, ALLOWED_HTML_ATTRS
 
 
 if TYPE_CHECKING:
@@ -46,6 +47,20 @@ from .config import (
     TemplatePageUIResourceConfig,
     UIResourceConfig,
 )
+
+
+def valid_tags(tags=None, attr=None):
+    special_attributes = {key: "|".join(value) for key, value in attr.items()}
+
+    result = []
+    for tag in tags:
+        if tag in special_attributes:
+            result.append(f"{tag}[{special_attributes[tag]}]")
+        else:
+            result.append(tag)
+
+    return ",".join(result)
+
 
 request_export_args = request_parser(
     from_conf("request_export_args"), location="view_args"
@@ -430,6 +445,22 @@ class RecordsUIResource(UIResource):
         form_config["custom_fields"] = self._get_custom_fields(
             api_record=api_record, resource_requestctx=resource_requestctx
         )
+        # TODO: it is getting a bit crowded in the resource, the issue is that we dont't really use any components
+        # in the config on the level of oarepo ui, i.e. they are only used in the config of specific resources inside apps
+        # so if we wish to start having some basic components array in config in oarepo ui, it would require refactor
+        # in all apps (to use also components on the upstream oarepo ui config and then any new ones on the level of the app)
+
+        form_config["allowedHtmlTags"] = current_app.config.get(
+            "ALLOWED_HTML_TAGS", ALLOWED_HTML_TAGS
+        )
+
+        form_config["allowedHtmlAttrs"] = current_app.config.get(
+            "ALLOWED_HTML_ATTRS", ALLOWED_HTML_ATTRS
+        )
+
+        form_config["validEditorTags"] = valid_tags(
+            form_config["allowedHtmlTags"], form_config["allowedHtmlAttrs"]
+        )
 
         ui_links = self.expand_detail_links(identity=g.identity, record=api_record)
 
@@ -505,6 +536,18 @@ class RecordsUIResource(UIResource):
         )
         form_config["custom_fields"] = self._get_custom_fields(
             resource_requestctx=resource_requestctx
+        )
+
+        form_config["allowedHtmlTags"] = current_app.config.get(
+            "ALLOWED_HTML_TAGS", ALLOWED_HTML_TAGS
+        )
+
+        form_config["allowedHtmlAttrs"] = current_app.config.get(
+            "ALLOWED_HTML_ATTRS", ALLOWED_HTML_ATTRS
+        )
+
+        form_config["validEditorTags"] = valid_tags(
+            form_config["allowedHtmlTags"], form_config["allowedHtmlAttrs"]
         )
 
         extra_context = dict()
