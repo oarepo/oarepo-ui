@@ -49,10 +49,14 @@ from .config import (
 )
 
 
-def valid_tags(tags=None, attr=None):
+def calculate_valid_tags_for_editor(tags=None, attr=None):
     special_attributes = {key: "|".join(value) for key, value in attr.items()}
 
     result = []
+
+    if "*" in special_attributes:
+        result.append(f"@[{special_attributes['*']}]")
+
     for tag in tags:
         if tag in special_attributes:
             result.append(f"{tag}[{special_attributes[tag]}]")
@@ -458,7 +462,7 @@ class RecordsUIResource(UIResource):
             "ALLOWED_HTML_ATTRS", ALLOWED_HTML_ATTRS
         )
 
-        form_config["validEditorTags"] = valid_tags(
+        form_config["validEditorTags"] = calculate_valid_tags_for_editor(
             form_config["allowedHtmlTags"], form_config["allowedHtmlAttrs"]
         )
 
@@ -546,7 +550,7 @@ class RecordsUIResource(UIResource):
             "ALLOWED_HTML_ATTRS", ALLOWED_HTML_ATTRS
         )
 
-        form_config["validEditorTags"] = valid_tags(
+        form_config["validEditorTags"] = calculate_valid_tags_for_editor(
             form_config["allowedHtmlTags"], form_config["allowedHtmlAttrs"]
         )
 
