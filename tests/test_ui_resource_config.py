@@ -31,7 +31,6 @@ def test_ui_resource_form_config(app, test_record_ui_resource):
         ],
         allowedHtmlTags=ALLOWED_HTML_TAGS,
         allowedHtmlAttrs=ALLOWED_HTML_ATTRS,
-        validEditorTags="@[class],a[href|title|name|class|rel],abbr[title],acronym[title],b,blockquote,br,code,div,table,tbody,td,th,tr,em,h1,h2,h3,h4,h5,i,li,ol,p,pre,span,strike,strong,sub,sup,u,ul",
         default_locale="en",
         overridableIdPrefix="Test.Form",
         permissions={

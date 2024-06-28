@@ -451,23 +451,28 @@ export const useValidateOnBlur = () => {
   return handleValidateAndBlur(validateField, setFieldTouched);
 };
 
-const sanitizeInput = (allowedHtmlTags, allowedHtmlAttrs) => (htmlString) => {
-  const decodedString = decode(htmlString);
-  const cleanInput = sanitizeHtml(decodedString, {
-    allowedTags: allowedHtmlTags,
-    allowedAttributes: allowedHtmlAttrs,
-  });
-  return cleanInput;
-};
-
 export const useSanitizeInput = () => {
   const {
-    formConfig: { allowedHtmlAttrs, allowedHtmlTags, validEditorTags },
+    formConfig: { allowedHtmlAttrs, allowedHtmlTags },
   } = useFormConfig();
+
+  const sanitizeInput = useCallback(
+    (htmlString) => {
+      const decodedString = decode(htmlString);
+      const cleanInput = sanitizeHtml(decodedString, {
+        allowedTags: allowedHtmlTags,
+        allowedAttributes: allowedHtmlAttrs,
+      });
+      return cleanInput;
+    },
+    [allowedHtmlTags, allowedHtmlAttrs]
+  );
+
   return {
-    sanitizeInput: sanitizeInput(allowedHtmlTags, allowedHtmlAttrs),
+    sanitizeInput,
     allowedHtmlAttrs,
     allowedHtmlTags,
-    validEditorTags,
   };
 };
+
+export default useSanitizeInput;

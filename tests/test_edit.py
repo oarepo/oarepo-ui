@@ -38,7 +38,6 @@ def test_edit(
             "form_config": {
                 "allowedHtmlTags": ALLOWED_HTML_TAGS,
                 "allowedHtmlAttrs": ALLOWED_HTML_ATTRS,
-                "validEditorTags": "@[class],a[href|title|name|class|rel],abbr[title],acronym[title],b,blockquote,br,code,div,table,tbody,td,th,tr,em,h1,h2,h3,h4,h5,i,li,ol,p,pre,span,strike,strong,sub,sup,u,ul",
                 "current_locale": "en",
                 "custom_fields": {
                     "ui": [

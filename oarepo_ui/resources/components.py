@@ -275,22 +275,6 @@ class FilesComponent(UIResourceComponent):
 
 
 class AllowedHtmlTagsComponent(UIResourceComponent):
-    def calculate_valid_tags_for_editor(self, tags, attr):
-        special_attributes = {key: "|".join(value) for key, value in attr.items()}
-
-        result = []
-
-        if "*" in special_attributes:
-            result.append(f"@[{special_attributes['*']}]")
-
-        for tag in tags:
-            if tag in special_attributes:
-                result.append(f"{tag}[{special_attributes[tag]}]")
-            else:
-                result.append(tag)
-
-        return ",".join(result)
-
     def form_config(self, *, form_config, **kwargs):
         form_config["allowedHtmlTags"] = current_app.config.get(
             "ALLOWED_HTML_TAGS", ALLOWED_HTML_TAGS
@@ -298,8 +282,4 @@ class AllowedHtmlTagsComponent(UIResourceComponent):
 
         form_config["allowedHtmlAttrs"] = current_app.config.get(
             "ALLOWED_HTML_ATTRS", ALLOWED_HTML_ATTRS
-        )
-
-        form_config["validEditorTags"] = self.calculate_valid_tags_for_editor(
-            form_config["allowedHtmlTags"], form_config["allowedHtmlAttrs"]
         )

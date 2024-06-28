@@ -80,3 +80,22 @@ export function createFormAppInit({
     return initFormApp;
   }
 }
+
+export const getValidTagsForEditor = (tags, attr) => {
+  const specialAttributes = Object.fromEntries(
+    Object.entries(attr).map(([key, value]) => [key, value.join("|")])
+  );
+  let result = [];
+
+  if (specialAttributes["*"]) {
+    result.push(`@[${specialAttributes["*"]}]`);
+  }
+
+  result = result.concat(
+    tags.map((tag) => {
+      return specialAttributes[tag] ? `${tag}[${specialAttributes[tag]}]` : tag;
+    })
+  );
+
+  return result.join(",");
+};

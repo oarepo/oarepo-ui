@@ -48,23 +48,6 @@ from .config import (
 )
 
 
-def calculate_valid_tags_for_editor(tags=None, attr=None):
-    special_attributes = {key: "|".join(value) for key, value in attr.items()}
-
-    result = []
-
-    if "*" in special_attributes:
-        result.append(f"@[{special_attributes['*']}]")
-
-    for tag in tags:
-        if tag in special_attributes:
-            result.append(f"{tag}[{special_attributes[tag]}]")
-        else:
-            result.append(tag)
-
-    return ",".join(result)
-
-
 request_export_args = request_parser(
     from_conf("request_export_args"), location="view_args"
 )
