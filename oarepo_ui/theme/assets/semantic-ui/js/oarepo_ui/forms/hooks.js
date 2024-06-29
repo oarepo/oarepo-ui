@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState, useContext } from "react";
+import { useEffect, useCallback, useState, useContext, useMemo } from "react";
 import { FormConfigContext } from "./contexts";
 import {
   OARepoDepositApiClient,
@@ -16,6 +16,7 @@ import { i18next } from "@translations/oarepo_ui/i18next";
 import { relativeUrl } from "../util";
 import { decode } from "html-entities";
 import sanitizeHtml from "sanitize-html";
+import { getValidTagsForEditor } from "@js/oarepo_ui";
 
 export const extractFEErrorMessages = (obj) => {
   const errorMessages = [];
@@ -467,11 +468,15 @@ export const useSanitizeInput = () => {
     },
     [allowedHtmlTags, allowedHtmlAttrs]
   );
-
+  const vailidEditorTags = useMemo(
+    () => getValidTagsForEditor(allowedHtmlTags, allowedHtmlAttrs),
+    [allowedHtmlTags, allowedHtmlAttrs]
+  );
   return {
     sanitizeInput,
     allowedHtmlAttrs,
     allowedHtmlTags,
+    vailidEditorTags,
   };
 };
 
