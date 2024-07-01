@@ -1,0 +1,21 @@
+.rel-mb-1 {
+  & .ui.button {
+    background: none;
+    padding: 5px;
+  }
+}
+
+.ui.button {
+  &.clear-filters-button {
+    color: black;
+    margin-bottom: 5px;
+  }
+
+  &.facets-sidebar-open-button {
+    position: relative;
+    padding: 0.7rem;
+    .icon {
+      margin: 0 !important;
+    }
+  }
+}

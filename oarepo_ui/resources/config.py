@@ -5,10 +5,17 @@ import marshmallow as ma
 from flask import current_app
 from flask_resources import ResourceConfig
 from invenio_base.utils import obj_or_import_string
-from invenio_pidstore.errors import PIDDeletedError, PIDDoesNotExistError, PIDUnregistered
+from invenio_pidstore.errors import (
+    PIDDeletedError,
+    PIDDoesNotExistError,
+    PIDUnregistered,
+)
 from invenio_records_resources.proxies import current_service_registry
 from invenio_records_resources.services import Link, pagination_links
-from invenio_records_resources.services.errors import FileKeyNotFoundError, PermissionDeniedError
+from invenio_records_resources.services.errors import (
+    FileKeyNotFoundError,
+    PermissionDeniedError,
+)
 from invenio_search_ui.searchconfig import FacetsConfig, SearchAppConfig, SortConfig
 from oarepo_runtime.services.custom_fields import CustomFields, InlinedCustomFields
 
@@ -103,17 +110,14 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
     @property
     def default_components(self):
-        service  = current_service_registry.get(self.api_service)
+        service = current_service_registry.get(self.api_service)
         schema = getattr(service.record_cls, "schema", None)
-        component = getattr(self ,"search_component", None )
+        component = getattr(self, "search_component", None)
         if schema and component:
-            return {
-                    schema.value:
-                    component
-            }
-        else: 
+            return {schema.value: component}
+        else:
             return {}
-    
+
     @property
     def exports(self):
         return {

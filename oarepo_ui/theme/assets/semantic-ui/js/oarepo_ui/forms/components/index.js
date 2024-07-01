@@ -13,7 +13,6 @@ export * from "./DeleteButton";
 export * from "./PreviewButton";
 export * from "./PublishButton";
 export * from "./SaveButton";
-export * from "./ValidateButton";
 export * from "./ConfirmationModal";
 export * from "./BaseFormLayout";
 export * from "./CompactFieldLabel";

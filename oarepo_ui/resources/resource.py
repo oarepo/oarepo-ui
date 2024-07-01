@@ -197,7 +197,7 @@ class RecordsUIResource(UIResource):
         self.make_links_absolute(record["links"], self.api_service.config.url_prefix)
 
         extra_context = dict()
-
+        extra_context["exporters"] = self.config.exports
         self.run_components(
             "before_ui_detail",
             api_record=api_record,
@@ -313,7 +313,9 @@ class RecordsUIResource(UIResource):
         default_components = {}
 
         for key, value in self.config.default_components.items():
-            default_components[f"{overridable_id_prefix}.ResultsList.item.{key}"] = value
+            default_components[f"{overridable_id_prefix}.ResultsList.item.{key}"] = (
+                value
+            )
 
         search_options = dict(
             api_config=self.api_service.config,

@@ -29,6 +29,8 @@ export const MultilingualTextInput = ({
   showEmptyValue,
   prefillLanguageWithDefaultLocale,
   useModelData,
+  removeButtonLabelClassName,
+  displayFirstInputRemoveButton,
   ...uiProps
 }) => {
   const { defaultLocale } = useDefaultLocale();
@@ -56,15 +58,18 @@ export const MultilingualTextInput = ({
         <FieldLabel htmlFor={fieldPath} icon={labelIcon ?? ""} label={label} />
       }
       helpText={helpText}
+      addButtonClassName="array-field-add-button"
     >
-      {({ indexPath, array, arrayHelpers }) => {
+      {({ indexPath, arrayHelpers }) => {
         const fieldPathPrefix = `${fieldPath}.${indexPath}`;
 
         return (
           <ArrayFieldItem
             indexPath={indexPath}
-            array={array}
             arrayHelpers={arrayHelpers}
+            removeButtonLabelClassName={removeButtonLabelClassName}
+            displayFirstInputRemoveButton={displayFirstInputRemoveButton}
+            fieldPathPrefix={fieldPathPrefix}
           >
             <Form.Field width={16}>
               {rich ? (
@@ -118,6 +123,8 @@ MultilingualTextInput.propTypes = {
   prefillLanguageWithDefaultLocale: PropTypes.bool,
   // whether or not the nested components shall call to get input information from the model
   useModelData: PropTypes.bool,
+  removeButtonLabelClassName: PropTypes.string,
+  displayFirstInputRemoveButton: PropTypes.bool,
 };
 
 MultilingualTextInput.defaultProps = {
@@ -131,4 +138,5 @@ MultilingualTextInput.defaultProps = {
   showEmptyValue: false,
   prefillLanguageWithDefaultLocale: false,
   useModelData: true,
+  displayFirstInputRemoveButton: true,
 };

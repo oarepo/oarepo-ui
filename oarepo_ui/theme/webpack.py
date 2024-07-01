@@ -59,7 +59,7 @@ else:
         "react-datepicker": "^4.21.0",
         "edtf": "^4.0.0",
         "html-entities": "2.5.2",
-        "sanitize-html": "2.13.0"
+        "sanitize-html": "2.13.0",
     }
     aliases = {}
 
@@ -75,6 +75,8 @@ theme = WebpackThemeBundle(
                 "oarepo_ui_forms": "./js/oarepo_ui/forms/index.js",
                 "oarepo_ui_theme": "./js/oarepo_ui/theme.js",
                 "oarepo_ui_components": "./js/oarepo_ui/custom-components.js",
+                "copy_to_clipboard": "./js/oarepo_ui/components/clipboard.js",
+                "record_export": "./js/oarepo_ui/components/record-export.js",
             },
             dependencies=dependencies,
             devDependencies={"eslint-plugin-i18next": "^6.0.3"},

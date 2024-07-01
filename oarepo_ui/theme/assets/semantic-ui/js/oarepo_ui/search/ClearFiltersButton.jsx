@@ -13,7 +13,10 @@ import _uniq from "lodash/uniq";
 const ClearFiltersButtonComponent = ({
   updateQueryState,
   currentQueryState,
+  currentResultsState,
   ignoredFilters,
+  clearFiltersButtonClassName,
+  ...uiProps
 }) => {
   const { filters } = currentQueryState;
   const searchAppContext = useContext(SearchConfigurationContext);
@@ -27,8 +30,9 @@ const ClearFiltersButtonComponent = ({
   ]);
   return (
     <Button
+      className={clearFiltersButtonClassName}
+      aria-label={i18next.t("Clear all filters")}
       name="clear"
-      color="orange"
       onClick={() =>
         updateQueryState({
           ...currentQueryState,
@@ -40,6 +44,7 @@ const ClearFiltersButtonComponent = ({
       content={i18next.t("Clear all filters")}
       type="button"
       size="mini"
+      {...uiProps}
     />
   );
 };
@@ -50,6 +55,11 @@ ClearFiltersButtonComponent.propTypes = {
   updateQueryState: PropTypes.func.isRequired,
   currentQueryState: PropTypes.object.isRequired,
   ignoredFilters: PropTypes.array,
+  currentResultsState: PropTypes.object.isRequired,
+  clearFiltersButtonClassName: PropTypes.string,
 };
 
-ClearFiltersButtonComponent.defaultProps = { ignoredFilters: [] };
+ClearFiltersButtonComponent.defaultProps = {
+  ignoredFilters: [],
+  clearFiltersButtonClassName: "clear-filters-button",
+};

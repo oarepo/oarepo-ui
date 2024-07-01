@@ -442,3 +442,62 @@ msgstr "Váš koncept byl uložen. Přesměrování na stránku náhledu..."
 
 msgid "Please provide an URL in valid format"
 msgstr "Zadejte prosím adresu URL v platném formátu"
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:3
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:4
+msgid "Identifiers and links"
+msgstr "Identifikátory a odkazy"
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:46
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:47
+msgid "metadata/originalRecord.label"
+msgstr "Odkaz na původní záznam"
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/SidebarApiLinks.jinja:5
+msgid "API"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/SidebarApiLinks.jinja:5
+msgid "Links"
+msgstr "Odkazy"
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/NotFound.jinja:11
+msgid "Not found"
+msgstr "Nenalezeno"
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/NotFound.jinja:16
+msgid ""
+"\n"
+"      The record you are trying to access does not exist in this repository."
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/PermissionDenied.jinja:11
+msgid "Permission denied"
+msgstr "Přístup odepřen"
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/PermissionDenied.jinja:16
+#, python-format
+msgid ""
+"\n"
+"      You do not have permissions to access this page on %(sitename)s."
+msgstr ""
+
+msgid "Copied!"
+msgstr "Zkopírováno!"
+
+msgid "Copy to clipboard failed!"
+msgstr "Kopírování se nezdařilo!"
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/RecordExport.jinja:13
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/RecordExport.jinja:14
+msgid "Export"
+msgstr "Exportovat"
+
+msgid "Export selection"
+msgstr "Exportovat výběr"
+
+msgid "Download file"
+msgstr "Stáhnout soubor"
+
+msgid "Remove"
+msgstr "Odstranit"
