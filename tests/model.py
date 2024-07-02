@@ -24,7 +24,10 @@ from oarepo_ui.resources import (
     RecordsUIResource,
     RecordsUIResourceConfig,
 )
-from oarepo_ui.resources.components import PermissionsComponent
+from oarepo_ui.resources.components import (
+    PermissionsComponent,
+    AllowedHtmlTagsComponent,
+)
 from oarepo_ui.resources.config import TemplatePageUIResourceConfig
 from oarepo_ui.resources.resource import TemplatePageUIResource
 
@@ -106,7 +109,7 @@ class ModelUIResourceConfig(RecordsUIResourceConfig):
         "edit": "TestEdit",
     }
 
-    components = [BabelComponent, PermissionsComponent]
+    components = [BabelComponent, PermissionsComponent, AllowedHtmlTagsComponent]
 
 
 class ModelUIResource(RecordsUIResource):
