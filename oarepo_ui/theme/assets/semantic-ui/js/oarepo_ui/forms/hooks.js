@@ -468,7 +468,7 @@ export const useSanitizeInput = () => {
     },
     [allowedHtmlTags, allowedHtmlAttrs]
   );
-  const vailidEditorTags = useMemo(
+  const validEditorTags = useMemo(
     () => getValidTagsForEditor(allowedHtmlTags, allowedHtmlAttrs),
     [allowedHtmlTags, allowedHtmlAttrs]
   );
@@ -476,7 +476,7 @@ export const useSanitizeInput = () => {
     sanitizeInput,
     allowedHtmlAttrs,
     allowedHtmlTags,
-    vailidEditorTags,
+    validEditorTags,
   };
 };
 
