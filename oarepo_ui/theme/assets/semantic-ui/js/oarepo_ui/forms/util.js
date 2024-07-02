@@ -160,39 +160,50 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
     const fieldPathWithPrefix = fieldPathPrefix
       ? `${fieldPathPrefix}.${fieldPath}`
       : fieldPath;
+    // handling labels, always I take result of i18next.t if we get metadata/smth, we use it to debug
+    // help and hint if result is same as the key, don't render, if it is different render
     const path = transformPath(fieldPathWithPrefix);
-    const { help, label, hint, required } = _get(uiMetadata, path);
+    const {
+      help: modelHelp,
+      label: modelLabel,
+      hint: modelHint,
+      required: modelRequired,
+    } = _get(uiMetadata, path);
+    const help = i18next.t(modelHelp).startsWith("metadata")
+      ? null
+      : i18next.t(modelHelp);
+    const label = i18next.t(modelLabel).startsWith("metadata")
+      ? null
+      : i18next.t(modelLabel);
+    const hint = i18next.t(modelHint).startsWith("metadata")
+      ? null
+      : i18next.t(modelHint);
+    const required = modelRequired;
     // full representation meaning jsx or small space representation (no helptext, label with helptext in popup)
     // text only without react elements
     return {
       fullRepresentation: {
-        helpText: i18next.t(help),
-        label: (
-          <FieldLabel
-            htmlFor={fieldPath}
-            icon={icon}
-            label={i18next.t(label)}
-          />
-        ),
-        placeholder: i18next.t(hint),
+        helpText: help,
+        label: <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />,
+        placeholder: hint,
         required,
       },
       compactRepresentation: {
-        helptext: undefined,
+        helptext: help,
         label: (
           <CompactFieldLabel
             htmlFor={fieldPath}
             icon=""
-            label={i18next.t(label)}
-            popupHelpText={i18next.t(help)}
+            label={label}
+            popupHelpText={help}
           />
         ),
-        placeholder: i18next.t(hint),
+        placeholder: hint,
       },
       textRepresentation: {
-        helpText: i18next.t(help),
-        label: i18next.t(label),
-        placeholder: i18next.t(hint),
+        helpText: help,
+        label: label,
+        placeholder: hint,
       },
     };
   };

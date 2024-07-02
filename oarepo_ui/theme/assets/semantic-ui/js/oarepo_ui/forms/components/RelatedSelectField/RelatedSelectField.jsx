@@ -44,7 +44,6 @@ export const RelatedSelectField = ({
     : _isEmpty(getIn(values, fieldPath, {}))
     ? []
     : [getIn(values, fieldPath)];
-  console.log(startingSuggestions);
   return (
     <React.Fragment>
       <RelatedSelectFieldInternal
