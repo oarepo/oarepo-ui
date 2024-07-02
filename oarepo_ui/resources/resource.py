@@ -51,8 +51,9 @@ request_export_args = request_parser(
     from_conf("request_export_args"), location="view_args"
 )
 
-request_file_view_args = request_parser(from_conf("request_file_view_args"), location="view_args")
-
+request_file_view_args = request_parser(
+    from_conf("request_file_view_args"), location="view_args"
+)
 
 
 class UIResource(Resource):
@@ -167,9 +168,7 @@ class RecordsUIResource(UIResource):
             )
 
         else:
-            api_record = self._get_record(
-                resource_requestctx, allow_draft=is_preview
-            )
+            api_record = self._get_record(resource_requestctx, allow_draft=is_preview)
             render_method = self.get_jinjax_macro(
                 "detail",
                 identity=g.identity,
@@ -198,7 +197,7 @@ class RecordsUIResource(UIResource):
         self.make_links_absolute(record["links"], self.api_service.config.url_prefix)
 
         extra_context = dict()
-
+        extra_context["exporters"] = self.config.exports
         self.run_components(
             "before_ui_detail",
             api_record=api_record,
@@ -248,12 +247,12 @@ class RecordsUIResource(UIResource):
 
         file_previewer = file_metadata.data.get("previewer")
 
-        url = file_metadata.links['content']
+        url = file_metadata.links["content"]
 
         # Find a suitable previewer
         fileobj = PreviewFile(file_metadata, pid_value, record, url)
         for plugin in current_previewer.iter_previewers(
-                previewers=[file_previewer] if file_previewer else None
+            previewers=[file_previewer] if file_previewer else None
         ):
             if plugin.can_preview(fileobj):
                 return plugin.preview(fileobj)
@@ -314,7 +313,9 @@ class RecordsUIResource(UIResource):
         default_components = {}
 
         for key, value in self.config.default_components.items():
-            default_components[f"{overridable_id_prefix}.ResultsList.item.{key}"] = value
+            default_components[f"{overridable_id_prefix}.ResultsList.item.{key}"] = (
+                value
+            )
 
         search_options = dict(
             api_config=self.api_service.config,
@@ -323,7 +324,7 @@ class RecordsUIResource(UIResource):
                 "ui_endpoint": self.config.url_prefix,
                 "ui_links": ui_links,
                 "overridableIdPrefix": overridable_id_prefix,
-                "defaultComponents": default_components
+                "defaultComponents": default_components,
             },
         )
 
@@ -574,7 +575,6 @@ class RecordsUIResource(UIResource):
         )
         return tpl.expand(identity, pagination)
 
-
     def tombstone(self, error, *args, **kwargs):
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro(
@@ -582,7 +582,7 @@ class RecordsUIResource(UIResource):
                 identity=g.identity,
                 default_macro="Tombstone",
             ),
-            pid=getattr(error, 'pid_value', None) or getattr(error, "pid", None)
+            pid=getattr(error, "pid_value", None) or getattr(error, "pid", None),
         )
 
     def not_found(self, error, *args, **kwargs):
@@ -592,7 +592,7 @@ class RecordsUIResource(UIResource):
                 identity=g.identity,
                 default_macro="NotFound",
             ),
-            pid=getattr(error, 'pid_value', None) or getattr(error, "pid", None)
+            pid=getattr(error, "pid_value", None) or getattr(error, "pid", None),
         )
 
     def permission_denied(self, error, *args, **kwargs):
@@ -602,7 +602,7 @@ class RecordsUIResource(UIResource):
                 identity=g.identity,
                 default_macro="PermissionDenied",
             ),
-            pid=getattr(error, 'pid_value', None) or getattr(error, "pid", None)
+            pid=getattr(error, "pid_value", None) or getattr(error, "pid", None),
         )
 
 

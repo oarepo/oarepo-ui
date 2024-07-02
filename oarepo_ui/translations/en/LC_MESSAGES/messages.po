@@ -540,3 +540,17 @@ msgstr ""
 
 msgid "Copy to clipboard failed!"
 msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/RecordExport.jinja:13
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/RecordExport.jinja:14
+msgid "Export"
+msgstr ""
+
+msgid "Export selection"
+msgstr ""
+
+msgid "Download file"
+msgstr ""
+
+msgid "Remove"
+msgstr ""
