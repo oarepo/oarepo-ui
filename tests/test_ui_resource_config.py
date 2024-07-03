@@ -1,5 +1,5 @@
 from invenio_access.permissions import system_identity
-from invenio_config.default import ALLOWED_HTML_TAGS, ALLOWED_HTML_ATTRS
+from invenio_config.default import ALLOWED_HTML_ATTRS, ALLOWED_HTML_TAGS
 
 
 def test_ui_resource_form_config(app, test_record_ui_resource):
