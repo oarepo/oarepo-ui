@@ -8,7 +8,6 @@ import _get from "lodash/get";
 
 import {
   ActiveFiltersElement,
-  BucketAggregationElement,
   BucketAggregationValuesElement,
   CountElement,
   EmptyResultsElement,
@@ -20,6 +19,7 @@ import {
   SearchFiltersToggleElement,
   SearchAppSort,
   SearchAppResults,
+  FoldableBucketAggregationElement,
 } from "@js/oarepo_ui/search";
 import { loadAppComponents } from "../util";
 
@@ -53,7 +53,7 @@ export function createSearchAppsInit({
     const defaultComponents = {
       [`${overridableIdPrefix}.ActiveFilters.element`]: ActiveFiltersElement,
       [`${overridableIdPrefix}.BucketAggregation.element`]:
-        BucketAggregationElement,
+        FoldableBucketAggregationElement,
       [`${overridableIdPrefix}.BucketAggregationValues.element`]:
         BucketAggregationValuesElement,
       [`${overridableIdPrefix}.Count.element`]: CountElement,

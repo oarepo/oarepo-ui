@@ -4,7 +4,7 @@ import _isEmpty from "lodash/isEmpty";
 import Overridable from "react-overridable";
 import { withState, ActiveFilters } from "react-searchkit";
 import { GridResponsiveSidebarColumn } from "react-invenio-forms";
-import { Container, Grid, Button } from "semantic-ui-react";
+import { Container, Grid, Button, Label, Icon } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import {
   SearchAppFacets,
@@ -17,6 +17,35 @@ import { ClearFiltersButton } from "./ClearFiltersButton";
 import { ShouldActiveFiltersRender } from "@js/oarepo_ui";
 
 const ResultOptionsWithState = withState(ResultOptions);
+
+export const ActiveFiltersCountFloatingLabelComponent = ({
+  currentQueryState,
+  className,
+}) => {
+  const { filters } = currentQueryState;
+  const searchAppContext = useContext(SearchConfigurationContext);
+  const {
+    initialQueryState: { filters: initialFilters },
+  } = searchAppContext;
+  return (
+    <Label floating circular size="mini" className={className}>
+      {filters.length - initialFilters.length}
+    </Label>
+  );
+};
+
+ActiveFiltersCountFloatingLabelComponent.propTypes = {
+  className: PropTypes.string,
+  currentQueryState: PropTypes.object.isRequired,
+};
+
+ActiveFiltersCountFloatingLabelComponent.defaultProps = {
+  className: "active-filters-count-label",
+};
+
+export const ActiveFiltersCountFloatingLabel = withState(
+  ActiveFiltersCountFloatingLabelComponent
+);
 
 export const SearchAppResultsGrid = ({
   columnsAmount,
@@ -48,30 +77,35 @@ export const SearchAppResultsGrid = ({
           >
             <Button
               basic
-              icon="sliders"
               onClick={() => setSidebarVisible(true)}
               title={i18next.t("Filter results")}
               aria-label={i18next.t("Filter results")}
-            />
+              className="facets-sidebar-open-button"
+            >
+              <Icon name="filter"></Icon>
+              <ShouldActiveFiltersRender>
+                <ActiveFiltersCountFloatingLabel />
+              </ShouldActiveFiltersRender>
+            </Button>
           </Grid.Column>
         )}
         {facetsAvailable && (
           <ShouldActiveFiltersRender>
-            <Grid.Column floated="left" only="computer" width={11}>
+            <Grid.Column
+              verticalAlign="middle"
+              floated="left"
+              only="computer"
+              width={11}
+            >
               <ActiveFilters />
             </Grid.Column>
           </ShouldActiveFiltersRender>
         )}
-        <ShouldActiveFiltersRender>
-          <Grid.Column width={3} only="mobile">
-            <ClearFiltersButton />
-          </Grid.Column>
-        </ShouldActiveFiltersRender>
         <Grid.Column
           textAlign="right"
           floated="right"
-          mobile={8}
-          tablet={8}
+          mobile={13}
+          tablet={13}
           computer={5}
           largeScreen={5}
           widescreen={5}
@@ -79,13 +113,6 @@ export const SearchAppResultsGrid = ({
           <ResultOptionsWithState />
         </Grid.Column>
       </Grid.Row>
-      <ShouldActiveFiltersRender>
-        <Grid.Row only="computer tablet">
-          <Grid.Column floated="left">
-            <ClearFiltersButton />
-          </Grid.Column>
-        </Grid.Row>
-      </ShouldActiveFiltersRender>
       <Grid.Row columns={columnsAmount}>
         {facetsAvailable && (
           <GridResponsiveSidebarColumn
@@ -97,6 +124,11 @@ export const SearchAppResultsGrid = ({
             open={sidebarVisible}
             onHideClick={() => setSidebarVisible(false)}
           >
+            <ShouldActiveFiltersRender>
+              <ClearFiltersButton
+                className={"clear-filters-button mobile tablet only"}
+              />
+            </ShouldActiveFiltersRender>
             <SearchAppFacets
               aggs={config.aggs}
               appName={appName}

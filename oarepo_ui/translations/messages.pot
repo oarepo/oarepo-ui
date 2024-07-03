@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-05-21 10:52+0200\n"
+"POT-Creation-Date: 2024-06-14 14:31+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,7 +49,7 @@ msgstr ""
 msgid "api.versions"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/resources/config.py:121
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/resources/config.py:125
 msgid "JSON"
 msgstr ""
 
@@ -78,8 +78,8 @@ msgstr ""
 msgid "Identifiers and links"
 msgstr ""
 
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:45
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:46
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:47
 msgid "metadata/originalRecord.label"
 msgstr ""
 
@@ -90,6 +90,11 @@ msgstr ""
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:8
 msgid ""
 "You are previewing a new record version that has not yet been published."
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/RecordExport.jinja:13
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/RecordExport.jinja:14
+msgid "Export"
 msgstr ""
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:6
@@ -115,15 +120,15 @@ msgstr ""
 msgid "Files"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:10
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:11
 msgid "File"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:11
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:12
 msgid "Size"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:12
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:13
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:53
 msgid "Actions"
 msgstr ""
@@ -223,6 +228,15 @@ msgid "Copied!"
 msgstr ""
 
 msgid "Copy to clipboard failed!"
+msgstr ""
+
+msgid "Export selection"
+msgstr ""
+
+msgid "Download file"
+msgstr ""
+
+msgid "Remove"
 msgstr ""
 
 msgid "Remove field"
