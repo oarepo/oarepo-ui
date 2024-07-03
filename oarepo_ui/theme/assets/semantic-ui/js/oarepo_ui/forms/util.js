@@ -13,8 +13,6 @@ import Overridable, {
   overrideStore,
 } from "react-overridable";
 import { BaseFormLayout } from "./components/BaseFormLayout";
-import { decode } from "html-entities";
-import sanitizeHtml from "sanitize-html";
 
 export function parseFormAppConfig(rootElementId = "form-app") {
   const rootEl = document.getElementById(rootElementId);
@@ -26,67 +24,6 @@ export function parseFormAppConfig(rootElementId = "form-app") {
 
   return { rootEl, record, formConfig, recordPermissions, files, links };
 }
-
-const allowed_tags = [
-  "a",
-  "abbr",
-  "acronym",
-  "b",
-  "blockquote",
-  "br",
-  "code",
-  "div",
-  "table",
-  "tbody",
-  "td",
-  "th",
-  "tr",
-  "em",
-  "h1",
-  "h2",
-  "h3",
-  "h4",
-  "h5",
-  "i",
-  "li",
-  "ol",
-  "p",
-  "pre",
-  "span",
-  "strike",
-  "strong",
-  "sub",
-  "sup",
-  "u",
-  "ul",
-];
-
-const allowed_attr = {
-  a: ["href", "title", "name", "target", "rel"],
-  abbr: ["title"],
-  acronym: ["title"],
-};
-
-export const validTags = (tags = allowed_tags, attr = allowed_attr) => {
-  const specialAttributes = Object.fromEntries(
-    Object.entries(attr).map(([key, value]) => [key, value.join("|")])
-  );
-
-  return tags
-    .map((tag) => {
-      return specialAttributes[tag] ? `${tag}[${specialAttributes[tag]}]` : tag;
-    })
-    .join(",");
-};
-
-export const sanitizeInput = (htmlString, validTags) => {
-  const decodedString = decode(htmlString);
-  const cleanInput = sanitizeHtml(decodedString, {
-    allowedTags: validTags || allowed_tags,
-    allowedAttributes: allowed_attr,
-  });
-  return cleanInput;
-};
 
 /**
  * Initialize Formik form application.
@@ -143,3 +80,22 @@ export function createFormAppInit({
     return initFormApp;
   }
 }
+
+export const getValidTagsForEditor = (tags, attr) => {
+  const specialAttributes = Object.fromEntries(
+    Object.entries(attr).map(([key, value]) => [key, value.join("|")])
+  );
+  let result = [];
+
+  if (specialAttributes["*"]) {
+    result.push(`@[${specialAttributes["*"]}]`);
+  }
+
+  result = result.concat(
+    tags.map((tag) => {
+      return specialAttributes[tag] ? `${tag}[${specialAttributes[tag]}]` : tag;
+    })
+  );
+
+  return result.join(",");
+};

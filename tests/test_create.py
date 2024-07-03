@@ -1,4 +1,5 @@
 import json
+from invenio_config.default import ALLOWED_HTML_TAGS, ALLOWED_HTML_ATTRS
 
 
 def test_create(
@@ -29,6 +30,8 @@ def test_create(
                 }
             },
             "form_config": {
+                "allowedHtmlTags": ALLOWED_HTML_TAGS,
+                "allowedHtmlAttrs": ALLOWED_HTML_ATTRS,
                 "createUrl": "/api/simple-model",
                 "current_locale": "en",
                 "custom_fields": {
