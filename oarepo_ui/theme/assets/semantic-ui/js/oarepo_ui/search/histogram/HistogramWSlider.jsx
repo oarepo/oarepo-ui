@@ -22,6 +22,8 @@ const HistogramComponent = ({
   updateQueryState,
   aggName,
   aggTitle,
+  minimumInterval,
+
   minDateAggName,
   maxDateAggName,
 }) => {
@@ -33,67 +35,72 @@ const HistogramComponent = ({
   const MAX_DATE = new Date(
     "Mon Jan 01 2024 01:00:00 GMT+0100 (Central European Standard Time)"
   );
-  const histogramInterval = _get(aggregations, aggName, {})?.interval;
+  // const histogramInterval = _get(aggregations, aggName, {})?.interval;
+  const addFunc = getAddFunc(minimumInterval);
+  const diffFunc = getDiffFunc(minimumInterval);
+  // if we send yyyy/yyyy to the url or yyyy-MM-dd/yyyy-MM-dd
+  const facetDateFormat = minimumInterval === "year" ? "yyyy" : "yyyy-MM-dd";
 
-  const addFunc = getAddFunc(histogramInterval);
-  const diffFunc = getDiffFunc(histogramInterval);
-  const formatString = getFormatString(histogramInterval);
+  // console.log(diffFunc);
+  const formatString = getFormatString(minimumInterval);
   const MIN_SLIDER_VALUE = 0;
   const MAX_SLIDER_VALUE = diffFunc(MAX_DATE, MIN_DATE);
-  let currentFilter;
-  currentFilter =
-    currentQueryState.filters?.find((f) => f[0] === aggName) ||
-    "1924-01-01/2024-01-01";
-
+  // let currentFilter;
+  // currentFilter = currentQueryState.filters?.find((f) => f[0] === aggName)
+  // ? currentQueryState.filters?.find((f) => f[0] === aggName)[1]
+  // : "1924-01-01/2024-01-01";
   let histogramData = _getResultBuckets(aggregations, aggName).map((d) => {
     return {
       ...d,
       start: new Date(d.start),
-      end: new Date(d.end),
+      // hack to fix the end issue, should be fixed in BE
+      end: new Date(d.end ?? d.start),
       // as you narrow the range, sometimes buckets would have the same key i.e. same day
       uuid: crypto.randomUUID(),
     };
   });
   useLoadLocaleObjects();
   return (
-    <Formik initialValues={{ fromto: currentFilter }}>
-      {histogramData?.length > 0 && (
-        <Card className="borderless facet">
-          <Card.Content>
-            <Card.Header as="h2">{aggTitle}</Card.Header>
-            <Histogram
-              histogramData={histogramData}
-              svgHeight={250}
-              rectangleClassName={"histogram-rectangle"}
-              updateQueryState={updateQueryState}
-              currentQueryState={currentQueryState}
-              aggName={aggName}
-            />
-            <DoubleDateSlider
-              addFunc={addFunc}
-              diffFunc={diffFunc}
-              formatString={formatString}
-              aggName={aggName}
-              thumbClassName="thumb"
-              trackClassName="track"
-              ariaLabel={["Lower thumb", "Upper thumb"]}
-              ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
-              min={MIN_SLIDER_VALUE}
-              max={MAX_SLIDER_VALUE}
-              minDate={MIN_DATE}
-              maxDate={MAX_DATE}
-            />
-            <EDTFDaterangePicker
+    // <Formik initialValues={{ fromto: currentFilter }}>
+    histogramData?.length > 0 && (
+      <Card className="borderless facet">
+        <Card.Content>
+          <Histogram
+            histogramData={histogramData}
+            svgHeight={250}
+            rectangleClassName={"histogram-rectangle"}
+            updateQueryState={updateQueryState}
+            currentQueryState={currentQueryState}
+            aggName={aggName}
+            formatString={formatString}
+            facetDateFormat={facetDateFormat}
+          />
+          <DoubleDateSlider
+            addFunc={addFunc}
+            diffFunc={diffFunc}
+            formatString={formatString}
+            aggName={aggName}
+            thumbClassName="thumb"
+            trackClassName="track"
+            ariaLabel={["Lower thumb", "Upper thumb"]}
+            ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
+            min={MIN_SLIDER_VALUE}
+            max={MAX_SLIDER_VALUE}
+            minDate={MIN_DATE}
+            maxDate={MAX_DATE}
+            facetDateFormat={facetDateFormat}
+          />
+          {/* <EDTFDaterangePicker
               fieldPath="fromto"
               updateQueryState={updateQueryState}
               currentQueryState={currentQueryState}
               aggName={aggName}
-            />
-          </Card.Content>
-        </Card>
-      )}
-    </Formik>
+            /> */}
+        </Card.Content>
+      </Card>
+    )
   );
+  // </Formik>
 };
 
 HistogramComponent.propTypes = {
@@ -104,5 +111,10 @@ HistogramComponent.propTypes = {
   aggTitle: PropTypes.string.isRequired,
   minDateAggName: PropTypes.string.isRequired,
   maxDateAggName: PropTypes.string.isRequired,
+  minimumInterval: PropTypes.oneOf(["year", "day"]),
+};
+
+HistogramComponent.defaultProps = {
+  minimumInterval: "year",
 };
 export const HistogramWSlider = withState(HistogramComponent);

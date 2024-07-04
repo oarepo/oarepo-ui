@@ -1,9 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Accordion, Header, Card, Icon, Transition } from "semantic-ui-react";
 import PropTypes from "prop-types";
+import { AppContext } from "react-searchkit";
+import Overridable from "react-overridable";
 
-export const FoldableBucketAggregationElement = ({ title, containerCmp }) => {
+export const FoldableBucketAggregationElement = ({
+  title,
+  containerCmp,
+  agg,
+}) => {
   const [isActive, setIsActive] = useState(false);
+  const { buildUID } = useContext(AppContext);
 
   const handleClick = () => setIsActive((prevState) => !prevState);
   return (
@@ -21,7 +28,7 @@ export const FoldableBucketAggregationElement = ({ title, containerCmp }) => {
         >
           <div className="flex justify-space-between align-items-center">
             <Header className="mb-0" as="h3">
-              {title}
+              {agg.title}
             </Header>
             <div className="align-self-end">
               <Icon name="angle right" />
@@ -30,7 +37,13 @@ export const FoldableBucketAggregationElement = ({ title, containerCmp }) => {
         </Accordion.Title>
         <Transition visible={isActive} animation="fade down" duration={200}>
           <Accordion.Content active={isActive}>
-            {containerCmp}
+            <Overridable
+              id={buildUID(`BucketAggregation.element.${agg.aggName}`)}
+              aggName={agg.aggName}
+              aggTitle={agg.title}
+            >
+              {containerCmp}
+            </Overridable>
           </Accordion.Content>
         </Transition>
       </Accordion>

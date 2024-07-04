@@ -34,6 +34,7 @@ export const EDTFDaterangePicker = ({
   // TODO: The datepickers shall recieve needed locales from form config (set in Invenio.cfg)
   const { setFieldValue } = useFormikContext();
   const [field] = useField(fieldPath);
+  console.log(field?.value);
   const initialEdtfDateFormat = getInitialEdtfDateFormat(field?.value);
   const [dateEdtfFormat, setDateEdtfFormat] = useState(initialEdtfDateFormat);
   let dates;

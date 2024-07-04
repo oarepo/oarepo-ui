@@ -7,35 +7,62 @@ import {
   differenceInYears,
 } from "date-fns";
 
-export const getAddFunc = (interval) => {
-  if (interval.includes("y")) {
+export const getAddFunc = (interval = "year") => {
+  if (interval === "day") {
+    return addDays;
+  } else {
     return addYears;
   }
-  if (interval.includes("M")) {
-    return addMonths;
-  }
-
-  return addDays;
 };
 
-export const getDiffFunc = (interval) => {
-  if (interval.includes("y")) {
+export const getDiffFunc = (interval = "year") => {
+  if (interval === "day") {
+    return differenceInDays;
+  } else {
     return differenceInYears;
   }
-  if (interval.includes("M")) {
-    return differenceInMonths;
-  }
-
-  return differenceInDays;
 };
 
-export const getFormatString = (interval) => {
-  if (interval.includes("y")) {
+export const getFormatString = (interval = "year") => {
+  if (interval === "day") {
+    return "PPP";
+  } else {
     return "yyyy";
   }
-  if (interval.includes("M")) {
-    return "MMMM yyyy";
-  }
+};
 
-  return "PPP";
+export const calculateZoomIn = (
+  sliderMin,
+  sliderMax,
+  min,
+  max,
+  coefficient = 0.1
+) => {
+  const newMin =
+    sliderMin + Math.floor(max * coefficient) <= max
+      ? sliderMin + Math.floor(max * coefficient)
+      : max;
+  const newMax =
+    sliderMax - Math.floor(max * coefficient) >= min
+      ? sliderMax - Math.floor(max * coefficient)
+      : min;
+  return [newMin, newMax];
+};
+
+export const calculateZoomOut = (
+  sliderMin,
+  sliderMax,
+  min,
+  max,
+  coefficient = 0.1
+) => {
+  const newMin =
+    sliderMin - Math.floor(max * coefficient) >= min
+      ? sliderMin - Math.floor(max * coefficient)
+      : min;
+  const newMax =
+    sliderMax + Math.floor(max * coefficient) <= max
+      ? sliderMax + Math.floor(max * coefficient)
+      : max;
+  return [newMin, newMax];
 };

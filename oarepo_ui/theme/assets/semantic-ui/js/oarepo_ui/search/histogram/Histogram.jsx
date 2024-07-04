@@ -15,12 +15,15 @@ export const Histogram = ({
   currentQueryState,
   aggName,
   noClientWidth,
+  formatString,
+  facetDateFormat,
 }) => {
   const svgContainerRef = useRef();
 
   const handleRectangleClick = (value, d) => {
     if (d.doc_count === 0) return;
-    if (value.split("/")[0] === value.split("/")[1]) return;
+    // if (value.split("/")[0] === value.split("/")[1]) return;
+    if (histogramData.length === 1) return;
     const filters = currentQueryState.filters.filter((f) => f[0] !== aggName);
     updateQueryState({
       ...currentQueryState,
@@ -29,7 +32,7 @@ export const Histogram = ({
   };
 
   const [marginTop, marginRight, marginBottom, marginLeft] = svgMargins ?? [
-    20, 20, 20, 20,
+    20, 20, 30, 20,
   ];
 
   const [width, setWidth] = useState(400);
@@ -54,19 +57,27 @@ export const Histogram = ({
     0
   );
   const bars = histogramData.map((d, i, array) => {
-    const popupContent = `${formatDate(
-      array[i].start,
-      "PPP",
-      i18next.language
-    )}/${formatDate(array[i].end, "PPP", i18next.language)}: ${i18next.t(
-      "totalResults",
-      { count: d?.doc_count }
-    )}`;
+    const popupContent =
+      array[i].start.getTime() === array[i].end.getTime()
+        ? `${formatDate(
+            array[i].start,
+            formatString,
+            i18next.language
+          )}: ${i18next.t("totalResults", { count: d?.doc_count })}`
+        : `${formatDate(
+            array[i].start,
+            formatString,
+            i18next.language
+          )}/${formatDate(
+            array[i]?.end ?? array[i].start,
+            formatString,
+            i18next.language
+          )}: ${i18next.t("totalResults", { count: d?.doc_count })}`;
 
     const rectangleClickValue = `${formatDate(
       d.start,
-      "yyyy-MM-dd"
-    )}/${formatDate(d.end, "yyyy-MM-dd")}`;
+      facetDateFormat
+    )}/${formatDate(d.end ?? d.start, facetDateFormat)}`;
     return (
       <React.Fragment key={d.uuid}>
         <Popup
@@ -78,8 +89,8 @@ export const Histogram = ({
               className={rectangleClassName}
               x={x(d.start) - rectangleWidth / 2}
               width={rectangleWidth}
-              y={y(d.doc_count + maxCountElement.doc_count / 15)}
-              height={y(0) - y(d?.doc_count + maxCountElement.doc_count / 15)}
+              y={y(d.doc_count)}
+              height={y(0) - y(d?.doc_count)}
               onClick={() => {
                 handleRectangleClick(rectangleClickValue, d);
               }}
@@ -94,11 +105,11 @@ export const Histogram = ({
     setWidth(
       (svgContainerRef.current.clientWidth > 0
         ? svgContainerRef.current.clientWidth
-        : noClientWidth) -
+        : width) -
         marginLeft -
         marginRight
     );
-  }, [marginLeft, marginRight, noClientWidth]);
+  }, [marginLeft, marginRight, width]);
 
   return (
     histogramData.length > 0 && (
@@ -112,6 +123,7 @@ export const Histogram = ({
             width={width}
             marginLeft={marginLeft}
             histogramData={histogramData}
+            formatString={formatString}
           />
         </svg>
       </div>
@@ -134,6 +146,8 @@ Histogram.propTypes = {
   currentQueryState: PropTypes.object.isRequired,
   aggName: PropTypes.string.isRequired,
   noClientWidth: PropTypes.number,
+  formatString: PropTypes.string,
+  facetDateFormat: PropTypes.string,
 };
 
 Histogram.defaultProps = {
