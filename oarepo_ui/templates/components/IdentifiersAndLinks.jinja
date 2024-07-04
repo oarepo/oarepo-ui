@@ -15,7 +15,7 @@
             <div class="header list-item">
               <i class="external alternate icon link-icon mb-5"></i>
               <span class="mr-5 identifier-type ui green label mini">{{ objectIdentifier.scheme }}:</span> 
-              <URL target="_blank" rel="noopener noreferrer" className="inline" data = {_data}></URL>
+              <URL :target="'_blank'" :rel="'noopener noreferrer'" :className="'inline'" :data="_data"></URL>
               <button class="ui icon button transparent copy-btn inline" data-clipboard-text="{{objectIdentifier.url}}">
                 <i class="copy icon"></i>
               </button>
@@ -46,7 +46,7 @@
           "label": _('metadata/originalRecord.label')
       }%}
         <i class="external alternate icon link-icon mb-5"></i>
-        <URL target="_blank" rel="noopener noreferrer" className="link" data = {_data}></URL>
+        <URL :target="'_blank'" :rel="'noopener noreferrer'" :className="'inline'" :data="_data"></URL>
       </div>
     </div>
     {% endif %}
