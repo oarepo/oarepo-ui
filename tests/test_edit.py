@@ -1,5 +1,7 @@
 import json
 
+from invenio_config.default import ALLOWED_HTML_ATTRS, ALLOWED_HTML_TAGS
+
 
 def test_edit(
     app, record_ui_resource, simple_record, client_with_credentials, fake_manifest
@@ -35,6 +37,8 @@ def test_edit(
                 }
             },
             "form_config": {
+                "allowedHtmlTags": ALLOWED_HTML_TAGS,
+                "allowedHtmlAttrs": ALLOWED_HTML_ATTRS,
                 "current_locale": "en",
                 "custom_fields": {
                     "ui": [

@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Dict
 
 from flask import current_app
 from flask_principal import Identity
+from invenio_config.default import ALLOWED_HTML_ATTRS, ALLOWED_HTML_TAGS
 from invenio_i18n.ext import current_i18n
 from invenio_records_resources.services.records.results import RecordItem
 from oarepo_runtime.datastreams.utils import get_file_service_for_record_service
@@ -270,3 +271,14 @@ class FilesComponent(UIResourceComponent):
 
     def before_ui_detail(self, **kwargs):
         self.before_ui_edit(**kwargs)
+
+
+class AllowedHtmlTagsComponent(UIResourceComponent):
+    def form_config(self, *, form_config, **kwargs):
+        form_config["allowedHtmlTags"] = current_app.config.get(
+            "ALLOWED_HTML_TAGS", ALLOWED_HTML_TAGS
+        )
+
+        form_config["allowedHtmlAttrs"] = current_app.config.get(
+            "ALLOWED_HTML_ATTRS", ALLOWED_HTML_ATTRS
+        )

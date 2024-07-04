@@ -1,9 +1,8 @@
 import * as React from "react";
-import { LanguageSelectField } from "@js/oarepo_ui";
+import { LanguageSelectField, useSanitizeInput } from "@js/oarepo_ui";
 import { TextField, GroupField, FieldLabel } from "react-invenio-forms";
 import PropTypes from "prop-types";
 import { useFormikContext, getIn } from "formik";
-import { sanitizeInput } from "../../util";
 
 export const I18nTextInputField = ({
   fieldPath,
@@ -18,6 +17,7 @@ export const I18nTextInputField = ({
   ...uiProps
 }) => {
   const { values, setFieldValue, setFieldTouched } = useFormikContext();
+  const { sanitizeInput } = useSanitizeInput();
 
   return (
     <GroupField fieldPath={fieldPath} optimized>
@@ -29,9 +29,6 @@ export const I18nTextInputField = ({
         usedLanguages={usedLanguages}
       />
       <TextField
-        // TODO: hacky fix for SUI alignment bug for case with
-        // field groups with empty field label on one of inputs
-        className={`${!label ? "mt-20" : ""}`}
         fieldPath={`${fieldPath}.value`}
         label={
           <FieldLabel
@@ -46,8 +43,7 @@ export const I18nTextInputField = ({
         width={13}
         onBlur={() => {
           const cleanedContent = sanitizeInput(
-            getIn(values, `${fieldPath}.value`),
-            validTags
+            getIn(values, `${fieldPath}.value`)
           );
           setFieldValue(`${fieldPath}.value`, cleanedContent);
           setFieldTouched(`${fieldPath}.value`, true);
