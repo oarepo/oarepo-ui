@@ -15,6 +15,6 @@
     <div data-formats='{{ data | tojson }}' id="recordExportDownload">
     </div>
     {% if hasApiLinks %}
-        <SidebarApiLinks links={record.links}></SidebarApiLinks>
+        <SidebarApiLinks :links="record.links"></SidebarApiLinks>
     {% endif %}
 </section>
