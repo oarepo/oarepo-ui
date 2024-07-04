@@ -9,10 +9,8 @@ import {
 } from "@js/oarepo_ui";
 import PropTypes from "prop-types";
 import { Card } from "semantic-ui-react";
-import _get from "lodash/get";
 import { getAddFunc, getDiffFunc, getFormatString } from "./utils";
-import { EDTFDaterangePicker } from "./Datepicker";
-import { Formik } from "formik";
+import _get from "lodash/get";
 
 const HistogramComponent = ({
   currentResultsState: {
@@ -35,20 +33,16 @@ const HistogramComponent = ({
   const MAX_DATE = new Date(
     "Mon Jan 01 2024 01:00:00 GMT+0100 (Central European Standard Time)"
   );
-  // const histogramInterval = _get(aggregations, aggName, {})?.interval;
   const addFunc = getAddFunc(minimumInterval);
   const diffFunc = getDiffFunc(minimumInterval);
   // if we send yyyy/yyyy to the url or yyyy-MM-dd/yyyy-MM-dd
   const facetDateFormat = minimumInterval === "year" ? "yyyy" : "yyyy-MM-dd";
+  const histogramInterval = _get(aggregations, aggName, {})?.interval;
 
-  // console.log(diffFunc);
   const formatString = getFormatString(minimumInterval);
   const MIN_SLIDER_VALUE = 0;
   const MAX_SLIDER_VALUE = diffFunc(MAX_DATE, MIN_DATE);
-  // let currentFilter;
-  // currentFilter = currentQueryState.filters?.find((f) => f[0] === aggName)
-  // ? currentQueryState.filters?.find((f) => f[0] === aggName)[1]
-  // : "1924-01-01/2024-01-01";
+
   let histogramData = _getResultBuckets(aggregations, aggName).map((d) => {
     return {
       ...d,
@@ -61,13 +55,12 @@ const HistogramComponent = ({
   });
   useLoadLocaleObjects();
   return (
-    // <Formik initialValues={{ fromto: currentFilter }}>
     histogramData?.length > 0 && (
       <Card className="borderless facet">
         <Card.Content>
           <Histogram
             histogramData={histogramData}
-            svgHeight={250}
+            svgHeight={300}
             rectangleClassName={"histogram-rectangle"}
             updateQueryState={updateQueryState}
             currentQueryState={currentQueryState}
@@ -89,18 +82,12 @@ const HistogramComponent = ({
             minDate={MIN_DATE}
             maxDate={MAX_DATE}
             facetDateFormat={facetDateFormat}
+            histogramDataLength={histogramData.length}
           />
-          {/* <EDTFDaterangePicker
-              fieldPath="fromto"
-              updateQueryState={updateQueryState}
-              currentQueryState={currentQueryState}
-              aggName={aggName}
-            /> */}
         </Card.Content>
       </Card>
     )
   );
-  // </Formik>
 };
 
 HistogramComponent.propTypes = {
@@ -113,7 +100,7 @@ HistogramComponent.propTypes = {
   maxDateAggName: PropTypes.string.isRequired,
   minimumInterval: PropTypes.oneOf(["year", "day"]),
 };
-
+// TODO: fix up layout for daily granularity
 HistogramComponent.defaultProps = {
   minimumInterval: "year",
 };

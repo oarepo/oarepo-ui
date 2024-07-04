@@ -36,7 +36,12 @@ export const Xaxis = ({
       xOffset: xScale(value),
     }));
   }, [width, xScale]);
-
+  console.log(
+    xScale.ticks(width / 80).map((value) => ({
+      value,
+      xOffset: xScale(value),
+    }))
+  );
   return (
     <svg className="x-axis-container">
       <path

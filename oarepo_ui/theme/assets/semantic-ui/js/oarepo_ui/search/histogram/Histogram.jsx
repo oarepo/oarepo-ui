@@ -11,10 +11,10 @@ export const Histogram = ({
   svgHeight,
   svgMargins,
   rectangleClassName,
+  rectangleOverlayClassName,
   updateQueryState,
   currentQueryState,
   aggName,
-  noClientWidth,
   formatString,
   facetDateFormat,
 }) => {
@@ -22,7 +22,6 @@ export const Histogram = ({
 
   const handleRectangleClick = (value, d) => {
     if (d.doc_count === 0) return;
-    // if (value.split("/")[0] === value.split("/")[1]) return;
     if (histogramData.length === 1) return;
     const filters = currentQueryState.filters.filter((f) => f[0] !== aggName);
     updateQueryState({
@@ -78,8 +77,32 @@ export const Histogram = ({
       d.start,
       facetDateFormat
     )}/${formatDate(d.end ?? d.start, facetDateFormat)}`;
+    console.log(x(d.start) - x(d.end));
     return (
       <React.Fragment key={d.uuid}>
+        <Popup
+          offset={[0, 0]}
+          position="right center"
+          content={popupContent}
+          trigger={
+            <rect
+              tabIndex={0}
+              className={rectangleOverlayClassName}
+              x={x(d.start) - rectangleWidth / 2}
+              width={rectangleWidth}
+              y={y(maxCountElement.doc_count)}
+              height={y(0) - y(maxCountElement.doc_count)}
+              onClick={() => handleRectangleClick(rectangleClickValue, d)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleRectangleClick(rectangleClickValue, d);
+                }
+              }}
+            />
+          }
+        />
         <Popup
           offset={[0, 0]}
           position="right center"
@@ -142,15 +165,15 @@ Histogram.propTypes = {
   svgHeight: PropTypes.number,
   svgMargins: PropTypes.arrayOf(PropTypes.number.isRequired),
   rectangleClassName: PropTypes.string,
+  rectangleOverlayClassName: PropTypes.string,
   updateQueryState: PropTypes.func.isRequired,
   currentQueryState: PropTypes.object.isRequired,
   aggName: PropTypes.string.isRequired,
-  noClientWidth: PropTypes.number,
   formatString: PropTypes.string,
   facetDateFormat: PropTypes.string,
 };
 
 Histogram.defaultProps = {
   rectangleClassName: "histogram-rectangle",
-  noClientWidth: 250,
+  rectangleOverlayClassName: "histogram-rectangle-overlay",
 };

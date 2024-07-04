@@ -22,6 +22,7 @@ const DoubleDateSliderComponent = ({
   diffFunc,
   formatString,
   facetDateFormat,
+  histogramDataLength,
 }) => {
   const currentFilter = currentQueryState.filters?.find(
     (f) => f[0] === aggName
@@ -34,9 +35,11 @@ const DoubleDateSliderComponent = ({
       end ? diffFunc(new Date(end), minDate) : max,
     ];
   }
+
   const [sliderValueState, setSliderValueState] = useState(sliderValue);
   const [sliderMin, setSliderMin] = useState(min);
   const [sliderMax, setSliderMax] = useState(max);
+
   const currentStartDate = formatDate(
     addFunc(minDate, sliderValueState[0]),
     formatString,
@@ -92,26 +95,39 @@ const DoubleDateSliderComponent = ({
 
   return (
     <div className="ui horizontal-slider">
-      <ReactSlider
-        value={sliderValueState}
-        className={className}
-        thumbClassName={thumbClassName}
-        trackClassName={trackClassName}
-        onChange={(value) => {
-          setSliderValueState(value);
-        }}
-        onAfterChange={handleAfterChange}
-        ariaLabel={["Lower thumb", "Upper thumb"]}
-        ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
-        min={sliderMin}
-        max={sliderMax}
-      />
+      {histogramDataLength > 1 && (
+        <ReactSlider
+          value={sliderValueState}
+          className={className}
+          thumbClassName={thumbClassName}
+          trackClassName={trackClassName}
+          onChange={(value) => {
+            setSliderValueState(value);
+          }}
+          onAfterChange={handleAfterChange}
+          ariaLabel={["Lower thumb", "Upper thumb"]}
+          ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
+          min={sliderMin}
+          max={sliderMax}
+        />
+      )}
       <div className="slider-values">
         <div className="slider-handle-value">{currentStartDate}</div>
         {(sliderMin !== min || sliderMax !== max) && (
           <Button
             type="button"
+            ariaLabel={i18next.t("Zoom out")}
+            title={i18next.t("Zoom out")}
             className="transparent"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                e.stopPropagation();
+                handleAfterChange(
+                  calculateZoomOut(sliderMin, sliderMax, min, max)
+                );
+              }
+            }}
             onClick={() => {
               handleAfterChange(
                 calculateZoomOut(sliderMin, sliderMax, min, max)
@@ -124,7 +140,18 @@ const DoubleDateSliderComponent = ({
         {sliderMax - sliderMin > Math.ceil(0.2 * max) && (
           <Button
             type="button"
+            ariaLabel={i18next.t("Zoom in")}
+            title={i18next.t("Zoom in")}
             className="transparent"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                e.stopPropagation();
+                handleAfterChange(
+                  calculateZoomIn(sliderMin, sliderMax, min, max)
+                );
+              }
+            }}
             onClick={() => {
               handleAfterChange(
                 calculateZoomIn(sliderMin, sliderMax, min, max)
