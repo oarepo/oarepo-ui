@@ -2,10 +2,11 @@ from typing import TYPE_CHECKING, Dict
 
 from flask import current_app
 from flask_principal import Identity
-from invenio_config.default import ALLOWED_HTML_ATTRS, ALLOWED_HTML_TAGS
 from invenio_i18n.ext import current_i18n
 from invenio_records_resources.services.records.results import RecordItem
 from oarepo_runtime.datastreams.utils import get_file_service_for_record_service
+from invenio_config.default import ALLOWED_HTML_TAGS, ALLOWED_HTML_ATTRS
+
 
 from ..proxies import current_oarepo_ui
 

@@ -1,5 +1,5 @@
-import html
 import json
+import html
 from typing import Union
 
 from oarepo_runtime.i18n import gettext
@@ -61,9 +61,7 @@ class FieldData:
 
                 if idx < len(self.__data):
                     return FieldData(
-                        self.__data[idx],
-                        self.__ui.get("child", {}),
-                        self.__path + [idx],
+                        self.__data[idx], self.__ui.get("child", {}), self.__path + [idx]
                     )
                 return EMPTY_FIELD_DATA
             except ValueError:
@@ -155,9 +153,7 @@ class FieldData:
 
     def __lt__(self, other):
         if isinstance(other, FieldData):
-            return json.dumps(self.__data, sort_keys=True) < json.dumps(
-                other.__data, sort_keys=True
-            )
+            return json.dumps(self.__data, sort_keys=True) < json.dumps(other.__data, sort_keys=True)
         return False
 
 

@@ -16,7 +16,6 @@ from flask_resources import (
 from flask_security import login_required
 from invenio_base.utils import obj_or_import_string
 from invenio_previewer import current_previewer
-from invenio_previewer.extensions import default as default_previewer
 from invenio_records_resources.pagination import Pagination
 from invenio_records_resources.proxies import current_service_registry
 from invenio_records_resources.records.systemfields import FilesField
@@ -26,12 +25,14 @@ from invenio_records_resources.resources.records.resource import (
     request_view_args,
 )
 from invenio_records_resources.services import LinksTemplate
-from oarepo_runtime.datastreams.utils import get_file_service_for_record_class
 from werkzeug.exceptions import Forbidden
 
 from oarepo_ui.utils import dump_empty
+from oarepo_runtime.datastreams.utils import get_file_service_for_record_class
 
 from .templating.data import FieldData
+from invenio_previewer.extensions import default as default_previewer
+
 
 if TYPE_CHECKING:
     from .components import UIResourceComponent
@@ -45,6 +46,7 @@ from .config import (
     TemplatePageUIResourceConfig,
     UIResourceConfig,
 )
+
 
 request_export_args = request_parser(
     from_conf("request_export_args"), location="view_args"
@@ -312,9 +314,9 @@ class RecordsUIResource(UIResource):
         default_components = {}
 
         for key, value in self.config.default_components.items():
-            default_components[
-                f"{overridable_id_prefix}.ResultsList.item.{key}"
-            ] = value
+            default_components[f"{overridable_id_prefix}.ResultsList.item.{key}"] = (
+                value
+            )
 
         search_options = dict(
             api_config=self.api_service.config,
