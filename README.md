@@ -17,7 +17,7 @@ functions to render layouts from model configuration.
 See also [JinjaX documentation](https://jinjax.scaletti.dev/).
 
 Oarepo builds its static UI pages on top of the JinjaX library.
-To load a Jinja application, a JinjaX component is expected on the input. 
+To load a Jinja application, a JinjaX component is expected on the input.
 The relative path to the component is taken from the configuration
 
 Components by default accept record metadata, ui definition and layout definition as parameters.
@@ -49,11 +49,11 @@ Example of possible contents of the DetailPage component, contained inside `temp
 {%- endblock %}
 
 {% block record_main_content %}
-    <Main metadata={{metadata}}></Main>
+    <Main :metadata={{metadata}}></Main>
 {% endblock %}
 
 {% block record_sidebar %}
-    <Sidebar metadata={{metadata}}></Sidebar>
+    <Sidebar :metadata={{metadata}}></Sidebar>
 {% endblock %}
 ```
 
@@ -63,7 +63,7 @@ Sample of possible contents of Main component:
 {#def metadata, ui, layout #}
 <h1 style="margin-bottom: 1em">{{ metadata.title }}</h1>
 <dl class="ui very basic table">
-<Field label="accessibility">{{metadata.accessibility}}</Field>
+<Field :label="'accessibility'">{{metadata.accessibility}}</Field>
 
 ```
 
