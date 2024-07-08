@@ -29,7 +29,7 @@ export const FoldableBucketAggregationElementComponent = ({
         >
           <div className="flex justify-space-between align-items-center">
             <Header className="mb-0" as="h3">
-              {agg.title}
+              {title}
             </Header>
             <div className="align-self-end">
               <Icon name="angle right" />
