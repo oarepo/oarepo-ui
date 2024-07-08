@@ -1,9 +1,17 @@
 import React, { useState } from "react";
 import { Accordion, Header, Card, Icon, Transition } from "semantic-ui-react";
 import PropTypes from "prop-types";
+import { withState } from "react-searchkit";
 
-export const FoldableBucketAggregationElement = ({ title, containerCmp }) => {
-  const [isActive, setIsActive] = useState(false);
+export const FoldableBucketAggregationElementComponent = ({
+  title,
+  containerCmp,
+  agg,
+  currentQueryState,
+}) => {
+  const [isActive, setIsActive] = useState(
+    currentQueryState.filters.some((f) => f[0] === agg?.aggName)
+  );
 
   const handleClick = () => setIsActive((prevState) => !prevState);
   return (
@@ -21,7 +29,7 @@ export const FoldableBucketAggregationElement = ({ title, containerCmp }) => {
         >
           <div className="flex justify-space-between align-items-center">
             <Header className="mb-0" as="h3">
-              {title}
+              {agg.title}
             </Header>
             <div className="align-self-end">
               <Icon name="angle right" />
@@ -38,7 +46,13 @@ export const FoldableBucketAggregationElement = ({ title, containerCmp }) => {
   );
 };
 
-FoldableBucketAggregationElement.propTypes = {
+FoldableBucketAggregationElementComponent.propTypes = {
   title: PropTypes.string.isRequired,
   containerCmp: PropTypes.node.isRequired,
+  agg: PropTypes.object.isRequired,
+  currentQueryState: PropTypes.object.isRequired,
 };
+
+export const FoldableBucketAggregationElement = withState(
+  FoldableBucketAggregationElementComponent
+);
