@@ -1,27 +1,10 @@
-// import React from "react";
-// import PropTypes from "prop-types";
-
-// export const Xaxis = ({ height, marginBottom, width }) => {
-//   return (
-//     <svg className="x-axis-container">
-//       <path
-//         className="x-axis-line"
-//         d={`M ${0} ${height - marginBottom} H ${width}`}
-//       />
-//     </svg>
-//   );
-// };
-
-// Xaxis.propTypes = {
-//   height: PropTypes.number.isRequired,
-//   marginBottom: PropTypes.number.isRequired,
-//   width: PropTypes.number.isRequired,
-// };
-
-import React, { useMemo } from "react";
+import React, { useLayoutEffect, useMemo, useRef, useState } from "react";
 import PropTypes from "prop-types";
+import * as d3 from "d3";
 import { formatDate } from "@js/oarepo_ui";
 import { i18next } from "@translations/oarepo_ui/i18next";
+import { set } from "date-fns";
+import { isBefore } from "date-fns";
 
 export const Xaxis = ({
   xScale,
@@ -29,38 +12,120 @@ export const Xaxis = ({
   marginBottom,
   width,
   formatString,
+  histogramData,
+  rectangleWidth,
+  handleDragEnd,
+  handleDragStart,
+  setDragStart,
+  setDragEnd,
+  dragStart,
+  dragEnd,
+  currentQueryState,
 }) => {
-  let ticks = useMemo(() => {
-    return xScale.ticks(width / 80).map((value) => ({
-      value,
-      xOffset: xScale(value),
-    }));
-  }, [width, xScale]);
-  console.log(
-    xScale.ticks(width / 80).map((value) => ({
-      value,
-      xOffset: xScale(value),
-    }))
-  );
+  const xAxisSvgRef = useRef();
+
+  // Update refs whenever state changes
+
+  useLayoutEffect(() => {
+    const svg = d3.select(xAxisSvgRef.current);
+    svg.select(".drag-start-group").call(handleDragStart());
+    svg.select(".drag-end-group").call(handleDragEnd());
+    setDragStart(xScale.domain()[0]);
+    setDragEnd(xScale.domain()[1]);
+  }, [histogramData, currentQueryState.filters]);
+
   return (
-    <svg className="x-axis-container">
+    <svg
+      className="x-axis-container"
+      ref={xAxisSvgRef}
+      width={width}
+      height={height}
+    >
       <path
         className="x-axis-line"
         d={`M ${0} ${height - marginBottom} H ${width}`}
       />
-      {ticks.map(({ value, xOffset }) => {
-        return (
-          <g
-            key={value}
-            transform={`translate(${xOffset}, ${height - marginBottom})`}
-          >
-            <line y2="6" className="x-axis-tick" />
-            <text className="x-axis-label" key={value}>
-              {formatDate(value, formatString, i18next.language)}
-            </text>
-          </g>
-        );
-      })}
+
+      <g className="drag-start-group">
+        <circle
+          className="drag-start"
+          cx={xScale(dragStart)}
+          cy={height - marginBottom}
+          r={5}
+          fill="red"
+        />
+        {/* Bubble for Drag Start */}
+        <rect
+          x={xScale(dragStart) - 20}
+          y={height - marginBottom + 10}
+          width={40}
+          height={20}
+          fill="lightgray"
+          stroke="black"
+          rx={5}
+          ry={5}
+        />
+        <text
+          x={xScale(dragStart)}
+          y={height - marginBottom + 25}
+          textAnchor="middle"
+          fontSize="12px"
+          fill="black"
+        >
+          {dragStart.getFullYear()}
+        </text>
+        <path
+          d={`
+        M ${xScale(dragStart)},${height - marginBottom + 10}
+        L ${xScale(dragStart) - 5},${height - marginBottom + 5}
+        L ${xScale(dragStart) + 5},${height - marginBottom + 5}
+        Z
+      `}
+          fill="lightgray"
+          stroke="black"
+        />
+      </g>
+
+      {/* Drag End Group */}
+      <g className="drag-end-group">
+        <circle
+          className="drag-end"
+          cx={xScale(dragEnd)}
+          cy={height - marginBottom}
+          r={5}
+          fill="red"
+        />
+        {/* Bubble for Drag End */}
+        <rect
+          x={xScale(dragEnd) - 20}
+          y={height - marginBottom + 10}
+          width={40}
+          height={20}
+          fill="lightgray"
+          stroke="black"
+          rx={5}
+          ry={5}
+        />
+        <text
+          x={xScale(dragEnd)}
+          y={height - marginBottom + 25}
+          textAnchor="middle"
+          fontSize="12px"
+          fill="black"
+        >
+          {dragEnd.getFullYear()}
+        </text>
+        <path
+          d={`
+        M ${xScale(dragEnd)},${height - marginBottom + 10}
+        L ${xScale(dragEnd) - 5},${height - marginBottom + 5}
+        L ${xScale(dragEnd) + 5},${height - marginBottom + 5}
+        Z
+      `}
+          fill="lightgray"
+          stroke="black"
+        />
+      </g>
     </svg>
   );
 };

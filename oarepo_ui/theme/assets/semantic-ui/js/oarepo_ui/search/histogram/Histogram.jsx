@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState, useRef } from "react";
+import React, { useLayoutEffect, useState, useRef, useEffect } from "react";
 import * as d3 from "d3";
 import PropTypes from "prop-types";
 import { Xaxis } from "./Xaxis.jsx";
@@ -37,7 +37,7 @@ export const Histogram = ({
   const [width, setWidth] = useState(400);
 
   const height = svgHeight ?? 550;
-  const rectangleWidth = width / (histogramData.length + 5);
+  const rectangleWidth = width / (histogramData.length + 4);
   const x = d3
     .scaleTime()
     .domain([
@@ -77,7 +77,6 @@ export const Histogram = ({
       d.start,
       facetDateFormat
     )}/${formatDate(d.end ?? d.start, facetDateFormat)}`;
-    console.log(x(d.start) - x(d.end));
     return (
       <React.Fragment key={d.uuid}>
         <Popup
@@ -133,6 +132,71 @@ export const Histogram = ({
         marginRight
     );
   }, [marginLeft, marginRight, width]);
+  const [dragStart, setDragStart] = useState(x.domain()[0]);
+  const [dragEnd, setDragEnd] = useState(x.domain()[1]);
+  const dragStartRef = useRef(dragStart);
+  const dragEndRef = useRef(dragEnd);
+  const [minDomain, maxDomain] = x.domain();
+  
+  const handleDragStart = () => {
+    return d3
+      .drag()
+      .on("drag", (e) => {
+        const xCoordinate = e.x;
+        let newValue = x.invert(xCoordinate);
+        if (newValue > minDomain && newValue < dragEndRef.current) {
+          dragStartRef.current = newValue;
+          setDragStart(newValue);
+        }
+      })
+      .on("end", (e) => {
+        if (dragStartRef.current !== dragStart) {
+          updateQueryState({
+            ...currentQueryState,
+            filters: [
+              ...currentQueryState.filters.filter((f) => f[0] !== aggName),
+              [
+                aggName,
+                `${formatDate(
+                  dragStartRef.current,
+                  facetDateFormat
+                )}/${formatDate(dragEndRef.current, facetDateFormat)}`,
+              ],
+            ],
+          });
+        }
+      });
+  };
+
+  const handleDragEnd = () => {
+    return d3
+      .drag()
+      .on("drag", (e) => {
+        const xCoordinate = e.x;
+        let newValue = x.invert(xCoordinate);
+        if (newValue < maxDomain && newValue > dragStartRef.current) {
+          dragEndRef.current = newValue;
+          setDragEnd(newValue);
+        }
+      })
+      .on("end", (e) => {
+        if (dragEndRef.current !== dragEnd) {
+          updateQueryState({
+            ...currentQueryState,
+            filters: [
+              ...currentQueryState.filters.filter((f) => f[0] !== aggName),
+              [
+                aggName,
+                `${formatDate(
+                  dragStartRef.current,
+                  facetDateFormat
+                )}/${formatDate(dragEndRef.current, facetDateFormat)}`,
+              ],
+            ],
+          });
+        }
+      });
+  };
 
   return (
     histogramData.length > 0 && (
@@ -147,6 +211,14 @@ export const Histogram = ({
             marginLeft={marginLeft}
             histogramData={histogramData}
             formatString={formatString}
+            rectangleWidth={rectangleWidth}
+            handleDragStart={handleDragStart}
+            handleDragEnd={handleDragEnd}
+            dragStart={dragStartRef.current}
+            dragEnd={dragEndRef.current}
+            setDragStart={setDragStart}
+            setDragEnd={setDragEnd}
+            currentQueryState={currentQueryState}
           />
         </svg>
       </div>

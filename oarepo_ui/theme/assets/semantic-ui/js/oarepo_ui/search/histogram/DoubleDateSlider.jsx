@@ -116,7 +116,7 @@ const DoubleDateSliderComponent = ({
         {(sliderMin !== min || sliderMax !== max) && (
           <Button
             type="button"
-            ariaLabel={i18next.t("Zoom out")}
+            aria-label={i18next.t("Zoom out")}
             title={i18next.t("Zoom out")}
             className="transparent"
             onKeyDown={(e) => {
@@ -140,7 +140,7 @@ const DoubleDateSliderComponent = ({
         {sliderMax - sliderMin > Math.ceil(0.2 * max) && (
           <Button
             type="button"
-            ariaLabel={i18next.t("Zoom in")}
+            aria-label={i18next.t("Zoom in")}
             title={i18next.t("Zoom in")}
             className="transparent"
             onKeyDown={(e) => {

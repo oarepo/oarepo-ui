@@ -16,6 +16,7 @@ const HistogramComponent = ({
   currentResultsState: {
     data: { aggregations },
   },
+  svgHeight,
   currentQueryState,
   updateQueryState,
   aggName,
@@ -60,7 +61,7 @@ const HistogramComponent = ({
         <Card.Content>
           <Histogram
             histogramData={histogramData}
-            svgHeight={300}
+            svgHeight={svgHeight}
             rectangleClassName={"histogram-rectangle"}
             updateQueryState={updateQueryState}
             currentQueryState={currentQueryState}
@@ -68,7 +69,7 @@ const HistogramComponent = ({
             formatString={formatString}
             facetDateFormat={facetDateFormat}
           />
-          <DoubleDateSlider
+          {/* <DoubleDateSlider
             addFunc={addFunc}
             diffFunc={diffFunc}
             formatString={formatString}
@@ -83,7 +84,7 @@ const HistogramComponent = ({
             maxDate={MAX_DATE}
             facetDateFormat={facetDateFormat}
             histogramDataLength={histogramData.length}
-          />
+          /> */}
         </Card.Content>
       </Card>
     )
@@ -99,9 +100,11 @@ HistogramComponent.propTypes = {
   minDateAggName: PropTypes.string.isRequired,
   maxDateAggName: PropTypes.string.isRequired,
   minimumInterval: PropTypes.oneOf(["year", "day"]),
+  svgHeight: PropTypes.number,
 };
 // TODO: fix up layout for daily granularity
 HistogramComponent.defaultProps = {
   minimumInterval: "year",
+  svgHeight: 300,
 };
 export const HistogramWSlider = withState(HistogramComponent);
