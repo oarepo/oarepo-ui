@@ -15,6 +15,7 @@ import _get from "lodash/get";
 const HistogramComponent = ({
   currentResultsState: {
     data: { aggregations },
+    loading,
   },
   svgHeight,
   currentQueryState,
@@ -26,30 +27,18 @@ const HistogramComponent = ({
   minDateAggName,
   maxDateAggName,
 }) => {
-  // const MIN_DATE = new Date(_getResultsStats(aggregations, minDateAggName));
-  // const MAX_DATE = new Date(_getResultsStats(aggregations, maxDateAggName));
-  const MIN_DATE = new Date(
-    "Tue Jan 01 1924 01:00:00 GMT+0100 (Central European Standard Time"
-  );
-  const MAX_DATE = new Date(
-    "Mon Jan 01 2024 01:00:00 GMT+0100 (Central European Standard Time)"
-  );
   const addFunc = getAddFunc(minimumInterval);
   const diffFunc = getDiffFunc(minimumInterval);
   // if we send yyyy/yyyy to the url or yyyy-MM-dd/yyyy-MM-dd
   const facetDateFormat = minimumInterval === "year" ? "yyyy" : "yyyy-MM-dd";
-  const histogramInterval = _get(aggregations, aggName, {})?.interval;
 
   const formatString = getFormatString(minimumInterval);
-  const MIN_SLIDER_VALUE = 0;
-  const MAX_SLIDER_VALUE = diffFunc(MAX_DATE, MIN_DATE);
 
   let histogramData = _getResultBuckets(aggregations, aggName).map((d) => {
     return {
       ...d,
       start: new Date(d.start),
-      // hack to fix the end issue, should be fixed in BE
-      end: new Date(d.end ?? d.start),
+      end: new Date(d.end),
       // as you narrow the range, sometimes buckets would have the same key i.e. same day
       uuid: crypto.randomUUID(),
     };
@@ -59,16 +48,20 @@ const HistogramComponent = ({
     histogramData?.length > 0 && (
       <Card className="borderless facet">
         <Card.Content>
-          <Histogram
-            histogramData={histogramData}
-            svgHeight={svgHeight}
-            rectangleClassName={"histogram-rectangle"}
-            updateQueryState={updateQueryState}
-            currentQueryState={currentQueryState}
-            aggName={aggName}
-            formatString={formatString}
-            facetDateFormat={facetDateFormat}
-          />
+          {!loading && (
+            <Histogram
+              histogramData={histogramData}
+              svgHeight={svgHeight}
+              rectangleClassName={"histogram-rectangle"}
+              updateQueryState={updateQueryState}
+              currentQueryState={currentQueryState}
+              aggName={aggName}
+              formatString={formatString}
+              facetDateFormat={facetDateFormat}
+              diffFunc={diffFunc}
+              addFunc={addFunc}
+            />
+          )}
           {/* <DoubleDateSlider
             addFunc={addFunc}
             diffFunc={diffFunc}

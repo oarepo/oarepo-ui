@@ -24,15 +24,17 @@ export const Xaxis = ({
 }) => {
   const xAxisSvgRef = useRef();
 
-  // Update refs whenever state changes
+  const dragStartCircleRef = useRef();
+  const dragEndCircleRef = useRef();
 
-  useLayoutEffect(() => {
-    const svg = d3.select(xAxisSvgRef.current);
-    svg.select(".drag-start-group").call(handleDragStart());
-    svg.select(".drag-end-group").call(handleDragEnd());
-    setDragStart(xScale.domain()[0]);
-    setDragEnd(xScale.domain()[1]);
-  }, [histogramData, currentQueryState.filters]);
+  useMemo(() => {
+    if (dragStartCircleRef.current) {
+      d3.select(dragStartCircleRef.current).call(handleDragStart());
+    }
+    if (dragEndCircleRef.current) {
+      d3.select(dragEndCircleRef.current).call(handleDragEnd());
+    }
+  }, [handleDragStart, handleDragEnd]);
 
   return (
     <svg
@@ -46,7 +48,7 @@ export const Xaxis = ({
         d={`M ${0} ${height - marginBottom} H ${width}`}
       />
 
-      <g className="drag-start-group">
+      <g className="drag-start-group" ref={dragStartCircleRef}>
         <circle
           className="drag-start"
           cx={xScale(dragStart)}
@@ -87,7 +89,7 @@ export const Xaxis = ({
       </g>
 
       {/* Drag End Group */}
-      <g className="drag-end-group">
+      <g className="drag-end-group" ref={dragEndCircleRef}>
         <circle
           className="drag-end"
           cx={xScale(dragEnd)}

@@ -5,6 +5,7 @@ import { Xaxis } from "./Xaxis.jsx";
 import { Popup } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { formatDate } from "@js/oarepo_ui";
+import Slider from "./Slider.jsx";
 
 export const Histogram = ({
   histogramData,
@@ -17,32 +18,34 @@ export const Histogram = ({
   aggName,
   formatString,
   facetDateFormat,
+  diffFunc,
 }) => {
   const svgContainerRef = useRef();
 
   const handleRectangleClick = (value, d) => {
     if (d.doc_count === 0) return;
     if (histogramData.length === 1) return;
+
     const filters = currentQueryState.filters.filter((f) => f[0] !== aggName);
     updateQueryState({
       ...currentQueryState,
       filters: [...filters, [aggName, value]],
     });
   };
-
+  console.log(histogramData);
   const [marginTop, marginRight, marginBottom, marginLeft] = svgMargins ?? [
-    20, 20, 30, 20,
+    20, 10, 0, 10,
   ];
 
   const [width, setWidth] = useState(400);
 
   const height = svgHeight ?? 550;
-  const rectangleWidth = width / (histogramData.length + 4);
+  const rectangleWidth = width / (histogramData.length + 3);
   const x = d3
     .scaleTime()
     .domain([
       histogramData[0]?.start,
-      histogramData[histogramData.length - 1]?.start,
+      histogramData[histogramData.length - 1]?.end,
     ])
     .nice()
     .range([marginLeft, width - marginRight]);
@@ -73,10 +76,11 @@ export const Histogram = ({
             i18next.language
           )}: ${i18next.t("totalResults", { count: d?.doc_count })}`;
 
-    const rectangleClickValue = `${formatDate(
-      d.start,
-      facetDateFormat
-    )}/${formatDate(d.end ?? d.start, facetDateFormat)}`;
+    const rectangleClickValue = `${formatDate(d.start, facetDateFormat)}/${
+      diffFunc(d.end, d.start) <= 1
+        ? formatDate(d.start, facetDateFormat)
+        : formatDate(d.end, facetDateFormat)
+    }`;
     return (
       <React.Fragment key={d.uuid}>
         <Popup
@@ -87,7 +91,7 @@ export const Histogram = ({
             <rect
               tabIndex={0}
               className={rectangleOverlayClassName}
-              x={x(d.start) - rectangleWidth / 2}
+              x={x(d.start)}
               width={rectangleWidth}
               y={y(maxCountElement.doc_count)}
               height={y(0) - y(maxCountElement.doc_count)}
@@ -109,7 +113,7 @@ export const Histogram = ({
           trigger={
             <rect
               className={rectangleClassName}
-              x={x(d.start) - rectangleWidth / 2}
+              x={x(d.start)}
               width={rectangleWidth}
               y={y(d.doc_count)}
               height={y(0) - y(d?.doc_count)}
@@ -123,87 +127,72 @@ export const Histogram = ({
     );
   });
 
-  useLayoutEffect(() => {
-    setWidth(
-      (svgContainerRef.current.clientWidth > 0
-        ? svgContainerRef.current.clientWidth
-        : width) -
-        marginLeft -
-        marginRight
-    );
-  }, [marginLeft, marginRight, width]);
-  const [dragStart, setDragStart] = useState(x.domain()[0]);
-  const [dragEnd, setDragEnd] = useState(x.domain()[1]);
-  const dragStartRef = useRef(dragStart);
-  const dragEndRef = useRef(dragEnd);
-  const [minDomain, maxDomain] = x.domain();
-  
-  const handleDragStart = () => {
-    return d3
-      .drag()
-      .on("drag", (e) => {
-        const xCoordinate = e.x;
-        let newValue = x.invert(xCoordinate);
-        if (newValue > minDomain && newValue < dragEndRef.current) {
-          dragStartRef.current = newValue;
-          setDragStart(newValue);
-        }
-      })
-      .on("end", (e) => {
-        if (dragStartRef.current !== dragStart) {
-          updateQueryState({
-            ...currentQueryState,
-            filters: [
-              ...currentQueryState.filters.filter((f) => f[0] !== aggName),
-              [
-                aggName,
-                `${formatDate(
-                  dragStartRef.current,
-                  facetDateFormat
-                )}/${formatDate(dragEndRef.current, facetDateFormat)}`,
-              ],
-            ],
-          });
-        }
-      });
-  };
+  useEffect(() => {
+    const handleResize = () => {
+      setWidth(
+        (svgContainerRef.current.clientWidth > 0
+          ? svgContainerRef.current.clientWidth
+          : width) -
+          marginLeft -
+          marginRight
+      );
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [marginLeft, marginRight]);
+
+  const [dragging, setDragging] = useState(false);
+  const dragChange = (dragging) => setDragging(dragging);
+
+  const [selection, setSelection] = useState([
+    histogramData[0]?.start,
+    histogramData[histogramData.length - 1]?.end,
+  ]);
+  console.log(selection);
 
   const handleDragEnd = () => {
-    return d3
-      .drag()
-      .on("drag", (e) => {
-        const xCoordinate = e.x;
-        let newValue = x.invert(xCoordinate);
-        if (newValue < maxDomain && newValue > dragStartRef.current) {
-          dragEndRef.current = newValue;
-          setDragEnd(newValue);
-        }
-      })
-      .on("end", (e) => {
-        if (dragEndRef.current !== dragEnd) {
-          updateQueryState({
-            ...currentQueryState,
-            filters: [
-              ...currentQueryState.filters.filter((f) => f[0] !== aggName),
-              [
-                aggName,
-                `${formatDate(
-                  dragStartRef.current,
-                  facetDateFormat
-                )}/${formatDate(dragEndRef.current, facetDateFormat)}`,
-              ],
-            ],
-          });
-        }
-      });
-  };
+    console.log(selection[0]);
+    console.log(histogramData[0].start.getTime());
+    console.log(selection[1]);
+    console.log(histogramData[histogramData.length - 1].end.getTime());
+    // if (
+    //   typeof selection[0] === "number"
+    //     ? selection[0]
+    //     : selection[0].getTime() === histogramData[0].start.getTime() &&
+    //       typeof selection[1] === "number"
+    //     ? selection[1]
+    //     : selection[1].getTime() ===
+    //       histogramData[histogramData.length - 1].end.getTime()
+    // ) {
+    //   return;
+    // }
 
+    updateQueryState({
+      ...currentQueryState,
+      filters: [
+        ...currentQueryState.filters.filter((f) => f[0] !== aggName),
+        [
+          aggName,
+          `${formatDate(selection[0], facetDateFormat)}/${formatDate(
+            selection[1],
+            facetDateFormat
+          )}`,
+        ],
+      ],
+    });
+  };
   return (
     histogramData.length > 0 && (
       <div className="ui histogram-container" ref={svgContainerRef}>
         <svg height={height} viewBox={`0 0 ${width} ${height}`}>
           {bars}
-          <Xaxis
+          {/* <Xaxis
             xScale={x}
             height={height}
             marginBottom={marginBottom}
@@ -214,13 +203,28 @@ export const Histogram = ({
             rectangleWidth={rectangleWidth}
             handleDragStart={handleDragStart}
             handleDragEnd={handleDragEnd}
-            dragStart={dragStartRef.current}
-            dragEnd={dragEndRef.current}
+            dragStart={dragStart}
+            dragEnd={dragEnd}
             setDragStart={setDragStart}
             setDragEnd={setDragEnd}
-            currentQueryState={currentQueryState}
-          />
+          /> */}
         </svg>
+        <Slider
+          onChange={(selection) => setSelection(selection)}
+          width={width}
+          selection={selection}
+          scale={x}
+          // yCoordinate={height - marginBottom}
+          min={histogramData[0]?.start}
+          max={histogramData[histogramData.length - 1]?.end}
+          formatLabelFunction={formatDate}
+          dragChange={dragChange}
+          updateQueryState={updateQueryState}
+          handleDragEnd={handleDragEnd}
+          marginLeft={marginLeft}
+          marginRight={marginRight}
+          height={50}
+        />
       </div>
     )
   );
