@@ -25,8 +25,8 @@ from oarepo_ui.resources import (
     RecordsUIResourceConfig,
 )
 from oarepo_ui.resources.components import (
-    AllowedHtmlTagsComponent,
     PermissionsComponent,
+    AllowedHtmlTagsComponent,
 )
 from oarepo_ui.resources.config import TemplatePageUIResourceConfig
 from oarepo_ui.resources.resource import TemplatePageUIResource

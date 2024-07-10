@@ -1,6 +1,5 @@
 import json
-
-from invenio_config.default import ALLOWED_HTML_ATTRS, ALLOWED_HTML_TAGS
+from invenio_config.default import ALLOWED_HTML_TAGS, ALLOWED_HTML_ATTRS
 
 
 def test_edit(
