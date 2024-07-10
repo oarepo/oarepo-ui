@@ -9,7 +9,12 @@ import {
 } from "@js/oarepo_ui";
 import PropTypes from "prop-types";
 import { Card } from "semantic-ui-react";
-import { getAddFunc, getDiffFunc, getFormatString } from "./utils";
+import {
+  getAddFunc,
+  getDiffFunc,
+  getFormatString,
+  getSubtractFunc,
+} from "./utils";
 import _get from "lodash/get";
 
 const HistogramComponent = ({
@@ -29,6 +34,7 @@ const HistogramComponent = ({
 }) => {
   const addFunc = getAddFunc(minimumInterval);
   const diffFunc = getDiffFunc(minimumInterval);
+  const subtractFunc = getSubtractFunc(minimumInterval);
   // if we send yyyy/yyyy to the url or yyyy-MM-dd/yyyy-MM-dd
   const facetDateFormat = minimumInterval === "year" ? "yyyy" : "yyyy-MM-dd";
 
@@ -37,8 +43,8 @@ const HistogramComponent = ({
   let histogramData = _getResultBuckets(aggregations, aggName).map((d) => {
     return {
       ...d,
-      start: new Date(d.start),
-      end: new Date(d.end),
+      start: new Date(d.start).getTime(),
+      end: new Date(d.end).getTime(),
       // as you narrow the range, sometimes buckets would have the same key i.e. same day
       uuid: crypto.randomUUID(),
     };
@@ -60,6 +66,7 @@ const HistogramComponent = ({
               facetDateFormat={facetDateFormat}
               diffFunc={diffFunc}
               addFunc={addFunc}
+              subtractFunc={subtractFunc}
             />
           )}
           {/* <DoubleDateSlider

@@ -2,6 +2,8 @@ import {
   addDays,
   addMonths,
   addYears,
+  subYears,
+  subDays,
   differenceInDays,
   differenceInMonths,
   differenceInYears,
@@ -12,6 +14,14 @@ export const getAddFunc = (interval = "year") => {
     return addDays;
   } else {
     return addYears;
+  }
+};
+
+export const getSubtractFunc = (interval = "year") => {
+  if (interval === "day") {
+    return subDays;
+  } else {
+    return subYears;
   }
 };
 

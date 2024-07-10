@@ -209,7 +209,6 @@ export function getDefaultLocale() {
 }
 
 export function formatDate(date, formatStr, locale) {
-  console.log(date, "date");
   if (locale === "en") {
     return format(date, formatStr, {
       useAdditionalWeekYearTokens: true,

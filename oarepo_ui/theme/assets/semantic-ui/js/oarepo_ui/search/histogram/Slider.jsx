@@ -117,12 +117,11 @@ class Slider extends Component {
       selectedDate.setHours(0, 0, 0, 0); // Set time to midnight
       selected = selectedDate.getTime(); // Convert back to timestamp
 
-      // Check if selected is outside the bounds
-      if (selected < this.props.min || selected > this.props.max) {
-        return;
+      if (selected <= this.props.min) {
+        selected = this.props.min;
+      } else if (selected >= this.props.max) {
+        selected = this.props.max;
       }
-
-      console.log(selected, "selected");
 
       if (this.state.dragIndex === 0) {
         selection[0] = Math.min(
@@ -174,6 +173,10 @@ class Slider extends Component {
       marginRight,
       max,
       min,
+      addFunc,
+      diffFunc,
+      formatString,
+      subtractFunc,
     } = this.props;
     console.log(max, min);
     const selectionWidth = Math.abs(scale(selection[1]) - scale(selection[0]));

@@ -19,13 +19,14 @@ export const Histogram = ({
   formatString,
   facetDateFormat,
   diffFunc,
+  addFunc,
+  subtractFunc,
 }) => {
   const svgContainerRef = useRef();
 
   const handleRectangleClick = (value, d) => {
     if (d.doc_count === 0) return;
     if (histogramData.length === 1) return;
-
     const filters = currentQueryState.filters.filter((f) => f[0] !== aggName);
     updateQueryState({
       ...currentQueryState,
@@ -42,14 +43,13 @@ export const Histogram = ({
   const height = svgHeight ?? 550;
   const rectangleWidth = width / (histogramData.length + 3);
   const x = d3
-    .scaleTime()
+    .scaleLinear()
     .domain([
       histogramData[0]?.start,
       histogramData[histogramData.length - 1]?.end,
     ])
-    .nice()
+    // .nice()
     .range([marginLeft, width - marginRight]);
-
   const y = d3
     .scaleLinear()
     .domain([0, d3.max(histogramData, (d) => d?.doc_count)])
@@ -60,7 +60,7 @@ export const Histogram = ({
   );
   const bars = histogramData.map((d, i, array) => {
     const popupContent =
-      array[i].start.getTime() === array[i].end.getTime()
+      array[i].start === array[i].end
         ? `${formatDate(
             array[i].start,
             formatString,
@@ -157,21 +157,12 @@ export const Histogram = ({
   console.log(selection);
 
   const handleDragEnd = () => {
-    console.log(selection[0]);
-    console.log(histogramData[0].start.getTime());
-    console.log(selection[1]);
-    console.log(histogramData[histogramData.length - 1].end.getTime());
-    // if (
-    //   typeof selection[0] === "number"
-    //     ? selection[0]
-    //     : selection[0].getTime() === histogramData[0].start.getTime() &&
-    //       typeof selection[1] === "number"
-    //     ? selection[1]
-    //     : selection[1].getTime() ===
-    //       histogramData[histogramData.length - 1].end.getTime()
-    // ) {
-    //   return;
-    // }
+    if (
+      selection[0] === histogramData[0].start &&
+      selection[1] === histogramData[histogramData.length - 1].end
+    ) {
+      return;
+    }
 
     updateQueryState({
       ...currentQueryState,
@@ -224,6 +215,10 @@ export const Histogram = ({
           marginLeft={marginLeft}
           marginRight={marginRight}
           height={50}
+          addFunc={addFunc}
+          formatString={formatString}
+          diffFunc={diffFunc}
+          subtractFunc={subtractFunc}
         />
       </div>
     )
