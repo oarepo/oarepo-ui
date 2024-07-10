@@ -34,9 +34,20 @@ name of the component from above)
   will allow users to override these values.
  */
 
-.ui.invenio-header-container{
-    background: @headerContainerBackground;
-    width: 100%;
+.ui.invenio-header-container {
+  background: @headerContainerBackground;
+  width: 1241px;
+  padding: 1rem 0;
+  @media only screen and (min-width: @largeMonitorBreakpoint) {
+    width: 1400px;
+  }
+  @media only screen and (max-width: @largestTabletScreen) {
+    width: 723px;
+  }
+  @media only screen and (max-width: @tabletBreakpoint) {
+    padding: 1rem 1rem 0;
+    max-width: 723px;
+  }
 }
 
 .loadUIOverrides();

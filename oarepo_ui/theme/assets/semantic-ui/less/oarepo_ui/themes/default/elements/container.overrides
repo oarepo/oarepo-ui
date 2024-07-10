@@ -8,7 +8,4 @@
   &:has(.coverpage) {
     width: 100%;
   }
-  &.invenio-header-container {
-    padding: 1rem 8rem 0;
-}
 }

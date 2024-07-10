@@ -42,8 +42,19 @@ name of the component from above)
     border-top: 1px solid black;
     padding: @pageFooterPadding;
 
-    & .ui.container{
-      width: 90vw;
+    & .ui.container {
+      width: 1241px;
+      padding: 1rem 0;
+      @media only screen and (min-width: @largeMonitorBreakpoint) {
+        width: 1400px;
+      }
+      @media only screen and (max-width: @largestTabletScreen) {
+        width: 723px;
+      }
+      @media only screen and (max-width: @tabletBreakpoint) {
+        padding: 1rem 1rem 0;
+        max-width: 723px;
+      }
     }
   }
 }
