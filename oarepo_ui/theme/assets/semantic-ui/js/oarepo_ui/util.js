@@ -208,6 +208,8 @@ export function getDefaultLocale() {
   return scope.__localeId__;
 }
 
+// function that can be used anywhere in code (where React is used), after the component uses useLoadLocaleObjects hook to
+// load the locale objects into the window object
 export function formatDate(date, formatStr, locale) {
   if (locale === "en") {
     return format(date, formatStr, {
@@ -216,6 +218,7 @@ export function formatDate(date, formatStr, locale) {
     });
   }
   let localeObj = locale ? getLocaleObject(locale) : undefined;
+  // it spams the console too much, because on load the objects are not available at first
   // if (locale && !localeObj) {
   //   console.warn(
   //     `A locale object was not found for the provided string ["${locale}"].`
