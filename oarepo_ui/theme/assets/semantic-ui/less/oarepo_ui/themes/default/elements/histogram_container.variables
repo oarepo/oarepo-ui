@@ -4,3 +4,7 @@
 @xAxisLineStroke: currentColor;
 @xAxisTickStroke: currentColor;
 @histogramRectangleOverlayColor: rgb(236, 236, 242);
+@unselectedSliderHeight: 4px;
+@selectedSliderHeight: 4px;
+@unselectedSliderColor: lightgray;
+@selectedSliderColor: steelblue;

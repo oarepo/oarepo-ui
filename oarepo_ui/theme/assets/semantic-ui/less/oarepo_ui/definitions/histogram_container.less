@@ -34,41 +34,84 @@ name of the component from above)
   will allow users to override these values.
  */
 .ui.histogram-container {
-  overflow: auto;
-
-  position: relative;
-
   width: 100%;
-  .histogram-rectangle {
-    fill: @histogramRectangleColor;
-  }
-  .histogram-rectangle:hover {
-    fill: @histogramRectangleHoverColor;
-    cursor: pointer;
-  }
 
-  .histogram-rectangle-overlay {
-    fill: white;
-  }
-  .histogram-rectangle-overlay:hover {
-    fill: @histogramRectangleOverlayColor;
-    cursor: pointer;
-  }
-  svg {
-    min-width: 100%;
-  }
-  .x-axis-line {
-    stroke: @xAxisLineStroke;
-  }
-  .x-axis-tick {
-    stroke: @xAxisTickStroke;
-  }
-  .x-axis-label {
-    font-size: @labelFontSize;
-    text-anchor: start;
-    dominant-baseline: hanging;
-    transform-origin: left top;
-    transform: translate(0px, 5px) rotate(45deg);
+  .histogram-svg-container {
+    overflow: auto;
+
+    /* histogram.css */
+
+    .opacity-0 {
+      opacity: 0;
+    }
+
+    .opacity-25 {
+      opacity: 0.25;
+    }
+
+    .opacity-50 {
+      opacity: 0.5;
+    }
+
+    .opacity-75 {
+      opacity: 0.75;
+    }
+
+    .opacity-100 {
+      opacity: 1;
+    }
+
+    position: relative;
+
+    width: 100%;
+    .histogram-rectangle {
+      fill: @histogramRectangleColor;
+    }
+    .histogram-rectangle:hover {
+      fill: @histogramRectangleHoverColor;
+      cursor: pointer;
+    }
+    .histogram-rectangle-single {
+      fill: @histogramRectangleColor;
+    }
+
+    .histogram-rectangle-overlay {
+      fill: white;
+    }
+    .histogram-rectangle-overlay:hover {
+      fill: @histogramRectangleOverlayColor;
+      cursor: pointer;
+    }
+    .unselected-slider {
+      height: @unselectedSliderHeight;
+      fill: @unselectedSliderColor;
+    }
+    .selected-slider {
+      height: @selectedSliderHeight;
+      fill: @selectedSliderColor;
+    }
+    .thumb-svg-group :focus-visible {
+      outline: 1px solid red;
+    }
+    .thumb-svg-group:focus {
+      outline: 1px solid red;
+    }
+    svg {
+      min-width: 100%;
+    }
+    .x-axis-line {
+      stroke: @xAxisLineStroke;
+    }
+    .x-axis-tick {
+      stroke: @xAxisTickStroke;
+    }
+    .x-axis-label {
+      font-size: @labelFontSize;
+      text-anchor: start;
+      dominant-baseline: hanging;
+      transform-origin: left top;
+      transform: translate(0px, 5px) rotate(45deg);
+    }
   }
 }
 

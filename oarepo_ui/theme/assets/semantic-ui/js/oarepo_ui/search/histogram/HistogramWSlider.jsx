@@ -1,12 +1,7 @@
 import React from "react";
 import { Histogram } from "./Histogram";
-import { DoubleDateSlider } from "./DoubleDateSlider";
-import { withState } from "react-searchkit";
-import {
-  useLoadLocaleObjects,
-  _getResultsStats,
-  _getResultBuckets,
-} from "@js/oarepo_ui";
+import { withState, ResultsLoader } from "react-searchkit";
+import { useLoadLocaleObjects, _getResultBuckets } from "@js/oarepo_ui";
 import PropTypes from "prop-types";
 import { Card } from "semantic-ui-react";
 import {
@@ -15,7 +10,6 @@ import {
   getFormatString,
   getSubtractFunc,
 } from "./utils";
-import _get from "lodash/get";
 
 const HistogramComponent = ({
   currentResultsState: {
@@ -23,19 +17,21 @@ const HistogramComponent = ({
     loading,
   },
   svgHeight,
+  sliderHeight,
   currentQueryState,
   updateQueryState,
   aggName,
   aggTitle,
   minimumInterval,
-
-  minDateAggName,
-  maxDateAggName,
+  rectanglePadding,
+  svgMargins,
+  rectangleClassName,
+  rectangleOverlayClassName,
+  singleRectangleClassName,
 }) => {
   const addFunc = getAddFunc(minimumInterval);
   const diffFunc = getDiffFunc(minimumInterval);
   const subtractFunc = getSubtractFunc(minimumInterval);
-  // if we send yyyy/yyyy to the url or yyyy-MM-dd/yyyy-MM-dd
   const facetDateFormat = minimumInterval === "year" ? "yyyy" : "yyyy-MM-dd";
 
   const formatString = getFormatString(minimumInterval);
@@ -45,48 +41,37 @@ const HistogramComponent = ({
       ...d,
       start: new Date(d.start).getTime(),
       end: new Date(d.end).getTime(),
-      // as you narrow the range, sometimes buckets would have the same key i.e. same day
       uuid: crypto.randomUUID(),
     };
   });
   useLoadLocaleObjects();
   return (
     histogramData?.length > 0 && (
-      <Card className="borderless facet">
-        <Card.Content>
-          {!loading && (
+      <ResultsLoader>
+        <Card className="borderless facet ui histogram-container">
+          <Card.Content>
             <Histogram
               histogramData={histogramData}
               svgHeight={svgHeight}
-              rectangleClassName={"histogram-rectangle"}
+              sliderHeight={sliderHeight}
               updateQueryState={updateQueryState}
               currentQueryState={currentQueryState}
               aggName={aggName}
               formatString={formatString}
               facetDateFormat={facetDateFormat}
+              minimumInterval={minimumInterval}
               diffFunc={diffFunc}
               addFunc={addFunc}
               subtractFunc={subtractFunc}
+              rectanglePadding={rectanglePadding}
+              svgMargins={svgMargins}
+              rectangleClassName={rectangleClassName}
+              rectangleOverlayClassName={rectangleOverlayClassName}
+              singleRectangleClassName={singleRectangleClassName}
             />
-          )}
-          {/* <DoubleDateSlider
-            addFunc={addFunc}
-            diffFunc={diffFunc}
-            formatString={formatString}
-            aggName={aggName}
-            thumbClassName="thumb"
-            trackClassName="track"
-            ariaLabel={["Lower thumb", "Upper thumb"]}
-            ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
-            min={MIN_SLIDER_VALUE}
-            max={MAX_SLIDER_VALUE}
-            minDate={MIN_DATE}
-            maxDate={MAX_DATE}
-            facetDateFormat={facetDateFormat}
-            histogramDataLength={histogramData.length}
-          /> */}
-        </Card.Content>
-      </Card>
+          </Card.Content>
+        </Card>
+      </ResultsLoader>
     )
   );
 };
@@ -97,14 +82,24 @@ HistogramComponent.propTypes = {
   updateQueryState: PropTypes.func.isRequired,
   aggName: PropTypes.string.isRequired,
   aggTitle: PropTypes.string.isRequired,
-  minDateAggName: PropTypes.string.isRequired,
-  maxDateAggName: PropTypes.string.isRequired,
   minimumInterval: PropTypes.oneOf(["year", "day"]),
   svgHeight: PropTypes.number,
+  rectanglePadding: PropTypes.number,
+  sliderHeight: PropTypes.number,
+  rectangleClassName: PropTypes.string,
+  rectangleOverlayClassName: PropTypes.string,
+  singleRectangleClassName: PropTypes.string,
+  svgMargins: PropTypes.array,
 };
 // TODO: fix up layout for daily granularity
 HistogramComponent.defaultProps = {
   minimumInterval: "year",
-  svgHeight: 300,
+  svgHeight: 220,
+  rectanglePadding: 1,
+  sliderHeight: 50,
+  rectangleClassName: "histogram-rectangle",
+  rectangleOverlayClassName: "histogram-rectangle-overlay",
+  singleRectangleClassName: "histogram-rectangle-single",
+  svgMargins: [20, 10, 0, 10],
 };
 export const HistogramWSlider = withState(HistogramComponent);

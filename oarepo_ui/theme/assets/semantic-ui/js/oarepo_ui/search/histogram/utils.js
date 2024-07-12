@@ -1,11 +1,9 @@
 import {
   addDays,
-  addMonths,
   addYears,
   subYears,
   subDays,
   differenceInDays,
-  differenceInMonths,
   differenceInYears,
 } from "date-fns";
 
@@ -15,6 +13,13 @@ export const getAddFunc = (interval = "year") => {
   } else {
     return addYears;
   }
+};
+
+export const getOpacityClass = (opacity) => {
+  if (opacity <= 0.25) return "opacity-25";
+  if (opacity <= 0.5) return "opacity-50";
+  if (opacity <= 0.75) return "opacity-75";
+  return "opacity-100";
 };
 
 export const getSubtractFunc = (interval = "year") => {

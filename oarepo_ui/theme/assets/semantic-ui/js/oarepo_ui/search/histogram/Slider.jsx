@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { format as d3Format } from "d3-format";
+import { i18next } from "@translations/oarepo_ui/i18next";
 
 const handleStyle = {
   cursor: "move",
@@ -31,11 +31,19 @@ class Slider extends Component {
   }
 
   componentDidMount() {
-    window.addEventListener("mouseup", this.dragEnd, false);
+    const element = document.getElementById(this.props.aggName);
+    if (element) {
+      element.addEventListener("mouseup", (e) => this.dragEnd(e));
+      element.addEventListener("keyup", (e) => this.handleKeyUp(e, 1000));
+    }
   }
 
   componentWillUnmount() {
-    window.removeEventListener("mouseup", this.dragEnd, false);
+    const element = document.getElementById(this.props.aggName);
+    if (element) {
+      element.removeEventListener("mouseup", this.dragEnd);
+      element.removeEventListener("keyup", this.dragEnd);
+    }
   }
 
   dragStart = (index, e) => {
@@ -46,11 +54,22 @@ class Slider extends Component {
           dragging: true,
           dragIndex: index,
         },
-        () => {
-          this.props.dragChange(true);
-        }
+        () => {}
       );
     }
+  };
+
+  handleKeyUp = (e, delay) => {
+    clearTimeout(this.dragEndTimeout);
+
+    let timeDelay = 0;
+    if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+      timeDelay = delay;
+    }
+
+    this.dragEndTimeout = setTimeout(() => {
+      this.dragEnd(e);
+    }, timeDelay);
   };
 
   dragEnd = (e) => {
@@ -62,16 +81,10 @@ class Slider extends Component {
           dragIndex: null,
         },
         () => {
-          this.props.dragChange(false);
           this.props.handleDragEnd();
-          //   this.cleanUp();
         }
       );
     }
-  };
-
-  cleanUp = () => {
-    document.removeEventListener("mouseup", this.dragEnd, false); // Clean up event listener
   };
 
   dragFromSVG = (e) => {
@@ -102,9 +115,7 @@ class Slider extends Component {
           dragging: true,
           dragIndex,
         },
-        () => {
-          this.props.dragChange(true);
-        }
+        () => {}
       );
     }
   };
@@ -140,11 +151,14 @@ class Slider extends Component {
   };
 
   keyDown = (index, e) => {
+    this.setState({ dragging: true, dragIndex: index });
+    const { min, max, diffFunc } = this.props;
+
+    const keyboardStep = (max - min) / diffFunc(max, min);
+
     const direction = mapToKeyCode(e.keyCode);
-    const { keyboardStep, min, max } = this.props;
     let selection = [...this.props.selection];
     let newValue = selection[index] + direction * keyboardStep;
-
     if (index === 0) {
       selection[0] = Math.min(selection[1], Math.max(newValue, min));
     } else {
@@ -157,53 +171,37 @@ class Slider extends Component {
     const {
       selection,
       scale,
-      format,
-      handleLabelFormat,
       formatLabelFunction,
       width,
       height,
       reset,
-      innerWidth,
-      selectedColor,
-      unselectedColor,
-      sliderStyle,
       showLabels,
-      yCoordinate,
       marginLeft,
       marginRight,
       max,
       min,
-      addFunc,
-      diffFunc,
       formatString,
-      subtractFunc,
+      aggName,
     } = this.props;
-    console.log(max, min);
     const selectionWidth = Math.abs(scale(selection[1]) - scale(selection[0]));
     const unselectedWidth = Math.abs(scale(max) - scale(min));
-    console.log(selectionWidth);
-    console.log(Math.abs(scale(max) - scale(min)));
-    const f = formatLabelFunction || d3Format(handleLabelFormat);
     return (
       <svg
-        style={sliderStyle}
+        id={aggName}
         height={height}
         width={width - marginLeft - marginRight}
         onMouseDown={this.dragFromSVG}
         onDoubleClick={reset}
         onMouseMove={this.mouseMove}
-        // transform={`translate(${marginLeft}, 0)`} // This line adds the translation
       >
         <rect
-          height={4}
-          fill={unselectedColor}
+          className="unselected-slider"
           x={scale(min) + marginLeft}
           y={10}
           width={unselectedWidth}
         />
         <rect
-          height={4}
-          fill={selectedColor}
+          className="selected-slider"
           x={scale(selection[0]) + marginLeft}
           y={10}
           width={selectionWidth}
@@ -211,20 +209,20 @@ class Slider extends Component {
         {selection.map((m, i) => {
           return (
             <g
+              className="thumb-svg-group"
               tabIndex={0}
               onKeyDown={this.keyDown.bind(this, i)}
               transform={`translate(${this.props.scale(m) + marginLeft}, 0)`}
               key={`handle-${i}`}
-              style={{ outline: "none" }}
             >
-              <circle
+              {/* <circle
                 style={handleStyle}
                 r={6}
                 cx={0}
                 cy={12}
                 fill="#ddd"
                 strokeWidth="1"
-              />
+              /> */}
               <circle
                 style={handleStyle}
                 onMouseDown={this.dragStart.bind(this, i)}
@@ -244,7 +242,7 @@ class Slider extends Component {
                   fill="#666"
                   fontSize={12}
                 >
-                  {f(m, "yyyy", "cs-CZ")}
+                  {formatLabelFunction(m, formatString, i18next.language)}
                 </text>
               ) : null}
             </g>
@@ -259,29 +257,24 @@ Slider.propTypes = {
   selection: PropTypes.arrayOf(PropTypes.number).isRequired,
   height: PropTypes.number,
   width: PropTypes.number,
-  innerWidth: PropTypes.number,
   scale: PropTypes.func,
   reset: PropTypes.func,
   keyboardStep: PropTypes.number,
-  dragChange: PropTypes.func,
   onChange: PropTypes.func,
-  handleLabelFormat: PropTypes.string,
   formatLabelFunction: PropTypes.func,
-  sliderStyle: PropTypes.object,
   showLabels: PropTypes.bool,
-  unselectedColor: PropTypes.string,
+  min: PropTypes.number.isRequired,
+  max: PropTypes.number.isRequired,
+  aggName: PropTypes.string.isRequired,
+  handleDragEnd: PropTypes.func.isRequired,
+  marginLeft: PropTypes.number.isRequired,
+  marginRight: PropTypes.number.isRequired,
+  formatString: PropTypes.string.isRequired,
 };
 
 Slider.defaultProps = {
-  sliderStyle: {
-    display: "block",
-    paddingBottom: "8px",
-    zIndex: 6,
-    overflow: "visible",
-  },
   keyboardStep: 1,
   showLabels: true,
-  unselectedColor: "gray",
 };
 
 export default Slider;
