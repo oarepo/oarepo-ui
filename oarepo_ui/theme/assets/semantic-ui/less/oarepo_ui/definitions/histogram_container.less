@@ -90,12 +90,36 @@ name of the component from above)
       height: @selectedSliderHeight;
       fill: @selectedSliderColor;
     }
-    .thumb-svg-group :focus-visible {
-      outline: 1px solid red;
+    .slider-thumb-container {
+      cursor: move;
     }
-    .thumb-svg-group:focus {
-      outline: 1px solid red;
+    .slider-thumb {
+      outline: none;
+      fill: @thumbColor;
+      stroke: @thumbStroke;
+      stroke-width: @thumbStrokeWidth;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
     }
+    .slider-thumb-label {
+      fill: @sliderThumbLabelFill;
+      font-size: @sliderThumbFontSize;
+      text-anchor: middle;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    .slider-thumb:focus-visible {
+      outline: 3px solid black;
+      border-radius: 100px;
+    }
+
     svg {
       min-width: 100%;
     }

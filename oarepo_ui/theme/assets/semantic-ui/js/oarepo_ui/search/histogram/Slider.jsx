@@ -2,15 +2,6 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
 
-const handleStyle = {
-  cursor: "move",
-  userSekect: "none",
-  MozUserSelect: "none",
-  KhtmlUserSelect: "none",
-  WebkitUserSelect: "none",
-  OUserSelect: "none",
-};
-
 // Map keycodes to positive or negative values
 export const mapToKeyCode = (code) => {
   const codes = {
@@ -22,7 +13,7 @@ export const mapToKeyCode = (code) => {
   return codes[code] || null;
 };
 
-class Slider extends Component {
+export class Slider extends Component {
   constructor() {
     super();
     this.state = {
@@ -174,7 +165,6 @@ class Slider extends Component {
       formatLabelFunction,
       width,
       height,
-      reset,
       showLabels,
       marginLeft,
       marginRight,
@@ -191,7 +181,6 @@ class Slider extends Component {
         height={height}
         width={width - marginLeft - marginRight}
         onMouseDown={this.dragFromSVG}
-        onDoubleClick={reset}
         onMouseMove={this.mouseMove}
       >
         <rect
@@ -209,39 +198,21 @@ class Slider extends Component {
         {selection.map((m, i) => {
           return (
             <g
-              className="thumb-svg-group"
-              tabIndex={0}
-              onKeyDown={this.keyDown.bind(this, i)}
+              className="slider-thumb-container"
               transform={`translate(${this.props.scale(m) + marginLeft}, 0)`}
               key={`handle-${i}`}
             >
-              {/* <circle
-                style={handleStyle}
-                r={6}
-                cx={0}
-                cy={12}
-                fill="#ddd"
-                strokeWidth="1"
-              /> */}
               <circle
-                style={handleStyle}
+                className="slider-thumb"
+                tabIndex={0}
+                onKeyDown={this.keyDown.bind(this, i)}
                 onMouseDown={this.dragStart.bind(this, i)}
                 r={5}
                 cx={0}
                 cy={12}
-                fill="white"
-                stroke="#ccc"
-                strokeWidth="1"
               />
               {showLabels ? (
-                <text
-                  style={handleStyle}
-                  textAnchor="middle"
-                  x={0}
-                  y={36}
-                  fill="#666"
-                  fontSize={12}
-                >
+                <text className="slider-thumb-label" x={0} y={36}>
                   {formatLabelFunction(m, formatString, i18next.language)}
                 </text>
               ) : null}
@@ -258,8 +229,6 @@ Slider.propTypes = {
   height: PropTypes.number,
   width: PropTypes.number,
   scale: PropTypes.func,
-  reset: PropTypes.func,
-  keyboardStep: PropTypes.number,
   onChange: PropTypes.func,
   formatLabelFunction: PropTypes.func,
   showLabels: PropTypes.bool,
@@ -270,11 +239,5 @@ Slider.propTypes = {
   marginLeft: PropTypes.number.isRequired,
   marginRight: PropTypes.number.isRequired,
   formatString: PropTypes.string.isRequired,
+  diffFunc: PropTypes.func.isRequired,
 };
-
-Slider.defaultProps = {
-  keyboardStep: 1,
-  showLabels: true,
-};
-
-export default Slider;

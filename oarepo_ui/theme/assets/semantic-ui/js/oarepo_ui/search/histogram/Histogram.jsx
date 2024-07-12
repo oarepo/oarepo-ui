@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { Popup, Button } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { formatDate } from "@js/oarepo_ui";
-import Slider from "./Slider.jsx";
+import { Slider } from "./Slider";
 import { getOpacityClass } from "./utils";
 
 export const Histogram = ({
@@ -25,6 +25,7 @@ export const Histogram = ({
   subtractFunc,
   rectanglePadding,
   minimumInterval,
+  showLabels,
 }) => {
   const svgContainerRef = useRef();
 
@@ -114,8 +115,10 @@ export const Histogram = ({
           trigger={
             <rect
               tabIndex={0}
+              type="button"
               className={rectangleOverlayClassName}
               x={x(d.start)}
+              aria-label={`${i18next.t("Filter data by date")} ${popupContent}`}
               // when I have a smaller rectangle (due to not full interval, I leave overlay so it is easier to click)
               width={
                 x(addFunc(d.start, interval).getTime()) -
@@ -141,6 +144,7 @@ export const Histogram = ({
           content={popupContent}
           trigger={
             <rect
+              type="button"
               className={`${rectangleClassName}  ${getOpacityClass(opacity)}`}
               x={x(d.start)}
               width={x(d.end) - x(d.start) - rectanglePadding}
@@ -262,7 +266,7 @@ export const Histogram = ({
           <Button
             type="button"
             onClick={handleReset}
-            className="transparent right-floated"
+            className="transparent right-floated mt-5"
           >
             {i18next.t("Reset")}
           </Button>
@@ -288,6 +292,7 @@ export const Histogram = ({
             diffFunc={diffFunc}
             aggName={aggName}
             minimumInterval={minimumInterval}
+            showLabels={showLabels}
           />
         )}
       </div>
@@ -319,4 +324,5 @@ Histogram.propTypes = {
   subtractFunc: PropTypes.func.isRequired,
   rectanglePadding: PropTypes.number.isRequired,
   minimumInterval: PropTypes.oneOf(["year", "day"]).isRequired,
+  showLabels: PropTypes.bool.isRequired,
 };

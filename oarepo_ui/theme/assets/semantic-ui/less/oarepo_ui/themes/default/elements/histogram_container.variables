@@ -8,3 +8,8 @@
 @selectedSliderHeight: 4px;
 @unselectedSliderColor: lightgray;
 @selectedSliderColor: steelblue;
+@thumbColor: white;
+@thumbStroke: steelblue;
+@thumbStrokeWidth: 1px;
+@sliderThumbLabelFill: "#666";
+@sliderThumbFontSize: 12px;

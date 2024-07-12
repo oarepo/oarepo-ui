@@ -14,20 +14,19 @@ import {
 const HistogramComponent = ({
   currentResultsState: {
     data: { aggregations },
-    loading,
   },
   svgHeight,
   sliderHeight,
   currentQueryState,
   updateQueryState,
   aggName,
-  aggTitle,
   minimumInterval,
   rectanglePadding,
   svgMargins,
   rectangleClassName,
   rectangleOverlayClassName,
   singleRectangleClassName,
+  showLabels,
 }) => {
   const addFunc = getAddFunc(minimumInterval);
   const diffFunc = getDiffFunc(minimumInterval);
@@ -68,6 +67,7 @@ const HistogramComponent = ({
               rectangleClassName={rectangleClassName}
               rectangleOverlayClassName={rectangleOverlayClassName}
               singleRectangleClassName={singleRectangleClassName}
+              showLabels={showLabels}
             />
           </Card.Content>
         </Card>
@@ -81,7 +81,6 @@ HistogramComponent.propTypes = {
   currentQueryState: PropTypes.object.isRequired,
   updateQueryState: PropTypes.func.isRequired,
   aggName: PropTypes.string.isRequired,
-  aggTitle: PropTypes.string.isRequired,
   minimumInterval: PropTypes.oneOf(["year", "day"]),
   svgHeight: PropTypes.number,
   rectanglePadding: PropTypes.number,
@@ -90,8 +89,8 @@ HistogramComponent.propTypes = {
   rectangleOverlayClassName: PropTypes.string,
   singleRectangleClassName: PropTypes.string,
   svgMargins: PropTypes.array,
+  showLabels: PropTypes.bool,
 };
-// TODO: fix up layout for daily granularity
 HistogramComponent.defaultProps = {
   minimumInterval: "year",
   svgHeight: 220,
@@ -101,5 +100,6 @@ HistogramComponent.defaultProps = {
   rectangleOverlayClassName: "histogram-rectangle-overlay",
   singleRectangleClassName: "histogram-rectangle-single",
   svgMargins: [20, 10, 0, 10],
+  showLabels: true,
 };
 export const HistogramWSlider = withState(HistogramComponent);

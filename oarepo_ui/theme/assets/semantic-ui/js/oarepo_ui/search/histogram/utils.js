@@ -45,39 +45,3 @@ export const getFormatString = (interval = "year") => {
     return "yyyy";
   }
 };
-
-export const calculateZoomIn = (
-  sliderMin,
-  sliderMax,
-  min,
-  max,
-  coefficient = 0.1
-) => {
-  const newMin =
-    sliderMin + Math.floor(max * coefficient) <= max
-      ? sliderMin + Math.floor(max * coefficient)
-      : max;
-  const newMax =
-    sliderMax - Math.floor(max * coefficient) >= min
-      ? sliderMax - Math.floor(max * coefficient)
-      : min;
-  return [newMin, newMax];
-};
-
-export const calculateZoomOut = (
-  sliderMin,
-  sliderMax,
-  min,
-  max,
-  coefficient = 0.1
-) => {
-  const newMin =
-    sliderMin - Math.floor(max * coefficient) >= min
-      ? sliderMin - Math.floor(max * coefficient)
-      : min;
-  const newMax =
-    sliderMax + Math.floor(max * coefficient) <= max
-      ? sliderMax + Math.floor(max * coefficient)
-      : max;
-  return [newMin, newMax];
-};
