@@ -418,7 +418,7 @@ class RecordsUIResource(UIResource):
     def edit(self):
         api_record = self._get_record(resource_requestctx, allow_draft=True)
         try:
-            self.api_service.require_permission(g.identity, "update", record=api_record)
+            self.api_service.require_permission(g.identity, "update", record=api_record._record) #ResultItem doesn't serialize state and owners field
         except PermissionDenied as e:
             raise Forbidden() from e
 
