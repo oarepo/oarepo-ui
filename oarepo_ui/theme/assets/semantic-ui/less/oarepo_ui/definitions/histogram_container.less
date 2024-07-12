@@ -119,22 +119,14 @@ name of the component from above)
       outline: 3px solid black;
       border-radius: 100px;
     }
-
+    .y-axis-indicator {
+      stroke: @yaxisLineStroke;
+    }
+    .y-axis-indicator-text {
+      font-size: @yaxisTextFontSize;
+    }
     svg {
       min-width: 100%;
-    }
-    .x-axis-line {
-      stroke: @xAxisLineStroke;
-    }
-    .x-axis-tick {
-      stroke: @xAxisTickStroke;
-    }
-    .x-axis-label {
-      font-size: @labelFontSize;
-      text-anchor: start;
-      dominant-baseline: hanging;
-      transform-origin: left top;
-      transform: translate(0px, 5px) rotate(45deg);
     }
   }
 }

@@ -1,8 +1,5 @@
-@labelFontSize: 0.75rem;
 @histogramRectangleColor: steelblue;
-@histogramRectangleHoverColor: red;
-@xAxisLineStroke: currentColor;
-@xAxisTickStroke: currentColor;
+@histogramRectangleHoverColor: green;
 @histogramRectangleOverlayColor: rgb(236, 236, 242);
 @unselectedSliderHeight: 4px;
 @selectedSliderHeight: 4px;
@@ -12,4 +9,6 @@
 @thumbStroke: steelblue;
 @thumbStrokeWidth: 1px;
 @sliderThumbLabelFill: "#666";
-@sliderThumbFontSize: 12px;
+@sliderThumbFontSize: 0.75rem;
+@yaxisLineStroke: steelblue;
+@yaxisTextFontSize: 0.75rem;

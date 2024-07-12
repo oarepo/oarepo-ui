@@ -40,9 +40,7 @@ export const Histogram = ({
   };
 
   const isFiltered = currentQueryState.filters.some((f) => f[0] === aggName);
-  const [marginTop, marginRight, marginBottom, marginLeft] = svgMargins ?? [
-    20, 10, 0, 10,
-  ];
+  const [marginTop, marginRight, marginBottom, marginLeft] = svgMargins;
 
   const [width, setWidth] = useState(400);
 
@@ -70,7 +68,7 @@ export const Histogram = ({
 
   const [selection, setSelection] = useState([minDate, maxDate]);
 
-  const bars = histogramData.map((d, i, array) => {
+  const bars = histogramData.map((d) => {
     let opacity;
 
     if (selection[0] > d.end || selection[1] < d.start) {
@@ -86,22 +84,17 @@ export const Histogram = ({
     }
     // if the interval is 1, show just the one date, if it is greater show from to
     const popupContent =
-      array[i].start === subtractFunc(array[i].end, 1).getTime()
-        ? `${formatDate(
-            array[i].start,
-            formatString,
-            i18next.language
-          )}: ${i18next.t("totalResults", { count: d?.doc_count })}`
-        : `${formatDate(
-            array[i].start,
-            formatString,
-            i18next.language
-          )}/${formatDate(
-            array[i]?.end ?? array[i].start,
+      d.start === subtractFunc(d.end, 1).getTime()
+        ? `${formatDate(d.start, formatString, i18next.language)}: ${i18next.t(
+            "totalResults",
+            { count: d?.doc_count }
+          )}`
+        : `${formatDate(d.start, formatString, i18next.language)}-${formatDate(
+            d?.end ?? d.start,
             formatString,
             i18next.language
           )}: ${i18next.t("totalResults", { count: d?.doc_count })}`;
-    const interval = array[i]?.interval.replace(/\D/g, "");
+    const interval = d?.interval.replace(/\D/g, "");
     const rectangleClickValue = `${formatDate(
       d.start,
       facetDateFormat
@@ -174,7 +167,10 @@ export const Histogram = ({
           textAnchor="middle"
           alignmentBaseline="middle"
         >
-          {popupContent}
+          {`${formatDate(d.start, formatString, i18next.language)}: ${i18next.t(
+            "totalResults",
+            { count: d?.doc_count }
+          )}`}
         </text>
       </React.Fragment>
     );
@@ -259,6 +255,7 @@ export const Histogram = ({
       });
     }
   };
+
   return (
     histogramData.length > 0 && (
       <div className="histogram-svg-container" ref={svgContainerRef}>
@@ -273,6 +270,24 @@ export const Histogram = ({
         )}
         <svg height={height} viewBox={`0 0 ${width} ${height}`}>
           {bars}
+          {histogramData.length > 1 && (
+            <React.Fragment>
+              <path
+                className="y-axis-indicator"
+                height={5}
+                d={`M${x(minDate)} ${y(maxCountElement.doc_count)} L${x(
+                  maxDate
+                )} ${y(maxCountElement.doc_count)}`}
+              />
+              <text
+                x={x(minDate) - 15}
+                y={y(maxCountElement.doc_count) - 10}
+                className="y-axis-indicator-text"
+              >
+                {maxCountElement.doc_count}
+              </text>
+            </React.Fragment>
+          )}
         </svg>
         {histogramData.length > 1 && (
           <Slider
