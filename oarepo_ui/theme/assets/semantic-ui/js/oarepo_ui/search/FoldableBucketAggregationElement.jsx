@@ -54,4 +54,5 @@ export const FoldableBucketAggregationElement = ({
 FoldableBucketAggregationElement.propTypes = {
   title: PropTypes.string.isRequired,
   containerCmp: PropTypes.node.isRequired,
+  agg: PropTypes.object.isRequired,
 };

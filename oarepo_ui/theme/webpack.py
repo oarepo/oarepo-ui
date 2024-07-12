@@ -61,7 +61,6 @@ else:
         "html-entities": "2.5.2",
         "sanitize-html": "2.13.0",
         "d3": "^7.8.5",
-        "react-slider": "^2.0.6",
     }
     aliases = {}
 
