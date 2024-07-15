@@ -554,3 +554,8 @@ msgstr ""
 
 msgid "Remove"
 msgstr ""
+
+#: /Users/m/w/cesnet/oarepo-ui/oarepo_ui/templates/oarepo_ui/footer.html:37
+#, python-format
+msgid "Version: %(version)s"
+msgstr ""

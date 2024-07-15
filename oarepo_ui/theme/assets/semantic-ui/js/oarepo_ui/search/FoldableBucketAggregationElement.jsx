@@ -3,13 +3,18 @@ import { Accordion, Header, Card, Icon, Transition } from "semantic-ui-react";
 import PropTypes from "prop-types";
 import { AppContext } from "react-searchkit";
 import Overridable from "react-overridable";
+import { withState } from "react-searchkit";
 
-export const FoldableBucketAggregationElement = ({
+// TODO: why is title a required prop that is not used at all?
+export const FoldableBucketAggregationElementComponent = ({
   title,
   containerCmp,
   agg,
+  currentQueryState,
 }) => {
-  const [isActive, setIsActive] = useState(false);
+  const [isActive, setIsActive] = useState(
+    currentQueryState.filters.some((f) => f[0] === agg?.aggName)
+  );
   const { buildUID } = useContext(AppContext);
 
   const handleClick = () => setIsActive((prevState) => !prevState);
@@ -51,8 +56,13 @@ export const FoldableBucketAggregationElement = ({
   );
 };
 
-FoldableBucketAggregationElement.propTypes = {
+FoldableBucketAggregationElementComponent.propTypes = {
   title: PropTypes.string.isRequired,
   containerCmp: PropTypes.node.isRequired,
   agg: PropTypes.object.isRequired,
+  currentQueryState: PropTypes.object.isRequired,
 };
+
+export const FoldableBucketAggregationElement = withState(
+  FoldableBucketAggregationElementComponent
+);
