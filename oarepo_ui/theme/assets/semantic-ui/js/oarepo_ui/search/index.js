@@ -22,3 +22,4 @@ export { ShouldActiveFiltersRender } from "./ShouldActiveFiltersRender";
 export { FoldableBucketAggregationElement } from "./FoldableBucketAggregationElement";
 export * from "./ShouldRender";
 export * from "./util";
+export * from "./histogram";

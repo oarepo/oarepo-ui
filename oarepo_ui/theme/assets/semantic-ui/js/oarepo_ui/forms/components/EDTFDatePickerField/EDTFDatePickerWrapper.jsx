@@ -4,7 +4,7 @@ import { DatePickerHeader } from "./DatePickerHeader";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { edtfDateFormatOptions } from "./utils";
-import { useLoadLocaleObjects } from "./hooks";
+import { useLoadLocaleObjects } from "@js/oarepo_ui";
 import { InputElement } from "./InputElement";
 
 export const EDTFDatePickerWrapper = ({
