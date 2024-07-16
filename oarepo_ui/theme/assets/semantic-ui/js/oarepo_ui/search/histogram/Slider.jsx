@@ -85,7 +85,7 @@ export class Slider extends Component {
       let dragIndex;
 
       if (
-        Math.abs(selected - selection[0]) > Math.abs(selected - selection[1])
+        Math.abs(selected - selection[0]) >= Math.abs(selected - selection[1])
       ) {
         dragIndex = 1;
         selection[1] = Math.max(
@@ -207,7 +207,7 @@ export class Slider extends Component {
                 tabIndex={0}
                 onKeyDown={this.keyDown.bind(this, i)}
                 onMouseDown={this.dragStart.bind(this, i)}
-                r={5}
+                r={8}
                 cx={0}
                 cy={12}
               />

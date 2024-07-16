@@ -57,7 +57,7 @@ export const Histogram = ({
     .range([marginLeft, width - marginRight]);
 
   const y = d3
-    .scaleLinear()
+    .scaleSqrt()
     .domain([0, d3.max(histogramData, (d) => d?.doc_count)])
     .range([height - marginBottom, marginTop]);
 
@@ -84,7 +84,7 @@ export const Histogram = ({
     }
     // if the interval is 1, show just the one date, if it is greater show from to
     const popupContent =
-      d.start === subtractFunc(d.end, 1).getTime()
+      d.end - d.start === 0
         ? `${formatDate(d.start, formatString, i18next.language)}: ${i18next.t(
             "totalResults",
             { count: d?.doc_count }
@@ -98,7 +98,12 @@ export const Histogram = ({
     const rectangleClickValue = `${formatDate(
       d.start,
       facetDateFormat
-    )}/${formatDate(subtractFunc(d.end, 1), facetDateFormat)}`;
+    )}/${formatDate(d.end, facetDateFormat)}`;
+
+    const sameYearX = x(d.end) - x(subtractFunc(d.start, 1).getTime())
+    const barX = d.end - d.start > 0 ? x(d.end) - x(d.start) : sameYearX
+    const barHeight = y(0) - y(d?.doc_count)
+
     return histogramData.length > 1 ? (
       <React.Fragment key={d.uuid}>
         <Popup
@@ -140,9 +145,9 @@ export const Histogram = ({
               type="button"
               className={`${rectangleClassName}  ${getOpacityClass(opacity)}`}
               x={x(d.start)}
-              width={x(d.end) - x(d.start) - rectanglePadding}
+              width={barX - rectanglePadding}
               y={y(d.doc_count)}
-              height={y(0) - y(d?.doc_count)}
+              height={barHeight}
               onClick={() => {
                 handleRectangleClick(rectangleClickValue, d);
               }}
@@ -151,18 +156,18 @@ export const Histogram = ({
         />
       </React.Fragment>
     ) : (
-      <React.Fragment>
+      <React.Fragment key={d.uuid}>
         <rect
           key={d.uuid}
           className={singleRectangleClassName}
-          x={(x(d.end) - x(d.start)) / 4}
-          width={(x(d.end) - x(d.start)) / 2}
+          x={width / 4}
+          width={width / 2 - rectanglePadding}
           y={y(d.doc_count * 0.8)}
-          height={y(0) - y(d?.doc_count * 0.8)}
+          height={barHeight}
         />
         <text
           className="single-rectangle-text"
-          x={(x(d.end) - x(d.start)) / 2}
+          x={width / 2}
           y={y(d.doc_count * 0.9)}
           textAnchor="middle"
           alignmentBaseline="middle"
@@ -261,9 +266,12 @@ export const Histogram = ({
       <div className="histogram-svg-container" ref={svgContainerRef}>
         {isFiltered && (
           <Button
+            basic
+            color="blue"
             type="button"
+            size="mini"
             onClick={handleReset}
-            className="transparent right-floated mt-5"
+            className="right-floated mt-5"
           >
             {i18next.t("Reset")}
           </Button>
@@ -274,7 +282,8 @@ export const Histogram = ({
             <React.Fragment>
               <path
                 className="y-axis-indicator"
-                height={5}
+                height={1}
+                strokeWidth="1"
                 d={`M${x(minDate)} ${y(maxCountElement.doc_count)} L${x(
                   maxDate
                 )} ${y(maxCountElement.doc_count)}`}
@@ -284,7 +293,7 @@ export const Histogram = ({
                 y={y(maxCountElement.doc_count) - 10}
                 className="y-axis-indicator-text"
               >
-                {maxCountElement.doc_count}
+                {"max. "}{i18next.t("totalResults", { count: maxCountElement.doc_count })}
               </text>
             </React.Fragment>
           )}

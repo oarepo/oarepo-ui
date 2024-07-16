@@ -559,3 +559,9 @@ msgstr ""
 #, python-format
 msgid "Version: %(version)s"
 msgstr ""
+
+msgid "Filter data by date"
+msgstr ""
+
+msgid "Reset"
+msgstr ""
