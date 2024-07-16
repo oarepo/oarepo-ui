@@ -1,9 +1,8 @@
 import React, { useState, useContext } from "react";
 import { Accordion, Header, Card, Icon, Transition } from "semantic-ui-react";
 import PropTypes from "prop-types";
-import { AppContext } from "react-searchkit";
+import { AppContext, withState } from "react-searchkit";
 import Overridable from "react-overridable";
-import { withState } from "react-searchkit";
 
 // TODO: why is title a required prop that is not used at all?
 export const FoldableBucketAggregationElementComponent = ({
