@@ -181,18 +181,19 @@ export class Slider extends Component {
         height={height}
         width={width - marginLeft - marginRight}
         onMouseDown={this.dragFromSVG}
+        onMouseUp={this.dragEnd}
         onMouseMove={this.mouseMove}
       >
         <rect
           className="unselected-slider"
           x={scale(min) + marginLeft}
-          y={10}
+          y={14}
           width={unselectedWidth}
         />
         <rect
           className="selected-slider"
           x={scale(selection[0]) + marginLeft}
-          y={10}
+          y={14}
           width={selectionWidth}
         />
         {selection.map((m, i) => {
@@ -209,10 +210,10 @@ export class Slider extends Component {
                 onMouseDown={this.dragStart.bind(this, i)}
                 r={8}
                 cx={0}
-                cy={12}
+                cy={16}
               />
               {showLabels ? (
-                <text className="slider-thumb-label" x={0} y={36}>
+                <text className="slider-thumb-label" x={0} y={48}>
                   {formatLabelFunction(m, formatString, i18next.language)}
                 </text>
               ) : null}

@@ -89,6 +89,7 @@ name of the component from above)
     .selected-slider {
       height: @selectedSliderHeight;
       fill: @selectedSliderColor;
+      fill-opacity: 0.6;
     }
     .slider-thumb-container {
       cursor: move;
@@ -103,6 +104,10 @@ name of the component from above)
       -moz-user-select: none;
       -ms-user-select: none;
       user-select: none;
+
+      &:hover {
+        fill: @thumbFillHovered;
+      }
     }
     .slider-thumb-label {
       fill: @sliderThumbLabelFill;

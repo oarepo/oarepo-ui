@@ -7,8 +7,9 @@
 @selectedSliderColor: steelblue;
 @thumbColor: white;
 @thumbStroke: steelblue;
+@thumbFillHovered: steelblue;
 @thumbStrokeWidth: 1px;
 @sliderThumbLabelFill: "#666";
-@sliderThumbFontSize: 0.75rem;
+@sliderThumbFontSize: 1rem;
 @yaxisLineStroke: steelblue;
 @yaxisTextFontSize: 0.75rem;
