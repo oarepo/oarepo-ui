@@ -100,8 +100,17 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
     // handling labels, always I take result of i18next.t if we get metadata/smth, we use it to debug
     // help and hint if result is same as the key, don't render, if it is different render
     const path = transformPath(fieldPathWithPrefix);
-    const { help, label, hint, required } = _get(uiMetadata, path);
-
+    const {
+      help: modelHelp,
+      label: modelLabel,
+      hint: modelHint,
+      required,
+    } = _get(uiMetadata, path);
+    const label = i18next.t(modelLabel);
+    const help =
+      i18next.t(modelHelp) === modelHelp ? null : i18next.t(modelHelp);
+    const hint =
+      i18next.t(modelHint) === modelHint ? null : i18next.t(modelHint);
     // full representation meaning jsx or small space representation (no helptext, label with helptext in popup)
     // text only without react elements
     return {
@@ -122,6 +131,7 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
           />
         ),
         placeholder: hint,
+        required,
       },
       textRepresentation: {
         helpText: help,
