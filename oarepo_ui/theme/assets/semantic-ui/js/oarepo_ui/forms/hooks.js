@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState, useContext } from "react";
+import { useEffect, useCallback, useState, useContext, useMemo } from "react";
 import { FormConfigContext, FieldDataContext } from "./contexts";
 import {
   OARepoDepositApiClient,
@@ -14,6 +14,9 @@ import _isEmpty from "lodash/isEmpty";
 import _isObject from "lodash/isObject";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { relativeUrl } from "../util";
+import { decode } from "html-entities";
+import sanitizeHtml from "sanitize-html";
+import { getValidTagsForEditor } from "@js/oarepo_ui";
 
 export const extractFEErrorMessages = (obj) => {
   const errorMessages = [];
@@ -458,3 +461,33 @@ export const useValidateOnBlur = () => {
 
   return handleValidateAndBlur(validateField, setFieldTouched);
 };
+
+export const useSanitizeInput = () => {
+  const {
+    formConfig: { allowedHtmlAttrs, allowedHtmlTags },
+  } = useFormConfig();
+
+  const sanitizeInput = useCallback(
+    (htmlString) => {
+      const decodedString = decode(htmlString);
+      const cleanInput = sanitizeHtml(decodedString, {
+        allowedTags: allowedHtmlTags,
+        allowedAttributes: allowedHtmlAttrs,
+      });
+      return cleanInput;
+    },
+    [allowedHtmlTags, allowedHtmlAttrs]
+  );
+  const validEditorTags = useMemo(
+    () => getValidTagsForEditor(allowedHtmlTags, allowedHtmlAttrs),
+    [allowedHtmlTags, allowedHtmlAttrs]
+  );
+  return {
+    sanitizeInput,
+    allowedHtmlAttrs,
+    allowedHtmlTags,
+    validEditorTags,
+  };
+};
+
+export default useSanitizeInput;

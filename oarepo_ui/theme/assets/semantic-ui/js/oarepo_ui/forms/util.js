@@ -16,8 +16,6 @@ import Overridable, {
   overrideStore,
 } from "react-overridable";
 import { BaseFormLayout } from "./components/BaseFormLayout";
-import { decode } from "html-entities";
-import sanitizeHtml from "sanitize-html";
 
 export function parseFormAppConfig(rootElementId = "form-app") {
   const rootEl = document.getElementById(rootElementId);
@@ -30,67 +28,6 @@ export function parseFormAppConfig(rootElementId = "form-app") {
 
   return { rootEl, record, formConfig, recordPermissions, files, links };
 }
-
-const allowed_tags = [
-  "a",
-  "abbr",
-  "acronym",
-  "b",
-  "blockquote",
-  "br",
-  "code",
-  "div",
-  "table",
-  "tbody",
-  "td",
-  "th",
-  "tr",
-  "em",
-  "h1",
-  "h2",
-  "h3",
-  "h4",
-  "h5",
-  "i",
-  "li",
-  "ol",
-  "p",
-  "pre",
-  "span",
-  "strike",
-  "strong",
-  "sub",
-  "sup",
-  "u",
-  "ul",
-];
-
-const allowed_attr = {
-  a: ["href", "title", "name", "target", "rel"],
-  abbr: ["title"],
-  acronym: ["title"],
-};
-
-export const validTags = (tags = allowed_tags, attr = allowed_attr) => {
-  const specialAttributes = Object.fromEntries(
-    Object.entries(attr).map(([key, value]) => [key, value.join("|")])
-  );
-
-  return tags
-    .map((tag) => {
-      return specialAttributes[tag] ? `${tag}[${specialAttributes[tag]}]` : tag;
-    })
-    .join(",");
-};
-
-export const sanitizeInput = (htmlString, validTags) => {
-  const decodedString = decode(htmlString);
-  const cleanInput = sanitizeHtml(decodedString, {
-    allowedTags: validTags || allowed_tags,
-    allowedAttributes: allowed_attr,
-  });
-  return cleanInput;
-};
 
 /**
  * Initialize Formik form application.
@@ -163,22 +100,8 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
     // handling labels, always I take result of i18next.t if we get metadata/smth, we use it to debug
     // help and hint if result is same as the key, don't render, if it is different render
     const path = transformPath(fieldPathWithPrefix);
-    const {
-      help: modelHelp,
-      label: modelLabel,
-      hint: modelHint,
-      required: modelRequired,
-    } = _get(uiMetadata, path);
-    const help = i18next.t(modelHelp).startsWith("metadata")
-      ? null
-      : i18next.t(modelHelp);
-    const label = i18next.t(modelLabel).startsWith("metadata")
-      ? null
-      : i18next.t(modelLabel);
-    const hint = i18next.t(modelHint).startsWith("metadata")
-      ? null
-      : i18next.t(modelHint);
-    const required = modelRequired;
+    const { help, label, hint, required } = _get(uiMetadata, path);
+
     // full representation meaning jsx or small space representation (no helptext, label with helptext in popup)
     // text only without react elements
     return {
@@ -204,6 +127,7 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
         helpText: help,
         label: label,
         placeholder: hint,
+        required,
       },
     };
   };
@@ -230,3 +154,22 @@ export function transformPath(path) {
   // Join the transformed parts back into a single string
   return transformedParts.join(".");
 }
+
+export const getValidTagsForEditor = (tags, attr) => {
+  const specialAttributes = Object.fromEntries(
+    Object.entries(attr).map(([key, value]) => [key, value.join("|")])
+  );
+  let result = [];
+
+  if (specialAttributes["*"]) {
+    result.push(`@[${specialAttributes["*"]}]`);
+  }
+
+  result = result.concat(
+    tags.map((tag) => {
+      return specialAttributes[tag] ? `${tag}[${specialAttributes[tag]}]` : tag;
+    })
+  );
+
+  return result.join(",");
+};

@@ -6,6 +6,7 @@ import { importTemplate, loadComponents } from "@js/invenio_theme/templates";
 import _uniqBy from "lodash/uniqBy";
 import * as Yup from "yup";
 import { i18next } from "@translations/oarepo_ui/i18next";
+import { format } from "date-fns";
 
 export const getInputFromDOM = (elementName) => {
   const element = document.getElementsByName(elementName);
@@ -14,7 +15,6 @@ export const getInputFromDOM = (elementName) => {
   }
   return null;
 };
-
 export const scrollTop = () => {
   window.scrollTo({
     top: 0,
@@ -187,3 +187,53 @@ export const getTitleFromMultilingualObject = (multilingualObject) => {
 
   return localizedValue;
 };
+
+// Date utils
+
+export function getLocaleObject(localeSpec) {
+  if (typeof localeSpec === "string") {
+    // Treat it as a locale name registered by registerLocale
+    const scope = window;
+    // Null was replaced with undefined to avoid type coercion
+    return scope.__localeData__ ? scope.__localeData__[localeSpec] : undefined;
+  } else {
+    // Treat it as a raw date-fns locale object
+    return localeSpec;
+  }
+}
+
+export function getDefaultLocale() {
+  const scope = window;
+
+  return scope.__localeId__;
+}
+
+// function that can be used anywhere in code (where React is used), after the component uses useLoadLocaleObjects hook to
+// load the locale objects into the window object
+export function formatDate(date, formatStr, locale) {
+  if (locale === "en") {
+    return format(date, formatStr, {
+      useAdditionalWeekYearTokens: true,
+      useAdditionalDayOfYearTokens: true,
+    });
+  }
+  let localeObj = locale ? getLocaleObject(locale) : undefined;
+  // it spams the console too much, because on load the objects are not available at first
+  // if (locale && !localeObj) {
+  //   console.warn(
+  //     `A locale object was not found for the provided string ["${locale}"].`
+  //   );
+  // }
+  if (
+    !localeObj &&
+    !!getDefaultLocale() &&
+    !!getLocaleObject(getDefaultLocale())
+  ) {
+    localeObj = getLocaleObject(getDefaultLocale());
+  }
+  return format(date, formatStr, {
+    locale: localeObj,
+    useAdditionalWeekYearTokens: true,
+    useAdditionalDayOfYearTokens: true,
+  });
+}

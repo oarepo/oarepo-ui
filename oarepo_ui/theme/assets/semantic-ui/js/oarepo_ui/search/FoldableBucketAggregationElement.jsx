@@ -1,9 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Accordion, Header, Card, Icon, Transition } from "semantic-ui-react";
 import PropTypes from "prop-types";
+import { AppContext, withState } from "react-searchkit";
+import Overridable from "react-overridable";
 
-export const FoldableBucketAggregationElement = ({ title, containerCmp }) => {
-  const [isActive, setIsActive] = useState(false);
+// TODO: why is title a required prop that is not used at all?
+export const FoldableBucketAggregationElementComponent = ({
+  title,
+  containerCmp,
+  agg,
+  currentQueryState,
+}) => {
+  const [isActive, setIsActive] = useState(
+    currentQueryState.filters.some((f) => f[0] === agg?.aggName)
+  );
+  const { buildUID } = useContext(AppContext);
 
   const handleClick = () => setIsActive((prevState) => !prevState);
   return (
@@ -21,7 +32,7 @@ export const FoldableBucketAggregationElement = ({ title, containerCmp }) => {
         >
           <div className="flex justify-space-between align-items-center">
             <Header className="mb-0" as="h3">
-              {title}
+              {agg.title}
             </Header>
             <div className="align-self-end">
               <Icon name="angle right" />
@@ -30,7 +41,13 @@ export const FoldableBucketAggregationElement = ({ title, containerCmp }) => {
         </Accordion.Title>
         <Transition visible={isActive} animation="fade down" duration={200}>
           <Accordion.Content active={isActive}>
-            {containerCmp}
+            <Overridable
+              id={buildUID(`BucketAggregation.element.${agg.aggName}`)}
+              aggName={agg.aggName}
+              aggTitle={agg.title}
+            >
+              {containerCmp}
+            </Overridable>
           </Accordion.Content>
         </Transition>
       </Accordion>
@@ -38,7 +55,13 @@ export const FoldableBucketAggregationElement = ({ title, containerCmp }) => {
   );
 };
 
-FoldableBucketAggregationElement.propTypes = {
+FoldableBucketAggregationElementComponent.propTypes = {
   title: PropTypes.string.isRequired,
   containerCmp: PropTypes.node.isRequired,
+  agg: PropTypes.object.isRequired,
+  currentQueryState: PropTypes.object.isRequired,
 };
+
+export const FoldableBucketAggregationElement = withState(
+  FoldableBucketAggregationElementComponent
+);

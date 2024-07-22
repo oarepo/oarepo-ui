@@ -21,7 +21,6 @@ export const DynamicResultsListItem = ({
     console.warn("Result", result, `is missing value for '${selector}'.`);
     return <FallbackComponent result={result} />;
   }
-
   return (
     <Overridable
       id={buildUID("ResultsList.item", selectorValue)}

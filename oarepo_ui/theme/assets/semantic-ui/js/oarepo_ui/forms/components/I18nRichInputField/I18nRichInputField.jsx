@@ -1,6 +1,7 @@
 import * as React from "react";
 import {
   LanguageSelectField,
+  useSanitizeInput,
   useFormConfig,
   useFieldData,
 } from "@js/oarepo_ui";
@@ -13,7 +14,6 @@ import {
 import PropTypes from "prop-types";
 import { Form } from "semantic-ui-react";
 import { useFormikContext, getIn } from "formik";
-import { sanitizeInput } from "../../util";
 
 export const I18nRichInputField = ({
   fieldPath,
@@ -30,7 +30,7 @@ export const I18nRichInputField = ({
   ...uiProps
 }) => {
   const { values, setFieldValue, setFieldTouched } = useFormikContext();
-
+  const { sanitizeInput } = useSanitizeInput();
   const fieldValue = getIn(values, `${fieldPath}.value`);
 
   const { getFieldData } = useFieldData();
@@ -48,7 +48,6 @@ export const I18nRichInputField = ({
 
       <Form.Field width={13}>
         <RichInputField
-          className={`${!label ? "mt-25" : ""}`}
           fieldPath={`${fieldPath}.value`}
           label={label}
           required={required}
@@ -60,10 +59,7 @@ export const I18nRichInputField = ({
               optimized
               editorConfig={editorConfig}
               onBlur={(event, editor) => {
-                const cleanedContent = sanitizeInput(
-                  editor.getContent(),
-                  validTags
-                );
+                const cleanedContent = sanitizeInput(editor.getContent());
                 setFieldValue(`${fieldPath}.value`, cleanedContent);
                 setFieldTouched(`${fieldPath}.value`, true);
               }}

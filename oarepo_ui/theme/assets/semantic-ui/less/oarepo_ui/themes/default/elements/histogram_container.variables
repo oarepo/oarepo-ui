@@ -1,0 +1,15 @@
+@histogramRectangleColor: steelblue;
+@histogramRectangleHoverColor: green;
+@histogramRectangleOverlayColor: rgb(236, 236, 242);
+@unselectedSliderHeight: 4px;
+@selectedSliderHeight: 4px;
+@unselectedSliderColor: lightgray;
+@selectedSliderColor: steelblue;
+@thumbColor: white;
+@thumbStroke: steelblue;
+@thumbFillHovered: steelblue;
+@thumbStrokeWidth: 1px;
+@sliderThumbLabelFill: "#666";
+@sliderThumbFontSize: 1rem;
+@yaxisLineStroke: steelblue;
+@yaxisTextFontSize: 0.75rem;

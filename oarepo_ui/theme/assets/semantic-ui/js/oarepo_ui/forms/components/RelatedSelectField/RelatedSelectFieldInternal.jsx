@@ -241,6 +241,7 @@ RelatedSelectFieldInternal.propTypes = {
   serializeExternalApiSuggestions: PropTypes.func,
   externalApiButtonContent: PropTypes.string,
   externalApiModalTitle: PropTypes.string,
+  searchQueryParamName: PropTypes.string,
 };
 
 RelatedSelectFieldInternal.defaultProps = {
@@ -261,4 +262,5 @@ RelatedSelectFieldInternal.defaultProps = {
   externalApiButtonContent: i18next.t("Search External Database"),
   externalApiModalTitle: i18next.t("Search results from external API"),
   serializeExternalApiSuggestions: undefined,
+  searchQueryParamName: "suggest",
 };
