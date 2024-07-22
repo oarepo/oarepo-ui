@@ -78,6 +78,7 @@ def test_edit(
                     "can_update_files": True,
                     "can_view": False,
                 },
+                "ui_model": {"test": "ok"},
                 "updateUrl": f"https://127.0.0.1:5000/api/simple-model/{simple_record.id}",
             },
             "record": {

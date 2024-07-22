@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { ArrayField, FieldLabel } from "react-invenio-forms";
+import { ArrayField } from "react-invenio-forms";
 import { Form } from "semantic-ui-react";
 import {
   I18nTextInputField,
@@ -9,31 +9,27 @@ import {
   useDefaultLocale,
   useFormFieldValue,
   useShowEmptyValue,
+  useFieldData,
 } from "@js/oarepo_ui";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { useFormikContext, getIn } from "formik";
 
 export const MultilingualTextInput = ({
   fieldPath,
-  label,
   labelIcon,
-  required,
   defaultNewValue,
   rich,
   editorConfig,
-  textFieldLabel,
-  textFieldIcon,
-  helpText,
   addButtonLabel,
   lngFieldWidth,
   showEmptyValue,
   prefillLanguageWithDefaultLocale,
-  useModelData,
   removeButtonLabelClassName,
   displayFirstInputRemoveButton,
   ...uiProps
 }) => {
   const { defaultLocale } = useDefaultLocale();
+  const { getFieldData } = useFieldData();
 
   const { values } = useFormikContext();
   const { usedSubValues, defaultNewValue: getNewValue } = useFormFieldValue({
@@ -54,11 +50,8 @@ export const MultilingualTextInput = ({
           : defaultNewValue
       }
       fieldPath={fieldPath}
-      label={
-        <FieldLabel htmlFor={fieldPath} icon={labelIcon ?? ""} label={label} />
-      }
-      helpText={helpText}
       addButtonClassName="array-field-add-button"
+      {...{ ...getFieldData(fieldPath, labelIcon).fullRepresentation }}
     >
       {({ indexPath, arrayHelpers }) => {
         const fieldPathPrefix = `${fieldPath}.${indexPath}`;
@@ -75,25 +68,17 @@ export const MultilingualTextInput = ({
               {rich ? (
                 <I18nRichInputField
                   fieldPath={fieldPathPrefix}
-                  label={textFieldLabel}
-                  labelIcon={textFieldIcon}
                   editorConfig={editorConfig}
                   optimized
-                  required={required}
                   usedLanguages={usedLanguages}
                   lngFieldWidth={lngFieldWidth}
-                  useModelData={useModelData}
                   {...uiProps}
                 />
               ) : (
                 <I18nTextInputField
                   fieldPath={fieldPathPrefix}
-                  label={textFieldLabel}
-                  labelIcon={textFieldIcon}
-                  required={required}
                   usedLanguages={usedLanguages}
                   lngFieldWidth={lngFieldWidth}
-                  useModelData={useModelData}
                   {...uiProps}
                 />
               )}
@@ -107,22 +92,14 @@ export const MultilingualTextInput = ({
 
 MultilingualTextInput.propTypes = {
   fieldPath: PropTypes.string.isRequired,
-  label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   labelIcon: PropTypes.string,
-  required: PropTypes.bool,
-  hasRichInput: PropTypes.bool,
+  rich: PropTypes.bool,
   editorConfig: PropTypes.object,
-  textFieldLabel: PropTypes.string,
-  textFieldIcon: PropTypes.string,
-  helpText: PropTypes.string,
   addButtonLabel: PropTypes.string,
   lngFieldWidth: PropTypes.number,
-  rich: PropTypes.bool,
   defaultNewValue: PropTypes.object,
   showEmptyValue: PropTypes.bool,
   prefillLanguageWithDefaultLocale: PropTypes.bool,
-  // whether or not the nested components shall call to get input information from the model
-  useModelData: PropTypes.bool,
   removeButtonLabelClassName: PropTypes.string,
   displayFirstInputRemoveButton: PropTypes.bool,
 };
@@ -133,10 +110,8 @@ MultilingualTextInput.defaultProps = {
     value: "",
   },
   rich: false,
-  label: undefined,
   addButtonLabel: i18next.t("Add another language"),
   showEmptyValue: false,
   prefillLanguageWithDefaultLocale: false,
-  useModelData: true,
   displayFirstInputRemoveButton: true,
 };

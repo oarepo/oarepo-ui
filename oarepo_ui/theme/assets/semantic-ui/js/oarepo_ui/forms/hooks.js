@@ -62,7 +62,7 @@ export const useFieldData = () => {
   const context = useContext(FieldDataContext);
   if (!context) {
     throw new Error(
-      "useFormConfig must be used inside FormConfigContext.Provider"
+      "useFormConfig must be used inside FieldDataContext .Provider"
     );
   }
   return context;

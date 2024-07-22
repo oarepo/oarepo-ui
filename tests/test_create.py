@@ -73,6 +73,7 @@ def test_create(
                     "can_update_files": True,
                     "can_view": False,
                 },
+                "ui_model": {"test": "ok"},
             },
             "record": {"title": ""},
             "ui_links": {},

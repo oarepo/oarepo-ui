@@ -92,7 +92,6 @@ export function createFormAppInit({
 }
 
 export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
-  // explore options of using context to pass the data from ui json to nested fields in modal
   return (fieldPath, icon = "pencil") => {
     const fieldPathWithPrefix = fieldPathPrefix
       ? `${fieldPathPrefix}.${fieldPath}`
