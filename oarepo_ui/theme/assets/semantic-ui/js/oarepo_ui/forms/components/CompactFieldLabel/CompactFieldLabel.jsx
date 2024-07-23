@@ -32,7 +32,7 @@ CompactFieldLabel.propTypes = {
 };
 
 CompactFieldLabel.defaultProps = {
-  className: "field-label-class invenio-field-label",
+  className: "field-label-class compact-label",
   icon: "",
   htmlFor: undefined,
   label: undefined,

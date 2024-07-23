@@ -30,14 +30,15 @@ export const I18nRichInputField = ({
         fieldPath={lngFieldPath}
         width={lngFieldWidth}
         usedLanguages={usedLanguages}
-        {...getFieldData(lngFieldPath, "web").compactRepresentation}
+        {...getFieldData({ fieldPath: lngFieldPath, icon: "globe" })
+          .compactRepresentation}
       />
 
       <Form.Field width={13}>
         <RichInputField
           fieldPath={textFieldPath}
           optimized={optimized}
-          {...getFieldData(textFieldPath).compactRepresentation}
+          {...getFieldData({ fieldPath: textFieldPath }).compactRepresentation}
           editor={
             <RichEditor
               value={fieldValue}

@@ -51,7 +51,7 @@ export const MultilingualTextInput = ({
       }
       fieldPath={fieldPath}
       addButtonClassName="array-field-add-button"
-      {...{ ...getFieldData(fieldPath, labelIcon).fullRepresentation }}
+      {...getFieldData({ fieldPath, icon: labelIcon }).fullRepresentation}
     >
       {({ indexPath, arrayHelpers }) => {
         const fieldPathPrefix = `${fieldPath}.${indexPath}`;

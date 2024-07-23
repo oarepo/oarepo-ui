@@ -92,7 +92,12 @@ export function createFormAppInit({
 }
 
 export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
-  return (fieldPath, icon = "pencil") => {
+  return ({
+    fieldPath,
+    icon = "pencil",
+    fullLabelClassName,
+    compactLabelClassName,
+  }) => {
     const fieldPathWithPrefix = fieldPathPrefix
       ? `${fieldPathPrefix}.${fieldPath}`
       : fieldPath;
@@ -110,12 +115,20 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
       i18next.t(modelHelp) === modelHelp ? null : i18next.t(modelHelp);
     const hint =
       i18next.t(modelHint) === modelHint ? null : i18next.t(modelHint);
-    // full representation meaning jsx or small space representation (no helptext, label with helptext in popup)
+    // full representation meaning jsx or small space representation (label with helptext in popup)
     // text only without react elements
     return {
       fullRepresentation: {
         helpText: help,
-        label: <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />,
+        label: (
+          <FieldLabel
+            id={fieldPath}
+            htmlFor={fieldPath}
+            icon={icon}
+            label={label}
+            className={fullLabelClassName}
+          />
+        ),
         placeholder: hint,
         required,
       },
@@ -124,9 +137,10 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
         label: (
           <CompactFieldLabel
             htmlFor={fieldPath}
-            icon=""
+            icon={icon}
             label={label}
             popupHelpText={help}
+            className={compactLabelClassName}
           />
         ),
         placeholder: hint,
@@ -146,7 +160,6 @@ export function transformPath(path) {
   // Split the path into components
   const parts = path.split(".");
 
-  // Use reduce to build the new path
   const transformedParts = parts.map((part, index, array) => {
     if (index === 0) {
       return `children.${part}.children`;

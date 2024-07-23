@@ -85,6 +85,7 @@ export class RelatedSelectFieldInternal extends RemoteSelectField {
       preSearchChange,
       onValueChange,
       search,
+      searchQueryParamName,
       ...uiProps
     } = this.props;
     const compProps = {

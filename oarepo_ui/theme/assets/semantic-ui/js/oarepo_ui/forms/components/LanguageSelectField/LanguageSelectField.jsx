@@ -25,7 +25,7 @@ export const LanguageSelectField = ({
       required={required}
       clearable={clearable}
       multiple={multiple}
-      label={<FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />}
+      label={label}
       optionsListName="languages"
       usedOptions={usedLanguages}
       onChange={({ e, data, formikProps }) => {
