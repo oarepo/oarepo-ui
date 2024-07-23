@@ -1,5 +1,4 @@
 import * as React from "react";
-import { FieldLabel } from "react-invenio-forms";
 import { LocalVocabularySelectField } from "@js/oarepo_vocabularies";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import PropTypes from "prop-types";
