@@ -39,7 +39,7 @@ export const LanguageSelectField = ({
 
 LanguageSelectField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
-  label: PropTypes.string,
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   labelIcon: PropTypes.string,
   required: PropTypes.bool,
   multiple: PropTypes.bool,

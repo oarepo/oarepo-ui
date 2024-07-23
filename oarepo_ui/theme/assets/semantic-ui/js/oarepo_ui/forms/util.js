@@ -122,7 +122,6 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
         helpText: help,
         label: (
           <FieldLabel
-            id={fieldPath}
             htmlFor={fieldPath}
             icon={icon}
             label={label}
@@ -150,6 +149,7 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
         helpText: help,
         label: label,
         placeholder: hint,
+        labelIcon: icon,
         required,
       },
     };
