@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
+import * as d3 from "d3";
 
 // Map keycodes to positive or negative values
 export const mapToKeyCode = (code) => {
@@ -161,25 +162,28 @@ export class Slider extends Component {
   render() {
     const {
       selection,
-      scale,
       formatLabelFunction,
       width,
       height,
       showLabels,
       marginLeft,
+      scale,
       marginRight,
       max,
       min,
       formatString,
       aggName,
     } = this.props;
+
     const selectionWidth = Math.abs(scale(selection[1]) - scale(selection[0]));
     const unselectedWidth = Math.abs(scale(max) - scale(min));
+
     return (
       <svg
         id={aggName}
         height={height}
-        width={width - marginLeft - marginRight}
+        viewBox={`${marginLeft} 0 ${width} ${height}`}
+        // width={width - marginLeft - marginRight}
         onMouseDown={this.dragFromSVG}
         onMouseUp={this.dragEnd}
         onMouseMove={this.mouseMove}
