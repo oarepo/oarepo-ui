@@ -43,7 +43,6 @@ export const Histogram = ({
   const [marginTop, marginRight, marginBottom, marginLeft] = svgMargins;
 
   const [width, setWidth] = useState(400);
-
   const height = svgHeight;
   const [minDate, maxDate] = [
     histogramData[0]?.start,
@@ -53,11 +52,6 @@ export const Histogram = ({
   const x = d3
     .scaleLinear()
     .domain([0, histogramData.length])
-    .range([marginLeft, width - marginRight]);
-
-  const xslider = d3
-    .scaleLinear()
-    .domain([minDate, maxDate])
     .range([marginLeft, width - marginRight]);
 
   const y = d3
@@ -98,14 +92,11 @@ export const Histogram = ({
             formatString,
             i18next.language
           )}: ${i18next.t("totalResults", { count: d?.doc_count })}`;
-    const interval = d?.interval.replace(/\D/g, "");
     const rectangleClickValue = `${formatDate(
       d.start,
       facetDateFormat
     )}/${formatDate(d.end, facetDateFormat)}`;
 
-    const sameYearX = x(d.end) - x(subtractFunc(d.start, 1).getTime());
-    const barX = d.end - d.start > 0 ? x(d.end) - x(d.start) : sameYearX;
     const barHeight = y(0) - y(d?.doc_count);
 
     return histogramData.length > 1 ? (
@@ -275,7 +266,7 @@ export const Histogram = ({
             onChange={(selection) => setSelection(selection)}
             width={width}
             selection={selection}
-            scale={xslider}
+            // scale={xslider}
             min={minDate}
             max={maxDate}
             formatLabelFunction={formatDate}
