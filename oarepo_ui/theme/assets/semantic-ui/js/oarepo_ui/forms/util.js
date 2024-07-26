@@ -24,7 +24,6 @@ export function parseFormAppConfig(rootElementId = "form-app") {
   const recordPermissions = getInputFromDOM("record-permissions");
   const files = getInputFromDOM("files");
   const links = getInputFromDOM("links");
-  formConfig.getFieldData = getFieldData(formConfig.ui_model);
 
   return { rootEl, record, formConfig, recordPermissions, files, links };
 }
@@ -60,11 +59,7 @@ export function createFormAppInit({
             <Router>
               <OverridableContext.Provider value={overrideStore.getAll()}>
                 <FormConfigProvider value={config}>
-                  <FieldDataProvider
-                    value={{
-                      getFieldData: getFieldData(config.formConfig.ui_model),
-                    }}
-                  >
+                  <FieldDataProvider>
                     <Overridable
                       id={buildUID(overridableIdPrefix, "FormApp.layout")}
                     >
@@ -97,66 +92,74 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
     icon = "pencil",
     fullLabelClassName,
     compactLabelClassName,
+    fieldRepresentation = "full",
   }) => {
     const fieldPathWithPrefix = fieldPathPrefix
       ? `${fieldPathPrefix}.${fieldPath}`
       : fieldPath;
-    // handling labels, always I take result of i18next.t if we get metadata/smth, we use it to debug
-    // help and hint if result is same as the key, don't render, if it is different render
-    const path = transformPath(fieldPathWithPrefix);
+    // Handling labels, always taking result of i18next.t; if we get metadata/smth, we use it to debug
+    // Help and hint: if result is same as the key, don't render; if it is different, render
+    const path = toModelPath(fieldPathWithPrefix);
+
     const {
       help: modelHelp,
       label: modelLabel,
       hint: modelHint,
       required,
     } = _get(uiMetadata, path);
+
     const label = i18next.t(modelLabel);
     const help =
       i18next.t(modelHelp) === modelHelp ? null : i18next.t(modelHelp);
     const hint =
       i18next.t(modelHint) === modelHint ? null : i18next.t(modelHint);
-    // full representation meaning jsx or small space representation (label with helptext in popup)
-    // text only without react elements
-    return {
-      fullRepresentation: {
-        helpText: help,
-        label: (
-          <FieldLabel
-            htmlFor={fieldPath}
-            icon={icon}
-            label={label}
-            className={fullLabelClassName}
-          />
-        ),
-        placeholder: hint,
-        required,
-      },
-      compactRepresentation: {
-        helptext: help,
-        label: (
-          <CompactFieldLabel
-            htmlFor={fieldPath}
-            icon={icon}
-            label={label}
-            popupHelpText={help}
-            className={compactLabelClassName}
-          />
-        ),
-        placeholder: hint,
-        required,
-      },
-      textRepresentation: {
-        helpText: help,
-        label: label,
-        placeholder: hint,
-        labelIcon: icon,
-        required,
-      },
-    };
+
+    // Determine the representation based on fieldRepresentation
+    switch (fieldRepresentation) {
+      case "full":
+        return {
+          helpText: help,
+          label: (
+            <FieldLabel
+              htmlFor={fieldPath}
+              icon={icon}
+              label={label}
+              className={fullLabelClassName}
+            />
+          ),
+          placeholder: hint,
+          required,
+        };
+      case "compact":
+        return {
+          helpText: help,
+          label: (
+            <CompactFieldLabel
+              htmlFor={fieldPath}
+              icon={icon}
+              label={label}
+              popupHelpText={help}
+              className={compactLabelClassName}
+            />
+          ),
+          placeholder: hint,
+          required,
+        };
+      case "text":
+        return {
+          helpText: help,
+          label: label,
+          placeholder: hint,
+          labelIcon: icon,
+          required,
+        };
+      default:
+        throw new Error(`Unknown fieldRepresentation: ${fieldRepresentation}`);
+    }
   };
 };
 
-export function transformPath(path) {
+export function toModelPath(path) {
   // Split the path into components
   const parts = path.split(".");
 

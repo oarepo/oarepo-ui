@@ -28,8 +28,11 @@ export const I18nTextInputField = ({
         fieldPath={lngFieldPath}
         width={lngFieldWidth}
         usedLanguages={usedLanguages}
-        {...getFieldData({ fieldPath: lngFieldPath, icon: "globe" })
-          .compactRepresentation}
+        {...getFieldData({
+          fieldPath: lngFieldPath,
+          icon: "globe",
+          fieldRepresentation: "compact",
+        })}
       />
       <TextField
         fieldPath={textFieldPath}
@@ -40,7 +43,10 @@ export const I18nTextInputField = ({
           setFieldValue(textFieldPath, cleanedContent);
           setFieldTouched(textFieldPath, true);
         }}
-        {...getFieldData({ fieldPath: textFieldPath }).compactRepresentation}
+        {...getFieldData({
+          fieldPath: textFieldPath,
+          fieldRepresentation: "compact",
+        })}
         {...uiProps}
       />
     </GroupField>
