@@ -266,7 +266,6 @@ export const Histogram = ({
             onChange={(selection) => setSelection(selection)}
             width={width}
             selection={selection}
-            // scale={xslider}
             min={minDate}
             max={maxDate}
             formatLabelFunction={formatDate}
