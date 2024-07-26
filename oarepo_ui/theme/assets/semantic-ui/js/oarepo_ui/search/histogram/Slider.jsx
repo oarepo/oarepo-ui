@@ -82,7 +82,9 @@ export class Slider extends Component {
   dragFromSVG = (e, scale) => {
     if (!this.state.dragging) {
       let selection = [...this.props.selection];
-      const selected = scale.invert(e.nativeEvent.offsetX);
+      const selected = scale.invert(
+        e.nativeEvent.offsetX - this.props.marginLeft
+      );
       let dragIndex;
 
       if (
@@ -115,10 +117,9 @@ export class Slider extends Component {
   mouseMove = (e, scale) => {
     if (this.state.dragging) {
       let selection = [...this.props.selection];
-      let selected = scale.invert(e.nativeEvent.offsetX);
-      let selectedDate = new Date(selected);
-      selectedDate.setHours(0, 0, 0, 0); // Set time to midnight
-      selected = selectedDate.getTime(); // Convert back to timestamp
+      let selected = scale.invert(
+        e.nativeEvent.offsetX - this.props.marginLeft
+      );
 
       if (selected <= this.props.min) {
         selected = this.props.min;
@@ -186,7 +187,6 @@ export class Slider extends Component {
         id={aggName}
         height={height}
         viewBox={`${marginLeft} 0 ${width} ${height}`}
-        // width={width - marginLeft - marginRight}
         onMouseDown={(e) => this.dragFromSVG(e, scale)}
         onMouseUp={this.dragEnd}
         onMouseMove={(e) => this.mouseMove(e, scale)}
