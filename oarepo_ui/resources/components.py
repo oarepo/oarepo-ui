@@ -209,10 +209,10 @@ class BabelComponent(UIResourceComponent):
 
 class PermissionsComponent(UIResourceComponent):
     def before_ui_detail(self, *, api_record, extra_context, identity, **kwargs):
-        self.fill_permissions(api_record.data, extra_context, identity)
+        self.fill_permissions(api_record._record, extra_context, identity)
 
     def before_ui_edit(self, *, api_record, extra_context, identity, **kwargs):
-        self.fill_permissions(api_record.data, extra_context, identity)
+        self.fill_permissions(api_record._record, extra_context, identity)
 
     def before_ui_create(self, *, extra_context, identity, **kwargs):
         self.fill_permissions(None, extra_context, identity)
@@ -231,19 +231,19 @@ class PermissionsComponent(UIResourceComponent):
 
     def form_config(self, *, form_config, api_record, identity, **kwargs):
         self.fill_permissions(
-            api_record.data if api_record else None, form_config, identity
+            api_record._record if api_record else None, form_config, identity
         )
 
-    def get_record_permissions(self, actions, service, identity, data):
+    def get_record_permissions(self, actions, service, identity, record, **kwargs):
         """Helper for generating (default) record action permissions."""
         return {
             f"can_{action}": service.check_permission(
-                identity, action, record=data or {}
+                identity, action, record=record or {}, **kwargs
             )
             for action in actions
         }
 
-    def fill_permissions(self, data, extra_context, identity):
+    def fill_permissions(self, record, extra_context, identity, **kwargs):
         from .resource import RecordsUIResource
 
         if not isinstance(self.resource, RecordsUIResource):
@@ -253,7 +253,8 @@ class PermissionsComponent(UIResourceComponent):
             current_oarepo_ui.record_actions,
             self.resource.api_service,
             identity,
-            data,
+            record,
+            **kwargs
         )
 
 
