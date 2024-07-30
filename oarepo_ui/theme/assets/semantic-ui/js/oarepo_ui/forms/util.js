@@ -132,7 +132,6 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
         };
       case "compact":
         return {
-          helpText: help,
           label: (
             <CompactFieldLabel
               htmlFor={fieldPath}
