@@ -1,5 +1,4 @@
 import * as React from "react";
-import { FieldLabel } from "react-invenio-forms";
 import { LocalVocabularySelectField } from "@js/oarepo_vocabularies";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import PropTypes from "prop-types";
@@ -25,7 +24,7 @@ export const LanguageSelectField = ({
       required={required}
       clearable={clearable}
       multiple={multiple}
-      label={<FieldLabel htmlFor={fieldPath} icon={labelIcon} label={label} />}
+      label={label}
       optionsListName="languages"
       usedOptions={usedLanguages}
       onChange={({ e, data, formikProps }) => {
@@ -39,7 +38,7 @@ export const LanguageSelectField = ({
 
 LanguageSelectField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
-  label: PropTypes.string,
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   labelIcon: PropTypes.string,
   required: PropTypes.bool,
   multiple: PropTypes.bool,

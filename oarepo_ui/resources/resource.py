@@ -432,6 +432,8 @@ class RecordsUIResource(UIResource):
             api_record=api_record, resource_requestctx=resource_requestctx
         )
 
+        form_config["ui_model"] = self.ui_model
+
         ui_links = self.expand_detail_links(identity=g.identity, record=api_record)
 
         extra_context = dict()
@@ -507,6 +509,8 @@ class RecordsUIResource(UIResource):
         form_config["custom_fields"] = self._get_custom_fields(
             resource_requestctx=resource_requestctx
         )
+
+        form_config["ui_model"] = self.ui_model
 
         extra_context = dict()
 

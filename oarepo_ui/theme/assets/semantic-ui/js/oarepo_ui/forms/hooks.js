@@ -1,5 +1,5 @@
 import { useEffect, useCallback, useState, useContext, useMemo } from "react";
-import { FormConfigContext } from "./contexts";
+import { FormConfigContext, FieldDataContext } from "./contexts";
 import {
   OARepoDepositApiClient,
   OARepoDepositSerializer,
@@ -53,6 +53,16 @@ export const useFormConfig = () => {
   if (!context) {
     throw new Error(
       "useFormConfig must be used inside FormConfigContext.Provider"
+    );
+  }
+  return context;
+};
+
+export const useFieldData = () => {
+  const context = useContext(FieldDataContext);
+  if (!context) {
+    throw new Error(
+      "useFormConfig must be used inside FieldDataContext .Provider"
     );
   }
   return context;

@@ -29,6 +29,7 @@ export const InputElement = forwardRef(
         value={value}
         placeholder={placeholder}
         className={className}
+        id={fieldPath}
         icon={
           value ? (
             <Icon

@@ -97,7 +97,7 @@ export const EDTFDaterangePicker = ({
       };
   return (
     <Form.Field className="ui datepicker field mb-0" required={required}>
-      <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />
+      {label ?? <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />}
       <Form.Field className="mb-0">
         <Radio
           label={i18next.t("Date range.")}
@@ -128,17 +128,16 @@ export const EDTFDaterangePicker = ({
           dateFormat={dateFormat}
           clearButtonClassName={clearButtonClassName}
           datePickerProps={{ ...pickerProps, ...datePickerPropsOverrides }}
-          helpText={helpText}
         />
       </Form.Field>
-      <label className="helptext">{helpText}</label>
+      {helpText && <label className="helptext">{helpText}</label>}
     </Form.Field>
   );
 };
 
 EDTFDaterangePicker.propTypes = {
   fieldPath: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
   icon: PropTypes.string,
   helpText: PropTypes.string,
   required: PropTypes.bool,

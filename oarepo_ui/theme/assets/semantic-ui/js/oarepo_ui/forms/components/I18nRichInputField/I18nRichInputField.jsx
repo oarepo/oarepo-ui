@@ -1,53 +1,46 @@
 import * as React from "react";
-import { LanguageSelectField, useSanitizeInput } from "@js/oarepo_ui";
 import {
-  RichInputField,
-  GroupField,
-  FieldLabel,
-  RichEditor,
-} from "react-invenio-forms";
+  LanguageSelectField,
+  useSanitizeInput,
+  useFieldData,
+} from "@js/oarepo_ui";
+import { RichInputField, GroupField, RichEditor } from "react-invenio-forms";
 import PropTypes from "prop-types";
 import { Form } from "semantic-ui-react";
 import { useFormikContext, getIn } from "formik";
 
 export const I18nRichInputField = ({
   fieldPath,
-  label,
-  required,
   optimized,
-  labelIcon,
-  placeholder,
   editorConfig,
   lngFieldWidth,
   usedLanguages,
-  validTags,
   ...uiProps
 }) => {
   const { values, setFieldValue, setFieldTouched } = useFormikContext();
   const { sanitizeInput } = useSanitizeInput();
-  const fieldValue = getIn(values, `${fieldPath}.value`);
+  const lngFieldPath = `${fieldPath}.lang`;
+  const textFieldPath = `${fieldPath}.value`;
+  const fieldValue = getIn(values, textFieldPath);
+  const { getFieldData } = useFieldData();
+
   return (
-    <GroupField fieldPath={fieldPath} optimized>
+    <GroupField fieldPath={fieldPath} optimized={optimized}>
       <LanguageSelectField
-        fieldPath={`${fieldPath}.lang`}
-        required
+        fieldPath={lngFieldPath}
         width={lngFieldWidth}
         usedLanguages={usedLanguages}
+        {...getFieldData({
+          fieldPath: lngFieldPath,
+          icon: "globe",
+          fieldRepresentation: "compact",
+        })}
       />
 
       <Form.Field width={13}>
         <RichInputField
-          fieldPath={`${fieldPath}.value`}
-          label={
-            <FieldLabel
-              htmlFor={`${fieldPath}.value`}
-              icon={labelIcon}
-              label={label}
-            />
-          }
-          required={required}
+          fieldPath={textFieldPath}
           optimized={optimized}
-          placeholder={placeholder}
           editor={
             <RichEditor
               value={fieldValue}
@@ -55,12 +48,16 @@ export const I18nRichInputField = ({
               editorConfig={editorConfig}
               onBlur={(event, editor) => {
                 const cleanedContent = sanitizeInput(editor.getContent());
-                setFieldValue(`${fieldPath}.value`, cleanedContent);
-                setFieldTouched(`${fieldPath}.value`, true);
+                setFieldValue(textFieldPath, cleanedContent);
+                setFieldTouched(textFieldPath, true);
               }}
             />
           }
           {...uiProps}
+          {...getFieldData({
+            fieldPath: textFieldPath,
+            fieldRepresentation: "compact",
+          })}
         />
       </Form.Field>
     </GroupField>
@@ -69,30 +66,14 @@ export const I18nRichInputField = ({
 
 I18nRichInputField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
-  label: PropTypes.string,
-  labelIcon: PropTypes.string,
-  required: PropTypes.bool,
-  placeholder: PropTypes.string,
-  error: PropTypes.any,
-  helpText: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  disabled: PropTypes.bool,
   optimized: PropTypes.bool,
   editorConfig: PropTypes.object,
-  languageOptions: PropTypes.array,
   lngFieldWidth: PropTypes.number,
   usedLanguages: PropTypes.array,
-  validTags: PropTypes.array,
 };
 
 I18nRichInputField.defaultProps = {
-  label: undefined,
-  labelIcon: undefined,
-  placeholder: undefined,
-  error: undefined,
-  helpText: "",
-  disabled: false,
   optimized: true,
-  required: false,
   editorConfig: {
     removePlugins: [
       "Image",
