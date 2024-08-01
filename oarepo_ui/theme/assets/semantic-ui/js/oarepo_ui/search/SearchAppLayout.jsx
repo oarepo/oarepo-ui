@@ -178,7 +178,6 @@ SearchAppResultsGrid.propTypes = {
 export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
   const { appName, buildUID } = useContext(SearchConfigurationContext);
   const facetsAvailable = !_isEmpty(config.aggs);
-
   let columnsAmount;
   let resultsPaneLayoutFacets;
 

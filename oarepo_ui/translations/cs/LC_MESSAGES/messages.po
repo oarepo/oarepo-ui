@@ -501,3 +501,13 @@ msgstr "Stáhnout soubor"
 
 msgid "Remove"
 msgstr "Odstranit"
+
+#: /Users/m/w/cesnet/oarepo-ui/oarepo_ui/templates/oarepo_ui/footer.html:37
+msgid "Version: %(version)s"
+msgstr "Verze repozitáře: %(version)s"
+
+msgid "Filter data by date"
+msgstr "Filtrovat podle data"
+
+msgid "Reset"
+msgstr "Resetovat"

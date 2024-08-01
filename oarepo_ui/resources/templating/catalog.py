@@ -1,7 +1,7 @@
+import os
 import re
 import typing as t
 from collections import namedtuple
-from functools import cached_property
 from itertools import chain
 from pathlib import Path
 from typing import Dict, Tuple
@@ -13,6 +13,7 @@ from flask.globals import request
 from jinjax import Catalog
 from jinjax.exceptions import ComponentNotFound
 from jinjax.jinjax import JinjaX
+
 
 DEFAULT_URL_ROOT = "/static/components/"
 ALLOWED_EXTENSIONS = (".css", ".js")
@@ -59,7 +60,9 @@ class OarepoCatalog(Catalog):
             undefined=jinja2.Undefined, app=current_app, autoescape=True
         )
         extensions = [*(extensions or []), "jinja2.ext.do", JinjaX]
-        globals = globals or {}
+        globals = globals or {
+            "deployment_version": os.environ.get("DEPLOYMENT_VERSION", "local development")
+        }
         filters = filters or {}
         tests = tests or {}
 
