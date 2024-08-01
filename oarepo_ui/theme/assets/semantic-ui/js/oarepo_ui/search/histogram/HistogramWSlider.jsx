@@ -95,11 +95,11 @@ HistogramComponent.defaultProps = {
   minimumInterval: "year",
   svgHeight: 220,
   rectanglePadding: 1,
-  sliderHeight: 50,
+  sliderHeight: 80,
   rectangleClassName: "histogram-rectangle",
   rectangleOverlayClassName: "histogram-rectangle-overlay",
   singleRectangleClassName: "histogram-rectangle-single",
-  svgMargins: [20, 10, 0, 10],
+  svgMargins: [20, 30, 0, 10],
   showLabels: true,
 };
 export const HistogramWSlider = withState(HistogramComponent);

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
+import * as d3 from "d3";
 
 // Map keycodes to positive or negative values
 export const mapToKeyCode = (code) => {
@@ -78,10 +79,12 @@ export class Slider extends Component {
     }
   };
 
-  dragFromSVG = (e) => {
+  dragFromSVG = (e, scale) => {
     if (!this.state.dragging) {
       let selection = [...this.props.selection];
-      const selected = this.props.scale.invert(e.nativeEvent.offsetX);
+      const selected = scale.invert(
+        e.nativeEvent.offsetX - this.props.marginLeft
+      );
       let dragIndex;
 
       if (
@@ -111,13 +114,12 @@ export class Slider extends Component {
     }
   };
 
-  mouseMove = (e) => {
+  mouseMove = (e, scale) => {
     if (this.state.dragging) {
       let selection = [...this.props.selection];
-      let selected = this.props.scale.invert(e.nativeEvent.offsetX);
-      let selectedDate = new Date(selected);
-      selectedDate.setHours(0, 0, 0, 0); // Set time to midnight
-      selected = selectedDate.getTime(); // Convert back to timestamp
+      let selected = scale.invert(
+        e.nativeEvent.offsetX - this.props.marginLeft
+      );
 
       if (selected <= this.props.min) {
         selected = this.props.min;
@@ -161,7 +163,6 @@ export class Slider extends Component {
   render() {
     const {
       selection,
-      scale,
       formatLabelFunction,
       width,
       height,
@@ -173,16 +174,22 @@ export class Slider extends Component {
       formatString,
       aggName,
     } = this.props;
+    const scale = d3
+      .scaleLinear()
+      .domain([min, max])
+      .range([marginLeft, width - marginRight]);
+
     const selectionWidth = Math.abs(scale(selection[1]) - scale(selection[0]));
     const unselectedWidth = Math.abs(scale(max) - scale(min));
+
     return (
       <svg
         id={aggName}
         height={height}
-        width={width - marginLeft - marginRight}
-        onMouseDown={this.dragFromSVG}
+        viewBox={`${marginLeft} 0 ${width} ${height}`}
+        onMouseDown={(e) => this.dragFromSVG(e, scale)}
         onMouseUp={this.dragEnd}
-        onMouseMove={this.mouseMove}
+        onMouseMove={(e) => this.mouseMove(e, scale)}
       >
         <rect
           className="unselected-slider"
@@ -200,7 +207,7 @@ export class Slider extends Component {
           return (
             <g
               className="slider-thumb-container"
-              transform={`translate(${this.props.scale(m) + marginLeft}, 0)`}
+              transform={`translate(${scale(m) + marginLeft}, 0)`}
               key={`handle-${i}`}
             >
               <circle
@@ -229,7 +236,6 @@ Slider.propTypes = {
   selection: PropTypes.arrayOf(PropTypes.number).isRequired,
   height: PropTypes.number,
   width: PropTypes.number,
-  scale: PropTypes.func,
   onChange: PropTypes.func,
   formatLabelFunction: PropTypes.func,
   showLabels: PropTypes.bool,

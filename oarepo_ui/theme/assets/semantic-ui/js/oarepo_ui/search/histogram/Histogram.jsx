@@ -43,9 +43,7 @@ export const Histogram = ({
   const [marginTop, marginRight, marginBottom, marginLeft] = svgMargins;
 
   const [width, setWidth] = useState(400);
-
   const height = svgHeight;
-
   const [minDate, maxDate] = [
     histogramData[0]?.start,
     histogramData[histogramData.length - 1]?.end,
@@ -53,7 +51,7 @@ export const Histogram = ({
 
   const x = d3
     .scaleLinear()
-    .domain([minDate, maxDate])
+    .domain([0, histogramData.length])
     .range([marginLeft, width - marginRight]);
 
   const y = d3
@@ -68,7 +66,7 @@ export const Histogram = ({
 
   const [selection, setSelection] = useState([minDate, maxDate]);
 
-  const bars = histogramData.map((d) => {
+  const bars = histogramData.map((d, index) => {
     let opacity;
 
     if (selection[0] > d.end || selection[1] < d.start) {
@@ -94,15 +92,12 @@ export const Histogram = ({
             formatString,
             i18next.language
           )}: ${i18next.t("totalResults", { count: d?.doc_count })}`;
-    const interval = d?.interval.replace(/\D/g, "");
     const rectangleClickValue = `${formatDate(
       d.start,
       facetDateFormat
     )}/${formatDate(d.end, facetDateFormat)}`;
 
-    const sameYearX = x(d.end) - x(subtractFunc(d.start, 1).getTime())
-    const barX = d.end - d.start > 0 ? x(d.end) - x(d.start) : sameYearX
-    const barHeight = y(0) - y(d?.doc_count)
+    const barHeight = y(0) - y(d?.doc_count);
 
     return histogramData.length > 1 ? (
       <React.Fragment key={d.uuid}>
@@ -115,14 +110,10 @@ export const Histogram = ({
               tabIndex={0}
               type="button"
               className={rectangleOverlayClassName}
-              x={x(d.start)}
+              x={x(index)}
               aria-label={`${i18next.t("Filter data by date")} ${popupContent}`}
               // when I have a smaller rectangle (due to not full interval, I leave overlay so it is easier to click)
-              width={
-                x(addFunc(d.start, interval).getTime()) -
-                x(d.start) -
-                rectanglePadding
-              }
+              width={x(index + 1) - x(index) - rectanglePadding}
               y={y(maxCountElement.doc_count)}
               height={y(0) - y(maxCountElement.doc_count)}
               onClick={() => handleRectangleClick(rectangleClickValue, d)}
@@ -144,8 +135,8 @@ export const Histogram = ({
             <rect
               type="button"
               className={`${rectangleClassName}  ${getOpacityClass(opacity)}`}
-              x={x(d.start)}
-              width={barX - rectanglePadding}
+              x={x(index)}
+              width={x(index + 1) - x(index) - rectanglePadding}
               y={y(d.doc_count)}
               height={barHeight}
               onClick={() => {
@@ -214,51 +205,20 @@ export const Histogram = ({
       return;
     }
     // edge case when someone drags left thumb all the way to the end
-    if (selection[0] === selection[1] && selection[0] === maxDate) {
-      updateQueryState({
-        ...currentQueryState,
-        filters: [
-          ...currentQueryState.filters.filter((f) => f[0] !== aggName),
-          [
-            aggName,
-            `${formatDate(
-              subtractFunc(selection[0], 1),
-              facetDateFormat
-            )}/${formatDate(subtractFunc(selection[1], 1), facetDateFormat)}`,
-          ],
+
+    updateQueryState({
+      ...currentQueryState,
+      filters: [
+        ...currentQueryState.filters.filter((f) => f[0] !== aggName),
+        [
+          aggName,
+          `${formatDate(selection[0], facetDateFormat)}/${formatDate(
+            selection[1],
+            facetDateFormat
+          )}`,
         ],
-      });
-    }
-    // when someone drags all the way to the start
-    else if (selection[0] === selection[1]) {
-      updateQueryState({
-        ...currentQueryState,
-        filters: [
-          ...currentQueryState.filters.filter((f) => f[0] !== aggName),
-          [
-            aggName,
-            `${formatDate(selection[0], facetDateFormat)}/${formatDate(
-              selection[1],
-              facetDateFormat
-            )}`,
-          ],
-        ],
-      });
-    } else {
-      updateQueryState({
-        ...currentQueryState,
-        filters: [
-          ...currentQueryState.filters.filter((f) => f[0] !== aggName),
-          [
-            aggName,
-            `${formatDate(selection[0], facetDateFormat)}/${formatDate(
-              subtractFunc(selection[1], 1),
-              facetDateFormat
-            )}`,
-          ],
-        ],
-      });
-    }
+      ],
+    });
   };
 
   return (
@@ -284,16 +244,19 @@ export const Histogram = ({
                 className="y-axis-indicator"
                 height={1}
                 strokeWidth="1"
-                d={`M${x(minDate)} ${y(maxCountElement.doc_count)} L${x(
-                  maxDate
+                d={`M${x(0)} ${y(maxCountElement.doc_count)} L${x(
+                  histogramData.length
                 )} ${y(maxCountElement.doc_count)}`}
               />
               <text
-                x={x(minDate) - 15}
+                x={x(0) - 15}
                 y={y(maxCountElement.doc_count) - 10}
                 className="y-axis-indicator-text"
               >
-                {"max. "}{i18next.t("totalResults", { count: maxCountElement.doc_count })}
+                {"max. "}
+                {i18next.t("totalResults", {
+                  count: maxCountElement.doc_count,
+                })}
               </text>
             </React.Fragment>
           )}
@@ -303,7 +266,6 @@ export const Histogram = ({
             onChange={(selection) => setSelection(selection)}
             width={width}
             selection={selection}
-            scale={x}
             min={minDate}
             max={maxDate}
             formatLabelFunction={formatDate}
