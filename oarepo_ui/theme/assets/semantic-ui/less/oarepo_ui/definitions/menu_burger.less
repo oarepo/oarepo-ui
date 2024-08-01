@@ -6,12 +6,12 @@
   The type is the type of the component as defined in semantic-ui - element, collection, view, module
   For simple component, 'element' is the correct type
 */
-@type: "view";
+@type: "element";
 
 /*
   This is the name of the component - though not required, keep it the same as the filename
 */
-@element: "page_footer";
+@element: "menu_burger";
 
 /*******************************
 
@@ -32,20 +32,30 @@ name of the component from above)
 
   Note: use variables here, not the exact values. Placing the values to another file (sample.variables)
   will allow users to override these values.
- */
+*/
 
-.ui.page-footer {
-  margin: 0;
-  min-height: @pageFooterMinHeight;
-  #nr-footer-container {
-    background-color: @pageFooterBackgroundColor;
-    border-top: 1px solid black;
-    padding: @pageFooterPadding;
+.ui.menu_burger {
+  right: 1rem;
+  font-size: 20px;
+  position: absolute;
 
-    & .ui.container {
-      padding: 1rem 0;
+  #invenio-burger-menu-icon {
+    cursor: pointer;
+    display: inline-block;
+    float: right;
+    padding: 2rem 1.5rem;
+    position: relative;
+    user-select: none;
+
+    .navicon {
+      &::before {
+        top: 5px;
+      }
+
+      &:after {
+        top: -5px;
+      }
     }
   }
 }
-
 .loadUIOverrides();

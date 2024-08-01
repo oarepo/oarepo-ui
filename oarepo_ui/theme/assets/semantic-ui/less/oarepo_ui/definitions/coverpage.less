@@ -11,7 +11,7 @@
 /*
   This is the name of the component - though not required, keep it the same as the filename
 */
-@element: "page_footer";
+@element: "coverpage";
 
 /*******************************
 
@@ -34,18 +34,10 @@ name of the component from above)
   will allow users to override these values.
  */
 
-.ui.page-footer {
-  margin: 0;
-  min-height: @pageFooterMinHeight;
-  #nr-footer-container {
-    background-color: @pageFooterBackgroundColor;
-    border-top: 1px solid black;
-    padding: @pageFooterPadding;
-
-    & .ui.container {
-      padding: 1rem 0;
-    }
-  }
+.ui.coverpage {
+  min-height: @coverMinHeight;
+  background-color: rgba(13, 95, 137, 0.8);
+  display: flex;
+  justify-content:center;
 }
-
 .loadUIOverrides();

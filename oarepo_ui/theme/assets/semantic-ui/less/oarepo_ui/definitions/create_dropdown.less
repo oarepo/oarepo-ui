@@ -1,3 +1,4 @@
+
 /*******************************
             Theme
 *******************************/
@@ -6,12 +7,12 @@
   The type is the type of the component as defined in semantic-ui - element, collection, view, module
   For simple component, 'element' is the correct type
 */
-@type: "view";
+@type: "module";
 
 /*
   This is the name of the component - though not required, keep it the same as the filename
 */
-@element: "page_footer";
+@element: "create_dropdown";
 
 /*******************************
 
@@ -34,18 +35,6 @@ name of the component from above)
   will allow users to override these values.
  */
 
-.ui.page-footer {
-  margin: 0;
-  min-height: @pageFooterMinHeight;
-  #nr-footer-container {
-    background-color: @pageFooterBackgroundColor;
-    border-top: 1px solid black;
-    padding: @pageFooterPadding;
-
-    & .ui.container {
-      padding: 1rem 0;
-    }
-  }
+.ui.create_dropdown {
 }
-
 .loadUIOverrides();

@@ -8,7 +8,7 @@
 #}
 {%- if config.ACCOUNTS %}
   {%- if not current_user.is_authenticated %}
-        <form>
+        <form class="ui auth_form">
             <a href="{{ url_for_security('login', next=request.path) }}"
                class="ui button">
                 <i class="sign-in icon"></i>
@@ -27,7 +27,7 @@
     {%- if plus_menu_items %}
       <div
         id="quick-create-dropdown"
-        class="ui dropdown pr-15 computer only"
+        class="ui dropdown pr-15 computer only create_dropdown"
       >
         <a
           id="quick-create-dropdown-btn"
@@ -63,7 +63,7 @@
     {% endif %}
 
 {%- if config.USERPROFILES %}
-    <div role="menuitem" id="user-profile-dropdown" class="ui floating dropdown computer only">
+    <div role="menuitem" id="user-profile-dropdown" class="ui floating dropdown computer only account_dropdown">
       <button id="user-profile-dropdown-btn"
               class="ui right labeled right floated icon button text"
               aria-controls="user-profile-menu"
@@ -138,7 +138,7 @@
     </div>
 
 {%- else %}
-  <a role="button" href="{{ url_for_security('logout') }}" class="ui button">
+  <a role="button" href="{{ url_for_security('logout') }}" class="ui button signout_button">
     <i class="sign-out icon"></i>
     {{ _('Log out') }}
   </a>

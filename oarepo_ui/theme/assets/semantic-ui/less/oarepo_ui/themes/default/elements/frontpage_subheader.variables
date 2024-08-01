@@ -1,0 +1,5 @@
+@subheaderWidth: max-content;
+@subheaderMargin: 1rem auto;
+@subheaderBackground: gray;
+@subheaderPadding: 1rem;
+@subheaderFontColor: white;
