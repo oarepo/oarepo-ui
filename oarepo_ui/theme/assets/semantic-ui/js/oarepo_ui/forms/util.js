@@ -44,7 +44,7 @@ export function createFormAppInit({
   const initFormApp = async ({ rootEl, ...config }) => {
     console.debug("Initializing Formik form app...");
     console.debug({ ...config });
-
+    console.log("main form rendered");
     const overridableIdPrefix = config.formConfig.overridableIdPrefix;
 
     loadAppComponents({
@@ -93,22 +93,25 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
     fullLabelClassName,
     compactLabelClassName,
     fieldRepresentation = "full",
+    ignorePrefix = false,
   }) => {
-    const fieldPathWithPrefix = fieldPathPrefix
-      ? `${fieldPathPrefix}.${fieldPath}`
-      : fieldPath;
+    const fieldPathWithPrefix =
+      fieldPathPrefix && !ignorePrefix
+        ? `${fieldPathPrefix}.${fieldPath}`
+        : fieldPath;
+
     // Handling labels, always taking result of i18next.t; if we get metadata/smth, we use it to debug
     // Help and hint: if result is same as the key, don't render; if it is different, render
     const path = toModelPath(fieldPathWithPrefix);
 
     const {
-      help: modelHelp,
-      label: modelLabel,
-      hint: modelHint,
-      required,
-    } = _get(uiMetadata, path);
+      help: modelHelp = undefined,
+      label: modelLabel = undefined,
+      hint: modelHint = undefined,
+      required = undefined,
+    } = _get(uiMetadata, path) || {};
 
-    const label = i18next.t(modelLabel);
+    const label = modelLabel ? i18next.t(modelLabel) : modelLabel;
     const help =
       i18next.t(modelHelp) === modelHelp ? null : i18next.t(modelHelp);
     const hint =

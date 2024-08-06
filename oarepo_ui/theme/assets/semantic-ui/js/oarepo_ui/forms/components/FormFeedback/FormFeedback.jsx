@@ -5,7 +5,7 @@ import _isEmpty from "lodash/isEmpty";
 import _startCase from "lodash/startCase";
 import _cloneDeep from "lodash/cloneDeep";
 import _omit from "lodash/omit";
-import { scrollToElement } from "@js/oarepo_ui";
+import { scrollToElement, useFieldData } from "@js/oarepo_ui";
 import PropTypes from "prop-types";
 
 // component to be used downstream of Formik that plugs into Formik's state and displays any errors
@@ -50,18 +50,27 @@ export const FormFeedback = () => {
   if (httpError?.response?.data) {
     httpError = httpError?.response?.data.message;
   }
+  const { getFieldData } = useFieldData();
+
   const successMessage = getIn(values, "successMessage", "");
   if (!_isEmpty(beValidationErrors))
     return (
       <CustomMessage negative color="orange">
         <Message.Header>{beValidationErrors?.errorMessage}</Message.Header>
         <Message.List>
-          {beValidationErrors?.errors?.map((error, index) => (
-            <Message.Item
-              onClick={() => scrollToElement(`label[for="${error.field}"]`)}
-              key={`${error.field}-${index}`}
-            >{`${titleCase(error.field)}: ${error.messages[0]}`}</Message.Item>
-          ))}
+          {beValidationErrors?.errors?.map((error, index) => {
+            return (
+              <Message.Item
+                onClick={() => scrollToElement(error.field)}
+                key={`${error.field}-${index}`}
+              >{`${
+                getFieldData({
+                  fieldPath: error.field,
+                  fieldRepresentation: "text",
+                })?.label ?? titleCase(error.field)
+              }: ${error.messages[0]}`}</Message.Item>
+            );
+          })}
         </Message.List>
       </CustomMessage>
     );

@@ -7,7 +7,7 @@ import {
 } from "../api";
 import _get from "lodash/get";
 import _set from "lodash/set";
-import { useFormikContext, getIn } from "formik";
+import { useFormikContext, getIn, setIn } from "formik";
 import _omit from "lodash/omit";
 import _pick from "lodash/pick";
 import _isEmpty from "lodash/isEmpty";
@@ -219,15 +219,29 @@ export const useDepositApiClient = ({
       // save accepts posts/puts even with validation errors. Here I check if there are some errors in the response
       // body. Here I am setting the individual error messages to the field
       if (!saveWithoutDisplayingValidationErrors && response.errors) {
-        response.errors.forEach((error) =>
-          setFieldError(error.field, error.messages[0])
-        );
+        response.errors = response.errors.map((error) => ({
+          ...error,
+          field: error.field.replace("_schema", "identifier"),
+        }));
+        // fix issue with many rerenders on submitting the form
+        let errorsObj = {};
+        const errorPaths = [];
+        for (const error of response.errors) {
+          errorsObj = setIn(errorsObj, error.field, error.messages.join(" "));
+          errorPaths.push(error.field);
+        }
+        const emptyObj = {};
+        const test = setIn(emptyObj, "bla", "bla");
+        console.log(test);
+        console.log(errorsObj);
+        setErrors(errorsObj);
         // here I am setting the state to be used by FormFeedback componene that plugs into the formik's context.
         setFieldValue("BEvalidationErrors", {
           errors: response.errors,
           errorMessage: i18next.t(
             "Draft saved with validation errors. Fields listed below that failed validation were not saved to the server"
           ),
+          errorPaths,
         });
         return false;
       }
