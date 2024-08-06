@@ -93,6 +93,7 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
     fullLabelClassName,
     compactLabelClassName,
     fieldRepresentation = "full",
+    // escape hatch that allows you to use top most provider and provide full paths inside of deeply nested fields
     ignorePrefix = false,
   }) => {
     const fieldPathWithPrefix =
