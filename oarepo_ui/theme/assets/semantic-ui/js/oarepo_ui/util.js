@@ -163,7 +163,7 @@ export const unique = (value, context, path, errorString) => {
   return true;
 };
 
-export const scrollToElement = (querySelector) => {
+export const scrollToElement = (fieldPath) => {
   const findElementAtPath = (path) => {
     const element =
       document.querySelector(`label[for="${path}"]`) ||
@@ -171,7 +171,7 @@ export const scrollToElement = (querySelector) => {
     return element;
   };
 
-  const splitPath = querySelector.split(".");
+  const splitPath = fieldPath.split(".");
 
   for (let i = splitPath.length; i > 0; i--) {
     const partialPath = splitPath.slice(0, i).join(".");

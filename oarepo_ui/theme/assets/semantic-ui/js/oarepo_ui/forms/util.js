@@ -44,7 +44,6 @@ export function createFormAppInit({
   const initFormApp = async ({ rootEl, ...config }) => {
     console.debug("Initializing Formik form app...");
     console.debug({ ...config });
-    console.log("main form rendered");
     const overridableIdPrefix = config.formConfig.overridableIdPrefix;
 
     loadAppComponents({
