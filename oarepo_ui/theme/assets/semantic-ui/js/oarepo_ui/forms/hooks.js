@@ -48,31 +48,6 @@ export const extractFEErrorMessages = (obj) => {
   return uniqueErrorMessages;
 };
 
-export const findStringPaths = (obj, parentPath = "") => {
-  let result = {};
-
-  for (let key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      let currentPath = parentPath ? `${parentPath}.${key}` : key;
-
-      if (typeof obj[key] === "string") {
-        result[`metadata.${currentPath}`] = obj[key];
-      } else if (Array.isArray(obj[key])) {
-        obj[key].forEach((item, index) => {
-          if (item !== null) {
-            let arrayPath = `${currentPath}.${index}`;
-            Object.assign(result, findStringPaths(item, arrayPath));
-          }
-        });
-      } else if (typeof obj[key] === "object" && obj[key] !== null) {
-        Object.assign(result, findStringPaths(obj[key], currentPath));
-      }
-    }
-  }
-
-  return result;
-};
-
 export const useFormConfig = () => {
   const context = useContext(FormConfigContext);
   if (!context) {
@@ -177,13 +152,7 @@ export const useShowEmptyValue = (
 export const useDepositApiClient = ({
   baseApiClient,
   serializer,
-  internalFieldsArray = [
-    "errors",
-    "BEvalidationErrors",
-    "FEvalidationErrors",
-    "httpErrors",
-    "successMessage",
-  ],
+  internalFieldsArray = ["errors"],
   keysToRemove = ["__key"],
 } = {}) => {
   const formik = useFormikContext();
@@ -236,19 +205,11 @@ export const useDepositApiClient = ({
 
       // save accepts posts/puts even with validation errors. Here I check if there are some errors in the response
       // body. Here I am setting the individual error messages to the field
-      // TODO hacky fix for an issue where field path is returned incorrectly in errors
       if (!saveWithoutDisplayingValidationErrors && response.errors) {
-        response.errors = response.errors.map((error) => ({
-          ...error,
-          field: error.field.replace("_schema", "identifier"),
-        }));
-        // fix issue with many rerenders on submitting the form
-
         for (const error of response.errors) {
           errorsObj = setIn(errorsObj, error.field, error.messages.join(" "));
           errorPaths.push(error.field);
         }
-        console.log(findStringPaths(errorsObj));
         if (response.errors.length > 0) {
           errorsObj["BEvalidationErrors"] = {
             errors: response.errors,

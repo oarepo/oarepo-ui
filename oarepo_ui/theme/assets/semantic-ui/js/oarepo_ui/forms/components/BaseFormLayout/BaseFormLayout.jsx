@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { BaseForm } from "../BaseForm";
 import { FormFeedback } from "../FormFeedback";
@@ -22,14 +22,11 @@ const FormTitle = () => {
   return recordTitle && <Header as="h1">{recordTitle}</Header>;
 };
 
-const handleSubmit = () => {};
-
 export const BaseFormLayout = ({ formikProps }) => {
   const {
     record,
     formConfig: { overridableIdPrefix },
   } = useFormConfig();
-  const memoizedRecord = useMemo(() => record, []);
   const sidebarRef = React.useRef(null);
   const formFeedbackRef = React.useRef(null);
   const {
@@ -37,9 +34,9 @@ export const BaseFormLayout = ({ formikProps }) => {
   } = useFormConfig();
   return (
     <BaseForm
-      onSubmit={handleSubmit}
+      onSubmit={() => {}}
       formik={{
-        initialValues: memoizedRecord,
+        initialValues: record,
         validateOnChange: false,
         validateOnBlur: false,
         enableReinitialize: true,
