@@ -16,16 +16,16 @@ const titleCase = (fieldPath) =>
   _startCase(fieldPath.split(".")[fieldPath.split(".").length - 1]);
 
 const CustomMessage = ({ children, ...uiProps }) => {
-  const { values, setValues } = useFormikContext();
-  const formikValuesCopy = _cloneDeep(values);
+  const { setErrors, errors } = useFormikContext();
+  const formikErrorsCopy = _cloneDeep(errors);
   const handleDismiss = () => {
-    const valuesWithoutInternalErrorFields = _omit(formikValuesCopy, [
+    const errorsWithoutInternalErrorFields = _omit(formikErrorsCopy, [
       "BEvalidationErrors",
       "FEvalidationErrors",
       "httpErrors",
       "successMessage",
     ]);
-    setValues(valuesWithoutInternalErrorFields);
+    setErrors(errorsWithoutInternalErrorFields);
   };
   return (
     <Message
@@ -43,16 +43,16 @@ CustomMessage.propTypes = {
 };
 
 export const FormFeedback = () => {
-  const { values } = useFormikContext();
-  const beValidationErrors = getIn(values, "BEvalidationErrors", {});
-  const feValidationErrors = getIn(values, "FEvalidationErrors", {});
-  let httpError = getIn(values, "httpErrors", "");
+  const { errors } = useFormikContext();
+  const beValidationErrors = getIn(errors, "BEvalidationErrors", {});
+  const feValidationErrors = getIn(errors, "FEvalidationErrors", {});
+  let httpError = getIn(errors, "httpErrors", "");
   if (httpError?.response?.data) {
     httpError = httpError?.response?.data.message;
   }
   const { getFieldData } = useFieldData();
 
-  const successMessage = getIn(values, "successMessage", "");
+  const successMessage = getIn(errors, "successMessage", "");
   if (!_isEmpty(beValidationErrors))
     return (
       <CustomMessage negative color="orange">

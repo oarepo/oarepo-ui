@@ -48,6 +48,31 @@ export const extractFEErrorMessages = (obj) => {
   return uniqueErrorMessages;
 };
 
+export const findStringPaths = (obj, parentPath = "") => {
+  let result = {};
+
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      let currentPath = parentPath ? `${parentPath}.${key}` : key;
+
+      if (typeof obj[key] === "string") {
+        result[`metadata.${currentPath}`] = obj[key];
+      } else if (Array.isArray(obj[key])) {
+        obj[key].forEach((item, index) => {
+          if (item !== null) {
+            let arrayPath = `${currentPath}.${index}`;
+            Object.assign(result, findStringPaths(item, arrayPath));
+          }
+        });
+      } else if (typeof obj[key] === "object" && obj[key] !== null) {
+        Object.assign(result, findStringPaths(obj[key], currentPath));
+      }
+    }
+  }
+
+  return result;
+};
+
 export const useFormConfig = () => {
   const context = useContext(FormConfigContext);
   if (!context) {
@@ -163,19 +188,12 @@ export const useDepositApiClient = ({
 } = {}) => {
   const formik = useFormikContext();
 
-  const {
-    isSubmitting,
-    values,
-    validateForm,
-    setSubmitting,
-    setValues,
-    setFieldError,
-    setFieldValue,
-    setErrors,
-  } = formik;
+  const { values, validateForm, setValues, setFieldError, setErrors } = formik;
   const {
     formConfig: { createUrl },
   } = useFormConfig();
+
+  const [isSubmitting, setSubmitting] = useState(false);
 
   const recordSerializer = serializer
     ? new serializer(internalFieldsArray, keysToRemove)
@@ -187,11 +205,11 @@ export const useDepositApiClient = ({
 
   async function save(saveWithoutDisplayingValidationErrors = false) {
     let response;
-
+    let errorsObj = {};
+    const errorPaths = [];
     setSubmitting(true);
     //  purge any existing errors in internal fields before making save action
     const valuesWithoutInternalFields = _omit(values, internalFieldsArray);
-    setErrors({});
     try {
       response = await apiClient.saveOrCreateDraft(valuesWithoutInternalFields);
       // when I am creating a new draft, it saves the response into formik's state, so that I would have access
@@ -218,41 +236,40 @@ export const useDepositApiClient = ({
 
       // save accepts posts/puts even with validation errors. Here I check if there are some errors in the response
       // body. Here I am setting the individual error messages to the field
+      // TODO hacky fix for an issue where field path is returned incorrectly in errors
       if (!saveWithoutDisplayingValidationErrors && response.errors) {
         response.errors = response.errors.map((error) => ({
           ...error,
           field: error.field.replace("_schema", "identifier"),
         }));
         // fix issue with many rerenders on submitting the form
-        let errorsObj = {};
-        const errorPaths = [];
+
         for (const error of response.errors) {
           errorsObj = setIn(errorsObj, error.field, error.messages.join(" "));
           errorPaths.push(error.field);
         }
-        const emptyObj = {};
-        const test = setIn(emptyObj, "bla", "bla");
-        console.log(test);
-        console.log(errorsObj);
+        console.log(findStringPaths(errorsObj));
+        if (response.errors.length > 0) {
+          errorsObj["BEvalidationErrors"] = {
+            errors: response.errors,
+            errorMessage: i18next.t(
+              "Draft saved with validation errors. Fields listed below that failed validation were not saved to the server"
+            ),
+            errorPaths,
+          };
+        }
+
         setErrors(errorsObj);
-        // here I am setting the state to be used by FormFeedback componene that plugs into the formik's context.
-        setFieldValue("BEvalidationErrors", {
-          errors: response.errors,
-          errorMessage: i18next.t(
-            "Draft saved with validation errors. Fields listed below that failed validation were not saved to the server"
-          ),
-          errorPaths,
-        });
         return false;
       }
       if (!saveWithoutDisplayingValidationErrors)
-        setFieldValue("successMessage", i18next.t("Draft saved successfully."));
+        setFieldError("successMessage", i18next.t("Draft saved successfully."));
       return response;
     } catch (error) {
       // handle 400 errors. Normally, axios would put messages in error.response. But for example
       // offline Error message does not produce a response, so in this way we can display
       // network error message
-      setFieldValue(
+      setFieldError(
         "httpErrors",
         error?.response?.data?.message ?? error.message
       );
@@ -267,7 +284,7 @@ export const useDepositApiClient = ({
     const saveResult = await save();
 
     if (!saveResult) {
-      setFieldValue(
+      setFieldError(
         "BEvalidationErrors.errorMessage",
         i18next.t(
           "Draft was saved but could not be published due to following validation errors"
@@ -280,7 +297,7 @@ export const useDepositApiClient = ({
       const FEvalidationErrors = await validateForm();
       // show also front end validation errors grouped on the top similar to BE validation errors for consistency
       if (!_isEmpty(FEvalidationErrors)) {
-        setFieldValue("FEvalidationErrors", {
+        setFieldError("FEvalidationErrors", {
           errors: extractFEErrorMessages(FEvalidationErrors.metadata),
           errorMessage: i18next.t(
             "Draft was saved but could not be published due to following validation errors"
@@ -299,7 +316,7 @@ export const useDepositApiClient = ({
       // takes to main search app
       window.history.replaceState(null, "", "/");
       window.location.href = response.links.self_html;
-      setFieldValue(
+      setFieldError(
         "successMessage",
         i18next.t(
           "Draft published successfully. Redirecting to record's detail page ..."
@@ -319,7 +336,7 @@ export const useDepositApiClient = ({
           setFieldError(err.field, err.messages.join(" "))
         );
       } else {
-        setFieldValue(
+        setFieldError(
           "httpErrors",
           error?.response?.data?.message ?? error.message
         );
@@ -345,7 +362,7 @@ export const useDepositApiClient = ({
       let response = await apiClient.deleteDraft(values);
 
       window.location.href = redirectUrl;
-      setFieldValue(
+      setFieldError(
         "successMessage",
         i18next.t(
           "Draft deleted successfully. Redirecting to the main page ..."
@@ -353,7 +370,7 @@ export const useDepositApiClient = ({
       );
       return response;
     } catch (error) {
-      setFieldValue(
+      setFieldError(
         "httpErrors",
         error?.response?.data?.message ?? error.message
       );
@@ -369,7 +386,7 @@ export const useDepositApiClient = ({
       const saveResult = await save();
 
       if (!saveResult) {
-        setFieldValue(
+        setFieldError(
           "BEvalidationErrors.errorMessage",
           i18next.t(
             "Your draft was saved. If you wish to preview it, please correct the following validation errors and click preview again:"
@@ -378,18 +395,18 @@ export const useDepositApiClient = ({
         return;
       } else {
         const url = saveResult.links.self_html;
-        setFieldValue(
+        setFieldError(
           "successMessage",
           i18next.t("Your draft was saved. Redirecting to the preview page...")
         );
         setTimeout(() => {
-          setFieldValue("successMessage", "");
+          setFieldError("successMessage", "");
           window.location.href = url;
         }, 1000);
       }
       return saveResult;
     } catch (error) {
-      setFieldValue(
+      setFieldError(
         "httpErrors",
         error?.response?.data?.message ?? error.message
       );
@@ -418,8 +435,14 @@ export const useDepositApiClient = ({
 export const useDepositFileApiClient = (baseApiClient) => {
   const formik = useFormikContext();
 
-  const { isSubmitting, values, setFieldValue, setSubmitting, setValues } =
-    formik;
+  const {
+    isSubmitting,
+    values,
+    setFieldValue,
+    setSubmitting,
+    setValues,
+    setFieldError,
+  } = formik;
 
   const apiClient = baseApiClient
     ? new baseApiClient()
@@ -443,7 +466,7 @@ export const useDepositFileApiClient = (baseApiClient) => {
       let response = await apiClient.deleteFile(file?.links);
       return Promise.resolve(response);
     } catch (error) {
-      setFieldValue(
+      setFieldError(
         "httpErrors",
         error?.response?.data?.message ?? error.message
       );
