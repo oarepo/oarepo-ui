@@ -165,6 +165,7 @@ export const useDepositApiClient = ({
     setErrors,
     isSubmitting,
     setSubmitting,
+    setFormikState,
   } = formik;
   const {
     formConfig: { createUrl },
@@ -207,10 +208,6 @@ export const useDepositApiClient = ({
       // it is a little bit problematic that when you save with errors, the server does not actually return in the response
       // the value you filled if it resulted in validation error. It can cause discrepancy between what is shown in the form and actual
       // state in formik so we preserve metadata in this way
-      setValues({
-        ..._omit(response, ["metadata"]),
-        ..._pick(values, ["metadata"]),
-      });
 
       // save accepts posts/puts even with validation errors. Here I check if there are some errors in the response
       // body. Here I am setting the individual error messages to the field
@@ -229,7 +226,6 @@ export const useDepositApiClient = ({
           };
         }
 
-        setErrors(errorsObj);
         return false;
       }
       if (!saveWithoutDisplayingValidationErrors)
@@ -245,7 +241,18 @@ export const useDepositApiClient = ({
       );
       return false;
     } finally {
-      setSubmitting(false);
+      setFormikState((prevState) => ({
+        ...prevState,
+        values: {
+          ...prevState.values,
+          ...{
+            ..._omit(response, ["metadata"]),
+            ..._pick(values, ["metadata"]),
+          },
+        },
+        errors: errorsObj,
+        isSubmitting: false,
+      }));
     }
   }
 
