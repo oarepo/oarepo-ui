@@ -157,12 +157,18 @@ export const useDepositApiClient = ({
 } = {}) => {
   const formik = useFormikContext();
 
-  const { values, validateForm, setValues, setFieldError, setErrors } = formik;
+  const {
+    values,
+    validateForm,
+    setValues,
+    setFieldError,
+    setErrors,
+    isSubmitting,
+    setSubmitting,
+  } = formik;
   const {
     formConfig: { createUrl },
   } = useFormConfig();
-
-  const [isSubmitting, setSubmitting] = useState(false);
 
   const recordSerializer = serializer
     ? new serializer(internalFieldsArray, keysToRemove)
@@ -177,7 +183,10 @@ export const useDepositApiClient = ({
     let errorsObj = {};
     const errorPaths = [];
     setSubmitting(true);
+    setErrors({});
+
     //  purge any existing errors in internal fields before making save action
+
     const valuesWithoutInternalFields = _omit(values, internalFieldsArray);
     try {
       response = await apiClient.saveOrCreateDraft(valuesWithoutInternalFields);
@@ -397,12 +406,12 @@ export const useDepositFileApiClient = (baseApiClient) => {
   const formik = useFormikContext();
 
   const {
-    isSubmitting,
     values,
     setFieldValue,
-    setSubmitting,
     setValues,
     setFieldError,
+    isSubmitting,
+    setSubmitting,
   } = formik;
 
   const apiClient = baseApiClient
@@ -413,15 +422,7 @@ export const useDepositFileApiClient = (baseApiClient) => {
     return await apiClient.readDraftFiles(draft);
   }
   async function _delete(file) {
-    setValues(
-      _omit(values, [
-        "errors",
-        "BEvalidationErrors",
-        "FEvalidationErrors",
-        "httpErrors",
-        "successMessage",
-      ])
-    );
+    setValues(_omit(values, ["errors"]));
     setSubmitting(true);
     try {
       let response = await apiClient.deleteFile(file?.links);
