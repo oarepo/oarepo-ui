@@ -19,7 +19,7 @@ export const SearchappSearchbarElement = withState(
     const placeholder = passedPlaceholder || i18next.t("Search");
 
     const onSearch = () => {
-      updateQueryState({ ...currentQueryState, queryString });
+      updateQueryState({ ...currentQueryState, queryString, page: 1 });
     };
     const onBtnSearchClick = () => {
       onSearch();
