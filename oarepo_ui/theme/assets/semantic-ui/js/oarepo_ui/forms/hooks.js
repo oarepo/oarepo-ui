@@ -205,12 +205,6 @@ export const useDepositApiClient = ({
         );
       }
 
-      // it is a little bit problematic that when you save with errors, the server does not actually return in the response
-      // the value you filled if it resulted in validation error. It can cause discrepancy between what is shown in the form and actual
-      // state in formik so we preserve metadata in this way
-
-      // save accepts posts/puts even with validation errors. Here I check if there are some errors in the response
-      // body. Here I am setting the individual error messages to the field
       if (!saveWithoutDisplayingValidationErrors && response.errors) {
         for (const error of response.errors) {
           errorsObj = setIn(errorsObj, error.field, error.messages.join(" "));
@@ -241,8 +235,12 @@ export const useDepositApiClient = ({
       );
       return false;
     } finally {
+      // put state changing calls together, in order to avoid multiple rerenders during form submit
       setFormikState((prevState) => ({
         ...prevState,
+        // it is a little bit problematic that when you save with errors, the server does not actually return in the response
+        // the value you filled if it resulted in validation error. It can cause discrepancy between what is shown in the form and actual
+        // state in formik so we preserve metadata in this way
         values: {
           ...prevState.values,
           ...{
