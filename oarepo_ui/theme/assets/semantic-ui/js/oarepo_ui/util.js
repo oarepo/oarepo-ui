@@ -163,13 +163,25 @@ export const unique = (value, context, path, errorString) => {
   return true;
 };
 
-export const scrollToElement = (querySelector) => {
-  const element = document.querySelector(querySelector);
-  if (element) {
-    element.scrollIntoView({ behavior: "smooth", block: "center" });
+export const scrollToElement = (fieldPath) => {
+  const findElementAtPath = (path) => {
+    const element =
+      document.querySelector(`label[for="${path}"]`) ||
+      document.getElementById(path);
+    return element;
+  };
+
+  const splitPath = fieldPath.split(".");
+
+  for (let i = splitPath.length; i > 0; i--) {
+    const partialPath = splitPath.slice(0, i).join(".");
+    const element = findElementAtPath(partialPath);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
   }
 };
-
 //In some instances the I18nString component is problematic to use,
 // because it is actually a React node and not a string (i.e. text value
 // for drop down options)
