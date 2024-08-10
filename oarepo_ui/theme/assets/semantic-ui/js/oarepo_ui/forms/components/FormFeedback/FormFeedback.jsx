@@ -7,6 +7,7 @@ import _cloneDeep from "lodash/cloneDeep";
 import _omit from "lodash/omit";
 import { scrollToElement, useFieldData } from "@js/oarepo_ui";
 import PropTypes from "prop-types";
+import { i18next } from "@translations/oarepo_ui/i18next";
 
 // component to be used downstream of Formik that plugs into Formik's state and displays any errors
 // that apiClient sent to formik in auxilary keys. The keys are later removed when submitting the form
@@ -59,16 +60,24 @@ export const FormFeedback = () => {
         <Message.Header>{beValidationErrors?.errorMessage}</Message.Header>
         <Message.List>
           {beValidationErrors?.errors?.map((error, index) => {
+            const label = getFieldData({
+              fieldPath: error.field,
+              fieldRepresentation: "text",
+            })?.label;
             return (
               <Message.Item
                 onClick={() => scrollToElement(error.field)}
                 key={`${error.field}-${index}`}
               >{`${
-                getFieldData({
-                  fieldPath: error.field,
-                  fieldRepresentation: "text",
-                })?.label ?? titleCase(error.field)
-              }: ${error.messages[0]}`}</Message.Item>
+                label
+                  ? label
+                  : // ugly hack, but simply the path for file validation errors is completely
+                  // different and there does not seem to be a reasonable way to make translations
+                  // it is not clear can there be other validation errors for files than the one below
+                  error.field === "files.enabled"
+                  ? i18next.t("Files")
+                  : titleCase(error.field)
+              }: ${error.messages.join(" ")}`}</Message.Item>
             );
           })}
         </Message.List>

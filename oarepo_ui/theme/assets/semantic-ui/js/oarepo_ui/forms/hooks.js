@@ -160,7 +160,6 @@ export const useDepositApiClient = ({
   const {
     values,
     validateForm,
-    setValues,
     setFieldError,
     setErrors,
     isSubmitting,
