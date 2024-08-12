@@ -16,6 +16,7 @@ from flask_resources import (
 from flask_security import login_required
 from invenio_base.utils import obj_or_import_string
 from invenio_previewer import current_previewer
+from invenio_previewer.extensions import default as default_previewer
 from invenio_records_resources.pagination import Pagination
 from invenio_records_resources.proxies import current_service_registry
 from invenio_records_resources.records.systemfields import FilesField
@@ -25,14 +26,12 @@ from invenio_records_resources.resources.records.resource import (
     request_view_args,
 )
 from invenio_records_resources.services import LinksTemplate
+from oarepo_runtime.datastreams.utils import get_file_service_for_record_class
 from werkzeug.exceptions import Forbidden
 
 from oarepo_ui.utils import dump_empty
-from oarepo_runtime.datastreams.utils import get_file_service_for_record_class
 
 from .templating.data import FieldData
-from invenio_previewer.extensions import default as default_previewer
-
 
 if TYPE_CHECKING:
     from .components import UIResourceComponent
@@ -46,7 +45,6 @@ from .config import (
     TemplatePageUIResourceConfig,
     UIResourceConfig,
 )
-
 
 request_export_args = request_parser(
     from_conf("request_export_args"), location="view_args"
@@ -418,7 +416,9 @@ class RecordsUIResource(UIResource):
     def edit(self):
         api_record = self._get_record(resource_requestctx, allow_draft=True)
         try:
-            self.api_service.require_permission(g.identity, "update", record=api_record._record) #ResultItem doesn't serialize state and owners field
+            self.api_service.require_permission(
+                g.identity, "update", record=api_record._record
+            )  # ResultItem doesn't serialize state and owners field
         except PermissionDenied as e:
             raise Forbidden() from e
 
@@ -496,7 +496,16 @@ class RecordsUIResource(UIResource):
     @request_view_args
     def create(self):
         try:
-            self.api_service.require_permission(g.identity, "create", record=None)
+            # check if permission policy contains a specialized "view_deposit_page" permission
+            # and if so, use it, otherwise use the generic "can_create" permission
+            permission_policy = self.api_service.permission_policy("view_deposit_page")
+
+            if hasattr(permission_policy, "can_view_deposit_page"):
+                self.api_service.require_permission(
+                    g.identity, "view_deposit_page", record=None
+                )
+            else:
+                self.api_service.require_permission(g.identity, "create", record=None)
         except PermissionDenied as e:
             raise Forbidden() from e
 

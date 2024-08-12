@@ -14,7 +14,6 @@ from jinjax import Catalog
 from jinjax.exceptions import ComponentNotFound
 from jinjax.jinjax import JinjaX
 
-
 DEFAULT_URL_ROOT = "/static/components/"
 ALLOWED_EXTENSIONS = (".css", ".js")
 DEFAULT_PREFIX = ""
@@ -61,7 +60,9 @@ class OarepoCatalog(Catalog):
         )
         extensions = [*(extensions or []), "jinja2.ext.do", JinjaX]
         globals = globals or {
-            "deployment_version": os.environ.get("DEPLOYMENT_VERSION", "local development")
+            "deployment_version": os.environ.get(
+                "DEPLOYMENT_VERSION", "local development"
+            )
         }
         filters = filters or {}
         tests = tests or {}
