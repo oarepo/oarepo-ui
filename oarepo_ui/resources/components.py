@@ -236,12 +236,16 @@ class PermissionsComponent(UIResourceComponent):
 
     def get_record_permissions(self, actions, service, identity, record, **kwargs):
         """Helper for generating (default) record action permissions."""
-        return {
-            f"can_{action}": service.check_permission(
-                identity, action, record=record or {}, **kwargs
-            )
-            for action in actions
-        }
+        ret = {}
+        for action in actions:
+            try:
+                can_perform = service.check_permission(
+                    identity, action, record=record or {}, **kwargs
+                )
+            except Exception:  # noqa
+                can_perform = False
+            ret[f"can_{action}"] = can_perform
+        return ret
 
     def fill_permissions(self, record, extra_context, identity, **kwargs):
         from .resource import RecordsUIResource
