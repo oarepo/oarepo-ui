@@ -22,12 +22,9 @@ from oarepo_runtime.services.custom_fields import CustomFields, InlinedCustomFie
 from oarepo_ui.resources import (
     BabelComponent,
     RecordsUIResource,
-    RecordsUIResourceConfig,
+    RecordsUIResourceConfig, PermissionsComponent,
 )
-from oarepo_ui.resources.components import (
-    PermissionsComponent,
-    AllowedHtmlTagsComponent,
-)
+from oarepo_ui.resources.components.bleach import AllowedHtmlTagsComponent
 from oarepo_ui.resources.config import TemplatePageUIResourceConfig
 from oarepo_ui.resources.resource import TemplatePageUIResource
 

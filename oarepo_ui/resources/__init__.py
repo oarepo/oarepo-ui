@@ -1,4 +1,5 @@
-from .components import BabelComponent, PermissionsComponent
+from .components.permissions import PermissionsComponent
+from .components.babel import BabelComponent
 from .config import RecordsUIResourceConfig, UIResourceConfig
 from .resource import RecordsUIResource, UIResource
 
@@ -7,6 +8,4 @@ __all__ = (
     "RecordsUIResource",
     "UIResourceConfig",
     "RecordsUIResourceConfig",
-    "BabelComponent",
-    "PermissionsComponent",
 )
