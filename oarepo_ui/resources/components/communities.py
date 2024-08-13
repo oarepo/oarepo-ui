@@ -3,6 +3,7 @@ from typing import Dict
 from flask_principal import Identity
 from invenio_communities.communities.records.api import Community
 
+
 from .base import UIResourceComponent
 
 
@@ -19,9 +20,13 @@ class AllowedCommunitiesComponent(UIResourceComponent):
             extra_context: Dict,
             **kwargs,
     ):
+        ret = self.get_allowed_communities(identity, "create")
+        form_config['allowed_communities'] = ret
+        return ret
+
+    def get_allowed_communities(self, identity, action):
         # get all communities
         community_ids = set()
-
         for need in identity.provides:
             if need.method == 'community' and need.value:
                 community_ids.add(need.value)
@@ -29,9 +34,13 @@ class AllowedCommunitiesComponent(UIResourceComponent):
         # for each community, get workflow
         for community_id in community_ids:
             community = Community.get_record(community_id)
-            if self.user_has_permission(identity, community, 'create'):
-                ret.append({'slug': community.slug, 'title': community.metadata['title']})
-        form_config['allowed_communities'] = ret
+            if self.user_has_permission(identity, community, action):
+                # get the link to the community
+
+                ret.append({
+                    'slug': community.slug,
+                    'title': community.metadata['title']
+                })
         return ret
 
     def user_has_permission(self, identity, community, action):
