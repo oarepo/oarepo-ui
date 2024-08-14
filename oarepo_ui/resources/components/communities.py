@@ -38,8 +38,9 @@ class AllowedCommunitiesComponent(UIResourceComponent):
                 # get the link to the community
 
                 ret.append({
-                    'slug': community.slug,
-                    'title': community.metadata['title']
+                    'id': str(community.id),
+                    'logo': f"/api/communities/{community.id}/logo",
+                    **(community.metadata or {}),
                 })
         return ret
 
