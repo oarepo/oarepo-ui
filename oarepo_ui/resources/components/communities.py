@@ -2,6 +2,7 @@ from typing import Dict
 
 from flask_principal import Identity
 from invenio_communities.communities.records.api import Community
+from invenio_communities.proxies import current_communities
 from flask import request
 
 
@@ -24,6 +25,16 @@ class AllowedCommunitiesComponent(UIResourceComponent):
         form_config["allowed_communities"] = self.get_allowed_communities(
             identity, "create"
         )
+        generic_community = current_communities.service.read(
+            id_="generic", identity=identity
+        )
+        generic_community = generic_community.to_dict()
+        form_config["generic_community"] = {
+            "slug": str(generic_community["slug"]),
+            "id": str(generic_community["id"]),
+            "logo": f"/api/communities/{generic_community['id']}/logo",
+            **(generic_community["metadata"] or {}),
+        }
 
     def before_ui_create(
         self,
