@@ -84,7 +84,7 @@
 
             {# User Account menu #}
             {%- block navbar_right %}
-              <div class="ui right menu item header_menu_item">
+              <div class="right menu item header_menu_item">
                 {%- for item in current_menu.submenu('main').children|sort(attribute='order') if item.visible recursive %}
                 {%- if item.children %}
                   <div class="item">
