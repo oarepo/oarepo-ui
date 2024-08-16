@@ -565,3 +565,18 @@ msgstr ""
 
 msgid "Reset"
 msgstr ""
+
+#: /Users/m/w/cesnet/oarepo-ui/oarepo_ui/resources/components/communities.py:55
+msgid "You have no permission to create record in this community."
+msgstr ""
+
+#: /Users/m/w/cesnet/oarepo-ui/oarepo_ui/templates/oarepo_ui/PermissionDenied.jinja:21
+#, python-format
+msgid ""
+"\n"
+"      Reason: %(error)s"
+msgstr ""
+
+#: /Users/m/w/cesnet/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_frontage.html:26
+msgid "Type and press enter to search"
+msgstr ""
