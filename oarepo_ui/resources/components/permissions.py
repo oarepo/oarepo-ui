@@ -19,7 +19,7 @@ class PermissionsComponent(UIResourceComponent):
             return
 
         extra_context["permissions"] = {
-            "can_create": self.resource.api_service.check_permission(identity, "create")
+            "can_create": self.resource.has_deposit_permissions(identity)
         }
         # fixes issue with permissions not propagating down to template
         search_options["overrides"]["permissions"] = extra_context["permissions"]

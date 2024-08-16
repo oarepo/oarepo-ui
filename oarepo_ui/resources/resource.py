@@ -499,19 +499,8 @@ class RecordsUIResource(UIResource):
     @request_view_args
     @request_create_args
     def create(self):
-        try:
-            # check if permission policy contains a specialized "view_deposit_page" permission
-            # and if so, use it, otherwise use the generic "can_create" permission
-            permission_policy = self.api_service.permission_policy("view_deposit_page")
-
-            if hasattr(permission_policy, "can_view_deposit_page"):
-                self.api_service.require_permission(
-                    g.identity, "view_deposit_page", record=None
-                )
-            else:
-                self.api_service.require_permission(g.identity, "create", record=None)
-        except PermissionDenied as e:
-            raise Forbidden() from e
+        if not self.has_deposit_permissions(g.identity):
+            raise Forbidden()
 
         empty_record = self.empty_record(resource_requestctx)
 
@@ -569,6 +558,17 @@ class RecordsUIResource(UIResource):
             data=empty_record,
             context=current_oarepo_ui.catalog.jinja_env.globals,
         )
+
+    def has_deposit_permissions(self, identity):
+        # check if permission policy contains a specialized "view_deposit_page" permission
+        # and if so, use it, otherwise use the generic "can_create" permission
+        permission_policy = self.api_service.permission_policy("view_deposit_page")
+        if hasattr(permission_policy, "can_view_deposit_page"):
+            return self.api_service.check_permission(
+                identity, "view_deposit_page", record=None
+            )
+        else:
+            return self.api_service.check_permission(identity, "create", record=None)
 
     @property
     def api_service(self):
