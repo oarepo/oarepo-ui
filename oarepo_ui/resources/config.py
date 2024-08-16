@@ -77,6 +77,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
     request_file_view_args = {**request_view_args, "filepath": ma.fields.Str()}
     request_export_args = {"export_format": ma.fields.Str()}
     request_search_args = {"page": ma.fields.Integer(), "size": ma.fields.Integer()}
+    request_create_args = {"community": ma.fields.Str()}
 
     app_contexts = None
     ui_serializer = None

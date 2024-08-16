@@ -54,6 +54,9 @@ request_file_view_args = request_parser(
     from_conf("request_file_view_args"), location="view_args"
 )
 
+request_create_args = request_parser(
+    from_conf("request_create_args"), location="args"
+)
 
 class UIResource(Resource):
     """Record resource."""
@@ -494,6 +497,7 @@ class RecordsUIResource(UIResource):
     @login_required
     @request_read_args
     @request_view_args
+    @request_create_args
     def create(self):
         try:
             # check if permission policy contains a specialized "view_deposit_page" permission
@@ -617,6 +621,7 @@ class RecordsUIResource(UIResource):
                 default_macro="PermissionDenied",
             ),
             pid=getattr(error, "pid_value", None) or getattr(error, "pid", None),
+            error=error
         )
 
 

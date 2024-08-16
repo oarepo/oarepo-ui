@@ -281,6 +281,8 @@ msgid ""
 "Powered by\n"
 "            <a href=\"%(link)s\">Invenio</a>"
 msgstr ""
+"Založeno na technologii\n"
+"            <a href=\"%(link)s\">Invenio</a>"
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:36
 msgid "Quick create"
@@ -455,7 +457,7 @@ msgstr "Odkaz na původní záznam"
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/SidebarApiLinks.jinja:5
 msgid "API"
-msgstr ""
+msgstr "API"
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/SidebarApiLinks.jinja:5
 msgid "Links"
@@ -470,6 +472,8 @@ msgid ""
 "\n"
 "      The record you are trying to access does not exist in this repository."
 msgstr ""
+"\n"
+"      Záznam, který se snažíte zobrazit, neexistuje v tomto repozitáři."
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/PermissionDenied.jinja:11
 msgid "Permission denied"
@@ -481,6 +485,8 @@ msgid ""
 "\n"
 "      You do not have permissions to access this page on %(sitename)s."
 msgstr ""
+"\n"
+"      Nemáte oprávnění k zobrazení této stránky na %(sitename)s."
 
 msgid "Copied!"
 msgstr "Zkopírováno!"
@@ -511,3 +517,20 @@ msgstr "Filtrovat podle data"
 
 msgid "Reset"
 msgstr "Resetovat"
+
+#: /Users/m/w/cesnet/oarepo-ui/oarepo_ui/resources/components/communities.py:55
+msgid "You have no permission to create record in this community."
+msgstr "Nemáte právo vytvořit záznam v této komunitě."
+
+#: /Users/m/w/cesnet/oarepo-ui/oarepo_ui/templates/oarepo_ui/PermissionDenied.jinja:21
+#, python-format
+msgid ""
+"\n"
+"      Reason: %(error)s"
+msgstr ""
+"\n"
+"      Důvod: %(error)s"
+
+#: /Users/m/w/cesnet/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_frontage.html:26
+msgid "Type and press enter to search"
+msgstr "Zadejte a stiskněte Enter pro vyhledávání"
