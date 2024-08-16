@@ -2,12 +2,13 @@ from typing import Dict
 
 from flask_principal import Identity
 from invenio_communities.communities.records.api import Community
-from invenio_communities.proxies import current_communities
-from flask import request
+from oarepo_runtime.i18n import lazy_gettext as _
 
 
 from .base import UIResourceComponent
-
+from invenio_records_resources.services.errors import (
+    PermissionDeniedError,
+)
 
 class AllowedCommunitiesComponent(UIResourceComponent):
     def form_config(
@@ -22,19 +23,11 @@ class AllowedCommunitiesComponent(UIResourceComponent):
         extra_context: Dict,
         **kwargs,
     ):
-        form_config["allowed_communities"] = self.get_allowed_communities(
-            identity, "create"
-        )
-        generic_community = current_communities.service.read(
-            id_="generic", identity=identity
-        )
-        generic_community = generic_community.to_dict()
-        form_config["generic_community"] = {
-            "slug": str(generic_community["slug"]),
-            "id": str(generic_community["id"]),
-            "logo": f"/api/communities/{generic_community['id']}/logo",
-            **(generic_community["metadata"] or {}),
-        }
+        form_config["allowed_communities"] = [
+            self.community_to_dict(community)
+            for community in self.get_allowed_communities(identity, "create"
+        )]
+        form_config["generic_community"] = self.community_to_dict(Community.pid.resolve("generic"))
 
     def before_ui_create(
         self,
@@ -48,16 +41,33 @@ class AllowedCommunitiesComponent(UIResourceComponent):
         extra_context: Dict,
         **kwargs,
     ):
-        preselected_community_slug = request.args.get("community", None)
-        preselected_community = next(
-            (
-                c
-                for c in form_config["allowed_communities"]
-                if c["slug"] == preselected_community_slug
-            ),
-            None,
-        )
+        preselected_community_slug = args.get("community", None)
+        if preselected_community_slug:
+            try:
+                preselected_community = next(
+                    (
+                        c
+                        for c in form_config["allowed_communities"]
+                        if c["slug"] == preselected_community_slug
+                    ),
+                )
+            except StopIteration:
+                raise PermissionDeniedError(_("You have no permission to create record in this community."))
+        else:
+            preselected_community = None
+
         form_config["preselected_community"] = preselected_community
+
+    def community_to_dict(self, community):
+        return {
+            "slug": str(community.slug),
+            "id": str(community.id),
+            "logo": f"/api/communities/{community.id}/logo",
+            "links": {
+                "self_html": f"/communities/{community.id}/records",
+            },
+            **(community.metadata or {}),
+        }
 
     def get_allowed_communities(self, identity, action):
         # get all communities
@@ -65,22 +75,13 @@ class AllowedCommunitiesComponent(UIResourceComponent):
         for need in identity.provides:
             if need.method == "community" and need.value:
                 community_ids.add(need.value)
-        ret = []
+
         # for each community, get workflow
         for community_id in community_ids:
             community = Community.get_record(community_id)
             if self.user_has_permission(identity, community, action):
                 # get the link to the community
-
-                ret.append(
-                    {
-                        "slug": str(community.slug),
-                        "id": str(community.id),
-                        "logo": f"/api/communities/{community.id}/logo",
-                        **(community.metadata or {}),
-                    }
-                )
-        return ret
+                yield community
 
     def user_has_permission(self, identity, community, action):
         workflow = community.custom_fields.get("workflow")
