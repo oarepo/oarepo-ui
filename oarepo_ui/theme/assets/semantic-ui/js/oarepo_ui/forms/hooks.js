@@ -228,10 +228,7 @@ export const useDepositApiClient = ({
       // handle 400 errors. Normally, axios would put messages in error.response. But for example
       // offline Error message does not produce a response, so in this way we can display
       // network error message
-      setFieldError(
-        "httpErrors",
-        error?.response?.data?.message ?? error.message
-      );
+      errorsObj["httpErrors"] = error?.response?.data?.message ?? error.message;
       return false;
     } finally {
       // put state changing calls together, in order to avoid multiple rerenders during form submit

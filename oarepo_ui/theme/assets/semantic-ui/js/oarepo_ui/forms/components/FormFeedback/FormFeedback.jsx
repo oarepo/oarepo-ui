@@ -69,14 +69,12 @@ export const FormFeedback = () => {
                 onClick={() => scrollToElement(error.field)}
                 key={`${error.field}-${index}`}
               >{`${
-                label
-                  ? label
-                  : // ugly hack, but simply the path for file validation errors is completely
-                  // different and there does not seem to be a reasonable way to make translations
-                  // it is not clear can there be other validation errors for files than the one below
-                  error.field === "files.enabled"
+                label || // ugly hack, but simply the path for file validation errors is completely
+                // different and there does not seem to be a reasonable way to make translations
+                // it is not clear can there be other validation errors for files than the one below
+                (error.field === "files.enabled"
                   ? i18next.t("Files")
-                  : titleCase(error.field)
+                  : titleCase(error.field))
               }: ${error.messages.join(" ")}`}</Message.Item>
             );
           })}
