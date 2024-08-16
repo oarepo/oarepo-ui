@@ -6,7 +6,7 @@ import { Message } from "semantic-ui-react";
 import { ExternalApiModal } from "./ExternalApiModal";
 import { NoResultsMessage } from "./NoResultsMessage";
 import _isEmpty from "lodash/isEmpty";
-
+import _uniqBy from "lodash/uniqBy";
 export class RelatedSelectFieldInternal extends RemoteSelectField {
   constructor(props) {
     super(props);
@@ -117,8 +117,8 @@ export class RelatedSelectFieldInternal extends RemoteSelectField {
       serializeExternalApiSuggestions,
       externalApiModalTitle,
       multiple,
+      initialSuggestions,
     } = this.props;
-
     const { compProps, uiProps } = this.getProps();
     const searchConfig = {
       searchApi: {
@@ -150,7 +150,13 @@ export class RelatedSelectFieldInternal extends RemoteSelectField {
         <SelectField
           allowAdditions={this.error ? false : uiProps.allowAdditions}
           fieldPath={compProps.fieldPath}
-          options={this.state.suggestions}
+          options={_uniqBy(
+            [
+              ...serializeSuggestions(initialSuggestions),
+              ...this.state.suggestions,
+            ],
+            "value"
+          )}
           noResultsMessage={this.getNoResultsMessage()}
           search={compProps.search}
           lazyLoad
