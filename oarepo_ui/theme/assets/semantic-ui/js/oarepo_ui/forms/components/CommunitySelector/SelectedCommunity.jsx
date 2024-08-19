@@ -35,10 +35,32 @@ export const SelectedCommunity = ({ fieldPath }) => {
         </p>
       )}
       <Header as="h3" className="m-0">
-        {selectedCommunity?.title}
+        {/* TODO: the link is to the community landing page which is not yet ready */}
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
+          href={selectedCommunity?.links?.self_html}
+          aria-label={i18next.t("Community landing page")}
+        >
+          {selectedCommunity?.title}
+        </a>
       </Header>
       <p>{selectedCommunity?.description}</p>
+      {selectedCommunity?.website && (
+        <span>
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            href={selectedCommunity?.website}
+          >
+            {i18next.t("Community website.")}
+          </a>
+        </span>
+      )}
       {isGeneric ? (
+        // TODO: get actual link for the documentation
         <Message>
           <Icon name="warning circle" className="text size large" />
           <Trans>
@@ -53,19 +75,18 @@ export const SelectedCommunity = ({ fieldPath }) => {
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
             >
-              here
-            </a>
-            . For more details on how to join a community please refer to the
-            instructions available{" "}
+              on our communities page.
+            </a>{" "}
+            For more details on how to join a community please refer to the
+            instructions on{" "}
             <a
               href="/documentation-url"
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
             >
-              here
+              how to join a community.
             </a>
-            .
           </Trans>
         </Message>
       ) : null}

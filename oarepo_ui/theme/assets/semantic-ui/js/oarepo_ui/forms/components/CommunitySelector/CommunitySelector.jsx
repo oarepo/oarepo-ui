@@ -7,7 +7,7 @@ import { Trans } from "react-i18next";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { CommunityItem } from "./CommunityItem";
 
-export const CommunitySelectorField = ({ fieldPath, ...uiProps }) => {
+export const CommunitySelector = ({ fieldPath, ...uiProps }) => {
   const { values, setFieldValue } = useFormikContext();
   const {
     formConfig: {
@@ -17,7 +17,9 @@ export const CommunitySelectorField = ({ fieldPath, ...uiProps }) => {
     },
   } = useFormConfig();
   const communitySelected = getIn(values, "parent.communities.default", "");
-
+  // TODO: ideally if the there is a preselected community, it could arrive as part of the
+  // empty record also, same for the case where the user has just one community, which would eliminate
+  // the need for this useEffect
   useEffect(() => {
     if (!values.id) {
       if (preselected_community) {
@@ -69,19 +71,19 @@ export const CommunitySelectorField = ({ fieldPath, ...uiProps }) => {
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    here
-                  </a>
-                  . For more details on how to join a community please refer to
-                  the instructions available{" "}
+                    on our communities page.
+                  </a>{" "}
+                  For more details on how to join a community please refer to
+                  the instructions on{" "}
                   <a
                     href="/documentation-url"
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    here
-                  </a>
-                  . If you are certain that you wish to proceed with the generic
+                    how to join a community.
+                  </a>{" "}
+                  If you are certain that you wish to proceed with the generic
                   community, please click on it below.
                 </Trans>
                 <List selection>
@@ -117,10 +119,10 @@ export const CommunitySelectorField = ({ fieldPath, ...uiProps }) => {
   );
 };
 
-CommunitySelectorField.propTypes = {
+CommunitySelector.propTypes = {
   fieldPath: PropTypes.string,
 };
 
-CommunitySelectorField.defaultProps = {
+CommunitySelector.defaultProps = {
   fieldPath: "parent.communities.default",
 };
