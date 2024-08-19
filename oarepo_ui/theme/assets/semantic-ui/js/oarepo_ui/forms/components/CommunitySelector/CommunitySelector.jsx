@@ -59,7 +59,7 @@ export const CommunitySelector = ({ fieldPath, ...uiProps }) => {
             {allowed_communities.length === 0 && (
               <React.Fragment>
                 {/* TODO: get actual link for the documentation */}
-                <Trans>
+                <Trans i18nKey="genericCommunityMessage">
                   You are not a member of any community. If you choose to
                   proceed, your work will be published in the "generic"
                   community. We strongly recommend that you join a community to
@@ -108,10 +108,10 @@ export const CommunitySelector = ({ fieldPath, ...uiProps }) => {
             className="ml-0"
             icon
             labelPosition="left"
-            onClick={() => window.history.go(-1)}
+            onClick={() => window.location.replace("/")}
           >
             <Icon name="arrow alternate circle left outline" />
-            {i18next.t("Go back")}
+            {i18next.t("Home page")}
           </Button>
         </Modal.Actions>
       </Modal>

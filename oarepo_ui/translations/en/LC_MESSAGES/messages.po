@@ -580,3 +580,58 @@ msgstr ""
 #: /Users/m/w/cesnet/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_frontage.html:26
 msgid "Type and press enter to search"
 msgstr ""
+
+msgid "Community website"
+msgstr ""
+
+msgid "Community selection"
+msgstr ""
+
+msgid "Please select community in which your work will be published:"
+msgstr ""
+
+msgid "All records must belong to a community."
+msgstr ""
+
+msgid "Go back"
+msgstr ""
+
+msgid ""
+"You are not a member of any community. If you choose to proceed, your work "
+"will be published in the \"generic\" community. We strongly recommend that "
+"you join a community to increase the visibility of your work and to "
+"cooperate with others more easily. You can check the available communities "
+"<2>on our communities page.</2> For more details on how to join a community "
+"please refer to the instructions on <6>how to join a community.</6> If you "
+"are certain that you wish to proceed with the generic community, please "
+"click on it below."
+msgstr ""
+
+msgid "Your record will be published in the following community:"
+msgstr ""
+
+msgid ""
+"Your work will be saved in the following community. Please note that after "
+"saving it will not be possible to transfer it to another community."
+msgstr ""
+
+msgid "Community landing page"
+msgstr ""
+
+msgid "Community website."
+msgstr ""
+
+msgid ""
+"You are not a member of any community. If you choose to proceed, your work "
+"will be published in the \"generic\" community. We strongly recommend that "
+"you join a community to increase the visibility of your work and to "
+"cooperate with others more easily. You can check the available communities "
+"<2>on our communities page.</2> For more details on how to join a community "
+"please refer to the instructions on <6>how to join a community.</6>"
+msgstr ""
+
+msgid "Community home page"
+msgstr ""
+
+msgid "genericCommunityMessage"
+msgstr ""

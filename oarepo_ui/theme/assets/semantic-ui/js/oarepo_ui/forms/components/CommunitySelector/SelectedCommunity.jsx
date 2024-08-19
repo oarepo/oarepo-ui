@@ -41,7 +41,7 @@ export const SelectedCommunity = ({ fieldPath }) => {
           rel="noopener noreferrer"
           onClick={(e) => e.stopPropagation()}
           href={selectedCommunity?.links?.self_html}
-          aria-label={i18next.t("Community landing page")}
+          aria-label={i18next.t("Community home page")}
         >
           {selectedCommunity?.title}
         </a>
