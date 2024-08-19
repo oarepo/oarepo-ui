@@ -11,7 +11,7 @@ export const CommunityItem = ({ community, handleClick }) => {
     <Overridable
       id="record-community-selection-item"
       community={community}
-      handleClick
+      handleClick={handleClick}
     >
       <List.Item onClick={() => handleClick(id)} className="flex">
         <Image src={logo} size="small" rounded />

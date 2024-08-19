@@ -45,7 +45,7 @@ export const CommunitySelector = ({ fieldPath }) => {
       generic_community,
     },
   } = useFormConfig();
-  const communitySelected = getIn(values, "parent.communities.default", "");
+  const selectedCommunity = getIn(values, "parent.communities.default", "");
   // TODO: ideally if the there is a preselected community, it could arrive as part of the
   // empty record also, same for the case where the user has just one community, which would eliminate
   // the need for this useEffect
@@ -58,12 +58,13 @@ export const CommunitySelector = ({ fieldPath }) => {
       }
     }
   }, []);
+
   const handleClick = (id) => {
     setFieldValue(fieldPath, id);
   };
   return (
     !values.id && (
-      <Modal open={!communitySelected}>
+      <Modal open={!selectedCommunity}>
         <Modal.Header>{i18next.t("Community selection")}</Modal.Header>
         <Modal.Content>
           <React.Fragment>
