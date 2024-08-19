@@ -222,7 +222,7 @@ export const useDepositApiClient = ({
         return false;
       }
       if (!saveWithoutDisplayingValidationErrors)
-        setFieldError("successMessage", i18next.t("Draft saved successfully."));
+        errorsObj["successMessage"] = i18next.t("Draft saved successfully.");
       return response;
     } catch (error) {
       // handle 400 errors. Normally, axios would put messages in error.response. But for example
