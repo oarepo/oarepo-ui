@@ -7,7 +7,36 @@ import { Trans } from "react-i18next";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { CommunityItem } from "./CommunityItem";
 
-export const CommunitySelector = ({ fieldPath, ...uiProps }) => {
+/* TODO: get actual link for the documentation */
+
+export const GenericCommunityMessage = () => (
+  <Trans i18n={i18next} i18nKey="genericCommunityMessage">
+    You are not a member of any community. If you choose to proceed, your work
+    will be published in the "generic" community. We strongly recommend that you
+    join a community to increase the visibility of your work and to cooperate
+    with others more easily. You can check the available communities{" "}
+    <a
+      href="/communities"
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={(e) => e.stopPropagation()}
+    >
+      on our communities page.
+    </a>{" "}
+    For more details on how to join a community please refer to the instructions
+    on{" "}
+    <a
+      href="/documentation-url"
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={(e) => e.stopPropagation()}
+    >
+      how to join a community.
+    </a>{" "}
+  </Trans>
+);
+
+export const CommunitySelector = ({ fieldPath }) => {
   const { values, setFieldValue } = useFormikContext();
   const {
     formConfig: {
@@ -58,34 +87,12 @@ export const CommunitySelector = ({ fieldPath, ...uiProps }) => {
             )}
             {allowed_communities.length === 0 && (
               <React.Fragment>
-                {/* TODO: get actual link for the documentation */}
-                <Trans i18nKey="genericCommunityMessage">
-                  You are not a member of any community. If you choose to
-                  proceed, your work will be published in the "generic"
-                  community. We strongly recommend that you join a community to
-                  increase the visibility of your work and to cooperate with
-                  others more easily. You can check the available communities{" "}
-                  <a
-                    href="/communities"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    on our communities page.
-                  </a>{" "}
-                  For more details on how to join a community please refer to
-                  the instructions on{" "}
-                  <a
-                    href="/documentation-url"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    how to join a community.
-                  </a>{" "}
-                  If you are certain that you wish to proceed with the generic
-                  community, please click on it below.
-                </Trans>
+                <GenericCommunityMessage />{" "}
+                <span>
+                  {i18next.t(
+                    "If you are certain that you wish to proceed with the generic community, please click on it below."
+                  )}
+                </span>
                 <List selection>
                   <CommunityItem
                     community={generic_community}

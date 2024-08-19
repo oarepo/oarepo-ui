@@ -4,7 +4,7 @@ import { useFormConfig } from "@js/oarepo_ui";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { Header, Message, Icon } from "semantic-ui-react";
-import { Trans } from "react-i18next";
+import { GenericCommunityMessage } from "./CommunitySelector";
 
 export const SelectedCommunity = ({ fieldPath }) => {
   const {
@@ -60,34 +60,9 @@ export const SelectedCommunity = ({ fieldPath }) => {
         </span>
       )}
       {isGeneric ? (
-        // TODO: get actual link for the documentation
         <Message>
           <Icon name="warning circle" className="text size large" />
-          <Trans>
-            You are not a member of any community. If you choose to proceed,
-            your work will be published in the "generic" community. We strongly
-            recommend that you join a community to increase the visibility of
-            your work and to cooperate with others more easily. You can check
-            the available communities{" "}
-            <a
-              href="/communities"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-            >
-              on our communities page.
-            </a>{" "}
-            For more details on how to join a community please refer to the
-            instructions on{" "}
-            <a
-              href="/documentation-url"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-            >
-              how to join a community.
-            </a>
-          </Trans>
+          <GenericCommunityMessage />
         </Message>
       ) : null}
     </React.Fragment>
