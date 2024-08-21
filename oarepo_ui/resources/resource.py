@@ -574,6 +574,8 @@ class RecordsUIResource(UIResource):
             return self.api_service.check_permission(identity, "create", record=None)
             
     def default_communities(self, empty_record, form_config, resource_requestctx):
+        if 'allowed_communities' not in form_config:
+            return empty_record
         if "community" in resource_requestctx.args:
             community = resource_requestctx.args["community"]
             for c in form_config["allowed_communities"]:
