@@ -5,16 +5,7 @@
       flex-wrap: wrap;
       align-items: center;
       .copy-btn {
-        opacity: 0.3;
         margin-left: auto;
-      }
-      .copy-btn.selected {
-        opacity: 1;
-        color: @primaryColor;
-      }
-      .copy-btn:hover {
-        opacity: 1;
-        background-color: none;
       }
     }
 
