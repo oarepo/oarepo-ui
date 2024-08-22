@@ -201,10 +201,7 @@ export const getTitleFromMultilingualObject = (multilingualObject) => {
 };
 
 export const getValueFromMultilingualArray = (multilingualArray) => {
-  if (!multilingualArray) {
-    return null;
-  }
-  if (multilingualArray.length === 0) {
+  if (!multilingualArray || multilingualArray.length === 0) {
     return null;
   } else {
     const value =
