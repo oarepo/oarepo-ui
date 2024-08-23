@@ -8,7 +8,11 @@ import { GenericCommunityMessage } from "./CommunitySelector";
 
 export const SelectedCommunity = ({ fieldPath }) => {
   const {
-    formConfig: { allowed_communities, generic_community },
+    formConfig: {
+      allowed_communities,
+      generic_community,
+      preselected_community,
+    },
   } = useFormConfig();
   const { values, setFieldValue } = useFormikContext();
   const selectedCommunityId = getIn(values, fieldPath, "");
@@ -50,15 +54,17 @@ export const SelectedCommunity = ({ fieldPath }) => {
             {selectedCommunity?.title}
           </a>
         </Header>
-        {!values?.id && (
-          <Button
-            className="rel-ml-1"
-            onClick={handleCommunityRemoval}
-            size="mini"
-          >
-            {i18next.t("Change")}
-          </Button>
-        )}
+        {!values?.id &&
+          allowed_communities.length > 1 &&
+          !preselected_community && (
+            <Button
+              className="rel-ml-1"
+              onClick={handleCommunityRemoval}
+              size="mini"
+            >
+              {i18next.t("Change")}
+            </Button>
+          )}
       </div>
 
       <p>{selectedCommunity?.description}</p>
