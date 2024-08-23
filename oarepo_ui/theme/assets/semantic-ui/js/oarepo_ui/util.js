@@ -200,6 +200,17 @@ export const getTitleFromMultilingualObject = (multilingualObject) => {
   return localizedValue;
 };
 
+export const getValueFromMultilingualArray = (multilingualArray) => {
+  if (!multilingualArray || multilingualArray.length === 0) {
+    return null;
+  } else {
+    const value =
+      multilingualArray.find((a) => a.lang === i18next.language)?.value ||
+      multilingualArray[0].value;
+    return value;
+  }
+};
+
 // Date utils
 
 export function getLocaleObject(localeSpec) {
