@@ -3,14 +3,14 @@ import { useFormikContext, getIn } from "formik";
 import { useFormConfig } from "@js/oarepo_ui";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import { Header, Message, Icon } from "semantic-ui-react";
+import { Header, Message, Icon, Button } from "semantic-ui-react";
 import { GenericCommunityMessage } from "./CommunitySelector";
 
 export const SelectedCommunity = ({ fieldPath }) => {
   const {
     formConfig: { allowed_communities, generic_community },
   } = useFormConfig();
-  const { values } = useFormikContext();
+  const { values, setFieldValue } = useFormikContext();
   const selectedCommunityId = getIn(values, fieldPath, "");
   let selectedCommunity = allowed_communities.find(
     (c) => c.id === selectedCommunityId
@@ -19,6 +19,9 @@ export const SelectedCommunity = ({ fieldPath }) => {
   if (isGeneric) {
     selectedCommunity = generic_community;
   }
+  const handleCommunityRemoval = () => {
+    setFieldValue(fieldPath, "");
+  };
   return (
     <React.Fragment>
       {values?.id ? (
@@ -34,18 +37,30 @@ export const SelectedCommunity = ({ fieldPath }) => {
           )}
         </p>
       )}
-      <Header as="h3" className="m-0">
-        {/* TODO: the link is to the community landing page which is not yet ready */}
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={(e) => e.stopPropagation()}
-          href={selectedCommunity?.links?.self_html}
-          aria-label={i18next.t("Community home page")}
-        >
-          {selectedCommunity?.title}
-        </a>
-      </Header>
+      <div className="flex center aligned">
+        <Header as="h3" className="m-0">
+          {/* TODO: the link is to the community landing page which is not yet ready */}
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            href={selectedCommunity?.links?.self_html}
+            aria-label={i18next.t("Community home page")}
+          >
+            {selectedCommunity?.title}
+          </a>
+        </Header>
+        {!values?.id && (
+          <Button
+            className="rel-ml-1"
+            onClick={handleCommunityRemoval}
+            size="mini"
+          >
+            {i18next.t("Change")}
+          </Button>
+        )}
+      </div>
+
       <p>{selectedCommunity?.description}</p>
       {selectedCommunity?.website && (
         <span>

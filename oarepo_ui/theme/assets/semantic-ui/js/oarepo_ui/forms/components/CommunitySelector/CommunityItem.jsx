@@ -14,7 +14,7 @@ export const CommunityItem = ({ community, handleClick }) => {
       handleClick={handleClick}
     >
       <List.Item onClick={() => handleClick(id)} className="flex">
-        <Image src={logo} size="small" rounded />
+        <Image src={logo} size="tiny" rounded />
         <List.Content>
           <Header size="small">{title}</Header>
           {description && <p className="mb-5">{description}</p>}

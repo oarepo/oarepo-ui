@@ -249,3 +249,16 @@ export function formatDate(date, formatStr, locale) {
     useAdditionalDayOfYearTokens: true,
   });
 }
+
+// function to take the user back to previous page, in case the page
+// was visited from external source i.e. by pasting the URL in the browser,
+// takes you back to the home page
+export const goBack = (fallBackURL = "/") => {
+  const referrer = document.referrer;
+
+  if (referrer?.startsWith(window.location.origin)) {
+    window.history.back();
+  } else {
+    window.location.href = fallBackURL;
+  }
+};

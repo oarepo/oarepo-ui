@@ -10,6 +10,7 @@ from invenio_records_resources.services.errors import (
     PermissionDeniedError,
 )
 
+
 class AllowedCommunitiesComponent(UIResourceComponent):
     def form_config(
         self,
@@ -23,11 +24,18 @@ class AllowedCommunitiesComponent(UIResourceComponent):
         extra_context: Dict,
         **kwargs,
     ):
+        sorted_allowed_communities = sorted(
+            self.get_allowed_communities(identity, "create"),
+            key=lambda community: community.metadata["title"],
+        )
+
         form_config["allowed_communities"] = [
             self.community_to_dict(community)
-            for community in self.get_allowed_communities(identity, "create"
-        )]
-        form_config["generic_community"] = self.community_to_dict(Community.pid.resolve("generic"))
+            for community in sorted_allowed_communities
+        ]
+        form_config["generic_community"] = self.community_to_dict(
+            Community.pid.resolve("generic")
+        )
 
     def before_ui_create(
         self,
@@ -52,7 +60,9 @@ class AllowedCommunitiesComponent(UIResourceComponent):
                     ),
                 )
             except StopIteration:
-                raise PermissionDeniedError(_("You have no permission to create record in this community."))
+                raise PermissionDeniedError(
+                    _("You have no permission to create record in this community.")
+                )
         else:
             preselected_community = None
 

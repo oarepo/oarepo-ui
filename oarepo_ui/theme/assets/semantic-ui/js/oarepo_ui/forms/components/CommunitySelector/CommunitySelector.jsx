@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import { useFormConfig } from "@js/oarepo_ui";
+import { useFormConfig, goBack } from "@js/oarepo_ui";
 import { useFormikContext, getIn } from "formik";
 import { Message, Icon, Modal, List, Button } from "semantic-ui-react";
 import { Trans } from "react-i18next";
@@ -58,7 +58,6 @@ export const CommunitySelector = ({ fieldPath }) => {
       }
     }
   }, []);
-
   const handleClick = (id) => {
     setFieldValue(fieldPath, id);
   };
@@ -116,10 +115,10 @@ export const CommunitySelector = ({ fieldPath }) => {
             className="ml-0"
             icon
             labelPosition="left"
-            onClick={() => window.location.replace("/")}
+            onClick={() => goBack()}
           >
             <Icon name="arrow alternate circle left outline" />
-            {i18next.t("Home page")}
+            {i18next.t("Go back")}
           </Button>
         </Modal.Actions>
       </Modal>

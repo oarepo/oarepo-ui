@@ -657,3 +657,6 @@ msgid ""
 "If you are certain that you wish to proceed with the generic community, "
 "click on it below."
 msgstr ""
+
+msgid "Change"
+msgstr ""

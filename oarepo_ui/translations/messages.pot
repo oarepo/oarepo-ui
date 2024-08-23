@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-08-19 13:07+0200\n"
+"POT-Creation-Date: 2024-08-23 16:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -53,7 +53,7 @@ msgstr ""
 msgid "JSON"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/resources/components/communities.py:55
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/resources/components/communities.py:64
 msgid "You have no permission to create record in this community."
 msgstr ""
 
@@ -265,7 +265,7 @@ msgstr ""
 msgid "All records must belong to a community."
 msgstr ""
 
-msgid "Home page"
+msgid "Go back"
 msgstr ""
 
 msgid "genericCommunityMessage"
@@ -280,6 +280,9 @@ msgid ""
 msgstr ""
 
 msgid "Community home page"
+msgstr ""
+
+msgid "Change"
 msgstr ""
 
 msgid "Community website."

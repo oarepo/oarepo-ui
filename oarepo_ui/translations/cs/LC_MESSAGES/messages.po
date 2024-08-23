@@ -548,7 +548,7 @@ msgid "All records must belong to a community."
 msgstr "Všechny záznamy musí patřit komunitě."
 
 msgid "Go back"
-msgstr "Vraťte se"
+msgstr "Zpátky"
 
 msgid ""
 "You are not a member of any community. If you choose to proceed, your work "
@@ -636,3 +636,6 @@ msgid ""
 "If you are certain that you wish to proceed with the generic community, "
 "click on it below."
 msgstr ""
+
+msgid "Change"
+msgstr "Změnit"
