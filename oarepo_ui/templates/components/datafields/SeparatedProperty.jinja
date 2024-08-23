@@ -8,5 +8,7 @@
 </span>
 {% endif%}
 <span class="{% if ui.content_class is defined %}{{ui.content_class}}{% endif %}">{{content}}</span>
-<Separator isLast={isLast} ui={ui}></Separator>
+{% if not isLast %}
+    <span class="{{ui.separator_class}}"></span>
+{% endif %}
 {% endif %}
