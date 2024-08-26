@@ -530,6 +530,9 @@ class RecordsUIResource(UIResource):
             extra_context=extra_context,
             ui_links=ui_links,
         )
+        empty_record = self.default_communities(empty_record, form_config, resource_requestctx)
+
+        
         self.run_components(
             "before_ui_create",
             data=empty_record,
@@ -569,7 +572,21 @@ class RecordsUIResource(UIResource):
             )
         else:
             return self.api_service.check_permission(identity, "create", record=None)
-
+            
+    def default_communities(self, empty_record, form_config, resource_requestctx):
+        if 'allowed_communities' not in form_config:
+            return empty_record
+        if "community" in resource_requestctx.args:
+            community = resource_requestctx.args["community"]
+            for c in form_config["allowed_communities"]:
+                if c['slug'] == community:
+                    empty_record["parent"]["communities"]["default"] = c['id']
+                    break
+        elif len(form_config["allowed_communities"]) == 1:
+            community = form_config["allowed_communities"][0]
+            empty_record["parent"]["communities"]["default"] = community["id"]
+        return empty_record
+    
     @property
     def api_service(self):
         return current_service_registry.get(self.config.api_service)
