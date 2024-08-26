@@ -580,3 +580,51 @@ msgstr ""
 #: /Users/m/w/cesnet/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_frontage.html:26
 msgid "Type and press enter to search"
 msgstr ""
+
+msgid "Community website"
+msgstr ""
+
+msgid "Community selection"
+msgstr ""
+
+msgid "Please select community in which your work will be published:"
+msgstr ""
+
+msgid "All records must belong to a community."
+msgstr ""
+
+msgid "Go back"
+msgstr ""
+
+msgid "Your record will be published in the following community:"
+msgstr ""
+
+msgid ""
+"Your work will be saved in the following community. Please note that after "
+"saving it will not be possible to transfer it to another community."
+msgstr ""
+
+msgid "Community website."
+msgstr ""
+
+msgid "Community home page"
+msgstr ""
+
+msgid "genericCommunityMessage"
+msgstr ""
+
+msgid "Home page"
+msgstr ""
+
+msgid ""
+"If you are certain that you wish to proceed with the generic community, "
+"click on it below."
+msgstr ""
+
+msgid "Change"
+msgstr ""
+
+msgid ""
+"If you are certain that you wish to proceed with the generic community, "
+"please click on it below."
+msgstr ""
