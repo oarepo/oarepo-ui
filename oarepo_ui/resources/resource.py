@@ -583,9 +583,8 @@ class RecordsUIResource(UIResource):
                     empty_record["parent"]["communities"]["default"] = c['id']
                     break
         elif len(form_config["allowed_communities"]) == 1:
-            if len(form_config["allowed_communities"]) == 1:
-                community = form_config["allowed_communities"][0]
-                empty_record["parent"]["communities"]["default"] = community["id"]
+            community = form_config["allowed_communities"][0]
+            empty_record["parent"]["communities"]["default"] = community["id"]
         return empty_record
     
     @property
