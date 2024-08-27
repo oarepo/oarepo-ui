@@ -1,0 +1,54 @@
+{#def identifier, creatibutorName, ui=None #}
+{% set scheme = identifier.scheme.lower() %}
+{% set value = identifier.identifier %}
+
+{% if scheme == "orcid" %}
+  {% set link = "https://orcid.org/" + value %}
+  {% set linkTitle = creatibutorName + ": " + _('ORCID profile') %}
+  {% set icon = "/static/images/identifiers/orcid-og-image.png" %}
+  {% set alt = "ORCID logo" %}
+{% elif scheme == "scopusid" %}
+  {% set link = "https://www.scopus.com/authid/detail.uri?authorId=" + value %}
+  {% set linkTitle = creatibutorName + ": " + _('Scopus ID profile') %}
+  {% set icon = "/static/images/scopus.svg" %}
+  {% set alt = "ScopusID logo" %}
+{% elif scheme == "ror" %}
+  {% set link = "https://ror.org/" + value %}
+  {% set linkTitle = creatibutorName + ": " + _('ROR profile') %}
+  {% set icon = "/static/images/orcid.png" %}
+  {% set alt = "ROR logo" %}
+{% elif scheme == "researcherid" %}
+  {% set link = "https://www.webofscience.com/wos/author/record/" + value %}
+  {% set linkTitle = creatibutorName + ": " + _('WOS Researcher ID') %}
+  {% set icon = "/static/images/orcid.png" %}
+  {% set alt = "WOS Researcher ID logo" %}
+{% elif scheme == "doi" %}
+  {% set link = "https://doi.org/" + value %}
+  {% set linkTitle = creatibutorName + ": " + _('DOI profile') %}
+  {% set icon = "/static/images/orcid.png" %}
+  {% set alt = "DOI logo" %}
+{% elif scheme == "gnd" %}
+  {% set link = "https://d-nb.info/gnd/" + value %}
+  {% set linkTitle = creatibutorName + ": " + _('GND profile') %}
+  {% set icon = "/static/images/orcid.png" %}
+  {% set alt = "GND logo" %}
+{% else %}
+  {% set link = None %}
+  {% set linkTitle = None %}
+  {% set icon = None %}
+  {% set alt = "" %}
+{% endif %}
+
+{% if link %}
+  <a
+    class="no-text-decoration mr-0"
+    href="{{ link }}"
+    aria-label="{{ linkTitle }}"
+    title="{{ linkTitle }}"
+    key="{{ link }}"
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    <img class="inline-id-icon ml-5  identifier-badge" src="{{ icon }}" alt="{{ alt }}" />
+  </a>
+{% endif %}

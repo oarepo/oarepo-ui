@@ -3,3 +3,7 @@
   min-width: 80px;
   object-fit: contain;
 }
+
+.identifier-badge {
+  line-height: 1.2rem;
+}
