@@ -2,10 +2,11 @@ import { overrideStore } from "react-overridable";
 
 // get all files below /templates/overridableRegistry that end with mapping.js.
 // The files shall be in a subfolder, in order to prevent clashing between mapping.js
-// from different libraries.
-// each mapping.js file shall have a default export that is an object with signature {"component-id": Component}
-// the files will be prioritized by leading prefix (e.g. 10-mapping.js will be processed before 20-mapping.js). mapping.js without prefix
-// will have lowest priority.
+// from different libraries. each mapping.js file shall have a default export
+// that is an object with signature {"component-id": Component} the files
+// will be prioritized by leading prefix (e.g. 10-mapping.js will be processed
+// before 20-mapping.js). mapping.js without prefix will have lowest priority.
+
 const requireMappingFiles = require.context(
   "/templates/overridableRegistry/",
   true,
