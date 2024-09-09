@@ -1,14 +1,12 @@
 import * as React from "react";
 import {
   LanguageSelectField,
-  useSanitizeInput,
   useFieldData,
   OarepoRichEditor,
 } from "@js/oarepo_ui";
 import { RichInputField, GroupField } from "react-invenio-forms";
 import PropTypes from "prop-types";
 import { Form } from "semantic-ui-react";
-import { useFormikContext, getIn } from "formik";
 
 export const I18nRichInputField = ({
   fieldPath,
@@ -18,11 +16,8 @@ export const I18nRichInputField = ({
   usedLanguages,
   ...uiProps
 }) => {
-  const { values, setFieldValue, setFieldTouched } = useFormikContext();
-  const { sanitizeInput } = useSanitizeInput();
   const lngFieldPath = `${fieldPath}.lang`;
   const textFieldPath = `${fieldPath}.value`;
-  const fieldValue = getIn(values, textFieldPath);
   const { getFieldData } = useFieldData();
 
   return (
@@ -42,7 +37,6 @@ export const I18nRichInputField = ({
         <RichInputField
           fieldPath={textFieldPath}
           optimized={optimized}
-          editorConfig={editorConfig}
           editor={<OarepoRichEditor fieldPath={textFieldPath} />}
           {...uiProps}
           {...getFieldData({

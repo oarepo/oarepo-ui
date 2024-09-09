@@ -21,7 +21,9 @@ export const OarepoRichEditor = ({ fieldPath, editorConfig }) => {
       }}
       editorConfig={{
         valid_elements: validEditorTags,
-        toolbar: "bold italic | bullist numlist | outdent indent | undo redo",
+        toolbar:
+          "blocks | bold italic | bullist numlist | outdent indent | undo redo",
+        block_formats: "Paragraph=p; Header 1=h1; Header 2=h2; Header 3=h3",
         ...editorConfig,
       }}
     />
