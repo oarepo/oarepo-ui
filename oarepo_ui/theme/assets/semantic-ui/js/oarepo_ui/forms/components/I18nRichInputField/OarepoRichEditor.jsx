@@ -4,6 +4,9 @@ import { useFormikContext, getIn } from "formik";
 import { useSanitizeInput } from "@js/oarepo_ui";
 import PropTypes from "prop-types";
 
+export const toolBar =
+  "blocks | bold italic | bullist numlist | outdent indent | undo redo";
+
 export const OarepoRichEditor = ({ fieldPath, editorConfig }) => {
   const { sanitizeInput, validEditorTags } = useSanitizeInput();
 
@@ -21,9 +24,7 @@ export const OarepoRichEditor = ({ fieldPath, editorConfig }) => {
       }}
       editorConfig={{
         valid_elements: validEditorTags,
-        toolbar:
-          "blocks | bold italic | bullist numlist | outdent indent | undo redo",
-        block_formats: "Paragraph=p; Header 1=h1; Header 2=h2; Header 3=h3",
+        toolbar: toolBar,
         ...editorConfig,
       }}
     />
