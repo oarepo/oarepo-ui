@@ -35,3 +35,11 @@
 .visually-hidden {
   visibility: hidden;
 }
+
+// .inline-computer {
+//   display: inline-block;
+
+//   @media all and (max-width: @largestMobileScreen) {
+//     display: block;
+//   }
+// }
