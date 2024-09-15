@@ -3,8 +3,9 @@ import { useFormikContext, getIn } from "formik";
 import { useFormConfig, CommunityItem } from "@js/oarepo_ui";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import { Header, Message, Icon, Button, List } from "semantic-ui-react";
+import { Message, Icon, Button, List } from "semantic-ui-react";
 import { GenericCommunityMessage } from "./CommunitySelector";
+import { Trans } from "react-i18next";
 
 export const SelectedCommunity = ({ fieldPath }) => {
   const {
@@ -26,7 +27,6 @@ export const SelectedCommunity = ({ fieldPath }) => {
   const handleCommunityRemoval = () => {
     setFieldValue(fieldPath, "");
   };
-  console.log(selectedCommunity);
   return (
     <React.Fragment>
       {values?.id ? (
@@ -36,24 +36,28 @@ export const SelectedCommunity = ({ fieldPath }) => {
           )}
         </p>
       ) : (
-        <p>
-          {i18next.t(
-            "Your work will be saved in the following community. Please note that after saving it will not be possible to transfer it to another community."
+        <Trans i18n={i18next} i18nKey="communityMessageBeforeSavingDraft">
+          Your work will be saved in the following community. Please note that
+          after saving it will not be possible to transfer it to another
+          community. Click here to
+          {allowed_communities.length > 1 && !preselected_community && (
+            <Button
+              className="ml-5 mr-5"
+              onClick={handleCommunityRemoval}
+              size="mini"
+            >
+              {i18next.t("change")}
+            </Button>
           )}
-        </p>
+          the selection.
+        </Trans>
       )}
+
       {selectedCommunity && (
         <List>
           <CommunityItem community={selectedCommunity} />
         </List>
       )}
-      {!values?.id &&
-        allowed_communities.length > 1 &&
-        !preselected_community && (
-          <Button onClick={handleCommunityRemoval} size="mini">
-            {i18next.t("Change")}
-          </Button>
-        )}
       {isGeneric ? (
         <Message>
           <Icon name="warning circle" className="text size large" />
