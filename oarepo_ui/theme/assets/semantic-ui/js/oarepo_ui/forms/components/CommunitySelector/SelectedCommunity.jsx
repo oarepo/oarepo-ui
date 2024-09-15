@@ -3,7 +3,7 @@ import { useFormikContext, getIn } from "formik";
 import { useFormConfig, CommunityItem } from "@js/oarepo_ui";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import { Message, Icon, Button, List } from "semantic-ui-react";
+import { Header, Message, Icon, Button, List } from "semantic-ui-react";
 import { GenericCommunityMessage } from "./CommunitySelector";
 import { Trans } from "react-i18next";
 
@@ -29,30 +29,30 @@ export const SelectedCommunity = ({ fieldPath }) => {
   };
   return (
     <React.Fragment>
-      {values?.id ? (
+      {values?.id && (
         <p>
           {i18next.t(
             "Your record will be published in the following community:"
           )}
         </p>
-      ) : (
-        <Trans i18n={i18next} i18nKey="communityMessageBeforeSavingDraft">
-          Your work will be saved in the following community. Please note that
-          after saving it will not be possible to transfer it to another
-          community. Click here to
-          {allowed_communities.length > 1 && !preselected_community && (
+      )}
+      {!values?.id &&
+        allowed_communities.length > 1 &&
+        !preselected_community && (
+          <Trans i18n={i18next}>
+            Your work will be saved in the following community. Please note that
+            after saving it will not be possible to transfer it to another
+            community. Click
             <Button
               className="ml-5 mr-5"
               onClick={handleCommunityRemoval}
               size="mini"
             >
-              {i18next.t("change")}
+              here
             </Button>
-          )}
-          the selection.
-        </Trans>
-      )}
-
+            to change the selection.
+          </Trans>
+        )}
       {selectedCommunity && (
         <List>
           <CommunityItem community={selectedCommunity} />
