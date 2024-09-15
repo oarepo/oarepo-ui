@@ -3,7 +3,7 @@ import { useFormikContext, getIn } from "formik";
 import { useFormConfig, CommunityItem } from "@js/oarepo_ui";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import { Header, Message, Icon, Button, List } from "semantic-ui-react";
+import { Message, Icon, Button, List } from "semantic-ui-react";
 import { GenericCommunityMessage } from "./CommunitySelector";
 import { Trans } from "react-i18next";
 
