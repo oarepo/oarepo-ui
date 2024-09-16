@@ -49,6 +49,8 @@ export const ArrayFieldItem = ({
             arrayHelpers={arrayHelpers}
             indexPath={indexPath}
             id={removeButtonId}
+            onMouseEnter={() => setHighlighted(true)}
+            onMouseLeave={() => setHighlighted(false)}
             {...removeButtonProps}
           />
         ) : (
