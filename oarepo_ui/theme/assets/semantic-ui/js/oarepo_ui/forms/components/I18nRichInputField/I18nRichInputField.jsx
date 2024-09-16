@@ -1,13 +1,12 @@
 import * as React from "react";
 import {
   LanguageSelectField,
-  useSanitizeInput,
   useFieldData,
+  OarepoRichEditor,
 } from "@js/oarepo_ui";
-import { RichInputField, GroupField, RichEditor } from "react-invenio-forms";
+import { RichInputField, GroupField } from "react-invenio-forms";
 import PropTypes from "prop-types";
 import { Form } from "semantic-ui-react";
-import { useFormikContext, getIn } from "formik";
 
 export const I18nRichInputField = ({
   fieldPath,
@@ -17,11 +16,8 @@ export const I18nRichInputField = ({
   usedLanguages,
   ...uiProps
 }) => {
-  const { values, setFieldValue, setFieldTouched } = useFormikContext();
-  const { sanitizeInput } = useSanitizeInput();
   const lngFieldPath = `${fieldPath}.lang`;
   const textFieldPath = `${fieldPath}.value`;
-  const fieldValue = getIn(values, textFieldPath);
   const { getFieldData } = useFieldData();
 
   return (
@@ -41,18 +37,7 @@ export const I18nRichInputField = ({
         <RichInputField
           fieldPath={textFieldPath}
           optimized={optimized}
-          editor={
-            <RichEditor
-              value={fieldValue}
-              optimized
-              editorConfig={editorConfig}
-              onBlur={(event, editor) => {
-                const cleanedContent = sanitizeInput(editor.getContent());
-                setFieldValue(textFieldPath, cleanedContent);
-                setFieldTouched(textFieldPath, true);
-              }}
-            />
-          }
+          editor={<OarepoRichEditor fieldPath={textFieldPath} />}
           {...uiProps}
           {...getFieldData({
             fieldPath: textFieldPath,
@@ -74,19 +59,5 @@ I18nRichInputField.propTypes = {
 
 I18nRichInputField.defaultProps = {
   optimized: true,
-  editorConfig: {
-    removePlugins: [
-      "Image",
-      "ImageCaption",
-      "ImageStyle",
-      "ImageToolbar",
-      "ImageUpload",
-      "MediaEmbed",
-      "Table",
-      "TableToolbar",
-      "TableProperties",
-      "TableCellProperties",
-    ],
-  },
   lngFieldWidth: 3,
 };
