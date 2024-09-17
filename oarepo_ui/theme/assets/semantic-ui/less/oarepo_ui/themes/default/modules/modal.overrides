@@ -3,3 +3,9 @@
     height: 80vh;
   }
 }
+
+.ui.modal > .close {
+  top: @innerCloseTop;
+  right: @innerCloseRight;
+  color: @innerCloseColor;
+}

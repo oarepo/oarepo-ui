@@ -49,6 +49,8 @@ export const ArrayFieldItem = ({
             arrayHelpers={arrayHelpers}
             indexPath={indexPath}
             id={removeButtonId}
+            onMouseEnter={() => setHighlighted(true)}
+            onMouseLeave={() => setHighlighted(false)}
             {...removeButtonProps}
           />
         ) : (
@@ -77,7 +79,7 @@ ArrayFieldItem.propTypes = {
   indexPath: PropTypes.number,
   children: PropTypes.node,
   className: PropTypes.string,
-  removeButton: PropTypes.node,
+  removeButton: PropTypes.func,
   removeButtonProps: PropTypes.object,
   displayFirstInputRemoveButton: PropTypes.bool,
   removeButtonLabelClassName: PropTypes.string,
