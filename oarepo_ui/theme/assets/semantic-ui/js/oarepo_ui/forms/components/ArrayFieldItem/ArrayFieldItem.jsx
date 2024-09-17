@@ -79,7 +79,7 @@ ArrayFieldItem.propTypes = {
   indexPath: PropTypes.number,
   children: PropTypes.node,
   className: PropTypes.string,
-  removeButton: PropTypes.node,
+  removeButton: PropTypes.func,
   removeButtonProps: PropTypes.object,
   displayFirstInputRemoveButton: PropTypes.bool,
   removeButtonLabelClassName: PropTypes.string,
