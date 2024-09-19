@@ -53,6 +53,20 @@ class UIResourceConfig(ResourceConfig):
     request_view_args = {}
 
 
+class FormConfigResourceConfig(ResourceConfig):
+    application_id = "Default"
+
+    def form_config(self, **kwargs):
+        """Get the react form configuration."""
+
+        return dict(
+            **kwargs,
+        )
+
+    request_view_args = {}
+    components = None
+
+
 class TemplatePageUIResourceConfig(UIResourceConfig):
     pages = {}
     """
