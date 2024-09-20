@@ -41,6 +41,7 @@ if TYPE_CHECKING:
 #
 from ..proxies import current_oarepo_ui
 from .config import (
+    FormConfigResourceConfig,
     RecordsUIResourceConfig,
     TemplatePageUIResourceConfig,
     UIResourceConfig,
@@ -54,11 +55,29 @@ request_file_view_args = request_parser(
     from_conf("request_file_view_args"), location="view_args"
 )
 
-request_create_args = request_parser(
-    from_conf("request_create_args"), location="args"
-)
+request_create_args = request_parser(from_conf("request_create_args"), location="args")
 
-class UIResource(Resource):
+
+class UIComponentsMixin:
+
+    #
+    # Pluggable components
+    #
+
+    @property
+    def components(self) -> Iterator["UIResourceComponent"]:
+        """Return initialized service components."""
+        return (c(self) for c in self.config.components or [])
+
+    def run_components(self, action, *args, **kwargs):
+        """Run components for a given action."""
+
+        for component in self.components:
+            if hasattr(component, action):
+                getattr(component, action)(*args, **kwargs)
+
+
+class UIResource(UIComponentsMixin, Resource):
     """Record resource."""
 
     config: UIResourceConfig
@@ -82,26 +101,36 @@ class UIResource(Resource):
 
         return blueprint
 
-    #
-    # Pluggable components
-    #
-    @property
-    def components(self) -> Iterator["UIResourceComponent"]:
-        """Return initialized service components."""
-        return (c(self) for c in self.config.components or [])
-
-    def run_components(self, action, *args, **kwargs):
-        """Run components for a given action."""
-
-        for component in self.components:
-            if hasattr(component, action):
-                getattr(component, action)(*args, **kwargs)
-
     def fill_jinja_context(self):
         """function providing flask template app context processors"""
         ret = {}
         self.run_components("fill_jinja_context", context=ret)
         return ret
+
+
+class FormConfigResource(UIComponentsMixin, Resource):
+    config: FormConfigResourceConfig
+
+    def create_url_rules(self):
+        """Create the URL rules for the record resource."""
+        routes = []
+        route_config = self.config.routes
+        for route_name, route_url in route_config.items():
+            routes.append(route("GET", route_url, getattr(self, route_name)))
+        return routes
+
+    def _get_form_config(self, **kwargs):
+        return self.config.form_config(**kwargs)
+
+    @request_view_args
+    def form_config(self):
+        form_config = self._get_form_config()
+        self.run_components(
+            "form_config",
+            form_config=form_config,
+            view_args=resource_requestctx.view_args,
+        )
+        return form_config
 
 
 class RecordsUIResource(UIResource):
@@ -530,9 +559,10 @@ class RecordsUIResource(UIResource):
             extra_context=extra_context,
             ui_links=ui_links,
         )
-        empty_record = self.default_communities(empty_record, form_config, resource_requestctx)
+        empty_record = self.default_communities(
+            empty_record, form_config, resource_requestctx
+        )
 
-        
         self.run_components(
             "before_ui_create",
             data=empty_record,
@@ -572,21 +602,21 @@ class RecordsUIResource(UIResource):
             )
         else:
             return self.api_service.check_permission(identity, "create", record=None)
-            
+
     def default_communities(self, empty_record, form_config, resource_requestctx):
-        if 'allowed_communities' not in form_config:
+        if "allowed_communities" not in form_config:
             return empty_record
         if "community" in resource_requestctx.args:
             community = resource_requestctx.args["community"]
             for c in form_config["allowed_communities"]:
-                if c['slug'] == community:
-                    empty_record["parent"]["communities"]["default"] = c['id']
+                if c["slug"] == community:
+                    empty_record["parent"]["communities"]["default"] = c["id"]
                     break
         elif len(form_config["allowed_communities"]) == 1:
             community = form_config["allowed_communities"][0]
             empty_record["parent"]["communities"]["default"] = community["id"]
         return empty_record
-    
+
     @property
     def api_service(self):
         return current_service_registry.get(self.config.api_service)
@@ -638,7 +668,7 @@ class RecordsUIResource(UIResource):
                 default_macro="PermissionDenied",
             ),
             pid=getattr(error, "pid_value", None) or getattr(error, "pid", None),
-            error=error
+            error=error,
         )
 
 
