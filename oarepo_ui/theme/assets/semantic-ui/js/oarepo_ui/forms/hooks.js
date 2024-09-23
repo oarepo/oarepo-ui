@@ -354,27 +354,27 @@ export const useDepositApiClient = ({
   async function preview() {
     setSubmitting(true);
     try {
-      const saveResult = await save();
+      const saveResult = await save(true);
 
-      if (!saveResult) {
-        setFieldError(
-          "BEvalidationErrors.errorMessage",
-          i18next.t(
-            "Your draft was saved. If you wish to preview it, please correct the following validation errors and click preview again:"
-          )
-        );
-        return;
-      } else {
-        const url = saveResult.links.self_html;
-        setFieldError(
-          "successMessage",
-          i18next.t("Your draft was saved. Redirecting to the preview page...")
-        );
-        setTimeout(() => {
-          setFieldError("successMessage", "");
-          window.location.href = url;
-        }, 1000);
-      }
+      // if (!saveResult) {
+      //   setFieldError(
+      //     "BEvalidationErrors.errorMessage",
+      //     i18next.t(
+      //       "Your draft was saved. If you wish to preview it, please correct the following validation errors and click preview again:"
+      //     )
+      //   );
+      //   return;
+      // } else {
+      const url = saveResult.links.self_html;
+      setFieldError(
+        "successMessage",
+        i18next.t("Your draft was saved. Redirecting to the preview page...")
+      );
+      setTimeout(() => {
+        setFieldError("successMessage", "");
+        window.location.href = url;
+      }, 1000);
+      // }
       return saveResult;
     } catch (error) {
       setFieldError(

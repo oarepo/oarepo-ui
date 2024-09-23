@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { BaseForm } from "../BaseForm";
 import { FormFeedback } from "../FormFeedback";
@@ -7,7 +7,11 @@ import { SaveButton } from "../SaveButton";
 import { PublishButton } from "../PublishButton";
 import { PreviewButton } from "../PreviewButton";
 import { Grid, Ref, Sticky, Card, Header } from "semantic-ui-react";
-import { useFormConfig, getTitleFromMultilingualObject } from "@js/oarepo_ui";
+import {
+  useFormConfig,
+  getTitleFromMultilingualObject,
+  getItemWithExpiryFromLocalStorage,
+} from "@js/oarepo_ui";
 import { buildUID } from "react-searchkit";
 import Overridable from "react-overridable";
 import { CustomFields } from "react-invenio-forms";
@@ -32,6 +36,27 @@ export const BaseFormLayout = ({ formikProps }) => {
   const {
     formConfig: { custom_fields: customFields },
   } = useFormConfig();
+  const localStorageValidationErrorsPath = `validationErrors.${record.id}`;
+  // on chrome there is an annoying issue where after deletion you are redirected, and then
+  // if you click back on browser <-, it serves you the deleted page, which does not exist from the cache.
+  // on firefox it does not happen.
+  useEffect(() => {
+    const handleUnload = () => {
+      localStorage.removeItem(localStorageValidationErrorsPath);
+    };
+
+    const handleBeforeUnload = () => {
+      localStorage.removeItem(localStorageValidationErrorsPath);
+    };
+
+    window.addEventListener("unload", handleUnload);
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("unload", handleUnload);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
   return (
     <BaseForm
       onSubmit={() => {}}
@@ -40,6 +65,9 @@ export const BaseFormLayout = ({ formikProps }) => {
         validateOnChange: false,
         validateOnBlur: false,
         enableReinitialize: true,
+        initialErrors: record.id
+          ? getItemWithExpiryFromLocalStorage(localStorageValidationErrorsPath)
+          : {},
         ...formikProps,
       }}
     >
