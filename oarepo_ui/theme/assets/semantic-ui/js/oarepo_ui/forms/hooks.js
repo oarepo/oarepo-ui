@@ -1,3 +1,5 @@
+import * as React from "react";
+import axios from "axios";
 import { useEffect, useCallback, useState, useContext, useMemo } from "react";
 import { FormConfigContext, FieldDataContext } from "./contexts";
 import {
@@ -12,11 +14,17 @@ import _omit from "lodash/omit";
 import _pick from "lodash/pick";
 import _isEmpty from "lodash/isEmpty";
 import _isObject from "lodash/isObject";
+import _debounce from "lodash/debounce";
+import _uniqBy from "lodash/uniqBy";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { relativeUrl } from "../util";
 import { decode } from "html-entities";
 import sanitizeHtml from "sanitize-html";
 import { getValidTagsForEditor } from "@js/oarepo_ui";
+import { DEFAULT_SUGGESTION_SIZE } from "./constants";
+import { withCancel } from "react-searchkit";
+import queryString from "query-string";
+import { Message } from "semantic-ui-react";
 
 export const extractFEErrorMessages = (obj) => {
   const errorMessages = [];
@@ -178,7 +186,7 @@ export const useDepositApiClient = ({
     ? new baseApiClient(createUrl, recordSerializer)
     : new OARepoDepositApiClient(createUrl, recordSerializer);
 
-  async function save(saveWithoutDisplayingValidationErrors = false) {
+  async function save (saveWithoutDisplayingValidationErrors = false) {
     let response;
     let errorsObj = {};
     const errorPaths = [];
@@ -250,7 +258,7 @@ export const useDepositApiClient = ({
     }
   }
 
-  async function publish({ validate = false } = {}) {
+  async function publish ({ validate = false } = {}) {
     // call save and if save returns false, exit
     const saveResult = await save();
 
@@ -319,11 +327,11 @@ export const useDepositApiClient = ({
     }
   }
 
-  async function read(recordUrl) {
+  async function read (recordUrl) {
     return await apiClient.readDraft({ self: recordUrl });
   }
 
-  async function _delete(redirectUrl) {
+  async function _delete (redirectUrl) {
     if (!redirectUrl)
       throw new Error(
         "You must provide url where to be redirected after deleting a draft"
@@ -351,7 +359,7 @@ export const useDepositApiClient = ({
     }
   }
 
-  async function preview() {
+  async function preview () {
     setSubmitting(true);
     try {
       const saveResult = await save();
@@ -419,10 +427,10 @@ export const useDepositFileApiClient = (baseApiClient) => {
     ? new baseApiClient()
     : new OARepoDepositFileApiClient();
 
-  async function read(draft) {
+  async function read (draft) {
     return await apiClient.readDraftFiles(draft);
   }
-  async function _delete(file) {
+  async function _delete (file) {
     setValues(_omit(values, ["errors"]));
     setSubmitting(true);
     try {
@@ -487,6 +495,198 @@ export const useSanitizeInput = () => {
     allowedHtmlAttrs,
     allowedHtmlTags,
     validEditorTags,
+  };
+};
+
+export const useSuggestionApi = ({
+  initialSuggestions = [],
+  serializeSuggestions = (suggestions) =>
+    suggestions.map((item) => ({
+      text: item.title,
+      value: item.id,
+      key: item.id,
+    })),
+  serializeAddedValue,
+  debounceTime = 500,
+  preSearchChange = (x) => x,
+  suggestionAPIUrl,
+  suggestionAPIQueryParams = {},
+  suggestionAPIHeaders = {},
+  searchOnFocus = false,
+  searchQueryParamName = "suggest",
+  loadingMessage = "Loading...",
+  suggestionsErrorMessage = i18next.t("Something went wrong..."),
+  noQueryMessage = i18next.t("Search..."),
+  noResultsMessage = i18next.t("No results found."),
+}) => {
+  const _initialSuggestions = initialSuggestions
+    ? serializeSuggestions(initialSuggestions)
+    : [];
+
+  const [state, setState] = React.useState({
+    isFetching: false,
+    suggestions: _initialSuggestions,
+    selectedSuggestions: _initialSuggestions,
+    error: false,
+    searchQuery: null,
+    open: false,
+  });
+
+  const [cancellableAction, setCancellableAction] = React.useState();
+
+  const handleAddition = React.useCallback(
+    (e, { value }, callbackFunc) => {
+      const { selectedSuggestions } = state;
+      const selectedSuggestion = serializeAddedValue
+        ? serializeAddedValue(value)
+        : { text: value, value, key: value, name: value };
+
+      const newSelectedSuggestions = [
+        ...selectedSuggestions,
+        selectedSuggestion,
+      ];
+
+      setState((prevState) => ({
+        selectedSuggestions: newSelectedSuggestions,
+        suggestions: _uniqBy(
+          [...prevState.suggestions, ...newSelectedSuggestions],
+          "value"
+        ),
+      }));
+
+      callbackFunc(newSelectedSuggestions);
+    },
+    [state.selectedSuggestions, serializeAddedValue]
+  );
+
+  const onSearchChange = React.useCallback(
+    _debounce(async (e, { searchQuery }) => {
+      cancellableAction && cancellableAction.cancel();
+      await executeSearch(searchQuery);
+      // eslint-disable-next-line react/destructuring-assignment
+    }, debounceTime),
+    [cancellableAction, debounceTime]
+  );
+
+  const executeSearch = React.useCallback(
+    async (searchQuery) => {
+      const query = preSearchChange(searchQuery);
+      // If there is no query change, then display prevState suggestions
+      const { searchQuery: prevSearchQuery } = state;
+      if (prevSearchQuery === searchQuery) {
+        return;
+      }
+      setState({ isFetching: true, searchQuery: query });
+      try {
+        const suggestions = await fetchSuggestions(query);
+
+        const serializedSuggestions = serializeSuggestions(suggestions);
+        setState((prevState) => ({
+          suggestions: _uniqBy(
+            [...prevState.selectedSuggestions, ...serializedSuggestions],
+            "value"
+          ),
+          isFetching: false,
+          error: false,
+          open: true,
+        }));
+      } catch (e) {
+        console.error(e);
+        setState({
+          error: true,
+          isFetching: false,
+        });
+      }
+    },
+    [cancellableAction, preSearchChange, sserializeSuggestions]
+  );
+
+  const fetchSuggestions = React.useCallback(
+    async (searchQuery) => {
+      const _cancellableFetch = withCancel(
+        axios.get(suggestionAPIUrl, {
+          params: {
+            [searchQueryParamName]: searchQuery,
+            size: DEFAULT_SUGGESTION_SIZE,
+            ...suggestionAPIQueryParams,
+          },
+          headers: suggestionAPIHeaders,
+          // There is a bug in axios that prevents brackets from being encoded,
+          // remove the paramsSerializer when fixed.
+          // https://github.com/axios/axios/issues/3316
+          paramsSerializer: (params) =>
+            queryString.stringify(params, { arrayFormat: "repeat" }),
+        })
+      );
+      setCancellableAction(_cancellableFetch);
+
+      try {
+        const response = await _cancellableFetch.promise;
+        return response?.data?.hits?.hits;
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    [
+      suggestionAPIUrl,
+      searchQueryParamName,
+      suggestionAPIQueryParams,
+      suggestionAPIHeaders,
+    ]
+  );
+
+  const getNoResultsMessage = React.useCallback(() => {
+    const { isFetching, error, searchQuery } = state;
+    if (isFetching) {
+      return loadingMessage;
+    }
+    if (error) {
+      return <Message negative size="mini" content={suggestionsErrorMessage} />;
+    }
+    if (!searchQuery) {
+      return noQueryMessage;
+    }
+    return noResultsMessage;
+  }, [
+    loadingMessage,
+    noQueryMessage,
+    noResultsMessage,
+    suggestionsErrorMessage,
+  ]);
+
+  const onClose = React.useCallback(() => {
+    setState({ open: false });
+  }, []);
+
+  const onBlur = React.useCallback(() => {
+    setState((prevState) => ({
+      open: false,
+      error: false,
+      searchQuery: searchOnFocus ? prevState.searchQuery : null,
+      suggestions: searchOnFocus
+        ? prevState.suggestions
+        : prevState.selectedSuggestions,
+    }));
+  }, [searchOnFocus]);
+
+  const onFocus = React.useCallback(async () => {
+    setState({ open: true });
+    if (searchOnFocus) {
+      const { searchQuery } = state;
+      await executeSearch(searchQuery || "");
+    }
+  }, [searchOnFocus]);
+
+  return {
+    ...state,
+    fetchSuggestions,
+    executeSearch,
+    onSearchChange,
+    handleAddition,
+    getNoResultsMessage,
+    onClose,
+    onBlur,
+    onFocus,
   };
 };
 
