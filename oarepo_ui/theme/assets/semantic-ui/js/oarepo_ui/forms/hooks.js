@@ -17,12 +17,12 @@ import _isObject from "lodash/isObject";
 import _debounce from "lodash/debounce";
 import _uniqBy from "lodash/uniqBy";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import { relativeUrl } from "../util";
+import { getTitleFromMultilingualObject, relativeUrl } from "../util";
 import { decode } from "html-entities";
 import sanitizeHtml from "sanitize-html";
 import { getValidTagsForEditor } from "@js/oarepo_ui";
 import { DEFAULT_SUGGESTION_SIZE } from "./constants";
-import { withCancel } from "react-searchkit";
+import { withCancel } from "react-invenio-forms";
 import queryString from "query-string";
 import { Message } from "semantic-ui-react";
 
@@ -502,7 +502,7 @@ export const useSuggestionApi = ({
   initialSuggestions = [],
   serializeSuggestions = (suggestions) =>
     suggestions.map((item) => ({
-      text: item.title,
+      text: getTitleFromMultilingualObject(item.title),
       value: item.id,
       key: item.id,
     })),
@@ -523,41 +523,16 @@ export const useSuggestionApi = ({
     ? serializeSuggestions(initialSuggestions)
     : [];
 
-  const [state, setState] = React.useState({
+  const _initialState = {
     isFetching: false,
     suggestions: _initialSuggestions,
-    selectedSuggestions: _initialSuggestions,
     error: false,
     searchQuery: null,
     open: false,
-  });
+  }
 
+  const [state, setState] = React.useState(_initialState);
   const [cancellableAction, setCancellableAction] = React.useState();
-
-  const handleAddition = React.useCallback(
-    (e, { value }, callbackFunc) => {
-      const { selectedSuggestions } = state;
-      const selectedSuggestion = serializeAddedValue
-        ? serializeAddedValue(value)
-        : { text: value, value, key: value, name: value };
-
-      const newSelectedSuggestions = [
-        ...selectedSuggestions,
-        selectedSuggestion,
-      ];
-
-      setState((prevState) => ({
-        selectedSuggestions: newSelectedSuggestions,
-        suggestions: _uniqBy(
-          [...prevState.suggestions, ...newSelectedSuggestions],
-          "value"
-        ),
-      }));
-
-      callbackFunc(newSelectedSuggestions);
-    },
-    [state.selectedSuggestions, serializeAddedValue]
-  );
 
   const onSearchChange = React.useCallback(
     _debounce(async (e, { searchQuery }) => {
@@ -576,29 +551,32 @@ export const useSuggestionApi = ({
       if (prevSearchQuery === searchQuery) {
         return;
       }
-      setState({ isFetching: true, searchQuery: query });
+      setState((prevState) => ({...prevState, isFetching: true, searchQuery: query }));
       try {
         const suggestions = await fetchSuggestions(query);
 
         const serializedSuggestions = serializeSuggestions(suggestions);
-        setState((prevState) => ({
-          suggestions: _uniqBy(
-            [...prevState.selectedSuggestions, ...serializedSuggestions],
-            "value"
-          ),
-          isFetching: false,
-          error: false,
-          open: true,
-        }));
+        setState((prevState) => {
+          const newSuggestions = [...serializedSuggestions]
+
+          return {
+            ...prevState,
+            suggestions: _uniqBy(newSuggestions, "value"),
+            isFetching: false,
+            error: false,
+            open: true,
+          };
+        });
       } catch (e) {
         console.error(e);
-        setState({
+        setState((prevState) => ({
+          ...prevState,
           error: true,
           isFetching: false,
-        });
+        }));
       }
     },
-    [cancellableAction, preSearchChange, sserializeSuggestions]
+    [cancellableAction, preSearchChange, serializeSuggestions]
   );
 
   const fetchSuggestions = React.useCallback(
@@ -655,11 +633,12 @@ export const useSuggestionApi = ({
   ]);
 
   const onClose = React.useCallback(() => {
-    setState({ open: false });
+    setState((prevState) => ({ ...prevState, open: false }));
   }, []);
 
   const onBlur = React.useCallback(() => {
     setState((prevState) => ({
+      ...prevState,
       open: false,
       error: false,
       searchQuery: searchOnFocus ? prevState.searchQuery : null,
@@ -670,7 +649,7 @@ export const useSuggestionApi = ({
   }, [searchOnFocus]);
 
   const onFocus = React.useCallback(async () => {
-    setState({ open: true });
+    setState((prevState) => ({ ...prevState, open: true }));
     if (searchOnFocus) {
       const { searchQuery } = state;
       await executeSearch(searchQuery || "");
@@ -682,7 +661,6 @@ export const useSuggestionApi = ({
     fetchSuggestions,
     executeSearch,
     onSearchChange,
-    handleAddition,
     getNoResultsMessage,
     onClose,
     onBlur,
