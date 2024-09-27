@@ -62,7 +62,7 @@ export const useFieldData = () => {
   const context = useContext(FieldDataContext);
   if (!context) {
     throw new Error(
-      "useFormConfig must be used inside FieldDataContext .Provider"
+      "useFormConfig must be used inside FieldDataContext.Provider"
     );
   }
   return context;
@@ -336,7 +336,7 @@ export const useDepositApiClient = ({
       setFieldError(
         "successMessage",
         i18next.t(
-          "Draft deleted successfully. Redirecting to the main page ..."
+          "Draft deleted successfully. Redirecting to your dashboard ..."
         )
       );
       return response;

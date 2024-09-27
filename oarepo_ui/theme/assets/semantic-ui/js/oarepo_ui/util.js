@@ -7,6 +7,7 @@ import _uniqBy from "lodash/uniqBy";
 import * as Yup from "yup";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { format } from "date-fns";
+import axios from "axios";
 
 export const getInputFromDOM = (elementName) => {
   const element = document.getElementsByName(elementName);
@@ -274,17 +275,23 @@ export const goBack = (fallBackURL = "/") => {
   }
 };
 
+// until we start using v4 of react-invenio-forms. They switched to vnd zenodo accept header
+const baseAxiosConfiguration = {
+  withCredentials: true,
+  xsrfCookieName: "csrftoken",
+  xsrfHeaderName: "X-CSRFToken",
+  headers: {
+    Accept: "application/vnd.inveniordm.v1+json",
+    "Content-Type": "application/json",
+  },
+};
 
-export const getItemWithExpiryFromLocalStorage = (key) => {
-  const itemStr = localStorage.getItem(key);
-  if (!itemStr) {
-    return null;
-  }
-  const item = JSON.parse(itemStr);
-  const now = new Date();
-  if (now.getTime() > item.expiry) {
-    localStorage.removeItem(key);
-    return null;
-  }
-  return item.value;
+export const http = axios.create(baseAxiosConfiguration);
+
+export const encodeUnicodeBase64 = (str) => {
+  return btoa(encodeURIComponent(str));
+};
+
+export const decodeUnicodeBase64 = (base64) => {
+  return decodeURIComponent(atob(base64));
 };

@@ -6,16 +6,19 @@ import { FormikStateLogger } from "../FormikStateLogger";
 import { SaveButton } from "../SaveButton";
 import { PublishButton } from "../PublishButton";
 import { PreviewButton } from "../PreviewButton";
+import { DeleteButton } from "../DeleteButton";
 import { Grid, Ref, Sticky, Card, Header } from "semantic-ui-react";
 import {
   useFormConfig,
   getTitleFromMultilingualObject,
-  getItemWithExpiryFromLocalStorage,
+  serializeErrors,
+  decodeUnicodeBase64,
 } from "@js/oarepo_ui";
 import { buildUID } from "react-searchkit";
 import Overridable from "react-overridable";
 import { CustomFields } from "react-invenio-forms";
 import { getIn, useFormikContext } from "formik";
+import { i18next } from "@translations/oarepo_ui/i18next";
 
 const FormTitle = () => {
   const { values } = useFormikContext();
@@ -36,18 +39,13 @@ export const BaseFormLayout = ({ formikProps }) => {
   const {
     formConfig: { custom_fields: customFields },
   } = useFormConfig();
-  const localStorageValidationErrorsPath = `validationErrors.${record.id}`;
   // on chrome there is an annoying issue where after deletion you are redirected, and then
   // if you click back on browser <-, it serves you the deleted page, which does not exist from the cache.
   // on firefox it does not happen.
   useEffect(() => {
-    const handleUnload = () => {
-      localStorage.removeItem(localStorageValidationErrorsPath);
-    };
+    const handleUnload = () => {};
 
-    const handleBeforeUnload = () => {
-      localStorage.removeItem(localStorageValidationErrorsPath);
-    };
+    const handleBeforeUnload = () => {};
 
     window.addEventListener("unload", handleUnload);
     window.addEventListener("beforeunload", handleBeforeUnload);
@@ -57,6 +55,19 @@ export const BaseFormLayout = ({ formikProps }) => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
+
+  const urlHash = window.location.hash.substring(1);
+  let errorData;
+  if (urlHash) {
+    const decodedData = decodeUnicodeBase64(urlHash);
+    errorData = JSON.parse(decodedData);
+    window.history.replaceState(
+      null,
+      null,
+      window.location.pathname + window.location.search
+    );
+  }
+
   return (
     <BaseForm
       onSubmit={() => {}}
@@ -65,8 +76,13 @@ export const BaseFormLayout = ({ formikProps }) => {
         validateOnChange: false,
         validateOnBlur: false,
         enableReinitialize: true,
-        initialErrors: record.id
-          ? getItemWithExpiryFromLocalStorage(localStorageValidationErrorsPath)
+        initialErrors: urlHash
+          ? serializeErrors(
+              errorData.errors,
+              i18next.t(
+                "Your draft has validation errors. Please correct them and try again:"
+              )
+            )
           : {},
         ...formikProps,
       }}
@@ -136,9 +152,9 @@ export const BaseFormLayout = ({ formikProps }) => {
                         <PublishButton />
                       </Grid.Column>
                       {/* TODO:see if there is a way to provide URL here, seems that UI links are empty in the form */}
-                      {/* <Grid.Column width={16} className="pt-10">
-                        <DeleteButton redirectUrl="/other/" />
-                      </Grid.Column> */}
+                      <Grid.Column width={16} className="pt-10">
+                        <DeleteButton redirectUrl="/me/records" />
+                      </Grid.Column>
                     </Grid>
                   </Card.Content>
                 </Card>
