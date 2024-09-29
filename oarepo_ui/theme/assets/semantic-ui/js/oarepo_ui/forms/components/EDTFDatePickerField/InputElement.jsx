@@ -56,6 +56,7 @@ InputElement.propTypes = {
   className: PropTypes.string,
   placeholder: PropTypes.string,
   onKeyDown: PropTypes.func,
+  autoComplete: PropTypes.string,
 };
 
 InputElement.defaultProps = {

@@ -76,14 +76,15 @@ export const BaseFormLayout = ({ formikProps }) => {
         validateOnChange: false,
         validateOnBlur: false,
         enableReinitialize: true,
-        initialErrors: urlHash
-          ? serializeErrors(
-              errorData.errors,
-              i18next.t(
-                "Your draft has validation errors. Please correct them and try again:"
+        initialErrors:
+          errorData?.errors?.length > 0
+            ? serializeErrors(
+                errorData.errors,
+                i18next.t(
+                  "Your draft has validation errors. Please correct them and try again:"
+                )
               )
-            )
-          : {},
+            : {},
         ...formikProps,
       }}
     >
@@ -152,9 +153,9 @@ export const BaseFormLayout = ({ formikProps }) => {
                         <PublishButton />
                       </Grid.Column>
                       {/* TODO:see if there is a way to provide URL here, seems that UI links are empty in the form */}
-                      <Grid.Column width={16} className="pt-10">
+                      {/* <Grid.Column width={16} className="pt-10">
                         <DeleteButton redirectUrl="/me/records" />
-                      </Grid.Column>
+                      </Grid.Column> */}
                     </Grid>
                   </Card.Content>
                 </Card>
