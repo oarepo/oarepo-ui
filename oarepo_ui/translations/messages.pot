@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-08-26 11:34+0200\n"
+"POT-Creation-Date: 2024-09-29 14:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,7 +49,7 @@ msgstr ""
 msgid "api.versions"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/resources/config.py:126
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/resources/config.py:140
 msgid "JSON"
 msgstr ""
 
@@ -75,6 +75,34 @@ msgstr ""
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:16
 msgid "Edit item"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:9
+msgid "ORCID profile"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:14
+msgid "Scopus ID profile"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:19
+msgid "ROR profile"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:24
+msgid "WOS Researcher ID"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:29
+msgid "ISNI profile"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:34
+msgid "DOI profile"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:39
+msgid "GND profile"
 msgstr ""
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:3
@@ -183,19 +211,19 @@ msgstr ""
 msgid "Version: %(version)s"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:45
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:42
 msgid "Menu"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:64
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:61
 msgid "Close menu"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:114
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:111
 msgid "Requests"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:116
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:113
 msgid "Inbox"
 msgstr ""
 
@@ -248,6 +276,9 @@ msgstr ""
 msgid "Remove field"
 msgstr ""
 
+msgid "Your draft has validation errors. Please correct them and try again:"
+msgstr ""
+
 msgid "Community website"
 msgstr ""
 
@@ -288,7 +319,7 @@ msgstr ""
 msgid "Community website."
 msgstr ""
 
-msgid "Delete"
+msgid "Delete draft"
 msgstr ""
 
 msgid "Cancel"
@@ -409,12 +440,7 @@ msgstr ""
 msgid "Draft published successfully. Redirecting to record's detail page ..."
 msgstr ""
 
-msgid "Draft deleted successfully. Redirecting to the main page ..."
-msgstr ""
-
-msgid ""
-"Your draft was saved. If you wish to preview it, please correct the "
-"following validation errors and click preview again:"
+msgid "Draft deleted successfully. Redirecting to your dashboard ..."
 msgstr ""
 
 msgid "Your draft was saved. Redirecting to the preview page..."

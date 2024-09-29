@@ -588,3 +588,41 @@ msgstr ""
 
 msgid "Change"
 msgstr "Změnit"
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:9
+msgid "ORCID profile"
+msgstr "ORCID profil"
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:14
+msgid "Scopus ID profile"
+msgstr "Scopus ID profil"
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:19
+msgid "ROR profile"
+msgstr "ROR profil"
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:24
+msgid "WOS Researcher ID"
+msgstr "WOS Researcher ID"
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:29
+msgid "ISNI profile"
+msgstr "ISNI profil"
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:34
+msgid "DOI profile"
+msgstr "DOI profil"
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:39
+msgid "GND profile"
+msgstr "GND profil"
+
+msgid "Your draft has validation errors. Please correct them and try again:"
+msgstr ""
+"Váš koncept obsahuje validační chyby. Opravte je prosím a zkuste to znovu."
+
+msgid "Draft deleted successfully. Redirecting to your dashboard ..."
+msgstr "Koncept byl úspěšně smazán. Přesměrování na vaši nástěnku..."
+
+msgid "Delete draft"
+msgstr "Smazat koncept"

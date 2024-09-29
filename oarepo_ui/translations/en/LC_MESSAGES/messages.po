@@ -628,3 +628,40 @@ msgid ""
 "If you are certain that you wish to proceed with the generic community, "
 "please click on it below."
 msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:9
+msgid "ORCID profile"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:14
+msgid "Scopus ID profile"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:19
+msgid "ROR profile"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:24
+msgid "WOS Researcher ID"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:29
+msgid "ISNI profile"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:34
+msgid "DOI profile"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:39
+msgid "GND profile"
+msgstr ""
+
+msgid "Your draft has validation errors. Please correct them and try again:"
+msgstr ""
+
+msgid "Draft deleted successfully. Redirecting to your dashboard ..."
+msgstr ""
+
+msgid "Delete draft"
+msgstr ""
