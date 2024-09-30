@@ -506,7 +506,6 @@ export const useSuggestionApi = ({
       value: item.id,
       key: item.id,
     })),
-  serializeAddedValue,
   debounceTime = 500,
   preSearchChange = (x) => x,
   suggestionAPIUrl,
@@ -514,10 +513,6 @@ export const useSuggestionApi = ({
   suggestionAPIHeaders = {},
   searchOnFocus = false,
   searchQueryParamName = "suggest",
-  loadingMessage = "Loading...",
-  suggestionsErrorMessage = i18next.t("Something went wrong..."),
-  noQueryMessage = i18next.t("Search..."),
-  noResultsMessage = i18next.t("No results found."),
 }) => {
   const _initialSuggestions = initialSuggestions
     ? serializeSuggestions(initialSuggestions)
@@ -613,25 +608,6 @@ export const useSuggestionApi = ({
     ]
   );
 
-  const getNoResultsMessage = React.useCallback(() => {
-    const { isFetching, error, searchQuery } = state;
-    if (isFetching) {
-      return loadingMessage;
-    }
-    if (error) {
-      return <Message negative size="mini" content={suggestionsErrorMessage} />;
-    }
-    if (!searchQuery) {
-      return noQueryMessage;
-    }
-    return noResultsMessage;
-  }, [
-    loadingMessage,
-    noQueryMessage,
-    noResultsMessage,
-    suggestionsErrorMessage,
-  ]);
-
   const onClose = React.useCallback(() => {
     setState((prevState) => ({ ...prevState, open: false }));
   }, []);
@@ -661,7 +637,6 @@ export const useSuggestionApi = ({
     fetchSuggestions,
     executeSearch,
     onSearchChange,
-    getNoResultsMessage,
     onClose,
     onBlur,
     onFocus,
