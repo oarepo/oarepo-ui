@@ -499,147 +499,83 @@ export const useSanitizeInput = () => {
 };
 
 export const useSuggestionApi = ({
-  initialSuggestions = [],
-  serializeSuggestions = (suggestions) =>
-    suggestions.map((item) => ({
-      text: getTitleFromMultilingualObject(item.title),
-      value: item.id,
-      key: item.id,
-    })),
-  debounceTime = 500,
-  preSearchChange = (x) => x,
-  suggestionAPIUrl,
-  suggestionAPIQueryParams = {},
-  suggestionAPIHeaders = {},
-  searchOnFocus = false,
-  searchQueryParamName = "suggest",
-}) => {
+    initialSuggestions = [],
+    serializeSuggestions = (suggestions) =>
+      suggestions.map((item) => ({
+        text: getTitleFromMultilingualObject(item.title),
+        value: item.id,
+        key: item.id,
+      })),
+    debounceTime = 500,
+    preSearchChange = (x) => x,
+    suggestionAPIUrl,
+    suggestionAPIQueryParams = {},
+    suggestionAPIHeaders = {},
+    searchQueryParamName = "suggest"
+  }) => {
+
   const _initialSuggestions = initialSuggestions
     ? serializeSuggestions(initialSuggestions)
     : [];
 
-  const _initialState = {
-    isFetching: false,
-    suggestions: _initialSuggestions,
-    error: false,
-    searchQuery: null,
-    open: false,
-  }
+  const [suggestions, setSuggestions] = useState(_initialSuggestions);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [query, setQuery] = useState("");
 
-  const [state, setState] = React.useState(_initialState);
-  const [cancellableAction, setCancellableAction] = React.useState();
+  React.useEffect(() => {
+    setLoading(true);
+    setSuggestions(initialSuggestions);
+    setError(null);
 
-  const onSearchChange = React.useCallback(
-    _debounce(async (e, { searchQuery }) => {
-      cancellableAction && cancellableAction.cancel();
-      await executeSearch(searchQuery);
-      // eslint-disable-next-line react/destructuring-assignment
-    }, debounceTime),
-    [cancellableAction, debounceTime]
-  );
+    const cancelToken = axios.CancelToken.source();
+    axios
+      .get(suggestionAPIUrl, {
+        params: {
+          [searchQueryParamName]: query,
+          size: DEFAULT_SUGGESTION_SIZE,
+          ...suggestionAPIQueryParams,
+        },
+        headers: suggestionAPIHeaders,
+        cancelToken: cancelToken.token,
+        // There is a bug in axios that prevents brackets from being encoded,
+        // remove the paramsSerializer when fixed.
+        // https://github.com/axios/axios/issues/3316
+        paramsSerializer: (params) =>
+          queryString.stringify(params, { arrayFormat: "repeat" }),
+      })
+      .then((res) => {
+        const searchHits = res?.data?.hits?.hits;
+        const serializedSuggestions = serializeSuggestions(searchHits);
+        setSuggestions(_uniqBy(serializedSuggestions, "value"));
+      })
+      .catch((err) => {
+        setError(err);
+      }).finally(() => {
+        setLoading(false)
+      });
 
-  const executeSearch = React.useCallback(
-    async (searchQuery) => {
-      const query = preSearchChange(searchQuery);
-      // If there is no query change, then display prevState suggestions
-      const { searchQuery: prevSearchQuery } = state;
-      if (prevSearchQuery === searchQuery) {
+    return () => {
+      cancelToken.cancel();
+    };
+  }, [query, suggestionAPIUrl, searchQueryParamName]) // suggestionAPIQueryParams, suggestionAPIHeaders]);
+
+  const executeSearch = (searchQuery) => {
+      const newQuery = preSearchChange(searchQuery);
+      // If there is no query change, then keep prevState suggestions
+      if (query === newQuery) {
         return;
       }
-      setState((prevState) => ({...prevState, isFetching: true, searchQuery: query }));
-      try {
-        const suggestions = await fetchSuggestions(query);
-
-        const serializedSuggestions = serializeSuggestions(suggestions);
-        setState((prevState) => {
-          const newSuggestions = [...serializedSuggestions]
-
-          return {
-            ...prevState,
-            suggestions: _uniqBy(newSuggestions, "value"),
-            isFetching: false,
-            error: false,
-            open: true,
-          };
-        });
-      } catch (e) {
-        console.error(e);
-        setState((prevState) => ({
-          ...prevState,
-          error: true,
-          isFetching: false,
-        }));
-      }
-    },
-    [cancellableAction, preSearchChange, serializeSuggestions]
-  );
-
-  const fetchSuggestions = React.useCallback(
-    async (searchQuery) => {
-      const _cancellableFetch = withCancel(
-        axios.get(suggestionAPIUrl, {
-          params: {
-            [searchQueryParamName]: searchQuery,
-            size: DEFAULT_SUGGESTION_SIZE,
-            ...suggestionAPIQueryParams,
-          },
-          headers: suggestionAPIHeaders,
-          // There is a bug in axios that prevents brackets from being encoded,
-          // remove the paramsSerializer when fixed.
-          // https://github.com/axios/axios/issues/3316
-          paramsSerializer: (params) =>
-            queryString.stringify(params, { arrayFormat: "repeat" }),
-        })
-      );
-      setCancellableAction(_cancellableFetch);
-
-      try {
-        const response = await _cancellableFetch.promise;
-        return response?.data?.hits?.hits;
-      } catch (e) {
-        console.error(e);
-      }
-    },
-    [
-      suggestionAPIUrl,
-      searchQueryParamName,
-      suggestionAPIQueryParams,
-      suggestionAPIHeaders,
-    ]
-  );
-
-  const onClose = React.useCallback(() => {
-    setState((prevState) => ({ ...prevState, open: false }));
-  }, []);
-
-  const onBlur = React.useCallback(() => {
-    setState((prevState) => ({
-      ...prevState,
-      open: false,
-      error: false,
-      searchQuery: searchOnFocus ? prevState.searchQuery : null,
-      suggestions: searchOnFocus
-        ? prevState.suggestions
-        : prevState.selectedSuggestions,
-    }));
-  }, [searchOnFocus]);
-
-  const onFocus = React.useCallback(async () => {
-    setState((prevState) => ({ ...prevState, open: true }));
-    if (searchOnFocus) {
-      const { searchQuery } = state;
-      await executeSearch(searchQuery || "");
-    }
-  }, [searchOnFocus]);
+      console.log('change', {query}, {newQuery});
+      _debounce(() => setQuery(query), debounceTime)
+  }
 
   return {
-    ...state,
-    fetchSuggestions,
+    suggestions,
+    error,
+    loading,
+    query,
     executeSearch,
-    onSearchChange,
-    onClose,
-    onBlur,
-    onFocus,
   };
 };
 
