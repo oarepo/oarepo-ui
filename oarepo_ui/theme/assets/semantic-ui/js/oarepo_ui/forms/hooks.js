@@ -499,21 +499,20 @@ export const useSanitizeInput = () => {
 };
 
 export const useSuggestionApi = ({
-    initialSuggestions = [],
-    serializeSuggestions = (suggestions) =>
-      suggestions.map((item) => ({
-        text: getTitleFromMultilingualObject(item.title),
-        value: item.id,
-        key: item.id,
-      })),
-    debounceTime = 500,
-    preSearchChange = (x) => x,
-    suggestionAPIUrl,
-    suggestionAPIQueryParams = {},
-    suggestionAPIHeaders = {},
-    searchQueryParamName = "suggest"
-  }) => {
-
+  initialSuggestions = [],
+  serializeSuggestions = (suggestions) =>
+    suggestions.map((item) => ({
+      text: getTitleFromMultilingualObject(item.title),
+      value: item.id,
+      key: item.id,
+    })),
+  debounceTime = 500,
+  preSearchChange = (x) => x,
+  suggestionAPIUrl,
+  suggestionAPIQueryParams = {},
+  suggestionAPIHeaders = {},
+  searchQueryParamName = "suggest",
+}) => {
   const _initialSuggestions = initialSuggestions
     ? serializeSuggestions(initialSuggestions)
     : [];
@@ -522,13 +521,42 @@ export const useSuggestionApi = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [query, setQuery] = useState("");
+  // Inspired by: https://dev.to/alexdrocks/using-lodash-debounce-with-react-hooks-for-an-async-data-fetching-input-2p4g
+  const [didMount, setDidMount] = useState(false);
+
+  const debouncedSearch = useMemo(
+    () =>
+      _debounce((cancelToken) => fetchSuggestions(cancelToken), debounceTime),
+    [debounceTime, query]
+  );
+
+  useEffect(() => {
+    return () => {
+      // Make sure to stop the invocation of the debounced function after unmounting
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
 
   React.useEffect(() => {
+    if (!didMount) {
+      // required to not call Suggestion API on initial render
+      setDidMount(true);
+      return;
+    }
+
+    const cancelToken = axios.CancelToken.source();
+    debouncedSearch(cancelToken);
+
+    return () => {
+      cancelToken.cancel();
+    };
+  }, [query, suggestionAPIUrl, searchQueryParamName]); // suggestionAPIQueryParams, suggestionAPIHeaders]);
+
+  function fetchSuggestions (cancelToken) {
     setLoading(true);
     setSuggestions(initialSuggestions);
     setError(null);
 
-    const cancelToken = axios.CancelToken.source();
     axios
       .get(suggestionAPIUrl, {
         params: {
@@ -551,23 +579,20 @@ export const useSuggestionApi = ({
       })
       .catch((err) => {
         setError(err);
-      }).finally(() => {
-        setLoading(false)
+      })
+      .finally(() => {
+        setLoading(false);
       });
+  }
 
-    return () => {
-      cancelToken.cancel();
-    };
-  }, [query, suggestionAPIUrl, searchQueryParamName]) // suggestionAPIQueryParams, suggestionAPIHeaders]);
+  function executeSearch (searchQuery) {
+    const newQuery = preSearchChange(searchQuery);
+    // If there is no query change, then keep prevState suggestions
+    if (query === newQuery) {
+      return;
+    }
 
-  const executeSearch = (searchQuery) => {
-      const newQuery = preSearchChange(searchQuery);
-      // If there is no query change, then keep prevState suggestions
-      if (query === newQuery) {
-        return;
-      }
-      console.log('change', {query}, {newQuery});
-      _debounce(() => setQuery(query), debounceTime)
+    setQuery(newQuery);
   }
 
   return {
