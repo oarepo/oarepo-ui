@@ -62,7 +62,7 @@ export const useFieldData = () => {
   const context = useContext(FieldDataContext);
   if (!context) {
     throw new Error(
-      "useFormConfig must be used inside FieldDataContext .Provider"
+      "useFormConfig must be used inside FieldDataContext.Provider"
     );
   }
   return context;
@@ -178,7 +178,11 @@ export const useDepositApiClient = ({
     ? new baseApiClient(createUrl, recordSerializer)
     : new OARepoDepositApiClient(createUrl, recordSerializer);
 
-  async function save(saveWithoutDisplayingValidationErrors = false) {
+  async function save({
+    saveWithoutDisplayingValidationErrors = false,
+    errorMessage = null,
+    successMessage = null,
+  } = {}) {
     let response;
     let errorsObj = {};
     const errorPaths = [];
@@ -212,9 +216,11 @@ export const useDepositApiClient = ({
         if (response.errors.length > 0) {
           errorsObj["BEvalidationErrors"] = {
             errors: response.errors,
-            errorMessage: i18next.t(
-              "Draft saved with validation errors. Fields listed below that failed validation were not saved to the server"
-            ),
+            errorMessage:
+              errorMessage ||
+              i18next.t(
+                "Draft saved with validation errors. Fields listed below that failed validation were not saved to the server"
+              ),
             errorPaths,
           };
         }
@@ -222,7 +228,8 @@ export const useDepositApiClient = ({
         return false;
       }
       if (!saveWithoutDisplayingValidationErrors)
-        errorsObj["successMessage"] = i18next.t("Draft saved successfully.");
+        errorsObj["successMessage"] =
+          successMessage || i18next.t("Draft saved successfully.");
       return response;
     } catch (error) {
       // handle 400 errors. Normally, axios would put messages in error.response. But for example
@@ -336,7 +343,7 @@ export const useDepositApiClient = ({
       setFieldError(
         "successMessage",
         i18next.t(
-          "Draft deleted successfully. Redirecting to the main page ..."
+          "Draft deleted successfully. Redirecting to your dashboard ..."
         )
       );
       return response;
@@ -354,17 +361,11 @@ export const useDepositApiClient = ({
   async function preview() {
     setSubmitting(true);
     try {
-      const saveResult = await save();
+      const saveResult = await save({
+        saveWithoutDisplayingValidationErrors: true,
+      });
 
-      if (!saveResult) {
-        setFieldError(
-          "BEvalidationErrors.errorMessage",
-          i18next.t(
-            "Your draft was saved. If you wish to preview it, please correct the following validation errors and click preview again:"
-          )
-        );
-        return;
-      } else {
+      if (saveResult?.links?.self_html) {
         const url = saveResult.links.self_html;
         setFieldError(
           "successMessage",
