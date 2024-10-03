@@ -22,9 +22,7 @@ import { decode } from "html-entities";
 import sanitizeHtml from "sanitize-html";
 import { getValidTagsForEditor } from "@js/oarepo_ui";
 import { DEFAULT_SUGGESTION_SIZE } from "./constants";
-import { withCancel } from "react-invenio-forms";
 import queryString from "query-string";
-import { Message } from "semantic-ui-react";
 
 export const extractFEErrorMessages = (obj) => {
   const errorMessages = [];
@@ -520,6 +518,7 @@ export const useSuggestionApi = ({
   const [suggestions, setSuggestions] = useState(_initialSuggestions);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [noResults, setNoResults] = useState(false);
   const [query, setQuery] = useState("");
   // Inspired by: https://dev.to/alexdrocks/using-lodash-debounce-with-react-hooks-for-an-async-data-fetching-input-2p4g
   const [didMount, setDidMount] = useState(false);
@@ -554,6 +553,7 @@ export const useSuggestionApi = ({
 
   function fetchSuggestions (cancelToken) {
     setLoading(true);
+    setNoResults(false);
     setSuggestions(initialSuggestions);
     setError(null);
 
@@ -574,6 +574,10 @@ export const useSuggestionApi = ({
       })
       .then((res) => {
         const searchHits = res?.data?.hits?.hits;
+        if (searchHits.length === 0) {
+          setNoResults(true);
+        }
+
         const serializedSuggestions = serializeSuggestions(searchHits);
         setSuggestions(_uniqBy(serializedSuggestions, "value"));
       })
@@ -585,21 +589,25 @@ export const useSuggestionApi = ({
       });
   }
 
-  function executeSearch (searchQuery) {
-    const newQuery = preSearchChange(searchQuery);
-    // If there is no query change, then keep prevState suggestions
-    if (query === newQuery) {
-      return;
-    }
+  const executeSearch = React.useCallback(
+    (searchQuery) => {
+      const newQuery = preSearchChange(searchQuery);
+      // If there is no query change, then keep prevState suggestions
+      if (query === newQuery) {
+        return;
+      }
 
-    setQuery(newQuery);
-  }
+      setQuery(newQuery);
+    },
+    [query]
+  );
 
   return {
     suggestions,
     error,
     loading,
     query,
+    noResults,
     executeSearch,
   };
 };
