@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-08-26 11:34+0200\n"
+"POT-Creation-Date: 2024-09-15 21:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -75,6 +75,30 @@ msgstr ""
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:16
 msgid "Edit item"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:7
+msgid "ORCID profile"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:12
+msgid "Scopus ID profile"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:17
+msgid "ROR profile"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:22
+msgid "WOS Researcher ID"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:27
+msgid "DOI profile"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:32
+msgid "GND profile"
 msgstr ""
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:3
@@ -248,9 +272,6 @@ msgstr ""
 msgid "Remove field"
 msgstr ""
 
-msgid "Community website"
-msgstr ""
-
 msgid "Community selection"
 msgstr ""
 
@@ -276,16 +297,8 @@ msgstr ""
 
 msgid ""
 "Your work will be saved in the following community. Please note that after "
-"saving it will not be possible to transfer it to another community."
-msgstr ""
-
-msgid "Community home page"
-msgstr ""
-
-msgid "Change"
-msgstr ""
-
-msgid "Community website."
+"saving it will not be possible to transfer it to another community. "
+"Click<1>here</1>to change the selection."
 msgstr ""
 
 msgid "Delete"

@@ -588,3 +588,39 @@ msgstr ""
 
 msgid "Change"
 msgstr "Změnit"
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:7
+msgid "ORCID profile"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:12
+msgid "Scopus ID profile"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:17
+msgid "ROR profile"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:22
+msgid "WOS Researcher ID"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:27
+msgid "DOI profile"
+msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:32
+msgid "GND profile"
+msgstr ""
+
+msgid "change"
+msgstr ""
+
+msgid ""
+"Your work will be saved in the following community. Please note that after "
+"saving it will not be possible to transfer it to another community. "
+"Click<1>here</1>to change the selection."
+msgstr ""
+"Vaše práce bude uložena v následující komunitě. Vezměte prosím na vědomí, že"
+" po uložení nebude možné převést ji do jiné komunity. Klikněte<1>zde</1>pro "
+"změnu výběru."
