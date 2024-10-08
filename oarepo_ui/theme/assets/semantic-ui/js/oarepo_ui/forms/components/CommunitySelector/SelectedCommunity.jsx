@@ -1,10 +1,11 @@
 import React from "react";
 import { useFormikContext, getIn } from "formik";
-import { useFormConfig } from "@js/oarepo_ui";
+import { useFormConfig, CommunityItem } from "@js/oarepo_ui";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import { Header, Message, Icon, Button } from "semantic-ui-react";
+import { Message, Icon, Button, List } from "semantic-ui-react";
 import { GenericCommunityMessage } from "./CommunitySelector";
+import { Trans } from "react-i18next";
 
 export const SelectedCommunity = ({ fieldPath }) => {
   const {
@@ -28,57 +29,34 @@ export const SelectedCommunity = ({ fieldPath }) => {
   };
   return (
     <React.Fragment>
-      {values?.id ? (
+      {values?.id && (
         <p>
           {i18next.t(
             "Your record will be published in the following community:"
           )}
         </p>
-      ) : (
-        <p>
-          {i18next.t(
-            "Your work will be saved in the following community. Please note that after saving it will not be possible to transfer it to another community."
-          )}
-        </p>
       )}
-      <div className="flex center aligned">
-        <Header as="h3" className="m-0">
-          {/* TODO: the link is to the community landing page which is not yet ready */}
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            href={selectedCommunity?.links?.self_html}
-            aria-label={i18next.t("Community home page")}
-          >
-            {selectedCommunity?.title}
-          </a>
-        </Header>
-        {!values?.id &&
-          allowed_communities.length > 1 &&
-          !preselected_community && (
+      {!values?.id &&
+        allowed_communities.length > 1 &&
+        !preselected_community && (
+          <Trans i18n={i18next}>
+            Your work will be saved in the following community. Please note that
+            after saving it will not be possible to transfer it to another
+            community. Click
             <Button
-              className="rel-ml-1"
+              className="ml-5 mr-5"
               onClick={handleCommunityRemoval}
               size="mini"
             >
-              {i18next.t("Change")}
+              here
             </Button>
-          )}
-      </div>
-
-      <p>{selectedCommunity?.description}</p>
-      {selectedCommunity?.website && (
-        <span>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            href={selectedCommunity?.website}
-          >
-            {i18next.t("Community website.")}
-          </a>
-        </span>
+            to change the selection.
+          </Trans>
+        )}
+      {selectedCommunity && (
+        <List>
+          <CommunityItem community={selectedCommunity} />
+        </List>
       )}
       {isGeneric ? (
         <Message>

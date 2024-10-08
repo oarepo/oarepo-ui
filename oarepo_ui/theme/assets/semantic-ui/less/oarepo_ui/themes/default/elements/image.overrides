@@ -1,4 +1,4 @@
-.ui.image.community-image img {
+.ui.image.community-selector-image img {
   max-height: 80px;
   min-width: 80px;
   object-fit: contain;

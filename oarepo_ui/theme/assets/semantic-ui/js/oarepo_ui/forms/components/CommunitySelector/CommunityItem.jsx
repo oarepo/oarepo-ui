@@ -1,34 +1,53 @@
 import React from "react";
-import { List, Header } from "semantic-ui-react";
+import { List, Header, Icon } from "semantic-ui-react";
 import Overridable from "react-overridable";
 import PropTypes from "prop-types";
-import { i18next } from "@translations/oarepo_ui/i18next";
 import { Image } from "react-invenio-forms";
 
 export const CommunityItem = ({ community, handleClick }) => {
-  const { id, title, description, website, logo } = community;
+  const { id, title, website, logo, organizations } = community;
   return (
     <Overridable
       id="record-community-selection-item"
       community={community}
       handleClick={handleClick}
     >
-      <List.Item onClick={() => handleClick(id)} className="flex">
-        <div className="ui image community-image">
+      <List.Item
+        onClick={() => handleClick(id)}
+        className="flex align-items-center"
+      >
+        <div className="ui image community-selector-image">
           <Image src={logo} size="tiny" rounded verticalAlign="top" />
         </div>
         <List.Content>
-          <Header size="small">{title}</Header>
-          {description && <p className="mb-5">{description}</p>}
-          {website && (
+          <Header size="small">
             <a
+              onClick={(e) => e.stopPropagation()}
+              href={community.links.self_html}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              href={website}
             >
-              {i18next.t("Community website")}
+              {title}
             </a>
+          </Header>
+          {website && (
+            <React.Fragment>
+              <Icon name="linkify" />
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                href={website}
+              >
+                {website}
+              </a>
+            </React.Fragment>
+          )}
+          {organizations && (
+            <div>
+              <Icon name="building outline" />
+              <span>{organizations.map((o) => o.name).join(", ")}</span>
+            </div>
           )}
         </List.Content>
       </List.Item>
@@ -38,5 +57,5 @@ export const CommunityItem = ({ community, handleClick }) => {
 
 CommunityItem.propTypes = {
   community: PropTypes.object.isRequired,
-  handleClick: PropTypes.func.isRequired,
+  handleClick: PropTypes.func,
 };
