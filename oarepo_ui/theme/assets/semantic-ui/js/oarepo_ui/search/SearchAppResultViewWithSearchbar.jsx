@@ -1,12 +1,3 @@
-// This file is part of InvenioRDM
-// Copyright (C) 2020-2022 CERN.
-// Copyright (C) 2020-2021 Northwestern University.
-// Copyright (C) 2021 Graz University of Technology.
-// Copyright (C) 2021 New York University.
-//
-// Invenio App RDM is free software; you can redistribute it and/or modify it
-// under the terms of the MIT License; see LICENSE file for more details.
-
 import React from "react";
 import {
   ResultsList,
@@ -45,7 +36,7 @@ export function SearchAppResultViewWithSearchbar(props) {
                   <Grid.Row
                     verticalAlign="middle"
                     width={16}
-                    className="user-dashboard-sort-count"
+                    className="results-options-row"
                   >
                     <Grid.Column textAlign="left" width={8}>
                       <ResultCountWithState />
@@ -83,61 +74,59 @@ export function SearchAppResultViewWithSearchbar(props) {
           currentResultsState={currentResultsState}
           appName={appName}
         >
-          {total > 10 && (
-            <Grid.Row verticalAlign="middle">
-              <Grid.Column
-                className="computer tablet only"
-                width={4}
-              ></Grid.Column>
-              <Grid.Column
-                className="computer tablet only"
-                width={8}
-                textAlign="center"
-              >
-                <Pagination
-                  options={{
-                    size: "mini",
-                    showFirst: false,
-                    showLast: false,
-                  }}
-                />
-              </Grid.Column>
-              <Grid.Column
-                className="mobile only"
-                width={16}
-                textAlign="center"
-              >
-                <Pagination
-                  options={{
-                    size: "mini",
-                    boundaryRangeCount: 0,
-                    showFirst: false,
-                    showLast: false,
-                  }}
-                />
-              </Grid.Column>
-              <Grid.Column
-                className="computer tablet only "
-                textAlign="right"
-                width={4}
-              >
-                <ResultsPerPage
-                  values={resultsPerPage}
-                  label={ResultsPerPageLabel}
-                />
-              </Grid.Column>
-              <Grid.Column
-                className="mobile only mt-10"
-                textAlign="center"
-                width={16}
-              >
-                <ResultsPerPage
-                  values={resultsPerPage}
-                  label={ResultsPerPageLabel}
-                />
-              </Grid.Column>
-            </Grid.Row>
-          )}
+          <Grid.Row verticalAlign="middle">
+            <Grid.Column
+              className="computer tablet only"
+              width={4}
+            ></Grid.Column>
+            <Grid.Column
+              className="computer tablet only"
+              width={8}
+              textAlign="center"
+            >
+              <Pagination
+                options={{
+                  size: "mini",
+                  showFirst: false,
+                  showLast: false,
+                }}
+                showWhenOnlyOnePage={false}
+              />
+            </Grid.Column>
+            <Grid.Column className="mobile only" width={16} textAlign="center">
+              <Pagination
+                options={{
+                  size: "mini",
+                  boundaryRangeCount: 0,
+                  showFirst: false,
+                  showLast: false,
+                }}
+                showWhenOnlyOnePage={false}
+              />
+            </Grid.Column>
+            <Grid.Column
+              className="computer tablet only "
+              textAlign="right"
+              width={4}
+            >
+              <ResultsPerPage
+                values={resultsPerPage}
+                label={ResultsPerPageLabel}
+                showWhenOnlyOnePage={false}
+              />
+            </Grid.Column>
+            <Grid.Column
+              className="mobile only mt-10"
+              textAlign="center"
+              width={16}
+            >
+              <ResultsPerPage
+                values={resultsPerPage}
+                label={ResultsPerPageLabel}
+                showWhenOnlyOnePage={false}
+              />
+            </Grid.Column>
+          </Grid.Row>
         </Overridable>
       </Grid>
     )

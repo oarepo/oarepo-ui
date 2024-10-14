@@ -1,0 +1,5 @@
+.row {
+  &.results-options-row {
+    background-color: @resultsOptionsRowBackgroundColor;
+  }
+}
