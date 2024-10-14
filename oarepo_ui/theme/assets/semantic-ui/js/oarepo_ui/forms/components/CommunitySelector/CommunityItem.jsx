@@ -4,13 +4,14 @@ import Overridable from "react-overridable";
 import PropTypes from "prop-types";
 import { Image } from "react-invenio-forms";
 
-export const CommunityItem = ({ community, handleClick }) => {
+export const CommunityItem = ({ community, handleClick, renderLinks }) => {
   const { id, title, website, logo, organizations } = community;
   return (
     <Overridable
       id="record-community-selection-item"
       community={community}
       handleClick={handleClick}
+      renderLinks={renderLinks}
     >
       <List.Item
         onClick={() => handleClick(id)}
@@ -21,16 +22,22 @@ export const CommunityItem = ({ community, handleClick }) => {
         </div>
         <List.Content>
           <Header size="small">
-            <a
-              onClick={(e) => e.stopPropagation()}
-              href={community.links.self_html}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {title}
-            </a>
+            {renderLinks ? (
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+                href={community.links.self_html}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {title}
+              </a>
+            ) : (
+              title
+            )}
           </Header>
-          {website && (
+          {website && renderLinks && (
             <React.Fragment>
               <Icon name="linkify" />
               <a
@@ -58,4 +65,9 @@ export const CommunityItem = ({ community, handleClick }) => {
 CommunityItem.propTypes = {
   community: PropTypes.object.isRequired,
   handleClick: PropTypes.func,
+  renderLinks: PropTypes.bool,
+};
+
+CommunityItem.defaultProps = {
+  renderLinks: true,
 };
