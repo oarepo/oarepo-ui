@@ -24,7 +24,6 @@ from invenio_records_resources.resources.records.resource import (
     request_read_args,
     request_search_args,
     request_view_args,
-    request_extra_args,
 )
 from invenio_records_resources.services import LinksTemplate
 from oarepo_runtime.datastreams.utils import get_file_service_for_record_class
@@ -188,7 +187,6 @@ class RecordsUIResource(UIResource):
     # helper function to avoid duplicating code between detail and preview handler
     @request_read_args
     @request_view_args
-    @request_extra_args
     @response_header_signposting
     def _detail(self, *, is_preview=False):
         if is_preview:
@@ -324,7 +322,7 @@ class RecordsUIResource(UIResource):
             return read_method(
                 g.identity,
                 resource_requestctx.view_args["pid_value"],
-                expand=resource_requestctx.args.get("expand", False),
+                expand=True,
             )
         except PermissionDenied as e:
             raise Forbidden() from e
