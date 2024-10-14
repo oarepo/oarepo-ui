@@ -80,6 +80,7 @@ export const CommunitySelector = ({ fieldPath }) => {
                       key={c.id}
                       community={c}
                       handleClick={handleClick}
+                      renderLinks={false}
                     />
                   ))}
                 </List>
@@ -97,6 +98,7 @@ export const CommunitySelector = ({ fieldPath }) => {
                   <CommunityItem
                     community={generic_community}
                     handleClick={handleClick}
+                    renderLinks={false}
                   />
                 </List>
               </React.Fragment>
