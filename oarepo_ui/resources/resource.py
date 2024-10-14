@@ -24,6 +24,7 @@ from invenio_records_resources.resources.records.resource import (
     request_read_args,
     request_search_args,
     request_view_args,
+    request_extra_args,
 )
 from invenio_records_resources.services import LinksTemplate
 from oarepo_runtime.datastreams.utils import get_file_service_for_record_class
@@ -60,7 +61,6 @@ request_create_args = request_parser(from_conf("request_create_args"), location=
 
 
 class UIComponentsMixin:
-
     #
     # Pluggable components
     #
@@ -188,6 +188,7 @@ class RecordsUIResource(UIResource):
     # helper function to avoid duplicating code between detail and preview handler
     @request_read_args
     @request_view_args
+    @request_extra_args
     @response_header_signposting
     def _detail(self, *, is_preview=False):
         if is_preview:
@@ -260,10 +261,14 @@ class RecordsUIResource(UIResource):
             "is_preview": is_preview,
         }
 
-        response = Response(current_oarepo_ui.catalog.render(
-            render_method,
-            **render_kwargs,
-        ), mimetype="text/html", status=200)
+        response = Response(
+            current_oarepo_ui.catalog.render(
+                render_method,
+                **render_kwargs,
+            ),
+            mimetype="text/html",
+            status=200,
+        )
         response._api_record = api_record
         return response
 
@@ -316,7 +321,11 @@ class RecordsUIResource(UIResource):
             else:
                 read_method = self.api_service.read
 
-            return read_method(g.identity, resource_requestctx.view_args["pid_value"])
+            return read_method(
+                g.identity,
+                resource_requestctx.view_args["pid_value"],
+                expand=resource_requestctx.args.get("expand", False),
+            )
         except PermissionDenied as e:
             raise Forbidden() from e
 
