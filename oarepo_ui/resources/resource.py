@@ -60,7 +60,6 @@ request_create_args = request_parser(from_conf("request_create_args"), location=
 
 
 class UIComponentsMixin:
-
     #
     # Pluggable components
     #
@@ -260,10 +259,14 @@ class RecordsUIResource(UIResource):
             "is_preview": is_preview,
         }
 
-        response = Response(current_oarepo_ui.catalog.render(
-            render_method,
-            **render_kwargs,
-        ), mimetype="text/html", status=200)
+        response = Response(
+            current_oarepo_ui.catalog.render(
+                render_method,
+                **render_kwargs,
+            ),
+            mimetype="text/html",
+            status=200,
+        )
         response._api_record = api_record
         return response
 
@@ -316,7 +319,11 @@ class RecordsUIResource(UIResource):
             else:
                 read_method = self.api_service.read
 
-            return read_method(g.identity, resource_requestctx.view_args["pid_value"])
+            return read_method(
+                g.identity,
+                resource_requestctx.view_args["pid_value"],
+                expand=True,
+            )
         except PermissionDenied as e:
             raise Forbidden() from e
 

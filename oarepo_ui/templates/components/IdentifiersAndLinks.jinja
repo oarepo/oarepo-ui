@@ -1,5 +1,6 @@
 {# def originalRecordUrl=None, objectIdentifiers=None #}
 
+{% if objectIdentifiers|length > 0 or originalRecordUrl %}
 <section aria-label='{{ _("Identifiers and links") }}' class="ui segment identifiers-and-links">
   <h2 class="ui small header detail-sidebar-header">{{_('Identifiers and links')}}</h2>
   <div class="ui link list">
@@ -52,3 +53,5 @@
     {% endif %}
    </div>
 </section>
+{% endif %}
+
