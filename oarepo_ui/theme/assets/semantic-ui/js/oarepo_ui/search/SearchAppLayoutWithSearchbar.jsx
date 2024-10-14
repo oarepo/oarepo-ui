@@ -61,7 +61,7 @@ export const SearchAppLayoutWithSearchbarHOC = ({
                   <Grid.Column>
                     <SearchBar placeholder={placeholder} className="rel-pl-1" />
                   </Grid.Column>
-                  {extraContent && extraContent()}
+                  {extraContent?.()}
                 </Grid.Row>
                 <Grid.Column only="mobile tablet" mobile={2} tablet={2}>
                   <Button
