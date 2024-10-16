@@ -1,4 +1,11 @@
-import { useEffect, useCallback, useState, useContext, useMemo } from "react";
+import {
+  useEffect,
+  useCallback,
+  useState,
+  useContext,
+  useMemo,
+  useRef,
+} from "react";
 import { FormConfigContext, FieldDataContext } from "./contexts";
 import {
   OARepoDepositApiClient,
@@ -86,8 +93,19 @@ export const useVocabularyOptions = (vocabularyType) => {
 
 export const useConfirmationModal = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const isMounted = useRef(null);
+  isMounted.current = true;
 
-  const close = useCallback(() => setIsOpen(false), []);
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
+  const close = useCallback(() => {
+    if (!isMounted.current) return;
+    setIsOpen(false);
+  }, []);
   const open = useCallback(() => setIsOpen(true), []);
 
   return { isOpen, close, open };
