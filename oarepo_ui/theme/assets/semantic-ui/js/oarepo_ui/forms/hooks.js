@@ -1,3 +1,5 @@
+import * as React from "react";
+import axios from "axios";
 import {
   useEffect,
   useCallback,
@@ -19,11 +21,15 @@ import _omit from "lodash/omit";
 import _pick from "lodash/pick";
 import _isEmpty from "lodash/isEmpty";
 import _isObject from "lodash/isObject";
+import _debounce from "lodash/debounce";
+import _uniqBy from "lodash/uniqBy";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import { relativeUrl } from "../util";
+import { getTitleFromMultilingualObject, relativeUrl } from "../util";
 import { decode } from "html-entities";
 import sanitizeHtml from "sanitize-html";
 import { getValidTagsForEditor } from "@js/oarepo_ui";
+import { DEFAULT_SUGGESTION_SIZE } from "./constants";
+import queryString from "query-string";
 
 export const extractFEErrorMessages = (obj) => {
   const errorMessages = [];
@@ -275,7 +281,7 @@ export const useDepositApiClient = ({
     }
   }
 
-  async function publish({ validate = false } = {}) {
+  async function publish ({ validate = false } = {}) {
     // call save and if save returns false, exit
     const saveResult = await save();
 
@@ -344,11 +350,11 @@ export const useDepositApiClient = ({
     }
   }
 
-  async function read(recordUrl) {
+  async function read (recordUrl) {
     return await apiClient.readDraft({ self: recordUrl });
   }
 
-  async function _delete(redirectUrl) {
+  async function _delete (redirectUrl) {
     if (!redirectUrl)
       throw new Error(
         "You must provide url where to be redirected after deleting a draft"
@@ -376,7 +382,7 @@ export const useDepositApiClient = ({
     }
   }
 
-  async function preview() {
+  async function preview () {
     setSubmitting(true);
     try {
       const saveResult = await save({
@@ -438,10 +444,10 @@ export const useDepositFileApiClient = (baseApiClient) => {
     ? new baseApiClient()
     : new OARepoDepositFileApiClient();
 
-  async function read(draft) {
+  async function read (draft) {
     return await apiClient.readDraftFiles(draft);
   }
-  async function _delete(file) {
+  async function _delete (file) {
     setValues(_omit(values, ["errors"]));
     setSubmitting(true);
     try {
@@ -506,6 +512,122 @@ export const useSanitizeInput = () => {
     allowedHtmlAttrs,
     allowedHtmlTags,
     validEditorTags,
+  };
+};
+
+export const useSuggestionApi = ({
+  initialSuggestions = [],
+  serializeSuggestions = (suggestions) =>
+    suggestions.map((item) => ({
+      text: getTitleFromMultilingualObject(item.title),
+      value: item.id,
+      key: item.id,
+    })),
+  debounceTime = 500,
+  preSearchChange = (x) => x,
+  suggestionAPIUrl,
+  suggestionAPIQueryParams = {},
+  suggestionAPIHeaders = {},
+  searchQueryParamName = "suggest",
+}) => {
+  const _initialSuggestions = initialSuggestions
+    ? serializeSuggestions(initialSuggestions)
+    : [];
+
+  const [suggestions, setSuggestions] = useState(_initialSuggestions);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [noResults, setNoResults] = useState(false);
+  const [query, setQuery] = useState("");
+  // Inspired by: https://dev.to/alexdrocks/using-lodash-debounce-with-react-hooks-for-an-async-data-fetching-input-2p4g
+  const [didMount, setDidMount] = useState(false);
+
+  const debouncedSearch = useMemo(
+    () =>
+      _debounce((cancelToken) => fetchSuggestions(cancelToken), debounceTime),
+    [debounceTime, query]
+  );
+
+  useEffect(() => {
+    return () => {
+      // Make sure to stop the invocation of the debounced function after unmounting
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
+
+  React.useEffect(() => {
+    if (!didMount) {
+      // required to not call Suggestion API on initial render
+      setDidMount(true);
+      return;
+    }
+
+    const cancelToken = axios.CancelToken.source();
+    debouncedSearch(cancelToken);
+
+    return () => {
+      cancelToken.cancel();
+    };
+  }, [query, suggestionAPIUrl, searchQueryParamName]); // suggestionAPIQueryParams, suggestionAPIHeaders]);
+
+  function fetchSuggestions (cancelToken) {
+    setLoading(true);
+    setNoResults(false);
+    setSuggestions(initialSuggestions);
+    setError(null);
+
+    axios
+      .get(suggestionAPIUrl, {
+        params: {
+          [searchQueryParamName]: query,
+          size: DEFAULT_SUGGESTION_SIZE,
+          ...suggestionAPIQueryParams,
+        },
+        headers: suggestionAPIHeaders,
+        cancelToken: cancelToken.token,
+        // There is a bug in axios that prevents brackets from being encoded,
+        // remove the paramsSerializer when fixed.
+        // https://github.com/axios/axios/issues/3316
+        paramsSerializer: (params) =>
+          queryString.stringify(params, { arrayFormat: "repeat" }),
+      })
+      .then((res) => {
+        const searchHits = res?.data?.hits?.hits;
+        if (searchHits.length === 0) {
+          setNoResults(true);
+        }
+
+        const serializedSuggestions = serializeSuggestions(searchHits);
+        setSuggestions(_uniqBy(serializedSuggestions, "value"));
+      })
+      .catch((err) => {
+        setError(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }
+
+  const executeSearch = React.useCallback(
+    (searchQuery) => {
+      const newQuery = preSearchChange(searchQuery);
+      // If there is no query change, then keep prevState suggestions
+      if (query === newQuery) {
+        return;
+      }
+
+      setQuery(newQuery);
+    },
+    [query]
+  );
+
+  return {
+    suggestions,
+    error,
+    loading,
+    query,
+    noResults,
+    executeSearch,
   };
 };
 

@@ -5,3 +5,5 @@ export const overridableComponentIds = [
   "FormFields.container",
   "CustomFields.container",
 ];
+
+export const DEFAULT_SUGGESTION_SIZE = 20;

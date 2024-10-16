@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-09-29 14:05+0200\n"
+"POT-Creation-Date: 2024-09-15 21:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,7 +49,7 @@ msgstr ""
 msgid "api.versions"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/resources/config.py:140
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/resources/config.py:126
 msgid "JSON"
 msgstr ""
 
@@ -77,31 +77,27 @@ msgstr ""
 msgid "Edit item"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:9
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:7
 msgid "ORCID profile"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:14
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:12
 msgid "Scopus ID profile"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:19
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:17
 msgid "ROR profile"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:24
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:22
 msgid "WOS Researcher ID"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:29
-msgid "ISNI profile"
-msgstr ""
-
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:34
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:27
 msgid "DOI profile"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:39
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:32
 msgid "GND profile"
 msgstr ""
 
@@ -211,19 +207,19 @@ msgstr ""
 msgid "Version: %(version)s"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:42
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:45
 msgid "Menu"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:61
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:64
 msgid "Close menu"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:111
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:114
 msgid "Requests"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:113
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:116
 msgid "Inbox"
 msgstr ""
 
@@ -276,12 +272,6 @@ msgstr ""
 msgid "Remove field"
 msgstr ""
 
-msgid "Your draft has validation errors. Please correct them and try again:"
-msgstr ""
-
-msgid "Community website"
-msgstr ""
-
 msgid "Community selection"
 msgstr ""
 
@@ -307,19 +297,11 @@ msgstr ""
 
 msgid ""
 "Your work will be saved in the following community. Please note that after "
-"saving it will not be possible to transfer it to another community."
+"saving it will not be possible to transfer it to another community. "
+"Click<1>here</1>to change the selection."
 msgstr ""
 
-msgid "Community home page"
-msgstr ""
-
-msgid "Change"
-msgstr ""
-
-msgid "Community website."
-msgstr ""
-
-msgid "Delete draft"
+msgid "Delete"
 msgstr ""
 
 msgid "Cancel"
@@ -440,7 +422,12 @@ msgstr ""
 msgid "Draft published successfully. Redirecting to record's detail page ..."
 msgstr ""
 
-msgid "Draft deleted successfully. Redirecting to your dashboard ..."
+msgid "Draft deleted successfully. Redirecting to the main page ..."
+msgstr ""
+
+msgid ""
+"Your draft was saved. If you wish to preview it, please correct the "
+"following validation errors and click preview again:"
 msgstr ""
 
 msgid "Your draft was saved. Redirecting to the preview page..."

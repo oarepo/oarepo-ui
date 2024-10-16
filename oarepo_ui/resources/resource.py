@@ -4,7 +4,7 @@ from os.path import splitext
 from typing import TYPE_CHECKING, Iterator
 
 import deepmerge
-from flask import abort, g, redirect, request
+from flask import abort, g, redirect, request, Response
 from flask_principal import PermissionDenied
 from flask_resources import (
     Resource,
@@ -30,6 +30,7 @@ from oarepo_runtime.datastreams.utils import get_file_service_for_record_class
 from werkzeug.exceptions import Forbidden
 
 from oarepo_ui.utils import dump_empty
+from .signposting import response_header_signposting
 
 from .templating.data import FieldData
 
@@ -187,6 +188,7 @@ class RecordsUIResource(UIResource):
     # helper function to avoid duplicating code between detail and preview handler
     @request_read_args
     @request_view_args
+    @response_header_signposting
     def _detail(self, *, is_preview=False):
         if is_preview:
             api_record = self._get_record(resource_requestctx, allow_draft=is_preview)
@@ -258,10 +260,12 @@ class RecordsUIResource(UIResource):
             "is_preview": is_preview,
         }
 
-        return current_oarepo_ui.catalog.render(
+        response = Response(current_oarepo_ui.catalog.render(
             render_method,
             **render_kwargs,
-        )
+        ), mimetype="text/html", status=200)
+        response._api_record = api_record
+        return response
 
     def detail(self):
         """Returns item detail page."""
