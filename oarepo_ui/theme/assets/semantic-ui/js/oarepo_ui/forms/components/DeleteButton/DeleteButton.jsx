@@ -36,7 +36,7 @@ export const DeleteButton = React.memo(
                 onClick={openModal}
                 icon="delete"
                 labelPosition="left"
-                content={i18next.t("Delete")}
+                content={i18next.t("Delete draft")}
                 type="button"
                 disabled={isSubmitting}
                 loading={isSubmitting}
@@ -59,7 +59,7 @@ export const DeleteButton = React.memo(
                   }}
                   icon="delete"
                   labelPosition="left"
-                  content={i18next.t("Delete")}
+                  content={i18next.t("Delete draft")}
                   type="button"
                 />
               </>

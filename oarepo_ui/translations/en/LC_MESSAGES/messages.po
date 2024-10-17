@@ -661,3 +661,16 @@ msgid ""
 "saving it will not be possible to transfer it to another community. "
 "Click<1>here</1>to change the selection."
 msgstr ""
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:29
+msgid "ISNI profile"
+msgstr ""
+
+msgid "Your draft has validation errors. Please correct them and try again:"
+msgstr ""
+
+msgid "Delete draft"
+msgstr ""
+
+msgid "Draft deleted successfully. Redirecting to your dashboard ..."
+msgstr ""

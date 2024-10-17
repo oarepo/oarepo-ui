@@ -624,3 +624,16 @@ msgstr ""
 "Vaše práce bude uložena v následující komunitě. Vezměte prosím na vědomí, že"
 " po uložení nebude možné převést ji do jiné komunity. Klikněte<1>zde</1>pro "
 "změnu výběru."
+
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:29
+msgid "ISNI profile"
+msgstr ""
+
+msgid "Your draft has validation errors. Please correct them and try again:"
+msgstr "Váš koncept obsahuje chyby ověření. Opravte je a zkuste to znovu:"
+
+msgid "Delete draft"
+msgstr "Smazat koncept"
+
+msgid "Draft deleted successfully. Redirecting to your dashboard ..."
+msgstr "Koncept byl úspěšně smazán. Přesměrování na vaši nástěnku ..."
