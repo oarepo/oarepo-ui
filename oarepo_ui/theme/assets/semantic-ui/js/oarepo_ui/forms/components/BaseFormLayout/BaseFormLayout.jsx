@@ -6,7 +6,6 @@ import { FormikStateLogger } from "../FormikStateLogger";
 import { SaveButton } from "../SaveButton";
 import { PublishButton } from "../PublishButton";
 import { PreviewButton } from "../PreviewButton";
-import { DeleteButton } from "../DeleteButton";
 import { Grid, Ref, Sticky, Card, Header } from "semantic-ui-react";
 import {
   useFormConfig,
