@@ -150,7 +150,9 @@ class FormConfigResource(UIComponentsMixin, Resource):
         self.run_components(
             "form_config",
             form_config=form_config,
+            args = resource_requestctx.args,
             view_args=resource_requestctx.view_args,
+            identity=g.identity,
         )
         return form_config
 
