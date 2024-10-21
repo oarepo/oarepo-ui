@@ -8,4 +8,6 @@ __all__ = (
     "RecordsUIResource",
     "UIResourceConfig",
     "RecordsUIResourceConfig",
+    "PermissionsComponent",
+    "BabelComponent"
 )
