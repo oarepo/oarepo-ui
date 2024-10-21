@@ -2,13 +2,10 @@ from typing import Dict
 
 from flask_principal import Identity
 from invenio_communities.communities.records.api import Community
+from invenio_records_resources.services.errors import PermissionDeniedError
 from oarepo_runtime.i18n import lazy_gettext as _
 
-
 from .base import UIResourceComponent
-from invenio_records_resources.services.errors import (
-    PermissionDeniedError,
-)
 
 
 class AllowedCommunitiesComponent(UIResourceComponent):
@@ -105,8 +102,8 @@ class AllowedCommunitiesComponent(UIResourceComponent):
         )
 
     def check_user_permissions(self, community_id, workflow, identity, action):
-        from oarepo_workflows.proxies import current_oarepo_workflows
         from oarepo_workflows.errors import InvalidWorkflowError
+        from oarepo_workflows.proxies import current_oarepo_workflows
 
         if workflow not in current_oarepo_workflows.record_workflows:
             raise InvalidWorkflowError(

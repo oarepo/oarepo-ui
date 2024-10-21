@@ -1,9 +1,9 @@
-from .base import UIResourceComponent
 from .babel import BabelComponent
+from .base import UIResourceComponent
 from .bleach import AllowedHtmlTagsComponent
+from .communities import AllowedCommunitiesComponent
 from .files import FilesComponent
 from .permissions import PermissionsComponent
-from .communities import AllowedCommunitiesComponent
 
 __all__ = (
     "UIResourceComponent",
@@ -11,5 +11,5 @@ __all__ = (
     "AllowedHtmlTagsComponent",
     "BabelComponent",
     "FilesComponent",
-    "AllowedCommunitiesComponent"
+    "AllowedCommunitiesComponent",
 )

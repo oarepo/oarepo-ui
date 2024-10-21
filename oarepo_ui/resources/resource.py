@@ -4,7 +4,7 @@ from os.path import splitext
 from typing import TYPE_CHECKING, Iterator
 
 import deepmerge
-from flask import abort, g, redirect, request, Response
+from flask import Response, abort, g, redirect, request
 from flask_principal import PermissionDenied
 from flask_resources import (
     Resource,
@@ -30,14 +30,17 @@ from oarepo_runtime.datastreams.utils import get_file_service_for_record_class
 from werkzeug.exceptions import Forbidden
 
 from oarepo_ui.utils import dump_empty
-from .signposting import response_header_signposting
 
+from .components.custom_fields import CustomFieldsComponent
+from .signposting import response_header_signposting
 from .templating.data import FieldData
 
 if TYPE_CHECKING:
     from .components import UIResourceComponent
 
 #
+import logging
+
 # Resource
 #
 from ..proxies import current_oarepo_ui
@@ -47,6 +50,8 @@ from .config import (
     TemplatePageUIResourceConfig,
     UIResourceConfig,
 )
+
+log = logging.getLogger(__name__)
 
 request_export_args = request_parser(
     from_conf("request_export_args"), location="view_args"
@@ -64,10 +69,26 @@ class UIComponentsMixin:
     #
     # Pluggable components
     #
+    config: UIResourceConfig
 
     @property
     def components(self) -> Iterator["UIResourceComponent"]:
         """Return initialized service components."""
+
+        # TODO: just for deprecation, will be removed later
+        for c in self.config.components or []:
+            if isinstance(c, CustomFieldsComponent):
+                break
+        else:
+            log.warning(
+                "CustomFieldsComponent not found in components, adding it to be backwards compatible."
+            )
+            if not self.config.components:
+                self.config.components = []
+            if isinstance(self.config.components, tuple):
+                self.config.components = list(self.config.components)
+            self.config.components.append(CustomFieldsComponent)
+
         return (c(self) for c in self.config.components or [])
 
     def run_components(self, action, *args, **kwargs):
@@ -240,9 +261,6 @@ class RecordsUIResource(UIResource):
             args=resource_requestctx.args,
             view_args=resource_requestctx.view_args,
             ui_links=ui_links,
-            custom_fields=self._get_custom_fields(
-                api_record=api_record, resource_requestctx=resource_requestctx
-            ),
             is_preview=is_preview,
         )
 
@@ -260,10 +278,14 @@ class RecordsUIResource(UIResource):
             "is_preview": is_preview,
         }
 
-        response = Response(current_oarepo_ui.catalog.render(
-            render_method,
-            **render_kwargs,
-        ), mimetype="text/html", status=200)
+        response = Response(
+            current_oarepo_ui.catalog.render(
+                render_method,
+                **render_kwargs,
+            ),
+            mimetype="text/html",
+            status=200,
+        )
         response._api_record = api_record
         return response
 
@@ -464,10 +486,6 @@ class RecordsUIResource(UIResource):
             g.identity, updateUrl=api_record.links.get("self", None)
         )
 
-        form_config["custom_fields"] = self._get_custom_fields(
-            api_record=api_record, resource_requestctx=resource_requestctx
-        )
-
         form_config["ui_model"] = self.ui_model
 
         ui_links = self.expand_detail_links(identity=g.identity, record=api_record)
@@ -521,9 +539,6 @@ class RecordsUIResource(UIResource):
             d=FieldData(record, self.ui_model),
         )
 
-    def _get_custom_fields(self, **kwargs):
-        return self.config.custom_fields(identity=g.identity, **kwargs)
-
     def _get_form_config(self, identity, **kwargs):
         return self.config.form_config(identity=identity, **kwargs)
 
@@ -540,9 +555,6 @@ class RecordsUIResource(UIResource):
         # TODO: use api service create link when available
         form_config = self._get_form_config(
             g.identity, createUrl=f"/api{self.api_service.config.url_prefix}"
-        )
-        form_config["custom_fields"] = self._get_custom_fields(
-            resource_requestctx=resource_requestctx
         )
 
         form_config["ui_model"] = self.ui_model

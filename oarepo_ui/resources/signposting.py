@@ -18,7 +18,7 @@ def response_header_signposting(f):
         if not hasattr(response, "_api_record"):
             return response
 
-        signposting_link = response._api_record.links['self']
+        signposting_link = response._api_record.links["self"]
         response.headers.update(
             {
                 "Link": f'<{signposting_link}> ; rel="linkset" ; type="application/linkset+json"',  # noqa
