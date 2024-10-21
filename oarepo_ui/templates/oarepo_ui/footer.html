@@ -34,7 +34,7 @@ MIT License; see LICENSE file for more details. #}
             link="http://inveniosoftware.org" %}Powered by
             <a href="{{ link }}">Invenio</a>{% endtrans %}
             <br>
-            {% trans version=deployment_version %}Version: {{ version }}{% endtrans %}
+            {% trans version=config.DEPLOYMENT_VERSION %}Version: {{ version }}{% endtrans %}
 
             {%- endblock
             footer_bottom_left %}
