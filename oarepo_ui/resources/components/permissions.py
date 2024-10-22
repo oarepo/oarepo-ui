@@ -1,5 +1,5 @@
-from .base import UIResourceComponent
 from ...proxies import current_oarepo_ui
+from .base import UIResourceComponent
 
 
 class PermissionsComponent(UIResourceComponent):
