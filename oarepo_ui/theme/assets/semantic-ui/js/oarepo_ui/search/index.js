@@ -20,6 +20,8 @@ export { DynamicResultsListItem } from "./DynamicResultsListItem";
 export { SearchappSearchbarElement } from "./SearchappSearchbarElement";
 export { ShouldActiveFiltersRender } from "./ShouldActiveFiltersRender";
 export { FoldableBucketAggregationElement } from "./FoldableBucketAggregationElement";
+export { SearchAppLayoutWithSearchbarHOC } from "./SearchAppLayoutWithSearchbar";
+export { SearchAppResultViewWithSearchbar } from "./SearchAppResultViewWithSearchbar";
 export * from "./ShouldRender";
 export * from "./util";
 export * from "./histogram";
