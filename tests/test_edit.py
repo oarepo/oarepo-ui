@@ -1,5 +1,6 @@
 import json
-from invenio_config.default import ALLOWED_HTML_TAGS, ALLOWED_HTML_ATTRS
+
+from invenio_config.default import ALLOWED_HTML_ATTRS, ALLOWED_HTML_TAGS
 
 
 def test_edit(
@@ -9,10 +10,11 @@ def test_edit(
         assert json.loads(c.text) == {
             "api_record": simple_record.id,
             "data": {
+                "expanded": {},
                 "links": {
                     "self": f"https://127.0.0.1:5000/api/simple-model/{simple_record.id}",
                     "ui": f"https://127.0.0.1:5000/simple-model/{simple_record.id}",
-                }
+                },
             },
             "extra_context": {
                 "permissions": {

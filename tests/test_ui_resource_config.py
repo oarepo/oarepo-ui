@@ -1,5 +1,5 @@
 from invenio_access.permissions import system_identity
-from invenio_config.default import ALLOWED_HTML_TAGS, ALLOWED_HTML_ATTRS
+from invenio_config.default import ALLOWED_HTML_ATTRS, ALLOWED_HTML_TAGS
 
 
 def test_ui_resource_form_config(app, test_record_ui_resource):
@@ -51,5 +51,14 @@ def test_ui_resource_form_config(app, test_record_ui_resource):
             "can_update_draft": False,
             "can_update_files": False,
             "can_view": False,
+        },
+        custom_fields={
+            "ui": [
+                {"fields": [{"field": "bbb", "ui_widget": "Input"}], "section": "B"},
+                {
+                    "fields": [{"field": "nested_cf.aaa", "ui_widget": "Input"}],
+                    "section": "A",
+                },
+            ]
         },
     )
