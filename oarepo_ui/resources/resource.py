@@ -65,7 +65,6 @@ request_create_args = request_parser(from_conf("request_create_args"), location=
 
 
 class UIComponentsMixin:
-
     #
     # Pluggable components
     #
@@ -340,7 +339,11 @@ class RecordsUIResource(UIResource):
             else:
                 read_method = self.api_service.read
 
-            return read_method(g.identity, resource_requestctx.view_args["pid_value"])
+            return read_method(
+                g.identity,
+                resource_requestctx.view_args["pid_value"],
+                expand=True,
+            )
         except PermissionDenied as e:
             raise Forbidden() from e
 
