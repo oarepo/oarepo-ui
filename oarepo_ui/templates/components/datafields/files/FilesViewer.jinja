@@ -22,14 +22,14 @@
       <td>{{ file.size | filesizeformat }}</td>
       <td>
         {% if file.links.preview %}
-        <button class="ui button">
+        <button class="ui button transparent">
           <i
             class="ui icon zoom openPreviewIcon"
             data-preview-link="{{ file.links.preview }}"
           ></i>
         </button>
         {% endif %}
-        <button class="ui button">
+        <button class="ui button transparent">
           <a href="{{ file.links.content }}"
             ><i class="ui icon download"></i
           ></a>
