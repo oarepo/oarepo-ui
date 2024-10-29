@@ -40,6 +40,7 @@ export const EDTFDatePickerWrapper = ({
           handleClear={handleClear}
           fieldPath={fieldPath}
           clearButtonClassName={clearButtonClassName}
+          autoComplete="off"
           {...customInputProps}
         />
       }

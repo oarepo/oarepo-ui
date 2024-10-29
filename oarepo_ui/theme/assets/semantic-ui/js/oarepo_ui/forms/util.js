@@ -16,6 +16,7 @@ import Overridable, {
   overrideStore,
 } from "react-overridable";
 import { BaseFormLayout } from "./components/BaseFormLayout";
+import { setIn } from "formik";
 
 export function parseFormAppConfig(rootElementId = "form-app") {
   const rootEl = document.getElementById(rootElementId);
@@ -199,4 +200,30 @@ export const getValidTagsForEditor = (tags, attr) => {
   );
 
   return result.join(",");
+};
+
+export const serializeErrors = (
+  errors,
+  message = i18next.t(
+    "Draft saved with validation errors. Fields listed below that failed validation were not saved to the server"
+  )
+) => {
+  if (errors?.length > 0) {
+    let errorsObj = {};
+    const errorPaths = [];
+    for (const error of errors) {
+      errorsObj = setIn(errorsObj, error.field, error.messages.join(" "));
+      errorPaths.push(error.field);
+    }
+
+    errorsObj["BEvalidationErrors"] = {
+      errors: errors,
+      errorMessage: message,
+      errorPaths,
+    };
+
+    return errorsObj;
+  } else {
+    return {};
+  }
 };

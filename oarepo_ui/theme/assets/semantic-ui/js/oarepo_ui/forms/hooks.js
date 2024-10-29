@@ -1,6 +1,13 @@
 import * as React from "react";
 import axios from "axios";
-import { useEffect, useCallback, useState, useContext, useMemo } from "react";
+import {
+  useEffect,
+  useCallback,
+  useState,
+  useContext,
+  useMemo,
+  useRef,
+} from "react";
 import { FormConfigContext, FieldDataContext } from "./contexts";
 import {
   OARepoDepositApiClient,
@@ -68,7 +75,7 @@ export const useFieldData = () => {
   const context = useContext(FieldDataContext);
   if (!context) {
     throw new Error(
-      "useFormConfig must be used inside FieldDataContext .Provider"
+      "useFormConfig must be used inside FieldDataContext.Provider"
     );
   }
   return context;
@@ -92,8 +99,19 @@ export const useVocabularyOptions = (vocabularyType) => {
 
 export const useConfirmationModal = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const isMounted = useRef(null);
+  isMounted.current = true;
 
-  const close = useCallback(() => setIsOpen(false), []);
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
+  const close = useCallback(() => {
+    if (!isMounted.current) return;
+    setIsOpen(false);
+  }, []);
   const open = useCallback(() => setIsOpen(true), []);
 
   return { isOpen, close, open };
@@ -158,7 +176,7 @@ export const useShowEmptyValue = (
 export const useDepositApiClient = ({
   baseApiClient,
   serializer,
-  internalFieldsArray = ["errors"],
+  internalFieldsArray = ["errors", "expanded"],
   keysToRemove = ["__key"],
 } = {}) => {
   const formik = useFormikContext();
@@ -184,7 +202,11 @@ export const useDepositApiClient = ({
     ? new baseApiClient(createUrl, recordSerializer)
     : new OARepoDepositApiClient(createUrl, recordSerializer);
 
-  async function save (saveWithoutDisplayingValidationErrors = false) {
+  async function save({
+    saveWithoutDisplayingValidationErrors = false,
+    errorMessage = null,
+    successMessage = null,
+  } = {}) {
     let response;
     let errorsObj = {};
     const errorPaths = [];
@@ -218,9 +240,11 @@ export const useDepositApiClient = ({
         if (response.errors.length > 0) {
           errorsObj["BEvalidationErrors"] = {
             errors: response.errors,
-            errorMessage: i18next.t(
-              "Draft saved with validation errors. Fields listed below that failed validation were not saved to the server"
-            ),
+            errorMessage:
+              errorMessage ||
+              i18next.t(
+                "Draft saved with validation errors. Fields listed below that failed validation were not saved to the server"
+              ),
             errorPaths,
           };
         }
@@ -228,7 +252,8 @@ export const useDepositApiClient = ({
         return false;
       }
       if (!saveWithoutDisplayingValidationErrors)
-        errorsObj["successMessage"] = i18next.t("Draft saved successfully.");
+        errorsObj["successMessage"] =
+          successMessage || i18next.t("Draft saved successfully.");
       return response;
     } catch (error) {
       // handle 400 errors. Normally, axios would put messages in error.response. But for example
@@ -256,7 +281,7 @@ export const useDepositApiClient = ({
     }
   }
 
-  async function publish ({ validate = false } = {}) {
+  async function publish({ validate = false } = {}) {
     // call save and if save returns false, exit
     const saveResult = await save();
 
@@ -325,11 +350,11 @@ export const useDepositApiClient = ({
     }
   }
 
-  async function read (recordUrl) {
+  async function read(recordUrl) {
     return await apiClient.readDraft({ self: recordUrl });
   }
 
-  async function _delete (redirectUrl) {
+  async function _delete(redirectUrl) {
     if (!redirectUrl)
       throw new Error(
         "You must provide url where to be redirected after deleting a draft"
@@ -342,7 +367,7 @@ export const useDepositApiClient = ({
       setFieldError(
         "successMessage",
         i18next.t(
-          "Draft deleted successfully. Redirecting to the main page ..."
+          "Draft deleted successfully. Redirecting to your dashboard ..."
         )
       );
       return response;
@@ -357,20 +382,14 @@ export const useDepositApiClient = ({
     }
   }
 
-  async function preview () {
+  async function preview() {
     setSubmitting(true);
     try {
-      const saveResult = await save();
+      const saveResult = await save({
+        saveWithoutDisplayingValidationErrors: true,
+      });
 
-      if (!saveResult) {
-        setFieldError(
-          "BEvalidationErrors.errorMessage",
-          i18next.t(
-            "Your draft was saved. If you wish to preview it, please correct the following validation errors and click preview again:"
-          )
-        );
-        return;
-      } else {
+      if (saveResult?.links?.self_html) {
         const url = saveResult.links.self_html;
         setFieldError(
           "successMessage",
@@ -425,10 +444,10 @@ export const useDepositFileApiClient = (baseApiClient) => {
     ? new baseApiClient()
     : new OARepoDepositFileApiClient();
 
-  async function read (draft) {
+  async function read(draft) {
     return await apiClient.readDraftFiles(draft);
   }
-  async function _delete (file) {
+  async function _delete(file) {
     setValues(_omit(values, ["errors"]));
     setSubmitting(true);
     try {
@@ -551,7 +570,7 @@ export const useSuggestionApi = ({
     };
   }, [query, suggestionAPIUrl, searchQueryParamName]); // suggestionAPIQueryParams, suggestionAPIHeaders]);
 
-  function fetchSuggestions (cancelToken) {
+  function fetchSuggestions(cancelToken) {
     setLoading(true);
     setNoResults(false);
     setSuggestions(initialSuggestions);

@@ -15,6 +15,7 @@ export const InputElement = forwardRef(
       clearButtonClassName,
       handleClear,
       onKeyDown,
+      autoComplete,
     },
     ref
   ) => {
@@ -30,6 +31,7 @@ export const InputElement = forwardRef(
         placeholder={placeholder}
         className={className}
         id={fieldPath}
+        autoComplete={autoComplete}
         icon={
           value ? (
             <Icon
@@ -54,6 +56,7 @@ InputElement.propTypes = {
   className: PropTypes.string,
   placeholder: PropTypes.string,
   onKeyDown: PropTypes.func,
+  autoComplete: PropTypes.string,
 };
 
 InputElement.defaultProps = {
