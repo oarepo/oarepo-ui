@@ -176,7 +176,7 @@ export const useShowEmptyValue = (
 export const useDepositApiClient = ({
   baseApiClient,
   serializer,
-  internalFieldsArray = ["errors"],
+  internalFieldsArray = ["errors", "expanded"],
   keysToRemove = ["__key"],
 } = {}) => {
   const formik = useFormikContext();
@@ -281,7 +281,7 @@ export const useDepositApiClient = ({
     }
   }
 
-  async function publish ({ validate = false } = {}) {
+  async function publish({ validate = false } = {}) {
     // call save and if save returns false, exit
     const saveResult = await save();
 
@@ -350,11 +350,11 @@ export const useDepositApiClient = ({
     }
   }
 
-  async function read (recordUrl) {
+  async function read(recordUrl) {
     return await apiClient.readDraft({ self: recordUrl });
   }
 
-  async function _delete (redirectUrl) {
+  async function _delete(redirectUrl) {
     if (!redirectUrl)
       throw new Error(
         "You must provide url where to be redirected after deleting a draft"
@@ -382,7 +382,7 @@ export const useDepositApiClient = ({
     }
   }
 
-  async function preview () {
+  async function preview() {
     setSubmitting(true);
     try {
       const saveResult = await save({
@@ -444,10 +444,10 @@ export const useDepositFileApiClient = (baseApiClient) => {
     ? new baseApiClient()
     : new OARepoDepositFileApiClient();
 
-  async function read (draft) {
+  async function read(draft) {
     return await apiClient.readDraftFiles(draft);
   }
-  async function _delete (file) {
+  async function _delete(file) {
     setValues(_omit(values, ["errors"]));
     setSubmitting(true);
     try {
@@ -570,7 +570,7 @@ export const useSuggestionApi = ({
     };
   }, [query, suggestionAPIUrl, searchQueryParamName]); // suggestionAPIQueryParams, suggestionAPIHeaders]);
 
-  function fetchSuggestions (cancelToken) {
+  function fetchSuggestions(cancelToken) {
     setLoading(true);
     setNoResults(false);
     setSuggestions(initialSuggestions);
