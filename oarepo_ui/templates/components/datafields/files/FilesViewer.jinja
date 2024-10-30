@@ -19,7 +19,7 @@
       <td>
         <a href="{{ file.links.content }}">{{ file.key }}</a>
       </td>
-      <td>{{ file.size | filesizeformat }}</td>
+      <td>{{ (file.size or 0) | filesizeformat }}</td>
       <td>
         {% if file.links.preview %}
         <button class="ui button transparent">
