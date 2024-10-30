@@ -73,21 +73,6 @@ class UIComponentsMixin:
     @property
     def components(self) -> Iterator["UIResourceComponent"]:
         """Return initialized service components."""
-
-        # TODO: just for deprecation, will be removed later
-        for c in self.config.components or []:
-            if issubclass(c, CustomFieldsComponent):
-                break
-        else:
-            log.warning(
-                "CustomFieldsComponent not found in components, adding it to be backwards compatible."
-            )
-            if not self.config.components:
-                self.config.components = []
-            if isinstance(self.config.components, tuple):
-                self.config.components = list(self.config.components)
-            self.config.components.append(CustomFieldsComponent)
-
         return (c(self) for c in self.config.components or [])
 
     def run_components(self, action, *args, **kwargs):
