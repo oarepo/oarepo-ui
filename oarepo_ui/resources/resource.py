@@ -76,7 +76,7 @@ class UIComponentsMixin:
 
         # TODO: just for deprecation, will be removed later
         for c in self.config.components or []:
-            if isinstance(c, CustomFieldsComponent):
+            if issubclass(c, CustomFieldsComponent):
                 break
         else:
             log.warning(
