@@ -115,7 +115,7 @@ export const BaseFormLayout = ({ formikProps }) => {
               id={buildUID(overridableIdPrefix, "CustomFields.container")}
             >
               <CustomFields
-                config={customFields.ui}
+                config={customFields?.ui}
                 templateLoaders={[
                   (widget) => import(`@templates/custom_fields/${widget}.js`),
                   (widget) => import(`react-invenio-forms`),
