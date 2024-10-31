@@ -284,7 +284,13 @@ class RecordsUIResource(UIResource):
     def file_preview(self, *args, is_preview=False, **kwargs):
         pid_value = resource_requestctx.view_args["pid_value"]
         filepath = resource_requestctx.view_args["filepath"]
-        record = self._get_record(resource_requestctx, allow_draft=is_preview)._record
+
+        # TODO: this is a hack that should be fixed
+        try:
+            record = self._get_record(resource_requestctx, allow_draft=is_preview)._record
+        except Forbidden:
+            record = self._get_record(resource_requestctx, allow_draft=not is_preview)._record
+
         file_service = get_file_service_for_record_class(type(record))
         file_metadata = file_service.read_file_metadata(g.identity, pid_value, filepath)
 
