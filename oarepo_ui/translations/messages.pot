@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-10-17 09:18+0200\n"
+"POT-Creation-Date: 2024-10-31 13:07+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -53,7 +53,7 @@ msgstr ""
 msgid "JSON"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/resources/components/communities.py:64
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/resources/components/communities.py:61
 msgid "You have no permission to create record in this community."
 msgstr ""
 
@@ -105,13 +105,13 @@ msgstr ""
 msgid "GND profile"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:3
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:4
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:5
 msgid "Identifiers and links"
 msgstr ""
 
-#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:45
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:46
+#: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:47
 msgid "metadata/originalRecord.label"
 msgstr ""
 
@@ -277,35 +277,6 @@ msgid "Remove field"
 msgstr ""
 
 msgid "Your draft has validation errors. Please correct them and try again:"
-msgstr ""
-
-msgid "Community selection"
-msgstr ""
-
-msgid "Please select community in which your work will be published:"
-msgstr ""
-
-msgid ""
-"If you are certain that you wish to proceed with the generic community, "
-"please click on it below."
-msgstr ""
-
-msgid "All records must belong to a community."
-msgstr ""
-
-msgid "Go back"
-msgstr ""
-
-msgid "genericCommunityMessage"
-msgstr ""
-
-msgid "Your record will be published in the following community:"
-msgstr ""
-
-msgid ""
-"Your work will be saved in the following community. Please note that after "
-"saving it will not be possible to transfer it to another community. "
-"Click<1>here</1>to change the selection."
 msgstr ""
 
 msgid "Delete draft"

@@ -535,60 +535,6 @@ msgstr ""
 msgid "Type and press enter to search"
 msgstr "Zadejte a stiskněte Enter pro vyhledávání"
 
-msgid "Community website"
-msgstr "Webové stránky komunity"
-
-msgid "Community selection"
-msgstr "Výběr komunity"
-
-msgid "Please select community in which your work will be published:"
-msgstr "Vyberte prosím komunitu, ve které bude vaše práce publikována:"
-
-msgid "All records must belong to a community."
-msgstr "Všechny záznamy musí patřit komunitě."
-
-msgid "Go back"
-msgstr "Zpátky"
-
-msgid "Your record will be published in the following community:"
-msgstr "Váš záznam bude zveřejněn v následující komunitě:"
-
-msgid ""
-"Your work will be saved in the following community. Please note that after "
-"saving it will not be possible to transfer it to another community."
-msgstr ""
-"Vaše práce bude uložena v následující komunitě. Vezměte prosím na vědomí, že"
-" po uložení nebude možné převést ji do jiné komunity."
-
-msgid "Community website."
-msgstr "Webové stránky komunity."
-
-msgid "Community home page"
-msgstr "Domovská stránka komunity"
-
-msgid "genericCommunityMessage"
-msgstr ""
-"Nejste členem žádné komunity. Pokud se rozhodnete pokračovat, vaše práce "
-"bude publikována v \"generické\" komunitě. Důrazně doporučujeme, abyste se "
-"připojili k nějaké komunitě, abyste zvýšili viditelnost své práce a mohli "
-"snadněji spolupracovat s ostatními. Na dostupné komunity se můžete podívat "
-"<2>na naší stránce komunit.</2> Pro více podrobností o tom, jak se připojit "
-"k nějaké komunitě, se prosím podívejte na instrukce <6>jak se připojit ke "
-"komunitě.</6>"
-
-msgid "Home page"
-msgstr "Domovská stránka"
-
-msgid ""
-"If you are certain that you wish to proceed with the generic community, "
-"please click on it below."
-msgstr ""
-"Pokud jste si jisti, že chcete pokračovat s generickou komunitou, klikněte "
-"na něj níže."
-
-msgid "Change"
-msgstr "Změnit"
-
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:7
 msgid "ORCID profile"
 msgstr ""
@@ -615,15 +561,6 @@ msgstr ""
 
 msgid "change"
 msgstr ""
-
-msgid ""
-"Your work will be saved in the following community. Please note that after "
-"saving it will not be possible to transfer it to another community. "
-"Click<1>here</1>to change the selection."
-msgstr ""
-"Vaše práce bude uložena v následující komunitě. Vezměte prosím na vědomí, že"
-" po uložení nebude možné převést ji do jiné komunity. Klikněte<1>zde</1>pro "
-"změnu výběru."
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:29
 msgid "ISNI profile"
