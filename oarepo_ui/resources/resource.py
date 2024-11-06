@@ -4,7 +4,7 @@ from os.path import splitext
 from typing import TYPE_CHECKING, Iterator
 
 import deepmerge
-from flask import Response, abort, g, redirect, request
+from flask import Response, abort, g, redirect, request, Blueprint
 from flask_principal import PermissionDenied
 from flask_resources import (
     Resource,
@@ -62,6 +62,10 @@ request_file_view_args = request_parser(
 )
 
 request_create_args = request_parser(from_conf("request_create_args"), location="args")
+
+request_form_config_view_args = request_parser(
+    from_conf("request_form_config_view_args"), location="view_args"
+)
 
 
 class UIComponentsMixin:
@@ -148,11 +152,22 @@ class RecordsUIResource(UIResource):
         """Constructor."""
         super(UIResource, self).__init__(config)
 
+    def create_blueprint(self, **options):
+        """Create the blueprint.
+
+        Override this function to customize the creation of the ``Blueprint``
+        object itself.
+        """
+        # do not set up the url prefix unline normal resource,
+        # as RecordsUIResource is on two endpoints - /configs/abc and /abc
+        return Blueprint(self.config.blueprint_name, __name__, **options)
+
     def create_url_rules(self):
         """Create the URL rules for the record resource."""
         routes = []
         route_config = self.config.routes
         for route_name, route_url in route_config.items():
+            route_url = self.config.url_prefix.rstrip('/') + "/" + route_url.lstrip('/')
             if route_name == "search":
                 search_route = route_url
                 if not search_route.endswith("/"):
@@ -168,6 +183,22 @@ class RecordsUIResource(UIResource):
                 )
             else:
                 routes.append(route("GET", route_url, getattr(self, route_name)))
+
+        for route_name, route_url in self.config.config_routes.items():
+            if route_url:
+                route_url = "{config_prefix}/{url_prefix}/{route}".format(
+                        config_prefix=self.config.config_url_prefix.rstrip('/'),
+                        url_prefix=self.config.url_prefix.strip('/'),
+                        route=route_url.lstrip('/')
+                )
+            else:
+                route_url = "{config_prefix}/{url_prefix}".format(
+                        config_prefix=self.config.config_url_prefix.rstrip('/'),
+                        url_prefix=self.config.url_prefix.strip('/')
+                )
+
+            routes.append(route("GET", route_url, getattr(self, route_name)))
+
         return routes
 
     def empty_record(self, resource_requestctx, **kwargs):
@@ -682,6 +713,24 @@ class RecordsUIResource(UIResource):
             pid=getattr(error, "pid_value", None) or getattr(error, "pid", None),
             error=error,
         )
+
+
+    @request_form_config_view_args
+    def form_config(self):
+        form_config = self._get_form_config(identity=g.identity)
+        self.run_components(
+            "form_config",
+            form_config=form_config,
+            api_record=None,
+            record=None,
+            data=None,
+            ui_links=None,
+            extra_context=None,
+            args = resource_requestctx.args,
+            view_args=resource_requestctx.view_args,
+            identity=g.identity,
+        )
+        return form_config
 
 
 # ported from https://github.com/inveniosoftware/invenio-app-rdm/blob/b1951f436027ad87214912e17c176727270e5e87/invenio_app_rdm/records_ui/views/records.py#L337

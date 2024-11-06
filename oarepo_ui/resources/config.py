@@ -87,11 +87,16 @@ class RecordsUIResourceConfig(UIResourceConfig):
         "preview": "/<pid_value>/preview",
         "file_preview": "/<pid_value>/files/<path:filepath>/preview",
     }
+    config_url_prefix = '/configs'
+    config_routes = {
+        'form_config': 'form',
+    }
     request_view_args = {"pid_value": ma.fields.Str()}
     request_file_view_args = {**request_view_args, "filepath": ma.fields.Str()}
     request_export_args = {"export_format": ma.fields.Str()}
     request_search_args = {"page": ma.fields.Integer(), "size": ma.fields.Integer()}
     request_create_args = {"community": ma.fields.Str()}
+    request_form_config_view_args = {}
 
     app_contexts = None
     ui_serializer = None
