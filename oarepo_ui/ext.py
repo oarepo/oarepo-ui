@@ -2,12 +2,15 @@ import functools
 import json
 from pathlib import Path
 
+import deepmerge
+import yaml
 from flask import Response, current_app
 from importlib_metadata import entry_points
 from invenio_base.utils import obj_or_import_string
 
 import oarepo_ui.cli  # noqa
 from oarepo_ui.resources.templating.catalog import OarepoCatalog as Catalog
+from oarepo_ui.utils import extract_priority
 
 
 class OARepoUIState:
@@ -16,6 +19,7 @@ class OARepoUIState:
         self._resources = []
         self.init_builder_plugin()
         self._catalog = None
+        self._ui_overrides = None
 
     def reinitialize_catalog(self):
         self._catalog = None
@@ -30,6 +34,40 @@ class OARepoUIState:
     def catalog(self):
         self._catalog = Catalog()
         return self._catalog_config(self._catalog, self.app.jinja_env)
+
+    @functools.cached_property
+    def ui_overrides(self) -> dict:
+        overrides = []
+        eps = entry_points(group="oarepo.ui_overrides")
+        for ep in eps:
+            path = Path(obj_or_import_string(ep.module).__file__).parent / ep.attr
+            with path.open() as f:
+                overrides.append((ep.name, yaml.safe_load(f)))
+
+        merger = deepmerge.Merger(
+            [(list, ["append_unique"]), (dict, ["merge"]), (set, ["union"])],
+            # next, choose the fallback strategies,
+            # applied to all other types:
+            ["override"],
+            # finally, choose the strategies in
+            # the case where the types conflict:
+            ["override"],
+        )
+        prioritized_overrides = sorted(overrides, key=lambda name: extract_priority(name[0])[1])
+
+        ret = {}
+        for po in prioritized_overrides:
+            ret = merger.merge(ret, po[1])
+
+        return ret
+
+    @property
+    def jinja_overrides(self) -> dict:
+        return self.ui_overrides.get('jinja', {})
+
+    @property
+    def react_overrides(self) -> dict:
+        return self.ui_overrides.get('react', {})
 
     def _catalog_config(self, catalog, env):
         context = {}
@@ -50,6 +88,9 @@ class OARepoUIState:
         catalog.prefixes[""] = catalog.jinja_env.loader
 
         return catalog
+
+    def lookup_jinja_component(self, component_name: str) -> str:
+        return self.jinja_overrides.get(component_name, component_name)
 
     def register_resource(self, ui_resource):
         self._resources.append(ui_resource)

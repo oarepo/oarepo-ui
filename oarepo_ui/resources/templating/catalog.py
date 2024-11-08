@@ -14,6 +14,9 @@ from jinjax import Catalog
 from jinjax.exceptions import ComponentNotFound
 from jinjax.jinjax import JinjaX
 
+from oarepo_ui.proxies import current_oarepo_ui
+from oarepo_ui.utils import extract_priority
+
 DEFAULT_URL_ROOT = "/static/components/"
 ALLOWED_EXTENSIONS = (".css", ".js")
 DEFAULT_PREFIX = ""
@@ -158,7 +161,7 @@ class OarepoCatalog(Catalog):
         if hasattr(self, "_component_paths"):
             return self._component_paths
 
-        paths: Dict[str, Tuple[Path, Path, int]] = {}
+        paths: Dict[str, Tuple[Path, Path]] = {}
 
         for (
             template_name,
@@ -166,21 +169,18 @@ class OarepoCatalog(Catalog):
             relative_template_path,
             priority,
         ) in self.list_templates():
+            # TODO: this is incorrect, doesn't work against e.g. components.EditForm
             split_template_name = template_name.split(DELIMITER)
 
             for idx in range(0, len(split_template_name)):
                 partial_template_name = DELIMITER.join(split_template_name[idx:])
-                partial_priority = priority - idx * 10
-
-                # if the priority is greater, replace the path
+                print(template_name, partial_template_name, idx, flush=True)
                 if (
                     partial_template_name not in paths
-                    or partial_priority > paths[partial_template_name][2]
                 ):
                     paths[partial_template_name] = (
                         absolute_template_path,
                         relative_template_path,
-                        partial_priority,
                     )
 
         self._component_paths = {k: (v[0], v[1]) for k, v in paths.items()}
@@ -190,21 +190,10 @@ class OarepoCatalog(Catalog):
     def component_paths(self):
         self._component_paths = {}
 
-    def _extract_priority(self, filename):
-        # check if there is a priority on the file, if not, take default 0
-        prefix_pattern = re.compile(r"^\d{3}-")
-        priority = 0
-        if prefix_pattern.match(filename):
-            # Remove the priority from the filename
-            priority = int(filename[:3])
-            filename = filename[4:]
-        return filename, priority
-
     def _get_component_path(
         self, prefix: str, name: str, file_ext: "TFileExt" = ""
     ) -> "tuple[Path, Path]":
         name = name.replace(SLASH, DELIMITER)
-
         paths = self.component_paths
         if name in paths:
             return paths[name]
@@ -236,7 +225,7 @@ class OarepoCatalog(Catalog):
 
             # extract priority
             split_name = list(template_name.rsplit(DELIMITER, 1))
-            split_name[-1], priority = self._extract_priority(split_name[-1])
+            split_name[-1], priority = extract_priority(split_name[-1])
             template_name = DELIMITER.join(split_name)
 
             if stripped:
@@ -254,6 +243,7 @@ class OarepoCatalog(Catalog):
     def _get_from_source(
         self, *, name: str, url_prefix: str, source: str
     ) -> "Component":
+        name = current_oarepo_ui.lookup_jinja_component(name)
         return KeepGlobalContextComponent(
             self,
             super()._get_from_source(name=name, url_prefix=url_prefix, source=source),
@@ -262,6 +252,7 @@ class OarepoCatalog(Catalog):
     def _get_from_cache(
         self, *, prefix: str, name: str, url_prefix: str, file_ext: str
     ) -> "Component":
+        name = current_oarepo_ui.lookup_jinja_component(name)
         return KeepGlobalContextComponent(
             self,
             super()._get_from_cache(
@@ -272,6 +263,7 @@ class OarepoCatalog(Catalog):
     def _get_from_file(
         self, *, prefix: str, name: str, url_prefix: str, file_ext: str
     ) -> "Component":
+        name = current_oarepo_ui.lookup_jinja_component(name)
         return KeepGlobalContextComponent(
             self,
             super()._get_from_file(

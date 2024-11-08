@@ -7,27 +7,32 @@ import { overrideStore } from "react-overridable";
 // will be prioritized by leading prefix (e.g. 10-mapping.js will be processed
 // before 20-mapping.js). mapping.js without prefix will have lowest priority.
 
-const requireMappingFiles = require.context(
-  "/templates/overridableRegistry/",
-  true,
-  /mapping.js$/
-);
 
-requireMappingFiles
-  .keys()
-  .map((fileName) => {
-    const match = fileName.match(/\/(\d+)-mapping.js$/);
-    const priority = match ? parseInt(match[1], 10) : 0;
-    return { fileName, priority };
-  })
-  .sort((a, b) => a.priority - b.priority)
-  .forEach(({ fileName }) => {
-    const module = requireMappingFiles(fileName);
-    if (!module.default) {
-      console.error(`Mapping file ${fileName} does not have a default export.`);
-    } else {
-      for (const [key, value] of Object.entries(module.default)) {
-        overrideStore.add(key, value);
-      }
-    }
-  });
+// TODO: fetch react-overrides from base_page hidden input, register to overrideStore,
+// import target component modules as lazily as possible
+
+//
+// const requireMappingFiles = require.context(
+//   "/templates/overridableRegistry/",
+//   true,
+//   /mapping.js$/
+// );
+//
+// requireMappingFiles
+//   .keys()
+//   .map((fileName) => {
+//     const match = fileName.match(/\/(\d+)-mapping.js$/);
+//     const priority = match ? parseInt(match[1], 10) : 0;
+//     return { fileName, priority };
+//   })
+//   .sort((a, b) => a.priority - b.priority)
+//   .forEach(({ fileName }) => {
+//     const module = requireMappingFiles(fileName);
+//     if (!module.default) {
+//       console.error(`Mapping file ${fileName} does not have a default export.`);
+//     } else {
+//       for (const [key, value] of Object.entries(module.default)) {
+//         overrideStore.add(key, value);
+//       }
+//     }
+//   });
