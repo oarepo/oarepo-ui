@@ -19,11 +19,12 @@ function parseImportString (importString) {
 function lazyOverridable (importString) {
     function LazyOverride ({ children, ...props }) {
         const { importType, ...importSpec } = parseImportString(importString)
-        const [OverrideComponent, setOverrideComponent] = React.useState(null);
+        const [OverrideComponent, setOverrideComponent] = React.useState(() => () => null);
 
-        // Lazily load Component on mount
+        // Lazily load a Component on mount, thanks to: https://stackoverflow.com/a/77028157
+        // TODO: try if React.lazy could be somehow used in this scenario where we load either template or
+        // dynamic import (which React.lazy is supposed to only support)
         React.useEffect(() => {
-            console.log('Run effect')
             async function loadOverrideComponent () {
                 let Component;
 
@@ -48,13 +49,13 @@ function lazyOverridable (importString) {
                         children: null,
                     };
 
-                    setOverrideComponent(Component)
+                    setOverrideComponent(() => Component)
                     return Component
                 }
             }
 
             loadOverrideComponent().catch(err => console.error(err))
-        }, [importType, importSpec])
+        }, [])
 
         return OverrideComponent && <OverrideComponent {...props}>{children}</OverrideComponent> || <span>Loading...</span>
     }
@@ -70,4 +71,5 @@ Object.entries(reactOverrides).forEach(
     ([overridableId, importString]) => overrideStore.add(
         overridableId, lazyOverridable(importString)
     ));
+
 console.debug("Global React component overrides:", overrideStore.getAll())
