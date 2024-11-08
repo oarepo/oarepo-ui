@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { registerLocale } from "react-datepicker";
+import { getInputFromDOM } from "./util";
 
 export const useLoadLocaleObjects = (localesArray = ["cs", "en-US"]) => {
   const [componentRendered, setComponentRendered] = useState(false);

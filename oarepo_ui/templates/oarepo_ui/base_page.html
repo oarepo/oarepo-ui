@@ -15,7 +15,7 @@
 
 {%- block page_footer %}
 {% if not embedded %}{{ super() }}{% endif %}
-<input type="hidden" value='{{react_overrides | tojson }}'>
+<input type="hidden" name="react-overrides" value='{{react_overrides | tojson }}'>
 {% endblock page_footer %}
 
 {%- block css%}

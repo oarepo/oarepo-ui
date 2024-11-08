@@ -1,4 +1,5 @@
 import { overrideStore } from "react-overridable";
+import { getInputFromDOM } from "./util";
 
 // get all files below /templates/overridableRegistry that end with mapping.js.
 // The files shall be in a subfolder, in order to prevent clashing between mapping.js
@@ -11,6 +12,11 @@ import { overrideStore } from "react-overridable";
 // TODO: fetch react-overrides from base_page hidden input, register to overrideStore,
 // import target component modules as lazily as possible
 
+const reactOverrides = getInputFromDOM("react-overrides");
+Object.entries(reactOverrides).forEach(([overridableId, importString]) => overrideStore.add(overridableId, importString));
+
+
+console.log("Loaded React component overrides:", overrideStore.getAll())
 //
 // const requireMappingFiles = require.context(
 //   "/templates/overridableRegistry/",
