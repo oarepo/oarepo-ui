@@ -1,25 +1,65 @@
-import * as React from 'react';
+import React, { lazy } from 'react';
 import { overrideStore } from "react-overridable";
 import { getInputFromDOM } from "./util";
 import { importTemplate } from "@js/invenio_theme/templates";
 import PropTypes from 'prop-types'
 
-function lazyOverridable (importString) {
-    function LazyOverride ({children, ...props}) {
-        const Override = importTemplate(importString);
-
-        const name = Override.displayName || Override.name;
-        Override.displayName = `LazyOverride(${name})`;
-
-        Override.propTypes = {
-            children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-        };
-        Override.defaultProps = {
-            children: null,
-        };
-
-        return <Override {...props}>{children}</Override>
+function parseImportString (importString) {
+    if (importString.includes(':')) {
+        const [moduleName, exportName] = importString.split(':')
+        return { importType: 'module', moduleName, exportName }
+    } else {
+        const path = !(importString.endsWith('jsx') || importString.endsWith('js'))
+            ? `${importString}.jsx`
+            : importString
+        return { importType: 'template', path: importString }
     }
+}
+
+function lazyOverridable (importString) {
+    function LazyOverride ({ children, ...props }) {
+        const { importType, ...importSpec } = parseImportString(importString)
+        const [OverrideComponent, setOverrideComponent] = React.useState(null);
+
+        // Lazily load Component on mount
+        React.useEffect(() => {
+            console.log('Run effect')
+            async function loadOverrideComponent () {
+                let Component;
+
+                if (importType === 'module') {
+                    const { moduleName, exportName } = importSpec
+                    //     TODO: call dynamic webpack import here
+                } else if (importType === 'template') {
+                    const { path } = importSpec
+                    Component = await importTemplate(path);
+                    console.log('Imported ', {Component})
+                } else {
+                    throw new Error(`Import type not supported for ${importString}`)
+                }
+
+                if (Component) {
+                    const name = Component.displayName || Component.name;
+                    Component.displayName = `LazyOverride(${name})`;
+                    Component.propTypes = {
+                        children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+                    };
+                    Component.defaultProps = {
+                        children: null,
+                    };
+
+                    setOverrideComponent(Component)
+                    return Component
+                }
+            }
+
+            loadOverrideComponent().catch(err => console.error(err))
+        }, [importType, importSpec])
+
+        return OverrideComponent && <OverrideComponent {...props}>{children}</OverrideComponent> || <span>Loading...</span>
+    }
+
+    LazyOverride.displayName = `LazyOverridable(${importString})`;
 
     return LazyOverride
 }
