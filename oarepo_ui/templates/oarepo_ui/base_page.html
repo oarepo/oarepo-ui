@@ -1,7 +1,6 @@
 {% extends "invenio_theme/page.html" %}
 
 {% set embedded = request.args.get("embed") == "true" %}
-
 {%- block header %}
 {{ super() }}
 {% if embedded %}
@@ -10,10 +9,12 @@
 {% endblock header %}
 
 {%- block page_header %}
+
 {% if not embedded %}{{ super() }}{% endif %}
 {% endblock page_header %}
 
 {%- block page_footer %}
+<input id="overridable-registry-name" type="hidden" name="overridable-registry-name" value='{{request.endpoint | tojson }}' />
 {% if not embedded %}{{ super() }}{% endif %}
 {% endblock page_footer %}
 

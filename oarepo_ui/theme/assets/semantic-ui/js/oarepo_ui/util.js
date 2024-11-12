@@ -121,6 +121,8 @@ export async function loadAppComponents({
     componentIds
   );
 
+  console.log(resourceConfigComponents)  
+  
   const components = {
     ...defaultComponents,
     ...resourceConfigComponents,

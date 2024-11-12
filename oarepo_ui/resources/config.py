@@ -45,7 +45,7 @@ class UIResourceConfig(ResourceConfig):
             )
         return str(tf)
 
-    response_handlers = {"text/html": None}
+    response_handlers = {"text/html": None, "application/json": None}
     default_accept_mimetype = "text/html"
 
     # Request parsing
@@ -87,9 +87,9 @@ class RecordsUIResourceConfig(UIResourceConfig):
         "preview": "/<pid_value>/preview",
         "file_preview": "/<pid_value>/files/<path:filepath>/preview",
     }
-    config_url_prefix = '/configs'
+    config_url_prefix = "/configs"
     config_routes = {
-        'form_config': 'form',
+        "form_config": "form",
     }
     request_view_args = {"pid_value": ma.fields.Str()}
     request_file_view_args = {**request_view_args, "filepath": ma.fields.Str()}

@@ -4,8 +4,8 @@
   }
 }
 
-.ui.modal > .close {
-  top: @innerCloseTop;
-  right: @innerCloseRight;
-  color: @innerCloseColor;
-}
+// .ui.modal > .close {
+//   top: @innerCloseTop;
+//   right: @innerCloseRight;
+//   color: @innerCloseColor;
+// }
