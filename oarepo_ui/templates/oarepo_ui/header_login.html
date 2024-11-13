@@ -25,7 +25,7 @@
       {# Desktop Quick-create ("plus") menu #}
     {%- set plus_menu_items = current_menu.submenu('plus').children %}
     {%- set visible_items = plus_menu_items | selectattr("visible") | list %}
-    {%- if plus_menu_items and visible_items  %}
+    {%- if plus_menu_items and current_menu.submenu('plus').has_visible_child()  %}
       <div
         id="quick-create-dropdown"
         class="ui dropdown pr-15 computer only create_dropdown"
