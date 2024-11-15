@@ -35,3 +35,7 @@
 .visually-hidden {
   visibility: hidden;
 }
+
+.invenio-page-body {
+  padding-bottom: @defaultPadding;
+}

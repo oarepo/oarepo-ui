@@ -3,65 +3,43 @@
     {% set scheme = identifier.scheme %}
     {% set value = identifier.identifier %}
     {% set lowercaseScheme = identifier.scheme.lower() %}
+    {% set link = identifier.url%}
+    {% set badgeTitle = creatibutorName + " " + scheme + ": " + value %}
 
     {% if lowercaseScheme == "orcid" %}
-      {% set link = "https://orcid.org/" + value %}
-      {% set badgeTitle = creatibutorName + ": " + _('ORCID profile') %}
       {% set icon = "/static/images/identifiers/ORCID-iD_icon-vector.svg" %}
       {% set alt = "ORCID logo" %}
     {% elif lowercaseScheme == "scopusid" %}
-      {% set link = "https://www.scopus.com/authid/detail.uri?authorId=" + value %}
-      {% set badgeTitle = creatibutorName + ": " + _('Scopus ID profile') %}
       {% set icon = "/static/images/identifiers/id.png" %}
       {% set alt = "ScopusID logo" %}
     {% elif lowercaseScheme == "ror" %}
-      {% set link = "https://ror.org/" + value %}
-      {% set badgeTitle = creatibutorName + ": " + _('ROR profile') %}
       {% set icon = "/static/images/identifiers/ror-icon-rgb.svg" %}
       {% set alt = "ROR logo" %}
     {% elif lowercaseScheme == "researcherid" %}
-      {% set link = "https://www.webofscience.com/wos/author/record/" + value %}
-      {% set badgeTitle = creatibutorName + ": " + _('WOS Researcher ID') %}
       {% set icon = "/static/images/identifiers/id.png" %}
       {% set alt = "WOS Researcher ID logo" %}
     {% elif lowercaseScheme == "isni" %}
-      {% set link = "https://isni.org/isni/" + value %}
-      {% set badgeTitle = creatibutorName + ": " + _('ISNI profile') %}
       {% set icon = "/static/images/identifiers/id.png" %}
       {% set alt = "ISNI logo" %}
     {% elif lowercaseScheme == "doi" %}
-      {% set link = "https://doi.org/" + value %}
-      {% set badgeTitle = creatibutorName + ": " + _('DOI profile') %}
       {% set icon = "/static/images/identifiers/DOI_logo.svg" %}
       {% set alt = "DOI logo" %}
     {% elif lowercaseScheme == "gnd" %}
-      {% set link = "https://d-nb.info/gnd/" + value %}
-      {% set badgeTitle = creatibutorName + ": " + _('GND profile') %}
       {% set icon = "/static/images/identifiers/id.png" %}
       {% set alt = "GND logo" %}
     {% elif lowercaseScheme == "czenasautid" %}
-      {% set link = None %}
-      {% set badgeTitle = scheme + " " + value %}
       {% set icon = "/static/images/identifiers/id.png" %}
       {% set alt = "CZENAS logo" %}
     {% elif lowercaseScheme == "vedidk" %}
-      {% set link = None %}
-      {% set badgeTitle = scheme + " " + value %}
       {% set icon = "/static/images/identifiers/id.png" %}
       {% set alt = "VEDIDK logo" %}
     {% elif lowercaseScheme == "institutionalid" %}
-      {% set link = None %}
-      {% set badgeTitle = scheme + " " + value %}
       {% set icon = "/static/images/identifiers/id.png" %}
       {% set alt = "Institutional ID logo" %}
     {% elif lowercaseScheme == "ico" %}
-      {% set link = None %}
-      {% set badgeTitle = scheme + " " + value %}
       {% set icon = "/static/images/identifiers/id.png" %}
       {% set alt = "ICO logo" %}
     {% else %}
-      {% set link = None %}
-      {% set badgeTitle = None %}
       {% set icon = None %}
       {% set alt = "" %}
     {% endif %}
