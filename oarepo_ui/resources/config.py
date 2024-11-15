@@ -45,7 +45,10 @@ class UIResourceConfig(ResourceConfig):
             )
         return str(tf)
 
-    response_handlers = {"text/html": None}
+    response_handlers = {
+        "text/html": None,
+        "application/json": None
+    }
     default_accept_mimetype = "text/html"
 
     # Request parsing
