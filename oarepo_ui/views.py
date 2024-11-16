@@ -1,10 +1,17 @@
 from flask import Blueprint
 from invenio_base.utils import obj_or_import_string
+from flask_menu import current_menu
 
 
 def create_blueprint(app):
     blueprint = Blueprint("oarepo_ui", __name__, template_folder="templates")
     blueprint.app_context_processor(lambda: ({"current_app": app}))
+
+    # hide the /admin (maximum recursion depth exceeded menu)
+    @blueprint.before_app_first_request
+    def init_menu():
+        admin_menu = current_menu.submenu("settings.admin")
+        admin_menu.hide()
 
     def add_jinja_filters(state):
         app = state.app
