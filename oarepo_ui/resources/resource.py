@@ -138,7 +138,7 @@ class FormConfigResource(UIComponentsMixin, Resource):
         self.run_components(
             "form_config",
             form_config=form_config,
-            args = resource_requestctx.args,
+            args=resource_requestctx.args,
             view_args=resource_requestctx.view_args,
             identity=g.identity,
         )
@@ -167,7 +167,7 @@ class RecordsUIResource(UIResource):
         routes = []
         route_config = self.config.routes
         for route_name, route_url in route_config.items():
-            route_url = self.config.url_prefix.rstrip('/') + "/" + route_url.lstrip('/')
+            route_url = self.config.url_prefix.rstrip("/") + "/" + route_url.lstrip("/")
             if route_name == "search":
                 search_route = route_url
                 if not search_route.endswith("/"):
@@ -187,14 +187,14 @@ class RecordsUIResource(UIResource):
         for route_name, route_url in self.config.config_routes.items():
             if route_url:
                 route_url = "{config_prefix}/{url_prefix}/{route}".format(
-                        config_prefix=self.config.config_url_prefix.rstrip('/'),
-                        url_prefix=self.config.url_prefix.strip('/'),
-                        route=route_url.lstrip('/')
+                    config_prefix=self.config.config_url_prefix.rstrip("/"),
+                    url_prefix=self.config.url_prefix.strip("/"),
+                    route=route_url.lstrip("/"),
                 )
             else:
                 route_url = "{config_prefix}/{url_prefix}".format(
-                        config_prefix=self.config.config_url_prefix.rstrip('/'),
-                        url_prefix=self.config.url_prefix.strip('/')
+                    config_prefix=self.config.config_url_prefix.rstrip("/"),
+                    url_prefix=self.config.url_prefix.strip("/"),
                 )
 
             routes.append(route("GET", route_url, getattr(self, route_name)))
@@ -318,9 +318,13 @@ class RecordsUIResource(UIResource):
 
         # TODO: this is a hack that should be fixed
         try:
-            record = self._get_record(resource_requestctx, allow_draft=is_preview)._record
+            record = self._get_record(
+                resource_requestctx, allow_draft=is_preview
+            )._record
         except Forbidden:
-            record = self._get_record(resource_requestctx, allow_draft=not is_preview)._record
+            record = self._get_record(
+                resource_requestctx, allow_draft=not is_preview
+            )._record
 
         file_service = get_file_service_for_record_class(type(record))
         file_metadata = file_service.read_file_metadata(g.identity, pid_value, filepath)
@@ -409,6 +413,7 @@ class RecordsUIResource(UIResource):
                 "ui_links": ui_links,
                 "overridableIdPrefix": overridable_id_prefix,
                 "defaultComponents": default_components,
+                "allowedHtmlTags": ["sup", "sub", "em", "strong"],
             },
         )
 
@@ -714,7 +719,6 @@ class RecordsUIResource(UIResource):
             error=error,
         )
 
-
     @request_form_config_view_args
     def form_config(self):
         form_config = self._get_form_config(identity=g.identity)
@@ -726,7 +730,7 @@ class RecordsUIResource(UIResource):
             data=None,
             ui_links=None,
             extra_context=None,
-            args = resource_requestctx.args,
+            args=resource_requestctx.args,
             view_args=resource_requestctx.view_args,
             identity=g.identity,
         )

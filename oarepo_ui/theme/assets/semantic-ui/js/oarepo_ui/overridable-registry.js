@@ -15,41 +15,48 @@ const getInputFromDOM = (elementName) => {
 // before 20-mapping.js). mapping.js without prefix will have lowest priority.
 const endpointName = getInputFromDOM("overridable-registry-name");
 console.log(endpointName);
-const parsedUrl = new URL(window.location.href);
-console.log(parsedUrl.pathname);
-const urlStart = parsedUrl.pathname.split("/")[1];
-console.log(urlStart);
-console.log(Boolean(urlStart));
-const requireMappingFiles = require.context(
-  "/templates/overridableRegistry/",
-  true,
-  /mapping.js$/,
-  "lazy"
-);
-console.log(requireMappingFiles.keys());
-const fillOverridableStore = async () => {
-  const mappingFiles = requireMappingFiles
-    .keys()
-    .filter((fileName) => fileName.includes(endpointName))
-    .map((fileName) => {
-      const match = fileName.match(/\/(\d+)-mapping.js$/);
-      const priority = match ? parseInt(match[1], 10) : 0;
-      return { fileName, priority };
-    })
-    .sort((a, b) => a.priority - b.priority);
+// const requireMappingFiles = require.context(
+//   `/templates/overridableRegistry/${endpointName}`,
+//   true,
+//   /mapping.js$/
+//   // "lazy"
+// );
+const fillOverridableStore = async (endpointName) => {
+  // const mappingFiles = requireMappingFiles
+  //   .keys()
+  //   .filter((fileName) => fileName.includes(endpointName))
+  //   .map((fileName) => {
+  //     const match = fileName.match(/\/(\d+)-mapping.js$/);
+  //     const priority = match ? parseInt(match[1], 10) : 0;
+  //     return { fileName, priority };
+  //   })
+  //   .sort((a, b) => a.priority - b.priority);
 
-  for (let { fileName } of mappingFiles) {
-    const module = await requireMappingFiles(fileName);
-    if (!module.default) {
-      console.error(`Mapping file ${fileName} does not have a default export.`);
-    } else {
-      for (const [key, value] of Object.entries(module.default)) {
-        overrideStore.add(key, value);
-      }
+  // for (let { fileName } of mappingFiles) {
+  //   const module = await requireMappingFiles(fileName);
+  // if (!module.default) {
+  //   console.error(`Mapping file ${fileName} does not have a default export.`);
+  // } else {
+  //   for (const [key, value] of Object.entries(module.default)) {
+  //     overrideStore.add(key, value);
+  //   }
+  //   }
+  // }
+  const module = await import(
+    `/templates/overridableRegistry/${endpointName}/mapping.js`
+  );
+  console.log(module);
+  if (!module.default) {
+    console.error(
+      `Mapping file ${endpointName} does not have a default export.`
+    );
+  } else {
+    for (const [key, value] of Object.entries(module.default)) {
+      overrideStore.add(key, value);
     }
   }
 };
-fillOverridableStore();
+fillOverridableStore(endpointName);
 
 // .forEach(({ fileName }) => {
 //   const module = requireMappingFiles(fileName);

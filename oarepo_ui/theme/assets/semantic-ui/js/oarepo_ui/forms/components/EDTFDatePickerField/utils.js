@@ -9,20 +9,24 @@ export const edtfDateFormatOptions = [
   { value: "yyyy-mm-dd", text: i18next.t("Year, month and date") },
 ];
 
+const getPaddedYearString = (dateObj) => {
+  const year = dateObj.getFullYear();
+  return _padStart(`${year}`, 4, "0");
+};
 export const allEmptyStrings = (arr) => arr.every((element) => element === "");
 
 export const serializeDate = (dateObj, dateEdtfFormat) => {
   if (dateObj === null) return "";
 
-  if (dateEdtfFormat === "yyyy") return `${dateObj.getFullYear()}`;
+  if (dateEdtfFormat === "yyyy") return getPaddedYearString(dateObj);
   if (dateEdtfFormat === "yyyy-mm")
-    return `${dateObj.getFullYear()}-${_padStart(
+    return `${getPaddedYearString(dateObj)}-${_padStart(
       dateObj.getMonth() + 1,
       2,
       "0"
     )}`;
   if (dateEdtfFormat === "yyyy-mm-dd")
-    return `${dateObj.getFullYear()}-${_padStart(
+    return `${getPaddedYearString(dateObj)}-${_padStart(
       dateObj.getMonth() + 1,
       2,
       "0"

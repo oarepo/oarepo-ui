@@ -5,7 +5,7 @@ import ReactDOM from "react-dom";
 import { parametrize } from "react-overridable";
 import { overridableComponentIds as componentIds } from "./constants";
 import _get from "lodash/get";
-
+import { overrideStore } from "react-overridable";
 import {
   ActiveFiltersElement,
   BucketAggregationValuesElement,
@@ -70,25 +70,33 @@ export function createSearchAppsInit({
       [`${overridableIdPrefix}.SearchApp.sort`]: SearchAppSort,
       [`${overridableIdPrefix}.SearchApp.results`]: SearchAppResults,
     };
-
-    loadAppComponents({
-      overridableIdPrefix,
-      componentIds,
-      defaultComponents,
-      resourceConfigComponents: config.defaultComponents,
-      componentOverrides,
-    }).then(() => {
-      ReactDOM.render(
-        <ContainerComponent>
-          <SearchApp
-            config={config}
-            // Use appName to namespace application components when overriding
-            appName={overridableIdPrefix}
-          />
-        </ContainerComponent>,
-        rootEl
-      );
-    });
+    const overridableStore = overrideStore.getAll();
+    for (const [componentKey, component] of Object.entries({
+      ...defaultComponents,
+      ...componentOverrides,
+    })) {
+      if (!(componentKey in overridableStore)) {
+        overrideStore.add(componentKey, component);
+      }
+    }
+    // loadAppComponents({
+    //   overridableIdPrefix,
+    //   componentIds,
+    //   defaultComponents,
+    //   resourceConfigComponents: config.defaultComponents,
+    //   componentOverrides,
+    // }).then(() => {
+    ReactDOM.render(
+      <ContainerComponent>
+        <SearchApp
+          config={config}
+          // Use appName to namespace application components when overriding
+          appName={overridableIdPrefix}
+        />
+      </ContainerComponent>,
+      rootEl
+    );
+    // });
   };
 
   if (autoInit) {
