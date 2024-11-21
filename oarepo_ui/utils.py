@@ -3,6 +3,7 @@ from marshmallow.schema import SchemaMeta
 from marshmallow_utils.fields import NestedAttribute
 from flask import session, current_app, g
 from invenio_base.utils import obj_or_import_string
+from flask_login import current_user
 
 
 def dump_empty(schema_or_field):
@@ -38,6 +39,9 @@ view_deposit_page_permission_key = "view_deposit_page_permission"
 # check if the user has the right to access the deposit page and store the results in session
 def can_view_deposit_page():
     permission_to_deposit = False
+    if not current_user.is_authenticated:
+        return False
+
     if view_deposit_page_permission_key in session:
         return session[view_deposit_page_permission_key]
 
