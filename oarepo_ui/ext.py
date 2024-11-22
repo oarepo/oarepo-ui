@@ -5,6 +5,9 @@ from pathlib import Path
 from flask import Response, current_app
 from importlib_metadata import entry_points
 from invenio_base.utils import obj_or_import_string
+from flask_login import user_logged_in, user_logged_out
+from .utils import clear_view_deposit_page_permission_from_session
+
 
 import oarepo_ui.cli  # noqa
 from oarepo_ui.resources.templating.catalog import OarepoCatalog as Catalog
@@ -90,6 +93,8 @@ class OARepoUIExtension:
     def init_app(self, app):
         self.init_config(app)
         app.extensions["oarepo_ui"] = OARepoUIState(app)
+        user_logged_in.connect(clear_view_deposit_page_permission_from_session)
+        user_logged_out.connect(clear_view_deposit_page_permission_from_session)
 
     def init_config(self, app):
         """Initialize configuration."""
