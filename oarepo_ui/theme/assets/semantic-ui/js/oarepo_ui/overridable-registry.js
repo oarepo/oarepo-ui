@@ -14,13 +14,13 @@ const getInputFromDOM = (elementName) => {
 // will be prioritized by leading prefix (e.g. 10-mapping.js will be processed
 // before 20-mapping.js). mapping.js without prefix will have lowest priority.
 const endpointName = getInputFromDOM("overridable-registry-name");
-console.log(endpointName);
 // const requireMappingFiles = require.context(
 //   `/templates/overridableRegistry/${endpointName}`,
 //   true,
 //   /mapping.js$/
 //   // "lazy"
 // );
+
 const fillOverridableStore = async (endpointName) => {
   // const mappingFiles = requireMappingFiles
   //   .keys()
@@ -45,7 +45,6 @@ const fillOverridableStore = async (endpointName) => {
   const module = await import(
     `/templates/overridableRegistry/${endpointName}/mapping.js`
   );
-  console.log(module);
   if (!module.default) {
     console.error(
       `Mapping file ${endpointName} does not have a default export.`
@@ -56,6 +55,11 @@ const fillOverridableStore = async (endpointName) => {
     }
   }
 };
+
+setTimeout(() => {
+  console.log("overridable registry finished");
+}, 10000);
+
 fillOverridableStore(endpointName);
 
 // .forEach(({ fileName }) => {
