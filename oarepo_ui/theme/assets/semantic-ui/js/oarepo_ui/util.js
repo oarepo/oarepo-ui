@@ -276,7 +276,17 @@ export const goBack = (fallBackURL = "/") => {
 };
 
 // until we start using v4 of react-invenio-forms. They switched to vnd zenodo accept header
-const baseAxiosConfiguration = {
+const baseAxiosConfigurationApplicationJson = {
+  withCredentials: true,
+  xsrfCookieName: "csrftoken",
+  xsrfHeaderName: "X-CSRFToken",
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
+};
+
+const baseAxiosConfigurationVnd = {
   withCredentials: true,
   xsrfCookieName: "csrftoken",
   xsrfHeaderName: "X-CSRFToken",
@@ -286,7 +296,11 @@ const baseAxiosConfiguration = {
   },
 };
 
-export const http = axios.create(baseAxiosConfiguration);
+export const httpApplicationJson = axios.create(
+  baseAxiosConfigurationApplicationJson
+);
+
+export const httpVnd = axios.create(baseAxiosConfigurationVnd);
 
 export const encodeUnicodeBase64 = (str) => {
   return btoa(encodeURIComponent(str));
