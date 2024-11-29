@@ -312,19 +312,26 @@ class RecordsUIResource(UIResource):
 
     @request_read_args
     @request_file_view_args
-    def file_preview(self, *args, is_preview=False, **kwargs):
+    def published_file_preview(self, *args, **kwargs):
+        """Return file preview for published record."""
+        record = self._get_record(
+            resource_requestctx, allow_draft=False
+        )._record
+
+        return self._file_preview(record)
+
+    @request_read_args
+    @request_file_view_args
+    def draft_file_preview(self, *args, **kwargs):
+        """Return file preview for draft record."""
+        record = self._get_record(
+            resource_requestctx, allow_draft=True
+        )._record
+        return self._file_preview(record)
+
+    def _file_preview(self, record):
         pid_value = resource_requestctx.view_args["pid_value"]
         filepath = resource_requestctx.view_args["filepath"]
-
-        # TODO: this is a hack that should be fixed
-        try:
-            record = self._get_record(
-                resource_requestctx, allow_draft=is_preview
-            )._record
-        except Forbidden:
-            record = self._get_record(
-                resource_requestctx, allow_draft=not is_preview
-            )._record
 
         file_service = get_file_service_for_record_class(type(record))
         file_metadata = file_service.read_file_metadata(g.identity, pid_value, filepath)
