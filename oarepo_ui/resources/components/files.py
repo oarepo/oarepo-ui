@@ -1,3 +1,5 @@
+from invenio_records_resources.services.errors import PermissionDeniedError
+
 from oarepo_runtime.datastreams.utils import get_file_service_for_record_service
 
 from .base import UIResourceComponent
@@ -13,8 +15,14 @@ class FilesComponent(UIResourceComponent):
         file_service = get_file_service_for_record_service(
             self.resource.api_service, record=api_record
         )
-        files = file_service.list_files(identity, api_record["id"])
-        extra_context["files"] = files.to_dict()
+        try:
+            files = file_service.list_files(identity, api_record["id"])
+            extra_context["files"] = files.to_dict()
+        except PermissionDeniedError:
+            extra_context["files"] = {
+                "entries": [],
+                "links": {}
+            }
 
     def before_ui_detail(self, **kwargs):
         self.before_ui_edit(**kwargs)
