@@ -574,3 +574,10 @@ msgstr "Smazat koncept"
 
 msgid "Draft deleted successfully. Redirecting to your dashboard ..."
 msgstr "Koncept byl úspěšně smazán. Přesměrování na vaši nástěnku ..."
+
+msgid ""
+"Draft saved with validation errors. Please correct the following issues and "
+"try again:"
+msgstr ""
+"Koncept byl uložen s validačními chybami. Opravte následující problémy a "
+"zkuste to znovu:"

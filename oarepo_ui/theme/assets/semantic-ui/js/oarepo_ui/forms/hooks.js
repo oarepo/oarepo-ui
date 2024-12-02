@@ -243,7 +243,7 @@ export const useDepositApiClient = ({
             errorMessage:
               errorMessage ||
               i18next.t(
-                "Draft saved with validation errors. Fields listed below that failed validation were not saved to the server"
+                "Draft saved with validation errors. Please correct the following issues and try again:"
               ),
             errorPaths,
           };
@@ -256,10 +256,22 @@ export const useDepositApiClient = ({
           successMessage || i18next.t("Draft saved successfully.");
       return response;
     } catch (error) {
-      // handle 400 errors. Normally, axios would put messages in error.response. But for example
-      // offline Error message does not produce a response, so in this way we can display
-      // network error message
-      errorsObj["httpErrors"] = error?.response?.data?.message ?? error.message;
+      if (error?.response?.data?.errors?.length > 0) {
+        for (const err of error.response.data.errors) {
+          errorsObj = setIn(errorsObj, err.field, err.messages.join(" "));
+        }
+        errorsObj["BEvalidationErrors"] = {
+          errors: error.response.data.errors,
+          errorMessage:
+            errorMessage ||
+            i18next.t(
+              "Draft saved with validation errors. Please correct the following issues and try again:"
+            ),
+        };
+      } else {
+        errorsObj["httpErrors"] =
+          error?.response?.data?.message ?? error.message;
+      }
       return false;
     } finally {
       // put state changing calls together, in order to avoid multiple rerenders during form submit
