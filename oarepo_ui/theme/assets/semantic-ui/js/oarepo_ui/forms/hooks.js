@@ -256,6 +256,10 @@ export const useDepositApiClient = ({
           successMessage || i18next.t("Draft saved successfully.");
       return response;
     } catch (error) {
+      // handle 400 errors. Normally, axios would put messages in error.response. But for example
+      // offline Error message does not produce a response, so in this way we can display
+      // network error message. Additionally, if request returns 400 and contains validation errors
+      // we can display them in the same manner as for the case when 200 is returned.
       if (error?.response?.data?.errors?.length > 0) {
         for (const err of error.response.data.errors) {
           errorsObj = setIn(errorsObj, err.field, err.messages.join(" "));
