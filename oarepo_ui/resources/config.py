@@ -85,7 +85,8 @@ class RecordsUIResourceConfig(UIResourceConfig):
         "export": "/<pid_value>/export/<export_format>",
         "export_preview": "/<pid_value>/preview/export/<export_format>",
         "preview": "/<pid_value>/preview",
-        "file_preview": "/<pid_value>/files/<path:filepath>/preview",
+        "published_file_preview": "/<pid_value>/files/<path:filepath>/preview",
+        "draft_file_preview": "/<pid_value>/preview/files/<path:filepath>/preview",
     }
     config_url_prefix = "/configs"
     config_routes = {

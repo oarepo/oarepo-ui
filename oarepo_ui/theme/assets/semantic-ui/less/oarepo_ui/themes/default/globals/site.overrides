@@ -34,6 +34,7 @@
 
 .visually-hidden {
   visibility: hidden;
+  white-space: nowrap;
 }
 
 .invenio-page-body {
