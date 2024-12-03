@@ -1,74 +1,48 @@
 import { overrideStore } from "react-overridable";
+import { getInputFromDOM } from "@js/oarepo_ui/util";
 
-const getInputFromDOM = (elementName) => {
-  const element = document.getElementsByName(elementName);
-  if (element.length > 0 && element[0].hasAttribute("value")) {
-    return JSON.parse(element[0].value);
-  }
-  return null;
-};
-// get all files below /templates/overridableRegistry that end with mapping.js.
-// The files shall be in a subfolder, in order to prevent clashing between mapping.js
-// from different libraries. each mapping.js file shall have a default export
-// that is an object with signature {"component-id": Component} the files
-// will be prioritized by leading prefix (e.g. 10-mapping.js will be processed
-// before 20-mapping.js). mapping.js without prefix will have lowest priority.
+// get the flask endpoint name from dom (as a unique identifier of each individual page)
 const endpointName = getInputFromDOM("overridable-registry-name");
-// const requireMappingFiles = require.context(
-//   `/templates/overridableRegistry/${endpointName}`,
-//   true,
-//   /mapping.js$/
-//   // "lazy"
-// );
 
 const fillOverridableStore = async (endpointName) => {
-  // const mappingFiles = requireMappingFiles
-  //   .keys()
-  //   .filter((fileName) => fileName.includes(endpointName))
-  //   .map((fileName) => {
-  //     const match = fileName.match(/\/(\d+)-mapping.js$/);
-  //     const priority = match ? parseInt(match[1], 10) : 0;
-  //     return { fileName, priority };
-  //   })
-  //   .sort((a, b) => a.priority - b.priority);
+  let libraryMapping;
+  let applicationMapping;
 
-  // for (let { fileName } of mappingFiles) {
-  //   const module = await requireMappingFiles(fileName);
-  // if (!module.default) {
-  //   console.error(`Mapping file ${fileName} does not have a default export.`);
-  // } else {
-  //   for (const [key, value] of Object.entries(module.default)) {
-  //     overrideStore.add(key, value);
-  //   }
-  //   }
-  // }
-  const module = await import(
-    `/templates/overridableRegistry/${endpointName}/mapping.js`
-  );
-  if (!module.default) {
-    console.error(
-      `Mapping file ${endpointName} does not have a default export.`
+  try {
+    libraryMapping = await import(`/templates/${endpointName}/mapping.js`);
+  } catch (error) {
+    console.warn(`Could not load library mapping for ${endpointName}:`, error);
+  }
+
+  if (libraryMapping) {
+    console.warn(
+      "This page has a mapping file in the library. If you wish to override the same component, you should create 1-mapping.js file in the application folder."
     );
-  } else {
-    for (const [key, value] of Object.entries(module.default)) {
-      overrideStore.add(key, value);
-    }
+  }
+
+  try {
+    applicationMapping = await import(
+      `/templates/${endpointName}/1-mapping.js`
+    );
+  } catch (error) {
+    console.warn(
+      `Could not load application mapping for ${endpointName}:`,
+      error
+    );
+  }
+
+  const componentStore = {
+    ...libraryMapping.default,
+    ...applicationMapping.default,
+  };
+
+  if (Object.keys(componentStore).length === 0) {
+    return;
+  }
+
+  for (const [key, value] of Object.entries(componentStore)) {
+    overrideStore.add(key, value);
   }
 };
 
-setTimeout(() => {
-  console.log("overridable registry finished");
-}, 10000);
-
 fillOverridableStore(endpointName);
-
-// .forEach(({ fileName }) => {
-//   const module = requireMappingFiles(fileName);
-//   if (!module.default) {
-//     console.error(`Mapping file ${fileName} does not have a default export.`);
-//   } else {
-//     for (const [key, value] of Object.entries(module.default)) {
-//       overrideStore.add(key, value);
-//     }
-//   }
-// });

@@ -314,9 +314,7 @@ class RecordsUIResource(UIResource):
     @request_file_view_args
     def published_file_preview(self, *args, **kwargs):
         """Return file preview for published record."""
-        record = self._get_record(
-            resource_requestctx, allow_draft=False
-        )._record
+        record = self._get_record(resource_requestctx, allow_draft=False)._record
 
         return self._file_preview(record)
 
@@ -324,9 +322,7 @@ class RecordsUIResource(UIResource):
     @request_file_view_args
     def draft_file_preview(self, *args, **kwargs):
         """Return file preview for draft record."""
-        record = self._get_record(
-            resource_requestctx, allow_draft=True
-        )._record
+        record = self._get_record(resource_requestctx, allow_draft=True)._record
         return self._file_preview(record)
 
     def _file_preview(self, record):
@@ -408,9 +404,7 @@ class RecordsUIResource(UIResource):
         default_components = {}
 
         for key, value in self.config.default_components.items():
-            default_components[f"{overridable_id_prefix}.ResultsList.item.{key}"] = (
-                value
-            )
+            default_components[f"{overridable_id_prefix}.{key}"] = value
 
         search_options = dict(
             api_config=self.api_service.config,

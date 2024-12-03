@@ -1,9 +1,7 @@
 import _map from "lodash/map";
 import _reduce from "lodash/reduce";
-import _camelCase from "lodash/camelCase";
-import _startCase from "lodash/startCase";
-import { importTemplate, loadComponents } from "@js/invenio_theme/templates";
 import _uniqBy from "lodash/uniqBy";
+import _isString from "lodash/isString";
 import * as Yup from "yup";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { format } from "date-fns";
@@ -58,81 +56,47 @@ export const relativeUrl = (urlString) => {
   return `${pathname}${search}`;
 };
 
-export async function loadTemplateComponents(
-  overridableIdPrefix,
-  componentIds
-) {
-  const asyncImportTemplate = async (componentId, path) => {
-    console.log(`Searching for component ID '${componentId}' in ${path}`);
-    try {
-      return {
-        componentId,
-        component: await importTemplate(path),
-      };
-    } catch (err) {
-      if (err.message.startsWith("Cannot find module")) {
-        console.debug(
-          `Component '${componentId}' not found in ${path}. Skipping.`
-        );
-      } else {
-        console.error(
-          `Error loading component '${componentId}' from ${path}: ${err}`
-        );
-      }
-      return null;
-    }
-  };
-
-  const components = componentIds.map((componentId) => {
-    const componentFilename = _startCase(_camelCase(componentId)).replace(
-      / /g,
-      ""
-    );
-
-    const baseDir = overridableIdPrefix
-      .split(".")
-      .map((dir) => dir.toLowerCase())
-      .join("/");
-    return asyncImportTemplate(
-      `${overridableIdPrefix}.${componentId}`,
-      `${baseDir}/${componentFilename}.jsx`
-    );
-  });
-
-  const loadedComponents = await Promise.all(components);
-  const componentOverrides = loadedComponents
-    .filter((component) => component !== null)
-    .reduce((res, { componentId, component }) => {
-      res[componentId] = component;
-      return res;
-    }, {});
-
-  return componentOverrides;
+export async function importTemplate(templateName) {
+  const module = await import(`@templates/${templateName}`);
+  return module.default;
 }
 
-export async function loadAppComponents({
-  overridableIdPrefix,
-  componentIds = [],
-  defaultComponents = {},
-  resourceConfigComponents = {},
-  componentOverrides = {},
-}) {
-  const templateComponents = await loadTemplateComponents(
-    overridableIdPrefix,
-    componentIds
-  );
+export async function registerComponent(componentId, defaultComponent) {
+  // default component is either a component or a path relative to templates folder
+  let component = null;
+  const storeComponents = overrideStore.getAll();
+  try {
+    // First look into the prefixed path for the component
+    component = await importTemplate(`${defaultComponent}.jsx`);
+  } catch (error) {
+    if (defaultComponent) {
+      // If a string was specified, try to import it
+      if (_isString(defaultComponent)) {
+        try {
+          component = await importTemplate(`${defaultComponent}.jsx`);
+        } catch (error) {
+          console.error(
+            `Failed to import default component ${defaultComponent}.jsx`
+          );
+        }
+      } else {
+        component = defaultComponent;
+      }
+    }
+  } finally {
+    if (component && !storeComponents.hasOwnProperty(componentId)) {
+      overrideStore.add(componentId, component);
+      return component;
+    }
+  }
+}
 
-  console.log(resourceConfigComponents);
-
-  const components = {
-    ...defaultComponents,
-    ...resourceConfigComponents,
-    ...componentOverrides,
-    ...templateComponents,
-    ...overrideStore.getAll(),
-  };
-
-  return loadComponents(overridableIdPrefix, components);
+export function loadComponents(defaultComponents) {
+  const tplPromises = [];
+  for (const [componentId, component] of Object.entries(defaultComponents)) {
+    tplPromises.push(registerComponent(componentId, component));
+  }
+  return Promise.all(tplPromises);
 }
 
 // functions to help with validation schemas

@@ -21,7 +21,8 @@ import {
   SearchAppResults,
   FoldableBucketAggregationElement,
 } from "@js/oarepo_ui/search";
-import { loadAppComponents } from "../util";
+import { loadComponents } from "../util";
+import _isString from "lodash/isString";
 
 export function parseSearchAppConfigs(
   configDataAttr = "invenio-search-config"
@@ -70,23 +71,14 @@ export function createSearchAppsInit({
       [`${overridableIdPrefix}.SearchApp.sort`]: SearchAppSort,
       [`${overridableIdPrefix}.SearchApp.results`]: SearchAppResults,
     };
-    // const overridableStore = overrideStore.getAll();
-    // for (const [componentKey, component] of Object.entries({
-    //   ...defaultComponents,
-    //   ...componentOverrides,
-    // })) {
-    //   if (!(componentKey in overridableStore)) {
-    //     overrideStore.add(componentKey, component);
-    //   }
-    // }
-    console.log(overrideStore.getAll());
-    loadAppComponents({
-      overridableIdPrefix,
-      componentIds,
-      defaultComponents,
-      resourceConfigComponents: config.defaultComponents,
-      componentOverrides,
-    }).then(() => {
+
+    const searchAppComponents = {
+      ...defaultComponents,
+      ...config.defaultComponents,
+      ...componentOverrides,
+    };
+
+    loadComponents(searchAppComponents).then(() => {
       ReactDOM.render(
         <ContainerComponent>
           <SearchApp

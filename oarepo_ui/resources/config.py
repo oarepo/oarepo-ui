@@ -131,11 +131,9 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
     @property
     def default_components(self):
-        service = current_service_registry.get(self.api_service)
-        schema = getattr(service.record_cls, "schema", None)
-        component = getattr(self, "search_component", None)
-        if schema and component:
-            return {schema.value: component}
+        components = getattr(self, "search_components", None)
+        if components:
+            return components
         else:
             return {}
 

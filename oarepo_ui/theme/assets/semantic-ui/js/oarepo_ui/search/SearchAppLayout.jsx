@@ -14,7 +14,7 @@ import {
 } from "@js/invenio_search_ui/components";
 import { ResultOptions } from "@js/invenio_search_ui/components/Results";
 import { ClearFiltersButton } from "./ClearFiltersButton";
-import { ShouldActiveFiltersRender } from "@js/oarepo_ui";
+import { ShouldActiveFiltersRender } from "@js/oarepo_ui/search";
 
 const ResultOptionsWithState = withState(ResultOptions);
 

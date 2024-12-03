@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { withState } from "react-searchkit";
 import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
 import PropTypes from "prop-types";
-import { ShouldRender } from "@js/oarepo_ui";
+import { ShouldRender } from "@js/oarepo_ui/search";
 
 const ShouldActiveFiltersRenderComponent = ({
   currentQueryState,

@@ -5,8 +5,7 @@ import { FormConfigProvider, FieldDataProvider } from "./contexts";
 import { Container } from "semantic-ui-react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { loadAppComponents } from "../util";
-import { overridableComponentIds as componentIds } from "./constants";
+import { loadComponents } from "../util";
 import { buildUID } from "react-searchkit";
 import _get from "lodash/get";
 import { FieldLabel } from "react-invenio-forms";
@@ -47,12 +46,7 @@ export function createFormAppInit({
     console.debug({ ...config });
     const overridableIdPrefix = config.formConfig.overridableIdPrefix;
 
-    loadAppComponents({
-      overridableIdPrefix,
-      componentIds,
-      resourceConfigComponents: config.formConfig.defaultComponents,
-      componentOverrides,
-    }).then(() => {
+    loadComponents(componentOverrides).then(() => {
       ReactDOM.render(
         <ContainerComponent>
           <QueryClientProvider client={queryClient}>
