@@ -16,8 +16,11 @@
   <tbody>
     {% for file in array(files.entries) %}
     <tr>
-      <td>
-        <a href="{{ file.links.content }}">{{ file.key }}</a>
+      <td class="file-info">
+        <p>{{ file.key }}</p>
+        {%- if file.metadata.fileNote -%}
+        <small>{{ file.metadata.fileNote }}</small>
+        {%- endif -%}
       </td>
       <td>{{ (file.size or 0) | filesizeformat }}</td>
       <td>
