@@ -12,26 +12,28 @@ class AllowedCommunitiesComponent(UIResourceComponent):
     def form_config(
         self,
         *,
-        data: Dict,
+        data: Dict = None,
         identity: Identity,
         form_config: Dict,
         args: Dict,
         view_args: Dict,
-        ui_links: Dict,
-        extra_context: Dict,
+        ui_links: Dict = None,
+        extra_context: Dict = None,
         **kwargs,
     ):
         sorted_allowed_communities = sorted(
-            self.get_allowed_communities(identity, "create"),
+            AllowedCommunitiesComponent.get_allowed_communities(identity, "create"),
             key=lambda community: community.metadata["title"],
         )
 
         form_config["allowed_communities"] = [
-            self.community_to_dict(community)
+            AllowedCommunitiesComponent.community_to_dict(community)
             for community in sorted_allowed_communities
         ]
-        form_config["generic_community"] = self.community_to_dict(
-            Community.pid.resolve("generic")
+        form_config["generic_community"] = (
+            AllowedCommunitiesComponent.community_to_dict(
+                Community.pid.resolve("generic")
+            )
         )
 
     def before_ui_create(
@@ -65,43 +67,29 @@ class AllowedCommunitiesComponent(UIResourceComponent):
 
         form_config["preselected_community"] = preselected_community
 
-    def community_to_dict(self, community):
-        return {
-            "slug": str(community.slug),
-            "id": str(community.id),
-            "logo": f"/api/communities/{community.id}/logo",
-            "links": {
-                "self_html": f"/communities/{community.id}/records",
-            },
-            **(community.metadata or {}),
-        }
-
-    def get_allowed_communities(self, identity, action):
-        # get all communities
+    @staticmethod
+    def get_allowed_communities(identity, action):
         community_ids = set()
         for need in identity.provides:
             if need.method == "community" and need.value:
                 community_ids.add(need.value)
 
-        # for each community, get workflow
         for community_id in community_ids:
             community = Community.get_record(community_id)
-            if self.user_has_permission(identity, community, action):
-                # get the link to the community
+            if AllowedCommunitiesComponent.user_has_permission(
+                identity, community, action
+            ):
                 yield community
 
-    def user_has_permission(self, identity, community, action):
-        workflow = community.custom_fields.get("workflow")
-
-        workflow = workflow or "default"  # TODO: just for testing !!!
-
-        if not workflow:
-            return False
-        return self.check_user_permissions(
+    @staticmethod
+    def user_has_permission(identity, community, action):
+        workflow = community.custom_fields.get("workflow", "default")
+        return AllowedCommunitiesComponent.check_user_permissions(
             str(community.id), workflow, identity, action
         )
 
-    def check_user_permissions(self, community_id, workflow, identity, action):
+    @staticmethod
+    def check_user_permissions(community_id, workflow, identity, action):
         from oarepo_workflows.errors import InvalidWorkflowError
         from oarepo_workflows.proxies import current_oarepo_workflows
 
@@ -114,3 +102,15 @@ class AllowedCommunitiesComponent(UIResourceComponent):
             action, data={"parent": {"communities": {"default": community_id}}}
         )
         return permissions.allows(identity)
+
+    @staticmethod
+    def community_to_dict(community):
+        return {
+            "slug": str(community.slug),
+            "id": str(community.id),
+            "logo": f"/api/communities/{community.id}/logo",
+            "links": {
+                "self_html": f"/communities/{community.id}/records",
+            },
+            **(community.metadata or {}),
+        }
