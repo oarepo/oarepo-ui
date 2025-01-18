@@ -22,18 +22,16 @@ class AllowedCommunitiesComponent(UIResourceComponent):
         **kwargs,
     ):
         sorted_allowed_communities = sorted(
-            AllowedCommunitiesComponent.get_allowed_communities(identity, "create"),
+            self.get_allowed_communities(identity, "create"),
             key=lambda community: community.metadata["title"],
         )
 
         form_config["allowed_communities"] = [
-            AllowedCommunitiesComponent.community_to_dict(community)
+            self.community_to_dict(community)
             for community in sorted_allowed_communities
         ]
-        form_config["generic_community"] = (
-            AllowedCommunitiesComponent.community_to_dict(
-                Community.pid.resolve("generic")
-            )
+        form_config["generic_community"] = self.community_to_dict(
+            Community.pid.resolve("generic")
         )
 
     def before_ui_create(
@@ -67,8 +65,8 @@ class AllowedCommunitiesComponent(UIResourceComponent):
 
         form_config["preselected_community"] = preselected_community
 
-    @staticmethod
-    def get_allowed_communities(identity, action):
+    @classmethod
+    def get_allowed_communities(cls, identity, action):
         community_ids = set()
         for need in identity.provides:
             if need.method == "community" and need.value:
@@ -76,20 +74,16 @@ class AllowedCommunitiesComponent(UIResourceComponent):
 
         for community_id in community_ids:
             community = Community.get_record(community_id)
-            if AllowedCommunitiesComponent.user_has_permission(
-                identity, community, action
-            ):
+            if cls.user_has_permission(identity, community, action):
                 yield community
 
-    @staticmethod
-    def user_has_permission(identity, community, action):
+    @classmethod
+    def user_has_permission(cls, identity, community, action):
         workflow = community.custom_fields.get("workflow", "default")
-        return AllowedCommunitiesComponent.check_user_permissions(
-            str(community.id), workflow, identity, action
-        )
+        return cls.check_user_permissions(str(community.id), workflow, identity, action)
 
-    @staticmethod
-    def check_user_permissions(community_id, workflow, identity, action):
+    @classmethod
+    def check_user_permissions(cls, community_id, workflow, identity, action):
         from oarepo_workflows.errors import InvalidWorkflowError
         from oarepo_workflows.proxies import current_oarepo_workflows
 
@@ -103,8 +97,8 @@ class AllowedCommunitiesComponent(UIResourceComponent):
         )
         return permissions.allows(identity)
 
-    @staticmethod
-    def community_to_dict(community):
+    @classmethod
+    def community_to_dict(cls, community):
         return {
             "slug": str(community.slug),
             "id": str(community.id),
