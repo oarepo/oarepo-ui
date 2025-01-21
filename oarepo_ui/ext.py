@@ -36,7 +36,7 @@ class OARepoUIState:
         try:
             del self.catalog  # noqa - this is a documented method of clearing the cache
         except (
-                AttributeError
+            AttributeError
         ):  # but does not work if the cache is not initialized yet, thus the try/except
             pass
 
