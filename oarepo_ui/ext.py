@@ -3,9 +3,14 @@ import json
 from pathlib import Path
 
 from flask import Response, current_app
+from flask_webpackext import current_manifest
+from flask_webpackext.errors import ManifestKeyNotFoundError
 from importlib_metadata import entry_points
 from invenio_base.utils import obj_or_import_string
 from flask_login import user_logged_in, user_logged_out
+from markupsafe import Markup
+
+from .proxies import current_optional_manifest
 from .utils import clear_view_deposit_page_permission_from_session
 
 
@@ -20,12 +25,18 @@ class OARepoUIState:
         self.init_builder_plugin()
         self._catalog = None
 
+    def optional_manifest(self, key):
+        try:
+            return current_manifest[key]
+        except ManifestKeyNotFoundError as e:
+            return Markup(f"<!-- Warn: {e} -->")
+
     def reinitialize_catalog(self):
         self._catalog = None
         try:
             del self.catalog  # noqa - this is a documented method of clearing the cache
         except (
-            AttributeError
+                AttributeError
         ):  # but does not work if the cache is not initialized yet, thus the try/except
             pass
 
@@ -95,6 +106,7 @@ class OARepoUIExtension:
         app.extensions["oarepo_ui"] = OARepoUIState(app)
         user_logged_in.connect(clear_view_deposit_page_permission_from_session)
         user_logged_out.connect(clear_view_deposit_page_permission_from_session)
+        app.add_template_global(current_optional_manifest, name="webpack_optional")
 
     def init_config(self, app):
         """Initialize configuration."""
