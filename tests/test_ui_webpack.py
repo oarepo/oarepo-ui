@@ -12,10 +12,11 @@ def test_overridable_bundle_project_init(app):
     with app.app_context():
         assert proj._project_template_dir.endswith('invenio_assets/assets')
         assert proj.config_path.endswith('test_build/config.json')
-        assert proj.overrides_bundle_path == '_overrides'
+        assert proj.overrides_bundle_path == os.path.join(proj.project_path, 'js/_overrides')
         assert os.path.exists(proj.package_json_source_path)
 
-def test_overridable_project_entry(app):
+
+def test_overridable_bundle_project_entry(app):
     app.config['UI_OVERRIDES'] = {
         'test_bp': {'componentA': ['ComponentA', 'components/ComponentA']}
     }
@@ -25,7 +26,7 @@ def test_overridable_project_entry(app):
         assert entry_points['overrides-test_bp'] == './js/_overrides/test_bp.js'
 
 
-def test_overridable_project_entry_file(app, fake_manifest):
+def test_overridable_bundle_project_entry_file(app, fake_manifest):
     app.config['UI_OVERRIDES'] = {
         'test_bp': {'componentA.item': ['ComponentA', 'components/ComponentA']}
     }
@@ -33,10 +34,9 @@ def test_overridable_project_entry_file(app, fake_manifest):
         project.create()
         assert os.path.exists(project.package_json_source_path)
 
-        overrides_bundle_dir = os.path.join(project.project_path,  f'js/{project.overrides_bundle_path}')
-        assert os.path.isdir(overrides_bundle_dir)
+        assert os.path.isdir(project.overrides_bundle_path)
 
-        overrides_file_path = os.path.join(overrides_bundle_dir, 'test_bp.js')
+        overrides_file_path = os.path.join(project.overrides_bundle_path, 'test_bp.js')
         assert os.path.exists(overrides_file_path)
         with open(overrides_file_path) as f:
             overrides_file_path_content = f.read()
@@ -46,3 +46,20 @@ import { overrideStore } from 'react-overridable';
 import ComponentA from 'components/ComponentA';
 
 overrideStore.add('componentA.item', ComponentA);'''
+
+
+def test_overridable_bundle_project_generated_paths(app, fake_manifest):
+    app.config['UI_OVERRIDES'] = {
+        'test_bp1': {'componentA.item': ['ComponentA', 'components/ComponentA']},
+        'test_bp2': {'componentA.item': ['ComponentB', 'components/ComponentB']}
+    }
+
+    project.clean()
+    project.create()
+
+    assert len(project.generated_paths) == 3
+    assert all([
+        os.path.join(project.overrides_bundle_path, path) in project.generated_paths
+        for path in ['test_bp1.js', 'test_bp2.js']
+    ])
+
