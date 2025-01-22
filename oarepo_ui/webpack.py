@@ -4,7 +4,18 @@ from flask import current_app
 from flask_webpackext import WebpackBundleProject
 from pywebpack import bundles_from_entry_point
 from pywebpack.helpers import cached
-from flask.helpers import get_root_path
+
+overrides_js_template = '''
+import { overrideStore } from 'react-overridable';
+
+{% for key, import_spec in overrides.items() -%}
+import {{ import_spec[0] }} from '{{ import_spec[1] }}';
+{%- endfor %}
+
+{% for key, import_spec in overrides.items() -%}
+overrideStore.add('{{ key }}', {{ import_spec[0] }});
+{%- endfor %}
+'''
 
 
 class OverridableBundleProject(WebpackBundleProject):
@@ -50,7 +61,6 @@ class OverridableBundleProject(WebpackBundleProject):
         bundle_entries = super().entry
         if 'UI_OVERRIDES' in current_app.config:
             for bp_name, overrides in current_app.config['UI_OVERRIDES'].items():
-                # TODO: actually generate the js file with overrides data
                 bundle_entries[f"overrides-{bp_name}"] = f"./js/{self.overrides_bundle_path}/{bp_name}.js"
         return bundle_entries
 
@@ -63,20 +73,20 @@ class OverridableBundleProject(WebpackBundleProject):
         bundle for any UI overrides.
         """
         super().create(force)
-        
-        # Generate special bundle for configured UI overrides
-        overrides_bundle_path = os.path.join(self.project_path, f'js/{self.overrides_bundle_path}')
-        self.storage_cls(overrides_bundle_path, self.project_path).run(force=force)
 
-        # TODO: iterate over overrides entries & render mapping templates to bundle path
+        if 'UI_OVERRIDES' in current_app.config:
+            # Generate special bundle for configured UI overrides
+            overrides_bundle_path = os.path.join(self.project_path, f'js/{self.overrides_bundle_path}')
+            if not os.path.exists(overrides_bundle_path):
+                os.mkdir(overrides_bundle_path)
 
-        raise AttributeError(self.project_path, os.listdir(os.path.join(self.project_path, 'js/')))
+            self.storage_cls(overrides_bundle_path, self.project_path).run(force=force)
 
-
-    # @property
-    # def package_json_source_path(self):
-    #     """Full path to the source package.json."""
-    #     raise AttributeError(self._project_template_dir,  'package.json')
+            for bp_name, overrides in current_app.config['UI_OVERRIDES'].items():
+                _overrides_js_template = current_app.jinja_env.from_string(overrides_js_template)
+                overrides_js_content = _overrides_js_template.render({'overrides': overrides})
+                with open(os.path.join(overrides_bundle_path, f'{bp_name}.js'), 'w+') as f:
+                    f.write(overrides_js_content)
 
 
 project = OverridableBundleProject(
