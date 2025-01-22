@@ -1,23 +1,21 @@
 import os
-import pytest
-from flask import Flask
 from oarepo_ui.webpack import OverridableBundleProject, project
 
 
-def test_overridable_bundle_project_init():
+def test_overridable_bundle_project_init(app):
     proj = OverridableBundleProject(
         import_name='test_app',
-        project_folder='test_assets',
+        project_folder='assets',
         config_path='test_build/config.json',
         bundles=[]
     )
-    assert proj.import_name == 'invenio_assets.webpack'
-    assert proj.project_folder == 'test_assets'
-    assert proj.config_path == 'test_build/config.json'
-    assert proj.overrides_bundle_path == '_overrides'
+    with app.app_context():
+        assert proj._project_template_dir.endswith('invenio_assets/assets')
+        assert proj.config_path.endswith('test_build/config.json')
+        assert proj.overrides_bundle_path == '_overrides'
+        assert os.path.exists(proj.package_json_source_path)
 
-
-def test_overridable_bundle_project_entry(app):
+def test_overridable_project_entry(app):
     app.config['UI_OVERRIDES'] = {
         'test_bp': {'componentA': ['ComponentA', 'components/ComponentA']}
     }
@@ -27,21 +25,24 @@ def test_overridable_bundle_project_entry(app):
         assert entry_points['overrides-test_bp'] == './js/_overrides/test_bp.js'
 
 
-def test_create_overrides_bundle(app, fake_manifest):
+def test_overridable_project_entry_file(app, fake_manifest):
     app.config['UI_OVERRIDES'] = {
-        'test_bp': {'componentA': ['ComponentA', 'components/ComponentA']}
+        'test_bp': {'componentA.item': ['ComponentA', 'components/ComponentA']}
     }
     with app.app_context():
         project.create()
-        # TODO: check assets folder
+        assert os.path.exists(project.package_json_source_path)
 
+        overrides_bundle_dir = os.path.join(project.project_path,  f'js/{project.overrides_bundle_path}')
+        assert os.path.isdir(overrides_bundle_dir)
 
-def test_create_writes_override_files(app, fake_manifest):
-    app.config['UI_OVERRIDES'] = {
-        'test_bp': {'componentA': ['ComponentA', 'components/ComponentA']}
-    }
-    with app.app_context():
-        project.create()
-        # mock_open.assert_called_once_with(os.path.join(project.project_path, 'js/_overrides/test_bp.js'), 'w+')
-        # written_content = mock_open().write.call_args[0][0]
-        # assert 'overrideStore.add' in written_content
+        overrides_file_path = os.path.join(overrides_bundle_dir, 'test_bp.js')
+        assert os.path.exists(overrides_file_path)
+        with open(overrides_file_path) as f:
+            overrides_file_path_content = f.read()
+            assert overrides_file_path_content == '''
+import { overrideStore } from 'react-overridable';
+
+import ComponentA from 'components/ComponentA';
+
+overrideStore.add('componentA.item', ComponentA);'''

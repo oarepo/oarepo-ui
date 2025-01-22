@@ -76,16 +76,14 @@ class OverridableBundleProject(WebpackBundleProject):
 
         if 'UI_OVERRIDES' in current_app.config:
             # Generate special bundle for configured UI overrides
-            overrides_bundle_path = os.path.join(self.project_path, f'js/{self.overrides_bundle_path}')
-            if not os.path.exists(overrides_bundle_path):
-                os.mkdir(overrides_bundle_path)
-
-            self.storage_cls(overrides_bundle_path, self.project_path).run(force=force)
+            overrides_bundle_dir = os.path.join(self.project_path, f'js/{self.overrides_bundle_path}')
+            if not os.path.exists(overrides_bundle_dir):
+                os.mkdir(overrides_bundle_dir)
 
             for bp_name, overrides in current_app.config['UI_OVERRIDES'].items():
                 _overrides_js_template = current_app.jinja_env.from_string(overrides_js_template)
                 overrides_js_content = _overrides_js_template.render({'overrides': overrides})
-                with open(os.path.join(overrides_bundle_path, f'{bp_name}.js'), 'w+') as f:
+                with open(os.path.join(overrides_bundle_dir, f'{bp_name}.js'), 'w+') as f:
                     f.write(overrides_js_content)
 
 
