@@ -1,7 +1,7 @@
 import os
 import pytest
 from flask import Flask
-from oarepo_ui.webpack import OverridableBundleProject, overrides_js_template, project
+from oarepo_ui.webpack import OverridableBundleProject, project
 
 
 def test_overridable_bundle_project_init():
@@ -45,10 +45,3 @@ def test_create_writes_override_files(app, fake_manifest):
         # mock_open.assert_called_once_with(os.path.join(project.project_path, 'js/_overrides/test_bp.js'), 'w+')
         # written_content = mock_open().write.call_args[0][0]
         # assert 'overrideStore.add' in written_content
-
-
-@pytest.fixture
-def app():
-    app = Flask(__name__)
-    app.config['UI_OVERRIDES'] = {}
-    return app
