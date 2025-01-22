@@ -4,6 +4,7 @@ from flask import current_app
 from flask_webpackext import WebpackBundleProject
 from pywebpack import bundles_from_entry_point
 from pywebpack.helpers import cached
+from flask.helpers import get_root_path
 
 
 class OverridableBundleProject(WebpackBundleProject):
@@ -35,6 +36,8 @@ class OverridableBundleProject(WebpackBundleProject):
         :param overrides_bundle_path: Path where special bundle for UI overrides
             if going to be generated.
         """
+        # Following is needed to correctly resolve paths to etc. source package.json from invenio_assets
+        import_name = 'invenio_assets.webpack'
         super(OverridableBundleProject, self).__init__(
             import_name,
             project_folder=project_folder, bundles=bundles, config=config, config_path=config_path)
@@ -68,6 +71,12 @@ class OverridableBundleProject(WebpackBundleProject):
         # TODO: iterate over overrides entries & render mapping templates to bundle path
 
         raise AttributeError(self.project_path, os.listdir(os.path.join(self.project_path, 'js/')))
+
+
+    # @property
+    # def package_json_source_path(self):
+    #     """Full path to the source package.json."""
+    #     raise AttributeError(self._project_template_dir,  'package.json')
 
 
 project = OverridableBundleProject(
