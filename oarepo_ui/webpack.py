@@ -48,9 +48,9 @@ class OverridableBundleProject(WebpackBundleProject):
             if going to be generated.
         """
         # Following is needed to correctly resolve paths to etc. source package.json from invenio_assets
-        import_name = 'invenio_assets.webpack'
+        _import_name = 'invenio_assets.webpack'
         super(OverridableBundleProject, self).__init__(
-            import_name,
+            _import_name,
             project_folder=project_folder, bundles=bundles, config=config, config_path=config_path)
         self.overrides_bundle_path = overrides_bundle_path
 
