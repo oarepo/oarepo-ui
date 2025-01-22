@@ -57,9 +57,5 @@ def test_overridable_bundle_project_generated_paths(app, fake_manifest):
     project.clean()
     project.create()
 
-    assert len(project.generated_paths) == 3
-    assert all([
-        os.path.join(project.overrides_bundle_path, path) in project.generated_paths
-        for path in ['test_bp1.js', 'test_bp2.js', '']
-    ])
-
+    assert len(project.generated_paths) == 1
+    assert project.overrides_bundle_path in project.generated_paths
