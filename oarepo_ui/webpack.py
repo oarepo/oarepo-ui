@@ -9,8 +9,19 @@ overrides_js_template = '''
 import { overrideStore } from 'react-overridable';
 
 {% for key, import_spec in overrides.items() -%}
+
+{% if import_spec|length == 3 -%}
+{%- set import_type = import_spec[2] -%}
+{%- else -%}
+{%- set import_type = 'named' -%}
+{%- endif -%}
+
+{%- if  import_type == 'default' -%}
 import {{ import_spec[0] }} from '{{ import_spec[1] }}';
-{% endfor %}
+{%- else -%}
+import { {{ import_spec[0] }} } from '{{ import_spec[1] }}';
+{%- endif %}
+{% endfor -%}
 
 {% for key, import_spec in overrides.items() -%}
 overrideStore.add('{{ key }}', {{ import_spec[0] }});
