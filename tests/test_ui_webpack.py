@@ -28,7 +28,8 @@ def test_overridable_bundle_project_entry(app):
 
 def test_overridable_bundle_project_entry_file(app, fake_manifest):
     app.config['UI_OVERRIDES'] = {
-        'test_bp': {'componentA.item': ['ComponentA', 'components/ComponentA']}
+        'test_bp': {'componentA.item': ['ComponentA', 'components/ComponentA'],
+                    'componentB.item': ['DefaultComponent', 'components/DefaultComponent', 'default']}
     }
     with app.app_context():
         project.create()
@@ -43,9 +44,11 @@ def test_overridable_bundle_project_entry_file(app, fake_manifest):
             assert overrides_file_path_content == '''
 import { overrideStore } from 'react-overridable';
 
-import ComponentA from 'components/ComponentA';
+import { ComponentA } from 'components/ComponentA';
+import DefaultComponent from 'components/DefaultComponent';
 
-overrideStore.add('componentA.item', ComponentA);'''
+overrideStore.add('componentA.item', ComponentA);
+overrideStore.add('componentB.item', DefaultComponent);'''
 
 
 def test_overridable_bundle_project_generated_paths(app, fake_manifest):
