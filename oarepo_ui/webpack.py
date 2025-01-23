@@ -10,11 +10,11 @@ import { overrideStore } from 'react-overridable';
 
 {% for key, import_spec in overrides.items() -%}
 import {{ import_spec[0] }} from '{{ import_spec[1] }}';
-{%- endfor %}
+{% endfor %}
 
 {% for key, import_spec in overrides.items() -%}
 overrideStore.add('{{ key }}', {{ import_spec[0] }});
-{%- endfor %}
+{% endfor %}
 '''
 
 
