@@ -46,9 +46,9 @@ import { overrideStore } from 'react-overridable';
 
 import { ComponentA } from 'components/ComponentA';
 import DefaultComponent from 'components/DefaultComponent';
-
 overrideStore.add('componentA.item', ComponentA);
-overrideStore.add('componentB.item', DefaultComponent);'''
+overrideStore.add('componentB.item', DefaultComponent);
+'''
 
 
 def test_overridable_bundle_project_generated_paths(app, fake_manifest):
