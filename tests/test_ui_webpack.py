@@ -44,10 +44,12 @@ def test_overridable_bundle_project_entry_file(app, fake_manifest):
         with open(overrides_file_path) as f:
             overrides_file_path_content = f.read()
             assert overrides_file_path_content == '''
-import { overrideStore } from 'react-overridable';
+import { overrideStore, parametrize } from 'react-overridable';
 
 import { ComponentA } from 'components/ComponentA';
 import DefaultComponent from 'components/DefaultComponent';
+
+
 overrideStore.add('componentA.item', ComponentA);
 overrideStore.add('componentB.item', DefaultComponent);
 '''
