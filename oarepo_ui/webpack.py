@@ -6,25 +6,18 @@ from pywebpack import bundles_from_entry_point
 from pywebpack.helpers import cached
 
 overrides_js_template = '''
-import { overrideStore } from 'react-overridable';
+import { overrideStore, parametrize } from 'react-overridable';
 
-{% for key, import_spec in overrides.items() -%}
+{% for key, component in overrides.items() -%}
+{{ component.import_statement | safe }}
+{% endfor %}
 
-{% if import_spec|length == 3 -%}
-{%- set import_type = import_spec[2] -%}
-{%- else -%}
-{%- set import_type = 'named' -%}
-{%- endif -%}
+{%- for key, component in overrides.items() -%}
+{%- if component.props -%}{{ component.parametrize_statement | safe }}{%- endif -%}
+{%- endfor %}
 
-{%- if  import_type == 'default' -%}
-import {{ import_spec[0] }} from '{{ import_spec[1] }}';
-{%- else -%}
-import { {{ import_spec[0] }} } from '{{ import_spec[1] }}';
-{%- endif %}
-{% endfor -%}
-
-{% for key, import_spec in overrides.items() -%}
-overrideStore.add('{{ key }}', {{ import_spec[0] }});
+{% for key, component in overrides.items() -%}
+overrideStore.add('{{ key }}', {{ component.name }});
 {% endfor %}
 '''
 
