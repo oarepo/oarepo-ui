@@ -20,7 +20,7 @@ def test_overridable_bundle_project_init(app):
 
 def test_overridable_bundle_project_entry(app):
     app.config['UI_OVERRIDES'] = {
-        'test_bp': {'componentA': ['ComponentA', 'components/ComponentA']}
+        'test_bp': {'componentA': UIComponent('ComponentA', 'components/ComponentA')}
     }
     with app.app_context():
         entry_points = project.entry
@@ -30,8 +30,8 @@ def test_overridable_bundle_project_entry(app):
 
 def test_overridable_bundle_project_entry_file(app, fake_manifest):
     app.config['UI_OVERRIDES'] = {
-        'test_bp': {'componentA.item': ['ComponentA', 'components/ComponentA'],
-                    'componentB.item': ['DefaultComponent', 'components/DefaultComponent', 'default']}
+        'test_bp': {'componentA.item': UIComponent('ComponentA', 'components/ComponentA'),
+                    'componentB.item': UIComponent('DefaultComponent', 'components/DefaultComponent', 'default')}
     }
     with app.app_context():
         project.create()
