@@ -1,4 +1,6 @@
 import os
+
+from oarepo_ui.ui.component import UIComponent
 from oarepo_ui.webpack import OverridableBundleProject, project
 
 
@@ -53,8 +55,8 @@ overrideStore.add('componentB.item', DefaultComponent);
 
 def test_overridable_bundle_project_generated_paths(app, fake_manifest):
     app.config['UI_OVERRIDES'] = {
-        'test_bp1': {'componentA.item': ['ComponentA', 'components/ComponentA']},
-        'test_bp2': {'componentA.item': ['ComponentB', 'components/ComponentB']}
+        'test_bp1': {'componentA.item': UIComponent('ComponentA', 'components/ComponentA')},
+        'test_bp2': {'componentA.item': UIComponent('ComponentB', 'components/ComponentB')}
     }
 
     project.clean()
