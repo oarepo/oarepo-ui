@@ -1,3 +1,4 @@
+import json
 from typing import Optional, Dict
 
 
@@ -43,7 +44,7 @@ class UIComponent:
     def parametrize_statement(self) -> str | None:
         """JS statement to parametrize the component with props."""
         if self.props:
-            js_props = ", ".join(f"{key}: {repr(value)}" for key, value in self.props.items())
+            js_props = ", ".join(f"{key}: {json.dumps(value)}" for key, value in self.props.items())
             return f"const {self.name} = parametrize({self.import_name}, {{ {js_props} }});"
 
 
