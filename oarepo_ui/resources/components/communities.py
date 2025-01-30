@@ -12,13 +12,13 @@ class AllowedCommunitiesComponent(UIResourceComponent):
     def form_config(
         self,
         *,
-        data: Dict,
+        data: Dict = None,
         identity: Identity,
         form_config: Dict,
         args: Dict,
         view_args: Dict,
-        ui_links: Dict,
-        extra_context: Dict,
+        ui_links: Dict = None,
+        extra_context: Dict = None,
         **kwargs,
     ):
         sorted_allowed_communities = sorted(
@@ -65,43 +65,25 @@ class AllowedCommunitiesComponent(UIResourceComponent):
 
         form_config["preselected_community"] = preselected_community
 
-    def community_to_dict(self, community):
-        return {
-            "slug": str(community.slug),
-            "id": str(community.id),
-            "logo": f"/api/communities/{community.id}/logo",
-            "links": {
-                "self_html": f"/communities/{community.id}/records",
-            },
-            **(community.metadata or {}),
-        }
-
-    def get_allowed_communities(self, identity, action):
-        # get all communities
+    @classmethod
+    def get_allowed_communities(cls, identity, action):
         community_ids = set()
         for need in identity.provides:
             if need.method == "community" and need.value:
                 community_ids.add(need.value)
 
-        # for each community, get workflow
         for community_id in community_ids:
             community = Community.get_record(community_id)
-            if self.user_has_permission(identity, community, action):
-                # get the link to the community
+            if cls.user_has_permission(identity, community, action):
                 yield community
 
-    def user_has_permission(self, identity, community, action):
-        workflow = community.custom_fields.get("workflow")
+    @classmethod
+    def user_has_permission(cls, identity, community, action):
+        workflow = community.custom_fields.get("workflow", "default")
+        return cls.check_user_permissions(str(community.id), workflow, identity, action)
 
-        workflow = workflow or "default"  # TODO: just for testing !!!
-
-        if not workflow:
-            return False
-        return self.check_user_permissions(
-            str(community.id), workflow, identity, action
-        )
-
-    def check_user_permissions(self, community_id, workflow, identity, action):
+    @classmethod
+    def check_user_permissions(cls, community_id, workflow, identity, action):
         from oarepo_workflows.errors import InvalidWorkflowError
         from oarepo_workflows.proxies import current_oarepo_workflows
 
@@ -114,3 +96,15 @@ class AllowedCommunitiesComponent(UIResourceComponent):
             action, data={"parent": {"communities": {"default": community_id}}}
         )
         return permissions.allows(identity)
+
+    @classmethod
+    def community_to_dict(cls, community):
+        return {
+            "slug": str(community.slug),
+            "id": str(community.id),
+            "logo": f"/api/communities/{community.id}/logo",
+            "links": {
+                "self_html": f"/communities/{community.id}/records",
+            },
+            **(community.metadata or {}),
+        }
