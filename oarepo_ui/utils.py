@@ -129,3 +129,15 @@ def can_view_deposit_page() -> bool:
 def clear_view_deposit_page_permission_from_session(*args: Any, **kwargs: Any) -> None:
     """Clear the cached permission for viewing the deposit page from the session."""
     session.pop(view_deposit_page_permission_key, None)
+
+
+def community_to_dict(community):
+    return {
+        "slug": str(community.slug),
+        "id": str(community.id),
+        "logo": f"/api/communities/{community.id}/logo",
+        "links": {
+            "self_html": f"/communities/{community.id}/records",
+        },
+        **(community.metadata or {}),
+    }

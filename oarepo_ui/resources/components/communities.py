@@ -4,7 +4,7 @@ from flask_principal import Identity
 from invenio_communities.communities.records.api import Community
 from invenio_records_resources.services.errors import PermissionDeniedError
 from oarepo_runtime.i18n import lazy_gettext as _
-
+from oarepo_ui.utils import community_to_dict
 from .base import UIResourceComponent
 
 
@@ -27,10 +27,9 @@ class AllowedCommunitiesComponent(UIResourceComponent):
         )
 
         form_config["allowed_communities"] = [
-            self.community_to_dict(community)
-            for community in sorted_allowed_communities
+            community_to_dict(community) for community in sorted_allowed_communities
         ]
-        form_config["generic_community"] = self.community_to_dict(
+        form_config["generic_community"] = community_to_dict(
             Community.pid.resolve("generic")
         )
 
@@ -96,15 +95,3 @@ class AllowedCommunitiesComponent(UIResourceComponent):
             action, data={"parent": {"communities": {"default": community_id}}}
         )
         return permissions.allows(identity)
-
-    @classmethod
-    def community_to_dict(cls, community):
-        return {
-            "slug": str(community.slug),
-            "id": str(community.id),
-            "logo": f"/api/communities/{community.id}/logo",
-            "links": {
-                "self_html": f"/communities/{community.id}/records",
-            },
-            **(community.metadata or {}),
-        }
