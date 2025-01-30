@@ -61,6 +61,8 @@ def app_config(app_config):
         {"section": "B", "fields": [{"field": "bbb", "ui_widget": "Input"}]}
     ]
 
+    app_config["WEBPACKEXT_PROJECT"] = "oarepo_ui.webpack:project"
+
     return app_config
 
 

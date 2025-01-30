@@ -78,10 +78,6 @@ theme = WebpackThemeBundle(
                 "oarepo_ui_components": "./js/oarepo_ui/custom-components.js",
                 "copy_to_clipboard": "./js/oarepo_ui/components/clipboard.js",
                 "record_export": "./js/oarepo_ui/components/record-export.js",
-                # there is already overridable-registry entry point in RDM which
-                # we are inheriting after installing RDM as a dependency
-                # so this avoids name clash
-                "oarepo-overridable-registry": "./js/oarepo_ui/overridable-registry.js",
             },
             dependencies=dependencies,
             devDependencies={"eslint-plugin-i18next": "^6.0.3"},
