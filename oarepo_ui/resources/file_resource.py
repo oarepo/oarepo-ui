@@ -9,7 +9,10 @@ class S3RedirectFileResource(FileResource):
 
     def read_content(self):
         ret = super().read_content()
-        if ret[0].status_code == 302:
-            return ret[0], 302
+        if isinstance(ret, (tuple, list)) and ret:
+            if ret[0].status_code == 302:
+                return ret[0], 302
+            else:
+                return ret
         else:
             return ret
