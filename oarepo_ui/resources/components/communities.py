@@ -2,6 +2,7 @@ from typing import Dict
 
 from flask_principal import Identity
 from invenio_communities.communities.records.api import Community
+from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_records_resources.services.errors import PermissionDeniedError
 from oarepo_runtime.i18n import lazy_gettext as _
 
@@ -30,9 +31,13 @@ class AllowedCommunitiesComponent(UIResourceComponent):
             self.community_to_dict(community)
             for community in sorted_allowed_communities
         ]
-        form_config["generic_community"] = self.community_to_dict(
-            Community.pid.resolve("generic")
-        )
+
+        try:
+            form_config["generic_community"] = self.community_to_dict(
+                Community.pid.resolve("generic")
+            )
+        except PIDDoesNotExistError:
+            raise ValueError("Generic community does not exist.")
 
     def before_ui_create(
         self,
