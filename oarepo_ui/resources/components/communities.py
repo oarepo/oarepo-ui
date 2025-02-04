@@ -105,6 +105,7 @@ class AllowedCommunitiesComponent(UIResourceComponent):
     @classmethod
     def community_to_dict(cls, community):
         return {
+            "access": community.access.dump(),
             "slug": str(community.slug),
             "id": str(community.id),
             "logo": f"/api/communities/{community.id}/logo",

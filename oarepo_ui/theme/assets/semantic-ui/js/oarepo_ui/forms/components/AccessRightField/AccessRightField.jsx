@@ -8,7 +8,7 @@ export const AccessRightField = ({
   fieldPath,
   label,
   labelIcon,
-  showMetadataAccess = true,
+  showMetadataAccess,
   community,
   record,
   recordRestrictionGracePeriod,
