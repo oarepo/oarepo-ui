@@ -4,6 +4,7 @@ from .bleach import AllowedHtmlTagsComponent
 from .communities import AllowedCommunitiesComponent
 from .files import FilesComponent
 from .permissions import PermissionsComponent
+from .files_locked import FilesLockedComponent
 
 __all__ = (
     "UIResourceComponent",
@@ -12,4 +13,5 @@ __all__ = (
     "BabelComponent",
     "FilesComponent",
     "AllowedCommunitiesComponent",
+    "FilesLockedComponent",
 )
