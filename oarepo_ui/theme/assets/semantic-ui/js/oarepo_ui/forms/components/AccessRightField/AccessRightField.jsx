@@ -1,5 +1,5 @@
-import React from "react";
-import { Field } from "formik";
+import React, { useEffect, useRef } from "react";
+import { Field, useFormikContext } from "formik";
 import { AccessRightFieldCmp } from "@js/invenio_rdm_records/src/deposit/fields/AccessField/AccessRightField";
 import PropTypes from "prop-types";
 import { useFormConfig } from "@js/oarepo_ui";
@@ -14,9 +14,26 @@ export const AccessRightField = ({
   recordRestrictionGracePeriod,
   allowRecordRestriction,
 }) => {
+  const { values } = useFormikContext();
   const {
     formConfig: { allowed_communities },
   } = useFormConfig();
+
+  const mounted = useRef(false);
+  // when you enable embargo to scroll the embargo related inputs into view
+  useEffect(() => {
+    // don't scroll it into view on mount if the input exists
+    if (!mounted.current) {
+      mounted.current = true;
+      return;
+    }
+
+    const embargoReasonInput = document.getElementById("access.embargo.reason");
+    if (embargoReasonInput) {
+      const rect = embargoReasonInput.getBoundingClientRect();
+      window.scrollTo(0, document.body.scrollHeight - rect.y);
+    }
+  }, [values?.access?.embargo?.active]);
   return (
     <Field name={fieldPath}>
       {(formik) => {
