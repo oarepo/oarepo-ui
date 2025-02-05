@@ -522,7 +522,6 @@ class RecordsUIResource(UIResource):
         )
 
         form_config["ui_model"] = self.ui_model
-        form_config["filesLocked"] = True
 
         ui_links = self.expand_detail_links(identity=g.identity, record=api_record)
 
@@ -594,7 +593,6 @@ class RecordsUIResource(UIResource):
         )
 
         form_config["ui_model"] = self.ui_model
-        form_config["filesLocked"] = False
 
         extra_context = dict()
 
