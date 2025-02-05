@@ -215,8 +215,6 @@ class RecordsUIResource(UIResource):
             resource_requestctx=resource_requestctx,
             empty_data=empty_data,
         )
-        empty_data["access"]["files"] = "public"
-        empty_data["access"]["record"] = "public"
 
         return empty_data
 

@@ -5,6 +5,7 @@ from .communities import AllowedCommunitiesComponent
 from .files import FilesComponent
 from .permissions import PermissionsComponent
 from .record_restriction import RecordRestrictionComponent
+from .access_empty_record import EmptyRecordAccessComponent
 
 __all__ = (
     "UIResourceComponent",
@@ -14,4 +15,5 @@ __all__ = (
     "FilesComponent",
     "AllowedCommunitiesComponent",
     "RecordRestrictionComponent",
+    "EmptyRecordAccessComponent",
 )
