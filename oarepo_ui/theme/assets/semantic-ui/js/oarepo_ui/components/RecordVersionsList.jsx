@@ -6,7 +6,7 @@
 // Invenio RDM Records is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import _get from "lodash/get";
+import _find from "lodash/find";
 import React, { useEffect, useState } from "react";
 import { Grid, Icon, Message, Placeholder, List, Divider } from "semantic-ui-react";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
@@ -21,14 +21,14 @@ const deserializeRecord = (record) => ({
   publication_date: record?.ui?.publication_date_l10n_medium,
   version: record?.versions?.index,
   links: record.links,
-  pids: [record.id],
+  pids: record?.metadata.objectIdentifiers,
   new_draft_parent_doi: record?.ui?.new_draft_parent_doi,
 });
 
 const NUMBER_OF_VERSIONS = 5;
 
 const RecordVersionItem = ({ item, activeVersion }) => {
-  const doi = _get(item.pids, "doi.identifier", "");
+  const doi = _find(item.pids, (o) => o.scheme.toLowerCase() === "doi")?.identifier ?? "";
   return (
     <List.Item key={item.id} {...(activeVersion && { className: "version active" })}>
       <List.Content floated="left">
