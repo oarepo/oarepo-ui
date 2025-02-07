@@ -131,8 +131,6 @@ export const RecordVersionsList = ({ initialRecord, isPreview }) => {
       try {
         const result = await cancellableFetchVersions.promise;
         let { hits, total } = result.data.hits;
-        console.error("hits", hits);
-        console.error("total", total);
         hits = hits.map(deserializeRecord);
         setCurrentRecordInResults(hits.some((record) => record.id === recid));
         setRecordVersions({ hits, total });
@@ -150,9 +148,7 @@ export const RecordVersionsList = ({ initialRecord, isPreview }) => {
       try {
         await fetchRecordAndSetState();
         await fetchVersionsAndSetState();
-      } catch (error) {
-        console.error("Error fetching record versions", error);
-      }
+      } catch (error) {}
     }
     fetchData();
 
