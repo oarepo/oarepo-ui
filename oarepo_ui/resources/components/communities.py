@@ -5,11 +5,23 @@ from invenio_communities.communities.records.api import Community
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_records_resources.services.errors import PermissionDeniedError
 from oarepo_runtime.i18n import lazy_gettext as _
-
 from .base import UIResourceComponent
 
 
 class AllowedCommunitiesComponent(UIResourceComponent):
+    def __init__(self, resource) -> None:
+        """
+        :param resource: the resource instance
+        """
+        import warnings
+
+        warnings.warn(
+            "AllowedCommunitiesComponent is deprecated, please use the one from oarepo_communities.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        super().__init__(resource)
+
     def form_config(
         self,
         *,
