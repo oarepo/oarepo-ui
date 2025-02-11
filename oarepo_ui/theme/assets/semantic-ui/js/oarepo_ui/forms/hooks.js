@@ -202,6 +202,103 @@ export const useDepositApiClient = ({
     ? new baseApiClient(createUrl, recordSerializer)
     : new OARepoDepositApiClient(createUrl, recordSerializer);
 
+  async function partialSave({
+    saveWithoutDisplayingValidationErrors = false,
+    errorMessage = null,
+    successMessage = null,
+    includedErrorPaths = [],
+  } = {}) {
+    let response;
+    let errorsObj = {};
+    const errorPaths = [];
+    setSubmitting(true);
+    setErrors({});
+
+    //  purge any existing errors in internal fields before making save action
+
+    const valuesWithoutInternalFields = _omit(values, internalFieldsArray);
+    try {
+      response = await apiClient.saveOrCreateDraft(valuesWithoutInternalFields);
+      // when I am creating a new draft, it saves the response into formik's state, so that I would have access
+      // to the draft and draft links in the app. I we don't do that then each time I click on save it will
+      // create new draft, as I don't actually refresh the page, so the record from html is still empty. Invenio,
+      // solves this by keeping record in the store, but the idea here is to not create some central state,
+      // but use formik as some sort of auxiliary state.
+
+      if (!valuesWithoutInternalFields.id) {
+        window.history.replaceState(
+          undefined,
+          "",
+          relativeUrl(response.links.edit_html)
+        );
+      }
+      const filteredErrors = response.errors.filter((error) =>
+        includedErrorPaths.some((path) => error.field.startsWith(path))
+      );
+      if (!saveWithoutDisplayingValidationErrors && filteredErrors.length > 0) {
+        for (const error of filteredErrors) {
+          errorsObj = setIn(errorsObj, error.field, error.messages.join(" "));
+          errorPaths.push(error.field);
+        }
+        if (filteredErrors.length > 0) {
+          errorsObj["BEvalidationErrors"] = {
+            errors: filteredErrors,
+            errorMessage:
+              errorMessage ||
+              i18next.t(
+                "Draft saved with validation errors. Please correct the following issues and try again:"
+              ),
+            errorPaths,
+          };
+        }
+
+        return false;
+      }
+      if (!saveWithoutDisplayingValidationErrors)
+        errorsObj["successMessage"] = successMessage;
+      return response;
+    } catch (error) {
+      // handle 400 errors. Normally, axios would put messages in error.response. But for example
+      // offline Error message does not produce a response, so in this way we can display
+      // network error message. Additionally, if request returns 400 and contains validation errors
+      // we can display them in the same manner as for the case when 200 is returned.
+      if (error?.response?.data?.errors?.length > 0) {
+        for (const err of error.response.data.errors) {
+          errorsObj = setIn(errorsObj, err.field, err.messages.join(" "));
+        }
+        errorsObj["BEvalidationErrors"] = {
+          errors: error.response.data.errors,
+          errorMessage:
+            errorMessage ||
+            i18next.t(
+              "Draft saved with validation errors. Please correct the following issues and try again:"
+            ),
+        };
+      } else {
+        errorsObj["httpErrors"] =
+          error?.response?.data?.message ?? error.message;
+      }
+      return false;
+    } finally {
+      // put state changing calls together, in order to avoid multiple rerenders during form submit
+      setFormikState((prevState) => ({
+        ...prevState,
+        // it is a little bit problematic that when you save with errors, the server does not actually return in the response
+        // the value you filled if it resulted in validation error. It can cause discrepancy between what is shown in the form and actual
+        // state in formik so we preserve metadata in this way
+        values: {
+          ...prevState.values,
+          ...{
+            ..._omit(response, ["metadata"]),
+            ..._pick(values, ["metadata"]),
+          },
+        },
+        errors: errorsObj,
+        isSubmitting: false,
+      }));
+    }
+  }
+
   async function save({
     saveWithoutDisplayingValidationErrors = false,
     errorMessage = null,
@@ -433,6 +530,7 @@ export const useDepositApiClient = ({
     values,
     isSubmitting,
     save,
+    partialSave,
     publish,
     read,
     _delete,

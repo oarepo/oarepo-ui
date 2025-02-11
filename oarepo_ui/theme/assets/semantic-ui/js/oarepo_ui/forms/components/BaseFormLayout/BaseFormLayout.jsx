@@ -25,7 +25,13 @@ const FormTitle = () => {
     getIn(values, "metadata.title", "") ||
     getTitleFromMultilingualObject(getIn(values, "title", "")) ||
     "";
-  return recordTitle && <Header as="h1">{recordTitle}</Header>;
+  return (
+    recordTitle && (
+      <Header as="h1">
+        <span dangerouslySetInnerHTML={{ __html: recordTitle }}></span>
+      </Header>
+    )
+  );
 };
 
 export const BaseFormLayout = ({ formikProps }) => {
