@@ -12,6 +12,20 @@ import { i18next } from "@translations/oarepo_ui/i18next";
 // component to be used downstream of Formik that plugs into Formik's state and displays any errors
 // that apiClient sent to formik in auxilary keys. The keys are later removed when submitting the form
 
+const findAccordion = (fieldPath, accordionData) => {
+  const splitPath = fieldPath.split(".");
+  let matchedAccordion;
+  for (let i = splitPath.length; i > 0; i--) {
+    const partialPath = splitPath.slice(0, i).join(".");
+    matchedAccordion = accordionData.find((accordion) =>
+      accordion.includesPaths.some((path) => partialPath.includes(path))
+    );
+    if (matchedAccordion) {
+      break;
+    }
+  }
+  return matchedAccordion;
+};
 // function to turn last part of fieldPath from form camelCase to Camel Case
 const titleCase = (fieldPath) =>
   _startCase(fieldPath.split(".")[fieldPath.split(".").length - 1]);
@@ -32,6 +46,11 @@ const CustomMessage = ({ children, ...uiProps }) => {
     <Message
       onDismiss={handleDismiss}
       className="rel-mb-2 form-feedback"
+      style={{
+        boxShadow: "none",
+        paddingLeft: "8rem",
+        paddingRight: "8rem",
+      }}
       {...uiProps}
     >
       {children}
@@ -43,7 +62,11 @@ CustomMessage.propTypes = {
   children: PropTypes.node,
 };
 
-export const FormFeedback = () => {
+export const FormFeedback = ({
+  activeAccordion,
+  handleAccordionChange,
+  accordionData,
+}) => {
   const { errors } = useFormikContext();
   const beValidationErrors = getIn(errors, "BEvalidationErrors", {});
   const feValidationErrors = getIn(errors, "FEvalidationErrors", {});
@@ -52,7 +75,13 @@ export const FormFeedback = () => {
     httpError = httpError?.response?.data.message;
   }
   const { getFieldData } = useFieldData();
-
+  const handleErrorClick = (fieldPath) => {
+    const accordion = findAccordion(fieldPath, accordionData);
+    if (accordion) {
+      handleAccordionChange(accordion.id);
+      setTimeout(() => scrollToElement(fieldPath), 100);
+    }
+  };
   const successMessage = getIn(errors, "successMessage", "");
   if (!_isEmpty(beValidationErrors))
     return (
@@ -66,7 +95,7 @@ export const FormFeedback = () => {
             })?.label;
             return (
               <Message.Item
-                onClick={() => scrollToElement(error.field)}
+                onClick={() => handleErrorClick(error.field)}
                 key={`${error.field}-${index}`}
               >{`${
                 label || // ugly hack, but simply the path for file validation errors is completely

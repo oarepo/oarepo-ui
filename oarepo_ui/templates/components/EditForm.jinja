@@ -6,17 +6,14 @@
 {%- endif %}
 
 {%- block page_body %}
+
 <div class="ui main container">
   <div class="ui relaxed grid">
     <div class="one column row">
       {# Main form content #}
       <div class="column">
       {%- block form_main_content %}
-        {%- if form_config.updateUrl %}
-        <h3 class="mt-20 ui header">{{  _("Edit item") }}</h3>
-        {%- elif form_config.createUrl -%}
-        <h3 class="mt-20 ui header">{{ _("New item") }}</h3>
-        {%- endif %}
+  
         {%- if record %}
         <input id="record" type="hidden" name="record" value='{{data | tojson }}' />
         {%- endif %}

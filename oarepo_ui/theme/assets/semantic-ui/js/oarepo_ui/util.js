@@ -167,8 +167,8 @@ export const unique = (value, context, path, errorString) => {
 export const scrollToElement = (fieldPath) => {
   const findElementAtPath = (path) => {
     const element =
-      document.querySelector(`label[for="${path}"]`) ||
-      document.getElementById(path);
+      document.getElementById(path) ||
+      document.querySelector(`label[for="${path}"]`);
     return element;
   };
 
@@ -178,7 +178,15 @@ export const scrollToElement = (fieldPath) => {
     const partialPath = splitPath.slice(0, i).join(".");
     const element = findElementAtPath(partialPath);
     if (element) {
+      console.log(element);
       element.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (
+        element.tagName === "INPUT" ||
+        element.tagName === "TEXTAREA" ||
+        element.isContentEditable
+      ) {
+        element.focus();
+      }
       return;
     }
   }

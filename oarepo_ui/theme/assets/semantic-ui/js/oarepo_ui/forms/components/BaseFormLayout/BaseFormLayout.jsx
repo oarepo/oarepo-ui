@@ -34,7 +34,7 @@ const FormTitle = () => {
   );
 };
 
-export const BaseFormLayout = ({ formikProps }) => {
+export const BaseFormLayout = ({ formikProps, ...rest }) => {
   const {
     record,
     formConfig: { overridableIdPrefix },
@@ -96,17 +96,20 @@ export const BaseFormLayout = ({ formikProps }) => {
       <Grid>
         <Ref innerRef={formFeedbackRef}>
           <Grid.Column id="main-content" mobile={16} tablet={16} computer={11}>
-            <FormTitle />
+            {/* <FormTitle /> */}
             <Sticky context={formFeedbackRef} offset={20}>
-              <Overridable
+              {/* <Overridable
                 id={buildUID(overridableIdPrefix, "Errors.container")}
+                {...rest}
               >
-                <FormFeedback />
-              </Overridable>
+                <FormFeedback {...rest} />
+              </Overridable> */}
             </Sticky>
             <Overridable
               id={buildUID(overridableIdPrefix, "FormFields.container")}
               record={record}
+              formFeedbackRef={formFeedbackRef}
+              {...rest}
             >
               <>
                 <pre>
@@ -132,10 +135,11 @@ export const BaseFormLayout = ({ formikProps }) => {
         </Ref>
         <Ref innerRef={sidebarRef}>
           <Grid.Column id="control-panel" mobile={16} tablet={16} computer={5}>
-            <Sticky context={sidebarRef} offset={20}>
+            <Sticky context={sidebarRef} offset={60}>
               <Overridable
                 id={buildUID(overridableIdPrefix, "FormActions.container")}
                 record={record}
+                {...rest}
               >
                 <Card fluid>
                   <Card.Content>

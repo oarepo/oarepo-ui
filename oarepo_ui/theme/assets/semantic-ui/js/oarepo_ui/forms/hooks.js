@@ -232,10 +232,13 @@ export const useDepositApiClient = ({
           relativeUrl(response.links.edit_html)
         );
       }
-      const filteredErrors = response.errors.filter((error) =>
+      const filteredErrors = response?.errors?.filter((error) =>
         includedErrorPaths.some((path) => error.field.startsWith(path))
       );
-      if (!saveWithoutDisplayingValidationErrors && filteredErrors.length > 0) {
+      if (
+        !saveWithoutDisplayingValidationErrors &&
+        filteredErrors?.length > 0
+      ) {
         for (const error of filteredErrors) {
           errorsObj = setIn(errorsObj, error.field, error.messages.join(" "));
           errorPaths.push(error.field);

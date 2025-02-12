@@ -9,13 +9,25 @@
 {% endif %}
 {% endblock header %}
 
-{%- block page_header %}
-{% if not embedded %}{{ super() }}{% endif %}
-{% endblock page_header %}
+   {%- block body_inner %}
 
-{%- block page_footer %}
-{% if not embedded %}{{ super() }}{% endif %}
-{% endblock page_footer %}
+        {%- block page_header %}
+          {% include config.THEME_HEADER_TEMPLATE %}
+        {%- endblock page_header %}
+        <div id="form-steps"></div>
+        <main id="main">
+        <div class="invenio-page-body">
+          {%- block page_body %}
+            {% include "invenio_theme/body.html" %}
+          {%- endblock page_body %}
+        </div>
+        </main>
+
+        {%- block page_footer %}
+          {% include config.THEME_FOOTER_TEMPLATE %}
+        {%- endblock page_footer %}
+
+      {%- endblock body_inner %}
 
 {%- block css%}
 {{ super() }}
