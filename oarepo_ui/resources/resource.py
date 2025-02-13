@@ -2,6 +2,7 @@ import copy
 from functools import partial
 from os.path import splitext
 from typing import TYPE_CHECKING, Iterator
+import json
 
 import deepmerge
 from flask import Response, abort, g, redirect, request, Blueprint
@@ -246,6 +247,9 @@ class RecordsUIResource(UIResource):
                 args=resource_requestctx.args,
                 view_args=resource_requestctx.view_args,
             )
+        record_versions = self.api_service.search_versions(g.identity, api_record.id)
+        previous_version_json = json.dumps(next(record_versions.hits)["metadata"])
+        current_version_json = json.dumps(api_record.to_dict()["metadata"])
 
         # TODO: handle permissions UI way - better response than generic error
         record = self.config.ui_serializer.dump_obj(api_record.to_dict())
@@ -279,9 +283,13 @@ class RecordsUIResource(UIResource):
             view_args=resource_requestctx.view_args,
             ui_links=ui_links,
             is_preview=is_preview,
+            previous_version_json=previous_version_json,
+            current_version_json=current_version_json,
         )
 
         metadata = dict(record.get("metadata", record))
+        extra_context["previous_version_json"] = previous_version_json
+        extra_context["current_version_json"] = current_version_json
         render_kwargs = {
             **extra_context,
             "extra_context": extra_context,  # for backward compatibility
@@ -314,9 +322,7 @@ class RecordsUIResource(UIResource):
     @request_file_view_args
     def published_file_preview(self, *args, **kwargs):
         """Return file preview for published record."""
-        record = self._get_record(
-            resource_requestctx, allow_draft=False
-        )._record
+        record = self._get_record(resource_requestctx, allow_draft=False)._record
 
         return self._file_preview(record)
 
@@ -324,9 +330,7 @@ class RecordsUIResource(UIResource):
     @request_file_view_args
     def draft_file_preview(self, *args, **kwargs):
         """Return file preview for draft record."""
-        record = self._get_record(
-            resource_requestctx, allow_draft=True
-        )._record
+        record = self._get_record(resource_requestctx, allow_draft=True)._record
         return self._file_preview(record)
 
     def _file_preview(self, record):
