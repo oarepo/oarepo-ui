@@ -248,8 +248,8 @@ class RecordsUIResource(UIResource):
                 view_args=resource_requestctx.view_args,
             )
         record_versions = self.api_service.search_versions(g.identity, api_record.id)
-        previous_version_json = json.dumps(next(record_versions.hits)["metadata"])
-        current_version_json = json.dumps(api_record.to_dict()["metadata"])
+        previous_version_json = json.dumps(next(record_versions.hits))
+        current_version_json = json.dumps(api_record.to_dict())
 
         # TODO: handle permissions UI way - better response than generic error
         record = self.config.ui_serializer.dump_obj(api_record.to_dict())
