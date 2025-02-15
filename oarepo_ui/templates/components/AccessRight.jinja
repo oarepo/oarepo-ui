@@ -1,0 +1,23 @@
+{# def access, search_link, searchFacet="access_status" #}
+
+{% set icons = {
+    "open": "/static/icons/locks/zamky_open_access.svg",
+    "restricted": "/static/icons/locks/zamky_Partialy_closed_access.svg",
+    "embargoed": "/static/icons/locks/zamky_Closed_access.svg",
+    "metadata-only": "/static/icons/locks/zamky_Partialy_closed_access.svg"
+} %}
+
+{% if access.id == "embargoed" %}
+    {% set tooltipText = "{} - {} ({})".format(access["title_l10n"], access["description_l10n"], access["embargo_date_l10n"]) %}
+{% else %}
+    {% set tooltipText = "{} - {}".format(access["title_l10n"], access["description_l10n"]) %}
+{% endif %}
+
+
+{% set href = search_link ~ "?q=&f=" ~ searchFacet ~ ":" ~ access["id"] %}
+
+<div data-tooltip="{{ tooltipText }}" class="inline">
+    <a href="{{ href }}" target="_blank" rel="noopener noreferrer"> 
+        <img class="ui image mini inline" src="{{ icons[access.id] }}" alt="{{ access.id }}" title="{{ access.id }}" />
+    </a>
+</div>

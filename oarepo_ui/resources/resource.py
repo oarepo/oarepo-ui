@@ -215,6 +215,7 @@ class RecordsUIResource(UIResource):
             resource_requestctx=resource_requestctx,
             empty_data=empty_data,
         )
+
         return empty_data
 
     @property
