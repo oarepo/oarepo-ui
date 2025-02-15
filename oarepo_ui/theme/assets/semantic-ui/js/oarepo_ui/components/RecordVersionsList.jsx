@@ -18,8 +18,9 @@ const deserializeRecord = (record) => ({
   id: record.id,
   parent: record?.parent,
   parent_id: record?.parent?.id,
-  publication_date: record?.ui?.publication_date_l10n_medium,
+  publication_date: record.metadata?.dateIssued,
   version: record?.versions?.index,
+  version_note: record.metadata?.version,
   links: record.links,
   pids: record?.metadata.objectIdentifiers,
   new_draft_parent_doi: record?.ui?.new_draft_parent_doi,
@@ -32,24 +33,36 @@ const RecordVersionItem = ({ item, activeVersion }) => {
   return (
     <List.Item key={item.id} {...(activeVersion && { className: "version active" })}>
       <List.Content floated="left">
-        {activeVersion ? (
-          <span className="text-break">
-            {i18next.t("Version {{- version}}", { version: item.version })}
-          </span>
-        ) : (
-          <a href={`/docs/${item.id}`} className="text-break">
-            {i18next.t("Version {{- version}}", { version: item.version })}
-          </a>
-        )}
+        <List.Header>
+          {activeVersion ? (
+            <span className="text-break">
+              {i18next.t("Version {{- version}}", { version: item.version })}
+            </span>
+          ) : (
+            <a href={`/docs/${item.id}`} className="text-break">
+              {i18next.t("Version {{- version}}", { version: item.version })}
+            </a>
+          )}
+        </List.Header>
 
-        {doi && (
-          <a
-            href={`https://doi.org/${doi}`}
-            className={"doi" + (activeVersion ? " text-muted-darken" : " text-muted")}
-          >
-            {doi}
-          </a>
-        )}
+        <List.Description>
+          {doi && (
+            <div>
+              DOI:{" "}
+              <a
+                href={`https://doi.org/${doi}`}
+                className={"doi" + (activeVersion ? " text-muted-darken" : " text-muted")}
+              >
+                {doi}
+              </a>
+            </div>
+          )}
+          {item.version_note && (
+            <div>
+              {item.version_note}
+            </div>
+          )}
+        </List.Description>
       </List.Content>
 
       <List.Content floated="right">
