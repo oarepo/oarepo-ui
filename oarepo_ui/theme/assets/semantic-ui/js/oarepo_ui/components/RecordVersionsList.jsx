@@ -8,7 +8,7 @@
 
 import _find from "lodash/find";
 import React, { useEffect, useState } from "react";
-import { Grid, Icon, Message, Placeholder, List, Divider } from "semantic-ui-react";
+import { Grid, Icon, Message, Placeholder, List } from "semantic-ui-react";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
 import PropTypes from "prop-types";
 import { Trans } from "react-i18next";
@@ -99,7 +99,6 @@ export const RecordVersionsList = ({ initialRecord, isPreview }) => {
   const recid = recordDeserialized.id;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentRecordInResults, setCurrentRecordInResults] = useState(false);
   const [recordVersions, setRecordVersions] = useState({});
 
   useEffect(() => {
@@ -145,7 +144,6 @@ export const RecordVersionsList = ({ initialRecord, isPreview }) => {
         const result = await cancellableFetchVersions.promise;
         let { hits, total } = result.data.hits;
         hits = hits.map(deserializeRecord);
-        setCurrentRecordInResults(hits.some((record) => record.id === recid));
         setRecordVersions({ hits, total });
         setLoading(false);
       } catch (error) {
@@ -193,64 +191,62 @@ export const RecordVersionsList = ({ initialRecord, isPreview }) => {
   );
 
   const recordVersionscmp = () => (
-    <List relaxed divided>
+    <>
       {isPreview ? <PreviewMessage /> : null}
-      {recordVersions.hits.map((item) => (
-        <RecordVersionItem
-          key={item.id}
-          item={item}
-          activeVersion={item.id === recid}
-        />
-      ))}
-      {!currentRecordInResults && (
-        <>
-          <Divider horizontal>...</Divider>
-          <RecordVersionItem item={recordDeserialized} activeVersion />
-        </>
-      )}
-      {recordVersions.total > 1 && (
-        <Grid className="mt-0">
-          <Grid.Row centered>
-            <a
-              href={`/docs?q=parent.id:${recordDeserialized.parent_id}&sort=newest&f=allversions:true`}
-              className="font-small"
-            >
-              {i18next.t(`View all {{count}} versions`, {
-                count: recordVersions.total,
-              })}
-            </a>
-          </Grid.Row>
-        </Grid>
-      )}
-      {recordParentDOI ? (
-        <List.Item className="parent-doi pr-0">
-          <List.Content floated="left">
-            <Trans>
-              <p className="text-muted">
-                <strong>Cite all versions?</strong> You can cite all versions by using
-                the DOI{" "}
-                <a href={recordDeserialized.links.parent_doi}>{recordParentDOI}</a>.
-                This DOI represents all versions, and will always resolve to the latest
-                one. <a href="/help/versioning">Read more</a>.
-              </p>
-            </Trans>
-          </List.Content>
-        </List.Item>
-      ) : recordDraftParentDOIFormat ? (
-        // new drafts without registered parent dois yet
-        <List.Item className="parent-doi pr-0">
-          <List.Content floated="left">
-            <Trans>
-              <p className="text-muted">
-                <strong>Cite all versions?</strong> You can cite all versions by using
-                the DOI {recordDraftParentDOIFormat}. The DOI is registered when the
-                first version is published. <a href="/help/versioning">Read more</a>.
-              </p>
-            </Trans>
-          </List.Content>
-        </List.Item>
-      ) : null}
-    </List>
+      {recordVersions.total > 0 && 
+        <List relaxed divided>
+          {recordVersions.hits.map((item) => (
+            <RecordVersionItem
+              key={item.id}
+              item={item}
+              activeVersion={item.id === recid}
+            />
+          ))}
+          {recordVersions.total > 1 && (
+            <Grid className="mt-0">
+              <Grid.Row centered>
+                <a
+                  href={`/docs?q=parent.id:${recordDeserialized.parent_id}&sort=newest&f=allversions:true`}
+                  className="font-small"
+                >
+                  {i18next.t(`View all {{count}} versions`, {
+                    count: recordVersions.total,
+                  })}
+                </a>
+              </Grid.Row>
+            </Grid>
+          )}
+          {recordParentDOI ? (
+            <List.Item className="parent-doi pr-0">
+              <List.Content floated="left">
+                <Trans>
+                  <p className="text-muted">
+                    <strong>Cite all versions?</strong> You can cite all versions by using
+                    the DOI{" "}
+                    <a href={recordDeserialized.links.parent_doi}>{recordParentDOI}</a>.
+                    This DOI represents all versions, and will always resolve to the latest
+                    one. <a href="/help/versioning">Read more</a>.
+                  </p>
+                </Trans>
+              </List.Content>
+            </List.Item>
+          ) : recordDraftParentDOIFormat ? (
+            // new drafts without registered parent dois yet
+            <List.Item className="parent-doi pr-0">
+              <List.Content floated="left">
+                <Trans>
+                  <p className="text-muted">
+                    <strong>Cite all versions?</strong> You can cite all versions by using
+                    the DOI {recordDraftParentDOIFormat}. The DOI is registered when the
+                    first version is published. <a href="/help/versioning">Read more</a>.
+                  </p>
+                </Trans>
+              </List.Content>
+            </List.Item>
+          ) : null}
+        </List>
+      }
+    </>
   );
 
   return loading ? loadingcmp() : error ? errorMessagecmp() : recordVersionscmp();
