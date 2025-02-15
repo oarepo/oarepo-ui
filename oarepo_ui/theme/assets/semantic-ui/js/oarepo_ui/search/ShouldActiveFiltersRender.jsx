@@ -9,14 +9,13 @@ const ShouldActiveFiltersRenderComponent = ({
   children,
 }) => {
   const { filters } = currentQueryState;
-  const searchAppContext = useContext(SearchConfigurationContext);
-  const {
-    initialQueryState: { filters: initialFilters },
-  } = searchAppContext;
+  const { aggs } = useContext(SearchConfigurationContext);
+  const aggNames = aggs.map((agg) => agg.aggName);
+  const activeFiltersNumber = filters
+    .map((filter) => filter[0])
+    .filter((filter) => aggNames.includes(filter)).length;
   return (
-    <ShouldRender condition={filters?.length > initialFilters?.length}>
-      {children}
-    </ShouldRender>
+    <ShouldRender condition={activeFiltersNumber > 0}>{children}</ShouldRender>
   );
 };
 

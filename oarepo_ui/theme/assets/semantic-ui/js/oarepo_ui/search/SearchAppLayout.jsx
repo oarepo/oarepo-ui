@@ -23,14 +23,17 @@ export const ActiveFiltersCountFloatingLabelComponent = ({
   className,
 }) => {
   const { filters } = currentQueryState;
-  const searchAppContext = useContext(SearchConfigurationContext);
-  const {
-    initialQueryState: { filters: initialFilters },
-  } = searchAppContext;
+  const { aggs } = useContext(SearchConfigurationContext);
+  const aggNames = aggs.map((agg) => agg.aggName);
+  const activeFiltersNumber = filters
+    .map((filter) => filter[0])
+    .filter((filter) => aggNames.includes(filter)).length;
   return (
-    <Label floating circular size="mini" className={className}>
-      {filters.length - initialFilters.length}
-    </Label>
+    activeFiltersNumber > 0 && (
+      <Label floating circular size="mini" className={className}>
+        {activeFiltersNumber}
+      </Label>
+    )
   );
 };
 

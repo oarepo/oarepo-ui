@@ -4,7 +4,6 @@ import { Button } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import PropTypes from "prop-types";
 import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
-import _uniq from "lodash/uniq";
 
 // TODO: in next iteration, rethink how handling of initialFilters/ignored filters is to be handled
 // in the best way
@@ -14,20 +13,16 @@ const ClearFiltersButtonComponent = ({
   updateQueryState,
   currentQueryState,
   currentResultsState,
-  ignoredFilters,
   clearFiltersButtonClassName,
   ...uiProps
 }) => {
   const { filters } = currentQueryState;
-  const searchAppContext = useContext(SearchConfigurationContext);
-  const {
-    initialQueryState: { filters: initialFilters },
-  } = searchAppContext;
+  const { aggs } = useContext(SearchConfigurationContext);
 
-  const allFiltersToIgnore = _uniq([
-    ...initialFilters.map((f) => f[0]),
-    ...ignoredFilters,
-  ]);
+  const filtersToIgnore = filters
+    .filter((filter) => !aggs.map((agg) => agg.aggName).includes(filter[0]))
+    .map((filter) => filter[0]);
+
   return (
     <Button
       className={clearFiltersButtonClassName}
@@ -36,7 +31,7 @@ const ClearFiltersButtonComponent = ({
       onClick={() =>
         updateQueryState({
           ...currentQueryState,
-          filters: filters.filter((f) => allFiltersToIgnore.includes(f[0])),
+          filters: filters.filter((f) => filtersToIgnore.includes(f[0])),
         })
       }
       icon="delete"

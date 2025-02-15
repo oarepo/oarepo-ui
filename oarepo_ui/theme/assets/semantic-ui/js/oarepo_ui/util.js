@@ -8,6 +8,7 @@ import * as Yup from "yup";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { format } from "date-fns";
 import axios from "axios";
+import { overrideStore } from "react-overridable";
 
 export const getInputFromDOM = (elementName) => {
   const element = document.getElementsByName(elementName);
@@ -126,6 +127,8 @@ export async function loadAppComponents({
     ...resourceConfigComponents,
     ...componentOverrides,
     ...templateComponents,
+    // make it possible to override from invenio.cfg as intermediary step, until this is decomissioned
+    ...overrideStore.getAll(),
   };
 
   return loadComponents(overridableIdPrefix, components);
