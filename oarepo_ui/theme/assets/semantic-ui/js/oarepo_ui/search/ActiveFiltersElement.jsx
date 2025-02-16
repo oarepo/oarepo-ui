@@ -92,5 +92,3 @@ ActiveFiltersElementComponent.propTypes = {
     }).isRequired,
   }).isRequired,
 };
-
-ActiveFiltersElementComponent.defaultProps = { ignoredFilters: [] };
