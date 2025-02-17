@@ -9,3 +9,50 @@
     }
   }
 }
+
+.ui.card.access-right {
+  width: unset;
+  padding: 0 1rem;
+  font-size: 1rem;
+  .field-label-class {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .ui.fitted.checkbox {
+    margin-top: 0.5rem;
+  }
+
+  .content.extra {
+    .field {
+      margin-bottom: 0;
+    }
+    label.helptext {
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+  }
+
+  .field .content:not(:last-child) {
+    border-bottom: 1px solid @solidBorderColor;
+  }
+  .disabled {
+    opacity: 0.5;
+  }
+  .content {
+    padding: 1rem 0;
+
+    .ui.message {
+      padding: 1em 0.7em;
+      margin: 0;
+    }
+  }
+
+  .disabled.description {
+    margin-top: 3px;
+  }
+
+  .ui.divider {
+    margin: 0.3rem 0;
+  }
+}
