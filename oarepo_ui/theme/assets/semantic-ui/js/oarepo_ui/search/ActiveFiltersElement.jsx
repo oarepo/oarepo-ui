@@ -1,13 +1,11 @@
 import PropTypes from "prop-types";
-import React, { useContext } from "react";
+import React from "react";
 import _groupBy from "lodash/groupBy";
 import _map from "lodash/map";
 import { Label, Icon, Grid } from "semantic-ui-react";
 import { withState } from "react-searchkit";
-import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
 import { ClearFiltersButton } from "@js/oarepo_ui";
-// TODO: in next iteration, rethink how handling of initialFilters/ignored filters is to be handled
-// in the best way
+import { useActiveSearchFilters } from "./hooks";
 
 const getLabel = (filter, aggregations) => {
   const aggName = filter[0];
@@ -34,12 +32,7 @@ const ActiveFiltersElementComponent = ({
     data: { aggregations },
   },
 }) => {
-  const { aggs } = useContext(SearchConfigurationContext);
-  const aggNames = aggs.map((agg) => agg.aggName);
-  const activeFilters = filters.filter((filter) =>
-    aggNames.includes(filter[0])
-  );
-
+  const activeFilters = useActiveSearchFilters(filters);
   const groupedData = _groupBy(activeFilters, 0);
   return (
     <Grid>

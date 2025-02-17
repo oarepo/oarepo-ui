@@ -1,21 +1,21 @@
-import React, { useContext } from "react";
+import React from "react";
 import { withState } from "react-searchkit";
-import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
 import PropTypes from "prop-types";
 import { ShouldRender } from "@js/oarepo_ui";
+import { useActiveSearchFilters } from "./hooks";
 
 const ShouldActiveFiltersRenderComponent = ({
   currentQueryState,
   children,
 }) => {
   const { filters } = currentQueryState;
-  const { aggs } = useContext(SearchConfigurationContext);
-  const aggNames = aggs.map((agg) => agg.aggName);
-  const activeFiltersNumber = filters
-    .map((filter) => filter[0])
-    .filter((filter) => aggNames.includes(filter)).length;
+
+  const activeFilters = useActiveSearchFilters(filters);
+
   return (
-    <ShouldRender condition={activeFiltersNumber > 0}>{children}</ShouldRender>
+    <ShouldRender condition={activeFilters?.length > 0}>
+      {children}
+    </ShouldRender>
   );
 };
 

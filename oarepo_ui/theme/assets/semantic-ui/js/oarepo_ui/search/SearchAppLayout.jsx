@@ -15,19 +15,16 @@ import {
 import { ResultOptions } from "@js/invenio_search_ui/components/Results";
 import { ClearFiltersButton } from "./ClearFiltersButton";
 import { ShouldActiveFiltersRender } from "@js/oarepo_ui";
+import { useActiveSearchFilters } from "./hooks";
 
 const ResultOptionsWithState = withState(ResultOptions);
 
 export const ActiveFiltersCountFloatingLabelComponent = ({
-  currentQueryState,
+  currentQueryState: { filters },
   className,
 }) => {
-  const { filters } = currentQueryState;
-  const { aggs } = useContext(SearchConfigurationContext);
-  const aggNames = aggs.map((agg) => agg.aggName);
-  const activeFiltersNumber = filters
-    .map((filter) => filter[0])
-    .filter((filter) => aggNames.includes(filter)).length;
+  const activeFiltersNumber = useActiveSearchFilters(filters)?.length;
+
   return (
     activeFiltersNumber > 0 && (
       <Label floating circular size="mini" className={className}>
