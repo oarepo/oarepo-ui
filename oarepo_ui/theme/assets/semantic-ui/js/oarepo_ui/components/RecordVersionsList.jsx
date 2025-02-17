@@ -28,7 +28,7 @@ const deserializeRecord = (record) => ({
 
 const NUMBER_OF_VERSIONS = 5;
 
-const RecordVersionItem = ({ item, activeVersion }) => {
+const RecordVersionItem = ({ item, activeVersion, searchLinkPrefix }) => {
   const doi = _find(item.pids, (o) => o.scheme.toLowerCase() === "doi")?.identifier ?? "";
   return (
     <List.Item key={item.id} {...(activeVersion && { className: "version active" })}>
@@ -39,7 +39,7 @@ const RecordVersionItem = ({ item, activeVersion }) => {
               {i18next.t("Version {{- version}}", { version: item.version })}
             </span>
           ) : (
-            <a href={`/docs/${item.id}`} className="text-break">
+            <a href={`${searchLinkPrefix}/${item.id}`} className="text-break">
               {i18next.t("Version {{- version}}", { version: item.version })}
             </a>
           )}
@@ -91,8 +91,8 @@ const PreviewMessage = () => {
   );
 };
 
-export const RecordVersionsList = ({ initialRecord, isPreview }) => {
-  const [record, setRecord] = useState(initialRecord);
+export const RecordVersionsList = ({ uiRecord, isPreview }) => {
+  const [record, setRecord] = useState(uiRecord);
   const recordDeserialized = deserializeRecord(record);
   const recordParentDOI = recordDeserialized?.parent?.pids?.doi?.identifier;
   const recordDraftParentDOIFormat = recordDeserialized?.new_draft_parent_doi;
@@ -190,6 +190,8 @@ export const RecordVersionsList = ({ initialRecord, isPreview }) => {
     <ErrorMessage className="rel-mr-1 rel-ml-1" content={i18next.t(error)} negative />
   );
 
+  const searchLinkPrefix = uiRecord.links?.search_link.endsWith('/') ? uiRecord.links.search_link.slice(0, -1) : uiRecord.links?.search_link;
+
   const recordVersionscmp = () => (
     <>
       {isPreview ? <PreviewMessage /> : null}
@@ -200,13 +202,14 @@ export const RecordVersionsList = ({ initialRecord, isPreview }) => {
               key={item.id}
               item={item}
               activeVersion={item.id === recid}
+              searchLinkPrefix={searchLinkPrefix}
             />
           ))}
           {recordVersions.total > 1 && (
             <Grid className="mt-0">
               <Grid.Row centered>
                 <a
-                  href={`/docs?q=parent.id:${recordDeserialized.parent_id}&sort=newest&f=allversions:true`}
+                  href={`${searchLinkPrefix}?q=parent.id:${recordDeserialized.parent_id}&sort=newest&f=allversions:true`}
                   className="font-small"
                 >
                   {i18next.t(`View all {{count}} versions`, {
