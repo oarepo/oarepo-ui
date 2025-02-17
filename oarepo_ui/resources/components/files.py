@@ -23,7 +23,7 @@ class FilesComponent(UIResourceComponent):
             files_dict["entries"] = [
                 {
                     **file_entry,
-                    "previewable": file_entry["key"].split(".")[-1]
+                    "previewable": file_entry["key"].lower().split(".")[-1]
                     in current_previewer.previewable_extensions,
                 }
                 for file_entry in files_dict.get("entries", [])
