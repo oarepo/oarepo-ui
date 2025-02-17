@@ -1,20 +1,19 @@
-import React, { useContext } from "react";
+import React from "react";
 import { withState } from "react-searchkit";
-import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
 import PropTypes from "prop-types";
 import { ShouldRender } from "@js/oarepo_ui";
+import { useActiveSearchFilters } from "./hooks";
 
 const ShouldActiveFiltersRenderComponent = ({
   currentQueryState,
   children,
 }) => {
   const { filters } = currentQueryState;
-  const searchAppContext = useContext(SearchConfigurationContext);
-  const {
-    initialQueryState: { filters: initialFilters },
-  } = searchAppContext;
+
+  const activeFilters = useActiveSearchFilters(filters);
+
   return (
-    <ShouldRender condition={filters?.length > initialFilters?.length}>
+    <ShouldRender condition={activeFilters?.length > 0}>
       {children}
     </ShouldRender>
   );

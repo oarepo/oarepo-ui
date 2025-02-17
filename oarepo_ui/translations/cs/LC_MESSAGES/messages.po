@@ -581,3 +581,9 @@ msgid ""
 msgstr ""
 "Koncept byl uložen s validačními chybami. Opravte prosím následující "
 "problémy a zkuste to znovu:"
+
+msgid "Versions"
+msgstr "Verze"
+
+msgid "View all versions"
+msgstr "Zobrazit všechny verze"
