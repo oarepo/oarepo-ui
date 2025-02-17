@@ -49,12 +49,10 @@ export const ClearFiltersButton = withState(ClearFiltersButtonComponent);
 ClearFiltersButtonComponent.propTypes = {
   updateQueryState: PropTypes.func.isRequired,
   currentQueryState: PropTypes.object.isRequired,
-  ignoredFilters: PropTypes.array,
   currentResultsState: PropTypes.object.isRequired,
   clearFiltersButtonClassName: PropTypes.string,
 };
 
 ClearFiltersButtonComponent.defaultProps = {
-  ignoredFilters: [],
   clearFiltersButtonClassName: "clear-filters-button",
 };
