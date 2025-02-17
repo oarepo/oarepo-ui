@@ -20,11 +20,14 @@ class FilesComponent(UIResourceComponent):
         try:
             files = file_service.list_files(identity, api_record["id"])
             files_dict = files.to_dict()
-            for file_entry in files_dict.get("entries", []):
-                file_extension = file_entry["key"].split(".")[-1]
-                file_entry["previewable"] = (
-                    file_extension in current_previewer.previewable_extensions
-                )
+            files_dict["entries"] = [
+                {
+                    **file_entry,
+                    "previewable": file_entry["key"].split(".")[-1]
+                    in current_previewer.previewable_extensions,
+                }
+                for file_entry in files_dict.get("entries", [])
+            ]
             extra_context["files"] = files_dict
         except PermissionDeniedError:
             extra_context["files"] = {"entries": [], "links": {}}
