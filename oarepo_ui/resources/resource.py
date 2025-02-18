@@ -457,7 +457,7 @@ class RecordsUIResource(UIResource):
 
         exporter = self.config.exports.get(export_format.lower())
         if exporter is None:
-            abort(404, "No exporter for code {export_format}")
+            abort(404, f"No exporter for code {export_format}")
 
         serializer = obj_or_import_string(exporter["serializer"])(
             options={
