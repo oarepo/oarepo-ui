@@ -1,6 +1,13 @@
-.ui.card.foldable.facet {
-  width: 100%;
-  padding-right: 1rem;
+.ui.card {
+  &.foldable.facet {
+    width: 100%;
+    padding-right: 1rem;
+  }
+  &.borderless.facet {
+    .content {
+      border-top: none;
+    }
+  }
 }
 
 .ui.card.access-right {

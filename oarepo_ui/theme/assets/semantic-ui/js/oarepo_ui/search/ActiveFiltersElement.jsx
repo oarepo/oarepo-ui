@@ -1,14 +1,11 @@
 import PropTypes from "prop-types";
-import React, { useContext } from "react";
+import React from "react";
 import _groupBy from "lodash/groupBy";
 import _map from "lodash/map";
 import { Label, Icon, Grid } from "semantic-ui-react";
 import { withState } from "react-searchkit";
-import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
-import _uniq from "lodash/merge";
 import { ClearFiltersButton } from "@js/oarepo_ui";
-// TODO: in next iteration, rethink how handling of initialFilters/ignored filters is to be handled
-// in the best way
+import { useActiveSearchFilters } from "./hooks";
 
 const getLabel = (filter, aggregations) => {
   const aggName = filter[0];
@@ -34,21 +31,9 @@ const ActiveFiltersElementComponent = ({
   currentResultsState: {
     data: { aggregations },
   },
-  ignoredFilters,
 }) => {
-  const searchAppContext = useContext(SearchConfigurationContext);
-  const {
-    initialQueryState: { filters: initialFilters },
-  } = searchAppContext;
-  const allFiltersToIgnore = _uniq([
-    ...initialFilters.map((f) => f[0]),
-    ...ignoredFilters,
-  ]);
-
-  const filtersWithoutInitialFilters = filters?.filter(
-    (f) => !allFiltersToIgnore.includes(f[0])
-  );
-  const groupedData = _groupBy(filtersWithoutInitialFilters, 0);
+  const activeFilters = useActiveSearchFilters(filters);
+  const groupedData = _groupBy(activeFilters, 0);
   return (
     <Grid>
       <Grid.Column only="computer">
@@ -82,7 +67,7 @@ const ActiveFiltersElementComponent = ({
               })}
             </Label.Group>
           ))}
-          <ClearFiltersButton ignoredFilters={ignoredFilters} />
+          <ClearFiltersButton />
         </div>
       </Grid.Column>
     </Grid>
@@ -93,7 +78,6 @@ export const ActiveFiltersElement = withState(ActiveFiltersElementComponent);
 
 ActiveFiltersElementComponent.propTypes = {
   filters: PropTypes.array,
-  ignoredFilters: PropTypes.array,
   removeActiveFilter: PropTypes.func.isRequired,
   currentResultsState: PropTypes.shape({
     data: PropTypes.shape({
@@ -101,5 +85,3 @@ ActiveFiltersElementComponent.propTypes = {
     }).isRequired,
   }).isRequired,
 };
-
-ActiveFiltersElementComponent.defaultProps = { ignoredFilters: [] };
