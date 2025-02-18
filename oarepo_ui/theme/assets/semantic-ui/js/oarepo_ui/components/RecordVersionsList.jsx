@@ -7,12 +7,14 @@
 // under the terms of the MIT License; see LICENSE file for more details.
 
 import _find from "lodash/find";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Grid, Icon, Message, Placeholder, List } from "semantic-ui-react";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
 import PropTypes from "prop-types";
 import { Trans } from "react-i18next";
 import { withCancel, http, ErrorMessage } from "react-invenio-forms";
+
+import { httpApplicationJson } from "..";
 
 const deserializeRecord = (record) => ({
   id: record.id,
@@ -101,73 +103,61 @@ export const RecordVersionsList = ({ uiRecord, isPreview }) => {
   const [error, setError] = useState(null);
   const [recordVersions, setRecordVersions] = useState({});
 
-  useEffect(() => {
-    const fetchRecord = async () => {
-      return await http.get(record.links.self, {
-        headers: {
-          Accept: "application/json",
-        },
-        withCredentials: true,
-      });
-    };
+  const fetchRecord = async () => {
+    return await httpApplicationJson.get(record.links.self);
+  };
 
-    const fetchVersions = async () => {
-      return await http.get(
-        `${record.links.versions}?size=${NUMBER_OF_VERSIONS}&sort=version&allversions=true`,
-        {
-          headers: {
-            Accept: "application/json",
-          },
-          withCredentials: true,
-        }
-      );
-    };
+  const fetchVersions = async () => {
+    return await httpApplicationJson.get(`${record.links.versions}?size=${NUMBER_OF_VERSIONS}&sort=version&allversions=true`);
+  };
 
-    const cancellableFetchRecord = withCancel(fetchRecord());
-    const cancellableFetchVersions = withCancel(fetchVersions());
+  const cancellableFetchRecord = withCancel(fetchRecord());
+  const cancellableFetchVersions = withCancel(fetchVersions());
 
-    async function fetchRecordAndSetState() {
-      try {
-        const result = await cancellableFetchRecord.promise;
-        setRecord(result.data);
-      } catch (error) {
-        if (error !== "UNMOUNTED") {
-          setError(i18next.t("An error occurred while fetching the record."));
-          setLoading(false);
-        }
-        throw error;
-      }
-    }
-
-    async function fetchVersionsAndSetState() {
-      try {
-        const result = await cancellableFetchVersions.promise;
-        let { hits, total } = result.data.hits;
-        hits = hits.map(deserializeRecord);
-        setRecordVersions({ hits, total });
+  const fetchRecordAndSetState = useCallback(async () => {
+    try {
+      const result = await cancellableFetchRecord.promise;
+      setRecord(result.data);
+    } catch (error) {
+      if (error !== "UNMOUNTED") {
+        setError(i18next.t("An error occurred while fetching the record."));
         setLoading(false);
-      } catch (error) {
-        if (error !== "UNMOUNTED") {
-          setError(i18next.t("An error occurred while fetching the versions."));
-          setLoading(false);
-        }
-        throw error;
       }
+      throw error;
     }
+  }, [cancellableFetchRecord.promise]);
 
-    const fetchData = async () => {
-      try {
-        await fetchRecordAndSetState();
-        await fetchVersionsAndSetState();
-      } catch (error) {}
+  const fetchVersionsAndSetState = useCallback(async () => {
+    try {
+      const result = await cancellableFetchVersions.promise;
+      let { hits, total } = result.data.hits;
+      hits = hits.map(deserializeRecord);
+      setRecordVersions({ hits, total });
+      setLoading(false);
+    } catch (error) {
+      if (error !== "UNMOUNTED") {
+        setError(i18next.t("An error occurred while fetching the versions."));
+        setLoading(false);
+      }
+      throw error;
     }
+  }, [cancellableFetchVersions.promise]);
+
+  const fetchData = useCallback(async () => {
+    try {
+      await fetchRecordAndSetState();
+      await fetchVersionsAndSetState();
+    } catch (error) {}
+  }, [fetchRecordAndSetState, fetchVersionsAndSetState]);
+
+  useEffect(() => {
     fetchData();
 
     return () => {
       cancellableFetchRecord?.cancel();
       cancellableFetchVersions?.cancel();
     };
-  }, [recid, record.links.self, record.links.versions]);
+  }, [cancellableFetchRecord, cancellableFetchVersions, fetchData]);
 
   const loadingcmp = () => {
     return isPreview ? (
