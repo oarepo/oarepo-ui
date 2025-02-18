@@ -1,18 +1,15 @@
 import copy
+#
+import logging
 from functools import partial
 from os.path import splitext
 from typing import TYPE_CHECKING, Iterator
 
 import deepmerge
-from flask import Response, abort, g, redirect, request, Blueprint
+from flask import Blueprint, Response, abort, current_app, g, redirect, request
 from flask_principal import PermissionDenied
-from flask_resources import (
-    Resource,
-    from_conf,
-    request_parser,
-    resource_requestctx,
-    route,
-)
+from flask_resources import (Resource, from_conf, request_parser,
+                             resource_requestctx, route)
 from flask_security import login_required
 from invenio_base.utils import obj_or_import_string
 from invenio_previewer import current_previewer
@@ -21,35 +18,26 @@ from invenio_records_resources.pagination import Pagination
 from invenio_records_resources.proxies import current_service_registry
 from invenio_records_resources.records.systemfields import FilesField
 from invenio_records_resources.resources.records.resource import (
-    request_read_args,
-    request_search_args,
-    request_view_args,
-)
+    request_read_args, request_search_args, request_view_args)
 from invenio_records_resources.services import LinksTemplate
+from invenio_stats.proxies import current_stats
 from oarepo_runtime.datastreams.utils import get_file_service_for_record_class
 from werkzeug.exceptions import Forbidden
 
 from oarepo_ui.utils import dump_empty
 
-from .components.custom_fields import CustomFieldsComponent
+# Resource
+#
+from ..proxies import current_oarepo_ui
+from .config import (FormConfigResourceConfig, RecordsUIResourceConfig,
+                     TemplatePageUIResourceConfig, UIResourceConfig)
 from .signposting import response_header_signposting
 from .templating.data import FieldData
 
 if TYPE_CHECKING:
     from .components import UIResourceComponent
 
-#
-import logging
 
-# Resource
-#
-from ..proxies import current_oarepo_ui
-from .config import (
-    FormConfigResourceConfig,
-    RecordsUIResourceConfig,
-    TemplatePageUIResourceConfig,
-    UIResourceConfig,
-)
 
 log = logging.getLogger(__name__)
 
@@ -251,6 +239,10 @@ class RecordsUIResource(UIResource):
         # TODO: handle permissions UI way - better response than generic error
         record = self.config.ui_serializer.dump_obj(api_record.to_dict())
         record.setdefault("links", {})
+
+        emitter = current_stats.get_event_emitter("record-view")
+        if record is not None and emitter is not None:
+            emitter(current_app, record=api_record._record, via_api=False)
 
         ui_links = self.expand_detail_links(identity=g.identity, record=api_record)
         export_path = request.path.split("?")[0]
@@ -465,7 +457,7 @@ class RecordsUIResource(UIResource):
 
         exporter = self.config.exports.get(export_format.lower())
         if exporter is None:
-            abort(404, f"No exporter for code {{export_format}}")
+            abort(404, f"No exporter for code {export_format}")
 
         serializer = obj_or_import_string(exporter["serializer"])(
             options={
