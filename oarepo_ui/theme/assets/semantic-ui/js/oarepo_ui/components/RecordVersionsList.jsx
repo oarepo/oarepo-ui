@@ -205,7 +205,7 @@ export const RecordVersionsList = ({ uiRecord, isPreview }) => {
                   <p className="text-muted">
                     <strong>Cite all versions?</strong> You can cite all versions by using
                     the DOI{" "}
-                    <a href={recordDeserialized.links.parent_doi}>{recordParentDOI}</a>.
+                    <a href={recordDeserialized.links.parent_doi}>{{recordParentDOI}}</a>.
                     This DOI represents all versions, and will always resolve to the latest
                     one. <a href="/help/versioning">Read more</a>.
                   </p>
@@ -219,7 +219,7 @@ export const RecordVersionsList = ({ uiRecord, isPreview }) => {
                 <Trans>
                   <p className="text-muted">
                     <strong>Cite all versions?</strong> You can cite all versions by using
-                    the DOI {recordDraftParentDOIFormat}. The DOI is registered when the
+                    the DOI {{recordDraftParentDOIFormat}}. The DOI is registered when the
                     first version is published. <a href="/help/versioning">Read more</a>.
                   </p>
                 </Trans>

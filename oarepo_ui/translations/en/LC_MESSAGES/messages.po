@@ -666,3 +666,18 @@ msgid ""
 "The DOI is registered when the first version is published. <4>Read "
 "more</4>.</0>"
 msgstr ""
+
+msgid "recordVersionsList.parentDOI"
+msgstr ""
+
+msgid ""
+"<0><0>Cite all versions?</0> You can cite all versions by using the DOI "
+"<2>{{recordDraftParentDOIFormat}}</2>. The DOI is registered when the first "
+"version is published. <4>Read more</4>.</0>"
+msgstr ""
+
+msgid ""
+"<0><0>Cite all versions?</0> You can cite all versions by using the DOI "
+"<3><0>{{recordParentDOI}}</0></3>. This DOI represents all versions, and "
+"will always resolve to the latest one. <5>Read more</5>.</0>"
+msgstr ""
