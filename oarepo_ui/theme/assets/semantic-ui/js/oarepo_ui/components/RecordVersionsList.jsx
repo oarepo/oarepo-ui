@@ -30,7 +30,7 @@ const deserializeRecord = (record) => ({
 
 const NUMBER_OF_VERSIONS = 5;
 
-const RecordVersionItem = ({ item, activeVersion, searchLinkPrefix }) => {
+const RecordVersionItem = ({ item, activeVersion, searchLinkPrefix = "" }) => {
   const doi = _find(item.pids, (o) => o.scheme.toLowerCase() === "doi")?.identifier ?? "";
   return (
     <List.Item key={item.id} {...(activeVersion && { className: "version active" })}>
@@ -79,6 +79,7 @@ const RecordVersionItem = ({ item, activeVersion, searchLinkPrefix }) => {
 RecordVersionItem.propTypes = {
   item: PropTypes.object.isRequired,
   activeVersion: PropTypes.bool.isRequired,
+  searchLinkPrefix: PropTypes.string,
 };
 
 const PreviewMessage = () => {
@@ -234,6 +235,6 @@ export const RecordVersionsList = ({ uiRecord, isPreview }) => {
 };
 
 RecordVersionsList.propTypes = {
-  initialRecord: PropTypes.object.isRequired,
+  uiRecord: PropTypes.object.isRequired,
   isPreview: PropTypes.bool.isRequired,
 };
