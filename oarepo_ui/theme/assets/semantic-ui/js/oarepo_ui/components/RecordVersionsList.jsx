@@ -12,7 +12,7 @@ import { Grid, Icon, Message, Placeholder, List } from "semantic-ui-react";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
 import PropTypes from "prop-types";
 import { Trans } from "react-i18next";
-import { withCancel, http, ErrorMessage } from "react-invenio-forms";
+import { ErrorMessage } from "react-invenio-forms";
 
 import { httpApplicationJson } from "..";
 
@@ -103,61 +103,49 @@ export const RecordVersionsList = ({ uiRecord, isPreview }) => {
   const [error, setError] = useState(null);
   const [recordVersions, setRecordVersions] = useState({});
 
-  const fetchRecord = async () => {
-    return await httpApplicationJson.get(record.links.self);
-  };
-
-  const fetchVersions = async () => {
-    return await httpApplicationJson.get(`${record.links.versions}?size=${NUMBER_OF_VERSIONS}&sort=version&allversions=true`);
-  };
-
-  const cancellableFetchRecord = withCancel(fetchRecord());
-  const cancellableFetchVersions = withCancel(fetchVersions());
-
-  const fetchRecordAndSetState = useCallback(async () => {
+  const fetchRecordAndSetState = useCallback(async (signal) => {
     try {
-      const result = await cancellableFetchRecord.promise;
+      const result = await httpApplicationJson.get(record.links.self, {
+        signal,
+      });
       setRecord(result.data);
     } catch (error) {
-      if (error !== "UNMOUNTED") {
-        setError(i18next.t("An error occurred while fetching the record."));
-        setLoading(false);
-      }
-      throw error;
+      setError(i18next.t("An error occurred while fetching the record."));
     }
-  }, [cancellableFetchRecord.promise]);
+  }, [record.links.self]);
 
-  const fetchVersionsAndSetState = useCallback(async () => {
+  const fetchVersionsAndSetState = useCallback(async (signal) => {
     try {
-      const result = await cancellableFetchVersions.promise;
+      const result = await httpApplicationJson.get(
+        `${record.links.versions}?size=${NUMBER_OF_VERSIONS}&sort=version&allversions=true`, {
+        signal,
+      });
       let { hits, total } = result.data.hits;
       hits = hits.map(deserializeRecord);
       setRecordVersions({ hits, total });
       setLoading(false);
     } catch (error) {
-      if (error !== "UNMOUNTED") {
-        setError(i18next.t("An error occurred while fetching the versions."));
-        setLoading(false);
-      }
-      throw error;
+      setError(i18next.t("An error occurred while fetching the versions."));
     }
-  }, [cancellableFetchVersions.promise]);
+  }, [record.links.versions]);
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (signal) => {
     try {
-      await fetchRecordAndSetState();
-      await fetchVersionsAndSetState();
-    } catch (error) {}
+      await fetchRecordAndSetState(signal);
+      await fetchVersionsAndSetState(signal);
+    } catch (error) {
+      setLoading(false);
+    }
   }, [fetchRecordAndSetState, fetchVersionsAndSetState]);
 
   useEffect(() => {
-    fetchData();
+    const controller = new AbortController();
+    fetchData(controller.signal);
 
     return () => {
-      cancellableFetchRecord?.cancel();
-      cancellableFetchVersions?.cancel();
+      controller.abort();
     };
-  }, [cancellableFetchRecord, cancellableFetchVersions, fetchData]);
+  }, [fetchData]);
 
   const loadingcmp = () => {
     return isPreview ? (
@@ -185,7 +173,7 @@ export const RecordVersionsList = ({ uiRecord, isPreview }) => {
   const recordVersionscmp = () => (
     <>
       {isPreview ? <PreviewMessage /> : null}
-      {recordVersions.total > 0 && 
+      {recordVersions.total > 0 &&
         <List relaxed divided>
           {recordVersions.hits.map((item) => (
             <RecordVersionItem
