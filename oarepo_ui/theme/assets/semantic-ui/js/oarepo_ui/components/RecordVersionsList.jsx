@@ -9,7 +9,7 @@
 import _find from "lodash/find";
 import React, { useEffect, useState, useCallback } from "react";
 import { Grid, Icon, Message, Placeholder, List } from "semantic-ui-react";
-import { i18next } from "@translations/invenio_app_rdm/i18next";
+import { i18next } from "@translations/oarepo_ui/i18next";
 import PropTypes from "prop-types";
 import { Trans } from "react-i18next";
 import { ErrorMessage } from "react-invenio-forms";
