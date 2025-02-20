@@ -6,7 +6,7 @@ const recordVersionsDiv = document.getElementById("recordVersions");
 if (recordVersionsDiv) {
   ReactDOM.render(
     <RecordVersionsList
-      initialRecord={JSON.parse(recordVersionsDiv.dataset.record)}
+      uiRecord={JSON.parse(recordVersionsDiv.dataset.record)}
       isPreview={JSON.parse(recordVersionsDiv.dataset.preview)}
     />,
     recordVersionsDiv

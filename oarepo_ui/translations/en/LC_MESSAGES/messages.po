@@ -637,3 +637,47 @@ msgstr ""
 
 msgid "View all versions"
 msgstr ""
+
+msgid "Version {{- version}}"
+msgstr ""
+
+msgid "Only published versions are displayed."
+msgstr ""
+
+msgid "An error occurred while fetching the record."
+msgstr ""
+
+msgid "An error occurred while fetching the versions."
+msgstr ""
+
+msgid "View all {{count}} versions"
+msgid_plural "View all {{count}} versions"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid ""
+"<0><0>Cite all versions?</0> You can cite all versions by using the DOI "
+"<3></3>. This DOI represents all versions, and will always resolve to the "
+"latest one. <5>Read more</5>.</0>"
+msgstr ""
+
+msgid ""
+"<0><0>Cite all versions?</0> You can cite all versions by using the DOI . "
+"The DOI is registered when the first version is published. <4>Read "
+"more</4>.</0>"
+msgstr ""
+
+msgid "recordVersionsList.parentDOI"
+msgstr ""
+
+msgid ""
+"<0><0>Cite all versions?</0> You can cite all versions by using the DOI "
+"<2>{{recordDraftParentDOIFormat}}</2>. The DOI is registered when the first "
+"version is published. <4>Read more</4>.</0>"
+msgstr ""
+
+msgid ""
+"<0><0>Cite all versions?</0> You can cite all versions by using the DOI "
+"<3><0>{{recordParentDOI}}</0></3>. This DOI represents all versions, and "
+"will always resolve to the latest one. <5>Read more</5>.</0>"
+msgstr ""
