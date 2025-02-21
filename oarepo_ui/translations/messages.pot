@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-02-17 08:58+0100\n"
+"POT-Creation-Date: 2025-02-21 12:25+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -101,6 +101,11 @@ msgstr ""
 msgid "Export"
 msgstr ""
 
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/RecordVersions.jinja:13
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/RecordVersions.jinja:14
+msgid "Versions"
+msgstr ""
+
 #: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:6
 #: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:7
 msgid "Search"
@@ -112,12 +117,6 @@ msgstr ""
 
 #: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/SidebarApiLinks.jinja:5
 msgid "Links"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/ICustomFields.jinja:11
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/translations/jinjax_messages.jinja:1
-#: oarepo_ui/translations/jinjax_messages.jinja:1
-msgid "Not set"
 msgstr ""
 
 #: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:7
@@ -230,6 +229,11 @@ msgstr ""
 msgid "Search results"
 msgstr ""
 
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/translations/jinjax_messages.jinja:1
+#: oarepo_ui/translations/jinjax_messages.jinja:1
+msgid "Not set"
+msgstr ""
+
 msgid "Copied!"
 msgstr ""
 
@@ -240,6 +244,35 @@ msgid "Export selection"
 msgstr ""
 
 msgid "Download file"
+msgstr ""
+
+msgid "Version {{- version}}"
+msgstr ""
+
+msgid "Only published versions are displayed."
+msgstr ""
+
+msgid "An error occurred while fetching the record."
+msgstr ""
+
+msgid "An error occurred while fetching the versions."
+msgstr ""
+
+msgid "View all {{count}} versions"
+msgid_plural "View all {{count}} versions"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid ""
+"<0><0>Cite all versions?</0> You can cite all versions by using the DOI "
+"<3></3>. This DOI represents all versions, and will always resolve to the "
+"latest one. <5>Read more</5>.</0>"
+msgstr ""
+
+msgid ""
+"<0><0>Cite all versions?</0> You can cite all versions by using the DOI . "
+"The DOI is registered when the first version is published. <4>Read "
+"more</4>.</0>"
 msgstr ""
 
 msgid "Remove"
@@ -300,6 +333,69 @@ msgid "Year and month"
 msgstr ""
 
 msgid "Year, month and date"
+msgstr ""
+
+msgid "Fetching files"
+msgstr ""
+
+msgid "Failed to fetch draft's files. Please try refreshing the page."
+msgstr ""
+
+msgid "You can import files from the previous version."
+msgstr ""
+
+msgid "Import files"
+msgstr ""
+
+msgid "Failed to import files from previous version. Please try again."
+msgstr ""
+
+msgid ""
+"After publishing the draft, it is not possible to add, modify or delete "
+"files. It will be necessary to create a new version of the record."
+msgstr ""
+
+msgid ""
+"<0>If you wish to upload files, you must </0><1>save</1><2> your draft "
+"first.</2>"
+msgstr ""
+
+msgid ""
+"You must create a new version to add, modify or delete files. It can be done"
+" on record's <2>detail</2> page."
+msgstr ""
+
+msgid "Delete file"
+msgstr ""
+
+msgid "File uploaded successfully."
+msgstr ""
+
+msgid "File was not uploaded correctly. Please delete it and try again."
+msgstr ""
+
+msgid "Edit file metadata"
+msgstr ""
+
+msgid "File name"
+msgstr ""
+
+msgid "File size"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Upload files"
+msgstr ""
+
+msgid "Edit file"
 msgstr ""
 
 msgid "Language"
@@ -401,9 +497,6 @@ msgid "Reset"
 msgstr ""
 
 msgid "resultsPerPage"
-msgstr ""
-
-msgid "Versions"
 msgstr ""
 
 msgid "View all versions"
