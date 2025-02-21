@@ -46,36 +46,40 @@ name of the component from above)
       width: 100% !important;
     }
   }
-  .ui.grid > &{
+  .ui.grid > & {
     padding: 0;
   }
 
-  #invenio-nav {
+  #invenio-nav.ui.menu {
     flex-direction: row !important;
     border-radius: 0;
     min-height: @pageHeaderMinHeight;
     align-items: center;
     .search-bar {
-      min-width: 40%;
+      @media all and (min-width: @largestTabletScreen) {
+        flex-grow: 1;
+      }
     }
     .ui.icon.input {
       width: 100%;
     }
   }
 
-  #invenio-menu {
+  #invenio-menu.ui.menu {
     box-shadow: none;
     gap: 1rem;
     justify-content: flex-end;
 
-    .item.main-nav-links a {
-      color: @pageHeaderTextColor !important;
+    .item.main-nav-links a:not(.ui.button) {
+      color: @pageHeaderTextColor;
       font-size: 1.2rem;
-    }
-    .item.main-nav-links a:hover {
-      border-radius: @borderRadius;
-      @media all and (min-width: @largestTabletScreen) {
-        background-color: @pageHeaderMainNavLinkLargeScreen !important;
+
+      &:hover {
+        border-radius: @borderRadius;
+
+        @media all and (min-width: @largestTabletScreen) {
+          background-color: @pageHeaderMainNavLinkLargeScreen;
+        }
       }
     }
   }

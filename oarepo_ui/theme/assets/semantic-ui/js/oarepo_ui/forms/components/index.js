@@ -17,3 +17,4 @@ export * from "./ConfirmationModal";
 export * from "./BaseFormLayout";
 export * from "./CompactFieldLabel";
 export * from "./AccessRightField";
+export * from "./FilesField";
