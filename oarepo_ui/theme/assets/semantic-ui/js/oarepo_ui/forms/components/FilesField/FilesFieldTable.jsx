@@ -11,7 +11,7 @@ const StatusIcon = ({ status }) => {
     <Popup
       position="top center"
       content={i18next.t("File uploaded successfully.")}
-      trigger={<Icon name="check circle" color="green" />}
+      trigger={<Icon name="check circle" color="positive" />}
     />
   ) : (
     <Popup
@@ -19,7 +19,7 @@ const StatusIcon = ({ status }) => {
       content={i18next.t(
         "File was not uploaded correctly. Please delete it and try again."
       )}
-      trigger={<Icon name="exclamation circle" color="red" />}
+      trigger={<Icon name="exclamation circle" color="negative" />}
     />
   );
 };

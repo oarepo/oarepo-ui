@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { Message, Icon, Button, Dimmer, Loader } from "semantic-ui-react";
-import { FileUploaderTable } from "./FilesFieldTable";
+import { FilesFieldTable } from "./FilesFieldTable";
 import { UploadFileButton } from "./FilesFieldButtons";
 import {
   useDepositApiClient,
@@ -140,7 +140,7 @@ export const FilesField = ({
                 </Message.Content>
               </Message>
             )}
-            <FileUploaderTable
+            <FilesFieldTable
               files={filesState}
               handleFileDeletion={handleFileDeletion}
               record={recordObject}
@@ -198,10 +198,10 @@ export const FilesField = ({
 };
 
 FilesField.propTypes = {
-  FilesFieldMessage: PropTypes.string,
   record: PropTypes.object,
   recordFiles: PropTypes.object,
   allowedFileTypes: PropTypes.array,
+  fileUploaderMessage: PropTypes.string,
 };
 
 FilesField.defaultProps = {

@@ -5,12 +5,15 @@ import { FileEditWrapper, FileUploadWrapper } from "./FilesFieldWrappers";
 import { useDepositFileApiClient } from "@js/oarepo_ui";
 import { i18next } from "@translations/oarepo_ui/i18next";
 
-const LOCALE =
-  i18next.language === "cs"
-    ? "cs_CZ"
-    : i18next.language === "en"
-    ? "en_US"
-    : i18next.language;
+let LOCALE;
+
+if (i18next.language === "cs") {
+  LOCALE = "cs_CZ";
+} else if (i18next.language === "en") {
+  LOCALE = "en_US";
+} else {
+  LOCALE = i18next.language;
+}
 
 export const EditFileButton = ({ fileName, record, allowedFileTypes }) => {
   return (

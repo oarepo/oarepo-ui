@@ -56,7 +56,9 @@ name of the component from above)
     min-height: @pageHeaderMinHeight;
     align-items: center;
     .search-bar {
-      flex-grow: 1;
+      @media all and (min-width: @largestTabletScreen) {
+        flex-grow: 1;
+      }
     }
     .ui.icon.input {
       width: 100%;
@@ -69,13 +71,13 @@ name of the component from above)
     justify-content: flex-end;
 
     .item.main-nav-links a {
-      color: @pageHeaderTextColor !important;
+      color: @pageHeaderTextColor;
       font-size: 1.2rem;
     }
     .item.main-nav-links a:hover {
       border-radius: @borderRadius;
       @media all and (min-width: @largestTabletScreen) {
-        background-color: @pageHeaderMainNavLinkLargeScreen !important;
+        background-color: @pageHeaderMainNavLinkLargeScreen;
       }
     }
   }
