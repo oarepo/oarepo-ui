@@ -725,6 +725,8 @@ msgid "Upload files"
 msgstr ""
 
 msgid "Edit file"
+msgstr ""
+
 msgid "recordVersionsList.parentDOI"
 msgstr ""
 
