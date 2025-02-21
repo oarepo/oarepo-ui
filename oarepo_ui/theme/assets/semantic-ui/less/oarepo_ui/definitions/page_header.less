@@ -50,7 +50,7 @@ name of the component from above)
     padding: 0;
   }
 
-  #invenio-nav {
+  #invenio-nav.ui.menu {
     flex-direction: row !important;
     border-radius: 0;
     min-height: @pageHeaderMinHeight;
@@ -65,19 +65,22 @@ name of the component from above)
     }
   }
 
-  #invenio-menu {
+  #invenio-menu.ui.menu {
     box-shadow: none;
     gap: 1rem;
     justify-content: flex-end;
 
-    .item.main-nav-links a {
+    .item.main-nav-links a:not(.ui.button) {
       color: @pageHeaderTextColor;
       font-size: 1.2rem;
     }
-    .item.main-nav-links a:hover {
-      border-radius: @borderRadius;
-      @media all and (min-width: @largestTabletScreen) {
-        background-color: @pageHeaderMainNavLinkLargeScreen;
+
+    .item.main-nav-links a:not(.ui.button) {
+      &:hover {
+        border-radius: @borderRadius;
+        @media all and (min-width: @largestTabletScreen) {
+          background-color: @pageHeaderMainNavLinkLargeScreen;
+        }
       }
     }
   }
