@@ -73,7 +73,7 @@ EditFileButtonCmp.propTypes = {
   className: PropTypes.string,
 };
 
-export const FileUploaderTable = ({
+export const FilesFieldTable = ({
   files,
   record,
   handleFileDeletion,
@@ -225,7 +225,7 @@ export const FileUploaderTable = ({
   );
 };
 
-FileUploaderTable.propTypes = {
+FilesFieldTable.propTypes = {
   files: PropTypes.array,
   record: PropTypes.object,
   handleFileDeletion: PropTypes.func,
