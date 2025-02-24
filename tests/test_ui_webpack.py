@@ -1,6 +1,6 @@
 import os
 
-from oarepo_ui.ui.component import UIComponent
+from oarepo_ui.ui.components import UIComponent
 from oarepo_ui.webpack import OverridableBundleProject, project
 
 

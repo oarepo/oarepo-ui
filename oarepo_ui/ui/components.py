@@ -17,8 +17,13 @@ class UIComponent:
             the component before registering it to overrides store.
     """
 
-    def __init__(self, import_name: str, import_path: str, import_mode: str = 'named',
-                 props: Optional[Dict[str, str]] = None):
+    def __init__(
+        self,
+        import_name: str,
+        import_path: str,
+        import_mode: str = "named",
+        props: Optional[Dict[str, any]] = None,
+    ):
         """Initialize a UIComponentOverride instance."""
         self.import_name = import_name
         self.import_path = import_path
@@ -36,7 +41,11 @@ class UIComponent:
     @property
     def import_statement(self) -> str:
         """JS import statement string to import the component."""
-        import_name = self.import_name if self.import_mode == 'default' else f"{{ {self.import_name} }}"
+        import_name = (
+            self.import_name
+            if self.import_mode == "default"
+            else f"{{ {self.import_name} }}"
+        )
 
         return f"import {import_name} from '{self.import_path}';"
 
@@ -44,8 +53,19 @@ class UIComponent:
     def parametrize_statement(self) -> str | None:
         """JS statement to parametrize the component with props."""
         if self.props:
-            js_props = ", ".join(f"{key}: {json.dumps(value)}" for key, value in self.props.items())
+            js_props = ", ".join(
+                f"{key}: {json.dumps(value)}" for key, value in self.props.items()
+            )
             return f"const {self.name} = parametrize({self.import_name}, {{ {js_props} }});"
+
+    def __repr__(self):
+        return f"UIComponent({self.import_name} <{self.import_path}>, {self.import_mode} import)>)"
 
 
 DisabledComponent = UIComponent("Disabled", "@js/oarepo_ui/components/Disabled")
+
+FacetsWithVersionsToggle = UIComponent(
+    "SearchAppFacets",
+    "@js/oarepo_ui/search/SearchAppFacets",
+    props={"allVersionsToggle": True},
+)
