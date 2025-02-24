@@ -1,0 +1,16 @@
+{#def number #}
+
+{% if number|truncate_number(max_value=10_000_000) != number|localize_number %}
+<div>
+  <span
+    tabindex="0"
+    role="tooltip"
+    class="compact-number"
+    data-tooltip="{{ number|localize_number }}"
+  >
+    {{ number|truncate_number(max_value=10_000_000) }}
+  </span>
+</div>
+{% else %}
+  {{ number|truncate_number(max_value=10_000_000) }}
+{% endif %}
