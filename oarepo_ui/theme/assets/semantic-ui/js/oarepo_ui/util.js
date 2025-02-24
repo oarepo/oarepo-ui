@@ -63,7 +63,7 @@ export async function loadTemplateComponents(
   componentIds
 ) {
   const asyncImportTemplate = async (componentId, path) => {
-    console.log(`Searching for component ID '${componentId}' in ${path}`);
+    console.debug(`Searching for component ID '${componentId}' in ${path}`);
     try {
       return {
         componentId,

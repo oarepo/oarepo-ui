@@ -10,6 +10,7 @@ from invenio_base.utils import obj_or_import_string
 from flask_login import user_logged_in, user_logged_out
 from markupsafe import Markup
 from oarepo_global_search.proxies import current_global_search
+from deepmerge import always_merger
 
 from .proxies import current_optional_manifest
 from .ui.components import UIComponent, DisabledComponent, FacetsWithVersionsToggle
@@ -103,29 +104,37 @@ class OARepoUIState:
 
     @functools.cached_property
     def ui_overrides(self):
-        # TODO: move to oarepo-global-search
+        # TODO: move to oarepo-global-search and respective libraries
         ui_overrides = {}
         # Prepare model overrides for global-search apps
         models = current_global_search.model_services
 
         global_search_result_items = {}
+
         for model in models:
             global_search_result_items[model.record_cls.schema.value] = UIComponent(
-                f"{model.config.service_id.capitalize()}ResultListItem",
+                f"{model.config.service_id.capitalize()}ResultsListItem",
                 # Model Service ID should correspond to generated JS component file import path.
                 f"@js/{model.config.service_id}/search/ResultsListItem",
                 "default",
             )
 
-        # Runtime overrides for 3rd-party libraries UI
-        runtime_overrides = {
-            "oarepo_communities.community_records": {
-                "Community_records.Search.SearchApp.facets": FacetsWithVersionsToggle,
+        def _global_search_ui(app_name):
+            return {
+                f"{app_name}.Search.SearchApp.facets": FacetsWithVersionsToggle,
                 **_prefixed_ui_overrides(
-                    "Community_records.Search.ResultListItem",
+                    f"{app_name}.Search.ResultsList.item",
                     global_search_result_items,
                 ),
-            },
+            }
+
+        # Runtime overrides for 3rd-party libraries UI
+        runtime_overrides = {
+            "oarepo_communities.community_records": _global_search_ui(
+                "Community_records"
+            ),
+            "records_dashboard.search": _global_search_ui("Records_dashboard"),
+            "global_search_ui.search": _global_search_ui("Global_search"),
             "oarepo_communities.members": {
                 "InvenioCommunities.CommunityMembers.InvitationsModal": UIComponent(
                     "CommunityInvitationsModal", "@js/communities_components"
@@ -135,28 +144,14 @@ class OARepoUIState:
                 "InvenioCommunities.CommunityProfileForm.GridRow.DangerZone": DisabledComponent
             },
         }
-        #
-        # RUNTIME_UI_OVERRIDES["records_dashboard.search"] = {}
-        #     : _prefixed_ui_overrides(
-        #         "Records_dashboard.Search", UI_GLOBAL_SEARCH
-        #         #     "SearchApp.facets":
-        #         # #         UIComponent("SearchAppFacets", "@js/oarepo_ui/search/SearchAppFacets",
-        #         # #                     props={"allVersionsToggle": True}),
-        #     ),
-        #     **UI_COMMUNITIES,
-        #     "global_search_ui.search": _prefixed_ui_overrides(
-        #         # "SearchApp.facets":
-        #         # #         UIComponent("SearchAppFacets", "@js/oarepo_ui/search/SearchAppFacets",
-        #         # #                     props={"allVersionsToggle": True}),
-        #         "Global_search.Search", UI_GLOBAL_SEARCH
-        #     ),
-        # }
 
-        # TODO: merge with self app config
-        self.app.config["UI_OVERRIDES"] = {}
-        ui_overrides = runtime_overrides
+        if "UI_OVERRIDES" not in self.app.config:
+            ui_overrides = runtime_overrides
+        else:
+            ui_overrides = always_merger.merge(
+                runtime_overrides, self.app.config["UI_OVERRIDES"]
+            )
 
-        print(ui_overrides, flush=True)
         return ui_overrides
 
 
