@@ -42,7 +42,7 @@
   </div>
 
   <div class="content">
-    <table id="record-statistics" class="ui definition table fluid small compact">
+    <table id="record-statistics" class="ui definition table fluid small">
       <thead>
         <tr>
           <th></th>
@@ -52,7 +52,7 @@
       </thead>
       <tbody>
         <tr>
-          <td>
+          <td class="single line">
             {{ _("Views") }}
             <span role="tooltip" data-tooltip="{{ _('Total views') }}">
               <i
@@ -71,7 +71,7 @@
           </td>
         </tr>
         <tr>
-          <td>
+          <td class="single line">
             {{ _("Downloads") }}
             <span role="tooltip" data-tooltip="{{ _('Total downloads') }}">
               <i
@@ -90,7 +90,7 @@
           </td>
         </tr>
         <tr>
-          <td>
+          <td class="single line">
             {{ _("Data volume") }}
             <span role="tooltip" data-tooltip="{{ _('Total data volume') }}">
               <i
@@ -111,11 +111,12 @@
         </tr>
       </tbody>
     </table>
-    <p class="text-align-center rel-mt-1">
+    <!-- TODO: Implement static webpage with FAQ -->
+    <!-- <p class="text-align-center rel-mt-1">
       <small>
         <a href="/help/statistics">{{ _("More info on how stats are collected.") }}...</a>
       </small>
-    </p>
+    </p> -->
   </div>
 
 </div>
