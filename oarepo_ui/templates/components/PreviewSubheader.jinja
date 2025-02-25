@@ -1,3 +1,5 @@
+{# def record #}
+
 <div class="ui info bottom attached manage message rel-pb-1 rel-pt-1">
   <div class="ui container">
     <div class="header">
@@ -5,7 +7,15 @@
       <strong>{{ _("Preview") }}</strong>
     </div>
     <p>
+      {% if not record.is_draft %}
+        {{ _("You are previewing a published record.") }}
+      {% elif record.is_published %}
+        {{ _("You are previewing changes that have not yet been published.") }}
+      {% elif not record.is_published and record.versions.index == 1 %}
+        {{ _("You are previewing a new record that has not yet been published.") }}
+      {% elif not record.is_published and record.versions.index > 1 %}
         {{ _("You are previewing a new record version that has not yet been published.") }}
+      {% endif %}
     </p>
   </div>
 </div>
