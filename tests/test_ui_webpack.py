@@ -19,6 +19,9 @@ def test_overridable_bundle_project_init(app):
 
 
 def test_overridable_bundle_project_entry(app):
+    assert app.extensions["oarepo_ui"].ui_overrides
+    del app.extensions["oarepo_ui"].ui_overrides
+
     app.config['UI_OVERRIDES'] = {
         'test_bp': {'componentA': UIComponent('ComponentA', 'components/ComponentA')}
     }
@@ -29,6 +32,9 @@ def test_overridable_bundle_project_entry(app):
 
 
 def test_overridable_bundle_project_entry_file(app, fake_manifest):
+    assert app.extensions["oarepo_ui"].ui_overrides
+    del app.extensions["oarepo_ui"].ui_overrides
+
     app.config['UI_OVERRIDES'] = {
         'test_bp': {'componentA.item': UIComponent('ComponentA', 'components/ComponentA'),
                     'componentB.item': UIComponent('DefaultComponent', 'components/DefaultComponent', 'default')}

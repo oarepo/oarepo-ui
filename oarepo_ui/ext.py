@@ -9,7 +9,6 @@ from importlib_metadata import entry_points
 from invenio_base.utils import obj_or_import_string
 from flask_login import user_logged_in, user_logged_out
 from markupsafe import Markup
-from oarepo_global_search.proxies import current_global_search
 from deepmerge import always_merger
 
 from .proxies import current_optional_manifest
@@ -106,7 +105,12 @@ class OARepoUIState:
     def ui_overrides(self):
         # TODO: move to oarepo-global-search and respective libraries
         ui_overrides = {}
-        # Prepare model overrides for global-search apps
+        try:
+            # Prepare model overrides for global-search apps if present
+            from oarepo_global_search.proxies import current_global_search
+        except ImportError:
+            return self.app.config.get("UI_OVERRIDES", {})
+
         models = current_global_search.model_services
 
         global_search_result_items = {}
