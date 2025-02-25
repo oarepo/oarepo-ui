@@ -78,6 +78,7 @@ export const FilesFieldTable = ({
   record,
   handleFileDeletion,
   lockFileUploader,
+  fileMetadataFields,
 }) => {
   return (
     files?.length > 0 && (
@@ -120,7 +121,7 @@ export const FilesFieldTable = ({
                   <Table.Cell textAlign="center">
                     <StatusIcon status={status} />
                   </Table.Cell>
-                  {!lockFileUploader && (
+                  {!lockFileUploader && fileMetadataFields?.length > 0 && (
                     <Table.Cell width={1} textAlign="center">
                       {status === "completed" && (
                         <EditFileButtonCmp
@@ -199,22 +200,24 @@ export const FilesFieldTable = ({
                       </Table.Cell>
                     </Table.Row>
                   )}
-                  {status === "completed" && !lockFileUploader && (
-                    <Table.Row>
-                      <Table.Cell width={6}>
-                        <strong>{i18next.t("Edit")}</strong>
-                      </Table.Cell>
-                      <Table.Cell
-                        textAlign="center"
-                        className="flex justify-center"
-                      >
-                        <EditFileButtonCmp
-                          fileName={fileName}
-                          record={record}
-                        />
-                      </Table.Cell>
-                    </Table.Row>
-                  )}
+                  {status === "completed" &&
+                    !lockFileUploader &&
+                    fileMetadataFields?.length > 0 && (
+                      <Table.Row>
+                        <Table.Cell width={6}>
+                          <strong>{i18next.t("Edit")}</strong>
+                        </Table.Cell>
+                        <Table.Cell
+                          textAlign="center"
+                          className="flex justify-center"
+                        >
+                          <EditFileButtonCmp
+                            fileName={fileName}
+                            record={record}
+                          />
+                        </Table.Cell>
+                      </Table.Row>
+                    )}
                 </Table.Body>
               </Table>
             );
@@ -230,4 +233,11 @@ FilesFieldTable.propTypes = {
   record: PropTypes.object,
   handleFileDeletion: PropTypes.func,
   lockFileUploader: PropTypes.bool.isRequired,
+  fileMetadataFields: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      defaultValue: PropTypes.string,
+      isUserInput: PropTypes.bool.isRequired,
+    })
+  ),
 };

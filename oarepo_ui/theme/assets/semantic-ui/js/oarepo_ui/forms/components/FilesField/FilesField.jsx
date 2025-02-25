@@ -18,7 +18,7 @@ export const FilesField = ({
   record,
   recordFiles,
   allowedFileTypes,
-  allowedMetaFields,
+  fileMetadataFields,
 }) => {
   const [filesState, setFilesState] = useState(recordFiles?.entries || []);
   const {
@@ -176,7 +176,7 @@ export const FilesField = ({
                 handleFilesUpload={handleFilesUpload}
                 allowedFileTypes={allowedFileTypes}
                 lockFileUploader={lockFileUploader}
-                allowedMetaFields={allowedMetaFields}
+                allowedMetaFields={fileMetadataFields}
               />
             )}
           </React.Fragment>
@@ -204,7 +204,7 @@ FilesField.propTypes = {
   recordFiles: PropTypes.object,
   allowedFileTypes: PropTypes.array,
   fileUploaderMessage: PropTypes.string,
-  allowedMetaFields: PropTypes.arrayOf(
+  fileMetadataFields: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,
       defaultValue: PropTypes.string,
