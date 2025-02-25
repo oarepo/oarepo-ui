@@ -9,13 +9,19 @@ from importlib_metadata import entry_points
 from invenio_base.utils import obj_or_import_string
 from flask_login import user_logged_in, user_logged_out
 from markupsafe import Markup
+from deepmerge import always_merger
 
 from .proxies import current_optional_manifest
+from .ui.components import UIComponent, DisabledComponent, FacetsWithVersionsToggle
 from .utils import clear_view_deposit_page_permission_from_session
 
 
 import oarepo_ui.cli  # noqa
 from oarepo_ui.resources.templating.catalog import OarepoCatalog as Catalog
+
+
+def _prefixed_ui_overrides(prefix: str, components: dict):
+    return {f"{prefix}.{key}": value for key, value in components.items()}
 
 
 class OARepoUIState:
@@ -94,6 +100,62 @@ class OARepoUIState:
             path = Path(obj_or_import_string(ep.module).__file__).parent / ep.attr
             ret[ep.name] = json.loads(path.read_text())
         return ret
+
+    @functools.cached_property
+    def ui_overrides(self):
+        # TODO: move to oarepo-global-search and respective libraries
+        try:
+            # Prepare model overrides for global-search apps if present
+            from oarepo_global_search.proxies import current_global_search
+        except ImportError:
+            return current_app.config.get("UI_OVERRIDES", {})
+
+        models = current_global_search.model_services
+
+        global_search_result_items = {}
+
+        for model in models:
+            global_search_result_items[model.record_cls.schema.value] = UIComponent(
+                f"{model.config.service_id.capitalize()}ResultsListItem",
+                # Model Service ID should correspond to generated JS component file import path.
+                f"@js/{model.config.service_id}/search/ResultsListItem",
+                "default",
+            )
+
+        def _global_search_ui(app_name):
+            return {
+                f"{app_name}.Search.SearchApp.facets": FacetsWithVersionsToggle,
+                **_prefixed_ui_overrides(
+                    f"{app_name}.Search.ResultsList.item",
+                    global_search_result_items,
+                ),
+            }
+
+        # Runtime overrides for 3rd-party libraries UI
+        runtime_overrides = {
+            "oarepo_communities.community_records": _global_search_ui(
+                "Community_records"
+            ),
+            "records_dashboard.search": _global_search_ui("Records_dashboard"),
+            "global_search_ui.search": _global_search_ui("Global_search"),
+            "oarepo_communities.members": {
+                "InvenioCommunities.CommunityMembers.InvitationsModal": UIComponent(
+                    "CommunityInvitationsModal", "@js/communities_components"
+                )
+            },
+            "oarepo_communities.communities_settings": {
+                "InvenioCommunities.CommunityProfileForm.GridRow.DangerZone": DisabledComponent
+            },
+        }
+
+        if "UI_OVERRIDES" not in self.app.config:
+            overrides = runtime_overrides
+        else:
+            overrides = always_merger.merge(
+                runtime_overrides, self.app.config["UI_OVERRIDES"]
+            )
+
+        return overrides
 
 
 class OARepoUIExtension:
