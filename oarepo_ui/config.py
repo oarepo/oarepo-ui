@@ -13,9 +13,9 @@ OAREPO_UI_JINJAX_FILTERS = {
     "type": "oarepo_ui.resources.templating.filters:type_filter",
     "keys": "oarepo_ui.resources.templating.filters:keys_filter",
     "ijoin": "oarepo_ui.resources.templating.filters:ijoin_filter",
-    "compact_number": "oarepo_ui.resources.templating.filters:compact_number",
-    "localize_number": "oarepo_ui.resources.templating.filters:localize_number",
-    "truncate_number": "oarepo_ui.resources.templating.filters:truncate_number",
+    "compact_number": "invenio_app_rdm.records_ui.views.filters:compact_number",
+    "localize_number": "invenio_app_rdm.records_ui.views.filters:localize_number",
+    "truncate_number": "invenio_app_rdm.records_ui.views.filters:truncate_number",
 }
 
 OAREPO_UI_JINJAX_GLOBALS = {

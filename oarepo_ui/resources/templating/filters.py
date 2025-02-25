@@ -98,31 +98,3 @@ def ijoin_filter(values, separator):
         else:
             ret.append(str(val))
     return separator.join(ret)
-
-
-def localize_number(value):
-    """Format number according to locale value."""
-    locale_value = current_app.config.get("BABEL_DEFAULT_LOCALE")
-    number = int(value)
-    return format_decimal(number, locale=locale_value)
-
-
-def compact_number(value, max_value):
-    """Format long numbers."""
-    locale_value = current_app.config.get("BABEL_DEFAULT_LOCALE")
-    number = int(value)
-    decimals = 0
-
-    if number > max_value:
-        decimals = 2
-    return format_compact_decimal(
-        int(value), format_type="short", locale=locale_value, fraction_digits=decimals
-    )
-
-
-def truncate_number(value, max_value):
-    """Make number compact if too long."""
-    number = localize_number(value)
-    if int(value) > max_value:
-        number = compact_number(value, max_value=1_000_000)
-    return number
