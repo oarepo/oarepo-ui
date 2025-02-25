@@ -40,6 +40,7 @@ export const UploadFileButton = ({
   record,
   handleFilesUpload,
   allowedFileTypes,
+  allowedMetaFields,
 }) => {
   return (
     <FileUploadWrapper
@@ -52,13 +53,7 @@ export const UploadFileButton = ({
         onCompletedUpload: (result) => {
           handleFilesUpload();
         },
-        allowedMetaFields: [
-          {
-            id: "fileNote",
-            defaultValue: "",
-            isUserInput: true,
-          },
-        ],
+        allowedMetaFields: allowedMetaFields,
       }}
     />
   );
@@ -68,6 +63,13 @@ UploadFileButton.propTypes = {
   record: PropTypes.object.isRequired,
   handleFilesUpload: PropTypes.func.isRequired,
   allowedFileTypes: PropTypes.array,
+  allowedMetaFields: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      defaultValue: PropTypes.string,
+      isUserInput: PropTypes.bool.isRequired,
+    })
+  ),
 };
 
 export const DeleteFileButton = ({ file, handleFileDeletion }) => {
