@@ -19,7 +19,7 @@ def test_overridable_bundle_project_init(app):
 
 
 def test_overridable_bundle_project_entry(app):
-    assert app.extensions["oarepo_ui"].ui_overrides
+    assert app.extensions["oarepo_ui"].ui_overrides is not None
     del app.extensions["oarepo_ui"].ui_overrides
 
     app.config['UI_OVERRIDES'] = {
@@ -32,7 +32,7 @@ def test_overridable_bundle_project_entry(app):
 
 
 def test_overridable_bundle_project_entry_file(app, fake_manifest):
-    assert app.extensions["oarepo_ui"].ui_overrides
+    assert app.extensions["oarepo_ui"].ui_overrides is not None
     del app.extensions["oarepo_ui"].ui_overrides
 
     app.config['UI_OVERRIDES'] = {

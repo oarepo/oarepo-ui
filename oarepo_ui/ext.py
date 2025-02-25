@@ -104,12 +104,11 @@ class OARepoUIState:
     @functools.cached_property
     def ui_overrides(self):
         # TODO: move to oarepo-global-search and respective libraries
-        ui_overrides = {}
         try:
             # Prepare model overrides for global-search apps if present
             from oarepo_global_search.proxies import current_global_search
         except ImportError:
-            return self.app.config.get("UI_OVERRIDES", {})
+            return current_app.config.get("UI_OVERRIDES", {})
 
         models = current_global_search.model_services
 
@@ -150,13 +149,13 @@ class OARepoUIState:
         }
 
         if "UI_OVERRIDES" not in self.app.config:
-            ui_overrides = runtime_overrides
+            overrides = runtime_overrides
         else:
-            ui_overrides = always_merger.merge(
+            overrides = always_merger.merge(
                 runtime_overrides, self.app.config["UI_OVERRIDES"]
             )
 
-        return ui_overrides
+        return overr
 
 
 class OARepoUIExtension:
