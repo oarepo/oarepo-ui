@@ -155,7 +155,7 @@ class OARepoUIState:
                 runtime_overrides, self.app.config["UI_OVERRIDES"]
             )
 
-        return overr
+        return overrides
 
 
 class OARepoUIExtension:
