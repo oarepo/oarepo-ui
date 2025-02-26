@@ -24,10 +24,10 @@
                     <a class="logo-link" href="/">
                       <img class="ui image"
                             src="{{ url_for('static', filename=config.THEME_LOGO) }}"
-                            alt="{{ _(config.THEME_SITENAME) }}"/>
+                            alt="{{ _(config.REPOSITORY_NAME) }}"/>
                     </a>
                   {%- else %}
-                    <a class="logo" href="/">{{ _(config.THEME_SITENAME) }}</a>
+                    <a class="logo" href="/">{{ _(config.REPOSITORY_NAME) }}</a>
                   {%- endif %}
                 {%- endblock brand %}
           </div>
