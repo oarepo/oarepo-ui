@@ -110,17 +110,13 @@ class OARepoUIState:
         except ImportError:
             return current_app.config.get("UI_OVERRIDES", {})
 
-        models = current_global_search.model_services
+        global_search_config = current_global_search.global_search_ui_resource.config
 
         global_search_result_items = {}
 
-        for model in models:
-            global_search_result_items[model.record_cls.schema.value] = UIComponent(
-                f"{model.config.service_id.capitalize()}ResultsListItem",
-                # Model Service ID should correspond to generated JS component file import path.
-                f"@js/{model.config.service_id}/search/ResultsListItem",
-                "default",
-            )
+        for schema, search_component in global_search_config.default_components.items():
+            if isinstance(search_component, UIComponent):
+                global_search_result_items[schema] = search_component
 
         def _global_search_ui(app_name):
             return {
