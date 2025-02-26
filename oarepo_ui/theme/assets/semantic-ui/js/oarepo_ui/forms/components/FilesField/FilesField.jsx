@@ -147,6 +147,7 @@ export const FilesField = ({
               record={recordObject}
               allowedFileTypes={allowedFileTypes}
               lockFileUploader={lockFileUploader}
+              fileMetadataFields={fileMetadataFields}
             />
             {lockFileUploader && (
               <Message className="flex justify-space-between align-items-center">
