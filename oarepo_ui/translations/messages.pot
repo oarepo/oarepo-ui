@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-02-21 15:36+0100\n"
+"POT-Creation-Date: 2025-02-27 15:16+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,144 +17,208 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:4
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/for_translations_only.py:4
 msgid "api.draft"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:5
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/for_translations_only.py:5
 msgid "api.latest"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:6
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/for_translations_only.py:6
 msgid "api.files"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:7
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/for_translations_only.py:7
 msgid "api.latest_html"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:8
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/for_translations_only.py:8
 msgid "api.publish"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:9
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/for_translations_only.py:9
 msgid "api.record"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:10
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/for_translations_only.py:10
 msgid "api.self_html"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:11
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/for_translations_only.py:11
 msgid "api.versions"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/config.py:149
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/resources/config.py:146
 msgid "JSON"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/components/communities.py:78
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/resources/components/communities.py:78
 msgid "You have no permission to create record in this community."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/DefinitionLink.jinja:2
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/DefinitionLink.jinja:2
 msgid "Open definition"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:3
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:18
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:16
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:31
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:3
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:18
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:16
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:31
 msgid "New item"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:5
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:18
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:5
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:18
 msgid "Edit item "
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:16
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:16
 msgid "Edit item"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:4
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:5
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:4
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:5
 msgid "Identifiers and links"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:46
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:47
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:46
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:47
 msgid "metadata/originalRecord.label"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:5
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/Metrics.jinja:14
+msgid "Metrics"
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:5
 msgid "Preview"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:8
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:8
 msgid ""
 "You are previewing a new record version that has not yet been published."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/RecordExport.jinja:13
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/RecordExport.jinja:14
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/RecordExport.jinja:13
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/RecordExport.jinja:14
 msgid "Export"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/RecordVersions.jinja:13
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/RecordVersions.jinja:14
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/RecordVersions.jinja:13
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/RecordVersions.jinja:14
 msgid "Versions"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:6
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:7
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:6
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:7
 msgid "Search"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/SidebarApiLinks.jinja:5
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/SidebarApiLinks.jinja:5
 msgid "API"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/SidebarApiLinks.jinja:5
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/SidebarApiLinks.jinja:5
 msgid "Links"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:7
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/Stats.jinja:18
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/Stats.jinja:56
+msgid "Views"
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/Stats.jinja:26
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/Stats.jinja:75
+msgid "Downloads"
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/Stats.jinja:37
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/Stats.jinja:40
+msgid "Show more details"
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/Stats.jinja:38
+msgid "Show less details"
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/Stats.jinja:49
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/Stats.jinja:66
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/Stats.jinja:85
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/Stats.jinja:109
+msgid "All versions"
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/Stats.jinja:50
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/Stats.jinja:69
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/Stats.jinja:88
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/Stats.jinja:110
+msgid "This version"
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/Stats.jinja:57
+msgid "Total views"
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/Stats.jinja:76
+msgid "Total downloads"
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/Stats.jinja:94
+msgid "Data volume"
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/Stats.jinja:95
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/Stats.jinja:104
+msgid "Total data volume"
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/Stats.jinja:117
+msgid "More info on how stats are collected."
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/ICustomFields.jinja:11
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/translations/jinjax_messages.jinja:1
+#: oarepo_ui/translations/jinjax_messages.jinja:1
+msgid "Not set"
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:7
 msgid "Files"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:11
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:11
 msgid "File"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:12
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:12
 msgid "Size"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:13
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:54
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:13
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:54
 msgid "Actions"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/NotFound.jinja:11
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/NotFound.jinja:11
 msgid "Not found"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/NotFound.jinja:16
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/NotFound.jinja:16
 msgid ""
 "\n"
 "      The record you are trying to access does not exist in this repository."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/PermissionDenied.jinja:11
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/PermissionDenied.jinja:11
 msgid "Permission denied"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/Tombstone.jinja:11
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/Tombstone.jinja:11
 msgid "Gone"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/Tombstone.jinja:16
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/Tombstone.jinja:16
 #, python-format
 msgid ""
 "\n"
@@ -162,76 +226,71 @@ msgid ""
 "      metadata of the record is kept for archival purposes."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/detail.html:25
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/detail.html:25
 msgid "Record details"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/footer.html:15
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/footer.html:15
 msgid "Contact"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/footer.html:33
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/footer.html:33
 #, python-format
 msgid ""
 "Powered by\n"
 "            <a href=\"%(link)s\">Invenio</a>"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/footer.html:37
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/footer.html:37
 #, python-format
 msgid "Version: %(version)s"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:42
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:42
 msgid "Menu"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:61
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:61
 msgid "Close menu"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:111
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:111
 msgid "Requests"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:113
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:113
 msgid "Inbox"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_frontage.html:26
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_frontage.html:26
 msgid "Type and press enter to search"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:15
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:15
 msgid "Log in"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:19
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:19
 msgid "Sign up"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:37
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:37
 msgid "Quick create"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:73
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:114
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:73
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:114
 msgid "My account"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:108
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:137
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:144
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:108
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:137
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:144
 msgid "Log out"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/search.html:2
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/search.html:2
 msgid "Search results"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/translations/jinjax_messages.jinja:1
-#: oarepo_ui/translations/jinjax_messages.jinja:1
-msgid "Not set"
 msgstr ""
 
 msgid "Copied!"
@@ -450,6 +509,9 @@ msgid "Search results from external API"
 msgstr ""
 
 msgid "Save"
+msgstr ""
+
+msgid "Add"
 msgstr ""
 
 msgid ""
