@@ -42,7 +42,13 @@ export const SearchAppLayoutWithSearchbarHOC = ({
                 />
               </Overridable>
             </ShouldActiveFiltersRender>
-            <SearchAppFacets aggs={config.aggs} appName={appName} />
+            <Overridable
+              id={buildUID("SearchApp.facets")}
+              aggs={config.aggs}
+              appName={appName}
+            >
+              <SearchAppFacets aggs={config.aggs} appName={appName} />
+            </Overridable>
           </GridResponsiveSidebarColumn>
           <Grid.Column computer={12} mobile={16} tablet={16}>
             <Grid columns="equal">
@@ -68,9 +74,7 @@ export const SearchAppLayoutWithSearchbarHOC = ({
                   className="facets-sidebar-open-button"
                 >
                   <Icon name="filter"></Icon>
-                  <ShouldActiveFiltersRender>
-                    <ActiveFiltersCountFloatingLabel />
-                  </ShouldActiveFiltersRender>
+                  <ActiveFiltersCountFloatingLabel />
                 </Button>
               </Grid.Column>
               <Grid.Column

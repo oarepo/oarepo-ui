@@ -1,10 +1,13 @@
 import copy
+
+#
+import logging
 from functools import partial
 from os.path import splitext
 from typing import TYPE_CHECKING, Iterator
 
 import deepmerge
-from flask import Response, abort, g, redirect, request, Blueprint
+from flask import Blueprint, Response, abort, current_app, g, redirect, request
 from flask_principal import PermissionDenied
 from flask_resources import (
     Resource,
@@ -26,20 +29,11 @@ from invenio_records_resources.resources.records.resource import (
     request_view_args,
 )
 from invenio_records_resources.services import LinksTemplate
+from invenio_stats.proxies import current_stats
 from oarepo_runtime.datastreams.utils import get_file_service_for_record_class
 from werkzeug.exceptions import Forbidden
 
 from oarepo_ui.utils import dump_empty
-
-from .components.custom_fields import CustomFieldsComponent
-from .signposting import response_header_signposting
-from .templating.data import FieldData
-
-if TYPE_CHECKING:
-    from .components import UIResourceComponent
-
-#
-import logging
 
 # Resource
 #
@@ -50,6 +44,12 @@ from .config import (
     TemplatePageUIResourceConfig,
     UIResourceConfig,
 )
+from .signposting import response_header_signposting
+from .templating.data import FieldData
+
+if TYPE_CHECKING:
+    from .components import UIResourceComponent
+
 
 log = logging.getLogger(__name__)
 
@@ -251,6 +251,10 @@ class RecordsUIResource(UIResource):
         # TODO: handle permissions UI way - better response than generic error
         record = self.config.ui_serializer.dump_obj(api_record.to_dict())
         record.setdefault("links", {})
+
+        emitter = current_stats.get_event_emitter("record-view")
+        if record is not None and emitter is not None:
+            emitter(current_app, record=api_record._record, via_api=False)
 
         ui_links = self.expand_detail_links(identity=g.identity, record=api_record)
         export_path = request.path.split("?")[0]
@@ -465,7 +469,7 @@ class RecordsUIResource(UIResource):
 
         exporter = self.config.exports.get(export_format.lower())
         if exporter is None:
-            abort(404, f"No exporter for code {{export_format}}")
+            abort(404, f"No exporter for code {export_format}")
 
         serializer = obj_or_import_string(exporter["serializer"])(
             options={

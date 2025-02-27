@@ -4,8 +4,9 @@ from flask import current_app
 from flask_webpackext import WebpackBundleProject
 from pywebpack import bundles_from_entry_point
 from pywebpack.helpers import cached
+from .proxies import current_ui_overrides
 
-overrides_js_template = '''
+overrides_js_template = """
 import { overrideStore, parametrize } from 'react-overridable';
 
 {% for key, component in overrides.items() -%}
@@ -19,13 +20,18 @@ import { overrideStore, parametrize } from 'react-overridable';
 {% for key, component in overrides.items() -%}
 overrideStore.add('{{ key }}', {{ component.name }});
 {% endfor %}
-'''
+"""
 
 
 class OverridableBundleProject(WebpackBundleProject):
     def __init__(
-            self, import_name, project_folder=None, bundles=None,
-            config=None, config_path=None, overrides_bundle_path="_overrides"
+        self,
+        import_name,
+        project_folder=None,
+        bundles=None,
+        config=None,
+        config_path=None,
+        overrides_bundle_path="_overrides",
     ):
         """Initialize templated folder.
 
@@ -52,16 +58,20 @@ class OverridableBundleProject(WebpackBundleProject):
             if going to be generated.
         """
         # Following is needed to correctly resolve paths to etc. source package.json from invenio_assets
-        _import_name = 'invenio_assets.webpack'
+        _import_name = "invenio_assets.webpack"
         super(OverridableBundleProject, self).__init__(
             _import_name,
-            project_folder=project_folder, bundles=bundles, config=config, config_path=config_path)
+            project_folder=project_folder,
+            bundles=bundles,
+            config=config,
+            config_path=config_path,
+        )
         self._overrides_bundle_path = overrides_bundle_path
         self._generated_paths = []
 
     @property
     def overrides_bundle_asset_path(self):
-        return f'js/{self._overrides_bundle_path}'
+        return f"js/{self._overrides_bundle_path}"
 
     @property
     def overrides_bundle_path(self):
@@ -77,9 +87,10 @@ class OverridableBundleProject(WebpackBundleProject):
     def entry(self):
         """Get webpack entry points."""
         bundle_entries = super().entry
-        if 'UI_OVERRIDES' in current_app.config:
-            for bp_name, overrides in current_app.config['UI_OVERRIDES'].items():
-                bundle_entries[f"overrides-{bp_name}"] = f"./{self.overrides_bundle_asset_path}/{bp_name}.js"
+        for bp_name, overrides in current_ui_overrides.items():
+            bundle_entries[f"overrides-{bp_name}"] = (
+                f"./{self.overrides_bundle_asset_path}/{bp_name}.js"
+            )
         return bundle_entries
 
     def create(self, force=None):
@@ -92,18 +103,19 @@ class OverridableBundleProject(WebpackBundleProject):
         """
         super().create(force)
 
-        if 'UI_OVERRIDES' in current_app.config:
-            # Generate special bundle for configured UI overrides
-            if not os.path.exists(self.overrides_bundle_path):
-                os.mkdir(self.overrides_bundle_path)
+        # Generate special bundle for configured UI overrides
+        if not os.path.exists(self.overrides_bundle_path):
+            os.mkdir(self.overrides_bundle_path)
 
-            for bp_name, overrides in current_app.config['UI_OVERRIDES'].items():
-                template = current_app.jinja_env.from_string(overrides_js_template)
-                overrides_js_content = template.render({'overrides': overrides})
-                overrides_js_path = os.path.join(self.overrides_bundle_path, f'{bp_name}.js')
+        for bp_name, overrides in current_ui_overrides.items():
+            template = current_app.jinja_env.from_string(overrides_js_template)
+            overrides_js_content = template.render({"overrides": overrides})
+            overrides_js_path = os.path.join(
+                self.overrides_bundle_path, f"{bp_name}.js"
+            )
 
-                with open(overrides_js_path, 'w+') as f:
-                    f.write(overrides_js_content)
+            with open(overrides_js_path, "w+") as f:
+                f.write(overrides_js_content)
 
     def clean(self):
         """Clean created webpack project."""

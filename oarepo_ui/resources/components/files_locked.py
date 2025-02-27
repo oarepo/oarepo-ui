@@ -5,6 +5,7 @@ from flask_principal import Identity
 
 class FilesLockedComponent(UIResourceComponent):
     """Add files locked to form config, to be able to use the same logic as in RDM"""
+
     def before_ui_create(
         self,
         *,

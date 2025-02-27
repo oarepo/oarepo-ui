@@ -16,12 +16,13 @@ import {
   SearchAppLayout,
   SearchAppResultOptions,
   SearchAppSearchbarContainer,
-  SearchFiltersToggleElement,
   SearchAppSort,
   SearchAppResults,
   FoldableBucketAggregationElement,
+  SearchappSearchbarElement,
 } from "@js/oarepo_ui/search";
 import { loadAppComponents } from "../util";
+import { RDMToggleComponent } from "@js/invenio_app_rdm/search/components";
 
 export function parseSearchAppConfigs(
   configDataAttr = "invenio-search-config"
@@ -66,9 +67,10 @@ export function createSearchAppsInit({
       [`${overridableIdPrefix}.SearchApp.searchbarContainer`]:
         SearchAppSearchbarContainerWithConfig,
       [`${overridableIdPrefix}.SearchFilters.Toggle.element`]:
-        SearchFiltersToggleElement,
+        RDMToggleComponent,
       [`${overridableIdPrefix}.SearchApp.sort`]: SearchAppSort,
       [`${overridableIdPrefix}.SearchApp.results`]: SearchAppResults,
+      [`${overridableIdPrefix}.SearchBar.element`]: SearchappSearchbarElement,
     };
 
     loadAppComponents({

@@ -1,6 +1,19 @@
-.ui.modal {
-  &#preview-modal .content {
+#preview-modal {
+  .content {
     height: 80vh;
+  }
+  #preview-file-title {
+    text-align: center;
+    padding: 0;
+    margin: 0.5rem 0;
+  }
+  .file-preview-iframe {
+    border-top: none;
+    padding: 0;
+  }
+  .ui.button.close {
+    top: 0;
+    right: -0.5rem;
   }
 }
 

@@ -11,7 +11,6 @@ export {
 export { SearchAppResultOptions } from "./SearchAppResultOptions";
 export { SearchAppSearchbarContainer } from "./SearchAppSearchbarContainer";
 export { SearchAppSort } from "./SearchAppSort";
-export { SearchFiltersToggleElement } from "./SearchFiltersToggleElement";
 export { SearchAppResults } from "./SearchAppResults";
 export { EmptyResultsElement } from "./EmptyResultsElement";
 export { ResultsPerPageLabel } from "./ResultsPerPageLabel";

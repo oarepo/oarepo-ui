@@ -1,52 +1,54 @@
-{# def files #} {% if files.entries|length > 0 %}
+{# def files #} 
+{% if files.entries|length > 0 %}
+  <table class="ui table striped rel-mb-1">
+    <thead>
+      <tr>
+        <th colspan="3">
+          <h2 class="ui header">{{ _("Files") }}</h2>
+        </th>
+      </tr>
+      <tr>
+        <th>{{ _("File") }}</th>
+        <th>{{ _("Size") }}</th>
+        <th>{{ _("Actions") }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for file in array(files.entries) %}
+      <tr>
+        <td class="file-info">
+          <p>{{ file.key }}</p>
+          {%- if file.metadata.fileNote -%}
+          <small>{{ file.metadata.fileNote }}</small>
+          {%- endif -%}
+        </td>
+        <td>{{ (file.size or 0) | filesizeformat }}</td>
+        <td>
+          {% if file.links.preview and file.previewable %}
+          <button class="ui button transparent">
+            <i
+              class="ui icon zoom openPreviewIcon"
+              data-preview-link="{{ file.links.preview }}"
+              data-preview-file-name="{{ file.key }}"
+            ></i>
+          </button>
+          {% endif %}
+          <button class="ui button transparent">
+            <a href="{{ file.links.content }}"
+              ><i class="ui icon download"></i
+            ></a>
+          </button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
-<table class="ui table striped rel-mb-1">
-  <thead>
-    <tr>
-      <th colspan="3">
-        <h2 class="ui header">{{ _("Files") }}</h2>
-      </th>
-    </tr>
-    <tr>
-      <th>{{ _("File") }}</th>
-      <th>{{ _("Size") }}</th>
-      <th>{{ _("Actions") }}</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for file in array(files.entries) %}
-    <tr>
-      <td class="file-info">
-        <p>{{ file.key }}</p>
-        {%- if file.metadata.fileNote -%}
-        <small>{{ file.metadata.fileNote }}</small>
-        {%- endif -%}
-      </td>
-      <td>{{ (file.size or 0) | filesizeformat }}</td>
-      <td>
-        {% if file.links.preview %}
-        <button class="ui button transparent">
-          <i
-            class="ui icon zoom openPreviewIcon"
-            data-preview-link="{{ file.links.preview }}"
-          ></i>
-        </button>
-        {% endif %}
-        <button class="ui button transparent">
-          <a href="{{ file.links.content }}"
-            ><i class="ui icon download"></i
-          ></a>
-        </button>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-
-<div class="ui modal fullscreen" id="preview-modal">
-  <button class="ui button close transparent">
-    <i class="close icon"></i>
-  </button>
-  <iframe class="content" title="File Preview"></iframe>
-</div>
+  <div class="ui modal fullscreen" id="preview-modal">
+    <h3 id="preview-file-title"></h3>
+    <button class="ui button close transparent">
+      <i class="close icon"></i>
+    </button>
+    <iframe class="content file-preview-iframe" title="File Preview"></iframe>
+  </div>
 {% endif %}
