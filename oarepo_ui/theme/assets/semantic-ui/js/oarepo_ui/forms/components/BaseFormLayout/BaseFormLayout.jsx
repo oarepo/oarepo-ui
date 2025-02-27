@@ -79,9 +79,10 @@ export const BaseFormLayout = ({ formikProps }) => {
           errorData?.errors?.length > 0
             ? serializeErrors(
                 errorData.errors,
-                i18next.t(
-                  "Your draft has validation errors. Please correct them and try again:"
-                )
+                errorData?.errorMessage ||
+                  i18next.t(
+                    "Your draft has validation errors. Please correct them and try again:"
+                  )
               )
             : {},
         ...formikProps,
