@@ -1,0 +1,5 @@
+// This height displays at most 15 items or so
+// Tablets/phones were left as-is because they have less screen estate
+@selectionComputerMaxMenuHeight : 575px;
+@selectionWidescreenMaxMenuHeight : 575px;
+@selectionIconPadding: 10px;

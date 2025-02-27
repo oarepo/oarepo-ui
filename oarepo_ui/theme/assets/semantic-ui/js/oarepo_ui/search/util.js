@@ -19,6 +19,7 @@ import {
   SearchAppSort,
   SearchAppResults,
   FoldableBucketAggregationElement,
+  SearchappSearchbarElement,
 } from "@js/oarepo_ui/search";
 import { loadAppComponents } from "../util";
 import { RDMToggleComponent } from "@js/invenio_app_rdm/search/components";
@@ -69,6 +70,7 @@ export function createSearchAppsInit({
         RDMToggleComponent,
       [`${overridableIdPrefix}.SearchApp.sort`]: SearchAppSort,
       [`${overridableIdPrefix}.SearchApp.results`]: SearchAppResults,
+      [`${overridableIdPrefix}.SearchBar.element`]: SearchappSearchbarElement,
     };
 
     loadAppComponents({
