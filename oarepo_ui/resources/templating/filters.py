@@ -1,6 +1,4 @@
 from oarepo_ui.resources.templating.data import EMPTY_FIELD_DATA, FieldData
-from babel.numbers import format_compact_decimal, format_decimal
-from flask import current_app
 
 
 def id_filter(x):

@@ -799,3 +799,6 @@ msgstr ""
 #: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/Stats.jinja:116
 msgid "More info on how stats are collected."
 msgstr ""
+
+msgid "Add"
+msgstr ""
