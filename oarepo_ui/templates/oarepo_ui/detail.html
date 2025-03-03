@@ -3,7 +3,7 @@
 {%- endblock bypasslinks %}
 {%- block page_body %}
   {% if is_preview %}
-    <PreviewSubheader />
+    <PreviewSubheader record={record} api_record={api_record} />
   {% endif %}
   <div class="ui{% if not embedded %} main{% endif %} container">
     <div class="ui relaxed grid">
