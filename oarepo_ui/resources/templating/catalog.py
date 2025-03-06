@@ -141,7 +141,7 @@ class OarepoCatalog(Catalog):
             except ComponentNotFound:
                 pass
 
-        raise ComponentNotFound(f"{names} not found in {self._component_paths}")
+        raise ComponentNotFound(str(names))
 
     def get_source(self, cname: str, file_ext: "TFileExt" = "") -> str:
         prefix, name = self._split_name(cname)
