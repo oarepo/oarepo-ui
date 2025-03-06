@@ -137,10 +137,8 @@ class OarepoCatalog(Catalog):
     ) -> str:
         for name in names:
             try:
-                print("Trying to render", name)
                 return self.irender(name, caller=caller, **kw)
             except ComponentNotFound:
-                print("Component not found", name)
                 pass
 
         raise ComponentNotFound(f"{names} not found in {self._component_paths}")
