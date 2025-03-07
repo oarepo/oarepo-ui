@@ -128,6 +128,21 @@ class OarepoCatalog(Catalog):
         self.collected_js = []
         return self.irender(__name, caller=caller, **kw)
 
+    def render_first_existing(
+        self,
+        names: "t.List[str]",
+        *,
+        caller: "t.Callable | None" = None,
+        **kw,
+    ) -> str:
+        for name in names:
+            try:
+                return self.irender(name, caller=caller, **kw)
+            except ComponentNotFound:
+                pass
+
+        raise ComponentNotFound(str(names))
+
     def get_source(self, cname: str, file_ext: "TFileExt" = "") -> str:
         prefix, name = self._split_name(cname)
         _root_path, path = self._get_component_path(prefix, name, file_ext=file_ext)
@@ -155,7 +170,7 @@ class OarepoCatalog(Catalog):
 
             * "DetailPage" -> oarepo_vocabularies/DetailPage.jinja (priority -10)
         """
-        if hasattr(self, "_component_paths"):
+        if getattr(self, "_component_paths", None):
             return self._component_paths
 
         paths: Dict[str, Tuple[Path, Path, int]] = {}
