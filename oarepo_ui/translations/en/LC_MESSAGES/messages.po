@@ -802,3 +802,23 @@ msgstr ""
 
 msgid "Add"
 msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:11
+msgid "You are previewing a published record."
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:13
+msgid "You are previewing changes that have not yet been published."
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:15
+msgid "You are previewing a new record that has not yet been published."
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:23
+msgid "File is being processed."
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:35
+msgid "Preview file"
+msgstr ""

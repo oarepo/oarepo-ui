@@ -17,7 +17,14 @@
       {% for file in array(files.entries) %}
       <tr>
         <td class="file-info">
-          <p>{{ file.key }}</p>
+          <p>
+            {{ file.key }}
+            {%- if file.status == "pending" -%}
+            <i class="notched circle loading icon rel-ml-1" title="{{ _('File is being processed.') }}"></i>
+            {%- elif file.status != "completed" -%}
+            <i class="ui icon exclamation circle red rel-ml-1" data-tooltip="{{ _('File was not uploaded correctly. Please delete it and try again.') }}"></i>
+            {%- endif -%}
+          </p>
           {%- if file.metadata.fileNote -%}
           <small>{{ file.metadata.fileNote }}</small>
           {%- endif -%}
@@ -25,7 +32,7 @@
         <td>{{ (file.size or 0) | filesizeformat }}</td>
         <td>
           {% if file.links.preview and file.previewable %}
-          <button class="ui button transparent">
+          <button class="ui button transparent{% if file.status != 'completed' %} disabled{% endif %}" title="{{ _('Preview file') }}">
             <i
               class="ui icon zoom openPreviewIcon"
               data-preview-link="{{ file.links.preview }}"
@@ -33,7 +40,7 @@
             ></i>
           </button>
           {% endif %}
-          <button class="ui button transparent">
+          <button class="ui button transparent{% if file.status != 'completed' %} disabled{% endif %}" title="{{ _('Download file') }}">
             <a href="{{ file.links.content }}"
               ><i class="ui icon download"></i
             ></a>
