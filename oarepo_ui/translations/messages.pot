@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-02-27 15:16+0100\n"
+"POT-Creation-Date: 2025-03-10 12:56+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -91,11 +91,23 @@ msgstr ""
 msgid "Metrics"
 msgstr ""
 
-#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:5
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:7
 msgid "Preview"
 msgstr ""
 
-#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:8
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:11
+msgid "You are previewing a published record."
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:13
+msgid "You are previewing changes that have not yet been published."
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:15
+msgid "You are previewing a new record that has not yet been published."
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:17
 msgid ""
 "You are previewing a new record version that has not yet been published."
 msgstr ""
@@ -200,6 +212,22 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:23
+msgid "File is being processed."
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:25
+msgid "File was not uploaded correctly. Please delete it and try again."
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:35
+msgid "Preview file"
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:43
+msgid "Download file"
+msgstr ""
+
 #: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/NotFound.jinja:11
 msgid "Not found"
 msgstr ""
@@ -300,9 +328,6 @@ msgid "Copy to clipboard failed!"
 msgstr ""
 
 msgid "Export selection"
-msgstr ""
-
-msgid "Download file"
 msgstr ""
 
 msgid "Version {{- version}}"
@@ -428,9 +453,6 @@ msgid "Delete file"
 msgstr ""
 
 msgid "File uploaded successfully."
-msgstr ""
-
-msgid "File was not uploaded correctly. Please delete it and try again."
 msgstr ""
 
 msgid "Edit file metadata"
