@@ -17,14 +17,15 @@ export const ClipboardCopyButton = ({ copyText, ...rest }) => {
   }, [copyText]);
 
   return (
-    <i
+    <button
       ref={copyBtnRef}
-      title={`${i18next.t("Click to copy")}: ${copyText}`}
-      type="button"
-      className="copy outline link icon copy-button"
+      class="ui button transparent copy outline link icon copy-button"
+      aria-label={`${i18next.t("Click to copy")}: ${copyText}`}
       data-clipboard-text={copyText}
       {...rest}
-    />
+    >
+      <i className="copy outline icon" />
+    </button>
   );
 };
 

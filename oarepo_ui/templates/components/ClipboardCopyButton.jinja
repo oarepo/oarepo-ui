@@ -1,9 +1,9 @@
 {# def copyText  #}
 
-<i
-  class="copy outline link icon copy-button"
-  type="button"
-  title="{{ _('Click to copy') ~ ': ' ~ copyText }}"
+<button
+  class="ui button transparent copy outline link icon copy-button"
   data-clipboard-text="{{ copyText }}"
+  aria-label="{{ _('Copy to clipboard') }}"
 >
-</i>
+  <i class="copy outline icon"></i>
+</button>

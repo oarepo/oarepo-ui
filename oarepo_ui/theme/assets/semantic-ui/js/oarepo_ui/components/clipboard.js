@@ -1,42 +1,61 @@
 import $ from "jquery";
 
-function copyToClipboard(element, text) {
-  const $element = $(element);
-  if (!$element.transition("is animating")) {
-    $element.transition("save conditions", { silent: true });
-    element.classList.remove("outline", "copy");
-    element.classList.add("notched", "circle", "loading");
+function copyToClipboard(buttonElement, text) {
+  const $buttonElement = $(buttonElement);
+  const $icon = $buttonElement.find("i.icon");
+
+  if (!$buttonElement.transition("is animating")) {
+    $buttonElement.transition("save conditions", { silent: true });
+
+    buttonElement.setAttribute("aria-label", "Copying...");
+
+    $icon.removeClass("outline copy");
+    $icon.addClass("notched circle loading");
+
     navigator.clipboard
       .writeText(text)
       .then(() => {
-        element.classList.remove("notched", "circle", "loading");
-        element.classList.add("check");
-        $element.transition({
+        $icon.removeClass("notched circle loading");
+        $icon.addClass("check");
+        buttonElement.setAttribute("aria-label", "Copied!");
+        $buttonElement.transition({
           animation: "fade",
           duration: "1s",
           onComplete: function () {
-            $element.transition("restore conditions");
-            element.classList.remove("check");
-            element.classList.add("outline", "copy");
+            $buttonElement.transition("restore conditions");
+            $icon.removeClass("check");
+            $icon.addClass("outline copy");
+
+            buttonElement.setAttribute(
+              "aria-label",
+              buttonElement.dataset.originalAriaLabel
+            );
           },
         });
       })
       .catch((err) => {
-        element.classList.remove("notched", "circle", "loading");
-        element.classList.add("exclamation", "triangle");
-        $element.transition({
+        $icon.removeClass("notched circle loading");
+        $icon.addClass("exclamation triangle");
+
+        buttonElement.setAttribute("aria-label", "Copy failed!");
+
+        $buttonElement.transition({
           animation: "fade",
           duration: "1s",
           onComplete: function () {
-            $element.transition("restore conditions");
-            element.classList.remove("exclamation", "triangle");
-            element.classList.add("outline", "copy");
+            $buttonElement.transition("restore conditions");
+            $icon.removeClass("exclamation triangle");
+            $icon.addClass("outline copy");
+
+            buttonElement.setAttribute(
+              "aria-label",
+              buttonElement.dataset.originalAriaLabel
+            );
           },
         });
       });
   }
 }
-
 function configureCopyButtons(copyButtons) {
   copyButtons.each((index, element) => {
     const text = element.dataset?.clipboardText ?? "";
