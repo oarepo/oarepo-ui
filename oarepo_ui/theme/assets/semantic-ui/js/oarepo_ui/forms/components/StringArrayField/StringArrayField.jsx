@@ -1,34 +1,35 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { FieldLabel, TextField } from "react-invenio-forms";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { useFormikContext, getIn, FieldArray } from "formik";
 import { Icon, Form, Label } from "semantic-ui-react";
-import {
-  ArrayFieldItem,
-  useShowEmptyValue,
-  useSanitizeInput,
-} from "@js/oarepo_ui";
+import { ArrayFieldItem } from "../ArrayFieldItem";
+import { useFieldData, useShowEmptyValue } from "../../hooks";
+import { TextField } from "../TextField";
 
 export const StringArrayField = ({
   fieldPath,
   label,
   required,
-  defaultNewValue,
-  addButtonLabel,
+  defaultNewValue = "",
+  addButtonLabel = i18next.t("Add"),
   helpText,
   labelIcon,
-  showEmptyValue,
-  addButtonClassName,
+  showEmptyValue = false,
+  addButtonClassName = "array-field-add-button inline",
+  icon,
   ...uiProps
 }) => {
-  const { values, setFieldValue, setFieldTouched, errors } = useFormikContext();
+  const { values, errors } = useFormikContext();
+  const { getFieldData } = useFieldData();
+  const fieldData = getFieldData({ fieldPath: fieldPath, icon: icon });
+  const help = fieldData.helpText ?? helpText;
+
   useShowEmptyValue(fieldPath, defaultNewValue, showEmptyValue);
-  const { sanitizeInput } = useSanitizeInput();
   const fieldError = getIn(errors, fieldPath, null);
   return (
     <Form.Field>
-      <FieldLabel label={label} />
+      {fieldData.label ?? label}
       <FieldArray
         name={fieldPath}
         render={(arrayHelpers) => (
@@ -46,25 +47,16 @@ export const StringArrayField = ({
                   fieldPathPrefix={indexPath}
                 >
                   <TextField
-                    width={16}
                     fieldPath={indexPath}
                     label={`#${index + 1}`}
-                    optimized
-                    fluid
-                    onBlur={() => {
-                      const cleanedContent = sanitizeInput(
-                        getIn(values, indexPath)
-                      );
-                      setFieldValue(indexPath, cleanedContent);
-                      setFieldTouched(indexPath, true);
-                    }}
-                    {...uiProps}
                     error={textInputError}
+                    width={16}
+                    {...uiProps}
                   />
                 </ArrayFieldItem>
               );
             })}
-            {helpText ? <label className="helptext">{helpText}</label> : null}
+            {help ? <label className="helptext">{help}</label> : null}
             <Form.Button
               className={addButtonClassName}
               type="button"
@@ -99,11 +91,5 @@ StringArrayField.propTypes = {
   required: PropTypes.bool,
   showEmptyValue: PropTypes.bool,
   addButtonClassName: PropTypes.string,
-};
-
-StringArrayField.defaultProps = {
-  addButtonLabel: i18next.t("Add"),
-  defaultNewValue: "",
-  showEmptyValue: false,
-  addButtonClassName: "array-field-add-button inline",
+  icon: PropTypes.string,
 };
