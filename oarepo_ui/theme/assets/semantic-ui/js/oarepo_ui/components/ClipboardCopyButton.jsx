@@ -5,16 +5,15 @@ import PropTypes from "prop-types";
 
 export const ClipboardCopyButton = ({ copyText, ...rest }) => {
   const copyBtnRef = useRef(null);
-
   useEffect(() => {
     const copyBtn = copyBtnRef.current;
     if (copyBtn) {
-      initCopyButtons(copyBtnRef.current);
+      initCopyButtons(copyBtn);
     }
     return () => {
       deinitializeCopyButtons(copyBtn);
     };
-  }, [copyText]);
+  }, []);
 
   return (
     <button

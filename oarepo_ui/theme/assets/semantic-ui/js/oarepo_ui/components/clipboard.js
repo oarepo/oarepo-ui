@@ -1,6 +1,6 @@
 import $ from "jquery";
 
-function copyToClipboard(buttonElement, text) {
+function copyToClipboard(buttonElement) {
   const $buttonElement = $(buttonElement);
   const $icon = $buttonElement.find("i.icon");
 
@@ -11,7 +11,7 @@ function copyToClipboard(buttonElement, text) {
 
     $icon.removeClass("outline copy");
     $icon.addClass("notched circle loading");
-
+    const text = buttonElement.dataset?.clipboardText ?? "";
     navigator.clipboard
       .writeText(text)
       .then(() => {
@@ -58,9 +58,8 @@ function copyToClipboard(buttonElement, text) {
 }
 function configureCopyButtons(copyButtons) {
   copyButtons.each((index, element) => {
-    const text = element.dataset?.clipboardText ?? "";
     $(element).on("click", () => {
-      copyToClipboard(element, text);
+      copyToClipboard(element);
     });
   });
 }
