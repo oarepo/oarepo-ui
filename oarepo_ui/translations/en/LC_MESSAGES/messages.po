@@ -802,3 +802,67 @@ msgstr ""
 
 msgid "Add"
 msgstr ""
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/ClipboardCopyButton.jinja:6
+msgid "Click to copy"
+msgstr ""
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:11
+msgid "You are previewing a published record."
+msgstr ""
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:13
+msgid "You are previewing changes that have not yet been published."
+msgstr ""
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:15
+msgid "You are previewing a new record that has not yet been published."
+msgstr ""
+
+msgid "DOI"
+msgstr ""
+
+msgid "Handle"
+msgstr ""
+
+msgid "ISBN"
+msgstr ""
+
+msgid "ISSN"
+msgstr ""
+
+msgid "RIV"
+msgstr ""
+
+msgid "ORCID"
+msgstr ""
+
+msgid "ScopusID"
+msgstr ""
+
+msgid "ResearcherID"
+msgstr ""
+
+msgid "CzenasAutID"
+msgstr ""
+
+msgid "vedIDK"
+msgstr ""
+
+msgid "InstitutionalID"
+msgstr ""
+
+msgid "ISNI"
+msgstr ""
+
+msgid "ROR"
+msgstr ""
+
+msgid "ICO"
+msgstr ""
+
+msgid "Both identifier and identifier type must be filled."
+msgstr ""
+
+msgid "Add identifier"
+msgstr ""

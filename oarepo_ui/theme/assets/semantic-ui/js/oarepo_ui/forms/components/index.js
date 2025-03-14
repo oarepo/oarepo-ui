@@ -19,3 +19,4 @@ export * from "./CompactFieldLabel";
 export * from "./AccessRightField";
 export * from "./FilesField";
 export * from "./StringArrayField";
+export * from "./IdentifiersField";
