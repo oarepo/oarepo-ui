@@ -11,3 +11,17 @@
     font-size: 1rem;
   }
 }
+
+.oarepo-funding-field-container {
+  .ui.icon.left.labeled.button {
+    background-color: @arrayAddButtonBackgroundColor;
+    color: @arrayAddButtonTextColor;
+  }
+}
+
+.oarepo-creatibutors-field-container {
+  .ui.icon.left.labeled.button {
+    background-color: @arrayAddButtonBackgroundColor;
+    color: @arrayAddButtonTextColor;
+  }
+}
