@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: oarepo-ui 4.0.0\n"
 "Report-Msgid-Bugs-To: info@oarepo.org\n"
 "POT-Creation-Date: 2023-10-25 13:15+0200\n"
-"PO-Revision-Date: 2025-03-10 12:55+0100\n"
+"PO-Revision-Date: 2025-03-17 10:31+0100\n"
 "Last-Translator: \n"
 "Language-Team: cs <LL@li.org>\n"
 "Language: cs\n"
@@ -588,24 +588,6 @@ msgstr "Verze"
 msgid "View all versions"
 msgstr "Zobrazit všechny verze"
 
-msgid "Version {{- version}}"
-msgstr ""
-
-msgid "Only published versions are displayed."
-msgstr ""
-
-msgid "An error occurred while fetching the record."
-msgstr ""
-
-msgid "An error occurred while fetching the versions."
-msgstr ""
-
-msgid "View all {{count}} versions"
-msgid_plural "View all {{count}} versions"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
 msgid ""
 "<0><0>Cite all versions?</0> You can cite all versions by using the DOI "
 "<3></3>. This DOI represents all versions, and will always resolve to the "
@@ -782,7 +764,6 @@ msgstr "Další informace o tom, jak se shromažďují statistiky."
 msgid "Add"
 msgstr "Přidat"
 
-<<<<<<< HEAD
 #: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:11
 msgid "You are previewing a published record."
 msgstr "Zobrazujete náhled zveřejněného záznamu."
@@ -802,22 +783,10 @@ msgstr "Soubor se zpracovává."
 #: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:35
 msgid "Preview file"
 msgstr "Náhled souboru"
-=======
+
 #: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/ClipboardCopyButton.jinja:6
 msgid "Click to copy"
 msgstr "Kliknutím zkopírujete"
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:11
-msgid "You are previewing a published record."
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:13
-msgid "You are previewing changes that have not yet been published."
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:15
-msgid "You are previewing a new record that has not yet been published."
-msgstr ""
 
 msgid "DOI"
 msgstr "DOI"
@@ -869,4 +838,7 @@ msgstr "Musí být vyplněn identifikátor i typ identifikátoru."
 
 msgid "Add identifier"
 msgstr "Přidat identifikátor"
->>>>>>> main
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/ClipboardCopyButton.jinja:6
+msgid "Copy to clipboard"
+msgstr "Zkopírovat do schránky"
