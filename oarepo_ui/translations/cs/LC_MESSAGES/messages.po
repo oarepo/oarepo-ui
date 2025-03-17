@@ -782,6 +782,7 @@ msgstr "Další informace o tom, jak se shromažďují statistiky."
 msgid "Add"
 msgstr "Přidat"
 
+<<<<<<< HEAD
 #: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:11
 msgid "You are previewing a published record."
 msgstr "Zobrazujete náhled zveřejněného záznamu."
@@ -801,3 +802,71 @@ msgstr "Soubor se zpracovává."
 #: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:35
 msgid "Preview file"
 msgstr "Náhled souboru"
+=======
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/ClipboardCopyButton.jinja:6
+msgid "Click to copy"
+msgstr "Kliknutím zkopírujete"
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:11
+msgid "You are previewing a published record."
+msgstr ""
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:13
+msgid "You are previewing changes that have not yet been published."
+msgstr ""
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:15
+msgid "You are previewing a new record that has not yet been published."
+msgstr ""
+
+msgid "DOI"
+msgstr "DOI"
+
+msgid "Handle"
+msgstr "Handle"
+
+msgid "ISBN"
+msgstr "ISBN"
+
+msgid "ISSN"
+msgstr "ISSN"
+
+msgid "RIV"
+msgstr "RIV"
+
+msgid "IGSN"
+msgstr "IGSN"
+
+msgid "ORCID"
+msgstr "ORCID"
+
+msgid "ScopusID"
+msgstr "ScopusID"
+
+msgid "ResearcherID"
+msgstr "ResearcherID (Web of Science)"
+
+msgid "CzenasAutID"
+msgstr "Národní autorita (czenasAutID)"
+
+msgid "vedIDK"
+msgstr "Vedidk (IS VaVaI)"
+
+msgid "InstitutionalID"
+msgstr "Institucionální ID (institutionalID)"
+
+msgid "ISNI"
+msgstr "ISNI"
+
+msgid "ROR"
+msgstr "ROR"
+
+msgid "ICO"
+msgstr "IČO"
+
+msgid "Both identifier and identifier type must be filled."
+msgstr "Musí být vyplněn identifikátor i typ identifikátoru."
+
+msgid "Add identifier"
+msgstr "Přidat identifikátor"
+>>>>>>> main

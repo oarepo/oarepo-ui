@@ -4,3 +4,10 @@
 .ui.form #main-content > .field {
   margin-bottom: @fieldLastChildBottomMargin;
 }
+
+.ui.form {
+  label.helptext {
+    font-weight: normal;
+    font-size: 1rem;
+  }
+}

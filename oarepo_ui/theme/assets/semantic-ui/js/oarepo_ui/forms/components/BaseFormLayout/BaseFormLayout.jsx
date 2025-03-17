@@ -127,40 +127,41 @@ export const BaseFormLayout = ({ formikProps }) => {
         </Ref>
         <Ref innerRef={sidebarRef}>
           <Grid.Column id="control-panel" mobile={16} tablet={16} computer={5}>
-            <Sticky context={sidebarRef} offset={20}>
-              <Overridable
-                id={buildUID(overridableIdPrefix, "FormActions.container")}
-                record={record}
-              >
-                <Card fluid>
-                  <Card.Content>
-                    <Grid>
-                      <Grid.Column
-                        computer={8}
-                        mobile={16}
-                        className="left-btn-col"
-                      >
-                        <SaveButton fluid />
-                      </Grid.Column>
-                      <Grid.Column
-                        computer={8}
-                        mobile={16}
-                        className="right-btn-col"
-                      >
-                        <PreviewButton fluid />
-                      </Grid.Column>
-                      <Grid.Column width={16} className="pt-10">
-                        <PublishButton />
-                      </Grid.Column>
-                      {/* TODO:see if there is a way to provide URL here, seems that UI links are empty in the form */}
-                      {/* <Grid.Column width={16} className="pt-10">
+            {/* TODO: will remove sticky for now, to see how girls like it https://linear.app/ducesnet/issue/NTK-95/opravit-zobrazeni-embarga */}
+            {/* <Sticky context={sidebarRef} offset={20}> */}
+            <Overridable
+              id={buildUID(overridableIdPrefix, "FormActions.container")}
+              record={record}
+            >
+              <Card fluid>
+                <Card.Content>
+                  <Grid>
+                    <Grid.Column
+                      computer={8}
+                      mobile={16}
+                      className="left-btn-col"
+                    >
+                      <SaveButton fluid />
+                    </Grid.Column>
+                    <Grid.Column
+                      computer={8}
+                      mobile={16}
+                      className="right-btn-col"
+                    >
+                      <PreviewButton fluid />
+                    </Grid.Column>
+                    <Grid.Column width={16} className="pt-10">
+                      <PublishButton />
+                    </Grid.Column>
+                    {/* TODO:see if there is a way to provide URL here, seems that UI links are empty in the form */}
+                    {/* <Grid.Column width={16} className="pt-10">
                         <DeleteButton redirectUrl="/me/records" />
                       </Grid.Column> */}
-                    </Grid>
-                  </Card.Content>
-                </Card>
-              </Overridable>
-            </Sticky>
+                  </Grid>
+                </Card.Content>
+              </Card>
+            </Overridable>
+            {/* </Sticky> */}
           </Grid.Column>
         </Ref>
       </Grid>

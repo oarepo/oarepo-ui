@@ -13,25 +13,19 @@
               "title": objectIdentifier.identifier,
               "label": objectIdentifier.identifier
           }%}
-            <div class="header list-item">
+            <div title="{{objectIdentifier.scheme}}"  class="header list-item">
               <i class="external alternate icon link-icon mb-5"></i>
-              <span class="mr-5 identifier-type ui green label mini">{{ objectIdentifier.scheme }}:</span> 
               <URL target="_blank" rel="noopener noreferrer" className="inline" data = {_data}></URL>
-              <button class="ui icon button transparent copy-btn inline" data-clipboard-text="{{objectIdentifier.url}}">
-                <i class="copy icon"></i>
-              </button>
+              <ClipboardCopyButton copyText={objectIdentifier.url} />
             </div>
            
         </div>
       {% else %}
-      <div class="item content">
+      <div title="{{objectIdentifier.scheme}}" class="item content">
         <div class="header list-item">
           <i class="id card icon link-icon"></i>
-          <span class="mr-5 identifier-type ui green label mini">{{ objectIdentifier.scheme }}:</span>
           <span>{{ objectIdentifier.identifier }}</span>
-          <button class="ui icon button transparent copy-btn inline" data-clipboard-text="{{objectIdentifier.identifier}}">
-            <i class="copy icon"></i>
-          </button>
+          <ClipboardCopyButton copyText={objectIdentifier.identifier} />
         </div>
       </div>
       {% endif %}
