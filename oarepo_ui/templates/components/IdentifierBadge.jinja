@@ -1,62 +1,44 @@
 {#def identifier=None, creatibutorName=None #}
 {%if identifier %}
-    {% set scheme = identifier.scheme %}
+    {% set scheme = identifier.scheme or "" %}
     {% set value = identifier.identifier %}
-    {% set lowercaseScheme = identifier.scheme.lower() %}
+    {% if identifier.scheme %}
+      {% set lowercaseScheme = identifier.scheme.lower() %}
+    {% else %} 
+      {% set lowercaseScheme = "" %}
+    {% endif %}
+
     {% set link = identifier.url%}
     {% set badgeTitle = creatibutorName + " " + scheme + ": " + value %}
+    {% set icon = "/static/images/identifiers/{}.svg".format(lowercaseScheme) %}
+    {% set alt = "/{} logo".format(identifier.scheme)%}
 
-    {% if lowercaseScheme == "orcid" %}
-      {% set icon = "/static/images/identifiers/ORCID-iD_icon-vector.svg" %}
-      {% set alt = "ORCID logo" %}
-    {% elif lowercaseScheme == "scopusid" %}
-      {% set icon = "/static/images/identifiers/id.png" %}
-      {% set alt = "ScopusID logo" %}
-    {% elif lowercaseScheme == "ror" %}
-      {% set icon = "/static/images/identifiers/ror-icon-rgb.svg" %}
-      {% set alt = "ROR logo" %}
-    {% elif lowercaseScheme == "researcherid" %}
-      {% set icon = "/static/images/identifiers/id.png" %}
-      {% set alt = "WOS Researcher ID logo" %}
-    {% elif lowercaseScheme == "isni" %}
-      {% set icon = "/static/images/identifiers/id.png" %}
-      {% set alt = "ISNI logo" %}
-    {% elif lowercaseScheme == "doi" %}
-      {% set icon = "/static/images/identifiers/DOI_logo.svg" %}
-      {% set alt = "DOI logo" %}
-    {% elif lowercaseScheme == "gnd" %}
-      {% set icon = "/static/images/identifiers/id.png" %}
-      {% set alt = "GND logo" %}
-    {% elif lowercaseScheme == "czenasautid" %}
-      {% set icon = "/static/images/identifiers/id.png" %}
-      {% set alt = "CZENAS logo" %}
-    {% elif lowercaseScheme == "vedidk" %}
-      {% set icon = "/static/images/identifiers/id.png" %}
-      {% set alt = "VEDIDK logo" %}
-    {% elif lowercaseScheme == "institutionalid" %}
-      {% set icon = "/static/images/identifiers/id.png" %}
-      {% set alt = "Institutional ID logo" %}
-    {% elif lowercaseScheme == "ico" %}
-      {% set icon = "/static/images/identifiers/id.png" %}
-      {% set alt = "ICO logo" %}
-    {% else %}
-      {% set icon = None %}
-      {% set alt = "" %}
-    {% endif %}
   {% endif %}
 
   {% if link %}
-    <a
-      class="no-text-decoration mr-0"
-      href="{{ link }}"
-      aria-label="{{ badgeTitle }}"
-      title="{{ badgeTitle }}"
-      key="{{ link }}"
-      rel="noopener noreferrer"
-      target="_blank"
-    >
-      <img class="inline-id-icon identifier-badge" src="{{ icon }}" alt="{{ alt }}" />
-    </a>
-  {% else %}
-      <img title="{{ badgeTitle }}" class="inline-id-icon identifier-badge" src="{{ icon }}" alt="{{ alt }}" />
-  {% endif %}
+  <a
+    class="no-text-decoration mr-0"
+    href="{{ link }}"
+    aria-label="{{ badgeTitle }}"
+    title="{{ badgeTitle }}"
+    key="{{ link }}"
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    <img 
+      class="inline-id-icon identifier-badge" 
+      src="{{ icon }}" 
+      alt="{{ alt }}" 
+      onerror="this.onerror=null; this.src='/static/images/square-placeholder.png';"
+    />
+  </a>
+{% else %}
+  <img 
+    title="{{ badgeTitle }}" 
+    class="inline-id-icon identifier-badge" 
+    src="{{ icon }}" 
+    alt="{{ alt }}" 
+    onerror="this.onerror=null; this.src='/static/images/square-placeholder.png';"
+  />
+{% endif %}
+
