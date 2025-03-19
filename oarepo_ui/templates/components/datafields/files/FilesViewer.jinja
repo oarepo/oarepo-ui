@@ -20,9 +20,21 @@
           <p>
             {{ file.key }}
             {%- if file.status == "pending" -%}
-            <i class="notched circle loading icon rel-ml-1" title="{{ _('File is being processed.') }}"></i>
+            <span 
+              data-tooltip="{{ _('File is being processed.') }}" 
+              aria-label="{{ _('File is being processed.') }}"
+              class="rel-ml-1"
+            >
+              <i class="notched circle loading icon"></i>
+            </span>
             {%- elif file.status != "completed" -%}
-            <i class="ui icon exclamation circle red rel-ml-1" data-tooltip="{{ _('File was not uploaded correctly. Please delete it and try again.') }}"></i>
+            <span 
+              data-tooltip="{{ _('File was not uploaded correctly. Please delete it and try again.') }}" 
+              aria-label="{{ _('File was not uploaded correctly.') }}"
+              class="rel-ml-1"
+            >
+              <i class="ui icon exclamation circle red"></i>
+            </span>
             {%- endif -%}
           </p>
           {%- if file.metadata.fileNote -%}
@@ -31,20 +43,26 @@
         </td>
         <td>{{ (file.size or 0) | filesizeformat }}</td>
         <td>
-          {% if file.links.preview and file.previewable %}
-          <button class="ui button transparent{% if file.status != 'completed' %} disabled{% endif %}" title="{{ _('Preview file') }}">
-            <i
-              class="ui icon zoom openPreviewIcon"
-              data-preview-link="{{ file.links.preview }}"
-              data-preview-file-name="{{ file.key }}"
-            ></i>
-          </button>
-          {% endif %}
-          <button class="ui button transparent{% if file.status != 'completed' %} disabled{% endif %}" title="{{ _('Download file') }}">
+          {% if file.status == 'completed' %}
+            {% if file.links.preview and file.previewable %}
+            <button class="ui button transparent" title="{{ _('Preview file') }}">
+              <i
+                class="ui icon zoom openPreviewIcon"
+                data-preview-link="{{ file.links.preview }}"
+                data-preview-file-name="{{ file.key }}"
+              ></i>
+            </button>
+            {% endif %}
+          <button class="ui button transparent" title="{{ _('Download file') }}">
             <a href="{{ file.links.content }}"
               ><i class="ui icon download"></i
             ></a>
           </button>
+          {% else %}
+          <span data-tooltip="{{ _('File upload is not completed.') }}" aria-label="{{ _('File upload is not completed.') }}">
+            <i class="ui icon ban red fitted"></i>
+          </span>
+          {% endif %}
         </td>
       </tr>
       {% endfor %}
