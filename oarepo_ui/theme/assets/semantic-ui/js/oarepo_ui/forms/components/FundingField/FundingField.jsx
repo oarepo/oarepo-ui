@@ -4,11 +4,38 @@ import { overrideStore, OverridableContext } from "react-overridable";
 import PropTypes from "prop-types";
 import { getTitleFromMultilingualObject } from "../../../util";
 import { useFieldData } from "../../hooks";
+import { deserializeFunder } from "./util";
+import { FundingRemoteSelectField } from "./FundingRemoteSelectField";
+import { Pagination } from "semantic-ui-react";
 
 const storeComponents = overrideStore.getAll();
 
+const SmallPagination = (props) => (
+  <Pagination
+    {...props}
+    size="tiny"
+    firstItem={null}
+    lastItem={null}
+    boundaryRange={0}
+    siblingRange={1}
+    showFirst={null}
+    showLast={null}
+    activePage={props.currentPage}
+    onPageChange={(_, { activePage }) => props.onPageChange(activePage)}
+  />
+);
+
+SmallPagination.propTypes = {
+  currentPage: PropTypes.number,
+  onPageChange: PropTypes.func,
+};
+
 export const FundingField = ({
-  overrides,
+  overrides = {
+    "InvenioVocabularies.CustomAwardForm.RemoteSelectField.Container":
+      FundingRemoteSelectField,
+    "awards.Pagination.element": SmallPagination,
+  },
   label,
   icon = "money bill alternate outline",
   fieldPath,
@@ -56,20 +83,7 @@ export const FundingField = ({
               ...(award.acronym && { acronym: award.acronym }),
             };
           }}
-          deserializeFunder={(funder) => {
-            return {
-              id: funder.id,
-              name: funder.name,
-              ...(funder.title_l10n && { title: funder.title_l10n }),
-              ...(funder.country && { country: funder.country }),
-              ...(funder.country_name && {
-                country_name: funder.country_name,
-              }),
-              ...(funder.identifiers && {
-                identifiers: funder.identifiers,
-              }),
-            };
-          }}
+          deserializeFunder={deserializeFunder}
           computeFundingContents={(funding) => {
             let headerContent,
               descriptionContent,
