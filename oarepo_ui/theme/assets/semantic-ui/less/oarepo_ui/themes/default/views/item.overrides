@@ -1,0 +1,22 @@
+.ui.items > .item.license-item {
+  cursor: pointer !important;
+  line-height: 1;
+  @media screen and (max-width: @largestMobileScreen) {
+    flex-direction: row;
+  }
+
+  .radio {
+    margin-right: 0.5em;
+  }
+
+  .content.license-item-content {
+    .description.license-item-description {
+      font-size: smaller;
+      color: rgba(0, 0, 0, 0.6);
+    }
+  }
+}
+
+.item div.description:not(.license-item-description) {
+  display: initial !important;
+}

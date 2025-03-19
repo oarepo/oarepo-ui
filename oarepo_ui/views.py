@@ -4,7 +4,7 @@ from flask_menu import current_menu
 
 
 def create_blueprint(app):
-    blueprint = Blueprint("oarepo_ui", __name__, template_folder="templates")
+    blueprint = Blueprint("oarepo_ui", __name__, template_folder="templates", static_folder="static")
     blueprint.app_context_processor(lambda: ({"current_app": app}))
 
     # hide the /admin (maximum recursion depth exceeded menu)

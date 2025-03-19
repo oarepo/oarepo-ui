@@ -1,3 +1,12 @@
 .identifier-badge {
   line-height: 1.2rem;
 }
+
+.creatibutor {
+  .creatibutor-identifier {
+    img {
+      margin-bottom: 2px;
+      margin-left: 2px;
+    }
+  }
+}
