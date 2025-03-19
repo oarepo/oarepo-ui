@@ -82,7 +82,21 @@ class CreatibutorsFieldForm extends Component {
     const initialError = getIn(initialErrors, fieldPath, null);
     const creatibutorsError =
       error || (creatibutorsList === formikInitialValues && initialError);
+    const arrayAddButtonLabel =
+      addButtonLabel || schema === "creators"
+        ? i18next.t("Add creator")
+        : i18next.t("Add contributor");
 
+    const modalHeader =
+      modal || schema === "creators"
+        ? {
+            addLabel: i18next.t("Add creator"),
+            editLabel: i18next.t("Edit creator"),
+          }
+        : {
+            addLabel: i18next.t("Add contributor"),
+            editLabel: i18next.t("Edit contributor"),
+          };
     return (
       <DndProvider backend={HTML5Backend}>
         <Form.Field
@@ -111,8 +125,8 @@ class CreatibutorsFieldForm extends Component {
                     removeCreatibutor: formikArrayRemove,
                     replaceCreatibutor: formikArrayReplace,
                     moveCreatibutor: formikArrayMove,
-                    addLabel: modal.addLabel,
-                    editLabel: modal.editLabel,
+                    addLabel: modalHeader.addLabel,
+                    editLabel: modalHeader.editLabel,
                     autocompleteNames: autocompleteNames,
                     showRoleField,
                   }}
@@ -123,8 +137,8 @@ class CreatibutorsFieldForm extends Component {
           <CreatibutorsModal
             onCreatibutorChange={this.handleOnContributorChange}
             action="add"
-            addLabel={modal.addLabel}
-            editLabel={modal.editLabel}
+            addLabel={modalHeader.addLabel}
+            editLabel={modalHeader.editLabel}
             roleOptions={sortOptions(roleOptions)}
             schema={schema}
             autocompleteNames={autocompleteNames}
@@ -136,7 +150,7 @@ class CreatibutorsFieldForm extends Component {
                 labelPosition="left"
               >
                 <Icon name="add" />
-                {addButtonLabel}
+                {arrayAddButtonLabel}
               </Form.Button>
             }
             showRoleField={showRoleField}
@@ -192,11 +206,6 @@ CreatibutorsFieldForm.defaultProps = {
   autocompleteNames: "search",
   label: i18next.t("Creators"),
   icon: "user",
-  modal: {
-    addLabel: i18next.t("Add creator"),
-    editLabel: i18next.t("Edit creator"),
-  },
-  addButtonLabel: i18next.t("Add creator"),
 };
 
 CreatibutorsFieldComponent.propTypes = {
@@ -220,11 +229,6 @@ CreatibutorsFieldComponent.defaultProps = {
   label: undefined,
   icon: undefined,
   roleOptions: undefined,
-  modal: {
-    addLabel: i18next.t("Add creator"),
-    editLabel: i18next.t("Edit creator"),
-  },
-  addButtonLabel: i18next.t("Add creator"),
 };
 
 export const CreatibutorsField = ({
