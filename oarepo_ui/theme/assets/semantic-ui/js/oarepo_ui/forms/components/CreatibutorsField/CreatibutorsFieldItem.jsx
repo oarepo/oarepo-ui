@@ -68,9 +68,6 @@ export const CreatibutorsFieldItem = ({
       return <Label size="tiny">{friendlyRole}</Label>;
     }
   };
-  const firstError =
-    identifiersError &&
-    identifiersError.find((elem) => ![undefined, null].includes(elem));
 
   const identifiers = _get(initialCreatibutor, "person_or_org.identifiers", []);
   const creatibutorName = _get(initialCreatibutor, "person_or_org.name", "");

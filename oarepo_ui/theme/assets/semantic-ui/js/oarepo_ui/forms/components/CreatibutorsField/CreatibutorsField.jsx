@@ -94,8 +94,7 @@ class CreatibutorsFieldForm extends Component {
             {creatibutorsList.map((value, index) => {
               const key = `${fieldPath}.${index}`;
               const identifiersError =
-                creatibutorsError &&
-                creatibutorsError[index]?.person_or_org?.identifiers;
+                creatibutorsError?.[index]?.person_or_org?.identifiers;
               const displayName = creatibutorNameDisplay(value);
 
               return (
@@ -169,7 +168,6 @@ export class CreatibutorsFieldComponent extends Component {
 }
 
 CreatibutorsFieldForm.propTypes = {
-  fieldPath: PropTypes.string.isRequired,
   showRoleField: PropTypes.bool,
   required: PropTypes.bool,
   addButtonLabel: PropTypes.string,

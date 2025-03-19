@@ -24,7 +24,7 @@ export const NestedErrors = ({ fieldPath }) => {
       <React.Fragment>
         <Label className="rel-mb-1 mt-0" prompt pointing="above">
           {nestedErrors.map(({ errorMessage, errorPath }, index) => (
-            <p key={index}>{`${
+            <p key={errorPath}>{`${
               getFieldData({
                 fieldPath: errorPath,
                 fieldRepresentation: "text",
