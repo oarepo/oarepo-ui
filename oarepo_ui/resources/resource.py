@@ -364,7 +364,7 @@ class RecordsUIResource(UIResource):
                 v = f"/api{api_prefix}{v}"
                 links[k] = v
 
-    def _get_record(self, resource_requestctx, allow_draft=False):
+    def _get_record(self, resource_requestctx, allow_draft=False, include_deleted=False):
         try:
             if allow_draft:
                 read_method = (
@@ -373,11 +373,20 @@ class RecordsUIResource(UIResource):
             else:
                 read_method = self.api_service.read
 
-            return read_method(
-                g.identity,
-                resource_requestctx.view_args["pid_value"],
-                expand=True,
-            )
+            if include_deleted:
+                # not all read methods support deleted records
+                return read_method(
+                    g.identity,
+                    resource_requestctx.view_args["pid_value"],
+                    expand=True,
+                    include_deleted=include_deleted,
+                )
+            else:
+                return read_method(
+                    g.identity,
+                    resource_requestctx.view_args["pid_value"],
+                    expand=True,
+                )
         except PermissionDenied as e:
             raise Forbidden() from e
 
@@ -697,6 +706,16 @@ class RecordsUIResource(UIResource):
         return tpl.expand(identity, pagination)
 
     def tombstone(self, error, *args, **kwargs):
+        record_tombstone = error.record.get('tombstone')
+
+        tombstone_dict = {}
+        if record_tombstone:
+            tombstone_dict={
+                "Removal reason": record_tombstone['removal_reason']['id'],
+                "Note": record_tombstone.get('note',""),
+                "Citation text": record_tombstone['citation_text']
+        }
+            
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro(
                 "tombstone",
@@ -704,6 +723,7 @@ class RecordsUIResource(UIResource):
                 default_macro="Tombstone",
             ),
             pid=getattr(error, "pid_value", None) or getattr(error, "pid", None),
+            tombstone=tombstone_dict
         )
 
     def not_found(self, error, *args, **kwargs):
