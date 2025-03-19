@@ -95,8 +95,13 @@ export class CreatibutorsModal extends Component {
     person_or_org: Yup.object({
       type: Yup.string(),
       family_name: Yup.string().when("type", (type, schema) => {
-        if (type === CREATIBUTOR_TYPE.PERSON && this.isCreator()) {
+        if (type === CREATIBUTOR_TYPE.PERSON) {
           return schema.required(i18next.t("Family name is a required field."));
+        }
+      }),
+      given_name: Yup.string().when("type", (type, schema) => {
+        if (type === CREATIBUTOR_TYPE.PERSON) {
+          return schema.required(i18next.t("Given name is a required field."));
         }
       }),
       name: Yup.string().when("type", (type, schema) => {
@@ -142,7 +147,7 @@ export class CreatibutorsModal extends Component {
       action: null,
     });
   };
-  
+
   changeContent = () => {
     this.setState({ saveAndContinueLabel: i18next.t("Added") });
     // change in 2 sec
@@ -607,9 +612,10 @@ export class CreatibutorsModal extends Component {
                               label={i18next.t("Family name")}
                               placeholder={i18next.t("Family name")}
                               fieldPath={familyNameFieldPath}
-                              required={this.isCreator()}
+                              required={true}
                             />
                             <TextField
+                              required={true}
                               label={i18next.t("Given names")}
                               placeholder={i18next.t("Given names")}
                               fieldPath={givenNameFieldPath}
@@ -693,7 +699,7 @@ export class CreatibutorsModal extends Component {
                     </>
                   )}
                   {showRoleField && (
-                    <div>
+                    <div className="rel-mt-1">
                       <SelectField
                         fieldPath={roleFieldPath}
                         label={i18next.t("Role")}
