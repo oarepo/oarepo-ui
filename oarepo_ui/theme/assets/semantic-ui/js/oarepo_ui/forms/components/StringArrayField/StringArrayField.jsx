@@ -6,6 +6,7 @@ import { Icon, Form, Label } from "semantic-ui-react";
 import { ArrayFieldItem } from "../ArrayFieldItem";
 import { useFieldData, useShowEmptyValue } from "../../hooks";
 import { TextField } from "../TextField";
+import { FieldLabel } from "react-invenio-forms";
 
 export const StringArrayField = ({
   fieldPath,
@@ -22,14 +23,18 @@ export const StringArrayField = ({
 }) => {
   const { values, errors } = useFormikContext();
   const { getFieldData } = useFieldData();
-  const fieldData = getFieldData({ fieldPath: fieldPath, icon: icon });
-  const help = fieldData.helpText ?? helpText;
 
+  const fieldData = {
+    ...getFieldData({ fieldPath, icon, fieldRepresentation: "text" }),
+    ...(label && { label }),
+    ...(required && { required }),
+    ...(helpText && { helpText }),
+  };
   useShowEmptyValue(fieldPath, defaultNewValue, showEmptyValue);
   const fieldError = getIn(errors, fieldPath, null);
   return (
-    <Form.Field>
-      {fieldData.label ?? label}
+    <Form.Field required={required}>
+      <FieldLabel htmlFor={fieldPath} icon={icon} label={fieldData.label} />
       <FieldArray
         name={fieldPath}
         render={(arrayHelpers) => (
@@ -56,7 +61,9 @@ export const StringArrayField = ({
                 </ArrayFieldItem>
               );
             })}
-            {help ? <label className="helptext">{help}</label> : null}
+            {fieldData.helpText ? (
+              <label className="helptext">{fieldData.helpText}</label>
+            ) : null}
             <Form.Button
               className={addButtonClassName}
               type="button"

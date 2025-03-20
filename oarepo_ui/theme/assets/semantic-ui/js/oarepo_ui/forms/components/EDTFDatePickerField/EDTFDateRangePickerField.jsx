@@ -12,15 +12,14 @@ import {
 } from "./utils";
 import { EDTFDatePickerWrapper } from "./EDTFDatePickerWrapper";
 import { useFieldData } from "../../hooks";
+import { FieldLabel } from "react-invenio-forms";
 
 export const EDTFDaterangePicker = ({
   fieldPath,
   label,
   icon = "calendar",
-  helpText = i18next.t(
-    "Choose the time interval in which the event took place."
-  ),
-  required = false,
+  helpText,
+  required,
   clearButtonClassName = "clear-icon",
   dateRangeInputPlaceholder = i18next.t("Choose date range (From - To)."),
   singleDateInputPlaceholder = i18next.t("Choose one date."),
@@ -99,11 +98,18 @@ export const EDTFDaterangePicker = ({
         selectsRange: true,
       };
 
-  const fieldData = getFieldData({ fieldPath: fieldPath, icon: icon });
-  const help = fieldData.helpText ?? helpText;
+  const fieldData = {
+    ...getFieldData({ fieldPath, icon, fieldRepresentation: "text" }),
+    ...(label && { label }),
+    ...(required && { required }),
+    ...(helpText && { helpText }),
+  };
   return (
-    <Form.Field className="ui datepicker field mb-0" required={required}>
-      {fieldData ?? label}
+    <Form.Field
+      className="ui datepicker field mb-0"
+      required={fieldData.required}
+    >
+      <FieldLabel htmlFor={fieldPath} icon={icon} label={fieldData.label} />
       <Form.Field className="mb-0">
         <Radio
           label={i18next.t("Date range.")}
@@ -136,7 +142,9 @@ export const EDTFDaterangePicker = ({
           datePickerProps={{ ...pickerProps, ...datePickerPropsOverrides }}
         />
       </Form.Field>
-      {help && <label className="helptext">{help}</label>}
+      {fieldData.helpText && (
+        <label className="helptext">{fieldData.helpText}</label>
+      )}
     </Form.Field>
   );
 };

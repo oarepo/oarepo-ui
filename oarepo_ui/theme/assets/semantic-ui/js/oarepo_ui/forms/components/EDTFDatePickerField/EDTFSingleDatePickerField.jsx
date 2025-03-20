@@ -11,15 +11,14 @@ import {
 } from "./utils";
 import { useFieldData } from "../../hooks";
 import { EDTFDatePickerWrapper } from "./EDTFDatePickerWrapper";
+import { FieldLabel } from "react-invenio-forms";
 
 export const EDTFSingleDatePicker = ({
   fieldPath,
   label,
-  helpText = i18next.t(
-    "Choose a date from the calendar by clicking on the input."
-  ),
-  required = false,
-  placeholder = i18next.t("Choose a date."),
+  helpText,
+  required,
+  placeholder,
   clearButtonClassName = "clear-icon",
   datePickerProps,
   customInputProps,
@@ -38,15 +37,20 @@ export const EDTFSingleDatePicker = ({
   const handleClear = () => {
     handleChange(null);
   };
-  const fieldData = getFieldData({ fieldPath: fieldPath, icon: icon });
-  const help = fieldData.helpText ?? helpText;
+  const fieldData = {
+    ...getFieldData({ fieldPath, icon, fieldRepresentation: "text" }),
+    ...(label && { label }),
+    ...(required && { required }),
+    ...(helpText && { helpText }),
+    ...(placeholder && { placeholder }),
+  };
   return (
-    <Form.Field className="ui datepicker field" required={required}>
-      {fieldData.label ?? label}
+    <Form.Field className="ui datepicker field" required={fieldData.required}>
+      <FieldLabel htmlFor={fieldPath} icon={icon} label={fieldData.label} />
       <EDTFDatePickerWrapper
         fieldPath={fieldPath}
         handleClear={handleClear}
-        placeholder={placeholder}
+        placeholder={fieldData.placeholder}
         dateEdtfFormat={dateEdtfFormat}
         setDateEdtfFormat={setDateEdtfFormat}
         dateFormat={getDateFormatStringFromEdtfFormat(dateEdtfFormat)}
@@ -58,7 +62,9 @@ export const EDTFSingleDatePicker = ({
         }}
         customInputProps={customInputProps}
       />
-      {help && <label className="helptext rel-mt-1">{help}</label>}
+      {fieldData.helpText && (
+        <label className="helptext rel-mt-1">{fieldData.helpText}</label>
+      )}
     </Form.Field>
   );
 };
