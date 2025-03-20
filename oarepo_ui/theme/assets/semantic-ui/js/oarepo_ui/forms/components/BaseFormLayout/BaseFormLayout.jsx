@@ -31,13 +31,11 @@ const FormTitle = () => {
 export const BaseFormLayout = ({ formikProps }) => {
   const {
     record,
-    formConfig: { overridableIdPrefix },
+    formConfig: { overridableIdPrefix, custom_fields: customFields },
   } = useFormConfig();
   const sidebarRef = React.useRef(null);
   const formFeedbackRef = React.useRef(null);
-  const {
-    formConfig: { custom_fields: customFields },
-  } = useFormConfig();
+
   // on chrome there is an annoying issue where after deletion you are redirected, and then
   // if you click back on browser <-, it serves you the deleted page, which does not exist from the cache.
   // on firefox it does not happen.

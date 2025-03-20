@@ -182,6 +182,7 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
       fieldRepresentation,
       fullLabelClassName,
       compactLabelClassName,
+      detail,
     ]);
 
     return memoizedResult;
