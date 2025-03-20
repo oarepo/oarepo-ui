@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-02-27 15:16+0100\n"
+"POT-Creation-Date: 2025-03-19 10:13+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -57,6 +57,10 @@ msgstr ""
 msgid "You have no permission to create record in this community."
 msgstr ""
 
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/ClipboardCopyButton.jinja:6
+msgid "Copy to clipboard"
+msgstr ""
+
 #: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/DefinitionLink.jinja:2
 msgid "Open definition"
 msgstr ""
@@ -82,8 +86,8 @@ msgstr ""
 msgid "Identifiers and links"
 msgstr ""
 
-#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:46
-#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:47
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:40
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:41
 msgid "metadata/originalRecord.label"
 msgstr ""
 
@@ -91,11 +95,23 @@ msgstr ""
 msgid "Metrics"
 msgstr ""
 
-#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:5
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:7
 msgid "Preview"
 msgstr ""
 
-#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:8
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:11
+msgid "You are previewing a published record."
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:13
+msgid "You are previewing changes that have not yet been published."
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:15
+msgid "You are previewing a new record that has not yet been published."
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:17
 msgid ""
 "You are previewing a new record version that has not yet been published."
 msgstr ""
@@ -200,6 +216,31 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:24
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:25
+msgid "File is being processed."
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:32
+msgid "File was not uploaded correctly. Please delete it and try again."
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:33
+msgid "File was not uploaded correctly."
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:48
+msgid "Preview file"
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:56
+msgid "Download file"
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:62
+msgid "File upload is not completed."
+msgstr ""
+
 #: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/NotFound.jinja:11
 msgid "Not found"
 msgstr ""
@@ -293,16 +334,10 @@ msgstr ""
 msgid "Search results"
 msgstr ""
 
-msgid "Copied!"
-msgstr ""
-
-msgid "Copy to clipboard failed!"
+msgid "Click to copy"
 msgstr ""
 
 msgid "Export selection"
-msgstr ""
-
-msgid "Download file"
 msgstr ""
 
 msgid "Version {{- version}}"
@@ -430,9 +465,6 @@ msgstr ""
 msgid "File uploaded successfully."
 msgstr ""
 
-msgid "File was not uploaded correctly. Please delete it and try again."
-msgstr ""
-
 msgid "Edit file metadata"
 msgstr ""
 
@@ -455,6 +487,54 @@ msgid "Upload files"
 msgstr ""
 
 msgid "Edit file"
+msgstr ""
+
+msgid "DOI"
+msgstr ""
+
+msgid "Handle"
+msgstr ""
+
+msgid "ISBN"
+msgstr ""
+
+msgid "ISSN"
+msgstr ""
+
+msgid "RIV"
+msgstr ""
+
+msgid "ORCID"
+msgstr ""
+
+msgid "ScopusID"
+msgstr ""
+
+msgid "ResearcherID"
+msgstr ""
+
+msgid "CzenasAutID"
+msgstr ""
+
+msgid "vedIDK"
+msgstr ""
+
+msgid "InstitutionalID"
+msgstr ""
+
+msgid "ISNI"
+msgstr ""
+
+msgid "ROR"
+msgstr ""
+
+msgid "ICO"
+msgstr ""
+
+msgid "Both identifier and identifier type must be filled."
+msgstr ""
+
+msgid "Add identifier"
 msgstr ""
 
 msgid "Language"

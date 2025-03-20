@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useMemo, memo } from "react";
 import ReactDOM from "react-dom";
-import { getInputFromDOM, CompactFieldLabel } from "@js/oarepo_ui";
+import { getInputFromDOM } from "@js/oarepo_ui/";
+import { CompactFieldLabel } from "./components/CompactFieldLabel";
 import { FormConfigProvider, FieldDataProvider } from "./contexts";
 import { Container } from "semantic-ui-react";
 import { BrowserRouter as Router } from "react-router-dom";
@@ -89,6 +90,9 @@ export function createFormAppInit({
   }
 }
 
+const MemoizedFieldLabel = memo(FieldLabel);
+const MemoizedCompactFieldLabel = memo(CompactFieldLabel);
+
 export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
   return ({
     fieldPath,
@@ -122,50 +126,65 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
     const hint =
       i18next.t(modelHint) === modelHint ? null : i18next.t(modelHint);
 
-    // Determine the representation based on fieldRepresentation
-    switch (fieldRepresentation) {
-      case "full":
-        return {
-          helpText: help,
-          label: modelLabel ? (
-            <FieldLabel
-              htmlFor={fieldPath}
-              icon={icon}
-              label={label}
-              className={fullLabelClassName}
-            />
-          ) : null,
-          placeholder: hint,
-          required,
-          detail,
-        };
-      case "compact":
-        return {
-          label: (
-            <CompactFieldLabel
-              htmlFor={fieldPath}
-              icon={icon}
-              label={label}
-              popupHelpText={help}
-              className={compactLabelClassName}
-            />
-          ),
-          placeholder: hint,
-          required,
-          detail,
-        };
-      case "text":
-        return {
-          helpText: help,
-          label: label,
-          placeholder: hint,
-          labelIcon: icon,
-          required,
-          detail,
-        };
-      default:
-        throw new Error(`Unknown fieldRepresentation: ${fieldRepresentation}`);
-    }
+    const memoizedResult = useMemo(() => {
+      switch (fieldRepresentation) {
+        case "full":
+          return {
+            helpText: help,
+            label: (
+              <MemoizedFieldLabel
+                htmlFor={fieldPath}
+                icon={icon}
+                label={label}
+                className={fullLabelClassName}
+              />
+            ),
+            placeholder: hint,
+            required,
+            detail,
+          };
+        case "compact":
+          return {
+            label: (
+              <MemoizedCompactFieldLabel
+                htmlFor={fieldPath}
+                icon={icon}
+                label={label}
+                popupHelpText={help}
+                className={compactLabelClassName}
+              />
+            ),
+            placeholder: hint,
+            required,
+            detail,
+          };
+        case "text":
+          return {
+            helpText: help,
+            label: label,
+            placeholder: hint,
+            labelIcon: icon,
+            required,
+            detail,
+          };
+        default:
+          throw new Error(
+            `Unknown fieldRepresentation: ${fieldRepresentation}`
+          );
+      }
+    }, [
+      fieldPath,
+      icon,
+      label,
+      help,
+      hint,
+      required,
+      fieldRepresentation,
+      fullLabelClassName,
+      compactLabelClassName,
+    ]);
+
+    return memoizedResult;
   };
 };
 

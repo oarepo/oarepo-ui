@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: oarepo-ui 4.0.0\n"
 "Report-Msgid-Bugs-To: info@oarepo.org\n"
 "POT-Creation-Date: 2023-10-25 13:15+0200\n"
-"PO-Revision-Date: 2025-02-25 15:07+0100\n"
+"PO-Revision-Date: 2025-03-19 10:12+0100\n"
 "Last-Translator: \n"
 "Language-Team: cs <LL@li.org>\n"
 "Language: cs\n"
@@ -588,23 +588,6 @@ msgstr "Verze"
 msgid "View all versions"
 msgstr "Zobrazit všechny verze"
 
-msgid "Version {{- version}}"
-msgstr ""
-
-msgid "Only published versions are displayed."
-msgstr ""
-
-msgid "An error occurred while fetching the record."
-msgstr ""
-
-msgid "An error occurred while fetching the versions."
-msgstr ""
-
-msgid "View all {{count}} versions"
-msgid_plural "View all {{count}} versions"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid ""
 "<0><0>Cite all versions?</0> You can cite all versions by using the DOI "
 "<3></3>. This DOI represents all versions, and will always resolve to the "
@@ -780,3 +763,90 @@ msgstr "Další informace o tom, jak se shromažďují statistiky."
 
 msgid "Add"
 msgstr "Přidat"
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:11
+msgid "You are previewing a published record."
+msgstr "Zobrazujete náhled zveřejněného záznamu."
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:13
+msgid "You are previewing changes that have not yet been published."
+msgstr "Zobrazujete náhled změn, které ještě nebyly zveřejněny."
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:15
+msgid "You are previewing a new record that has not yet been published."
+msgstr "Zobrazujete náhled nového záznamu, který ještě nebyl zveřejněn."
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:23
+msgid "File is being processed."
+msgstr "Soubor se zpracovává."
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:35
+msgid "Preview file"
+msgstr "Náhled souboru"
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/ClipboardCopyButton.jinja:6
+msgid "Click to copy"
+msgstr "Kliknutím zkopírujete"
+
+msgid "DOI"
+msgstr "DOI"
+
+msgid "Handle"
+msgstr "Handle"
+
+msgid "ISBN"
+msgstr "ISBN"
+
+msgid "ISSN"
+msgstr "ISSN"
+
+msgid "RIV"
+msgstr "RIV"
+
+msgid "IGSN"
+msgstr "IGSN"
+
+msgid "ORCID"
+msgstr "ORCID"
+
+msgid "ScopusID"
+msgstr "ScopusID"
+
+msgid "ResearcherID"
+msgstr "ResearcherID (Web of Science)"
+
+msgid "CzenasAutID"
+msgstr "Národní autorita (czenasAutID)"
+
+msgid "vedIDK"
+msgstr "Vedidk (IS VaVaI)"
+
+msgid "InstitutionalID"
+msgstr "Institucionální ID (institutionalID)"
+
+msgid "ISNI"
+msgstr "ISNI"
+
+msgid "ROR"
+msgstr "ROR"
+
+msgid "ICO"
+msgstr "IČO"
+
+msgid "Both identifier and identifier type must be filled."
+msgstr "Musí být vyplněn identifikátor i typ identifikátoru."
+
+msgid "Add identifier"
+msgstr "Přidat identifikátor"
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/ClipboardCopyButton.jinja:6
+msgid "Copy to clipboard"
+msgstr "Zkopírovat do schránky"
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:33
+msgid "File was not uploaded correctly."
+msgstr "Soubor nebyl správně nahrán."
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:62
+msgid "File upload is not completed."
+msgstr "Nahrávání souborů nebylo dokončeno."
