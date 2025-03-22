@@ -850,3 +850,15 @@ msgstr "Soubor nebyl správně nahrán."
 #: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:62
 msgid "File upload is not completed."
 msgstr "Nahrávání souborů nebylo dokončeno."
+
+#: /Users/m/w/cesnet/oarepo-ui/oarepo_ui/resources/resource.py:882
+msgid "Removal reason"
+msgstr "Důvod odstranění"
+
+#: /Users/m/w/cesnet/oarepo-ui/oarepo_ui/resources/resource.py:882
+msgid "Note"
+msgstr "Poznámka"
+
+#: /Users/m/w/cesnet/oarepo-ui/oarepo_ui/resources/resource.py:882
+msgid "Citation text"
+msgstr "Citace"

@@ -20,6 +20,7 @@ from flask_security import login_required
 from invenio_base.utils import obj_or_import_string
 from invenio_previewer import current_previewer
 from invenio_previewer.extensions import default as default_previewer
+from invenio_rdm_records.services.errors import RecordDeletedException
 from invenio_records_resources.pagination import Pagination
 from invenio_records_resources.proxies import current_service_registry
 from invenio_records_resources.records.systemfields import FilesField
@@ -34,7 +35,7 @@ from oarepo_runtime.datastreams.utils import get_file_service_for_record_class
 from werkzeug.exceptions import Forbidden
 
 from oarepo_ui.utils import dump_empty
-from invenio_rdm_records.services.errors import RecordDeletedException
+
 # Resource
 #
 from ..proxies import current_oarepo_ui
@@ -230,7 +231,9 @@ class RecordsUIResource(UIResource):
     @response_header_signposting
     def _detail(self, *, is_preview=False):
         if is_preview:
-            api_record = self._get_record(resource_requestctx.view_args["pid_value"], allow_draft=is_preview)
+            api_record = self._get_record(
+                resource_requestctx.view_args["pid_value"], allow_draft=is_preview
+            )
             render_method = self.get_jinjax_macro(
                 "preview",
                 identity=g.identity,
@@ -240,7 +243,9 @@ class RecordsUIResource(UIResource):
             )
 
         else:
-            api_record = self._get_record(resource_requestctx.view_args["pid_value"], allow_draft=is_preview)
+            api_record = self._get_record(
+                resource_requestctx.view_args["pid_value"], allow_draft=is_preview
+            )
             render_method = self.get_jinjax_macro(
                 "detail",
                 identity=g.identity,
@@ -319,7 +324,9 @@ class RecordsUIResource(UIResource):
     @request_file_view_args
     def published_file_preview(self, *args, **kwargs):
         """Return file preview for published record."""
-        record = self._get_record(resource_requestctx.view_args["pid_value"], allow_draft=False)._record
+        record = self._get_record(
+            resource_requestctx.view_args["pid_value"], allow_draft=False
+        )._record
 
         return self._file_preview(record)
 
@@ -327,7 +334,9 @@ class RecordsUIResource(UIResource):
     @request_file_view_args
     def draft_file_preview(self, *args, **kwargs):
         """Return file preview for draft record."""
-        record = self._get_record(resource_requestctx.view_args["pid_value"], allow_draft=True)._record
+        record = self._get_record(
+            resource_requestctx.view_args["pid_value"], allow_draft=True
+        )._record
         return self._file_preview(record)
 
     def _file_preview(self, record):
@@ -364,13 +373,17 @@ class RecordsUIResource(UIResource):
                 v = f"/api{api_prefix}{v}"
                 links[k] = v
 
-    def _get_record(self, pid_value_or_resource_requestctx, allow_draft=False, include_deleted=False):
+    def _get_record(
+        self, pid_value_or_resource_requestctx, allow_draft=False, include_deleted=False
+    ):
         if isinstance(pid_value_or_resource_requestctx, str):
             pid_value = pid_value_or_resource_requestctx
         else:
-            log.warning("_get_record should receive only pid_value, not the whole resouce_request_ctx")    
+            log.warning(
+                "_get_record should receive only pid_value, not the whole resouce_request_ctx"
+            )
             pid_value = pid_value_or_resource_requestctx.view_args["pid_value"]
-            
+
         try:
             if allow_draft:
                 read_method = (
@@ -480,7 +493,9 @@ class RecordsUIResource(UIResource):
     def _export(self, *, is_preview=False):
         pid_value = resource_requestctx.view_args["pid_value"]
         export_format = resource_requestctx.view_args["export_format"]
-        record = self._get_record(resource_requestctx.view_args["pid_value"], allow_draft=is_preview)
+        record = self._get_record(
+            resource_requestctx.view_args["pid_value"], allow_draft=is_preview
+        )
 
         exporter = self.config.exports.get(export_format.lower())
         if exporter is None:
@@ -527,7 +542,9 @@ class RecordsUIResource(UIResource):
     @request_read_args
     @request_view_args
     def edit(self):
-        api_record = self._get_record(resource_requestctx.view_args["pid_value"], allow_draft=True)
+        api_record = self._get_record(
+            resource_requestctx.view_args["pid_value"], allow_draft=True
+        )
         try:
             self.api_service.require_permission(
                 g.identity, "update", record=api_record._record
@@ -713,18 +730,23 @@ class RecordsUIResource(UIResource):
 
     def tombstone(self, error, *args, **kwargs):
         try:
-            record = self._get_record(error.record.get('id', None), include_deleted=True)
-        except RecordDeletedException as e: # read with include_deleted=True raises an exception instead of just returning record 
-            record_tombstone = e.record.get('tombstone')
+            record = self._get_record(
+                error.record.get("id", None), include_deleted=True
+            )
+            record_tombstone = record.get("tombstone", None)
+        except (
+            RecordDeletedException
+        ) as e:  # read with include_deleted=True raises an exception instead of just returning record
+            record_tombstone = e.record.get("tombstone")
 
         tombstone_dict = {}
         if record_tombstone:
-            tombstone_dict={
-                "Removal reason": record_tombstone['removal_reason']['id'],
-                "Note": record_tombstone.get('note',""),
-                "Citation text": record_tombstone['citation_text']
-        }
-            
+            tombstone_dict = {
+                "Removal reason": record_tombstone["removal_reason"]["id"],
+                "Note": record_tombstone.get("note", ""),
+                "Citation text": record_tombstone["citation_text"],
+            }
+
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro(
                 "tombstone",
@@ -732,7 +754,7 @@ class RecordsUIResource(UIResource):
                 default_macro="Tombstone",
             ),
             pid=getattr(error, "pid_value", None) or getattr(error, "pid", None),
-            tombstone=tombstone_dict
+            tombstone=tombstone_dict,
         )
 
     def not_found(self, error, *args, **kwargs):
@@ -852,3 +874,9 @@ class TemplatePageUIResource(UIResource):
             ui_resource=self,
             extra_context=extra_context,
         )
+
+
+if False:
+    from invenio_i18n import gettext as _
+
+    just_for_translations = [_("Removal reason"), _("Note"), _("Citation text")]

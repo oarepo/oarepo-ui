@@ -23,11 +23,11 @@
       <tbody>
         {% for key, value in tombstone.items() %}
           <tr>
-            <th class="left aligned pl-5">{{ key.replace("_", " ").capitalize() }}:</th>
+            <th class="left aligned pl-5">{{ _(key) }}:</th>
             <td>{{ value }}</td>
           </tr>
         {% endfor %}
-      </tbody>
+    </tbody>
     </table>
   {% else %}
     <p>No tombstone (e.g. removal reason, note) available.</p>
