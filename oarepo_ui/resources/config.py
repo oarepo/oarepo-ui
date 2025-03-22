@@ -16,6 +16,7 @@ from invenio_records_resources.services.errors import (
     FileKeyNotFoundError,
     PermissionDeniedError,
 )
+from invenio_rdm_records.services.errors import RecordDeletedException
 from invenio_search_ui.searchconfig import FacetsConfig, SearchAppConfig, SortConfig
 from oarepo_runtime.services.custom_fields import CustomFields, InlinedCustomFields
 
@@ -122,6 +123,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
     error_handlers = {
         PIDDeletedError: "tombstone",
+        RecordDeletedException: "tombstone",
         PIDDoesNotExistError: "not_found",
         PIDUnregistered: "not_found",
         KeyError: "not_found",

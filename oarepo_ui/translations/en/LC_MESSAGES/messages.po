@@ -886,3 +886,15 @@ msgstr ""
 #: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:62
 msgid "File upload is not completed."
 msgstr ""
+
+#: /Users/m/w/cesnet/oarepo-ui/oarepo_ui/resources/resource.py:882
+msgid "Removal reason"
+msgstr ""
+
+#: /Users/m/w/cesnet/oarepo-ui/oarepo_ui/resources/resource.py:882
+msgid "Note"
+msgstr ""
+
+#: /Users/m/w/cesnet/oarepo-ui/oarepo_ui/resources/resource.py:882
+msgid "Citation text"
+msgstr ""
