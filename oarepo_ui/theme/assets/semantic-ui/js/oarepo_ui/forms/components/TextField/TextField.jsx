@@ -4,7 +4,12 @@ import { useFieldData, useSanitizeInput } from "../../hooks";
 import { getIn, useFormikContext } from "formik";
 import PropTypes from "prop-types";
 
-export const TextField = ({ fieldPath, ...rest }) => {
+export const TextField = ({
+  fieldPath,
+  fieldRepresentation = "full",
+  icon,
+  ...rest
+}) => {
   const { sanitizeInput } = useSanitizeInput();
   const { setFieldTouched, setFieldValue, values } = useFormikContext();
   const { getFieldData } = useFieldData();
@@ -13,7 +18,7 @@ export const TextField = ({ fieldPath, ...rest }) => {
     <InvenioTextField
       optimized
       fieldPath={fieldPath}
-      {...getFieldData({ fieldPath: fieldPath })}
+      {...getFieldData({ fieldPath, fieldRepresentation, icon })}
       onBlur={() => {
         const cleanedContent = sanitizeInput(getIn(values, fieldPath));
         setFieldValue(fieldPath, cleanedContent);
@@ -26,4 +31,6 @@ export const TextField = ({ fieldPath, ...rest }) => {
 
 TextField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
+  fieldRepresentation: PropTypes.string,
+  icon: PropTypes.string,
 };
