@@ -43,6 +43,29 @@ CustomMessage.propTypes = {
   children: PropTypes.node,
 };
 
+const ErrorMessageItem = ({ error }) => {
+  const { getFieldData } = useFieldData();
+  const label = getFieldData({
+    fieldPath: error.field,
+    fieldRepresentation: "text",
+  })?.label;
+
+  const errorMessage =
+    label ||
+    // ugly hack, but simply the path for file validation errors is completely
+    // different and there does not seem to be a reasonable way to make translations
+    // it is not clear can there be other validation errors for files than the one below
+    (error.field === "files.enabled"
+      ? i18next.t("Files")
+      : titleCase(error.field));
+
+  return `${errorMessage}: ${error.messages.join(" ")}`;
+};
+
+ErrorMessageItem.propTypes = {
+  error: PropTypes.object.isRequired, // Expects the error object from BEvalidationErrors
+};
+
 export const FormFeedback = () => {
   const { errors } = useFormikContext();
   const beValidationErrors = getIn(errors, "BEvalidationErrors", {});
@@ -51,33 +74,22 @@ export const FormFeedback = () => {
   if (httpError?.response?.data) {
     httpError = httpError?.response?.data.message;
   }
-  const { getFieldData } = useFieldData();
 
   const successMessage = getIn(errors, "successMessage", "");
+
   if (!_isEmpty(beValidationErrors))
     return (
       <CustomMessage negative color="orange">
         <Message.Header>{beValidationErrors?.errorMessage}</Message.Header>
         <Message.List>
-          {beValidationErrors?.errors?.map((error, index) => {
-            const label = getFieldData({
-              fieldPath: error.field,
-              fieldRepresentation: "text",
-            })?.label;
-            return (
-              <Message.Item
-                onClick={() => scrollToElement(error.field)}
-                key={`${error.field}-${index}`}
-              >{`${
-                label || // ugly hack, but simply the path for file validation errors is completely
-                // different and there does not seem to be a reasonable way to make translations
-                // it is not clear can there be other validation errors for files than the one below
-                (error.field === "files.enabled"
-                  ? i18next.t("Files")
-                  : titleCase(error.field))
-              }: ${error.messages.join(" ")}`}</Message.Item>
-            );
-          })}
+          {beValidationErrors?.errors?.map((error, index) => (
+            <Message.Item
+              onClick={() => scrollToElement(error.field)}
+              key={`${error.field}-${index}`}
+            >
+              <ErrorMessageItem error={error} />
+            </Message.Item>
+          ))}
         </Message.List>
       </CustomMessage>
     );
