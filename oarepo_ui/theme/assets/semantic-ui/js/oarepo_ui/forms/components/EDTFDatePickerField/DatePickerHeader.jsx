@@ -130,6 +130,7 @@ export const DatePickerHeader = ({
           locale={i18next.language}
           onChange={changeYear}
           year={getYear(date)}
+          date={date}
         />
       )}
     </div>
@@ -151,4 +152,8 @@ DatePickerHeader.propTypes = {
       text: PropTypes.string.isRequired,
     })
   ).isRequired,
+  changeYear: PropTypes.func.isRequired,
+  changeMonth: PropTypes.func.isRequired,
+  prevMonthButtonDisabled: PropTypes.bool,
+  nextMonthButtonDisabled: PropTypes.bool,
 };
