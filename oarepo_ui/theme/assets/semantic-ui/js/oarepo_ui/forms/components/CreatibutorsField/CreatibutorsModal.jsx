@@ -295,7 +295,7 @@ export class CreatibutorsModal extends Component {
             <div className="flex align-items-center">
               <span>{creatibutor.name}</span>
               {selectedIdentifier ? (
-                <span>
+                <span className="ml-5">
                   (
                   <IdentifierBadge identifier={selectedIdentifier} />
                   <span className="ml-5">{selectedIdentifier.identifier})</span>
