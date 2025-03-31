@@ -2,6 +2,7 @@ import _padStart from "lodash/padStart";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { parse } from "edtf";
 import _trim from "lodash/trim";
+import { setMonth } from "date-fns";
 
 export const edtfDateFormatOptions = [
   { value: "yyyy", text: i18next.t("Year") },
@@ -74,3 +75,7 @@ export const getInitialEdtfDateFormat = (fieldValue) => {
   }
   return dateEdtfFormat;
 };
+
+export function getMonthInLocale(month, locale) {
+  return setMonth(new Date(), month).toLocaleString(locale, { month: "long" });
+}
