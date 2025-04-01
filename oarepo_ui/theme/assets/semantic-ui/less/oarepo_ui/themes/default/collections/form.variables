@@ -1,1 +1,3 @@
 @fieldLastChildBottomMargin: 1rem;
+@arrayAddButtonBackgroundColor: @primaryColor;
+@arrayAddButtonTextColor: white;
