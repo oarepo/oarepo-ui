@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-03-19 10:40+0100\n"
+"POT-Creation-Date: 2025-04-01 10:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,8 +49,20 @@ msgstr ""
 msgid "api.versions"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/config.py:146
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/config.py:148
 msgid "JSON"
+msgstr ""
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/resource.py:882
+msgid "Removal reason"
+msgstr ""
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/resource.py:882
+msgid "Note"
+msgstr ""
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/resource.py:882
+msgid "Citation text"
 msgstr ""
 
 #: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/components/communities.py:78
@@ -210,6 +222,31 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:24
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:25
+msgid "File is being processed."
+msgstr ""
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:32
+msgid "File was not uploaded correctly. Please delete it and try again."
+msgstr ""
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:33
+msgid "File was not uploaded correctly."
+msgstr ""
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:48
+msgid "Preview file"
+msgstr ""
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:56
+msgid "Download file"
+msgstr ""
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:62
+msgid "File upload is not completed."
+msgstr ""
+
 #: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/NotFound.jinja:11
 msgid "Not found"
 msgstr ""
@@ -314,9 +351,6 @@ msgstr ""
 msgid "Export selection"
 msgstr ""
 
-msgid "Download file"
-msgstr ""
-
 msgid "Version {{- version}}"
 msgstr ""
 
@@ -395,6 +429,9 @@ msgid "Save and add another"
 msgstr ""
 
 msgid "Family name is a required field."
+msgstr ""
+
+msgid "Given name is a required field."
 msgstr ""
 
 msgid "Name is a required field."
@@ -536,9 +573,6 @@ msgid "Delete file"
 msgstr ""
 
 msgid "File uploaded successfully."
-msgstr ""
-
-msgid "File was not uploaded correctly. Please delete it and try again."
 msgstr ""
 
 msgid "Edit file metadata"

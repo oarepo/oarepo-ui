@@ -1,4 +1,4 @@
-{# def pid #}
+{# def pid, tombstone #}
 
 {% extends "oarepo_ui/detail.html" %}
 
@@ -18,7 +18,20 @@
       metadata of the record is kept for archival purposes.
     {%- endtrans %}
   </p>
-  {# Add more details, who removed, when it was removed, ... #}
+  {% if tombstone %}
+    <table class="ui table">
+      <tbody>
+        {% for key, value in tombstone.items() %}
+          <tr>
+            <th class="left aligned pl-5">{{ _(key) }}:</th>
+            <td>{{ value }}</td>
+          </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+  {% else %}
+    <p>No tombstone (e.g. removal reason, note) available.</p>
+  {% endif %}
 </div>
 
 {% endblock %}

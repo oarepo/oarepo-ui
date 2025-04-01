@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: oarepo-ui 4.0.0\n"
 "Report-Msgid-Bugs-To: info@oarepo.org\n"
 "POT-Creation-Date: 2023-10-25 13:15+0200\n"
-"PO-Revision-Date: 2024-03-01 16:25+0100\n"
+"PO-Revision-Date: 2025-03-17 10:40+0100\n"
 "Last-Translator: \n"
 "Language-Team: en <LL@li.org>\n"
 "Language: en\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: Babel 2.10.3\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.5\n"
 
 #: oarepo_ui/for_translations_only.py:4
 msgid "api.draft"
@@ -803,20 +803,28 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/ClipboardCopyButton.jinja:6
-msgid "Click to copy"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:11
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:11
 msgid "You are previewing a published record."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:13
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:13
 msgid "You are previewing changes that have not yet been published."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:15
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:15
 msgid "You are previewing a new record that has not yet been published."
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:23
+msgid "File is being processed."
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:35
+msgid "Preview file"
+msgstr ""
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/ClipboardCopyButton.jinja:6
+msgid "Click to copy"
 msgstr ""
 
 msgid "DOI"
@@ -965,6 +973,33 @@ msgid "Search for a funder by name"
 msgstr ""
 
 msgid "Funder"
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/ClipboardCopyButton.jinja:6
+msgid "Copy to clipboard"
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:33
+msgid "File was not uploaded correctly."
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:62
+msgid "File upload is not completed."
+msgstr ""
+
+#: /Users/m/w/cesnet/oarepo-ui/oarepo_ui/resources/resource.py:882
+msgid "Removal reason"
+msgstr ""
+
+#: /Users/m/w/cesnet/oarepo-ui/oarepo_ui/resources/resource.py:882
+msgid "Note"
+msgstr ""
+
+#: /Users/m/w/cesnet/oarepo-ui/oarepo_ui/resources/resource.py:882
+msgid "Citation text"
+msgstr ""
+
+msgid "Given name is a required field."
 msgstr ""
 
 msgid "Search for funder..."
