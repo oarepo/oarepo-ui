@@ -2,8 +2,8 @@
 {%if identifier %}
     {% set scheme = identifier.scheme or "" %}
     {% set value = identifier.identifier %}
-    {% if identifier.scheme %}
-      {% set lowercaseScheme = identifier.scheme.lower() %}
+    {% if scheme %}
+      {% set lowercaseScheme = scheme.lower() %}
     {% else %} 
       {% set lowercaseScheme = "" %}
     {% endif %}
@@ -11,7 +11,7 @@
     {% set link = identifier.url%}
     {% set badgeTitle = creatibutorName + " " + scheme + ": " + value %}
     {% set icon = "/static/images/identifiers/{}.svg".format(lowercaseScheme) %}
-    {% set alt = "/{} logo".format(identifier.scheme)%}
+    {% set alt = "{} logo".format(scheme)%}
 
   {% endif %}
 

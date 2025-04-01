@@ -24,3 +24,4 @@ export { SearchAppResultViewWithSearchbar } from "./SearchAppResultViewWithSearc
 export * from "./ShouldRender";
 export * from "./util";
 export * from "./histogram";
+export * from "./SmallPagination";

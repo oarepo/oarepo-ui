@@ -6,43 +6,9 @@ import { getTitleFromMultilingualObject } from "../../../util";
 import { useFieldData } from "../../hooks";
 import { deserializeFunder } from "./util";
 import { FundingRemoteSelectField } from "./FundingRemoteSelectField";
-import { Pagination } from "semantic-ui-react";
+import { SmallPagination } from "../../../search/SmallPagination";
 
 const storeComponents = overrideStore.getAll();
-
-const SmallPagination = ({
-  currentPage,
-  totalResults,
-  options,
-  currentSize,
-  onPageChange,
-  maxTotalResults = 10000,
-}) => {
-  const maxTotalPages = Math.floor(maxTotalResults / currentSize);
-  const pages = Math.ceil(totalResults / currentSize);
-  const totalDisplayedPages = Math.min(pages, maxTotalPages);
-  return (
-    <Pagination
-      activePage={currentPage}
-      size="tiny"
-      totalPages={totalDisplayedPages}
-      firstItem={null}
-      lastItem={null}
-      boundaryRange={0}
-      siblingRange={3}
-      onPageChange={(_, { activePage }) => onPageChange(activePage)}
-    />
-  );
-};
-
-SmallPagination.propTypes = {
-  currentPage: PropTypes.number.isRequired,
-  totalResults: PropTypes.number.isRequired,
-  options: PropTypes.object.isRequired,
-  currentSize: PropTypes.number.isRequired,
-  onPageChange: PropTypes.func.isRequired,
-  maxTotalResults: PropTypes.number,
-};
 
 export const FundingField = ({
   overrides = {

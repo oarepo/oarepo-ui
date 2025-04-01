@@ -1,35 +1,14 @@
 import React from "react";
 import { RemoteSelectField } from "react-invenio-forms";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import { deserializeFunder } from "./util";
+import {
+  deserializeFunder,
+  deserializeFunderToDropdown,
+  serializeFunderFromDropdown,
+} from "./util";
 import { getIn, useFormikContext } from "formik";
 
 export const FundingRemoteSelectField = () => {
-  function deserializeFunderToDropdown(funderItem) {
-    const funderName = funderItem?.name;
-    const funderPID = funderItem?.id;
-    const funderCountry = funderItem?.country_name ?? funderItem?.country;
-
-    if (!funderName && !funderPID) {
-      return {};
-    }
-
-    return {
-      text: [funderName, funderCountry, funderPID]
-        .filter((val) => val)
-        .join(", "),
-      value: funderItem.id,
-      key: funderItem.id,
-      ...(funderName && { name: funderName }),
-    };
-  }
-
-  function serializeFunderFromDropdown(funderDropObject) {
-    return {
-      id: funderDropObject.key,
-      ...(funderDropObject.name && { name: funderDropObject.name }),
-    };
-  }
   const { values } = useFormikContext();
   const selectedFunding = getIn(values, "selectedFunding.funder.id", "");
   return (
