@@ -2,9 +2,12 @@ import React, { useMemo } from "react";
 import { FundingField as InvenioFundingField } from "@js/invenio_vocabularies";
 import { overrideStore, OverridableContext } from "react-overridable";
 import PropTypes from "prop-types";
-import { getTitleFromMultilingualObject } from "../../../util";
 import { useFieldData } from "../../hooks";
-import { deserializeFunder } from "./util";
+import {
+  deserializeFunder,
+  deserializeAward,
+  computeFundingContents,
+} from "./util";
 import { FundingRemoteSelectField } from "./FundingRemoteSelectField";
 import { SmallPagination } from "../../../search/SmallPagination";
 
@@ -52,46 +55,9 @@ export const FundingField = ({
               size: 5,
             },
           }}
-          deserializeAward={(award) => {
-            return {
-              title: award.title_l10n,
-              number: award.number,
-              id: award.id,
-              ...(award.identifiers && {
-                identifiers: award.identifiers,
-              }),
-              ...(award.acronym && { acronym: award.acronym }),
-            };
-          }}
+          deserializeAward={deserializeAward}
           deserializeFunder={deserializeFunder}
-          computeFundingContents={(funding) => {
-            let headerContent,
-              descriptionContent,
-              awardOrFunder = "";
-
-            if (funding.funder) {
-              const funderName =
-                funding.funder?.name ??
-                funding.funder?.title ??
-                funding.funder?.id ??
-                "";
-              awardOrFunder = "funder";
-              headerContent = funderName;
-              descriptionContent = "";
-
-              // there cannot be an award without a funder
-              if (funding.award) {
-                const { acronym, title } = funding.award;
-                awardOrFunder = "award";
-                descriptionContent = funderName;
-                headerContent = acronym
-                  ? `${acronym} — ${getTitleFromMultilingualObject(title)}`
-                  : getTitleFromMultilingualObject(title);
-              }
-            }
-
-            return { headerContent, descriptionContent, awardOrFunder };
-          }}
+          computeFundingContents={computeFundingContents}
           labelIcon={null}
           {...fieldData}
           {...props}

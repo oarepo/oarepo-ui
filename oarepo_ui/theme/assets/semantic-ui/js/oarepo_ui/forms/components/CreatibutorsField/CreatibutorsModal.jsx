@@ -27,6 +27,7 @@ import { AffiliationsField } from "./AffiliationsField";
 import { CreatibutorsIdentifiers } from "./CreatibutorsIdentifiers";
 import { CREATIBUTOR_TYPE } from "./type";
 import { IdentifierBadge } from "../../../components";
+import { serializeCreatibutor, deserializeCreatibutor } from "./util";
 
 const ModalActions = {
   ADD: "add",
@@ -38,19 +39,6 @@ const NamesAutocompleteOptions = {
   SEARCH_ONLY: "search_only",
   OFF: "off",
 };
-
-function splitOnce(str, separator) {
-  const index = str.indexOf(separator);
-
-  if (index === -1) {
-    return [str]; // Separator not found, return the original string in an array
-  }
-
-  const firstPart = str.substring(0, index);
-  const secondPart = str.substring(index + separator.length);
-
-  return [firstPart, secondPart];
-}
 
 export class CreatibutorsModal extends Component {
   constructor(props) {
@@ -164,70 +152,6 @@ export class CreatibutorsModal extends Component {
     return action === ModalActions.ADD ? addLabel : editLabel;
   };
 
-  /**
-   * Function to transform formik creatibutor state
-   * back to the external format.
-   */
-  serializeCreatibutor = (submittedCreatibutor) => {
-    const identifiersFieldPath = "person_or_org.identifiers";
-    const affiliationsFieldPath = "affiliations";
-    // The modal is saving only identifiers values, thus
-    // identifiers with existing scheme are trimmed
-    // Here we merge back the known scheme for the submitted identifiers
-
-    const submittedIdentifiers = _get(
-      submittedCreatibutor,
-      identifiersFieldPath,
-      []
-    );
-    const identifiers = submittedIdentifiers.map((submittedIdentifier) => {
-      const [scheme, identifier] = splitOnce(submittedIdentifier, ":");
-      return { scheme: scheme.toLowerCase(), identifier };
-    });
-
-    const submittedAffiliations = _get(
-      submittedCreatibutor,
-      affiliationsFieldPath,
-      []
-    );
-
-    return {
-      ...submittedCreatibutor,
-      person_or_org: {
-        ...submittedCreatibutor.person_or_org,
-        identifiers,
-      },
-      affiliations: submittedAffiliations.map((affiliation) => ({
-        id: affiliation.id,
-        name: affiliation.name,
-      })),
-    };
-  };
-
-  /**
-   * Function to transform creatibutor object
-   * to formik initialValues. The function is converting
-   * the array of objects fields e.g `identifiers`, `affiliations`
-   * to simple arrays. This is needed as SUI dropdowns accept only
-   * array of strings as values.
-   */
-  deserializeCreatibutor = (initialCreatibutor) => {
-    const identifiersFieldPath = "person_or_org.identifiers";
-
-    return {
-      // Default type to personal
-      person_or_org: {
-        type: CREATIBUTOR_TYPE.PERSON,
-        ...initialCreatibutor.person_or_org,
-        identifiers: _get(initialCreatibutor, identifiersFieldPath, []).map(
-          (identifier) => `${identifier.scheme}:${identifier.identifier}`
-        ),
-      },
-      affiliations: _get(initialCreatibutor, "affiliations", []),
-      role: _get(initialCreatibutor, "role", ""),
-    };
-  };
-
   isCreator = () => {
     const { schema } = this.props;
 
@@ -238,7 +162,7 @@ export class CreatibutorsModal extends Component {
     const { onCreatibutorChange } = this.props;
     const { action } = this.state;
 
-    onCreatibutorChange(this.serializeCreatibutor(values));
+    onCreatibutorChange(serializeCreatibutor(values));
     formikBag.setSubmitting(false);
     formikBag.resetForm();
     switch (action) {
@@ -485,7 +409,7 @@ export class CreatibutorsModal extends Component {
     const ActionLabel = this.displayActionLabel();
     return (
       <Formik
-        initialValues={this.deserializeCreatibutor(initialCreatibutor)}
+        initialValues={deserializeCreatibutor(initialCreatibutor)}
         onSubmit={this.onSubmit}
         enableReinitialize
         validationSchema={this.CreatorSchema}

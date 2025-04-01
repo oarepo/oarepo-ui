@@ -10,46 +10,18 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { getIn, FieldArray } from "formik";
 import { Form, Label, List, Icon } from "semantic-ui-react";
-import _get from "lodash/get";
 import { FieldLabel } from "react-invenio-forms";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DndProvider } from "react-dnd";
 import { CreatibutorsModal } from "./CreatibutorsModal";
 import { CreatibutorsFieldItem } from "./CreatibutorsFieldItem";
-import { CREATIBUTOR_TYPE } from "./type";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { useFieldData, useFormConfig } from "../../hooks";
-import _truncate from "lodash/truncate";
+import { creatibutorNameDisplay } from "./util";
 
 function sortOptions(options) {
   return options.sort((o1, o2) => o1.text.localeCompare(o2.text));
 }
-
-const creatibutorNameDisplay = (value) => {
-  const creatibutorType = _get(
-    value,
-    "person_or_org.type",
-    CREATIBUTOR_TYPE.PERSON
-  );
-  const isPerson = creatibutorType === CREATIBUTOR_TYPE.PERSON;
-
-  const familyName = _get(value, "person_or_org.family_name", "");
-  const givenName = _get(value, "person_or_org.given_name", "");
-  const affiliationName = _get(value, `affiliations[0].name`, "");
-  const name = _get(value, `person_or_org.name`);
-
-  const affiliation = affiliationName ? ` (${affiliationName})` : "";
-
-  let displayName;
-  if (isPerson) {
-    const givenNameSuffix = givenName ? `, ${givenName}` : "";
-    displayName = `${familyName}${givenNameSuffix}${affiliation}`;
-  } else {
-    displayName = `${name}${affiliation}`;
-  }
-
-  return _truncate(displayName, { length: 60 });
-};
 
 class CreatibutorsFieldForm extends Component {
   handleOnContributorChange = (selectedCreatibutor) => {
