@@ -21,3 +21,6 @@ export * from "./FilesField";
 export * from "./StringArrayField";
 export * from "./TextField";
 export * from "./IdentifiersField";
+export * from "./FundingField";
+export * from "./CreatibutorsField";
+export * from "./NestedErrors";

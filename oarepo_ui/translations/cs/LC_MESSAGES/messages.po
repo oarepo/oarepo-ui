@@ -839,6 +839,109 @@ msgstr "Musí být vyplněn identifikátor i typ identifikátoru."
 msgid "Add identifier"
 msgstr "Přidat identifikátor"
 
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/ClipboardCopyButton.jinja:6
+msgid "Copy to clipboard"
+msgstr "Kopírovat do schránky"
+
+msgid "Search or create affiliation"
+msgstr "Hledat nebo vytvořit afiliaci"
+
+msgid "Affiliations"
+msgstr "Afiliace"
+
+msgid "Search for affiliations.."
+msgstr "Hledat afiliace..."
+
+msgid "Add creator"
+msgstr "Přidat tvůrce"
+
+msgid "Add contributor"
+msgstr "Přidat přispěvatele"
+
+msgid "Edit creator"
+msgstr "Upravit tvůrce"
+
+msgid "Edit contributor"
+msgstr "Upravit přispěvatele"
+
+msgid "Creators"
+msgstr "Autoři"
+
+msgid "Type the value of an identifier..."
+msgstr "Zadejte hodnotu identifikátoru..."
+
+msgid "Identifiers"
+msgstr "Identifikátory"
+
+msgid "e.g. ORCID, ISNI or GND."
+msgstr "např. ORCID, ISNI nebo GND."
+
+msgid "Save and add another"
+msgstr "Uložit a přidat další"
+
+msgid "Family name is a required field."
+msgstr "Příjmení je povinné pole."
+
+msgid "Name is a required field."
+msgstr "Křestní jméno je povinné pole."
+
+msgid "Role is a required field."
+msgstr "Role je povinné pole."
+
+msgid "Added"
+msgstr "Přidáno"
+
+msgid "Person"
+msgstr "Osoba"
+
+msgid "Organization"
+msgstr "Organizace"
+
+msgid "Search for persons by name, identifier, or affiliation..."
+msgstr "Hledat osoby podle jména, identifikátoru nebo afiliace..."
+
+msgid "Family name"
+msgstr "Příjmení"
+
+msgid "Given names"
+msgstr "Křestní jména"
+
+msgid "In format scheme:identifier e.g. orcid:0000-0000-0000-0000"
+msgstr "Ve formátu schéma:identifikátor např. orcid:0000-0000-0000-0000"
+
+msgid "Search for an organization by name, identifier, or affiliation..."
+msgstr "Hledat organizaci podle jména, identifikátoru nebo afiliace..."
+
+msgid "Search for organization by name, identifier, or affiliation..."
+msgstr "Hledat organizaci podle jména, identifikátoru nebo afiliace..."
+
+msgid "Name"
+msgstr "Jméno"
+
+msgid "Organization name"
+msgstr "Název organizace"
+
+msgid "e.g. ROR, ISNI or GND."
+msgstr "např. ROR, ISNI nebo GND."
+
+msgid "Role"
+msgstr "Role"
+
+msgid "Select role"
+msgstr "Vyberte roli"
+
+msgid "Couldn't find your person? You can <2>create a new entry</2>."
+msgstr "Nemůžete najít osobu? Můžete <2>vytvořit nový záznam</2>."
+
+msgid "Search for a funder by name"
+msgstr "Hledat poskytovatele financování podle jména"
+
+msgid "Funder"
+msgstr "Poskytovatel financování"
+
+msgid "Search for funder..."
+msgstr "Hledat poskytovatele financování..."
+
 #: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/ClipboardCopyButton.jinja:6
 msgid "Copy to clipboard"
 msgstr "Zkopírovat do schránky"
@@ -850,3 +953,18 @@ msgstr "Soubor nebyl správně nahrán."
 #: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:62
 msgid "File upload is not completed."
 msgstr "Nahrávání souborů nebylo dokončeno."
+
+#: /Users/m/w/cesnet/oarepo-ui/oarepo_ui/resources/resource.py:882
+msgid "Removal reason"
+msgstr "Důvod odstranění"
+
+#: /Users/m/w/cesnet/oarepo-ui/oarepo_ui/resources/resource.py:882
+msgid "Note"
+msgstr "Poznámka"
+
+#: /Users/m/w/cesnet/oarepo-ui/oarepo_ui/resources/resource.py:882
+msgid "Citation text"
+msgstr "Citace"
+
+msgid "Given name is a required field."
+msgstr ""

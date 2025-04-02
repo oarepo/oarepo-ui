@@ -15,6 +15,7 @@ export const SearchappSearchbarElement = withState(
     iconName,
     iconColor,
     placeholder: passedPlaceholder,
+    actionProps,
   }) => {
     const placeholder = passedPlaceholder || i18next.t("Search");
 
@@ -37,6 +38,7 @@ export const SearchappSearchbarElement = withState(
           color: iconColor,
           onClick: onBtnSearchClick,
           "aria-label": i18next.t("Search"),
+          ...actionProps,
         }}
         fluid
         placeholder={placeholder}

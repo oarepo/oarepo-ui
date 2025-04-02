@@ -2,3 +2,4 @@
 @pageFooterBackgroundColor: #ffffff;
 @pageFooterPadding: 1rem 5rem;
 @pageFooterBottomBackgroundColor: #ffffff;
+@pageFooterTopBorder:1px solid @borderColor;

@@ -2,6 +2,12 @@ import React from "react";
 import { Dropdown } from "semantic-ui-react";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
+import MonthDropdown from "./MonthDropdown";
+import YearDropdown from "./YearDropdown";
+import {
+  getYear,
+  getMonth,
+} from "date-fns";
 
 export const DatePickerHeader = ({
   dateEdtfFormat,
@@ -13,6 +19,11 @@ export const DatePickerHeader = ({
   date,
   setDateEdtfFormat,
   edtfDateFormatOptions,
+  changeYear,
+  changeMonth,
+  prevMonthButtonDisabled,
+  nextMonthButtonDisabled,
+  ...props
 }) => {
   return (
     <div>
@@ -24,6 +35,7 @@ export const DatePickerHeader = ({
               "react-datepicker__navigation react-datepicker__navigation--previous"
             }
             onClick={decreaseMonth}
+            disabled={prevMonthButtonDisabled}
           >
             <span
               className={
@@ -45,6 +57,7 @@ export const DatePickerHeader = ({
               "react-datepicker__navigation react-datepicker__navigation--next"
             }
             onClick={increaseMonth}
+            disabled={nextMonthButtonDisabled}
           >
             <span
               className={
@@ -64,6 +77,7 @@ export const DatePickerHeader = ({
               "react-datepicker__navigation react-datepicker__navigation--previous"
             }
             onClick={decreaseYear}
+            disabled={prevMonthButtonDisabled}
           >
             <span
               className={
@@ -82,6 +96,7 @@ export const DatePickerHeader = ({
               "react-datepicker__navigation react-datepicker__navigation--next"
             }
             onClick={increaseYear}
+            disabled={nextMonthButtonDisabled}
           >
             <span
               className={
@@ -102,6 +117,22 @@ export const DatePickerHeader = ({
           value={dateEdtfFormat}
         />
       </div>
+      {dateEdtfFormat === "yyyy-mm-dd" && (
+        <MonthDropdown
+          locale={i18next.language}
+          onChange={changeMonth}
+          month={getMonth(date)}
+        />
+      )}
+      {(dateEdtfFormat === "yyyy-mm" || dateEdtfFormat === "yyyy-mm-dd") && (
+        <YearDropdown
+          {...props}
+          locale={i18next.language}
+          onChange={changeYear}
+          year={getYear(date)}
+          date={date}
+        />
+      )}
     </div>
   );
 };
@@ -121,4 +152,8 @@ DatePickerHeader.propTypes = {
       text: PropTypes.string.isRequired,
     })
   ).isRequired,
+  changeYear: PropTypes.func.isRequired,
+  changeMonth: PropTypes.func.isRequired,
+  prevMonthButtonDisabled: PropTypes.bool,
+  nextMonthButtonDisabled: PropTypes.bool,
 };
