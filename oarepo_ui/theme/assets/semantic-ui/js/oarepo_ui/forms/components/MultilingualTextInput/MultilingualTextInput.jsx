@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { ArrayField } from "react-invenio-forms";
 import { Form } from "semantic-ui-react";
@@ -31,7 +31,7 @@ export const MultilingualTextInput = ({
   const { defaultLocale } = useDefaultLocale();
   const { getFieldData } = useFieldData();
 
-  const { values } = useFormikContext();
+  const { values, errors } = useFormikContext();
   const { usedSubValues, defaultNewValue: getNewValue } = useFormFieldValue({
     defaultValue: defaultLocale,
     fieldPath,
@@ -41,6 +41,16 @@ export const MultilingualTextInput = ({
   const usedLanguages = usedSubValues(value);
 
   useShowEmptyValue(fieldPath, defaultNewValue, showEmptyValue);
+
+  useEffect(() => {
+    const fieldDOMNode = document.querySelector(
+      `.field.${fieldPath}`
+    );
+    if (fieldDOMNode) {
+      fieldDOMNode.classList.remove("error");
+    }
+  }, [fieldPath, errors]);
+
   return (
     <ArrayField
       addButtonLabel={addButtonLabel}
@@ -52,6 +62,7 @@ export const MultilingualTextInput = ({
       fieldPath={fieldPath}
       addButtonClassName="array-field-add-button"
       {...getFieldData({ fieldPath, icon: labelIcon })}
+      className={fieldPath}
     >
       {({ indexPath, arrayHelpers }) => {
         const fieldPathPrefix = `${fieldPath}.${indexPath}`;
