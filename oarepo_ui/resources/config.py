@@ -10,13 +10,13 @@ from invenio_pidstore.errors import (
     PIDDoesNotExistError,
     PIDUnregistered,
 )
+from invenio_rdm_records.services.errors import RecordDeletedException
 from invenio_records_resources.proxies import current_service_registry
 from invenio_records_resources.services import Link, pagination_links
 from invenio_records_resources.services.errors import (
     FileKeyNotFoundError,
     PermissionDeniedError,
 )
-from invenio_rdm_records.services.errors import RecordDeletedException
 from invenio_search_ui.searchconfig import FacetsConfig, SearchAppConfig, SortConfig
 from oarepo_runtime.services.custom_fields import CustomFields, InlinedCustomFields
 
@@ -140,17 +140,6 @@ class RecordsUIResourceConfig(UIResourceConfig):
             return {schema.value: component}
         else:
             return {}
-
-    @property
-    def exports(self):
-        return {
-            "json": {
-                "name": _("JSON"),
-                "serializer": ("flask_resources.serializers:JSONSerializer"),
-                "content-type": "application/json",
-                "filename": "{id}.json",
-            },
-        }
 
     ui_links_item = {
         "self": UIRecordLink("{+ui}{+url_prefix}/{id}"),

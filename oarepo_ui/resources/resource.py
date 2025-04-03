@@ -3,6 +3,7 @@ import copy
 #
 import logging
 from functools import partial
+from mimetypes import guess_extension
 from os.path import splitext
 from typing import TYPE_CHECKING, Iterator
 
@@ -17,7 +18,6 @@ from flask_resources import (
     route,
 )
 from flask_security import login_required
-from invenio_base.utils import obj_or_import_string
 from invenio_previewer import current_previewer
 from invenio_previewer.extensions import default as default_previewer
 from invenio_rdm_records.services.errors import RecordDeletedException
@@ -32,6 +32,7 @@ from invenio_records_resources.resources.records.resource import (
 from invenio_records_resources.services import LinksTemplate
 from invenio_stats.proxies import current_stats
 from oarepo_runtime.datastreams.utils import get_file_service_for_record_class
+from oarepo_runtime.resources.responses import ExportableResponseHandler
 from werkzeug.exceptions import Forbidden
 
 from oarepo_ui.utils import dump_empty
@@ -278,7 +279,7 @@ class RecordsUIResource(UIResource):
         self.make_links_absolute(record["links"], self.api_service.config.url_prefix)
 
         extra_context = dict()
-        extra_context["exporters"] = self.config.exports
+        # extra_context["exporters"] = self.config.exports
         self.run_components(
             "before_ui_detail",
             api_record=api_record,
@@ -491,27 +492,47 @@ class RecordsUIResource(UIResource):
     @request_view_args
     @request_export_args
     def _export(self, *, is_preview=False):
-        pid_value = resource_requestctx.view_args["pid_value"]
         export_format = resource_requestctx.view_args["export_format"]
         record = self._get_record(
             resource_requestctx.view_args["pid_value"], allow_draft=is_preview
         )
-
-        exporter = self.config.exports.get(export_format.lower())
-        if exporter is None:
+        resource_config = self.resource_config
+        if not resource_config:
+            return () # what should this return?
+        handlers = [
+            (mimetype, handler)
+            for mimetype, handler in resource_config.response_handlers.items()
+            if isinstance(handler, ExportableResponseHandler)
+        ]
+        handlers = [
+            handler_tuple
+            for handler_tuple in handlers
+            if handler_tuple[1].export_code == export_format.lower()
+        ]
+        if len(handlers) != 1:
             abort(404, f"No exporter for code {export_format}")
+        mimetype = handlers[0][0]
+        handler = handlers[0][1]
 
-        serializer = obj_or_import_string(exporter["serializer"])(
+        # do the options matter?
+        """
+        serializer = obj_or_import_string(exporter)(
             options={
                 "indent": 2,
                 "sort_keys": True,
             }
         )
-        exported_record = serializer.serialize_object(record.to_dict())
-        contentType = exporter.get("content-type", export_format)
-        filename = exporter.get("filename", export_format).format(id=pid_value)
+        """
+
+        exported_record = handler.serializer.serialize_object(record.to_dict())
+        extension = guess_extension(mimetype)
+        if not extension:
+            first, second = mimetype.split("/")
+            _, second = second.split("+")
+            extension = guess_extension(f"{first}/{second}")
+        filename = f"{{id}}{extension}"
         headers = {
-            "Content-Type": contentType,
+            "Content-Type": mimetype,
             "Content-Disposition": f"attachment; filename={filename}",
         }
         return (exported_record, 200, headers)
@@ -708,6 +729,15 @@ class RecordsUIResource(UIResource):
     @property
     def api_service(self):
         return current_service_registry.get(self.config.api_service)
+
+    @property
+    def resource_config(
+        self,
+    ):  # todo put this somewhere in config?
+        import importlib
+
+        module = importlib.import_module(f"{self.config.api_service}.proxies")
+        return module.current_resource.config
 
     @property
     def api_config(self):
