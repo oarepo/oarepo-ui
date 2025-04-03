@@ -29,6 +29,12 @@ from oarepo_ui.resources.components.bleach import AllowedHtmlTagsComponent
 from oarepo_ui.resources.components.custom_fields import CustomFieldsComponent
 from oarepo_ui.resources.config import TemplatePageUIResourceConfig
 from oarepo_ui.resources.resource import TemplatePageUIResource
+import importlib_metadata
+from flask_resources.serializers.json import JSONSerializer
+from invenio_records_resources.resources import RecordResourceConfig
+from invenio_records_resources.resources.records.headers import etag_headers
+from oarepo_runtime.resources.responses import ExportableResponseHandler
+from invenio_records_resources.resources import RecordResource
 
 
 class ModelRecordIdProvider(RecordIdProviderV2):
@@ -67,6 +73,7 @@ class ModelServiceConfig(RecordServiceConfig):
     permission_policy_cls = ModelPermissionPolicy
     schema = ModelSchema
 
+    service_id = "simple_model"
     url_prefix = "/simple-model"
 
     @property
@@ -79,6 +86,40 @@ class ModelServiceConfig(RecordServiceConfig):
 
 class ModelService(RecordService):
     pass
+
+class ModelResourceConfig(RecordResourceConfig):
+    """SimpleModelRecord resource config."""
+
+    blueprint_name = "simple_model_api"
+    url_prefix = "/simple-model/"
+
+    @property
+    def response_handlers(self):
+        entrypoint_response_handlers = {}
+        for x in importlib_metadata.entry_points(
+            group="invenio.simple_model.response_handlers"
+        ):
+            entrypoint_response_handlers.update(x.load())
+        return {
+            "application/json": ExportableResponseHandler(
+                export_code="json",
+                name="json",
+                serializer=JSONSerializer(),
+                headers=etag_headers,
+            ),
+            "application/vnd.inveniordm.v1+json": ExportableResponseHandler(
+                export_code="inveniordm_json",
+                name="inveniordm_json",
+                serializer=JSONSerializer(),
+            ),
+            **entrypoint_response_handlers,
+        }
+
+class ModelResource(RecordResource):
+    """SimpleModelRecord resource."""
+
+    # here you can for example redefine
+    # create_url_rules function to add your own rules
 
 
 class ModelUISerializer(MarshmallowSerializer):
