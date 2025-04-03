@@ -5,6 +5,7 @@ from invenio_communities.communities.records.api import Community
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_records_resources.services.errors import PermissionDeniedError
 from oarepo_runtime.i18n import lazy_gettext as _
+
 from .base import UIResourceComponent
 
 

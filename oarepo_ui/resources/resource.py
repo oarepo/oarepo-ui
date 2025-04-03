@@ -18,6 +18,7 @@ from flask_resources import (
     route,
 )
 from flask_security import login_required
+from invenio_base.utils import obj_or_import_string
 from invenio_previewer import current_previewer
 from invenio_previewer.extensions import default as default_previewer
 from invenio_rdm_records.services.errors import RecordDeletedException
@@ -34,7 +35,7 @@ from invenio_stats.proxies import current_stats
 from oarepo_runtime.datastreams.utils import get_file_service_for_record_class
 from oarepo_runtime.resources.responses import ExportableResponseHandler
 from werkzeug.exceptions import Forbidden
-from invenio_base.utils import obj_or_import_string
+
 from oarepo_ui.utils import dump_empty
 
 # Resource
@@ -498,7 +499,7 @@ class RecordsUIResource(UIResource):
         )
         resource_config = self.resource_config
         if not resource_config:
-            return () # what should this return?
+            return ()  # what should this return?
         handlers = [
             (mimetype, handler)
             for mimetype, handler in resource_config.response_handlers.items()
@@ -736,7 +737,9 @@ class RecordsUIResource(UIResource):
     ):
         from flask import current_app
 
-        if "RDM_MODELS" in current_app.config: #todo - couldn't this be problematic too?; could it happen that the final config class is created at runtime like with FromConfig in service configs?
+        if (
+            "RDM_MODELS" in current_app.config
+        ):  # todo - couldn't this be problematic too?; could it happen that the final config class is created at runtime like with FromConfig in service configs?
             for model_dict in current_app.config["RDM_MODELS"]:
                 if model_dict["service_id"] == self.config.api_service:
                     return obj_or_import_string(model_dict["api_resource_config"])()

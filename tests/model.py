@@ -1,6 +1,8 @@
+import importlib_metadata
 import marshmallow as ma
 from flask_resources import BaseListSchema, MarshmallowSerializer
 from flask_resources.serializers import JSONSerializer
+from flask_resources.serializers.json import JSONSerializer
 from invenio_pidstore.providers.recordid_v2 import RecordIdProviderV2
 from invenio_records.models import RecordMetadata
 from invenio_records_permissions import RecordPermissionPolicy
@@ -12,11 +14,14 @@ from invenio_records_permissions.generators import (
 from invenio_records_resources.records.api import Record
 from invenio_records_resources.records.systemfields import IndexField, PIDField
 from invenio_records_resources.records.systemfields.pid import PIDFieldContext
+from invenio_records_resources.resources import RecordResource, RecordResourceConfig
+from invenio_records_resources.resources.records.headers import etag_headers
 from invenio_records_resources.services import (
     RecordLink,
     RecordService,
     RecordServiceConfig,
 )
+from oarepo_runtime.resources.responses import ExportableResponseHandler
 from oarepo_runtime.services.custom_fields import CustomFields, InlinedCustomFields
 
 from oarepo_ui.resources import (
@@ -29,12 +34,6 @@ from oarepo_ui.resources.components.bleach import AllowedHtmlTagsComponent
 from oarepo_ui.resources.components.custom_fields import CustomFieldsComponent
 from oarepo_ui.resources.config import TemplatePageUIResourceConfig
 from oarepo_ui.resources.resource import TemplatePageUIResource
-import importlib_metadata
-from flask_resources.serializers.json import JSONSerializer
-from invenio_records_resources.resources import RecordResourceConfig
-from invenio_records_resources.resources.records.headers import etag_headers
-from oarepo_runtime.resources.responses import ExportableResponseHandler
-from invenio_records_resources.resources import RecordResource
 
 
 class ModelRecordIdProvider(RecordIdProviderV2):
@@ -87,6 +86,7 @@ class ModelServiceConfig(RecordServiceConfig):
 class ModelService(RecordService):
     pass
 
+
 class ModelResourceConfig(RecordResourceConfig):
     """SimpleModelRecord resource config."""
 
@@ -114,6 +114,7 @@ class ModelResourceConfig(RecordResourceConfig):
             ),
             **entrypoint_response_handlers,
         }
+
 
 class ModelResource(RecordResource):
     """SimpleModelRecord resource."""
@@ -149,7 +150,12 @@ class ModelUIResourceConfig(RecordsUIResourceConfig):
         "edit": "TestEdit",
     }
 
-    components = [BabelComponent, PermissionsComponent, AllowedHtmlTagsComponent, CustomFieldsComponent]
+    components = [
+        BabelComponent,
+        PermissionsComponent,
+        AllowedHtmlTagsComponent,
+        CustomFieldsComponent,
+    ]
 
 
 class ModelUIResource(RecordsUIResource):

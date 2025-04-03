@@ -14,10 +14,12 @@ from invenio_app.factory import create_app as _create_app
 from invenio_records_resources.services.custom_fields import KeywordCF
 
 from tests.model import (
+    ModelResource,
+    ModelResourceConfig,
     ModelUIResource,
     ModelUIResourceConfig,
     TitlePageUIResource,
-    TitlePageUIResourceConfig, ModelResourceConfig, ModelResource,
+    TitlePageUIResourceConfig,
 )
 
 
@@ -63,14 +65,16 @@ def app_config(app_config):
 
     app_config["WEBPACKEXT_PROJECT"] = "oarepo_ui.webpack:project"
 
-    app_config["RDM_MODELS"] = [{
+    app_config["RDM_MODELS"] = [
+        {
             "service_id": "simple_model",
             "api_service": "tests.model.ModelService",
             "api_service_config": "tests.model.ModelServiceConfig",
             "api_resource": "tests.model.ModelResource",
             "api_resource_config": "tests.model.ModelResourceConfig",
             "ui_resource_config": "tests.model.ModelUIResourceConfig",
-            }]
+        }
+    ]
 
     return app_config
 
@@ -103,6 +107,7 @@ def record_ui_resource(app, record_ui_resource_config, record_service):
         ui_resource.as_blueprint(template_folder=Path(__file__).parent / "templates")
     )
     return ui_resource
+
 
 @pytest.fixture(scope="module")
 def record_api_resource_config(app):
