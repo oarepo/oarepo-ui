@@ -17,7 +17,6 @@ export const StringArrayField = ({
   helpText,
   labelIcon,
   showEmptyValue = false,
-  addButtonClassName = "array-field-add-button inline",
   icon,
   ...uiProps
 }) => {
@@ -65,7 +64,7 @@ export const StringArrayField = ({
               <label className="helptext">{fieldData.helpText}</label>
             ) : null}
             <Form.Button
-              className={addButtonClassName}
+              className="array-field-add-button inline"
               type="button"
               icon
               labelPosition="left"
@@ -97,6 +96,5 @@ StringArrayField.propTypes = {
   labelIcon: PropTypes.string,
   required: PropTypes.bool,
   showEmptyValue: PropTypes.bool,
-  addButtonClassName: PropTypes.string,
   icon: PropTypes.string,
 };

@@ -72,12 +72,12 @@ export const IdentifiersField = ({
   const { setFieldTouched } = useFormikContext();
   const { getFieldData } = useFieldData();
   const handleValidateAndBlur = useValidateOnBlur();
-  const selectFieldData = getFieldData({
+  const schemeFieldProps = getFieldData({
     fieldPath: `${fieldPath}.0.scheme`,
     fieldRepresentation: "compact",
   });
 
-  const textFieldData = getFieldData({
+  const identifierFieldProps = getFieldData({
     fieldPath: `${fieldPath}.0.identifier`,
     fieldRepresentation: "compact",
   });
@@ -115,13 +115,13 @@ export const IdentifiersField = ({
                   ? () => handleValidateAndBlur(schemeFieldPath)
                   : () => setFieldTouched(schemeFieldPath)
               }
-              {...selectFieldData}
+              {...schemeFieldProps}
               {...uiProps}
             />
             <TextField
               width={11}
               fieldPath={identifierFieldPath}
-              {...textFieldData}
+              {...identifierFieldProps}
               onBlur={
                 validateOnBlur
                   ? () => handleValidateAndBlur(identifierFieldPath)

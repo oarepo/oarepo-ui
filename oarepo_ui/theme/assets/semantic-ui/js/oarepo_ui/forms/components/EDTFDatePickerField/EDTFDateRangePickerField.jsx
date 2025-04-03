@@ -20,7 +20,6 @@ export const EDTFDaterangePicker = ({
   icon = "calendar",
   helpText,
   required,
-  clearButtonClassName = "clear-icon",
   dateRangeInputPlaceholder = i18next.t("Choose date range (From - To)."),
   singleDateInputPlaceholder = i18next.t("Choose one date."),
   datePickerPropsOverrides,
@@ -138,7 +137,6 @@ export const EDTFDaterangePicker = ({
           dateEdtfFormat={dateEdtfFormat}
           setDateEdtfFormat={setDateEdtfFormat}
           dateFormat={dateFormat}
-          clearButtonClassName={clearButtonClassName}
           datePickerProps={{ ...pickerProps, ...datePickerPropsOverrides }}
         />
       </Form.Field>
@@ -155,7 +153,6 @@ EDTFDaterangePicker.propTypes = {
   icon: PropTypes.string,
   helpText: PropTypes.string,
   required: PropTypes.bool,
-  clearButtonClassName: PropTypes.string,
   singleDateInputPlaceholder: PropTypes.string,
   dateRangeInputPlaceholder: PropTypes.string,
   datePickerPropsOverrides: PropTypes.object,

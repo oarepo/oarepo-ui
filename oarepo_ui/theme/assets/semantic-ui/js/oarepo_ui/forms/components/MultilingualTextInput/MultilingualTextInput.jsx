@@ -22,9 +22,8 @@ export const MultilingualTextInput = ({
     value: "",
   },
   rich = false,
-  editorConfig,
   addButtonLabel = i18next.t("Add another language"),
-  lngFieldWidth,
+  lngFieldWidth = 3,
   showEmptyValue = false,
   prefillLanguageWithDefaultLocale = false,
   removeButtonLabelClassName,
@@ -71,7 +70,6 @@ export const MultilingualTextInput = ({
               {rich ? (
                 <I18nRichInputField
                   fieldPath={fieldPathPrefix}
-                  editorConfig={editorConfig}
                   optimized
                   usedLanguages={usedLanguages}
                   lngFieldWidth={lngFieldWidth}
@@ -97,7 +95,6 @@ MultilingualTextInput.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   labelIcon: PropTypes.string,
   rich: PropTypes.bool,
-  editorConfig: PropTypes.object,
   addButtonLabel: PropTypes.string,
   lngFieldWidth: PropTypes.number,
   defaultNewValue: PropTypes.object,

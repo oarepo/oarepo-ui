@@ -18,7 +18,6 @@ export const EDTFSingleDatePicker = ({
   helpText,
   required,
   placeholder,
-  clearButtonClassName = "clear-icon",
   datePickerProps,
   customInputProps,
   icon = "calendar",
@@ -53,7 +52,6 @@ export const EDTFSingleDatePicker = ({
         dateEdtfFormat={dateEdtfFormat}
         setDateEdtfFormat={setDateEdtfFormat}
         dateFormat={getDateFormatStringFromEdtfFormat(dateEdtfFormat)}
-        clearButtonClassName={clearButtonClassName}
         datePickerProps={{
           selected: date,
           onChange: handleChange,
@@ -75,7 +73,6 @@ EDTFSingleDatePicker.propTypes = {
   datePickerProps: PropTypes.object,
   required: PropTypes.bool,
   placeholder: PropTypes.string,
-  clearButtonClassName: PropTypes.string,
   customInputProps: PropTypes.object,
   icon: PropTypes.string,
 };
