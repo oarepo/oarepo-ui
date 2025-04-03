@@ -1,0 +1,54 @@
+i.access-status {
+  display: inline-block;
+  height: 100px;
+  width: 100px;
+
+  &.open {
+    background: url("~@less/images/open_access.svg") no-repeat center;
+    background-size: contain;
+  }
+  &.restricted {
+    background: url("~@less/images/closed_access.svg") no-repeat center;
+    background-size: contain;
+  }
+
+  &.metadata-only {
+    background: url("~@less/images/partially_closed_access.svg") no-repeat
+      center;
+    background-size: contain;
+  }
+
+  &.embargoed {
+    background: url("~@less/images/partially_closed_access_grey.svg") no-repeat
+      center;
+    background-size: contain;
+  }
+}
+
+i.access-status.small {
+  display: inline-block;
+  height: 3rem;
+  width: 3rem;
+  vertical-align: middle;
+
+  &.open {
+    background: url("~@less/images/open_access.svg") no-repeat center;
+    background-size: contain;
+  }
+  &.restricted {
+    background: url("~@less/images/closed_access.svg") no-repeat center;
+    background-size: contain;
+  }
+
+  &.metadata-only {
+    background: url("~@less/images/partially_closed_access.svg") no-repeat
+      center;
+    background-size: contain;
+  }
+
+  &.embargoed {
+    background: url("~@less/images/partially_closed_access_grey.svg") no-repeat
+      center;
+    background-size: contain;
+  }
+}
