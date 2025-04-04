@@ -31,18 +31,28 @@ const deserializeRecord = (record) => ({
 const NUMBER_OF_VERSIONS = 5;
 
 const RecordVersionItem = ({ item, activeVersion, searchLinkPrefix = "" }) => {
-  const doi = _find(item.pids, (o) => o.scheme.toLowerCase() === "doi")?.identifier ?? "";
+  const doi =
+    _find(item.pids, (o) => o.scheme.toLowerCase() === "doi")?.identifier ?? "";
   return (
-    <List.Item key={item.id} {...(activeVersion && { className: "version active" })}>
+    <List.Item
+      key={item.id}
+      {...(activeVersion && { className: "version active" })}
+    >
       <List.Content floated="left">
         <List.Header>
           {activeVersion ? (
             <span className="text-break">
-              {i18next.t("Version {{- version}}", { version: item.version })}
+              {item.version_note ??
+                i18next.t("Version {{- version}}", {
+                  version: item.version_note || item.version,
+                })}
             </span>
           ) : (
             <a href={`${searchLinkPrefix}/${item.id}`} className="text-break">
-              {i18next.t("Version {{- version}}", { version: item.version })}
+              {item.version_note ??
+                i18next.t("Version {{- version}}", {
+                  version: item.version_note || item.version,
+                })}
             </a>
           )}
         </List.Header>
@@ -53,15 +63,12 @@ const RecordVersionItem = ({ item, activeVersion, searchLinkPrefix = "" }) => {
               DOI:{" "}
               <a
                 href={`https://doi.org/${doi}`}
-                className={"doi" + (activeVersion ? " text-muted-darken" : " text-muted")}
+                className={
+                  "doi" + (activeVersion ? " text-muted-darken" : " text-muted")
+                }
               >
                 {doi}
               </a>
-            </div>
-          )}
-          {item.version_note && (
-            <div>
-              {item.version_note}
             </div>
           )}
         </List.Description>
@@ -104,40 +111,51 @@ export const RecordVersionsList = ({ uiRecord, isPreview }) => {
   const [error, setError] = useState(null);
   const [recordVersions, setRecordVersions] = useState({});
 
-  const fetchRecordAndSetState = useCallback(async (signal) => {
-    try {
-      const result = await httpApplicationJson.get(record.links.self, {
-        signal,
-      });
-      setRecord(result.data);
-    } catch (error) {
-      setError(i18next.t("An error occurred while fetching the record."));
-    }
-  }, [record.links.self]);
+  const fetchRecordAndSetState = useCallback(
+    async (signal) => {
+      try {
+        const result = await httpApplicationJson.get(record.links.self, {
+          signal,
+        });
+        setRecord(result.data);
+      } catch (error) {
+        setError(i18next.t("An error occurred while fetching the record."));
+      }
+    },
+    [record.links.self]
+  );
 
-  const fetchVersionsAndSetState = useCallback(async (signal) => {
-    try {
-      const result = await httpApplicationJson.get(
-        `${record.links.versions}?size=${NUMBER_OF_VERSIONS}&sort=version&allversions=true`, {
-        signal,
-      });
-      let { hits, total } = result.data.hits;
-      hits = hits.map(deserializeRecord);
-      setRecordVersions({ hits, total });
-      setLoading(false);
-    } catch (error) {
-      setError(i18next.t("An error occurred while fetching the versions."));
-    }
-  }, [record.links.versions]);
+  const fetchVersionsAndSetState = useCallback(
+    async (signal) => {
+      try {
+        const result = await httpApplicationJson.get(
+          `${record.links.versions}?size=${NUMBER_OF_VERSIONS}&sort=version&allversions=true`,
+          {
+            signal,
+          }
+        );
+        let { hits, total } = result.data.hits;
+        hits = hits.map(deserializeRecord);
+        setRecordVersions({ hits, total });
+        setLoading(false);
+      } catch (error) {
+        setError(i18next.t("An error occurred while fetching the versions."));
+      }
+    },
+    [record.links.versions]
+  );
 
-  const fetchData = useCallback(async (signal) => {
-    try {
-      await fetchRecordAndSetState(signal);
-      await fetchVersionsAndSetState(signal);
-    } catch (error) {
-      setLoading(false);
-    }
-  }, [fetchRecordAndSetState, fetchVersionsAndSetState]);
+  const fetchData = useCallback(
+    async (signal) => {
+      try {
+        await fetchRecordAndSetState(signal);
+        await fetchVersionsAndSetState(signal);
+      } catch (error) {
+        setLoading(false);
+      }
+    },
+    [fetchRecordAndSetState, fetchVersionsAndSetState]
+  );
 
   useEffect(() => {
     const controller = new AbortController();
@@ -166,15 +184,21 @@ export const RecordVersionsList = ({ uiRecord, isPreview }) => {
   };
 
   const errorMessagecmp = () => (
-    <ErrorMessage className="rel-mr-1 rel-ml-1" content={i18next.t(error)} negative />
+    <ErrorMessage
+      className="rel-mr-1 rel-ml-1"
+      content={i18next.t(error)}
+      negative
+    />
   );
 
-  const searchLinkPrefix = uiRecord.links?.search_link.endsWith('/') ? uiRecord.links.search_link.slice(0, -1) : uiRecord.links?.search_link;
+  const searchLinkPrefix = uiRecord.links?.search_link.endsWith("/")
+    ? uiRecord.links.search_link.slice(0, -1)
+    : uiRecord.links?.search_link;
 
   const recordVersionscmp = () => (
     <>
       {isPreview ? <PreviewMessage /> : null}
-      {recordVersions.total > 0 &&
+      {recordVersions.total > 0 && (
         <List relaxed divided>
           {recordVersions.hits.map((item) => (
             <RecordVersionItem
@@ -203,11 +227,13 @@ export const RecordVersionsList = ({ uiRecord, isPreview }) => {
               <List.Content floated="left">
                 <Trans>
                   <p className="text-muted">
-                    <strong>Cite all versions?</strong> You can cite all versions by using
-                    the DOI{" "}
-                    <a href={recordDeserialized.links.parent_doi}>{{recordParentDOI}}</a>.
-                    This DOI represents all versions, and will always resolve to the latest
-                    one. <a href="/help/versioning">Read more</a>.
+                    <strong>Cite all versions?</strong> You can cite all
+                    versions by using the DOI{" "}
+                    <a href={recordDeserialized.links.parent_doi}>
+                      {{ recordParentDOI }}
+                    </a>
+                    . This DOI represents all versions, and will always resolve
+                    to the latest one. <a href="/help/versioning">Read more</a>.
                   </p>
                 </Trans>
               </List.Content>
@@ -218,20 +244,25 @@ export const RecordVersionsList = ({ uiRecord, isPreview }) => {
               <List.Content floated="left">
                 <Trans>
                   <p className="text-muted">
-                    <strong>Cite all versions?</strong> You can cite all versions by using
-                    the DOI {{recordDraftParentDOIFormat}}. The DOI is registered when the
-                    first version is published. <a href="/help/versioning">Read more</a>.
+                    <strong>Cite all versions?</strong> You can cite all
+                    versions by using the DOI {{ recordDraftParentDOIFormat }}.
+                    The DOI is registered when the first version is published.{" "}
+                    <a href="/help/versioning">Read more</a>.
                   </p>
                 </Trans>
               </List.Content>
             </List.Item>
           ) : null}
         </List>
-      }
+      )}
     </>
   );
 
-  return loading ? loadingcmp() : error ? errorMessagecmp() : recordVersionscmp();
+  return loading
+    ? loadingcmp()
+    : error
+    ? errorMessagecmp()
+    : recordVersionscmp();
 };
 
 RecordVersionsList.propTypes = {
