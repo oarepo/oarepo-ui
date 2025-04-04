@@ -279,8 +279,9 @@ class RecordsUIResource(UIResource):
         )
 
         self.make_links_absolute(record["links"], self.api_service.config.url_prefix)
-
         extra_context = dict()
+        handlers = self._exportable_handlers()
+        extra_context["exporters"] = {handler.export_code: handler for mimetype, handler in handlers}
         self.run_components(
             "before_ui_detail",
             api_record=api_record,
@@ -497,17 +498,7 @@ class RecordsUIResource(UIResource):
         record = self._get_record(
             resource_requestctx.view_args["pid_value"], allow_draft=is_preview
         )
-        resource_config = self.resource_config
-        if not resource_config:
-            abort(
-                404,
-                "Cannot export due to missing configuration, specify RDM_MODELS option",
-            )
-        handlers = [
-            (mimetype, handler)
-            for mimetype, handler in resource_config.response_handlers.items()
-            if isinstance(handler, ExportableResponseHandler)
-        ]
+        handlers = self._exportable_handlers()
         handlers = [
             handler_tuple
             for handler_tuple in handlers
@@ -529,6 +520,20 @@ class RecordsUIResource(UIResource):
             "Content-Disposition": f"attachment; filename={filename}",
         }
         return (exported_record, 200, headers)
+
+    def _exportable_handlers(self):
+        resource_config = self.resource_config
+        if not resource_config:
+            abort(
+                404,
+                "Cannot export due to missing configuration, specify RDM_MODELS option",
+            )
+        handlers = [
+            (mimetype, handler)
+            for mimetype, handler in resource_config.response_handlers.items()
+            if isinstance(handler, ExportableResponseHandler)
+        ]
+        return handlers
 
     def export(self):
         return self._export()
