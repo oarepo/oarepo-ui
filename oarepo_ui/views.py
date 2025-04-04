@@ -1,10 +1,12 @@
 from flask import Blueprint
-from invenio_base.utils import obj_or_import_string
 from flask_menu import current_menu
+from invenio_base.utils import obj_or_import_string
 
 
 def create_blueprint(app):
-    blueprint = Blueprint("oarepo_ui", __name__, template_folder="templates", static_folder="static")
+    blueprint = Blueprint(
+        "oarepo_ui", __name__, template_folder="templates", static_folder="static"
+    )
     blueprint.app_context_processor(lambda: ({"current_app": app}))
 
     # hide the /admin (maximum recursion depth exceeded menu)

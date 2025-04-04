@@ -1,6 +1,8 @@
-from .base import UIResourceComponent
 from typing import Dict
+
 from flask_principal import Identity
+
+from .base import UIResourceComponent
 
 
 class FilesLockedComponent(UIResourceComponent):
