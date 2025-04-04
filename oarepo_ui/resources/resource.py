@@ -31,6 +31,7 @@ from invenio_records_resources.resources.records.resource import (
     request_view_args,
 )
 from invenio_records_resources.services import LinksTemplate
+from invenio_records_resources.services.base.config import ConfiguratorMixin
 from invenio_stats.proxies import current_stats
 from oarepo_runtime.datastreams.utils import get_file_service_for_record_class
 from oarepo_runtime.resources.responses import ExportableResponseHandler
@@ -499,7 +500,10 @@ class RecordsUIResource(UIResource):
         )
         resource_config = self.resource_config
         if not resource_config:
-            return ()  # what should this return?
+            abort(
+                404,
+                "Cannot export due to missing configuration, specify RDM_MODELS option",
+            )
         handlers = [
             (mimetype, handler)
             for mimetype, handler in resource_config.response_handlers.items()
@@ -510,21 +514,10 @@ class RecordsUIResource(UIResource):
             for handler_tuple in handlers
             if handler_tuple[1].export_code == export_format.lower()
         ]
-        if len(handlers) != 1:
+        if not handlers:
             abort(404, f"No exporter for code {export_format}")
         mimetype = handlers[0][0]
         handler = handlers[0][1]
-
-        # do the options matter?
-        """
-        serializer = obj_or_import_string(exporter)(
-            options={
-                "indent": 2,
-                "sort_keys": True,
-            }
-        )
-        """
-
         exported_record = handler.serializer.serialize_object(record.to_dict())
         extension = guess_extension(mimetype)
         if not extension:
@@ -737,12 +730,16 @@ class RecordsUIResource(UIResource):
     ):
         from flask import current_app
 
-        if (
-            "RDM_MODELS" in current_app.config
-        ):  # todo - couldn't this be problematic too?; could it happen that the final config class is created at runtime like with FromConfig in service configs?
+        if "RDM_MODELS" in current_app.config:
             for model_dict in current_app.config["RDM_MODELS"]:
                 if model_dict["service_id"] == self.config.api_service:
-                    return obj_or_import_string(model_dict["api_resource_config"])()
+                    config = obj_or_import_string(model_dict["api_resource_config"])()
+                    if isinstance(config, ConfiguratorMixin):
+                        config = obj_or_import_string(
+                            model_dict["api_resource_config"]
+                        ).build(current_app)
+                    return config
+
         return None
 
     @property

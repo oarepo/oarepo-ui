@@ -31,7 +31,7 @@ def test_inveniordm(
     fake_manifest,
 ):
     with client_with_credentials.get(
-        f"/simple-model/{simple_record.id}/export/inveniordm_json"
+        f"/simple-model/{simple_record.id}/export/ui_json"
     ) as c:  # todo the serializer results dont differ here
         text = json.loads(c.text)
         assert text == {

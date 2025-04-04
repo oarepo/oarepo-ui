@@ -21,6 +21,8 @@ from invenio_records_resources.services import (
     RecordService,
     RecordServiceConfig,
 )
+from invenio_records_resources.services.base.config import ConfiguratorMixin
+from oarepo_runtime.i18n import lazy_gettext as _
 from oarepo_runtime.resources.responses import ExportableResponseHandler
 from oarepo_runtime.services.custom_fields import CustomFields, InlinedCustomFields
 
@@ -35,9 +37,6 @@ from oarepo_ui.resources.components.custom_fields import CustomFieldsComponent
 from oarepo_ui.resources.config import TemplatePageUIResourceConfig
 from oarepo_ui.resources.resource import TemplatePageUIResource
 
-def _(x):
-    """Identity function used to trigger string extraction."""
-    return x
 
 class ModelRecordIdProvider(RecordIdProviderV2):
     pid_type = "rec"
@@ -90,7 +89,7 @@ class ModelService(RecordService):
     pass
 
 
-class ModelResourceConfig(RecordResourceConfig):
+class ModelResourceConfig(RecordResourceConfig, ConfiguratorMixin):
     """SimpleModelRecord resource config."""
 
     blueprint_name = "simple_model_api"
@@ -106,13 +105,13 @@ class ModelResourceConfig(RecordResourceConfig):
         return {
             "application/json": ExportableResponseHandler(
                 export_code="json",
-                name=_("JSON"),
+                name=_("NATIVE_JSON"),
                 serializer=JSONSerializer(),
                 headers=etag_headers,
             ),
             "application/vnd.inveniordm.v1+json": ExportableResponseHandler(
-                export_code="inveniordm_json",
-                name=_("INVENIORDM_JSON"),
+                export_code="ui_json",
+                name=_("NATIVE_UI_JSON"),
                 serializer=JSONSerializer(),
             ),
             **entrypoint_response_handlers,
