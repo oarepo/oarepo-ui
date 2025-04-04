@@ -22,7 +22,6 @@ from invenio_records_resources.services import (
     RecordServiceConfig,
 )
 from invenio_records_resources.services.base.config import ConfiguratorMixin
-from oarepo_runtime.i18n import lazy_gettext as _
 from oarepo_runtime.resources.responses import ExportableResponseHandler
 from oarepo_runtime.services.custom_fields import CustomFields, InlinedCustomFields
 
@@ -105,13 +104,13 @@ class ModelResourceConfig(RecordResourceConfig, ConfiguratorMixin):
         return {
             "application/json": ExportableResponseHandler(
                 export_code="json",
-                name=_("NATIVE_JSON"),
+                name="Native JSON",
                 serializer=JSONSerializer(),
                 headers=etag_headers,
             ),
             "application/vnd.inveniordm.v1+json": ExportableResponseHandler(
                 export_code="ui_json",
-                name=_("NATIVE_UI_JSON"),
+                name="Native UI JSON",
                 serializer=JSONSerializer(),
             ),
             **entrypoint_response_handlers,

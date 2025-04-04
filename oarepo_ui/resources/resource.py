@@ -281,7 +281,6 @@ class RecordsUIResource(UIResource):
         self.make_links_absolute(record["links"], self.api_service.config.url_prefix)
 
         extra_context = dict()
-        # extra_context["exporters"] = self.config.exports
         self.run_components(
             "before_ui_detail",
             api_record=api_record,
@@ -521,8 +520,8 @@ class RecordsUIResource(UIResource):
         exported_record = handler.serializer.serialize_object(record.to_dict())
         extension = guess_extension(mimetype)
         if not extension:
-            first, second = mimetype.split("/")
-            _, second = second.split("+")
+            first, second = mimetype.rsplit("/", maxsplit=1)
+            _, second = second.rsplit("+", maxsplit=1)
             extension = guess_extension(f"{first}/{second}")
         filename = f"{{id}}{extension}"
         headers = {
@@ -733,11 +732,11 @@ class RecordsUIResource(UIResource):
         if "RDM_MODELS" in current_app.config:
             for model_dict in current_app.config["RDM_MODELS"]:
                 if model_dict["service_id"] == self.config.api_service:
-                    config = obj_or_import_string(model_dict["api_resource_config"])()
-                    if isinstance(config, ConfiguratorMixin):
-                        config = obj_or_import_string(
-                            model_dict["api_resource_config"]
-                        ).build(current_app)
+                    config_cls = obj_or_import_string(model_dict["api_resource_config"])
+                    if issubclass(config_cls, ConfiguratorMixin):
+                        config = config_cls.build(current_app)
+                    else:
+                        config = config_cls()
                     return config
 
         return None
