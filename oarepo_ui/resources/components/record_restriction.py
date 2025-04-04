@@ -1,6 +1,8 @@
-from flask import current_app
-from .base import UIResourceComponent
 from datetime import timedelta
+
+from flask import current_app
+
+from .base import UIResourceComponent
 
 
 class RecordRestrictionComponent(UIResourceComponent):

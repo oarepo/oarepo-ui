@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useField, useFormikContext } from "formik";
 import PropTypes from "prop-types";
-import { FieldLabel } from "react-invenio-forms";
 import { Form, Radio } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import {
@@ -12,20 +11,22 @@ import {
   getInitialEdtfDateFormat,
 } from "./utils";
 import { EDTFDatePickerWrapper } from "./EDTFDatePickerWrapper";
+import { useFieldData } from "../../hooks";
+import { FieldLabel } from "react-invenio-forms";
 
 export const EDTFDaterangePicker = ({
   fieldPath,
   label,
-  icon,
+  icon = "calendar",
   helpText,
   required,
-  clearButtonClassName,
-  dateRangeInputPlaceholder,
-  singleDateInputPlaceholder,
+  dateRangeInputPlaceholder = i18next.t("Choose date range (From - To)."),
+  singleDateInputPlaceholder = i18next.t("Choose one date."),
   datePickerPropsOverrides,
 }) => {
-  // TODO: The datepickers shall recieve needed locales from form config (set in Invenio.cfg)
   const { setFieldValue } = useFormikContext();
+  const { getFieldData } = useFieldData();
+
   const [field] = useField(fieldPath);
   const initialEdtfDateFormat = getInitialEdtfDateFormat(field?.value);
   const [dateEdtfFormat, setDateEdtfFormat] = useState(initialEdtfDateFormat);
@@ -95,9 +96,19 @@ export const EDTFDaterangePicker = ({
         endDate: endDate,
         selectsRange: true,
       };
+
+  const fieldData = {
+    ...getFieldData({ fieldPath, icon, fieldRepresentation: "text" }),
+    ...(label && { label }),
+    ...(required && { required }),
+    ...(helpText && { helpText }),
+  };
   return (
-    <Form.Field className="ui datepicker field mb-0" required={required}>
-      {label ?? <FieldLabel htmlFor={fieldPath} icon={icon} label={label} />}
+    <Form.Field
+      className="ui datepicker field mb-0"
+      required={fieldData.required}
+    >
+      <FieldLabel htmlFor={fieldPath} icon={icon} label={fieldData.label} />
       <Form.Field className="mb-0">
         <Radio
           label={i18next.t("Date range.")}
@@ -126,34 +137,23 @@ export const EDTFDaterangePicker = ({
           dateEdtfFormat={dateEdtfFormat}
           setDateEdtfFormat={setDateEdtfFormat}
           dateFormat={dateFormat}
-          clearButtonClassName={clearButtonClassName}
           datePickerProps={{ ...pickerProps, ...datePickerPropsOverrides }}
         />
       </Form.Field>
-      {helpText && <label className="helptext">{helpText}</label>}
+      {fieldData.helpText && (
+        <label className="helptext">{fieldData.helpText}</label>
+      )}
     </Form.Field>
   );
 };
 
 EDTFDaterangePicker.propTypes = {
   fieldPath: PropTypes.string.isRequired,
-  label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   icon: PropTypes.string,
   helpText: PropTypes.string,
   required: PropTypes.bool,
-  clearButtonClassName: PropTypes.string,
   singleDateInputPlaceholder: PropTypes.string,
   dateRangeInputPlaceholder: PropTypes.string,
   datePickerPropsOverrides: PropTypes.object,
-};
-
-EDTFDaterangePicker.defaultProps = {
-  icon: "calendar",
-  helpText: i18next.t(
-    "Choose the time interval in which the event took place."
-  ),
-  required: false,
-  clearButtonClassName: "clear-icon",
-  singleDateInputPlaceholder: i18next.t("Choose one date."),
-  dateRangeInputPlaceholder: i18next.t("Choose date range (From - To)."),
 };

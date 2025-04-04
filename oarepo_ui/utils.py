@@ -44,14 +44,16 @@ def dump_empty(schema_or_field: object) -> None: ...
 
 
 def dump_empty(
-    schema_or_field: Schema
-    | SchemaMeta
-    | fields.List
-    | fields.Nested
-    | NestedAttribute
-    | fields.Str
-    | fields.Dict
-    | object,
+    schema_or_field: (
+        Schema
+        | SchemaMeta
+        | fields.List
+        | fields.Nested
+        | NestedAttribute
+        | fields.Str
+        | fields.Dict
+        | object
+    ),
 ) -> dict | list | str | None:
     """Return a full json-compatible dict of schema representation with empty values."""
     if isinstance(schema_or_field, (Schema,)):

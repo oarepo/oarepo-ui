@@ -1,10 +1,8 @@
+from invenio_previewer import current_previewer
 from invenio_records_resources.services.errors import PermissionDeniedError
-
 from oarepo_runtime.datastreams.utils import get_file_service_for_record_service
 
 from .base import UIResourceComponent
-
-from invenio_previewer import current_previewer
 
 
 class FilesComponent(UIResourceComponent):

@@ -2,22 +2,21 @@ import functools
 import json
 from pathlib import Path
 
+from deepmerge import always_merger
 from flask import Response, current_app
+from flask_login import user_logged_in, user_logged_out
 from flask_webpackext import current_manifest
 from flask_webpackext.errors import ManifestKeyNotFoundError
 from importlib_metadata import entry_points
 from invenio_base.utils import obj_or_import_string
-from flask_login import user_logged_in, user_logged_out
 from markupsafe import Markup
-from deepmerge import always_merger
-
-from .proxies import current_optional_manifest
-from .ui.components import UIComponent, DisabledComponent, FacetsWithVersionsToggle
-from .utils import clear_view_deposit_page_permission_from_session
-
 
 import oarepo_ui.cli  # noqa
 from oarepo_ui.resources.templating.catalog import OarepoCatalog as Catalog
+
+from .proxies import current_optional_manifest
+from .ui.components import DisabledComponent, FacetsWithVersionsToggle, UIComponent
+from .utils import clear_view_deposit_page_permission_from_session
 
 
 def _prefixed_ui_overrides(prefix: str, components: dict):

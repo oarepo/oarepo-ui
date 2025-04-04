@@ -1,5 +1,6 @@
-from .base import UIResourceComponent
 from typing import Dict
+
+from .base import UIResourceComponent
 
 
 class EmptyRecordAccessComponent(UIResourceComponent):

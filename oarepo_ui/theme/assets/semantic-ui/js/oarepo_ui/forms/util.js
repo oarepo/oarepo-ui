@@ -117,6 +117,7 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
       label: modelLabel = undefined,
       hint: modelHint = undefined,
       required = undefined,
+      detail = undefined,
     } = _get(uiMetadata, path) || {};
 
     const label = modelLabel ? i18next.t(modelLabel) : modelLabel;
@@ -140,6 +141,7 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
             ),
             placeholder: hint,
             required,
+            detail,
           };
         case "compact":
           return {
@@ -154,6 +156,7 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
             ),
             placeholder: hint,
             required,
+            detail,
           };
         case "text":
           return {
@@ -162,6 +165,7 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
             placeholder: hint,
             labelIcon: icon,
             required,
+            detail,
           };
         default:
           throw new Error(
@@ -178,6 +182,7 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
       fieldRepresentation,
       fullLabelClassName,
       compactLabelClassName,
+      detail,
     ]);
 
     return memoizedResult;

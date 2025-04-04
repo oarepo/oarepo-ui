@@ -10,22 +10,24 @@ import {
   useFormFieldValue,
   useShowEmptyValue,
   useFieldData,
-} from "@js/oarepo_ui";
+} from "@js/oarepo_ui/forms";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { useFormikContext, getIn } from "formik";
 
 export const MultilingualTextInput = ({
   fieldPath,
   labelIcon,
-  defaultNewValue,
-  rich,
-  editorConfig,
-  addButtonLabel,
-  lngFieldWidth,
-  showEmptyValue,
-  prefillLanguageWithDefaultLocale,
+  defaultNewValue = {
+    lang: "",
+    value: "",
+  },
+  rich = false,
+  addButtonLabel = i18next.t("Add another language"),
+  lngFieldWidth = 3,
+  showEmptyValue = false,
+  prefillLanguageWithDefaultLocale = false,
   removeButtonLabelClassName,
-  displayFirstInputRemoveButton,
+  displayFirstInputRemoveButton = true,
   ...uiProps
 }) => {
   const { defaultLocale } = useDefaultLocale();
@@ -68,7 +70,6 @@ export const MultilingualTextInput = ({
               {rich ? (
                 <I18nRichInputField
                   fieldPath={fieldPathPrefix}
-                  editorConfig={editorConfig}
                   optimized
                   usedLanguages={usedLanguages}
                   lngFieldWidth={lngFieldWidth}
@@ -94,7 +95,6 @@ MultilingualTextInput.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   labelIcon: PropTypes.string,
   rich: PropTypes.bool,
-  editorConfig: PropTypes.object,
   addButtonLabel: PropTypes.string,
   lngFieldWidth: PropTypes.number,
   defaultNewValue: PropTypes.object,
@@ -102,16 +102,4 @@ MultilingualTextInput.propTypes = {
   prefillLanguageWithDefaultLocale: PropTypes.bool,
   removeButtonLabelClassName: PropTypes.string,
   displayFirstInputRemoveButton: PropTypes.bool,
-};
-
-MultilingualTextInput.defaultProps = {
-  defaultNewValue: {
-    lang: "",
-    value: "",
-  },
-  rich: false,
-  addButtonLabel: i18next.t("Add another language"),
-  showEmptyValue: false,
-  prefillLanguageWithDefaultLocale: false,
-  displayFirstInputRemoveButton: true,
 };

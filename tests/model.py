@@ -1,6 +1,8 @@
+import importlib_metadata
 import marshmallow as ma
 from flask_resources import BaseListSchema, MarshmallowSerializer
 from flask_resources.serializers import JSONSerializer
+from flask_resources.serializers.json import JSONSerializer
 from invenio_pidstore.providers.recordid_v2 import RecordIdProviderV2
 from invenio_records.models import RecordMetadata
 from invenio_records_permissions import RecordPermissionPolicy
@@ -12,11 +14,15 @@ from invenio_records_permissions.generators import (
 from invenio_records_resources.records.api import Record
 from invenio_records_resources.records.systemfields import IndexField, PIDField
 from invenio_records_resources.records.systemfields.pid import PIDFieldContext
+from invenio_records_resources.resources import RecordResource, RecordResourceConfig
+from invenio_records_resources.resources.records.headers import etag_headers
 from invenio_records_resources.services import (
     RecordLink,
     RecordService,
     RecordServiceConfig,
 )
+from invenio_records_resources.services.base.config import ConfiguratorMixin
+from oarepo_runtime.resources.responses import ExportableResponseHandler
 from oarepo_runtime.services.custom_fields import CustomFields, InlinedCustomFields
 
 from oarepo_ui.resources import (
@@ -67,6 +73,7 @@ class ModelServiceConfig(RecordServiceConfig):
     permission_policy_cls = ModelPermissionPolicy
     schema = ModelSchema
 
+    service_id = "simple_model"
     url_prefix = "/simple-model"
 
     @property
@@ -79,6 +86,42 @@ class ModelServiceConfig(RecordServiceConfig):
 
 class ModelService(RecordService):
     pass
+
+
+class ModelResourceConfig(RecordResourceConfig, ConfiguratorMixin):
+    """SimpleModelRecord resource config."""
+
+    blueprint_name = "simple_model_api"
+    url_prefix = "/simple-model/"
+
+    @property
+    def response_handlers(self):
+        entrypoint_response_handlers = {}
+        for x in importlib_metadata.entry_points(
+            group="invenio.simple_model.response_handlers"
+        ):
+            entrypoint_response_handlers.update(x.load())
+        return {
+            "application/json": ExportableResponseHandler(
+                export_code="json",
+                name="Native JSON",
+                serializer=JSONSerializer(),
+                headers=etag_headers,
+            ),
+            "application/vnd.inveniordm.v1+json": ExportableResponseHandler(
+                export_code="ui_json",
+                name="Native UI JSON",
+                serializer=JSONSerializer(),
+            ),
+            **entrypoint_response_handlers,
+        }
+
+
+class ModelResource(RecordResource):
+    """SimpleModelRecord resource."""
+
+    # here you can for example redefine
+    # create_url_rules function to add your own rules
 
 
 class ModelUISerializer(MarshmallowSerializer):
@@ -108,7 +151,12 @@ class ModelUIResourceConfig(RecordsUIResourceConfig):
         "edit": "TestEdit",
     }
 
-    components = [BabelComponent, PermissionsComponent, AllowedHtmlTagsComponent, CustomFieldsComponent]
+    components = [
+        BabelComponent,
+        PermissionsComponent,
+        AllowedHtmlTagsComponent,
+        CustomFieldsComponent,
+    ]
 
 
 class ModelUIResource(RecordsUIResource):
