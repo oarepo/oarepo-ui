@@ -1,4 +1,4 @@
-{#def identifier=None, creatibutorName=None #}
+{#def identifier=None, creatibutorName=None, fallbackImage="/static/images/square-placeholder.png" #}
 {%if identifier %}
     {% set scheme = identifier.scheme or "" %}
     {% set value = identifier.identifier %}
@@ -29,7 +29,7 @@
       class="inline-id-icon identifier-badge" 
       src="{{ icon }}" 
       alt="{{ alt }}" 
-      onerror="this.onerror=null; this.src='/static/images/square-placeholder.png';"
+      onerror="this.onerror=null; this.src='{{fallbackImage}}';"
     />
   </a>
 {% else %}
@@ -38,7 +38,7 @@
     class="inline-id-icon identifier-badge" 
     src="{{ icon }}" 
     alt="{{ alt }}" 
-    onerror="this.onerror=null; this.src='/static/images/square-placeholder.png';"
+    onerror="this.onerror=null; this.src='{{fallbackImage}}';"
   />
 {% endif %}
 

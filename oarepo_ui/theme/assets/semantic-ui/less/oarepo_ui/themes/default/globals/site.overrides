@@ -88,3 +88,8 @@
 #skip-to-main {
   display: none;
 }
+
+[data-tooltip]:hover:after {
+  white-space: normal;
+  min-width: 300px;
+}

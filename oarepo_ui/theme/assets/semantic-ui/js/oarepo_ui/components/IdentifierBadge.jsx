@@ -2,7 +2,14 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Image } from "react-invenio-forms";
 
-export const IconIdentifier = ({ link, badgeTitle, icon, alt, className }) => {
+export const IconIdentifier = ({
+  link,
+  badgeTitle,
+  icon,
+  alt,
+  className,
+  fallbackImage = "/static/images/square-placeholder.png",
+}) => {
   return link ? (
     <span className={`creatibutor-identifier ${className}`}>
       <a
@@ -18,6 +25,7 @@ export const IconIdentifier = ({ link, badgeTitle, icon, alt, className }) => {
           className="inline-id-icon identifier-badge inline"
           src={icon}
           alt={alt}
+          fallbackSrc={fallbackImage}
         />
       </a>
     </span>
@@ -28,6 +36,7 @@ export const IconIdentifier = ({ link, badgeTitle, icon, alt, className }) => {
         className="inline-id-icon identifier-badge inline"
         src={icon}
         alt={alt}
+        fallbackSrc={fallbackImage}
       />
     </span>
   );
@@ -39,6 +48,7 @@ IconIdentifier.propTypes = {
   icon: PropTypes.string,
   alt: PropTypes.string,
   className: PropTypes.string,
+  fallbackImage: PropTypes.string,
 };
 
 export const IdentifierBadge = ({ identifier, creatibutorName, className }) => {
