@@ -35,6 +35,9 @@ from oarepo_ui.resources.components.custom_fields import CustomFieldsComponent
 from oarepo_ui.resources.config import TemplatePageUIResourceConfig
 from oarepo_ui.resources.resource import TemplatePageUIResource
 
+def _(x):
+    """Identity function used to trigger string extraction."""
+    return x
 
 class ModelRecordIdProvider(RecordIdProviderV2):
     pid_type = "rec"
@@ -103,13 +106,13 @@ class ModelResourceConfig(RecordResourceConfig):
         return {
             "application/json": ExportableResponseHandler(
                 export_code="json",
-                name="json",
+                name=_("JSON"),
                 serializer=JSONSerializer(),
                 headers=etag_headers,
             ),
             "application/vnd.inveniordm.v1+json": ExportableResponseHandler(
                 export_code="inveniordm_json",
-                name="inveniordm_json",
+                name=_("INVENIORDM_JSON"),
                 serializer=JSONSerializer(),
             ),
             **entrypoint_response_handlers,
