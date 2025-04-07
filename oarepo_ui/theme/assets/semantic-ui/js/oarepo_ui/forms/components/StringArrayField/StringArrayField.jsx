@@ -18,13 +18,14 @@ export const StringArrayField = ({
   labelIcon,
   showEmptyValue = false,
   icon,
+  fieldRepresentation = "text",
   ...uiProps
 }) => {
   const { values, errors } = useFormikContext();
   const { getFieldData } = useFieldData();
 
   const fieldData = {
-    ...getFieldData({ fieldPath, icon, fieldRepresentation: "text" }),
+    ...getFieldData({ fieldPath, icon, fieldRepresentation }),
     ...(label && { label }),
     ...(required && { required }),
     ...(helpText && { helpText }),
@@ -97,4 +98,5 @@ StringArrayField.propTypes = {
   required: PropTypes.bool,
   showEmptyValue: PropTypes.bool,
   icon: PropTypes.string,
+  fieldRepresentation: PropTypes.string,
 };
