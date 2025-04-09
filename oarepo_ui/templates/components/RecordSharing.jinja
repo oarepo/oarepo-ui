@@ -1,0 +1,8 @@
+{#def record, permissions, groups_enabled #}
+
+<div 
+  id="recordSharing" 
+  data-record='{{ record | tojson }}' 
+  data-permissions='{{ permissions | tojson }}' 
+  data-groups-enabled='{{ groups_enabled | tojson }}'
+/>
