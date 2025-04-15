@@ -6,15 +6,28 @@
 // Invenio RDM Records is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import _find from "lodash/find";
 import React, { useEffect, useState, useCallback } from "react";
 import { Grid, Icon, Message, Placeholder, List } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import PropTypes from "prop-types";
-import { Trans } from "react-i18next";
 import { ErrorMessage } from "react-invenio-forms";
 
 import { httpApplicationJson } from "..";
+
+// unfortunately, Trans component and interpolation, have some weird issue, where
+// the / in the doi gets escaped, and even though you tell it to not escape, it still escapes it
+const ParentDoiMessage = ({ doi }) => (
+  <p className="text-muted">
+    <strong>{i18next.t("Cite all versions?")}</strong>{" "}
+    {i18next.t("You can cite all versions by using the DOI")} {doi}.{" "}
+    {i18next.t("The DOI is registered when the first version is published.")}{" "}
+    <a href="/help/versioning">{i18next.t("Read more.")}</a>.
+  </p>
+);
+
+ParentDoiMessage.propTypes = {
+  doi: PropTypes.string.isRequired,
+};
 
 const deserializeRecord = (record) => ({
   id: record.id,
@@ -24,15 +37,15 @@ const deserializeRecord = (record) => ({
   version: record?.versions?.index,
   version_note: record.metadata?.version,
   links: record.links,
-  pids: record?.metadata.objectIdentifiers,
+  pids: record?.pids,
   new_draft_parent_doi: record?.ui?.new_draft_parent_doi,
 });
 
 const NUMBER_OF_VERSIONS = 5;
 
 const RecordVersionItem = ({ item, activeVersion, searchLinkPrefix = "" }) => {
-  const doi =
-    _find(item.pids, (o) => o.scheme.toLowerCase() === "doi")?.identifier ?? "";
+  const doi = item?.pids.doi?.identifier;
+
   return (
     <List.Item
       key={item.id}
@@ -59,17 +72,14 @@ const RecordVersionItem = ({ item, activeVersion, searchLinkPrefix = "" }) => {
 
         <List.Description>
           {doi && (
-            <div>
-              DOI:{" "}
-              <a
-                href={`https://doi.org/${doi}`}
-                className={
-                  "doi" + (activeVersion ? " text-muted-darken" : " text-muted")
-                }
-              >
-                {doi}
-              </a>
-            </div>
+            <a
+              href={`https://doi.org/${doi}`}
+              className={
+                "doi" + (activeVersion ? " text-muted-darken" : " text-muted")
+              }
+            >
+              {doi}
+            </a>
           )}
         </List.Description>
       </List.Content>
@@ -225,31 +235,14 @@ export const RecordVersionsList = ({ uiRecord, isPreview }) => {
           {recordParentDOI ? (
             <List.Item className="parent-doi pr-0">
               <List.Content floated="left">
-                <Trans>
-                  <p className="text-muted">
-                    <strong>Cite all versions?</strong> You can cite all
-                    versions by using the DOI{" "}
-                    <a href={recordDeserialized.links.parent_doi}>
-                      {{ recordParentDOI }}
-                    </a>
-                    . This DOI represents all versions, and will always resolve
-                    to the latest one. <a href="/help/versioning">Read more</a>.
-                  </p>
-                </Trans>
+                <ParentDoiMessage doi={recordParentDOI} />
               </List.Content>
             </List.Item>
           ) : recordDraftParentDOIFormat ? (
             // new drafts without registered parent dois yet
             <List.Item className="parent-doi pr-0">
               <List.Content floated="left">
-                <Trans>
-                  <p className="text-muted">
-                    <strong>Cite all versions?</strong> You can cite all
-                    versions by using the DOI {{ recordDraftParentDOIFormat }}.
-                    The DOI is registered when the first version is published.{" "}
-                    <a href="/help/versioning">Read more</a>.
-                  </p>
-                </Trans>
+                <ParentDoiMessage doi={recordDraftParentDOIFormat} />
               </List.Content>
             </List.Item>
           ) : null}

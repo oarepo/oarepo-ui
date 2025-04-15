@@ -1,9 +1,23 @@
-{# def originalRecordUrl=None, objectIdentifiers=None #}
-
-{% if objectIdentifiers|length > 0 or originalRecordUrl %}
+{# def originalRecordUrl=None, objectIdentifiers=None, repositoryAssignedIdentifier=None  #}
+{% if objectIdentifiers|length > 0 or originalRecordUrl or repositoryAssignedIdentifier %}
 <section aria-label='{{ _("Identifiers and links") }}' class="ui segment identifiers-and-links">
   <h2 class="ui small header detail-sidebar-header">{{_('Identifiers and links')}}</h2>
   <div class="ui link list">
+    {% if repositoryAssignedIdentifier %}
+    {% set _data = {
+      "href": repositoryAssignedIdentifier if repositoryAssignedIdentifier.startswith('http') 
+              else 'http://doi.org/' ~ repositoryAssignedIdentifier,
+      "title": repositoryAssignedIdentifier,
+      "label": repositoryAssignedIdentifier
+    }%}
+    <div class="item content">
+      <div class="header list-item">
+        <i class="external alternate icon link-icon mb-5"></i>
+        <URL target="_blank" rel="noopener noreferrer" className="inline" data = {_data}></URL>
+        <ClipboardCopyButton copyText={repositoryAssignedIdentifier} />
+      </div>
+    </div>
+    {%endif%}
     {% if objectIdentifiers|length > 0 %}
       {% for objectIdentifier in objectIdentifiers %}
       {% if objectIdentifier.url%}
