@@ -281,7 +281,9 @@ class RecordsUIResource(UIResource):
         self.make_links_absolute(record["links"], self.api_service.config.url_prefix)
         extra_context = dict()
         handlers = self._exportable_handlers()
-        extra_context["exporters"] = {handler.export_code: handler for mimetype, handler in handlers}
+        extra_context["exporters"] = {
+            handler.export_code: handler for mimetype, handler in handlers
+        }
         self.run_components(
             "before_ui_detail",
             api_record=api_record,
@@ -514,7 +516,7 @@ class RecordsUIResource(UIResource):
             first, second = mimetype.rsplit("/", maxsplit=1)
             _, second = second.rsplit("+", maxsplit=1)
             extension = guess_extension(f"{first}/{second}")
-        filename = f"{{id}}{extension}"
+        filename = f"{record.id}{extension}"
         headers = {
             "Content-Type": mimetype,
             "Content-Disposition": f"attachment; filename={filename}",
@@ -771,9 +773,7 @@ class RecordsUIResource(UIResource):
                 error.record.get("id", None), include_deleted=True
             )
             record_tombstone = record.get("tombstone", None)
-        except (
-            RecordDeletedException
-        ) as e:  # read with include_deleted=True raises an exception instead of just returning record
+        except RecordDeletedException as e:  # read with include_deleted=True raises an exception instead of just returning record
             record_tombstone = e.record.get("tombstone")
 
         tombstone_dict = {}
