@@ -5,8 +5,8 @@
   <div class="ui link list">
     {% if repositoryAssignedIdentifier %}
     {% set _data = {
-      "href": repositoryAssignedIdentifier if repositoryAssignedIdentifier.startswith('http') 
-              else 'http://doi.org/' ~ repositoryAssignedIdentifier,
+      "href": repositoryAssignedIdentifier if repositoryAssignedIdentifier.startswith('https') 
+              else 'https://doi.org/' ~ repositoryAssignedIdentifier,
       "title": repositoryAssignedIdentifier,
       "label": repositoryAssignedIdentifier
     }%}
