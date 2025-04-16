@@ -4,4 +4,4 @@
 @pageHeaderMinHeight: 6rem;
 @pageHeaderLogoHeight:@pageHeaderMinHeight - 2rem;
 @borderRadius: 0.3rem;
-@pageheaderbottomborder:1px solid @borderColor;
+@pageHeaderBottomBorder: 1px solid @borderColor;

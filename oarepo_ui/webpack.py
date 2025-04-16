@@ -4,6 +4,7 @@ from flask import current_app
 from flask_webpackext import WebpackBundleProject
 from pywebpack import bundles_from_entry_point
 from pywebpack.helpers import cached
+
 from .proxies import current_ui_overrides
 
 overrides_js_template = """
