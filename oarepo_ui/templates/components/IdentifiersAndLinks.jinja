@@ -1,22 +1,33 @@
-{# def originalRecordUrl=None, objectIdentifiers=None, repositoryAssignedIdentifier=None  #}
-{% if objectIdentifiers|length > 0 or originalRecordUrl or repositoryAssignedIdentifier %}
+{# def originalRecordUrl=None, objectIdentifiers=None, pids=None  #}
+{% if objectIdentifiers|length > 0 or originalRecordUrl or pids %}
 <section aria-label='{{ _("Identifiers and links") }}' class="ui segment identifiers-and-links">
   <h2 class="ui small header detail-sidebar-header">{{_('Identifiers and links')}}</h2>
   <div class="ui link list">
-    {% if repositoryAssignedIdentifier %}
-    {% set _data = {
-      "href": repositoryAssignedIdentifier if repositoryAssignedIdentifier.startswith('https') 
-              else 'https://doi.org/' ~ repositoryAssignedIdentifier,
-      "title": repositoryAssignedIdentifier,
-      "label": repositoryAssignedIdentifier
-    }%}
-    <div class="item content">
-      <div class="header list-item">
-        <i class="external alternate icon link-icon mb-5"></i>
-        <URL target="_blank" rel="noopener noreferrer" className="inline" data = {_data}></URL>
-        <ClipboardCopyButton copyText={repositoryAssignedIdentifier} />
-      </div>
-    </div>
+    {% if pids %}
+      {% for scheme, pidObject in pids.items()%}
+        {% if pidObject.url%}
+          {% set _data = {
+            "href":  pidObject.url | e,
+            "title": pidObject.identifier,
+            "label": pidObject.identifier
+          }%}
+          <div class="item content">
+            <div class="header list-item">
+              <i class="external alternate icon link-icon mb-5"></i>
+              <URL target="_blank" rel="noopener noreferrer" className="inline" data = {_data}></URL>
+              <ClipboardCopyButton copyText={_data["href"]} />
+            </div>
+          </div>
+        {% else %}
+          <div title="{{pidObject.identifier}}" class="item content">
+            <div class="header list-item">
+              <i class="id card icon link-icon"></i>
+              <span>{{ pidObject.identifier }}</span>
+              <ClipboardCopyButton copyText={pidObject.identifier} />
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
     {%endif%}
     {% if objectIdentifiers|length > 0 %}
       {% for objectIdentifier in objectIdentifiers %}
@@ -29,7 +40,7 @@
           }%}
             <div title="{{objectIdentifier.scheme}}"  class="header list-item">
               <i class="external alternate icon link-icon mb-5"></i>
-              <URL target="_blank" rel="noopener noreferrer" className="inline" data = {_data}></URL>
+              <URL target="_blank" rel="noopener noreferrer" className="inline" data={_data}></URL>
               <ClipboardCopyButton copyText={objectIdentifier.url} />
             </div>
            
@@ -55,7 +66,7 @@
           "label": _('metadata/originalRecord.label')
       }%}
         <i class="external alternate icon link-icon mb-5"></i>
-        <URL target="_blank" rel="noopener noreferrer" className="link" data = {_data}></URL>
+        <URL target="_blank" rel="noopener noreferrer" className="link" data={_data}></URL>
       </div>
     </div>
     {% endif %}
