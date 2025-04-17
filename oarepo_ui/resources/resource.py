@@ -773,9 +773,7 @@ class RecordsUIResource(UIResource):
                 error.record.get("id", None), include_deleted=True
             )
             record_tombstone = record.get("tombstone", None)
-        except (
-            RecordDeletedException
-        ) as e:  # read with include_deleted=True raises an exception instead of just returning record
+        except RecordDeletedException as e:  # read with include_deleted=True raises an exception instead of just returning record
             record_tombstone = e.record.get("tombstone")
 
         tombstone_dict = {}
