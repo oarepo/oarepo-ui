@@ -18,7 +18,7 @@ export const ClipboardCopyButton = ({ copyText, ...rest }) => {
   return (
     <button
       ref={copyBtnRef}
-      class="ui button transparent copy outline link icon copy-button"
+      className="ui button transparent copy outline link icon copy-button"
       aria-label={`${i18next.t("Click to copy")}: ${copyText}`}
       data-clipboard-text={copyText}
       {...rest}

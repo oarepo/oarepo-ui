@@ -6,15 +6,54 @@
 // Invenio RDM Records is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import _find from "lodash/find";
 import React, { useEffect, useState, useCallback } from "react";
 import { Grid, Icon, Message, Placeholder, List } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import PropTypes from "prop-types";
-import { Trans } from "react-i18next";
 import { ErrorMessage } from "react-invenio-forms";
 
-import { httpApplicationJson } from "..";
+import { httpVnd } from "..";
+
+// unfortunately, Trans component and interpolation, have some weird issue, where
+// the / in the doi gets escaped, and even though you tell it to not escape, it still escapes it
+const ParentDoiMessage = ({ parentDoiObject }) => {
+  return (
+    <p className="text-muted">
+      <strong>{i18next.t("Cite all versions?")}</strong>{" "}
+      {i18next.t("You can cite all versions by using the DOI")}{" "}
+      {parentDoiObject?.url ? (
+        <a href={parentDoiObject.url} target="_blank" rel="noopener noreferrer">
+          {parentDoiObject?.identifier}
+        </a>
+      ) : (
+        <span>{parentDoiObject?.identifier}</span>
+      )}
+      {". "}
+      {i18next.t(
+        "This DOI represents all versions, and will always resolve to the latest one."
+      )}{" "}
+      <a href="/help/versioning">{i18next.t("Read more.")}</a>
+    </p>
+  );
+};
+
+ParentDoiMessage.propTypes = {
+  parentDoiObject: PropTypes.object.isRequired,
+};
+
+const DraftParentDoiMessage = ({ recordDraftParentDOIFormat }) => (
+  <p className="text-muted">
+    <strong>{i18next.t("Cite all versions?")}</strong>{" "}
+    {i18next.t("You can cite all versions by using the DOI")}{" "}
+    {recordDraftParentDOIFormat}.{" "}
+    {i18next.t("The DOI is registered when the first version is published.")}{" "}
+    <a href="/help/versioning">{i18next.t("Read more.")}</a>.
+  </p>
+);
+
+DraftParentDoiMessage.propTypes = {
+  recordDraftParentDOIFormat: PropTypes.string.isRequired,
+};
 
 const deserializeRecord = (record) => ({
   id: record.id,
@@ -24,15 +63,16 @@ const deserializeRecord = (record) => ({
   version: record?.versions?.index,
   version_note: record.metadata?.version,
   links: record.links,
-  pids: record?.metadata.objectIdentifiers,
+  pids: record?.pids,
   new_draft_parent_doi: record?.ui?.new_draft_parent_doi,
 });
 
 const NUMBER_OF_VERSIONS = 5;
 
 const RecordVersionItem = ({ item, activeVersion, searchLinkPrefix = "" }) => {
-  const doi =
-    _find(item.pids, (o) => o.scheme.toLowerCase() === "doi")?.identifier ?? "";
+  const doi = item?.pids.doi?.identifier;
+  const doiLink = item?.pids.doi?.url;
+
   return (
     <List.Item
       key={item.id}
@@ -42,35 +82,42 @@ const RecordVersionItem = ({ item, activeVersion, searchLinkPrefix = "" }) => {
         <List.Header>
           {activeVersion ? (
             <span className="text-break">
-              {item.version_note ??
-                i18next.t("Version {{- version}}", {
-                  version: item.version_note || item.version,
-                })}
+              {/* As we now return a number in UI serialization for metadata.version, 
+              the most common scenario is that you will have there a number or vNumber */}
+              {i18next.t("Version {{- version}}", {
+                version: item.version_note || item.version,
+              })}
             </span>
           ) : (
             <a href={`${searchLinkPrefix}/${item.id}`} className="text-break">
-              {item.version_note ??
-                i18next.t("Version {{- version}}", {
-                  version: item.version_note || item.version,
-                })}
+              {i18next.t("Version {{- version}}", {
+                version: item.version_note || item.version,
+              })}
             </a>
           )}
         </List.Header>
 
         <List.Description>
-          {doi && (
-            <div>
-              DOI:{" "}
+          <div className="rel-mt-1">
+            {doiLink ? (
               <a
-                href={`https://doi.org/${doi}`}
+                href={doiLink}
                 className={
                   "doi" + (activeVersion ? " text-muted-darken" : " text-muted")
                 }
               >
                 {doi}
               </a>
-            </div>
-          )}
+            ) : (
+              <span
+                className={
+                  "doi" + (activeVersion ? " text-muted-darken" : " text-muted")
+                }
+              >
+                {doi}
+              </span>
+            )}
+          </div>
         </List.Description>
       </List.Content>
 
@@ -114,7 +161,7 @@ export const RecordVersionsList = ({ uiRecord, isPreview }) => {
   const fetchRecordAndSetState = useCallback(
     async (signal) => {
       try {
-        const result = await httpApplicationJson.get(record.links.self, {
+        const result = await httpVnd.get(record.links.self, {
           signal,
         });
         setRecord(result.data);
@@ -128,7 +175,7 @@ export const RecordVersionsList = ({ uiRecord, isPreview }) => {
   const fetchVersionsAndSetState = useCallback(
     async (signal) => {
       try {
-        const result = await httpApplicationJson.get(
+        const result = await httpVnd.get(
           `${record.links.versions}?size=${NUMBER_OF_VERSIONS}&sort=version&allversions=true`,
           {
             signal,
@@ -225,31 +272,18 @@ export const RecordVersionsList = ({ uiRecord, isPreview }) => {
           {recordParentDOI ? (
             <List.Item className="parent-doi pr-0">
               <List.Content floated="left">
-                <Trans>
-                  <p className="text-muted">
-                    <strong>Cite all versions?</strong> You can cite all
-                    versions by using the DOI{" "}
-                    <a href={recordDeserialized.links.parent_doi}>
-                      {{ recordParentDOI }}
-                    </a>
-                    . This DOI represents all versions, and will always resolve
-                    to the latest one. <a href="/help/versioning">Read more</a>.
-                  </p>
-                </Trans>
+                <ParentDoiMessage
+                  parentDoiObject={recordDeserialized?.parent?.pids?.doi}
+                />
               </List.Content>
             </List.Item>
           ) : recordDraftParentDOIFormat ? (
             // new drafts without registered parent dois yet
             <List.Item className="parent-doi pr-0">
               <List.Content floated="left">
-                <Trans>
-                  <p className="text-muted">
-                    <strong>Cite all versions?</strong> You can cite all
-                    versions by using the DOI {{ recordDraftParentDOIFormat }}.
-                    The DOI is registered when the first version is published.{" "}
-                    <a href="/help/versioning">Read more</a>.
-                  </p>
-                </Trans>
+                <DraftParentDoiMessage
+                  recordDraftParentDOIFormat={recordDraftParentDOIFormat}
+                />
               </List.Content>
             </List.Item>
           ) : null}
