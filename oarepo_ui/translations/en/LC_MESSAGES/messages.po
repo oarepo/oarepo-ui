@@ -1016,3 +1016,7 @@ msgstr ""
 
 msgid "Read more."
 msgstr ""
+
+msgid ""
+"This DOI represents all versions, and will always resolve to the latest one."
+msgstr ""

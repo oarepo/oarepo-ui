@@ -980,3 +980,8 @@ msgstr "DOI se registruje při zveřejnění první verze."
 
 msgid "Read more."
 msgstr "Přečtěte si více."
+
+msgid ""
+"This DOI represents all versions, and will always resolve to the latest one."
+msgstr ""
+"Toto DOI zastupuje všechny verze a vždy bude odkazovat na tu nejnovější."
