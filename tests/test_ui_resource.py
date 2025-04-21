@@ -22,7 +22,6 @@ def test_permissions_on_detail(
         assert data["permissions"] == {
             "can_create": False,
             "can_delete": False,
-            "can_delete_draft": False,
             "can_edit": False,
             "can_manage": False,
             "can_manage_files": False,
@@ -34,7 +33,6 @@ def test_permissions_on_detail(
             "can_review": False,
             "can_search": True,
             "can_update": False,
-            "can_update_draft": False,
             "can_update_files": False,
             "can_view": False,
         }
@@ -66,7 +64,7 @@ def test_filter_on_detail(
 def test_no_permissions_on_search(
     app, record_ui_resource, simple_record, client, fake_manifest
 ):
-    with client.get(f"/simple-model/") as c:
+    with client.get("/simple-model/") as c:
         assert c.status_code == 200
         data = json.loads(c.text)
         assert data["permissions"] == {"can_create": False}
@@ -84,7 +82,7 @@ def test_permissions_on_search(
 def test_filter_on_search(
     app, record_ui_resource, simple_record, client, fake_manifest
 ):
-    with client.get(f"/simple-model/") as c:
+    with client.get("/simple-model/") as c:
         assert c.status_code == 200
         assert "dummy" in c.text
 
@@ -103,7 +101,7 @@ def test_ui_links_on_detail(
 
 
 def test_ui_listing(app, record_ui_resource, simple_record, client, fake_manifest):
-    with client.get(f"/simple-model/") as c:
+    with client.get("/simple-model/") as c:
         assert c.status_code == 200
         data = json.loads(c.text)
         assert data["ui_links"] == {
@@ -112,7 +110,7 @@ def test_ui_listing(app, record_ui_resource, simple_record, client, fake_manifes
             "self": "https://127.0.0.1:5000/simple-model",
         }
 
-    with client.get(f"/simple-model/?page=2") as c:
+    with client.get("/simple-model/?page=2") as c:
         assert c.status_code == 200
         data = json.loads(c.text)
         assert data["ui_links"] == {

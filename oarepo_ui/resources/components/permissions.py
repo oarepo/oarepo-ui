@@ -53,7 +53,7 @@ class PermissionsComponent(UIResourceComponent):
 
         # prefill permissions with False (drafts do not have some of those)
         extra_context["permissions"] = {
-            mapped_to: False
+            f"can_{mapped_to}": False
             for _action, mapped_to in current_oarepo_ui.record_actions.items()
         }
         extra_context["permissions"].update(

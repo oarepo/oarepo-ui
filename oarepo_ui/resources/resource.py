@@ -567,7 +567,7 @@ class RecordsUIResource(UIResource):
             resource_requestctx.view_args["pid_value"], allow_draft=True
         )
         try:
-            if api_record._record.is_draft:
+            if getattr(api_record._record, "is_draft", False):
                 self.api_service.require_permission(
                     g.identity, "update_draft", record=api_record._record
                 )  # ResultItem doesn't serialize state and owners field
