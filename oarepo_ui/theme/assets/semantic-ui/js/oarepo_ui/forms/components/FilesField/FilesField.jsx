@@ -22,7 +22,7 @@ export const FilesField = ({
 }) => {
   const [filesState, setFilesState] = useState(recordFiles?.entries || []);
   const {
-    formConfig: { filesLocked },
+    formConfig: { filesLocked, permissions },
   } = useFormConfig();
   const { formik, isSubmitting, save, isSaving } = useDepositApiClient();
   const { read } = useDepositFileApiClient();
@@ -30,8 +30,8 @@ export const FilesField = ({
   const recordObject = record || values;
 
   const isDraftRecord = !recordObject.is_published;
-
-  const lockFileUploader = !isDraftRecord && filesLocked;
+  // TODO: suspicious condition here
+  const lockFileUploader = !permissions?.can_update_files || (!isDraftRecord && filesLocked);
   const hasParentRecord =
     recordObject?.versions?.index && recordObject?.versions?.index > 1;
 
@@ -149,7 +149,7 @@ export const FilesField = ({
               lockFileUploader={lockFileUploader}
               fileMetadataFields={fileMetadataFields}
             />
-            {lockFileUploader && (
+            {lockFileUploader && recordObject.is_published && (
               <Message className="flex justify-space-between align-items-center">
                 <p className="mb-0">
                   <Icon name="info circle" />
