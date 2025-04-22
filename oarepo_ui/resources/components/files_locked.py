@@ -11,6 +11,7 @@ class FilesLockedComponent(UIResourceComponent):
     def before_ui_create(
         self,
         *,
+        record: Dict = None,
         data: Dict,
         identity: Identity,
         form_config: Dict,
@@ -25,6 +26,7 @@ class FilesLockedComponent(UIResourceComponent):
     def before_ui_edit(
         self,
         *,
+        record: Dict = None,
         data: Dict,
         identity: Identity,
         form_config: Dict,
@@ -34,4 +36,6 @@ class FilesLockedComponent(UIResourceComponent):
         extra_context: Dict,
         **kwargs,
     ) -> None:
-        form_config["filesLocked"] = True
+        form_config["filesLocked"] = not extra_context.get("permissions", {}).get(
+            "can_update_files", False
+        ) or record.get("is_published", False)
