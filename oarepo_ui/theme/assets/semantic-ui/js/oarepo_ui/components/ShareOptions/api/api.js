@@ -44,16 +44,11 @@ export const useEntitiesSugestionsApi = (searchType) => {
   let suggestionApiUrlSuffix;
 
   if (searchType === "user") {
-    suggestionApiUrlSuffix = "names";
+    suggestionApiUrlSuffix = "users";
   } else if (searchType === "role") {
-    suggestionApiUrlSuffix = "communities";
+    suggestionApiUrlSuffix = "groups";
   }
   const {
-    suggestions: searchResults,
-    loading: suggestionsLoading,
-    error: suggestionsError,
-    query: searchQuery,
-    noResults,
     executeSearch: getSuggestions,
   } = useSuggestionApi({
     suggestionAPIUrl: `/api/${suggestionApiUrlSuffix}`,

@@ -9,7 +9,6 @@ import PropTypes from "prop-types";
 import { AccessUsersGroups } from "./AccessUsersGroups";
 import { withCancel } from "react-invenio-forms";
 import { http } from "react-invenio-forms";
-import { delay } from "bluebird";
 
 export class PeopleTab extends Component {
   constructor(props) {
@@ -43,18 +42,10 @@ export class PeopleTab extends Component {
 
     this.setState({ loading: true });
     try {
-      // this.cancellableAction = withCancel(
-      //   http.get(`${record.links.access_users}?expand=true`)
-      // );
-      // const response = await this.cancellableAction.promise;
-      await delay(200); // Simulate network delay
-      const response = {
-        data: {
-          hits: {
-            hits: [],
-          },
-        },
-      };
+      this.cancellableAction = withCancel(
+        http.get(`${record.links.access_users}?expand=true`)
+      );
+      const response = await this.cancellableAction.promise;
       this.setState({
         loading: false,
         error: undefined,
