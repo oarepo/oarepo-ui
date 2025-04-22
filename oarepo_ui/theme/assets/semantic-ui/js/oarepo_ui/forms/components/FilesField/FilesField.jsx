@@ -147,7 +147,7 @@ export const FilesField = ({
               lockFileUploader={filesLocked}
               fileMetadataFields={fileMetadataFields}
             />
-            {filesLocked && recordObject.is_published && (
+            {filesLocked && (
               <Message className="flex justify-space-between align-items-center">
                 <p className="mb-0">
                   <Icon name="info circle" />
