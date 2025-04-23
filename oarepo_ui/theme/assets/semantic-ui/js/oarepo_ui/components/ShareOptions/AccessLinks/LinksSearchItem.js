@@ -26,11 +26,11 @@ export const LinksSearchItem = ({
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(undefined);
-  var cancellableAction = undefined;
+  let cancellableAction;
 
   useEffect(() => {
     return () => {
-      cancellableAction && cancellableAction.cancel();
+      cancellableAction?.cancel();
     };
   }, [cancellableAction]);
 
@@ -143,7 +143,7 @@ export const LinksSearchItem = ({
               trigger={
                 <Button
                   ref={copyButtonRef}
-                  onClick={() => copyAccessLink(result?.id)}
+                  onClick={() => copyAccessLink()}
                   aria-label={i18next.t("Copy link")}
                   size="small"
                   icon
