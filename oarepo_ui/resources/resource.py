@@ -567,9 +567,14 @@ class RecordsUIResource(UIResource):
             resource_requestctx.view_args["pid_value"], allow_draft=True
         )
         try:
-            self.api_service.require_permission(
-                g.identity, "update", record=api_record._record
-            )  # ResultItem doesn't serialize state and owners field
+            if getattr(api_record._record, "is_draft", False):
+                self.api_service.require_permission(
+                    g.identity, "update_draft", record=api_record._record
+                )  # ResultItem doesn't serialize state and owners field
+            else:
+                self.api_service.require_permission(
+                    g.identity, "update", record=api_record._record
+                )
         except PermissionDenied as e:
             raise Forbidden() from e
 
@@ -772,7 +777,7 @@ class RecordsUIResource(UIResource):
             record = self._get_record(
                 error.record.get("id", None), include_deleted=True
             )
-            record_tombstone = record.get("tombstone", None)
+            record_tombstone = record._record.get("tombstone", None)
         except (
             RecordDeletedException
         ) as e:  # read with include_deleted=True raises an exception instead of just returning record

@@ -30,8 +30,6 @@ export const FilesField = ({
   const recordObject = record || values;
 
   const isDraftRecord = !recordObject.is_published;
-
-  const lockFileUploader = !isDraftRecord && filesLocked;
   const hasParentRecord =
     recordObject?.versions?.index && recordObject?.versions?.index > 1;
 
@@ -146,10 +144,10 @@ export const FilesField = ({
               handleFileDeletion={handleFileDeletion}
               record={recordObject}
               allowedFileTypes={allowedFileTypes}
-              lockFileUploader={lockFileUploader}
+              lockFileUploader={filesLocked}
               fileMetadataFields={fileMetadataFields}
             />
-            {lockFileUploader && (
+            {filesLocked && (
               <Message className="flex justify-space-between align-items-center">
                 <p className="mb-0">
                   <Icon name="info circle" />
@@ -171,12 +169,12 @@ export const FilesField = ({
                 </p>
               </Message>
             )}
-            {!lockFileUploader && (
+            {!filesLocked && (
               <UploadFileButton
                 record={recordObject}
                 handleFilesUpload={handleFilesUpload}
                 allowedFileTypes={allowedFileTypes}
-                lockFileUploader={lockFileUploader}
+                lockFileUploader={filesLocked}
                 allowedMetaFields={fileMetadataFields}
               />
             )}

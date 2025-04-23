@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-04-01 10:09+0200\n"
+"POT-Creation-Date: 2025-04-17 09:56+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,23 +49,19 @@ msgstr ""
 msgid "api.versions"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/config.py:148
-msgid "JSON"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/resource.py:882
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/resource.py:919
 msgid "Removal reason"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/resource.py:882
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/resource.py:919
 msgid "Note"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/resource.py:882
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/resource.py:919
 msgid "Citation text"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/components/communities.py:78
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/components/communities.py:79
 msgid "You have no permission to create record in this community."
 msgstr ""
 
@@ -93,13 +89,13 @@ msgstr ""
 msgid "Edit item"
 msgstr ""
 
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:3
 #: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:4
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:5
 msgid "Identifiers and links"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:40
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:41
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:65
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:66
 msgid "metadata/originalRecord.label"
 msgstr ""
 
@@ -351,6 +347,22 @@ msgstr ""
 msgid "Export selection"
 msgstr ""
 
+msgid "Cite all versions?"
+msgstr ""
+
+msgid "You can cite all versions by using the DOI"
+msgstr ""
+
+msgid ""
+"This DOI represents all versions, and will always resolve to the latest one."
+msgstr ""
+
+msgid "Read more."
+msgstr ""
+
+msgid "The DOI is registered when the first version is published."
+msgstr ""
+
 msgid "Version {{- version}}"
 msgstr ""
 
@@ -367,18 +379,6 @@ msgid "View all {{count}} versions"
 msgid_plural "View all {{count}} versions"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid ""
-"<0><0>Cite all versions?</0> You can cite all versions by using the DOI "
-"<3><0>{{recordParentDOI}}</0></3>. This DOI represents all versions, and "
-"will always resolve to the latest one. <5>Read more</5>.</0>"
-msgstr ""
-
-msgid ""
-"<0><0>Cite all versions?</0> You can cite all versions by using the DOI "
-"<2>{{recordDraftParentDOIFormat}}</2>. The DOI is registered when the first "
-"version is published. <4>Read more</4>.</0>"
-msgstr ""
 
 msgid "Remove"
 msgstr ""
@@ -512,22 +512,16 @@ msgstr ""
 msgid "Choose a date."
 msgstr ""
 
-msgid "Date range."
-msgstr ""
-
-msgid "Single date."
-msgstr ""
-
-msgid "Choose the time interval in which the event took place."
+msgid "Choose date range (From - To)."
 msgstr ""
 
 msgid "Choose one date."
 msgstr ""
 
-msgid "Choose date range (From - To)."
+msgid "Date range."
 msgstr ""
 
-msgid "Choose a date from the calendar by clicking on the input."
+msgid "Single date."
 msgstr ""
 
 msgid "Year"

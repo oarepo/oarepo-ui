@@ -1004,3 +1004,19 @@ msgstr ""
 
 msgid "Search for funder..."
 msgstr ""
+
+msgid "Cite all versions?"
+msgstr ""
+
+msgid "You can cite all versions by using the DOI"
+msgstr ""
+
+msgid "The DOI is registered when the first version is published."
+msgstr ""
+
+msgid "Read more."
+msgstr ""
+
+msgid ""
+"This DOI represents all versions, and will always resolve to the latest one."
+msgstr ""
