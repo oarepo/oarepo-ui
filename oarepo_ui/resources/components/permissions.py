@@ -29,17 +29,20 @@ class PermissionsComponent(UIResourceComponent):
             api_record._record if api_record else None, form_config, identity
         )
 
-    def get_record_permissions(self, actions, service, identity, record, **kwargs):
+    def get_record_permissions(
+        self, actions: dict[str, str], service, identity, record, **kwargs
+    ):
         """Helper for generating (default) record action permissions."""
+
         ret = {}
-        for action in actions:
+        for action_name, mapped_to in actions.items():
             try:
                 can_perform = service.check_permission(
-                    identity, action, record=record or {}, **kwargs
+                    identity, action_name, record=record or {}, **kwargs
                 )
             except Exception:  # noqa
                 can_perform = False
-            ret[f"can_{action}"] = can_perform
+            ret[f"can_{mapped_to}"] = can_perform
         return ret
 
     def fill_permissions(self, record, extra_context, identity, **kwargs):
@@ -48,10 +51,21 @@ class PermissionsComponent(UIResourceComponent):
         if not isinstance(self.resource, RecordsUIResource):
             return
 
-        extra_context["permissions"] = self.get_record_permissions(
-            current_oarepo_ui.record_actions,
-            self.resource.api_service,
-            identity,
-            record,
-            **kwargs,
+        # prefill permissions with False (drafts do not have some of those)
+        extra_context["permissions"] = {
+            f"can_{mapped_to}": False
+            for _action, mapped_to in current_oarepo_ui.record_actions.items()
+        }
+        extra_context["permissions"].update(
+            self.get_record_permissions(
+                (
+                    current_oarepo_ui.draft_actions
+                    if record and getattr(record, "is_draft", False)
+                    else current_oarepo_ui.record_actions
+                ),
+                self.resource.api_service,
+                identity,
+                record,
+                **kwargs,
+            )
         )

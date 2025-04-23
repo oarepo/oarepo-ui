@@ -967,4 +967,21 @@ msgid "Citation text"
 msgstr "Citace"
 
 msgid "Given name is a required field."
+msgstr "Křestní jméno je povinné pole."
+
+msgid "Cite all versions?"
+msgstr "Citovat všechny verze?"
+
+msgid "You can cite all versions by using the DOI"
+msgstr "Všechny verze můžete citovat pomocí DOI"
+
+msgid "The DOI is registered when the first version is published."
+msgstr "DOI se registruje při zveřejnění první verze."
+
+msgid "Read more."
+msgstr "Přečtěte si více."
+
+msgid ""
+"This DOI represents all versions, and will always resolve to the latest one."
 msgstr ""
+"Toto DOI zastupuje všechny verze a vždy bude odkazovat na tu nejnovější."
