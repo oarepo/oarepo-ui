@@ -11,7 +11,8 @@ if (recordSharingDiv) {
   ReactDOM.render(
     <ShareButton
       record={record}
-      disabled={!permissions.can_update}
+      // TODO: add proper permission for making the button disabled
+      disabled={false}
       permissions={permissions}
       groupsEnabled={groupsEnabled}
     />,
