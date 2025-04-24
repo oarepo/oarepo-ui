@@ -9,6 +9,7 @@ import { i18next } from "@translations/oarepo_ui/i18next";
 import { format } from "date-fns";
 import axios from "axios";
 import { overrideStore } from "react-overridable";
+import { DateTime } from "luxon";
 
 export const getInputFromDOM = (elementName) => {
   const element = document.getElementsByName(elementName);
@@ -312,3 +313,12 @@ export const encodeUnicodeBase64 = (str) => {
 export const decodeUnicodeBase64 = (base64) => {
   return decodeURIComponent(atob(base64));
 };
+
+/**
+ * Returns a human readable timestamp in the format "4 days ago".
+ *
+ * @param {Date} timestamp
+ * @returns string
+ */
+export const timestampToRelativeTime = (timestamp) =>
+  DateTime.fromISO(timestamp).setLocale(i18next.language).toRelative();

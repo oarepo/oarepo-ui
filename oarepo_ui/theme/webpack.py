@@ -80,6 +80,7 @@ theme = WebpackThemeBundle(
                 "copy_to_clipboard": "./js/oarepo_ui/components/clipboard.js",
                 "record_export": "./js/oarepo_ui/components/record-export.js",
                 "record_versions": "./js/oarepo_ui/components/record-versions.js",
+                "record_sharing": "./js/oarepo_ui/components/record-sharing.js",
             },
             dependencies=dependencies,
             devDependencies={"eslint-plugin-i18next": "^6.0.3"},
