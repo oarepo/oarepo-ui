@@ -112,7 +112,6 @@ export function SearchAppResultViewWithSearchbar(props) {
               <ResultsPerPage
                 values={resultsPerPage}
                 label={ResultsPerPageLabel}
-                showWhenOnlyOnePage={false}
               />
             </Grid.Column>
             <Grid.Column
@@ -123,7 +122,6 @@ export function SearchAppResultViewWithSearchbar(props) {
               <ResultsPerPage
                 values={resultsPerPage}
                 label={ResultsPerPageLabel}
-                showWhenOnlyOnePage={false}
               />
             </Grid.Column>
           </Grid.Row>
