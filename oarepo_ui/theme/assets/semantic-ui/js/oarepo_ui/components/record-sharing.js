@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { ShareButton } from "./ShareOptions/ShareButton";
+import { ShareButton } from "@js/invenio_app_rdm/landing_page/ShareOptions/ShareButton";
 
 const recordSharingDiv = document.getElementById("recordSharing");
 if (recordSharingDiv) {
@@ -11,8 +11,7 @@ if (recordSharingDiv) {
   ReactDOM.render(
     <ShareButton
       record={record}
-      disabled={!permissions.can_update_draft}
-      // disabled={false}
+      disabled={!permissions.can_update}
       permissions={permissions}
       groupsEnabled={groupsEnabled}
     />,
