@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { ArrayField } from "react-invenio-forms";
 import { Form } from "semantic-ui-react";
@@ -33,7 +33,7 @@ export const MultilingualTextInput = ({
   const { defaultLocale } = useDefaultLocale();
   const { getFieldData } = useFieldData();
 
-  const { values } = useFormikContext();
+  const { values, errors } = useFormikContext();
   const { usedSubValues, defaultNewValue: getNewValue } = useFormFieldValue({
     defaultValue: defaultLocale,
     fieldPath,
@@ -43,51 +43,68 @@ export const MultilingualTextInput = ({
   const usedLanguages = usedSubValues(value);
 
   useShowEmptyValue(fieldPath, defaultNewValue, showEmptyValue);
-  return (
-    <ArrayField
-      addButtonLabel={addButtonLabel}
-      defaultNewValue={
-        prefillLanguageWithDefaultLocale
-          ? getNewValue(defaultNewValue, usedLanguages)
-          : defaultNewValue
-      }
-      fieldPath={fieldPath}
-      addButtonClassName="array-field-add-button"
-      {...getFieldData({ fieldPath, icon: labelIcon })}
-    >
-      {({ indexPath, arrayHelpers }) => {
-        const fieldPathPrefix = `${fieldPath}.${indexPath}`;
 
-        return (
-          <ArrayFieldItem
-            indexPath={indexPath}
-            arrayHelpers={arrayHelpers}
-            removeButtonLabelClassName={removeButtonLabelClassName}
-            displayFirstInputRemoveButton={displayFirstInputRemoveButton}
-            fieldPathPrefix={fieldPathPrefix}
-          >
-            <Form.Field width={16}>
-              {rich ? (
-                <I18nRichInputField
-                  fieldPath={fieldPathPrefix}
-                  optimized
-                  usedLanguages={usedLanguages}
-                  lngFieldWidth={lngFieldWidth}
-                  {...uiProps}
-                />
-              ) : (
-                <I18nTextInputField
-                  fieldPath={fieldPathPrefix}
-                  usedLanguages={usedLanguages}
-                  lngFieldWidth={lngFieldWidth}
-                  {...uiProps}
-                />
-              )}
-            </Form.Field>
-          </ArrayFieldItem>
-        );
-      }}
-    </ArrayField>
+  const fieldWrapperDOMNode = useRef(null);
+
+  useEffect(() => {
+    if (fieldWrapperDOMNode.current) {
+      const fieldDOMNode = fieldWrapperDOMNode.current.querySelector(
+        `#${fieldPath}-array-field`
+      );
+      if (fieldDOMNode) {
+        fieldDOMNode.classList.remove("error");
+      }
+    }
+  }, [fieldPath, errors]);
+
+  return (
+    <div ref={fieldWrapperDOMNode}>
+      <ArrayField
+        addButtonLabel={addButtonLabel}
+        defaultNewValue={
+          prefillLanguageWithDefaultLocale
+            ? getNewValue(defaultNewValue, usedLanguages)
+            : defaultNewValue
+        }
+        fieldPath={fieldPath}
+        addButtonClassName="array-field-add-button"
+        {...getFieldData({ fieldPath, icon: labelIcon })}
+        id={`${fieldPath}-array-field`}
+      >
+        {({ indexPath, arrayHelpers }) => {
+          const fieldPathPrefix = `${fieldPath}.${indexPath}`;
+
+          return (
+            <ArrayFieldItem
+              indexPath={indexPath}
+              arrayHelpers={arrayHelpers}
+              removeButtonLabelClassName={removeButtonLabelClassName}
+              displayFirstInputRemoveButton={displayFirstInputRemoveButton}
+              fieldPathPrefix={fieldPathPrefix}
+            >
+              <Form.Field width={16}>
+                {rich ? (
+                  <I18nRichInputField
+                    fieldPath={fieldPathPrefix}
+                    optimized
+                    usedLanguages={usedLanguages}
+                    lngFieldWidth={lngFieldWidth}
+                    {...uiProps}
+                  />
+                ) : (
+                  <I18nTextInputField
+                    fieldPath={fieldPathPrefix}
+                    usedLanguages={usedLanguages}
+                    lngFieldWidth={lngFieldWidth}
+                    {...uiProps}
+                  />
+                )}
+              </Form.Field>
+            </ArrayFieldItem>
+          );
+        }}
+      </ArrayField>
+    </div>
   );
 };
 
