@@ -20,7 +20,6 @@ def test_edit(
                 "permissions": {
                     "can_create": True,
                     "can_delete": True,
-                    "can_delete_draft": False,
                     "can_edit": False,
                     "can_manage": False,
                     "can_manage_files": False,
@@ -32,7 +31,6 @@ def test_edit(
                     "can_review": False,
                     "can_search": True,
                     "can_update": True,
-                    "can_update_draft": False,
                     "can_update_files": True,
                     "can_view": False,
                 }
@@ -64,7 +62,6 @@ def test_edit(
                 "permissions": {
                     "can_create": True,
                     "can_delete": True,
-                    "can_delete_draft": False,
                     "can_edit": False,
                     "can_manage": False,
                     "can_manage_files": False,
@@ -76,7 +73,6 @@ def test_edit(
                     "can_review": False,
                     "can_search": True,
                     "can_update": True,
-                    "can_update_draft": False,
                     "can_update_files": True,
                     "can_view": False,
                 },

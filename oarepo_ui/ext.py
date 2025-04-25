@@ -87,8 +87,24 @@ class OARepoUIState:
             return add_vite_tags(response)
 
     @property
-    def record_actions(self):
-        return self.app.config["OAREPO_UI_RECORD_ACTIONS"]
+    def record_actions(self) -> dict[str, str]:
+        """
+        Map of record actions to themselves. This is done to have the same
+        handling for record actions and draft actions in the UI.
+        """
+        ret = self.app.config["OAREPO_UI_RECORD_ACTIONS"]
+        if not isinstance(ret, dict):
+            # convert to dict with action name as key and action name as value
+            ret = {action: action for action in ret}
+        return ret
+
+    @property
+    def draft_actions(self) -> dict[str, str]:
+        """
+        Map of draft actions to record actions. The keys are the draft actions
+        and the values are the corresponding record actions.
+        """
+        return self.app.config["OAREPO_UI_DRAFT_ACTIONS"]
 
     @functools.cached_property
     def ui_models(self):

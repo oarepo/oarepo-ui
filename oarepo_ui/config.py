@@ -26,9 +26,7 @@ OAREPO_UI_JINJAX_GLOBALS = {
 }
 
 
-# TODO: make sure that permissions here are correct and complete
 OAREPO_UI_RECORD_ACTIONS = {
-    # permissions from records
     "search",
     "create",
     "read",
@@ -37,16 +35,22 @@ OAREPO_UI_RECORD_ACTIONS = {
     "read_files",
     "update_files",
     "read_deleted_files",
-    # permissions from drafts
     "edit",
     "new_version",
     "manage",
-    "update_draft",
     "review",
     "view",
-    "delete_draft",
     "manage_files",
     "manage_record_access",
+}
+
+OAREPO_UI_DRAFT_ACTIONS = {
+    "read_draft": "read",
+    "update_draft": "update",
+    "delete_draft": "delete",
+    "draft_read_files": "read_files",
+    "draft_update_files": "update_files",
+    "draft_read_deleted_files": "read_deleted_files",
 }
 
 MATOMO_ANALYTICS_TEMPLATE = "oarepo_ui/matomo_analytics.html"
