@@ -18,14 +18,22 @@ import Overridable from "react-overridable";
 import { CustomFields } from "react-invenio-forms";
 import { getIn, useFormikContext } from "formik";
 import { i18next } from "@translations/oarepo_ui/i18next";
+import { useSanitizeInput } from "../../hooks";
 
 const FormTitle = () => {
   const { values } = useFormikContext();
+  const { sanitizeInput } = useSanitizeInput();
+
   const recordTitle =
     getIn(values, "metadata.title", "") ||
     getTitleFromMultilingualObject(getIn(values, "title", "")) ||
     "";
-  return recordTitle && <Header as="h1">{recordTitle}</Header>;
+  
+  const sanitizedTitle = sanitizeInput(recordTitle);
+  
+  return recordTitle && (
+    <Header as="h1" dangerouslySetInnerHTML={{ __html: sanitizedTitle }} />
+  );
 };
 
 export const BaseFormLayout = ({ formikProps }) => {
