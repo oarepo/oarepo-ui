@@ -178,3 +178,5 @@ class OARepoUIExtension:
             for name, val in getattr(config, k).items():
                 if name not in app.config[k]:
                     app.config[k][name] = val
+                    
+        app.config.setdefault("MATOMO_ANALYTICS_TEMPLATE", config.MATOMO_ANALYTICS_TEMPLATE)            
