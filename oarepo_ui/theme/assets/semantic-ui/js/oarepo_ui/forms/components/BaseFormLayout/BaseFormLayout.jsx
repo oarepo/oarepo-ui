@@ -28,11 +28,18 @@ const FormTitle = () => {
     getIn(values, "metadata.title", "") ||
     getTitleFromMultilingualObject(getIn(values, "title", "")) ||
     "";
-  
+
   const sanitizedTitle = sanitizeInput(recordTitle);
-  
-  return recordTitle && (
-    <Header as="h1" dangerouslySetInnerHTML={{ __html: sanitizedTitle }} />
+
+  return (
+    sanitizedTitle && (
+      <Header as="h1">
+        {/* cannot set dangerously html to SUI header directly, I think it is some internal
+        implementation quirk (it says you cannot have both children and dangerouslySethtml even though
+        there is no children given to the component) */}
+        <span dangerouslySetInnerHTML={{ __html: sanitizedTitle }}></span>
+      </Header>
+    )
   );
 };
 
