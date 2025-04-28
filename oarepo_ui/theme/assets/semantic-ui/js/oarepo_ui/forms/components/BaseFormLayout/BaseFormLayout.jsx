@@ -18,14 +18,29 @@ import Overridable from "react-overridable";
 import { CustomFields } from "react-invenio-forms";
 import { getIn, useFormikContext } from "formik";
 import { i18next } from "@translations/oarepo_ui/i18next";
+import { useSanitizeInput } from "../../hooks";
 
 const FormTitle = () => {
   const { values } = useFormikContext();
+  const { sanitizeInput } = useSanitizeInput();
+
   const recordTitle =
     getIn(values, "metadata.title", "") ||
     getTitleFromMultilingualObject(getIn(values, "title", "")) ||
     "";
-  return recordTitle && <Header as="h1">{recordTitle}</Header>;
+
+  const sanitizedTitle = sanitizeInput(recordTitle);
+
+  return (
+    sanitizedTitle && (
+      <Header as="h1">
+        {/* cannot set dangerously html to SUI header directly, I think it is some internal
+        implementation quirk (it says you cannot have both children and dangerouslySethtml even though
+        there is no children given to the component) */}
+        <span dangerouslySetInnerHTML={{ __html: sanitizedTitle }}></span>
+      </Header>
+    )
+  );
 };
 
 export const BaseFormLayout = ({ formikProps }) => {
