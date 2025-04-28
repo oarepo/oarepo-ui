@@ -51,4 +51,7 @@ OAREPO_UI_DRAFT_ACTIONS = {
     "draft_read_files": "read_files",
     "draft_update_files": "update_files",
     "draft_read_deleted_files": "read_deleted_files",
+    "manage": "manage",  # add manage to draft actions - it is the same for drafts as well as published
+    "manage_files": "manage_files",
+    "manage_record_access": "manage_record_access",
 }
