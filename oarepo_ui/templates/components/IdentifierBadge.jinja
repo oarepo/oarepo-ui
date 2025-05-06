@@ -1,7 +1,7 @@
 {#def identifier=None, creatibutorName=None, fallbackImage="/static/images/square-placeholder.png" #}
 {%if identifier %}
     {% set scheme = identifier.scheme or "" %}
-    {% set value = identifier.identifier %}
+    {% set value = identifier.identifier or "" %}
     {% if scheme %}
       {% set lowercaseScheme = scheme.lower() %}
     {% else %} 
