@@ -55,3 +55,5 @@ OAREPO_UI_DRAFT_ACTIONS = {
     "manage_files": "manage_files",
     "manage_record_access": "manage_record_access",
 }
+
+MATOMO_ANALYTICS_TEMPLATE = "oarepo_ui/matomo_analytics.html"
