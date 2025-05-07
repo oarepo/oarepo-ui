@@ -2,6 +2,7 @@ import React from "react";
 import { BucketAggregation, Toggle } from "react-searchkit";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
+import { ErrorBoundary } from "../components/ErrorBoundary";
 
 export const SearchAppFacets = ({ aggs, appName, allVersionsToggle }) => {
   return (
@@ -15,7 +16,12 @@ export const SearchAppFacets = ({ aggs, appName, allVersionsToggle }) => {
           />
         )}
         {aggs.map((agg) => (
-          <BucketAggregation key={agg.aggName} title={agg.title} agg={agg} />
+          <ErrorBoundary
+            fallback={<div>{i18next.t("Error loading facet")}</div>}
+            key={agg.aggName}
+          >
+            <BucketAggregation key={agg.aggName} title={agg.title} agg={agg} />
+          </ErrorBoundary>
         ))}
       </div>
     </div>
