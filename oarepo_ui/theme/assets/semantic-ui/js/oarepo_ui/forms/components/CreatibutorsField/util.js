@@ -70,7 +70,7 @@ export const serializeCreatibutor = (submittedCreatibutor) => {
   );
   const identifiers = submittedIdentifiers.map((submittedIdentifier) => {
     const [scheme, identifier] = splitOnce(submittedIdentifier, ":");
-    return { scheme: scheme.toLowerCase(), identifier };
+    return { scheme: scheme, identifier };
   });
 
   const submittedAffiliations = _get(

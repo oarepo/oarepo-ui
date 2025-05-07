@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Iterator
 
 import deepmerge
 from flask import Blueprint, Response, abort, current_app, g, redirect, request
+from flask_login import current_user
 from flask_principal import PermissionDenied
 from flask_resources import (
     Resource,
@@ -559,13 +560,17 @@ class RecordsUIResource(UIResource):
             return self.config.templates.get(template_type, default_macro)
         return self.config.templates[template_type]
 
-    @login_required
     @request_read_args
     @request_view_args
     def edit(self):
-        api_record = self._get_record(
-            resource_requestctx.view_args["pid_value"], allow_draft=True
-        )
+        try:
+            api_record = self._get_record(
+                resource_requestctx.view_args["pid_value"], allow_draft=True
+            )
+        except:
+            if not current_user.is_authenticated:
+                return current_app.login_manager.unauthorized()
+            raise
         try:
             if getattr(api_record._record, "is_draft", False):
                 self.api_service.require_permission(

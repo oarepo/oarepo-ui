@@ -53,7 +53,7 @@ export class CreatibutorsModal extends Component {
       isOrganization:
         !_isEmpty(props.initialCreatibutor) &&
         props.initialCreatibutor.person_or_org.type ===
-          CREATIBUTOR_TYPE.ORGANIZATION,
+        CREATIBUTOR_TYPE.ORGANIZATION,
       personIdentifiers: [],
       personAffiliations: [],
       organizationIdentifiers: [],
@@ -201,12 +201,12 @@ export class CreatibutorsModal extends Component {
 
       const selectedIdentifier =
         Array.isArray(creatibutor.identifiers) &&
-        creatibutor.identifiers.length > 0
+          creatibutor.identifiers.length > 0
           ? creatibutor.identifiers.find(
-              (identifier) =>
-                identifier?.scheme?.toLowerCase() === "orcid" ||
-                identifier?.scheme?.toLowerCase() === "ror"
-            ) || creatibutor.identifiers[0]
+            (identifier) =>
+              identifier?.scheme?.toLowerCase() === "orcid" ||
+              identifier?.scheme?.toLowerCase() === "ror"
+          ) || creatibutor.identifiers[0]
           : null;
 
       return {
@@ -313,7 +313,7 @@ export class CreatibutorsModal extends Component {
           // .filter((identifier) => identifier.scheme !== "grid") // Filtering out org scheme (RDM_RECORDS_PERSONORG_SCHEMES) for unsupported one i.e. "grid"
           .map(
             (identifier) =>
-              `${identifier.scheme.toLowerCase()}:${identifier.identifier}`
+              `${identifier.scheme}:${identifier.identifier}`
           ),
         organizationAffiliations: [],
       },
@@ -356,7 +356,7 @@ export class CreatibutorsModal extends Component {
         showPersonForm: true,
         personIdentifiers: selectedSuggestion.identifiers.map(
           (identifier) =>
-            `${identifier.scheme.toLowerCase()}:${identifier.identifier}`
+            `${identifier.scheme}:${identifier.identifier}`
         ),
         personAffiliations: selectedSuggestion.affiliations.map(
           (affiliation) => affiliation
@@ -501,7 +501,7 @@ export class CreatibutorsModal extends Component {
                     />
                   </Form.Group>
                   {_get(values, typeFieldPath, "") ===
-                  CREATIBUTOR_TYPE.PERSON ? (
+                    CREATIBUTOR_TYPE.PERSON ? (
                     <div>
                       {autocompleteNames !== NamesAutocompleteOptions.OFF && (
                         <RemoteSelectField
