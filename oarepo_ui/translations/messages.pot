@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-04-17 09:56+0200\n"
+"POT-Creation-Date: 2025-05-09 08:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.17.0\n"
+"Generated-By: Babel 2.16.0\n"
 
 #: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:4
 msgid "api.draft"
@@ -49,15 +49,15 @@ msgstr ""
 msgid "api.versions"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/resource.py:919
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/resource.py:931
 msgid "Removal reason"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/resource.py:919
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/resource.py:931
 msgid "Note"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/resource.py:919
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/resource.py:931
 msgid "Citation text"
 msgstr ""
 
@@ -201,6 +201,12 @@ msgstr ""
 msgid "More info on how stats are collected."
 msgstr ""
 
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/ICustomFields.jinja:11
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/translations/jinjax_messages.jinja:1
+#: oarepo_ui/translations/jinjax_messages.jinja:1
+msgid "Not set"
+msgstr ""
+
 #: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:7
 msgid "Files"
 msgstr ""
@@ -334,11 +340,6 @@ msgstr ""
 
 #: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/search.html:2
 msgid "Search results"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/translations/jinjax_messages.jinja:1
-#: oarepo_ui/translations/jinjax_messages.jinja:1
-msgid "Not set"
 msgstr ""
 
 msgid "Click to copy"
@@ -745,10 +746,26 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
+msgid "Something went wrong"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "An error occurred while rendering this component"
+msgstr ""
+
+msgid ""
+"Please try refreshing the page or contact support if the problem persists."
+msgstr ""
+
 msgid "resultsPerPage"
 msgstr ""
 
 msgid "View all versions"
+msgstr ""
+
+msgid "Error loading facet"
 msgstr ""
 
 msgid "Filter results"

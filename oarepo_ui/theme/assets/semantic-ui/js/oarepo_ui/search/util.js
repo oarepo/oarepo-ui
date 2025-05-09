@@ -5,6 +5,7 @@ import ReactDOM from "react-dom";
 import { parametrize } from "react-overridable";
 import { overridableComponentIds as componentIds } from "./constants";
 import _get from "lodash/get";
+import { ListItemContainer } from "./ResultsList";
 
 import {
   ActiveFiltersElement,
@@ -71,6 +72,7 @@ export function createSearchAppsInit({
       [`${overridableIdPrefix}.SearchApp.sort`]: SearchAppSort,
       [`${overridableIdPrefix}.SearchApp.results`]: SearchAppResults,
       [`${overridableIdPrefix}.SearchBar.element`]: SearchappSearchbarElement,
+      [`${overridableIdPrefix}.ResultsList.container`]: ListItemContainer,
     };
 
     loadAppComponents({

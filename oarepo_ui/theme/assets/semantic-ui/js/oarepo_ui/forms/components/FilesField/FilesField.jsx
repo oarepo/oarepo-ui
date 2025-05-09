@@ -147,7 +147,9 @@ export const FilesField = ({
               lockFileUploader={filesLocked}
               fileMetadataFields={fileMetadataFields}
             />
-            {filesLocked && (
+            {/* filesLocked includes permission check as well. This is 
+            so it does not display message when someone just does not have permissions to view */}
+            {filesLocked && recordObject.is_published && (
               <Message className="flex justify-space-between align-items-center">
                 <p className="mb-0">
                   <Icon name="info circle" />
