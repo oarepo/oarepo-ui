@@ -2,7 +2,7 @@ import React from "react";
 import { BucketAggregation, Toggle } from "react-searchkit";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import { ErrorBoundary } from "../components/ErrorBoundary";
+import { ErrorBoundary } from "react-error-boundary";
 
 export const SearchAppFacets = ({ aggs, appName, allVersionsToggle }) => {
   return (

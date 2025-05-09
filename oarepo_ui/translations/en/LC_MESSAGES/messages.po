@@ -1020,3 +1020,19 @@ msgstr ""
 msgid ""
 "This DOI represents all versions, and will always resolve to the latest one."
 msgstr ""
+
+msgid "Something went wrong"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "An error occurred while rendering this component"
+msgstr ""
+
+msgid ""
+"Please try refreshing the page or contact support if the problem persists."
+msgstr ""
+
+msgid "Error loading facet"
+msgstr ""

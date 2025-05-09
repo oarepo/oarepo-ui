@@ -985,3 +985,19 @@ msgid ""
 "This DOI represents all versions, and will always resolve to the latest one."
 msgstr ""
 "Toto DOI zastupuje všechny verze a vždy bude odkazovat na tu nejnovější."
+
+msgid "Something went wrong"
+msgstr "Došlo k chybě"
+
+msgid "Error"
+msgstr "Chyba"
+
+msgid "An error occurred while rendering this component"
+msgstr "Došlo k chybě při vykreslování této komponenty"
+
+msgid ""
+"Please try refreshing the page or contact support if the problem persists."
+msgstr "Obnovte stránku nebo kontaktujte podporu, pokud problém přetrvává."
+
+msgid "Error loading facet"
+msgstr "Chyba při načítání facety"

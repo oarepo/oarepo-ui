@@ -3,10 +3,10 @@ import React, { useContext } from "react";
 import Overridable from "react-overridable";
 import { Item, Grid, Icon, Label } from "semantic-ui-react";
 import { AppContext, withState } from "react-searchkit";
-import { ErrorBoundary } from "../components/ErrorBoundary";
+import { ErrorBoundary } from "react-error-boundary";
 import { i18next } from "@translations/oarepo_ui/i18next";
 
-const DefaultListItemErrorFallback = () => {
+const DefaultListItemErrorFallback = ({ result }) => {
   return (
     <Item data-testid="error-fallback">
       <Item.Content>
@@ -20,7 +20,7 @@ const DefaultListItemErrorFallback = () => {
             <Grid.Column className="results-list item-main">
               <div className="justify-space-between flex">
                 <Item.Header as="h2">
-                  {i18next.t("Something went wrong")}
+                  {i18next.t("Something went wrong")} {result?.id}
                 </Item.Header>
                 <div className="item-access-rights">
                   <Label color="red">{i18next.t("Error")}</Label>
@@ -52,12 +52,16 @@ const DefaultListItemErrorFallback = () => {
   );
 };
 
+DefaultListItemErrorFallback.propTypes = {
+  result: PropTypes.object.isRequired,
+};
+
 // Don't see another way, if we do not wish to put the error boundary directly
 // in result list items component, which would be tedious
 const ListItem = ({ result, overridableId }) => {
   const { buildUID } = useContext(AppContext);
   return (
-    <ErrorBoundary fallback={<DefaultListItemErrorFallback />}>
+    <ErrorBoundary fallback={<DefaultListItemErrorFallback result={result} />}>
       <Overridable
         id={buildUID("ResultsList.item", overridableId)}
         result={result}
