@@ -23,7 +23,7 @@ export const DeleteButton = React.memo(
 
     return (
       <>
-        {values.id && permissions?.can_delete && (
+        {values.id && (
           <ConfirmationModal
             header={modalHeader}
             content={modalMessage}
