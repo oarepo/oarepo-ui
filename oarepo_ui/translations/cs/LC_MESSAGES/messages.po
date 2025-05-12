@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: oarepo-ui 4.0.0\n"
 "Report-Msgid-Bugs-To: info@oarepo.org\n"
 "POT-Creation-Date: 2023-10-25 13:15+0200\n"
-"PO-Revision-Date: 2025-03-19 10:12+0100\n"
+"PO-Revision-Date: 2025-05-12 13:06+0200\n"
 "Last-Translator: \n"
 "Language-Team: cs <LL@li.org>\n"
 "Language: cs\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
 "Generated-By: Babel 2.10.3\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.6\n"
 
 #: oarepo_ui/for_translations_only.py:4
 msgid "api.draft"
@@ -146,7 +146,7 @@ msgid "Selected records"
 msgstr "Vybrané záznamy"
 
 msgid "Something went wrong..."
-msgstr "Stala se nějaká chyba …"
+msgstr "Něco se pokazilo…"
 
 msgid "Search..."
 msgstr "Hledat …"
@@ -985,3 +985,32 @@ msgid ""
 "This DOI represents all versions, and will always resolve to the latest one."
 msgstr ""
 "Toto DOI zastupuje všechny verze a vždy bude odkazovat na tu nejnovější."
+
+msgid "Something went wrong"
+msgstr "Něco se pokazilo"
+
+msgid "Error"
+msgstr "Chyba"
+
+msgid "An error occurred while rendering this component"
+msgstr "Došlo k chybě při vykreslování této komponenty"
+
+msgid ""
+"Please try refreshing the page or contact support if the problem persists."
+msgstr "Obnovte stránku nebo kontaktujte podporu, pokud problém přetrvává."
+
+msgid "Error loading facet"
+msgstr "Chyba při načítání facety"
+
+msgid "We couldn’t display this item."
+msgstr "Tuto položku se nepodařilo zobrazit."
+
+msgid "Please refresh the page, or contact support if the problem continues."
+msgstr ""
+"Zkuste prosím stránku obnovit. Pokud problém přetrvává, kontaktujte podporu."
+
+msgid "Record ID: {{pid}}"
+msgstr "ID záznamu: {{pid}}"
+
+msgid "Unable to load {{facet}} filter options"
+msgstr "Nepodařilo se načíst filtr {{facet}}"
