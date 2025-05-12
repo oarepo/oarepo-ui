@@ -3,7 +3,6 @@ import { Button } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import {
   useConfirmationModal,
-  useFormConfig,
   useDepositApiClient,
   ConfirmationModal,
 } from "@js/oarepo_ui";
@@ -16,9 +15,6 @@ export const DeleteButton = React.memo(
       close: closeModal,
       open: openModal,
     } = useConfirmationModal();
-    const {
-      formConfig: { permissions },
-    } = useFormConfig();
     const { values, isSubmitting, _delete } = useDepositApiClient();
 
     return (
