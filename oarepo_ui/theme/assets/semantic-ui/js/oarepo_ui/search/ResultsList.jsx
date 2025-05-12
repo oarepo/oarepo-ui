@@ -6,7 +6,7 @@ import { AppContext, withState } from "react-searchkit";
 import { ErrorBoundary } from "react-error-boundary";
 import { i18next } from "@translations/oarepo_ui/i18next";
 
-const DefaultListItemErrorFallback = ({ result }) => {
+const DefaultListItemErrorFallback = ({ result, error }) => {
   return (
     <Item data-testid="error-fallback">
       <Item.Content>
@@ -20,30 +20,26 @@ const DefaultListItemErrorFallback = ({ result }) => {
             <Grid.Column className="results-list item-main">
               <div className="justify-space-between flex">
                 <Item.Header as="h2">
-                  {i18next.t("Something went wrong")} {result?.id}
+                  {i18next.t("Something went wrong")}
                 </Item.Header>
                 <div className="item-access-rights">
                   <Label color="red">{i18next.t("Error")}</Label>
                 </div>
               </div>
+              <Item.Description>
+                <p>{i18next.t("We couldn’t display this item.")}</p>
+                <p>{i18next.t("Please refresh the page, or contact support if the problem continues.")}</p>
+              </Item.Description>
               <Item.Meta>
                 <Grid columns={1}>
                   <Grid.Column>
                     <Grid.Row className="ui separated">
-                      <span>
-                        {i18next.t(
-                          "An error occurred while rendering this component"
-                        )}
-                      </span>
+                      <p>{i18next.t("Record ID: {{pid}}", {pid: result.id})}</p>
+                      <p>{i18next.t("Error")}: <code>{error.message}</code></p>
                     </Grid.Row>
                   </Grid.Column>
                 </Grid>
               </Item.Meta>
-              <Item.Description>
-                {i18next.t(
-                  "Please try refreshing the page or contact support if the problem persists."
-                )}
-              </Item.Description>
             </Grid.Column>
           </Grid.Row>
         </Grid>
@@ -61,7 +57,7 @@ DefaultListItemErrorFallback.propTypes = {
 const ListItem = ({ result, overridableId }) => {
   const { buildUID } = useContext(AppContext);
   return (
-    <ErrorBoundary fallback={<DefaultListItemErrorFallback result={result} />}>
+    <ErrorBoundary FallbackComponent={(props) => <DefaultListItemErrorFallback {...props} result={result} />}>
       <Overridable
         id={buildUID("ResultsList.item", overridableId)}
         result={result}

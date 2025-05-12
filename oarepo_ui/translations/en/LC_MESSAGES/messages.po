@@ -1036,3 +1036,15 @@ msgstr ""
 
 msgid "Error loading facet"
 msgstr ""
+
+msgid "We couldn’t display this item."
+msgstr ""
+
+msgid "Please refresh the page, or contact support if the problem continues."
+msgstr ""
+
+msgid "Record ID: {{pid}}"
+msgstr ""
+
+msgid "Unable to load {{facet}} filter options"
+msgstr ""

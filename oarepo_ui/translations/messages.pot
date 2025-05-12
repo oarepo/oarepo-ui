@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-05-09 08:35+0200\n"
+"POT-Creation-Date: 2025-05-12 13:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.16.0\n"
+"Generated-By: Babel 2.17.0\n"
 
 #: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:4
 msgid "api.draft"
@@ -752,20 +752,22 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-msgid "An error occurred while rendering this component"
+msgid "We couldn’t display this item."
 msgstr ""
 
-msgid ""
-"Please try refreshing the page or contact support if the problem persists."
+msgid "Please refresh the page, or contact support if the problem continues."
+msgstr ""
+
+msgid "Record ID: {{pid}}"
 msgstr ""
 
 msgid "resultsPerPage"
 msgstr ""
 
-msgid "View all versions"
+msgid "Unable to load {{facet}} filter options"
 msgstr ""
 
-msgid "Error loading facet"
+msgid "View all versions"
 msgstr ""
 
 msgid "Filter results"
