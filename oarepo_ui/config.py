@@ -7,6 +7,8 @@ OAREPO_UI_DEVELOPMENT_MODE = False
 # We set this to avoid https://github.com/inveniosoftware/invenio-administration/issues/180
 THEME_HEADER_LOGIN_TEMPLATE = "oarepo_ui/header_login.html"
 
+OAREPO_UI_THEME_HEADER_FRONTPAGE = "oarepo_ui/header_frontpage.html"
+
 OAREPO_UI_JINJAX_FILTERS = {
     "id": "oarepo_ui.resources.templating.filters:id_filter",
     "to_dict": "oarepo_ui.resources.templating.filters:to_dict_filter",
