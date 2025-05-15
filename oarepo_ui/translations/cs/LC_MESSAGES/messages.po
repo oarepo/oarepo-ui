@@ -1014,3 +1014,6 @@ msgstr "ID záznamu: {{pid}}"
 
 msgid "Unable to load {{facet}} filter options"
 msgstr "Nepodařilo se načíst filtr {{facet}}"
+
+msgid "Organization name is a required field."
+msgstr "Název organizace je povinné pole."

@@ -28,14 +28,22 @@ const DefaultListItemErrorFallback = ({ result, error }) => {
               </div>
               <Item.Description>
                 <p>{i18next.t("We couldn’t display this item.")}</p>
-                <p>{i18next.t("Please refresh the page, or contact support if the problem continues.")}</p>
+                <p>
+                  {i18next.t(
+                    "Please refresh the page, or contact support if the problem continues."
+                  )}
+                </p>
               </Item.Description>
               <Item.Meta>
                 <Grid columns={1}>
                   <Grid.Column>
                     <Grid.Row className="ui separated">
-                      <p>{i18next.t("Record ID: {{pid}}", {pid: result.id})}</p>
-                      <p>{i18next.t("Error")}: <code>{error.message}</code></p>
+                      <p>
+                        {i18next.t("Record ID: {{pid}}", { pid: result.id })}
+                      </p>
+                      <p>
+                        {i18next.t("Error")}: <code>{error.message}</code>
+                      </p>
                     </Grid.Row>
                   </Grid.Column>
                 </Grid>
@@ -50,6 +58,7 @@ const DefaultListItemErrorFallback = ({ result, error }) => {
 
 DefaultListItemErrorFallback.propTypes = {
   result: PropTypes.object.isRequired,
+  error: PropTypes.object,
 };
 
 // Don't see another way, if we do not wish to put the error boundary directly
@@ -57,7 +66,11 @@ DefaultListItemErrorFallback.propTypes = {
 const ListItem = ({ result, overridableId }) => {
   const { buildUID } = useContext(AppContext);
   return (
-    <ErrorBoundary FallbackComponent={(props) => <DefaultListItemErrorFallback {...props} result={result} />}>
+    <ErrorBoundary
+      FallbackComponent={(props) => (
+        <DefaultListItemErrorFallback {...props} result={result} />
+      )}
+    >
       <Overridable
         id={buildUID("ResultsList.item", overridableId)}
         result={result}
@@ -79,7 +92,7 @@ const ListItem = ({ result, overridableId }) => {
 
 ListItem.propTypes = {
   result: PropTypes.object.isRequired,
-  overridableId: PropTypes.string.isRequired,
+  overridableId: PropTypes.string,
 };
 
 const ListItemContainerComponent = ({ currentResultsState, overridableId }) => {
@@ -97,7 +110,7 @@ const ListItemContainerComponent = ({ currentResultsState, overridableId }) => {
 
 ListItemContainerComponent.propTypes = {
   currentResultsState: PropTypes.object.isRequired,
-  overridableId: PropTypes.string.isRequired,
+  overridableId: PropTypes.string,
 };
 
 export const ListItemContainer = withState(ListItemContainerComponent);
