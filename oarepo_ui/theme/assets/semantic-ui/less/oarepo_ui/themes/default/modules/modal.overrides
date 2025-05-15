@@ -22,3 +22,17 @@
   right: @innerCloseRight;
   color: @innerCloseColor;
 }
+
+
+.record-share-modal {
+  min-height: 35em;
+
+  .share-content {
+    padding: 1em;
+    min-height: 26em;
+  }
+
+  .share-description {
+    margin: 1em auto;
+  }
+}
