@@ -4,9 +4,7 @@ import PropTypes from "prop-types";
 import { AppContext, withState } from "react-searchkit";
 import Overridable from "react-overridable";
 
-// TODO: why is title a required prop that is not used at all?
 export const FoldableBucketAggregationElementComponent = ({
-  title,
   containerCmp,
   agg,
   currentQueryState,
@@ -56,7 +54,6 @@ export const FoldableBucketAggregationElementComponent = ({
 };
 
 FoldableBucketAggregationElementComponent.propTypes = {
-  title: PropTypes.string.isRequired,
   containerCmp: PropTypes.node.isRequired,
   agg: PropTypes.object.isRequired,
   currentQueryState: PropTypes.object.isRequired,
