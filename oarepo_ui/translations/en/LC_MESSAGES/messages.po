@@ -1048,3 +1048,6 @@ msgstr ""
 
 msgid "Unable to load {{facet}} filter options"
 msgstr ""
+
+msgid "Organization name is a required field."
+msgstr ""
