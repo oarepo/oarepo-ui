@@ -9,6 +9,7 @@ const ErrorMessageItem = ({ error }) => {
   const label = getFieldData({
     fieldPath: error.errorPath,
     fieldRepresentation: "text",
+    ignorePrefix: true,
   })?.label;
 
   return `${label}: ${error.errorMessage}`;
