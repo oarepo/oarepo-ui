@@ -1,0 +1,6 @@
+.ui.input {
+  &.icon > i.icon.searchbar-clear-button {
+    position: absolute;
+    right: @iconMargin + 0.2em;
+  }
+}
