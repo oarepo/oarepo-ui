@@ -1,6 +1,6 @@
 // no multiple options search bar
 
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { withState } from "react-searchkit";
 import { i18next } from "@translations/oarepo_ui/i18next";
