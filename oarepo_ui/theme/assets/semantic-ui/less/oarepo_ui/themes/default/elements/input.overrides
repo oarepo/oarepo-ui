@@ -1,6 +1,12 @@
 .ui.input {
-  &.icon > i.icon.searchbar-clear-button {
+  &.icon > i.icon.clear-button {
     position: absolute;
     right: @iconMargin + 0.2em;
+  }
+
+  & > textarea+i.icon.clear-button {
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
   }
 }

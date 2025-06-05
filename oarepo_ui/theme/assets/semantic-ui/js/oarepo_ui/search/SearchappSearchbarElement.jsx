@@ -1,10 +1,11 @@
 // no multiple options search bar
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { withState } from "react-searchkit";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { Button, Icon } from "semantic-ui-react";
+import TextareaAutosize from 'react-textarea-autosize';
 
 export const SearchappSearchbarElement = withState(
   ({
@@ -17,8 +18,10 @@ export const SearchappSearchbarElement = withState(
     placeholder: passedPlaceholder,
     actionProps,
   }) => {
+    const initialMaxRows = 10; // Default maximum number of rows for the textarea
     const placeholder = passedPlaceholder || i18next.t("Search");
-    const textareaRef = useRef(null);
+    
+    const [textAreaMaxRows, setTextAreaMaxRows] = useState(1);
 
     const onSearch = () => {
       updateQueryState({ ...currentQueryState, queryString, page: 1 });
@@ -33,80 +36,45 @@ export const SearchappSearchbarElement = withState(
       }
     };
 
-    const autoResize = () => {
-      const textarea = textareaRef.current;
-      if (textarea) {
-        textarea.style.height = 'auto';
-        textarea.style.height = Math.max(38, textarea.scrollHeight) + 'px';
-      }
-    };
-
-    useEffect(() => {
-      autoResize();
-    }, [queryString]);
-
     const handleInputChange = (event) => {
       onInputChange(event.target.value);
-      autoResize();
     };
 
     const handleClear = () => {
       onInputChange("");
-      if (textareaRef.current) {
-        textareaRef.current.style.height = '38px';
-        textareaRef.current.focus();
-      }
+    };
+
+    const handleFocus = () => {
+      setTextAreaMaxRows(initialMaxRows); // Expand to multiple lines when focused
+    };
+
+    const handleBlur = () => {
+      setTextAreaMaxRows(1); // Reset to single line when blurred
     };
 
     return (
-      <div className="ui fluid action input" style={{ position: 'relative' }}>
-        <textarea
-          ref={textareaRef}
-          className="form-control searchbar-textarea"
+      <div className="ui fluid action icon input">
+        <TextareaAutosize
+          className="ui multiline-textarea"
           placeholder={placeholder}
           aria-label={placeholder}
           value={queryString}
           onChange={handleInputChange}
           onKeyPress={onKeyPress}
-          style={{
-            resize: 'none',
-            minHeight: '38px',
-            overflowY: 'hidden',
-            paddingRight: queryString ? '70px' : '42px',
-            border: '1px solid rgba(34,36,38,.15)',
-            borderRadius: '.28571429rem 0 0 .28571429rem',
-            fontFamily: 'inherit',
-            fontSize: '1em',
-            padding: '0.67857143em 1em',
-            width: '100%',
-            boxSizing: 'border-box',
-            outline: 'none',
-            zIndex: 10,
-          }}
-          rows="1"
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          minRows="1"
+          maxRows={textAreaMaxRows}
         />
         {queryString && (
           <Icon
             name="close"
             role="button"
-            className="searchbar-clear-button"
+            className="clear-button"
             link
             onClick={handleClear}
             aria-label={i18next.t("Clear")}
-            style={{
-              position: 'absolute',
-              right: '3em',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              background: 'transparent',
-              border: 'none',
-              padding: '4px',
-              zIndex: 100,
-              minHeight: 'auto',
-              height: 'auto'
-            }}
-          >
-          </Icon>
+          />
         )}
         <Button
           type="submit"
@@ -115,9 +83,6 @@ export const SearchappSearchbarElement = withState(
           color={iconColor}
           onClick={onBtnSearchClick}
           aria-label={i18next.t("Search")}
-          style={{
-            borderRadius: '0 .28571429rem .28571429rem 0'
-          }}
           {...actionProps}
         >
           <Icon name={iconName} />
