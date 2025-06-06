@@ -7,6 +7,7 @@ export const FileUploadWrapper = ({
   uploadWrapperClassName,
   uploadButtonClassName,
   props,
+  required,
 }) => {
   const TriggerComponent = ({ onClick, ...props }) => (
     <button
@@ -16,7 +17,7 @@ export const FileUploadWrapper = ({
       aria-label={i18next.t("Upload files")}
       {...props}
     >
-      {i18next.t("Upload files")}
+      {i18next.t("Upload files")} {required && <span>*</span>}
       <i aria-hidden="true" className="upload icon" />
     </button>
   );
@@ -31,6 +32,7 @@ export const FileUploadWrapper = ({
 FileUploadWrapper.propTypes = {
   uploadWrapperClassName: PropTypes.string,
   uploadButtonClassName: PropTypes.string,
+  required: PropTypes.bool,
   props: PropTypes.object,
 };
 

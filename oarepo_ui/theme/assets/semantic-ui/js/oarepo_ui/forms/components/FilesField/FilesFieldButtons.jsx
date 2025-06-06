@@ -41,6 +41,7 @@ export const UploadFileButton = ({
   handleFilesUpload,
   allowedFileTypes,
   fileMetadataFields,
+  required,
 }) => {
   return (
     <FileUploadWrapper
@@ -55,6 +56,7 @@ export const UploadFileButton = ({
         },
         allowedMetaFields: fileMetadataFields,
       }}
+      required={required}
     />
   );
 };
@@ -63,6 +65,7 @@ UploadFileButton.propTypes = {
   record: PropTypes.object.isRequired,
   handleFilesUpload: PropTypes.func.isRequired,
   allowedFileTypes: PropTypes.array,
+  required: PropTypes.bool,
   fileMetadataFields: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,
