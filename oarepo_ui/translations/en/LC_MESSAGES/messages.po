@@ -1051,3 +1051,10 @@ msgstr ""
 
 msgid "Organization name is a required field."
 msgstr ""
+
+#: /Users/m/w/cesnet/oarepo-ui/oarepo_ui/templates/oarepo_ui/Tombstone.jinja:16
+msgid ""
+"\n"
+"      The record you are trying to access was removed. The\n"
+"      metadata of the record is kept for archival purposes."
+msgstr ""
