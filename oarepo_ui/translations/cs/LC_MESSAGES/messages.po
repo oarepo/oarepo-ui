@@ -395,11 +395,11 @@ msgstr "Záznam smazán"
 #, python-format
 msgid ""
 "\n"
-"      The record you are trying to access was removed from %(sitename)s. The\n"
+"      The record you are trying to access was removed. The\n"
 "      metadata of the record is kept for archival purposes."
 msgstr ""
 "\n"
-"      Záznam, který se snažíte zobrazit, byl smazán z repozitáře %(sitename)s. <br>Metadata\n"
+"      Záznam, který se snažíte zobrazit, byl smazán. <br>Metadata\n"
 "      záznamu jsou uložena pro archivní účely. <br>Potřebujete-li je, obraťte se na správce repozitáře."
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/PreviewHeader.jinja:11
