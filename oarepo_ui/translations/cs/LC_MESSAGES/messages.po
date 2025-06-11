@@ -171,17 +171,16 @@ msgstr ""
 "uložena, prosím, opravte je a uložte znovu"
 
 msgid "Draft saved successfully."
-msgstr "Pracovní záznam byl uložen."
+msgstr "Koncept byl uložen."
 
 msgid "Draft published successfully. Redirecting to record's detail page ..."
 msgstr ""
-"Pracovní záznam byl úspěšně publikován. Budete přesměrováni na stránku s "
-"detailem záznamu …"
+"Koncept byl úspěšně publikován. Budete přesměrováni na stránku s detailem "
+"záznamu …"
 
 msgid "Draft deleted successfully. Redirecting to the main page ..."
 msgstr ""
-"Pracovní verze záznamu byla smazána. Za okamžik Vás přesměrujeme na hlavní "
-"stránku."
+"Koncept byl úspěšně smazán. Za okamžik Vás přesměrujeme na hlavní stránku."
 
 msgid ""
 "Draft was saved but could not be published due to following validation "
