@@ -171,17 +171,16 @@ msgstr ""
 "uložena, prosím, opravte je a uložte znovu"
 
 msgid "Draft saved successfully."
-msgstr "Pracovní záznam byl uložen."
+msgstr "Koncept byl uložen."
 
 msgid "Draft published successfully. Redirecting to record's detail page ..."
 msgstr ""
-"Pracovní záznam byl úspěšně publikován. Budete přesměrováni na stránku s "
-"detailem záznamu …"
+"Koncept byl úspěšně publikován. Budete přesměrováni na stránku s detailem "
+"záznamu …"
 
 msgid "Draft deleted successfully. Redirecting to the main page ..."
 msgstr ""
-"Pracovní verze záznamu byla smazána. Za okamžik Vás přesměrujeme na hlavní "
-"stránku."
+"Koncept byl úspěšně smazán. Za okamžik Vás přesměrujeme na hlavní stránku."
 
 msgid ""
 "Draft was saved but could not be published due to following validation "
@@ -395,11 +394,11 @@ msgstr "Záznam smazán"
 #, python-format
 msgid ""
 "\n"
-"      The record you are trying to access was removed from %(sitename)s. The\n"
+"      The record you are trying to access was removed. The\n"
 "      metadata of the record is kept for archival purposes."
 msgstr ""
 "\n"
-"      Záznam, který se snažíte zobrazit, byl smazán z repozitáře %(sitename)s. <br>Metadata\n"
+"      Záznam, který se snažíte zobrazit, byl smazán. <br>Metadata\n"
 "      záznamu jsou uložena pro archivní účely. <br>Potřebujete-li je, obraťte se na správce repozitáře."
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/PreviewHeader.jinja:11

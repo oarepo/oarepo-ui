@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-05-15 10:41+0200\n"
+"POT-Creation-Date: 2025-06-11 10:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -268,10 +268,9 @@ msgid "Gone"
 msgstr ""
 
 #: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/Tombstone.jinja:16
-#, python-format
 msgid ""
 "\n"
-"      The record you are trying to access was removed from %(sitename)s. The\n"
+"      The record you are trying to access was removed. The\n"
 "      metadata of the record is kept for archival purposes."
 msgstr ""
 
