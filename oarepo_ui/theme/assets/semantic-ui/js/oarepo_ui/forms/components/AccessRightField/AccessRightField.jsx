@@ -3,6 +3,8 @@ import { Field } from "formik";
 import { AccessRightFieldCmp } from "@js/invenio_rdm_records/src/deposit/fields/AccessField/AccessRightField";
 import PropTypes from "prop-types";
 import { useFormConfig } from "@js/oarepo_ui";
+import { I18nextProvider } from "react-i18next";
+import { i18next } from "@translations/invenio_rdm_records/i18next";
 
 export const AccessRightField = ({
   fieldPath,
@@ -19,28 +21,30 @@ export const AccessRightField = ({
   } = useFormConfig();
 
   return (
-    <Field name={fieldPath}>
-      {(formik) => {
-        const mainCommunity =
-          community ||
-          allowed_communities.find(
-            (c) => c.id === record?.parent?.communities?.default
+    <I18nextProvider i18n={i18next}>
+      <Field name={fieldPath}>
+        {(formik) => {
+          const mainCommunity =
+            community ||
+            allowed_communities.find(
+              (c) => c.id === record?.parent?.communities?.default
+            );
+          return (
+            <AccessRightFieldCmp
+              formik={formik}
+              fieldPath={fieldPath}
+              label={label}
+              labelIcon={labelIcon}
+              showMetadataAccess={showMetadataAccess}
+              community={mainCommunity}
+              record={record}
+              recordRestrictionGracePeriod={recordRestrictionGracePeriod}
+              allowRecordRestriction={allowRecordRestriction}
+            />
           );
-        return (
-          <AccessRightFieldCmp
-            formik={formik}
-            fieldPath={fieldPath}
-            label={label}
-            labelIcon={labelIcon}
-            showMetadataAccess={showMetadataAccess}
-            community={mainCommunity}
-            record={record}
-            recordRestrictionGracePeriod={recordRestrictionGracePeriod}
-            allowRecordRestriction={allowRecordRestriction}
-          />
-        );
-      }}
-    </Field>
+        }}
+      </Field>
+    </I18nextProvider>
   );
 };
 

@@ -154,6 +154,13 @@ class OARepoUIState:
                     "CommunityInvitationsModal", "@js/communities_components"
                 )
             },
+            "oarepo_communities.community_invitations": {
+                "InvenioCommunities.CommunityMembers.InvitationsModal": UIComponent(
+                    "CommunityInvitationsModal",
+                    "@js/communities_components",
+                    props={"resetQueryOnSubmit": True},
+                )
+            },
             "oarepo_communities.communities_settings": {
                 "InvenioCommunities.CommunityProfileForm.GridRow.DangerZone": DisabledComponent
             },
@@ -194,5 +201,7 @@ class OARepoUIExtension:
             for name, val in getattr(config, k).items():
                 if name not in app.config[k]:
                     app.config[k][name] = val
-                    
-        app.config.setdefault("MATOMO_ANALYTICS_TEMPLATE", config.MATOMO_ANALYTICS_TEMPLATE)            
+
+        app.config.setdefault(
+            "MATOMO_ANALYTICS_TEMPLATE", config.MATOMO_ANALYTICS_TEMPLATE
+        )
