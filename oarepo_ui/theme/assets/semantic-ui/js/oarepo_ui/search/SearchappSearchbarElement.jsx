@@ -29,7 +29,7 @@ export const SearchappSearchbarElement = withState(
     const onBtnSearchClick = () => {
       onSearch();
     };
-    const onKeyPress = (event) => {
+    const onKeyDown = (event) => {
       if (event.key === "Enter" && !event.shiftKey) {
         event.preventDefault();
         onSearch();
@@ -44,28 +44,37 @@ export const SearchappSearchbarElement = withState(
       onInputChange("");
     };
 
-    const handleFocus = () => {
+    const handleFocus = (event) => {
       setTextAreaMaxRows(initialMaxRows); // Expand to multiple lines when focused
+      event.target.removeAttribute('title');
     };
 
-    const handleBlur = () => {
+    const handleBlur = (event) => {
       setTextAreaMaxRows(1); // Reset to single line when blurred
+      event.target.setAttribute('title', event.target.value); // Set title for tooltip effect
     };
 
     return (
       <div className="ui fluid action icon input">
-        <TextareaAutosize
-          className="ui multiline-textarea"
-          placeholder={placeholder}
-          aria-label={placeholder}
-          value={queryString}
-          onChange={handleInputChange}
-          onKeyPress={onKeyPress}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          minRows="1"
-          maxRows={textAreaMaxRows}
-        />
+        <div className="textarea-container">
+          <TextareaAutosize
+            className="ui multiline-textarea"
+            placeholder={placeholder}
+            aria-label={placeholder}
+            value={queryString}
+            onChange={handleInputChange}
+            onKeyDown={onKeyDown}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            minRows="1"
+            maxRows={textAreaMaxRows}
+          />
+          {queryString && (
+            <div className="textarea-overlay">
+              {queryString}
+            </div>
+          )}
+        </div>
         {queryString && (
           <Icon
             name="close"

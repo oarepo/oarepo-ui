@@ -1,4 +1,3 @@
-
 /*******************************
             Theme
 *******************************/
@@ -35,6 +34,14 @@ name of the component from above)
   will allow users to override these values.
 */
 
+// HTMl+CSS trick, according to: https://stackoverflow.com/a/47896872
+
+.textarea-container {
+  position: relative;
+  width: 100%;
+  z-index: 1;
+}
+
 .ui.multiline-textarea {
   resize: none;
   min-height: 38px; // 38px is the default height of a textarea
@@ -45,7 +52,35 @@ name of the component from above)
   padding-right: 2.7em;
   width: 100%;
   outline: none;
-  z-index: 10;
+  background: white;
+
+  &:focus + .textarea-overlay {
+    display: none;
+  }
+}
+
+.textarea-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+
+  // Match textarea styling
+  min-height: 38px;
+  border: 1px solid @borderColor;
+  border-radius: .28571429rem 0 0 .28571429rem;
+  font-family: inherit;
+  padding: 0.5em 1em;
+  padding-right: 2.7em;
+  background: white;
+  cursor: text;
+  line-height: 1.15em;
+  
+  // Ellipsis effect
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .loadUIOverrides();

@@ -2,6 +2,7 @@
   &.icon > i.icon.clear-button {
     position: absolute;
     right: @iconMargin + 0.2em;
+    z-index: 100;
   }
 
   & > textarea+i.icon.clear-button {
