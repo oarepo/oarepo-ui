@@ -283,7 +283,7 @@ class RecordsUIResource(UIResource):
         )
 
         self.make_links_absolute(record["links"], self.api_service.config.url_prefix)
-        extra_context = dict()
+        extra_context = {}
         embedded = resource_requestctx.args.get("embed", None) == "true"
         handlers = self._exportable_handlers()
         extra_context["exporters"] = {
@@ -452,19 +452,19 @@ class RecordsUIResource(UIResource):
                 value
             )
 
-        search_options = dict(
-            api_config=self.api_service.config,
-            identity=g.identity,
-            overrides={
+        search_options = {
+            "api_config": self.api_service.config,
+            "identity": g.identity,
+            "overrides": {
                 "ui_endpoint": self.config.url_prefix,
                 "ui_links": ui_links,
                 "overridableIdPrefix": overridable_id_prefix,
                 "defaultComponents": default_components,
                 "allowedHtmlTags": ["sup", "sub", "em", "strong"],
             },
-        )
+        }
 
-        extra_context = dict()
+        extra_context = {}
 
         self.run_components(
             "before_ui_search",
@@ -598,7 +598,7 @@ class RecordsUIResource(UIResource):
 
         ui_links = self.expand_detail_links(identity=g.identity, record=api_record)
 
-        extra_context = dict()
+        extra_context = {}
 
         self.run_components(
             "form_config",
@@ -667,7 +667,7 @@ class RecordsUIResource(UIResource):
 
         form_config["ui_model"] = self.ui_model
 
-        extra_context = dict()
+        extra_context = {}
 
         ui_links = {}
 
@@ -907,7 +907,7 @@ class TemplatePageUIResource(UIResource):
 
     @request_view_args
     def render(self, page, *args, **kwargs):
-        extra_context = dict()
+        extra_context = {}
 
         self.run_components(
             "before_render",
