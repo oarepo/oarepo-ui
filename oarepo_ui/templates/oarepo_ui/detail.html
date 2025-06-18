@@ -16,6 +16,13 @@
         >
           {% block record_main_content %}
           {% endblock record_main_content %}
+          {% if embedded %}
+           <IdentifiersAndLinks 
+            originalRecordUrl={metadata.originalRecord} 
+            objectIdentifiers={metadata.objectIdentifiers} 
+            pids={record.get('pids', {})}
+          />
+          {% endif %}
         </article>
 
         {# Sidebar #}
