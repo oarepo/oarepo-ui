@@ -98,6 +98,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
     request_export_args = {"export_format": ma.fields.Str()}
     request_search_args = {"page": ma.fields.Integer(), "size": ma.fields.Integer()}
     request_create_args = {"community": ma.fields.Str()}
+    request_embed_args = {"embed": ma.fields.Str()}
     request_form_config_view_args = {}
 
     app_contexts = None
