@@ -1,6 +1,10 @@
-from flask import Blueprint
+from flask import Blueprint, flash, render_template, request
+from flask_login import current_user
 from flask_menu import current_menu
+from invenio_i18n import lazy_gettext as _
 from invenio_base.utils import obj_or_import_string
+from invenio_users_resources.forms import NotificationsForm
+from invenio_app_rdm.theme.views import handle_notifications_form
 
 
 def create_blueprint(app):
@@ -41,3 +45,26 @@ def create_blueprint(app):
     blueprint.record_once(add_jinja_filters)
 
     return blueprint
+
+
+def notification_settings():
+    """View for notification settings."""
+    preferences_notifications_form = NotificationsForm(
+        formdata=None, obj=current_user, prefix="preferences-notifications"
+    )
+
+    # Pick form
+    form_name = request.form.get("submit", None)
+    form = preferences_notifications_form if form_name else None
+
+    # Process form
+    if form:
+        form.process(formdata=request.form)
+        if form.validate_on_submit():
+            handle_notifications_form(form)
+            flash(_("Notification preferences were updated."), category="success")
+
+    return render_template(
+        "oarepo_ui/settings/notifications.html",
+        preferences_notifications_form=preferences_notifications_form,
+    )
