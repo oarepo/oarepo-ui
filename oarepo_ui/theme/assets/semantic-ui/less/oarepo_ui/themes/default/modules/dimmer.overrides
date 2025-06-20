@@ -1,0 +1,10 @@
+// fixes issue with loader not being visible in the modal
+.ui.dimmer .ui.modal .ui.loader {
+  &:before {
+    border-color: @loaderFillColor;
+  }
+
+  &:after {
+    border-color: @mutedTextColor transparent transparent;
+  }
+}
