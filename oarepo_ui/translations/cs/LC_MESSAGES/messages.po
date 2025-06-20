@@ -1016,3 +1016,6 @@ msgstr "Nepodařilo se načíst filtr {{facet}}"
 
 msgid "Organization name is a required field."
 msgstr "Název organizace je povinné pole."
+
+msgid "Clear"
+msgstr "Smazat"
