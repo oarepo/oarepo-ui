@@ -72,6 +72,8 @@ request_form_config_view_args = request_parser(
     from_conf("request_form_config_view_args"), location="view_args"
 )
 
+request_embed_args = request_parser(from_conf("request_embed_args"), location="args")
+
 
 class UIComponentsMixin:
     #
@@ -233,6 +235,7 @@ class RecordsUIResource(UIResource):
     @request_read_args
     @request_view_args
     @response_header_signposting
+    @request_embed_args
     def _detail(self, *, is_preview=False):
         if is_preview:
             api_record = self._get_record(
@@ -280,7 +283,8 @@ class RecordsUIResource(UIResource):
         )
 
         self.make_links_absolute(record["links"], self.api_service.config.url_prefix)
-        extra_context = dict()
+        extra_context = {}
+        embedded = resource_requestctx.args.get("embed", None) == "true"
         handlers = self._exportable_handlers()
         extra_context["exporters"] = {
             handler.export_code: handler for mimetype, handler in handlers
@@ -295,8 +299,8 @@ class RecordsUIResource(UIResource):
             view_args=resource_requestctx.view_args,
             ui_links=ui_links,
             is_preview=is_preview,
+            embedded=embedded,
         )
-
         metadata = dict(record.get("metadata", record))
         render_kwargs = {
             **extra_context,
@@ -309,6 +313,7 @@ class RecordsUIResource(UIResource):
             "context": current_oarepo_ui.catalog.jinja_env.globals,
             "d": FieldData(record, self.ui_model),
             "is_preview": is_preview,
+            "embedded": embedded,
         }
 
         response = Response(
@@ -447,19 +452,19 @@ class RecordsUIResource(UIResource):
                 value
             )
 
-        search_options = dict(
-            api_config=self.api_service.config,
-            identity=g.identity,
-            overrides={
+        search_options = {
+            "api_config": self.api_service.config,
+            "identity": g.identity,
+            "overrides": {
                 "ui_endpoint": self.config.url_prefix,
                 "ui_links": ui_links,
                 "overridableIdPrefix": overridable_id_prefix,
                 "defaultComponents": default_components,
                 "allowedHtmlTags": ["sup", "sub", "em", "strong"],
             },
-        )
+        }
 
-        extra_context = dict()
+        extra_context = {}
 
         self.run_components(
             "before_ui_search",
@@ -593,7 +598,7 @@ class RecordsUIResource(UIResource):
 
         ui_links = self.expand_detail_links(identity=g.identity, record=api_record)
 
-        extra_context = dict()
+        extra_context = {}
 
         self.run_components(
             "form_config",
@@ -662,7 +667,7 @@ class RecordsUIResource(UIResource):
 
         form_config["ui_model"] = self.ui_model
 
-        extra_context = dict()
+        extra_context = {}
 
         ui_links = {}
 
@@ -783,9 +788,7 @@ class RecordsUIResource(UIResource):
                 error.record.get("id", None), include_deleted=True
             )
             record_tombstone = record._record.get("tombstone", None)
-        except (
-            RecordDeletedException
-        ) as e:  # read with include_deleted=True raises an exception instead of just returning record
+        except RecordDeletedException as e:  # read with include_deleted=True raises an exception instead of just returning record
             record_tombstone = e.record.get("tombstone")
 
         tombstone_dict = {}
@@ -904,7 +907,7 @@ class TemplatePageUIResource(UIResource):
 
     @request_view_args
     def render(self, page, *args, **kwargs):
-        extra_context = dict()
+        extra_context = {}
 
         self.run_components(
             "before_render",

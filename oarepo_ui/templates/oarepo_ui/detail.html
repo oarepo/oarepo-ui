@@ -16,6 +16,13 @@
         >
           {% block record_main_content %}
           {% endblock record_main_content %}
+          {% if embedded %}
+           <IdentifiersAndLinks 
+            originalRecordUrl={metadata.originalRecord} 
+            objectIdentifiers={metadata.objectIdentifiers} 
+            pids={record.get('pids', {})}
+          />
+          {% endif %}
         </article>
 
         {# Sidebar #}
@@ -33,12 +40,14 @@
 
   </div>
 
-  {% endblock page_body %}
+{% endblock page_body %}
 
-  {%- block javascript %}
-  {{super()}}
-  {{webpack["record_export.js"]}}
-  {{webpack["record_versions.js"]}}
-  {{webpack["record_sharing.js"]}}
-  {%- endblock javascript %}
+{% if not embedded %}
+{%- block javascript %}
+{{super()}}
+{{webpack["record_export.js"]}}
+{{webpack["record_versions.js"]}}
+{{webpack["record_sharing.js"]}}
+{%- endblock javascript %}
+{% endif %}
 
