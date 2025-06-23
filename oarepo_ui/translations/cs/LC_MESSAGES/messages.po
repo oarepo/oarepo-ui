@@ -268,7 +268,7 @@ msgstr "v"
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:14
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:15
 msgid "Search"
-msgstr "Vyhledávání"
+msgstr "Hledat"
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/oarepo_ui/footer.html:15
 msgid "Contact"
@@ -1019,3 +1019,7 @@ msgstr "Název organizace je povinné pole."
 
 msgid "Clear"
 msgstr "Smazat"
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/views.py:65
+msgid "Notification preferences were updated."
+msgstr "Předvolby oznámení byly aktualizovány."

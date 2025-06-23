@@ -1061,3 +1061,7 @@ msgstr ""
 
 msgid "Clear"
 msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/views.py:65
+msgid "Notification preferences were updated."
+msgstr ""

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-06-16 14:52+0200\n"
+"POT-Creation-Date: 2025-06-23 17:21+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,15 +49,19 @@ msgstr ""
 msgid "api.versions"
 msgstr ""
 
-#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/resources/resource.py:931
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/views.py:65
+msgid "Notification preferences were updated."
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/resources/resource.py:934
 msgid "Removal reason"
 msgstr ""
 
-#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/resources/resource.py:931
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/resources/resource.py:934
 msgid "Note"
 msgstr ""
 
-#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/resources/resource.py:931
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/resources/resource.py:934
 msgid "Citation text"
 msgstr ""
 
@@ -274,7 +278,7 @@ msgid ""
 "      metadata of the record is kept for archival purposes."
 msgstr ""
 
-#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/detail.html:25
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/templates/oarepo_ui/detail.html:32
 msgid "Record details"
 msgstr ""
 
