@@ -51,7 +51,7 @@ export const SearchappSearchbarElement = withState(
 
     const handleBlur = (event) => {
       setTextAreaMaxRows(1); // Reset to single line when blurred
-      event.target.setAttribute('title', event.target.value); // Set title for tooltip effect
+      event.target.setAttribute('title', `${i18next.t("Search")}: ${event.target.value}`); // Set title for tooltip effect
     };
 
     return (
