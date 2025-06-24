@@ -51,7 +51,12 @@ DeleteFileButtonCmp.propTypes = {
   className: PropTypes.string,
 };
 
-const EditFileButtonCmp = ({ fileName, record, className }) => {
+const EditFileButtonCmp = ({
+  fileName,
+  record,
+  className,
+  allowedFileTypes,
+}) => {
   return (
     <Popup
       // quirky issue where while in UPPY UI the popup goes over it
@@ -60,7 +65,11 @@ const EditFileButtonCmp = ({ fileName, record, className }) => {
       content={i18next.t("Edit file metadata")}
       trigger={
         <div className={className}>
-          <EditFileButton fileName={fileName} record={record} />
+          <EditFileButton
+            fileName={fileName}
+            record={record}
+            allowedFileTypes={allowedFileTypes}
+          />
         </div>
       }
     />
@@ -71,6 +80,7 @@ EditFileButtonCmp.propTypes = {
   fileName: PropTypes.string,
   record: PropTypes.object,
   className: PropTypes.string,
+  allowedFileTypes: PropTypes.arrayOf(PropTypes.string),
 };
 
 export const FilesFieldTable = ({
@@ -79,6 +89,7 @@ export const FilesFieldTable = ({
   handleFileDeletion,
   lockFileUploader,
   fileMetadataFields,
+  allowedFileTypes,
 }) => {
   return (
     files?.length > 0 && (
@@ -127,6 +138,7 @@ export const FilesFieldTable = ({
                         <EditFileButtonCmp
                           fileName={fileName}
                           record={record}
+                          allowedFileTypes={allowedFileTypes}
                         />
                       )}
                     </Table.Cell>
@@ -214,6 +226,7 @@ export const FilesFieldTable = ({
                           <EditFileButtonCmp
                             fileName={fileName}
                             record={record}
+                            allowedFileTypes={allowedFileTypes}
                           />
                         </Table.Cell>
                       </Table.Row>
@@ -233,6 +246,7 @@ FilesFieldTable.propTypes = {
   record: PropTypes.object,
   handleFileDeletion: PropTypes.func,
   lockFileUploader: PropTypes.bool.isRequired,
+  allowedFileTypes: PropTypes.arrayOf(PropTypes.string),
   fileMetadataFields: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,
