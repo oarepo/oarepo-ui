@@ -1058,3 +1058,10 @@ msgid ""
 "      The record you are trying to access was removed. The\n"
 "      metadata of the record is kept for archival purposes."
 msgstr ""
+
+msgid "Clear"
+msgstr ""
+
+#: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/views.py:65
+msgid "Notification preferences were updated."
+msgstr ""
