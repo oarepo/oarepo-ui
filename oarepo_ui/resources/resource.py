@@ -451,7 +451,6 @@ class RecordsUIResource(UIResource):
             default_components[f"{overridable_id_prefix}.ResultsList.item.{key}"] = (
                 value
             )
-
         search_options = {
             "api_config": self.api_service.config,
             "identity": g.identity,
@@ -461,6 +460,8 @@ class RecordsUIResource(UIResource):
                 "overridableIdPrefix": overridable_id_prefix,
                 "defaultComponents": default_components,
                 "allowedHtmlTags": ["sup", "sub", "em", "strong"],
+                "ignoredSearchFilters": self.config.ignored_search_filters(),
+                "additionalFilterLabels": self.config.additional_filter_labels(),
             },
         }
 

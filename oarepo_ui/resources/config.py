@@ -4,6 +4,9 @@ from pathlib import Path
 import marshmallow as ma
 from flask import current_app
 from flask_resources import ResourceConfig
+from flask_resources import (
+    resource_requestctx,
+)
 from invenio_base.utils import obj_or_import_string
 from invenio_pidstore.errors import (
     PIDDeletedError,
@@ -20,12 +23,37 @@ from invenio_records_resources.services.errors import (
 from invenio_search_ui.searchconfig import FacetsConfig, SearchAppConfig, SortConfig
 from oarepo_runtime.services.custom_fields import CustomFields, InlinedCustomFields
 
+from flask_resources.parsers import MultiDictSchema
+from marshmallow import fields, post_load, validate
+
 from oarepo_ui.resources.links import UIRecordLink
 
 
 def _(x):
     """Identity function used to trigger string extraction."""
     return x
+
+
+class SearchRequestArgsSchema(MultiDictSchema):
+    """Request URL query string arguments."""
+
+    q = fields.String()
+    suggest = fields.String()
+    sort = fields.String()
+    page = fields.Integer()
+    size = fields.Integer()
+    layout = fields.String(validate=validate.OneOf(["grid", "list"]))
+
+    @post_load(pass_original=True)
+    def facets(self, data, original_data=None, **kwargs):
+        """Extract facet filters from 'f=facetName:facetValue' style arguments."""
+
+        for value in original_data.getlist("f"):
+            if ":" in value:
+                key, val = value.split(":", 1)
+                data.setdefault("facets", {}).setdefault(key, []).append(val)
+
+        return data
 
 
 class UIResourceConfig(ResourceConfig):
@@ -96,7 +124,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
     request_view_args = {"pid_value": ma.fields.Str()}
     request_file_view_args = {**request_view_args, "filepath": ma.fields.Str()}
     request_export_args = {"export_format": ma.fields.Str()}
-    request_search_args = {"page": ma.fields.Integer(), "size": ma.fields.Integer()}
+    request_search_args = SearchRequestArgsSchema
     request_create_args = {"community": ma.fields.Str()}
     request_embed_args = {"embed": ma.fields.Str()}
     request_form_config_view_args = {}
@@ -185,6 +213,45 @@ class RecordsUIResourceConfig(UIResourceConfig):
         """
         return list(self.search_available_facets(api_config, identity).keys())
 
+    def additional_filter_labels(self):
+        """
+        Returns human-readable list of filters that are currently applied in the URL.
+        Sometimes those are not available in the response from the search API.
+        """
+        translated_params = {}
+        facets = {}
+
+        for model in current_app.config.get("GLOBAL_SEARCH_MODELS", []):
+            service_config_cls = obj_or_import_string(model["service_config"])
+            search_options = service_config_cls.search
+            facets = {**facets, **search_options.facets}
+
+        for k, v in resource_requestctx.args.get("facets", {}).items():
+            facet = facets.get(k)
+            if not facet:
+                continue
+
+            translated_params.setdefault(k, {})
+            translated_params[k]["label"] = facet._label
+
+            value_labels_attr = getattr(facet, "_value_labels", None)
+            if not value_labels_attr:
+                translated_params[k]["value_labels"] = [{"key": key} for key in v]
+                continue
+
+            if callable(value_labels_attr):
+                value_labels = value_labels_attr(v)
+            elif isinstance(value_labels_attr, dict):
+                value_labels = value_labels_attr
+            else:
+                value_labels = {}
+
+            translated_params[k]["value_labels"] = [
+                {"key": key, "label": value_labels.get(key, key)} for key in v
+            ]
+
+        return translated_params
+
     def search_active_sort_options(self, api_config, identity):
         return list(api_config.search.sort_options.keys())
 
@@ -210,6 +277,14 @@ class RecordsUIResourceConfig(UIResourceConfig):
             }
 
         return FacetsConfig(facets_config, selected_facets)
+
+    def ignored_search_filters(self):
+        """
+        Return a list of search filters to ignore.
+
+        Override this method downstream to specify which filters should be ignored.
+        """
+        return ["allversions"]
 
     def search_endpoint_url(self, identity, api_config, overrides={}, **kwargs):
         return f"/api{api_config.url_prefix}"
