@@ -28,6 +28,7 @@ export const MultilingualTextInput = ({
   prefillLanguageWithDefaultLocale = false,
   removeButtonLabelClassName,
   displayFirstInputRemoveButton = true,
+  hasLocalLanguageSelectField,
   ...uiProps
 }) => {
   const { defaultLocale } = useDefaultLocale();
@@ -89,6 +90,7 @@ export const MultilingualTextInput = ({
                     optimized
                     usedLanguages={usedLanguages}
                     lngFieldWidth={lngFieldWidth}
+                    hasLocalLanguageSelectField={hasLocalLanguageSelectField}
                     {...uiProps}
                   />
                 ) : (
@@ -96,6 +98,7 @@ export const MultilingualTextInput = ({
                     fieldPath={fieldPathPrefix}
                     usedLanguages={usedLanguages}
                     lngFieldWidth={lngFieldWidth}
+                    hasLocalLanguageSelectField={hasLocalLanguageSelectField}
                     {...uiProps}
                   />
                 )}
@@ -119,4 +122,5 @@ MultilingualTextInput.propTypes = {
   prefillLanguageWithDefaultLocale: PropTypes.bool,
   removeButtonLabelClassName: PropTypes.string,
   displayFirstInputRemoveButton: PropTypes.bool,
+  hasLocalLanguageSelectField: PropTypes.bool,
 };
