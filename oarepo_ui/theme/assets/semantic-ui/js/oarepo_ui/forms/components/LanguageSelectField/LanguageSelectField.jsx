@@ -1,5 +1,8 @@
 import * as React from "react";
-import { LocalVocabularySelectField } from "@js/oarepo_vocabularies";
+import {
+  LocalVocabularySelectField,
+  VocabularySelectField,
+} from "@js/oarepo_vocabularies";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import PropTypes from "prop-types";
 import { useFormikContext, getIn } from "formik";
@@ -13,10 +16,11 @@ export const LanguageSelectField = ({
   placeholder,
   clearable,
   usedLanguages,
+  isLocal,
   ...uiProps
 }) => {
   const { values } = useFormikContext();
-  return (
+  return isLocal ? (
     <LocalVocabularySelectField
       deburr
       fieldPath={fieldPath}
@@ -27,6 +31,22 @@ export const LanguageSelectField = ({
       label={label}
       optionsListName="languages"
       usedOptions={usedLanguages}
+      onChange={({ e, data, formikProps }) => {
+        formikProps.form.setFieldValue(fieldPath, data.value);
+      }}
+      value={getIn(values, fieldPath, "") ?? ""}
+      {...uiProps}
+    />
+  ) : (
+    <VocabularySelectField
+      deburr
+      fieldPath={fieldPath}
+      placeholder={placeholder}
+      required={required}
+      clearable={clearable}
+      multiple={multiple}
+      label={label}
+      type="languages"
       onChange={({ e, data, formikProps }) => {
         formikProps.form.setFieldValue(fieldPath, data.value);
       }}
@@ -46,6 +66,7 @@ LanguageSelectField.propTypes = {
   placeholder: PropTypes.string,
   options: PropTypes.array,
   usedLanguages: PropTypes.array,
+  isLocal: PropTypes.bool,
 };
 
 LanguageSelectField.defaultProps = {

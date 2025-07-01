@@ -13,6 +13,7 @@ export const I18nTextInputField = ({
   optimized,
   lngFieldWidth,
   usedLanguages,
+  hasLocalLanguageSelectField,
   ...uiProps
 }) => {
   const { values, setFieldValue, setFieldTouched } = useFormikContext();
@@ -28,6 +29,7 @@ export const I18nTextInputField = ({
         fieldPath={lngFieldPath}
         width={lngFieldWidth}
         usedLanguages={usedLanguages}
+        isLocal={hasLocalLanguageSelectField}
         {...getFieldData({
           fieldPath: lngFieldPath,
           icon: "globe",
@@ -58,6 +60,7 @@ I18nTextInputField.propTypes = {
   optimized: PropTypes.bool,
   lngFieldWidth: PropTypes.number,
   usedLanguages: PropTypes.array,
+  hasLocalLanguageSelectField: PropTypes.bool,
 };
 
 I18nTextInputField.defaultProps = {

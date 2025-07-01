@@ -14,6 +14,7 @@ export const I18nRichInputField = ({
   editorConfig,
   lngFieldWidth,
   usedLanguages,
+  hasLocalLanguageSelectField,
   ...uiProps
 }) => {
   const lngFieldPath = `${fieldPath}.lang`;
@@ -25,6 +26,7 @@ export const I18nRichInputField = ({
       <LanguageSelectField
         fieldPath={lngFieldPath}
         width={lngFieldWidth}
+        isLocal={hasLocalLanguageSelectField}
         usedLanguages={usedLanguages}
         {...getFieldData({
           fieldPath: lngFieldPath,
@@ -55,6 +57,7 @@ I18nRichInputField.propTypes = {
   editorConfig: PropTypes.object,
   lngFieldWidth: PropTypes.number,
   usedLanguages: PropTypes.array,
+  hasLocalLanguageSelectField: PropTypes.bool,
 };
 
 I18nRichInputField.defaultProps = {
