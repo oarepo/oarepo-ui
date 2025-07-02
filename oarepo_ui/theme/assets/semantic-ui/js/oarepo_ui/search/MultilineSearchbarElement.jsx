@@ -7,7 +7,7 @@ import { i18next } from "@translations/oarepo_ui/i18next";
 import { Button, Icon } from "semantic-ui-react";
 import TextareaAutosize from 'react-textarea-autosize';
 
-export const SearchappSearchbarElement = withState(
+export const MultilineSearchbarElement = withState(
   ({
     queryString,
     onInputChange,
@@ -26,9 +26,7 @@ export const SearchappSearchbarElement = withState(
     const onSearch = () => {
       updateQueryState({ ...currentQueryState, queryString, page: 1 });
     };
-    const onBtnSearchClick = () => {
-      onSearch();
-    };
+
     const onKeyDown = (event) => {
       if (event.key === "Enter" && !event.shiftKey) {
         event.preventDefault();
@@ -66,11 +64,11 @@ export const SearchappSearchbarElement = withState(
             onKeyDown={onKeyDown}
             onFocus={handleFocus}
             onBlur={handleBlur}
-            minRows="1"
+            minRows={1}
             maxRows={textAreaMaxRows}
           />
           {queryString && (
-            <div className="textarea-overlay">
+            <div className="textarea-overlay" aria-hidden={true}>
               {queryString}
             </div>
           )}
@@ -90,7 +88,7 @@ export const SearchappSearchbarElement = withState(
           icon
           className="search"
           color={iconColor}
-          onClick={onBtnSearchClick}
+          onClick={onSearch}
           aria-label={i18next.t("Search")}
           {...actionProps}
         >
@@ -101,7 +99,7 @@ export const SearchappSearchbarElement = withState(
   }
 );
 
-SearchappSearchbarElement.propTypes = {
+MultilineSearchbarElement.propTypes = {
   placeholder: PropTypes.string,
   queryString: PropTypes.string,
   onInputChange: PropTypes.func,
@@ -111,7 +109,7 @@ SearchappSearchbarElement.propTypes = {
   iconColor: PropTypes.string,
 };
 
-SearchappSearchbarElement.defaultProps = {
+MultilineSearchbarElement.defaultProps = {
   placeholder: i18next.t("Search"),
   iconName: "search",
 };
