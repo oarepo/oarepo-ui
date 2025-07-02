@@ -6,7 +6,7 @@ import { withState } from "react-searchkit";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { Input } from "semantic-ui-react";
 
-export const SearchappSearchbarElement = withState(
+export const ClearableSearchbarElement = withState(
   ({
     queryString,
     onInputChange,
@@ -30,8 +30,22 @@ export const SearchappSearchbarElement = withState(
         onSearch();
       }
     };
+
+    const icon = queryString ? { 
+      icon: { 
+        name: "close", 
+        className: "clear-button", 
+        link: true, 
+        onClick: () => onInputChange(""), 
+        role: "button", 
+        "aria-label": i18next.t("Clear"), 
+        ...actionProps 
+      } 
+    } : {};
+
     return (
       <Input
+        {...icon}
         action={{
           icon: iconName,
           className: "search",
@@ -53,7 +67,7 @@ export const SearchappSearchbarElement = withState(
   }
 );
 
-SearchappSearchbarElement.propTypes = {
+ClearableSearchbarElement.propTypes = {
   placeholder: PropTypes.string,
   queryString: PropTypes.string,
   onInputChange: PropTypes.func,
@@ -63,7 +77,7 @@ SearchappSearchbarElement.propTypes = {
   iconColor: PropTypes.string,
 };
 
-SearchappSearchbarElement.defaultProps = {
+ClearableSearchbarElement.defaultProps = {
   placeholder: i18next.t("Search"),
   iconName: "search",
 };
