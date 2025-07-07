@@ -10,12 +10,10 @@ const ShouldActiveFiltersRenderComponent = ({
 }) => {
   const { filters } = currentQueryState;
 
-  const activeFilters = useActiveSearchFilters(filters);
+  const { activeFiltersCount } = useActiveSearchFilters(filters);
 
   return (
-    <ShouldRender condition={activeFilters?.length > 0}>
-      {children}
-    </ShouldRender>
+    <ShouldRender condition={activeFiltersCount > 0}>{children}</ShouldRender>
   );
 };
 

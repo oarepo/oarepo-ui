@@ -7,17 +7,30 @@ import { withState } from "react-searchkit";
 import { ClearFiltersButton } from "@js/oarepo_ui";
 import { useActiveSearchFilters } from "./hooks";
 
-const getLabel = (filter, aggregations) => {
+
+const getLabel = (filter, aggregations, additionalFilterLabels) => {
+
   const aggName = filter[0];
-  let value = filter[1];
+  const value = filter[1];
+
+  const _getValueLabel = (aggregations) =>
+    aggregations[aggName]?.buckets?.find((b) => b.key === value)?.label;
+
+  // keep the original methodo of getting labels for backwards compatibility just in case
+  // to not break existing applications
   const label =
-    aggregations[aggName]?.buckets?.find((b) => b.key === value)?.label ||
+    _getValueLabel(aggregations) ||
+    _getValueLabel(additionalFilterLabels) ||
     value;
+
   let currentFilter = [aggName, value];
   const hasChild = filter.length === 3;
   if (hasChild) {
-    const { label, activeFilter } = getLabel(filter[2]);
-    value = `${value}.${label}`;
+    const { activeFilter } = getLabel(
+      filter[2],
+      aggregations,
+      additionalFilterLabels
+    );
     currentFilter.push(activeFilter);
   }
   return {
@@ -32,41 +45,50 @@ const ActiveFiltersElementComponent = ({
     data: { aggregations },
   },
 }) => {
-  const activeFilters = useActiveSearchFilters(filters);
-  const groupedData = _groupBy(activeFilters, 0);
+  const { activeSearchFilters, additionalFilterLabels } =
+    useActiveSearchFilters(filters);
+  const groupedData = _groupBy(activeSearchFilters, 0);
   return (
     <Grid>
       <Grid.Column only="computer">
         <div className="flex wrap align-items-center">
-          {_map(groupedData, (filters, key) => (
-            <Label.Group key={key} className="active-filters-group">
-              <Label pointing="right">
-                <Icon name="filter" />
-                {aggregations[key]?.label}
-              </Label>
-              {filters.map((filter, index) => {
-                const { label, activeFilter } = getLabel(filter, aggregations);
-                return (
-                  <Label
-                    className="active-filter-label"
-                    key={activeFilter}
-                    onClick={() => removeActiveFilter(activeFilter)}
-                    type="button"
-                    tabIndex="0"
-                    aria-label={`Remove filter ${label}`}
-                    onKeyPress={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        removeActiveFilter(activeFilter);
-                      }
-                    }}
-                  >
-                    {label}
-                    <Icon name="delete" aria-hidden="true" />
-                  </Label>
-                );
-              })}
-            </Label.Group>
-          ))}
+          {_map(groupedData, (filters, key) => {
+            return (
+              <Label.Group key={key} className="active-filters-group">
+                <Label pointing="right">
+                  <Icon name="filter" />
+                  {aggregations[key]?.label ||
+                    additionalFilterLabels[key]?.label ||
+                    key}
+                </Label>
+                {filters.map((filter, index) => {
+                  const { label, activeFilter } = getLabel(
+                    filter,
+                    aggregations,
+                    additionalFilterLabels
+                  );
+                  return (
+                    <Label
+                      className="active-filter-label"
+                      key={activeFilter}
+                      onClick={() => removeActiveFilter(activeFilter)}
+                      type="button"
+                      tabIndex="0"
+                      aria-label={`Remove filter ${label}`}
+                      onKeyPress={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          removeActiveFilter(activeFilter);
+                        }
+                      }}
+                    >
+                      {label}
+                      <Icon name="delete" aria-hidden="true" />
+                    </Label>
+                  );
+                })}
+              </Label.Group>
+            );
+          })}
           <ClearFiltersButton />
         </div>
       </Grid.Column>
