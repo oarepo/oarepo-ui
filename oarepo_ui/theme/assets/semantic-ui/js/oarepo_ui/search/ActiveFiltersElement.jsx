@@ -11,8 +11,7 @@ const getLabel = (filter, aggregations) => {
   const aggName = filter[0];
   let value = filter[1];
   const label =
-    aggregations[aggName]?.buckets?.find((b) => b.key === value)?.label ||
-    value;
+    aggregations[aggName]?.buckets?.find((b) => b.key === value)?.label || value;
   let currentFilter = [aggName, value];
   const hasChild = filter.length === 3;
   if (hasChild) {

@@ -25,10 +25,7 @@ export const ArrayWidget = ({
       setImportedComponent({
         // can not return function here as it would be interpreted by the setter immediatelly
         component: (idx) => (
-          <ItemWidgetComponent
-            fieldPath={`${fieldPath}[${idx}]`}
-            {...item_props}
-          />
+          <ItemWidgetComponent fieldPath={`${fieldPath}[${idx}]`} {...item_props} />
         ),
       });
     };
@@ -57,27 +54,27 @@ export const ArrayWidget = ({
     <>
       <Header as="h3">{label}</Header>
       <Grid>
-       {existingValues.length>0 && <Grid.Column width={16} className="pb-0">
-          {existingValues.map((value, index) => (
-            <GroupField width={16} key={index}>
-              <Form.Field width={15}>
-                {importedComponent.component(index)}
-              </Form.Field>
-              <Form.Field>
-                <Button
-                  aria-label={"Remove field"}
-                  className={`close-btn ${item_props.label ? "mt-25" : "mt-5"}`}
-                  icon
-                  onClick={() => handleRemove({ value: index })}
-                  type="button"
-                >
-                  <Icon name="close" />
-                </Button>
-              </Form.Field>
-            </GroupField>
-          ))}
-        </Grid.Column>}
-        <Grid.Row className={existingValues.length>0 ? "pt-0" : ""}>
+        {existingValues.length > 0 && (
+          <Grid.Column width={16} className="pb-0">
+            {existingValues.map((value, index) => (
+              <GroupField width={16} key={index}>
+                <Form.Field width={15}>{importedComponent.component(index)}</Form.Field>
+                <Form.Field>
+                  <Button
+                    aria-label={"Remove field"}
+                    className={`close-btn ${item_props.label ? "mt-25" : "mt-5"}`}
+                    icon
+                    onClick={() => handleRemove({ value: index })}
+                    type="button"
+                  >
+                    <Icon name="close" />
+                  </Button>
+                </Form.Field>
+              </GroupField>
+            ))}
+          </Grid.Column>
+        )}
+        <Grid.Row className={existingValues.length > 0 ? "pt-0" : ""}>
           <Grid.Column>
             <Button
               primary
