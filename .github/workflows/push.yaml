@@ -34,3 +34,20 @@ jobs:
           skip_existing: true
           user: __token__
           password: ${{ secrets.PYPI_PASSWORD }}
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install ESLint config
+        run: npm install --no-save --no-package-lock @inveniosoftware/eslint-config-invenio@^2.0.0
+
+      - name: Run ESLint
+        run: npx eslint .
