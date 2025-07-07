@@ -7,16 +7,19 @@ import { withState } from "react-searchkit";
 import { ClearFiltersButton } from "@js/oarepo_ui";
 import { useActiveSearchFilters } from "./hooks";
 
+const getValueLabel = (aggregations, aggName, aggValue) =>
+  aggregations[aggName]?.buckets?.find((b) => b.key === aggValue)?.label;
+
 const getLabel = (filter, aggregations, additionalFilterLabels) => {
   const aggName = filter[0];
   let value = filter[1];
   // keep the original methodo of getting labels for backwards compatibility just in case
   // to not break existing applications
   const label =
-    aggregations[aggName]?.buckets?.find((b) => b.key === value)?.label ||
-    additionalFilterLabels[aggName]?.value_labels?.find((b) => b.key === value)
-      ?.label ||
+    getValueLabel(aggregations, aggName, value) ||
+    getValueLabel(additionalFilterLabels, aggName, value) ||
     value;
+
   let currentFilter = [aggName, value];
   const hasChild = filter.length === 3;
   if (hasChild) {

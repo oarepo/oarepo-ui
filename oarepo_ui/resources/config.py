@@ -236,7 +236,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
             value_labels_attr = getattr(facet, "_value_labels", None)
             if not value_labels_attr:
-                translated_params[k]["value_labels"] = [{"key": key} for key in v]
+                translated_params[k]["buckets"] = [{"key": key} for key in v]
                 continue
 
             if callable(value_labels_attr):
@@ -246,7 +246,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
             else:
                 value_labels = {}
 
-            translated_params[k]["value_labels"] = [
+            translated_params[k]["buckets"] = [
                 {"key": key, "label": value_labels.get(key, key)} for key in v
             ]
 
