@@ -1,1 +1,1 @@
-export * from './MultilingualTextInput'
+export * from "./MultilingualTextInput";

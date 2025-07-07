@@ -35,10 +35,7 @@ const DeleteFileButtonCmp = ({ file, handleFileDeletion, className }) => {
       content={i18next.t("Delete file")}
       trigger={
         <div className={className}>
-          <DeleteFileButton
-            file={file}
-            handleFileDeletion={handleFileDeletion}
-          />
+          <DeleteFileButton file={file} handleFileDeletion={handleFileDeletion} />
         </div>
       }
     />
@@ -51,12 +48,7 @@ DeleteFileButtonCmp.propTypes = {
   className: PropTypes.string,
 };
 
-const EditFileButtonCmp = ({
-  fileName,
-  record,
-  className,
-  allowedFileTypes,
-}) => {
+const EditFileButtonCmp = ({ fileName, record, className, allowedFileTypes }) => {
   return (
     <Popup
       // quirky issue where while in UPPY UI the popup goes over it
@@ -94,10 +86,7 @@ export const FilesFieldTable = ({
   return (
     files?.length > 0 && (
       <React.Fragment>
-        <Table
-          compact
-          className="computer tablet only files-table-computer-tablet"
-        >
+        <Table compact className="computer tablet only files-table-computer-tablet">
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>{i18next.t("File name")}</Table.HeaderCell>
@@ -122,13 +111,10 @@ export const FilesFieldTable = ({
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {fileName &&
-                        _truncate(fileName, { length: 40, omission: "..." })}
+                      {fileName && _truncate(fileName, { length: 40, omission: "..." })}
                     </a>
                   </Table.Cell>
-                  <Table.Cell textAlign="center">
-                    {humanReadableBytes(size)}
-                  </Table.Cell>
+                  <Table.Cell textAlign="center">{humanReadableBytes(size)}</Table.Cell>
                   <Table.Cell textAlign="center">
                     <StatusIcon status={status} />
                   </Table.Cell>
@@ -201,10 +187,7 @@ export const FilesFieldTable = ({
                       <Table.Cell width={6}>
                         <strong>{i18next.t("Delete")}</strong>
                       </Table.Cell>
-                      <Table.Cell
-                        textAlign="center"
-                        className="flex justify-center"
-                      >
+                      <Table.Cell textAlign="center" className="flex justify-center">
                         <DeleteFileButtonCmp
                           file={file}
                           handleFileDeletion={handleFileDeletion}
@@ -219,10 +202,7 @@ export const FilesFieldTable = ({
                         <Table.Cell width={6}>
                           <strong>{i18next.t("Edit")}</strong>
                         </Table.Cell>
-                        <Table.Cell
-                          textAlign="center"
-                          className="flex justify-center"
-                        >
+                        <Table.Cell textAlign="center" className="flex justify-center">
                           <EditFileButtonCmp
                             fileName={fileName}
                             record={record}

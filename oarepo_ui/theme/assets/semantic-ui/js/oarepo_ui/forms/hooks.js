@@ -1,13 +1,6 @@
 import * as React from "react";
 import axios from "axios";
-import {
-  useEffect,
-  useCallback,
-  useState,
-  useContext,
-  useMemo,
-  useRef,
-} from "react";
+import { useEffect, useCallback, useState, useContext, useMemo, useRef } from "react";
 import { FormConfigContext, FieldDataContext } from "./contexts";
 import {
   OARepoDepositApiClient,
@@ -64,9 +57,7 @@ export const extractFEErrorMessages = (obj) => {
 export const useFormConfig = () => {
   const context = useContext(FormConfigContext);
   if (!context) {
-    throw new Error(
-      "useFormConfig must be used inside FormConfigContext.Provider"
-    );
+    throw new Error("useFormConfig must be used inside FormConfigContext.Provider");
   }
   return context;
 };
@@ -74,9 +65,7 @@ export const useFormConfig = () => {
 export const useFieldData = () => {
   const context = useContext(FieldDataContext);
   if (!context) {
-    throw new Error(
-      "useFormConfig must be used inside FieldDataContext.Provider"
-    );
+    throw new Error("useFormConfig must be used inside FieldDataContext.Provider");
   }
   return context;
 };
@@ -130,29 +119,20 @@ export const useFormFieldValue = ({
     _set(
       { ...initialVal },
       subValuesPath,
-      !usedSubValues?.includes(defaultValue) || !subValuesUnique
-        ? defaultValue
-        : ""
+      !usedSubValues?.includes(defaultValue) || !subValuesUnique ? defaultValue : ""
     );
 
   return { usedSubValues, defaultNewValue };
 };
 
-export const useShowEmptyValue = (
-  fieldPath,
-  defaultNewValue,
-  showEmptyValue
-) => {
+export const useShowEmptyValue = (fieldPath, defaultNewValue, showEmptyValue) => {
   const { values, setFieldValue } = useFormikContext();
   const currentFieldValue = getIn(values, fieldPath, []);
   useEffect(() => {
     if (!showEmptyValue) return;
     if (!_isEmpty(currentFieldValue)) return;
     if (defaultNewValue === undefined) {
-      console.error(
-        "Default value for new input must be provided. Field: ",
-        fieldPath
-      );
+      console.error("Default value for new input must be provided. Field: ", fieldPath);
       return;
     }
     if (!fieldPath) {
@@ -273,8 +253,7 @@ export const useDepositApiClient = ({
             ),
         };
       } else {
-        errorsObj["httpErrors"] =
-          error?.response?.data?.message ?? error.message;
+        errorsObj["httpErrors"] = error?.response?.data?.message ?? error.message;
       }
       return false;
     } finally {
@@ -354,10 +333,7 @@ export const useDepositApiClient = ({
           setFieldError(err.field, err.messages.join(" "))
         );
       } else {
-        setFieldError(
-          "httpErrors",
-          error?.response?.data?.message ?? error.message
-        );
+        setFieldError("httpErrors", error?.response?.data?.message ?? error.message);
       }
 
       return false;
@@ -382,16 +358,11 @@ export const useDepositApiClient = ({
       window.location.href = redirectUrl;
       setFieldError(
         "successMessage",
-        i18next.t(
-          "Draft deleted successfully. Redirecting to your dashboard ..."
-        )
+        i18next.t("Draft deleted successfully. Redirecting to your dashboard ...")
       );
       return response;
     } catch (error) {
-      setFieldError(
-        "httpErrors",
-        error?.response?.data?.message ?? error.message
-      );
+      setFieldError("httpErrors", error?.response?.data?.message ?? error.message);
       return false;
     } finally {
       setSubmitting(false);
@@ -418,10 +389,7 @@ export const useDepositApiClient = ({
       }
       return saveResult;
     } catch (error) {
-      setFieldError(
-        "httpErrors",
-        error?.response?.data?.message ?? error.message
-      );
+      setFieldError("httpErrors", error?.response?.data?.message ?? error.message);
       return false;
     } finally {
       setSubmitting(false);
@@ -470,10 +438,7 @@ export const useDepositFileApiClient = (baseApiClient) => {
       let response = await apiClient.deleteFile(file?.links);
       return Promise.resolve(response);
     } catch (error) {
-      setFieldError(
-        "httpErrors",
-        error?.response?.data?.message ?? error.message
-      );
+      setFieldError("httpErrors", error?.response?.data?.message ?? error.message);
       return false;
     } finally {
       setSubmitting(false);
@@ -559,8 +524,7 @@ export const useSuggestionApi = ({
   const [didMount, setDidMount] = useState(false);
 
   const debouncedSearch = useMemo(
-    () =>
-      _debounce((cancelToken) => fetchSuggestions(cancelToken), debounceTime),
+    () => _debounce((cancelToken) => fetchSuggestions(cancelToken), debounceTime),
     [debounceTime, query]
   );
 

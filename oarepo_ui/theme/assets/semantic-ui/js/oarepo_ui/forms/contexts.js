@@ -6,9 +6,7 @@ export const FormConfigContext = createContext();
 
 export const FormConfigProvider = ({ children, value }) => {
   return (
-    <FormConfigContext.Provider value={value}>
-      {children}
-    </FormConfigContext.Provider>
+    <FormConfigContext.Provider value={value}>{children}</FormConfigContext.Provider>
   );
 };
 

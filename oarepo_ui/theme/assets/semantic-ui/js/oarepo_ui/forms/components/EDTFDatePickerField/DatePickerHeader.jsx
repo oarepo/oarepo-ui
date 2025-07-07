@@ -4,10 +4,7 @@ import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import MonthDropdown from "./MonthDropdown";
 import YearDropdown from "./YearDropdown";
-import {
-  getYear,
-  getMonth,
-} from "date-fns";
+import { getYear, getMonth } from "date-fns";
 
 export const DatePickerHeader = ({
   dateEdtfFormat,
@@ -87,9 +84,7 @@ export const DatePickerHeader = ({
               {"<"}
             </span>
           </button>
-          <span className="react-datepicker__current-month">
-            {date.getFullYear()}
-          </span>
+          <span className="react-datepicker__current-month">{date.getFullYear()}</span>
           <button
             aria-label={i18next.t("Next Month")}
             className={

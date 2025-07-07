@@ -8,64 +8,62 @@ import {
 } from "@js/oarepo_ui";
 import PropTypes from "prop-types";
 
-export const DeleteButton = React.memo(
-  ({ modalMessage, modalHeader, redirectUrl }) => {
-    const {
-      isOpen: isModalOpen,
-      close: closeModal,
-      open: openModal,
-    } = useConfirmationModal();
-    const { values, isSubmitting, _delete } = useDepositApiClient();
+export const DeleteButton = React.memo(({ modalMessage, modalHeader, redirectUrl }) => {
+  const {
+    isOpen: isModalOpen,
+    close: closeModal,
+    open: openModal,
+  } = useConfirmationModal();
+  const { values, isSubmitting, _delete } = useDepositApiClient();
 
-    return (
-      <>
-        {values.id && (
-          <ConfirmationModal
-            header={modalHeader}
-            content={modalMessage}
-            isOpen={isModalOpen}
-            close={closeModal}
-            trigger={
+  return (
+    <>
+      {values.id && (
+        <ConfirmationModal
+          header={modalHeader}
+          content={modalMessage}
+          isOpen={isModalOpen}
+          close={closeModal}
+          trigger={
+            <Button
+              name="delete"
+              color="red"
+              onClick={openModal}
+              icon="delete"
+              labelPosition="left"
+              content={i18next.t("Delete draft")}
+              type="button"
+              disabled={isSubmitting}
+              loading={isSubmitting}
+              fluid
+            />
+          }
+          actions={
+            <>
+              <Button onClick={closeModal} floated="left">
+                {i18next.t("Cancel")}
+              </Button>
               <Button
                 name="delete"
+                disabled={isSubmitting}
+                loading={isSubmitting}
                 color="red"
-                onClick={openModal}
+                onClick={() => {
+                  _delete(redirectUrl);
+                  closeModal();
+                }}
                 icon="delete"
                 labelPosition="left"
                 content={i18next.t("Delete draft")}
                 type="button"
-                disabled={isSubmitting}
-                loading={isSubmitting}
-                fluid
               />
-            }
-            actions={
-              <>
-                <Button onClick={closeModal} floated="left">
-                  {i18next.t("Cancel")}
-                </Button>
-                <Button
-                  name="delete"
-                  disabled={isSubmitting}
-                  loading={isSubmitting}
-                  color="red"
-                  onClick={() => {
-                    _delete(redirectUrl);
-                    closeModal();
-                  }}
-                  icon="delete"
-                  labelPosition="left"
-                  content={i18next.t("Delete draft")}
-                  type="button"
-                />
-              </>
-            }
-          />
-        )}
-      </>
-    );
-  }
-);
+            </>
+          }
+        />
+      )}
+    </>
+  );
+});
 
 DeleteButton.propTypes = {
   modalMessage: PropTypes.string,

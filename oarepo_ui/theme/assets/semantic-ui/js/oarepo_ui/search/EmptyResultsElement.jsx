@@ -3,11 +3,7 @@ import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { Button, Header, Icon, Segment } from "semantic-ui-react";
 
-export const EmptyResultsElement = ({
-  queryString,
-  resetQuery,
-  extraContent,
-}) => {
+export const EmptyResultsElement = ({ queryString, resetQuery, extraContent }) => {
   return (
     <Segment placeholder textAlign="center">
       <Header icon>

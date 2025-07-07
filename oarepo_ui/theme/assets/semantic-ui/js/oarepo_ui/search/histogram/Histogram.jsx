@@ -92,10 +92,10 @@ export const Histogram = ({
             formatString,
             i18next.language
           )}: ${i18next.t("totalResults", { count: d?.doc_count })}`;
-    const rectangleClickValue = `${formatDate(
-      d.start,
+    const rectangleClickValue = `${formatDate(d.start, facetDateFormat)}/${formatDate(
+      d.end,
       facetDateFormat
-    )}/${formatDate(d.end, facetDateFormat)}`;
+    )}`;
 
     const barHeight = y(0) - y(d?.doc_count);
 

@@ -82,25 +82,15 @@ export class Slider extends Component {
   dragFromSVG = (e, scale) => {
     if (!this.state.dragging) {
       let selection = [...this.props.selection];
-      const selected = scale.invert(
-        e.nativeEvent.offsetX - this.props.marginLeft
-      );
+      const selected = scale.invert(e.nativeEvent.offsetX - this.props.marginLeft);
       let dragIndex;
 
-      if (
-        Math.abs(selected - selection[0]) >= Math.abs(selected - selection[1])
-      ) {
+      if (Math.abs(selected - selection[0]) >= Math.abs(selected - selection[1])) {
         dragIndex = 1;
-        selection[1] = Math.max(
-          selection[0],
-          Math.min(selected, this.props.max)
-        );
+        selection[1] = Math.max(selection[0], Math.min(selected, this.props.max));
       } else {
         dragIndex = 0;
-        selection[0] = Math.min(
-          selection[1],
-          Math.max(selected, this.props.min)
-        );
+        selection[0] = Math.min(selection[1], Math.max(selected, this.props.min));
       }
 
       this.props.onChange(selection);
@@ -117,9 +107,7 @@ export class Slider extends Component {
   mouseMove = (e, scale) => {
     if (this.state.dragging) {
       let selection = [...this.props.selection];
-      let selected = scale.invert(
-        e.nativeEvent.offsetX - this.props.marginLeft
-      );
+      let selected = scale.invert(e.nativeEvent.offsetX - this.props.marginLeft);
 
       if (selected <= this.props.min) {
         selected = this.props.min;
@@ -128,15 +116,9 @@ export class Slider extends Component {
       }
 
       if (this.state.dragIndex === 0) {
-        selection[0] = Math.min(
-          selection[1],
-          Math.max(selected, this.props.min)
-        );
+        selection[0] = Math.min(selection[1], Math.max(selected, this.props.min));
       } else {
-        selection[1] = Math.max(
-          selection[0],
-          Math.min(selected, this.props.max)
-        );
+        selection[1] = Math.max(selection[0], Math.min(selected, this.props.max));
       }
 
       this.props.onChange(selection);

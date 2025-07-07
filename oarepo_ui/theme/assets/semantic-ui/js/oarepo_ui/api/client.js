@@ -13,10 +13,10 @@ import { relativeUrl } from "../util";
 // to simplify things that for code that later uses the client
 
 const BASE_HEADERS = {
-  json: { "Content-Type": "application/json" },
+  "json": { "Content-Type": "application/json" },
   "vnd+json": {
     "Content-Type": "application/json",
-    Accept: "application/vnd.inveniordm.v1+json",
+    "Accept": "application/vnd.inveniordm.v1+json",
   },
   "octet-stream": { "Content-Type": "application/octet-stream" },
 };
@@ -109,9 +109,7 @@ export class OARepoDepositApiClient extends DepositApiClient {
         "You must either pass createUrl when initializing the OARepoDepositApiClient class or pass it to createDraft method., "
       );
     const payload = this.recordSerializer.serialize(draft);
-    return this._createResponse(() =>
-      this.axiosWithConfig.post(createUrl, payload)
-    );
+    return this._createResponse(() => this.axiosWithConfig.post(createUrl, payload));
   };
   /**
    * Calls the API to save a pre-existing draft.
@@ -158,10 +156,7 @@ export class OARepoDepositApiClient extends DepositApiClient {
   publishDraft = async (draft) => {
     const payload = this.recordSerializer.serialize(draft);
     return this._createResponse(() => {
-      return this.axiosWithConfig.post(
-        relativeUrl(draft.links.publish),
-        payload
-      );
+      return this.axiosWithConfig.post(relativeUrl(draft.links.publish), payload);
     });
   };
 

@@ -47,9 +47,7 @@ export const EDTFDaterangePicker = ({
   const endDate = dates[1];
 
   const handleChange = (dates) => {
-    const serializedDates = dates.map((date) =>
-      serializeDate(date, dateEdtfFormat)
-    );
+    const serializedDates = dates.map((date) => serializeDate(date, dateEdtfFormat));
     if (allEmptyStrings(serializedDates)) {
       setFieldValue(fieldPath, "");
     } else {
@@ -104,10 +102,7 @@ export const EDTFDaterangePicker = ({
     ...(helpText && { helpText }),
   };
   return (
-    <Form.Field
-      className="ui datepicker field mb-0"
-      required={fieldData.required}
-    >
+    <Form.Field className="ui datepicker field mb-0" required={fieldData.required}>
       <FieldLabel htmlFor={fieldPath} icon={icon} label={fieldData.label} />
       <Form.Field className="mb-0">
         <Radio
@@ -140,9 +135,7 @@ export const EDTFDaterangePicker = ({
           datePickerProps={{ ...pickerProps, ...datePickerPropsOverrides }}
         />
       </Form.Field>
-      {fieldData.helpText && (
-        <label className="helptext">{fieldData.helpText}</label>
-      )}
+      {fieldData.helpText && <label className="helptext">{fieldData.helpText}</label>}
     </Form.Field>
   );
 };

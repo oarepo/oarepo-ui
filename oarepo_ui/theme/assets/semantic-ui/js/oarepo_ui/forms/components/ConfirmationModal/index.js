@@ -1,2 +1,2 @@
-export * from './ConfirmationModal';
-export { default } from './ConfirmationModal';
+export * from "./ConfirmationModal";
+export { default } from "./ConfirmationModal";

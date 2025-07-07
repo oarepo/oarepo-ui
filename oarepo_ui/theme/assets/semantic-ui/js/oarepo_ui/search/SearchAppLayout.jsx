@@ -60,12 +60,7 @@ export const SearchAppResultsGrid = ({
   const [sidebarVisible, setSidebarVisible] = useState(false);
 
   return (
-    <Grid
-      columns={columnsAmount}
-      relaxed
-      className="search-app rel-mt-2"
-      padded
-    >
+    <Grid columns={columnsAmount} relaxed className="search-app rel-mt-2" padded>
       <Grid.Row verticalAlign="middle" className="result-options">
         {facetsAvailable && (
           <Grid.Column
@@ -129,11 +124,7 @@ export const SearchAppResultsGrid = ({
                 className={"clear-filters-button mobile tablet only"}
               />
             </ShouldActiveFiltersRender>
-            <SearchAppFacets
-              aggs={config.aggs}
-              appName={appName}
-              buildUID={buildUID}
-            />
+            <SearchAppFacets aggs={config.aggs} appName={appName} buildUID={buildUID} />
           </GridResponsiveSidebarColumn>
         )}
         <Grid.Column {...resultsPaneLayout}>

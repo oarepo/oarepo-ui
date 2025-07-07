@@ -1,9 +1,5 @@
 import * as React from "react";
-import {
-  LanguageSelectField,
-  useFieldData,
-  OarepoRichEditor,
-} from "@js/oarepo_ui";
+import { LanguageSelectField, useFieldData, OarepoRichEditor } from "@js/oarepo_ui";
 import { RichInputField, GroupField } from "react-invenio-forms";
 import PropTypes from "prop-types";
 import { Form } from "semantic-ui-react";

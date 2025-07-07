@@ -53,8 +53,6 @@ LanguageSelectField.defaultProps = {
   labelIcon: "globe",
   multiple: false,
   clearable: true,
-  placeholder: i18next.t(
-    'Search for a language by name (e.g "eng", "fr" or "Polish")'
-  ),
+  placeholder: i18next.t('Search for a language by name (e.g "eng", "fr" or "Polish")'),
   required: false,
 };

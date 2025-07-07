@@ -29,11 +29,7 @@ const CustomMessage = ({ children, ...uiProps }) => {
     setErrors(errorsWithoutInternalErrorFields);
   };
   return (
-    <Message
-      onDismiss={handleDismiss}
-      className="rel-mb-2 form-feedback"
-      {...uiProps}
-    >
+    <Message onDismiss={handleDismiss} className="rel-mb-2 form-feedback" {...uiProps}>
       {children}
     </Message>
   );
@@ -55,9 +51,7 @@ const ErrorMessageItem = ({ error }) => {
     // ugly hack, but simply the path for file validation errors is completely
     // different and there does not seem to be a reasonable way to make translations
     // it is not clear can there be other validation errors for files than the one below
-    (error.field === "files.enabled"
-      ? i18next.t("Files")
-      : titleCase(error.field));
+    (error.field === "files.enabled" ? i18next.t("Files") : titleCase(error.field));
 
   return `${errorMessage}: ${error.messages.join(" ")}`;
 };

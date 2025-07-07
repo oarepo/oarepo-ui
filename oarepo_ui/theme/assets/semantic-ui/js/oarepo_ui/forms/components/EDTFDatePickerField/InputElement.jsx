@@ -34,11 +34,7 @@ export const InputElement = forwardRef(
         autoComplete={autoComplete}
         icon={
           value ? (
-            <Icon
-              className={clearButtonClassName}
-              name="close"
-              onClick={handleClear}
-            />
+            <Icon className={clearButtonClassName} name="close" onClick={handleClear} />
           ) : null
         }
       />

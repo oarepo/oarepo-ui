@@ -52,8 +52,7 @@ export class CreatibutorsModal extends Component {
         !_isEmpty(props.initialCreatibutor),
       isOrganization:
         !_isEmpty(props.initialCreatibutor) &&
-        props.initialCreatibutor.person_or_org.type ===
-          CREATIBUTOR_TYPE.ORGANIZATION,
+        props.initialCreatibutor.person_or_org.type === CREATIBUTOR_TYPE.ORGANIZATION,
       personIdentifiers: [],
       personAffiliations: [],
       organizationIdentifiers: [],
@@ -94,9 +93,7 @@ export class CreatibutorsModal extends Component {
       }),
       name: Yup.string().when("type", (type, schema) => {
         if (type === CREATIBUTOR_TYPE.ORGANIZATION) {
-          return schema.required(
-            i18next.t("Organization name is a required field.")
-          );
+          return schema.required(i18next.t("Organization name is a required field."));
         }
       }),
     }),
@@ -202,8 +199,7 @@ export class CreatibutorsModal extends Component {
       const { isOrganization } = this.state;
 
       const selectedIdentifier =
-        Array.isArray(creatibutor.identifiers) &&
-        creatibutor.identifiers.length > 0
+        Array.isArray(creatibutor.identifiers) && creatibutor.identifiers.length > 0
           ? creatibutor.identifiers.find(
               (identifier) =>
                 identifier?.scheme?.toLowerCase() === "orcid" ||
@@ -240,8 +236,7 @@ export class CreatibutorsModal extends Component {
     const { autocompleteNames } = this.props;
 
     const showManualEntry =
-      autocompleteNames === NamesAutocompleteOptions.SEARCH_ONLY &&
-      !showPersonForm;
+      autocompleteNames === NamesAutocompleteOptions.SEARCH_ONLY && !showPersonForm;
 
     if (showManualEntry) {
       results.push({
@@ -317,13 +312,9 @@ export class CreatibutorsModal extends Component {
         organizationAffiliations: [],
       },
       () => {
-        const { organizationIdentifiers, organizationAffiliations } =
-          this.state;
+        const { organizationIdentifiers, organizationAffiliations } = this.state;
 
-        formikProps.form.setFieldValue(
-          "person_or_org.name",
-          selectedSuggestion.name
-        );
+        formikProps.form.setFieldValue("person_or_org.name", selectedSuggestion.name);
 
         this.updateIdentifiersAndAffiliations(
           formikProps,
@@ -445,9 +436,7 @@ export class CreatibutorsModal extends Component {
                     <RadioField
                       fieldPath={typeFieldPath}
                       label={i18next.t("Person")}
-                      checked={
-                        _get(values, typeFieldPath) === CREATIBUTOR_TYPE.PERSON
-                      }
+                      checked={_get(values, typeFieldPath) === CREATIBUTOR_TYPE.PERSON}
                       value={CREATIBUTOR_TYPE.PERSON}
                       onChange={({ formikProps }) => {
                         this.setState({
@@ -474,8 +463,7 @@ export class CreatibutorsModal extends Component {
                       fieldPath={typeFieldPath}
                       label={i18next.t("Organization")}
                       checked={
-                        _get(values, typeFieldPath) ===
-                        CREATIBUTOR_TYPE.ORGANIZATION
+                        _get(values, typeFieldPath) === CREATIBUTOR_TYPE.ORGANIZATION
                       }
                       value={CREATIBUTOR_TYPE.ORGANIZATION}
                       onChange={({ formikProps }) => {
@@ -498,8 +486,7 @@ export class CreatibutorsModal extends Component {
                       optimized
                     />
                   </Form.Group>
-                  {_get(values, typeFieldPath, "") ===
-                  CREATIBUTOR_TYPE.PERSON ? (
+                  {_get(values, typeFieldPath, "") === CREATIBUTOR_TYPE.PERSON ? (
                     <div>
                       {autocompleteNames !== NamesAutocompleteOptions.OFF && (
                         <RemoteSelectField
@@ -597,8 +584,7 @@ export class CreatibutorsModal extends Component {
                         placeholder={i18next.t("Organization name")}
                         fieldPath={organizationNameFieldPath}
                         required={
-                          _get(values, typeFieldPath) ===
-                          CREATIBUTOR_TYPE.ORGANIZATION
+                          _get(values, typeFieldPath) === CREATIBUTOR_TYPE.ORGANIZATION
                         }
                         // forward ref to Input component because Form.Input
                         // doesn't handle it
@@ -641,10 +627,7 @@ export class CreatibutorsModal extends Component {
                           vocabularyItem = data.value
                             ? { id: vocabularyItem?.value }
                             : {};
-                          formikProps.form.setFieldValue(
-                            roleFieldPath,
-                            vocabularyItem
-                          );
+                          formikProps.form.setFieldValue(roleFieldPath, vocabularyItem);
                         }}
                         value={_get(values, roleFieldPath, "")?.id}
                       />
@@ -671,8 +654,7 @@ export class CreatibutorsModal extends Component {
                         {
                           action: "saveAndContinue",
                           showPersonForm:
-                            autocompleteNames !==
-                            NamesAutocompleteOptions.SEARCH_ONLY,
+                            autocompleteNames !== NamesAutocompleteOptions.SEARCH_ONLY,
                         },
                         () => {
                           handleSubmit();
@@ -691,8 +673,7 @@ export class CreatibutorsModal extends Component {
                       {
                         action: "saveAndClose",
                         showPersonForm:
-                          autocompleteNames !==
-                          NamesAutocompleteOptions.SEARCH_ONLY,
+                          autocompleteNames !== NamesAutocompleteOptions.SEARCH_ONLY,
                       },
                       () => handleSubmit()
                     );

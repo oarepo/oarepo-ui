@@ -151,10 +151,7 @@ export class RelatedSelectFieldInternal extends RemoteSelectField {
           allowAdditions={this.error ? false : uiProps.allowAdditions}
           fieldPath={compProps.fieldPath}
           options={_uniqBy(
-            [
-              ...serializeSuggestions(initialSuggestions),
-              ...this.state.suggestions,
-            ],
+            [...serializeSuggestions(initialSuggestions), ...this.state.suggestions],
             "value"
           )}
           noResultsMessage={this.getNoResultsMessage()}
@@ -208,9 +205,7 @@ export class RelatedSelectFieldInternal extends RemoteSelectField {
                 ? serializeExternalApiSuggestions
                 : serializeSuggestions
             }
-            handleAddingExternalApiSuggestion={
-              this.handleAddingExternalApiSuggestion
-            }
+            handleAddingExternalApiSuggestion={this.handleAddingExternalApiSuggestion}
             fieldPath={fieldPath}
             externalApiModalTitle={externalApiModalTitle}
             multiple={multiple}
@@ -235,10 +230,7 @@ RelatedSelectFieldInternal.propTypes = {
   debounceTime: PropTypes.number,
   noResultsMessage: PropTypes.node,
   loadingMessage: PropTypes.string,
-  suggestionsErrorMessage: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.object,
-  ]),
+  suggestionsErrorMessage: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   noQueryMessage: PropTypes.string,
   preSearchChange: PropTypes.func, // Takes a string and returns a string
   onValueChange: PropTypes.func, // Takes the SUI hanf and updated selectedSuggestions

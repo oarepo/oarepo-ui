@@ -106,9 +106,7 @@ export const BaseFormLayout = ({ formikProps }) => {
           <Grid.Column id="main-content" mobile={16} tablet={16} computer={11}>
             <FormTitle />
             <Sticky context={formFeedbackRef} offset={20}>
-              <Overridable
-                id={buildUID(overridableIdPrefix, "Errors.container")}
-              >
+              <Overridable id={buildUID(overridableIdPrefix, "Errors.container")}>
                 <FormFeedback />
               </Overridable>
             </Sticky>
@@ -119,15 +117,12 @@ export const BaseFormLayout = ({ formikProps }) => {
               <>
                 <pre>
                   Add your form input fields here by overriding{" "}
-                  {buildUID(overridableIdPrefix, "FormFields.container")}{" "}
-                  component
+                  {buildUID(overridableIdPrefix, "FormFields.container")} component
                 </pre>
                 <FormikStateLogger render={true} />
               </>
             </Overridable>
-            <Overridable
-              id={buildUID(overridableIdPrefix, "CustomFields.container")}
-            >
+            <Overridable id={buildUID(overridableIdPrefix, "CustomFields.container")}>
               <CustomFields
                 config={customFields?.ui}
                 templateLoaders={[
@@ -149,18 +144,10 @@ export const BaseFormLayout = ({ formikProps }) => {
               <Card fluid>
                 <Card.Content>
                   <Grid>
-                    <Grid.Column
-                      computer={8}
-                      mobile={16}
-                      className="left-btn-col"
-                    >
+                    <Grid.Column computer={8} mobile={16} className="left-btn-col">
                       <SaveButton fluid />
                     </Grid.Column>
-                    <Grid.Column
-                      computer={8}
-                      mobile={16}
-                      className="right-btn-col"
-                    >
+                    <Grid.Column computer={8} mobile={16} className="right-btn-col">
                       <PreviewButton fluid />
                     </Grid.Column>
                     <Grid.Column width={16} className="pt-10">

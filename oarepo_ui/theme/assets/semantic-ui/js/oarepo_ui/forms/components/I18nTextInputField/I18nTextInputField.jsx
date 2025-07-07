@@ -1,9 +1,5 @@
 import * as React from "react";
-import {
-  LanguageSelectField,
-  useSanitizeInput,
-  useFieldData,
-} from "@js/oarepo_ui";
+import { LanguageSelectField, useSanitizeInput, useFieldData } from "@js/oarepo_ui";
 import { TextField, GroupField } from "react-invenio-forms";
 import PropTypes from "prop-types";
 import { useFormikContext, getIn } from "formik";

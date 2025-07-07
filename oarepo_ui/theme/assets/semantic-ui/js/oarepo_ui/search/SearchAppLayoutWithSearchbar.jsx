@@ -77,12 +77,7 @@ export const SearchAppLayoutWithSearchbarHOC = ({
                   <ActiveFiltersCountFloatingLabel />
                 </Button>
               </Grid.Column>
-              <Grid.Column
-                only="mobile tablet"
-                mobile={14}
-                tablet={14}
-                floated="right"
-              >
+              <Grid.Column only="mobile tablet" mobile={14} tablet={14} floated="right">
                 <SearchBar placeholder={placeholder} />
               </Grid.Column>
               {extraContent && (
@@ -120,10 +115,7 @@ export const SearchAppLayoutWithSearchbarHOC = ({
 SearchAppLayoutWithSearchbarHOC.propTypes = {
   placeholder: PropTypes.string,
   extraContent: PropTypes.oneOfType([PropTypes.func, PropTypes.oneOf([null])]),
-  mobileOnlyExtraRow: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.oneOf([null]),
-  ]),
+  mobileOnlyExtraRow: PropTypes.oneOfType([PropTypes.func, PropTypes.oneOf([null])]),
   appName: PropTypes.string,
 };
 

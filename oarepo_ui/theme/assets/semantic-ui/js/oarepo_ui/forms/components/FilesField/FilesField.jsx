@@ -47,28 +47,21 @@ export const FilesField = ({
     reset: resetImportParentFiles,
   } = useMutation({
     mutationFn: () =>
-      httpApplicationJson.post(
-        recordObject?.links?.self + "/actions/files-import",
-        {}
-      ),
+      httpApplicationJson.post(recordObject?.links?.self + "/actions/files-import", {}),
     onSuccess: (data) => {
       setFilesState(data.data.entries);
       resetImportParentFiles();
     },
   });
 
-  const { isFetching, isError, refetch } = useQuery(
-    ["files"],
-    () => read(values),
-    {
-      refetchOnWindowFocus: false,
-      enabled: false,
-      onSuccess: (data) => {
-        setFilesState(data.entries);
-        resetImportParentFiles();
-      },
-    }
-  );
+  const { isFetching, isError, refetch } = useQuery(["files"], () => read(values), {
+    refetchOnWindowFocus: false,
+    enabled: false,
+    onSuccess: (data) => {
+      setFilesState(data.entries);
+      resetImportParentFiles();
+    },
+  });
 
   const handleFilesUpload = () => {
     refetch();
@@ -155,15 +148,12 @@ export const FilesField = ({
                 <p className="mb-0">
                   <Icon name="info circle" />
                   <Trans i18next={i18next}>
-                    You must create a new version to add, modify or delete
-                    files. It can be done on record's{" "}
+                    You must create a new version to add, modify or delete files. It can
+                    be done on record's{" "}
                     <a
                       target="_blank"
                       rel="noopener noreferrer"
-                      href={recordObject.links.self_html.replace(
-                        "/preview",
-                        ""
-                      )}
+                      href={recordObject.links.self_html.replace("/preview", "")}
                     >
                       detail
                     </a>{" "}
@@ -185,10 +175,7 @@ export const FilesField = ({
           </React.Fragment>
         )}
         {!recordObject.is_published && (
-          <Message
-            negative
-            className="flex justify-space-between align-items-center"
-          >
+          <Message negative className="flex justify-space-between align-items-center">
             <p className="mb-0">
               <Icon name="warning sign" />
               {fileUploaderMessage}

@@ -33,10 +33,10 @@ export const SearchappSearchbarElement = withState(
     return (
       <Input
         action={{
-          icon: iconName,
-          className: "search",
-          color: iconColor,
-          onClick: onBtnSearchClick,
+          "icon": iconName,
+          "className": "search",
+          "color": iconColor,
+          "onClick": onBtnSearchClick,
           "aria-label": i18next.t("Search"),
           ...actionProps,
         }}

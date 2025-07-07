@@ -116,9 +116,7 @@ export const ExternalApiModal = ({
                       }
                       handleExternalRecordChange={handleExternalRecordChange}
                       externalApiRecords={externalApiRecords}
-                      serializeExternalApiSuggestions={
-                        serializeExternalApiSuggestions
-                      }
+                      serializeExternalApiSuggestions={serializeExternalApiSuggestions}
                       multiple={multiple}
                       fieldPath={fieldPath}
                       onClose={onClose}

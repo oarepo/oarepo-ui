@@ -65,7 +65,6 @@ jobs:
       - name: Run tests
         run: |
           ./run-tests.sh
-      
 
       - name: Build package to publish
         run: |

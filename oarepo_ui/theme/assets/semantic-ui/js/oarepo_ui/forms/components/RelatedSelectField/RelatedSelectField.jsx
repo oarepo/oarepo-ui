@@ -56,9 +56,7 @@ export const RelatedSelectField = ({
         serializeSuggestions={serializeSuggestions}
         serializeAddedValue={serializeAddedValue}
         initialSuggestions={
-          initialSuggestions.length > 0
-            ? initialSuggestions
-            : startingSuggestions
+          initialSuggestions.length > 0 ? initialSuggestions : startingSuggestions
         }
         debounceTime={debounceTime}
         noResultsMessage={noResultsMessage}
@@ -86,10 +84,7 @@ export const RelatedSelectField = ({
             );
             if (vocabularyItem) {
               const { text, ...vocabularyItemWithoutText } = vocabularyItem;
-              formikProps.form.setFieldValue(
-                fieldPath,
-                vocabularyItemWithoutText
-              );
+              formikProps.form.setFieldValue(fieldPath, vocabularyItemWithoutText);
             } else {
               formikProps.form.setFieldValue(fieldPath, "");
             }
@@ -130,10 +125,7 @@ RelatedSelectField.propTypes = {
   debounceTime: PropTypes.number,
   noResultsMessage: PropTypes.node,
   loadingMessage: PropTypes.string,
-  suggestionsErrorMessage: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.object,
-  ]),
+  suggestionsErrorMessage: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   noQueryMessage: PropTypes.string,
   preSearchChange: PropTypes.func,
   onValueChange: PropTypes.func,

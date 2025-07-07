@@ -3,11 +3,7 @@ import { FundingField as InvenioFundingField } from "@js/invenio_vocabularies";
 import { overrideStore, OverridableContext } from "react-overridable";
 import PropTypes from "prop-types";
 import { useFieldData } from "../../hooks";
-import {
-  deserializeFunder,
-  deserializeAward,
-  computeFundingContents,
-} from "./util";
+import { deserializeFunder, deserializeAward, computeFundingContents } from "./util";
 import { FundingRemoteSelectField } from "./FundingRemoteSelectField";
 import { SmallPagination } from "../../../search/SmallPagination";
 

@@ -71,10 +71,7 @@ class CreatibutorsFieldForm extends Component {
           };
     return (
       <DndProvider backend={HTML5Backend}>
-        <Form.Field
-          required={required}
-          className={creatibutorsError ? "error" : ""}
-        >
+        <Form.Field required={required} className={creatibutorsError ? "error" : ""}>
           <FieldLabel htmlFor={fieldPath} label={label} icon={icon} />
           <List>
             {creatibutorsList.map((value, index) => {
@@ -217,8 +214,7 @@ export const CreatibutorsField = ({
   };
 
   const { formConfig } = useFormConfig();
-  const roleOptions =
-    formConfig?.vocabularies?.["contributor-types"]?.all || [];
+  const roleOptions = formConfig?.vocabularies?.["contributor-types"]?.all || [];
   return (
     <CreatibutorsFieldComponent
       fieldPath={fieldPath}
