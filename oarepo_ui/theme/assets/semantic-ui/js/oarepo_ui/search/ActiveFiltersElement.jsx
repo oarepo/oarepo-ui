@@ -31,7 +31,6 @@ const getLabel = (filter, aggregations, additionalFilterLabels) => {
       aggregations,
       additionalFilterLabels
     );
-    value = `${value}.${label}`;
     currentFilter.push(activeFilter);
   }
   return {
