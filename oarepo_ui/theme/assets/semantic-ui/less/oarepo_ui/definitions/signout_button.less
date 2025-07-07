@@ -6,12 +6,12 @@
   The type is the type of the component as defined in semantic-ui - element, collection, view, module
   For simple component, 'element' is the correct type
 */
-@type: 'element';
+@type: "element";
 
 /*
   This is the name of the component - though not required, keep it the same as the filename
 */
-@element: 'signout_button';
+@element: "signout_button";
 
 /*******************************
 
@@ -25,7 +25,7 @@ name of the component from above)
 
 *******************************/
 
-@import (multiple) '../../theme.config';
+@import (multiple) "../../theme.config";
 
 /*
   This is the styling of your component. The class should start with .ui.<component-name>
@@ -33,7 +33,7 @@ name of the component from above)
   Note: use variables here, not the exact values. Placing the values to another file (sample.variables)
   will allow users to override these values.
  */
-.ui.signout_button{
+.ui.signout_button {
   background: @background;
   color: @fontColor;
 }
