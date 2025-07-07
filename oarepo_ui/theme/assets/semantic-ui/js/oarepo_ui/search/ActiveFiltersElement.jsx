@@ -26,7 +26,7 @@ const getLabel = (filter, aggregations, additionalFilterLabels) => {
   let currentFilter = [aggName, value];
   const hasChild = filter.length === 3;
   if (hasChild) {
-    const { label, activeFilter } = getLabel(
+    const { activeFilter } = getLabel(
       filter[2],
       aggregations,
       additionalFilterLabels
