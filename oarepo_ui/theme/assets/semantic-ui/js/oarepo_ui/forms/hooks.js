@@ -34,7 +34,7 @@ export const extractFEErrorMessages = (obj) => {
       obj.forEach((item, index) => traverse(item, `${parentKey}.${index}`));
     } else if (typeof obj === "object") {
       for (const key in obj) {
-        if (obj.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
           const newKey = parentKey ? `${parentKey}.${key}` : key;
           traverse(obj[key], newKey);
         }
@@ -72,10 +72,10 @@ export const useFieldData = () => {
 
 export const useDefaultLocale = () => {
   const {
-    formConfig: { default_locale },
+    formConfig: { default_locale: defaultLocale },
   } = useFormConfig();
 
-  return { defaultLocale: default_locale };
+  return { defaultLocale: defaultLocale };
 };
 
 export const useVocabularyOptions = (vocabularyType) => {
