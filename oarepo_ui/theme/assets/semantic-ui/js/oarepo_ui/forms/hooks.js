@@ -71,6 +71,7 @@ export const useFieldData = () => {
 };
 
 export const useDefaultLocale = () => {
+  console.log("dwadadwa");
   const {
     formConfig: { default_locale: defaultLocale },
   } = useFormConfig();

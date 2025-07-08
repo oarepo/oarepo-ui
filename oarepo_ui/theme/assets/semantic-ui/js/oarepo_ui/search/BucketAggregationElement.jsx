@@ -6,6 +6,12 @@ import PropTypes from "prop-types";
 
 export const BucketAggregationElement = (props) => {
   const { buildUID } = useContext(AppContext);
+
+
+
+
+
+  
   return (
     // Makes it possible to override UI components for certain buckets
     // by providing them in componentOverrides in the search app initialization
