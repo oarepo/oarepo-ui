@@ -1,0 +1,6 @@
+@textAreaMinHeight: 38px; // 38px is the default height of a textarea
+@textAreaBorderRadius: .28571429rem 0 0 .28571429rem;
+@textAreaPadding: 0.5em 2.7em 0.5em 1em;
+@textAreaBorder: 1px solid @borderColor;
+@textAreaLineHeight: 1.15em;
+@textAreaBackground: @white;

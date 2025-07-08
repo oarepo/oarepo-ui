@@ -20,7 +20,7 @@ import {
   SearchAppSort,
   SearchAppResults,
   FoldableBucketAggregationElement,
-  SearchappSearchbarElement,
+  MultilineSearchbarElement as SearchappSearchbarElement,
 } from "@js/oarepo_ui/search";
 import { loadAppComponents } from "../util";
 import { RDMToggleComponent } from "@js/invenio_app_rdm/search/components";

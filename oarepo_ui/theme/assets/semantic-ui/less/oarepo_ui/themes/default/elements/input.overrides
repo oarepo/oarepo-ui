@@ -1,0 +1,21 @@
+.ui.input {
+  &.icon > i.icon.clear-button {
+    position: absolute;
+    right: @iconMargin + 0.2em;
+    z-index: 100;
+  }
+
+  & > .textarea-container+button.clear-button {
+    &:hover {
+      background: none !important;
+    }
+    & > .icon {
+      height: 1em;
+    }
+    height: 38px;
+    position: absolute;
+    right: @iconMargin + 0.2em;
+    z-index: 100;
+    box-shadow: none;
+  }
+}
