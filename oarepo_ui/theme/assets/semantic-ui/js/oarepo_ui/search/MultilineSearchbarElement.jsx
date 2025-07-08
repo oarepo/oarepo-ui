@@ -74,13 +74,12 @@ export const MultilineSearchbarElement = withState(
           )}
         </div>
         {queryString && (
-          <Icon
-            name="close"
-            role="button"
+          <Button
+            basic
+            icon="close"
             className="clear-button"
-            link
             onClick={handleClear}
-            aria-label={i18next.t("Clear")}
+            title={i18next.t("Clear")}
           />
         )}
         <Button
