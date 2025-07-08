@@ -10,8 +10,6 @@ export const BucketAggregationElement = (props) => {
 
 
 
-
-  
   return (
     // Makes it possible to override UI components for certain buckets
     // by providing them in componentOverrides in the search app initialization
