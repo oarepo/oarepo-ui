@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
+import React from "react";
 import { withState } from "react-searchkit";
 import { Button } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import PropTypes from "prop-types";
-import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
+import { useActiveSearchFilters } from "./hooks";
 
 // TODO: in next iteration, rethink how handling of initialFilters/ignored filters is to be handled
 // in the best way
@@ -17,11 +17,7 @@ const ClearFiltersButtonComponent = ({
   ...uiProps
 }) => {
   const { filters } = currentQueryState;
-  const { aggs } = useContext(SearchConfigurationContext);
-
-  const filtersToIgnore = filters
-    .filter((filter) => !aggs.map((agg) => agg.aggName).includes(filter[0]))
-    .map((filter) => filter[0]);
+  const { ignoredSearchFilters = [] } = useActiveSearchFilters(filters);
 
   return (
     <Button
@@ -31,7 +27,7 @@ const ClearFiltersButtonComponent = ({
       onClick={() =>
         updateQueryState({
           ...currentQueryState,
-          filters: filters.filter((f) => filtersToIgnore.includes(f[0])),
+          filters: filters.filter((f) => ignoredSearchFilters.includes(f[0])),
         })
       }
       icon="delete"

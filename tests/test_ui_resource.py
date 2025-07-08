@@ -109,6 +109,8 @@ def test_ui_listing(app, record_ui_resource, simple_record, client, fake_manifes
             "next": "https://127.0.0.1:5000/simple-model?page=2",
             "self": "https://127.0.0.1:5000/simple-model",
         }
+        assert data["search_config"]["ignoredSearchFilters"] == ["allversions"]
+        assert data["search_config"]["additionalFilterLabels"] == {}
 
     with client.get("/simple-model/?page=2") as c:
         assert c.status_code == 200

@@ -23,12 +23,12 @@ export const ActiveFiltersCountFloatingLabelComponent = ({
   currentQueryState: { filters },
   className,
 }) => {
-  const activeFiltersNumber = useActiveSearchFilters(filters)?.length;
+  const { activeFiltersCount } = useActiveSearchFilters(filters);
 
   return (
-    activeFiltersNumber > 0 && (
+    activeFiltersCount > 0 && (
       <Label floating circular size="mini" className={className}>
-        {activeFiltersNumber}
+        {activeFiltersCount}
       </Label>
     )
   );
