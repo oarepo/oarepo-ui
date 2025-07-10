@@ -19,12 +19,12 @@ export const FieldDataContext = createContext();
 
 export const FieldDataProvider = ({ children, fieldPathPrefix = "" }) => {
   const {
-    formConfig: { ui_model },
+    formConfig: { ui_model: uiModel },
   } = useFormConfig();
 
   const fieldDataValue = useMemo(
-    () => ({ getFieldData: getFieldData(ui_model, fieldPathPrefix) }),
-    [ui_model, fieldPathPrefix]
+    () => ({ getFieldData: getFieldData(uiModel, fieldPathPrefix) }),
+    [uiModel, fieldPathPrefix]
   );
 
   return (
