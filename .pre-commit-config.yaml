@@ -1,7 +1,6 @@
 repos:
   - repo: https://github.com/oarepo/oarepo
-    rev: 0fa72affb5a3cab77cb94c9e8409fc4fa60ed225
+    rev: 92f6dc21d67b2591e0de48fd9d17ed9aaf15bd65
     hooks:
       - id: eslint
-
-
+      - id: prettier
