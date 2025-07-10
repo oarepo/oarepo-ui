@@ -48,6 +48,12 @@ jobs:
 
       - name: Install pre-commit
         run: pip install pre-commit
+        
+      - name: Check for eslint-config-invenio
+        run: npm install @inveniosoftware/eslint-config-invenio@^2.0.0
+
+      - name: Run ESLint (directly for annotation)
+        run: npx eslint --ext .js,.jsx,.ts,.tsx --no-error-on-unmatched-pattern . 
 
       - name: Run pre-commit hooks on all files
         run: pre-commit run --all-files
