@@ -42,8 +42,8 @@ export const RelatedSelectField = ({
   const startingSuggestions = multiple
     ? getIn(values, fieldPath, [])
     : _isEmpty(getIn(values, fieldPath, {}))
-      ? []
-      : [getIn(values, fieldPath)];
+    ? []
+    : [getIn(values, fieldPath)];
   return (
     <React.Fragment>
       <RelatedSelectFieldInternal
@@ -98,8 +98,8 @@ export const RelatedSelectField = ({
           multiple
             ? getIn(values, fieldPath, []).map((item) => item.id || item)
             : !_isEmpty(getIn(values, fieldPath, {}))
-              ? getIn(values, fieldPath, {}).id || getIn(values, fieldPath, "")
-              : getIn(values, fieldPath, "")
+            ? getIn(values, fieldPath, {}).id || getIn(values, fieldPath, "")
+            : getIn(values, fieldPath, "")
         }
         {...uiProps}
       />
