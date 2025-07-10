@@ -46,8 +46,8 @@ jobs:
         with:
           node-version: "16"
 
-      - name: Install ESLint config
-        run: npm install --no-save --no-package-lock @inveniosoftware/eslint-config-invenio@^2.0.0
+      - name: Install pre-commit
+        run: pip install pre-commit
 
-      - name: Run ESLint
-        run: npx eslint .
+      - name: Run pre-commit hooks on all files
+        run: pre-commit run --all-files
