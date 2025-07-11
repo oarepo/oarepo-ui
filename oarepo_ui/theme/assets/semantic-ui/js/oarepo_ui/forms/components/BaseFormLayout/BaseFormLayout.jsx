@@ -4,21 +4,21 @@ import { BaseForm } from "../BaseForm";
 import { FormFeedback } from "../FormFeedback";
 import { FormikStateLogger } from "../FormikStateLogger";
 import { SaveButton } from "../SaveButton";
-import { PublishButton } from "../PublishButton";
+import { DeleteButton } from "../DeleteButton";
 import { PreviewButton } from "../PreviewButton";
 import { Grid, Ref, Sticky, Card, Header } from "semantic-ui-react";
+import { connect } from "react-redux";
 import {
   useFormConfig,
   getTitleFromMultilingualObject,
-  serializeErrors,
-  decodeUnicodeBase64,
+  useFormikRef,
 } from "@js/oarepo_ui";
 import { buildUID } from "react-searchkit";
 import Overridable from "react-overridable";
 import { CustomFields } from "react-invenio-forms";
 import { getIn, useFormikContext } from "formik";
-import { i18next } from "@translations/oarepo_ui/i18next";
 import { useSanitizeInput } from "../../hooks";
+import _isEmpty from "lodash/isEmpty";
 
 const FormTitle = () => {
   const { values } = useFormikContext();
@@ -43,14 +43,11 @@ const FormTitle = () => {
   );
 };
 
-export const BaseFormLayout = ({ formikProps }) => {
-  const {
-    record,
-    formConfig: { overridableIdPrefix, custom_fields: customFields },
-  } = useFormConfig();
+const BaseFormLayoutComponent = ({ formikProps, record, errors }) => {
+  const { overridableIdPrefix, custom_fields: customFields } = useFormConfig();
   const sidebarRef = React.useRef(null);
   const formFeedbackRef = React.useRef(null);
-
+  const formikRef = useFormikRef();
   // on chrome there is an annoying issue where after deletion you are redirected, and then
   // if you click back on browser <-, it serves you the deleted page, which does not exist from the cache.
   // on firefox it does not happen.
@@ -68,36 +65,14 @@ export const BaseFormLayout = ({ formikProps }) => {
     };
   }, []);
 
-  const urlHash = window.location.hash.substring(1);
-  let errorData;
-  if (urlHash) {
-    const decodedData = decodeUnicodeBase64(urlHash);
-    errorData = JSON.parse(decodedData);
-    window.history.replaceState(
-      null,
-      null,
-      window.location.pathname + window.location.search
-    );
-  }
-
   return (
     <BaseForm
       onSubmit={() => {}}
       formik={{
         initialValues: record,
-        validateOnChange: false,
-        validateOnBlur: false,
+        innerRef: formikRef,
         enableReinitialize: true,
-        initialErrors:
-          errorData?.errors?.length > 0
-            ? serializeErrors(
-                errorData.errors,
-                errorData?.errorMessage ||
-                  i18next.t(
-                    "Your draft has validation errors. Please correct them and try again:"
-                  )
-              )
-            : {},
+        initialErrors: !_isEmpty(errors) ? errors : {},
         ...formikProps,
       }}
     >
@@ -140,8 +115,6 @@ export const BaseFormLayout = ({ formikProps }) => {
         </Ref>
         <Ref innerRef={sidebarRef}>
           <Grid.Column id="control-panel" mobile={16} tablet={16} computer={5}>
-            {/* TODO: will remove sticky for now, to see how girls like it https://linear.app/ducesnet/issue/NTK-95/opravit-zobrazeni-embarga */}
-            {/* <Sticky context={sidebarRef} offset={20}> */}
             <Overridable
               id={buildUID(overridableIdPrefix, "FormActions.container")}
               record={record}
@@ -164,17 +137,12 @@ export const BaseFormLayout = ({ formikProps }) => {
                       <PreviewButton fluid />
                     </Grid.Column>
                     <Grid.Column width={16} className="pt-10">
-                      <PublishButton />
+                      <DeleteButton redirectUrl="/me/records" />
                     </Grid.Column>
-                    {/* TODO:see if there is a way to provide URL here, seems that UI links are empty in the form */}
-                    {/* <Grid.Column width={16} className="pt-10">
-                        <DeleteButton redirectUrl="/me/records" />
-                      </Grid.Column> */}
                   </Grid>
                 </Card.Content>
               </Card>
             </Overridable>
-            {/* </Sticky> */}
           </Grid.Column>
         </Ref>
       </Grid>
@@ -182,7 +150,19 @@ export const BaseFormLayout = ({ formikProps }) => {
   );
 };
 
-BaseFormLayout.propTypes = {
+const mapStateToProps = (state) => {
+  return {
+    record: state.deposit.record,
+    errors: state.deposit.errors,
+  };
+};
+
+export const BaseFormLayout = connect(
+  mapStateToProps,
+  null
+)(BaseFormLayoutComponent);
+
+BaseFormLayoutComponent.propTypes = {
   formikProps: PropTypes.object,
 };
 

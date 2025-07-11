@@ -216,7 +216,7 @@ export const CreatibutorsField = ({
     ...(label && { label }),
   };
 
-  const { formConfig } = useFormConfig();
+  const formConfig = useFormConfig();
   const roleOptions =
     formConfig?.vocabularies?.["contributor-types"]?.all || [];
   return (

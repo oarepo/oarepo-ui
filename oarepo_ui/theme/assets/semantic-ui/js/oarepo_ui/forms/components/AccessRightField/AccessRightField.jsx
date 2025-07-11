@@ -16,9 +16,7 @@ export const AccessRightField = ({
   recordRestrictionGracePeriod,
   allowRecordRestriction,
 }) => {
-  const {
-    formConfig: { allowed_communities },
-  } = useFormConfig();
+  const { allowed_communities } = useFormConfig();
 
   return (
     <I18nextProvider i18n={i18next}>

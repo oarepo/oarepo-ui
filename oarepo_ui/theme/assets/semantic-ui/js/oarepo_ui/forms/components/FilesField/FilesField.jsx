@@ -4,35 +4,41 @@ import { i18next } from "@translations/oarepo_ui/i18next";
 import { Message, Icon, Button, Dimmer, Loader } from "semantic-ui-react";
 import { FilesFieldTable } from "./FilesFieldTable";
 import { UploadFileButton } from "./FilesFieldButtons";
-import {
-  useDepositApiClient,
-  useDepositFileApiClient,
-  useFormConfig,
-  httpApplicationJson,
-} from "@js/oarepo_ui";
+import { useFormConfig, httpApplicationJson } from "@js/oarepo_ui";
 import { Trans } from "react-i18next";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { connect } from "react-redux";
+import { deleteFile } from "@js/invenio_rdm_records/src/deposit/state/actions/files";
+import { save } from "../../state/deposit/actions";
+import { useFormikContext } from "formik";
+import _isEmpty from "lodash/isEmpty";
+import { useDepositFormAction } from "../../hooks";
 
-export const FilesField = ({
+export const FilesFieldComponent = ({
   fileUploaderMessage,
   record,
-  recordFiles,
   allowedFileTypes,
   fileMetadataFields,
   required = false,
+  deleteFileAction,
+  saveAction,
+  files,
 }) => {
-  const [filesState, setFilesState] = useState(recordFiles?.entries || []);
-  const {
-    formConfig: { filesLocked },
-  } = useFormConfig();
-  const { formik, isSubmitting, save, isSaving } = useDepositApiClient();
-  const { read } = useDepositFileApiClient();
-  const { values } = formik;
+  const [filesState, setFilesState] = useState(
+    !_isEmpty(files) ? Object.values(files) : []
+  );
+  const { filesLocked } = useFormConfig();
+  const { values } = useFormikContext();
   const recordObject = record || values;
 
   const isDraftRecord = !recordObject.is_published;
   const hasParentRecord =
     recordObject?.versions?.index && recordObject?.versions?.index > 1;
+
+  const { handleAction: handleSave, isSubmitting } = useDepositFormAction({
+    action: saveAction,
+    params: { ignoreValidationErrors: true },
+  });
 
   const displayImportBtn =
     recordObject?.files?.enabled &&
@@ -59,12 +65,12 @@ export const FilesField = ({
 
   const { isFetching, isError, refetch } = useQuery(
     ["files"],
-    () => read(values),
+    () => httpApplicationJson.get(values.links.files),
     {
       refetchOnWindowFocus: false,
       enabled: false,
       onSuccess: (data) => {
-        setFilesState(data.entries);
+        setFilesState(data?.data?.entries);
         resetImportParentFiles();
       },
     }
@@ -73,10 +79,16 @@ export const FilesField = ({
   const handleFilesUpload = () => {
     refetch();
   };
-  const handleFileDeletion = (fileObject) => {
-    setFilesState((prevFilesState) =>
-      prevFilesState.filter((file) => file.key !== fileObject.key)
-    );
+
+  const handleFileDeletion = async (fileObject) => {
+    try {
+      await deleteFileAction(fileObject);
+      setFilesState((prevFilesState) =>
+        prevFilesState.filter((file) => file.key !== fileObject.key)
+      );
+    } catch (error) {
+      console.error("Error deleting file:", error);
+    }
   };
 
   if (!recordObject.id && recordObject?.files?.enabled) {
@@ -88,8 +100,8 @@ export const FilesField = ({
           <Button
             className="ml-5 mr-5"
             primary
-            onClick={() => save(true)}
-            loading={isSaving}
+            onClick={() => handleSave()}
+            loading={isSubmitting}
             disabled={isSubmitting}
             size="mini"
           >
@@ -202,7 +214,7 @@ export const FilesField = ({
   return null;
 };
 
-FilesField.propTypes = {
+FilesFieldComponent.propTypes = {
   record: PropTypes.object,
   recordFiles: PropTypes.object,
   allowedFileTypes: PropTypes.array,
@@ -217,9 +229,24 @@ FilesField.propTypes = {
   ),
 };
 
-FilesField.defaultProps = {
+FilesFieldComponent.defaultProps = {
   fileUploaderMessage: i18next.t(
     "After publishing the draft, it is not possible to add, modify or delete files. It will be necessary to create a new version of the record."
   ),
   allowedFileTypes: ["*/*"],
 };
+
+const mapDispatchToProps = (dispatch) => ({
+  deleteFileAction: (fileObject) => dispatch(deleteFile(fileObject)),
+  saveAction: (values, params) => dispatch(save(values, params)),
+});
+
+const mapStateToProps = (state) => ({
+  actionState: state.deposit.actionState,
+  files: state.files.entries,
+});
+
+export const FilesField = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(FilesFieldComponent);

@@ -1,7 +1,7 @@
 import React, { forwardRef } from "react";
-import { Form, Icon } from "semantic-ui-react";
-import { useFormikContext, getIn } from "formik";
+import { Icon } from "semantic-ui-react";
 import PropTypes from "prop-types";
+import { TextField } from "react-invenio-forms";
 
 export const InputElement = forwardRef(
   (
@@ -19,11 +19,9 @@ export const InputElement = forwardRef(
     },
     ref
   ) => {
-    const { errors } = useFormikContext();
-    const inputError = getIn(errors, fieldPath, undefined);
     return (
-      <Form.Input
-        error={inputError}
+      <TextField
+        fieldPath={fieldPath}
         onClick={onClick}
         onKeyDown={onKeyDown}
         label={label}
