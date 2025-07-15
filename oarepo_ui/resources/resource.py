@@ -264,11 +264,11 @@ class RecordsUIResource(UIResource):
             )
 
         # TODO: handle permissions UI way - better response than generic error
-        record = self.config.ui_serializer.dump_obj(api_record.to_dict())
-        record.setdefault("links", {})
+        ui_data_serialization = self.config.ui_serializer.dump_obj(api_record.to_dict())
+        ui_data_serialization.setdefault("links", {})
 
         emitter = current_stats.get_event_emitter("record-view")
-        if record is not None and emitter is not None:
+        if ui_data_serialization is not None and emitter is not None:
             emitter(current_app, record=api_record._record, via_api=False)
 
         ui_links = self.expand_detail_links(identity=g.identity, record=api_record)
@@ -277,7 +277,7 @@ class RecordsUIResource(UIResource):
             export_path += "/"
         export_path += "export"
 
-        record["links"].update(
+        ui_data_serialization["links"].update(
             {
                 "ui_links": ui_links,
                 "export_path": export_path,
@@ -285,7 +285,7 @@ class RecordsUIResource(UIResource):
             }
         )
 
-        self.make_links_absolute(record["links"], self.api_service.config.url_prefix)
+        self.make_links_absolute(ui_data_serialization["links"], self.api_service.config.url_prefix)
         extra_context = {}
         embedded = resource_requestctx.args.get("embed", None) == "true"
         handlers = self._exportable_handlers()
@@ -295,7 +295,7 @@ class RecordsUIResource(UIResource):
         self.run_components(
             "before_ui_detail",
             api_record=api_record,
-            record=record,
+            record=ui_data_serialization,
             identity=g.identity,
             extra_context=extra_context,
             args=resource_requestctx.args,
@@ -304,17 +304,23 @@ class RecordsUIResource(UIResource):
             is_preview=is_preview,
             embedded=embedded,
         )
-        metadata = dict(record.get("metadata", record))
+        metadata = dict(ui_data_serialization.get("metadata", ui_data_serialization))
+        
         render_kwargs = {
             **extra_context,
             "extra_context": extra_context,  # for backward compatibility
             "metadata": metadata,
-            "ui": dict(record.get("ui", record)),
-            "record": record,
+            "ui": dict(ui_data_serialization.get("ui", ui_data_serialization)),
+            "record": ui_data_serialization,
             "api_record": api_record,
             "ui_links": ui_links,
             "context": current_oarepo_ui.catalog.jinja_env.globals,
-            "d": FieldData(record, self.ui_model),
+            "d": FieldData.create(
+                api_data=api_record.to_dict(), 
+                ui_data=ui_data_serialization,
+                ui_definitions=self.ui_model,
+                item_getter=self.config.field_data_item_getter
+            ),
             "is_preview": is_preview,
             "embedded": embedded,
         }
@@ -592,8 +598,8 @@ class RecordsUIResource(UIResource):
         except PermissionDenied as e:
             raise Forbidden() from e
 
-        data = api_record.to_dict()
-        record = self.config.ui_serializer.dump_obj(data)
+        api_record_serialization = api_record.to_dict()
+        ui_serialization = self.config.ui_serializer.dump_obj(api_record_serialization)
         form_config = self._get_form_config(
             g.identity, updateUrl=api_record.links.get("self", None)
         )
@@ -607,8 +613,8 @@ class RecordsUIResource(UIResource):
         self.run_components(
             "form_config",
             api_record=api_record,
-            data=data,
-            record=record,
+            data=api_record_serialization,
+            record=ui_serialization,
             identity=g.identity,
             form_config=form_config,
             args=resource_requestctx.args,
@@ -619,8 +625,8 @@ class RecordsUIResource(UIResource):
         self.run_components(
             "before_ui_edit",
             api_record=api_record,
-            record=record,
-            data=data,
+            record=ui_serialization,
+            data=api_record_serialization,
             form_config=form_config,
             args=resource_requestctx.args,
             view_args=resource_requestctx.view_args,
@@ -629,11 +635,12 @@ class RecordsUIResource(UIResource):
             extra_context=extra_context,
         )
 
-        record["extra_links"] = {
+        ui_serialization["extra_links"] = {
             "ui_links": ui_links,
             "search_link": self.config.url_prefix,
         }
 
+        
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro(
                 "edit",
@@ -641,14 +648,19 @@ class RecordsUIResource(UIResource):
                 args=resource_requestctx.args,
                 view_args=resource_requestctx.view_args,
             ),
-            record=record,
+            record=ui_serialization,
             api_record=api_record,
             form_config=form_config,
             extra_context=extra_context,
             ui_links=ui_links,
-            data=data,
+            data=api_record_serialization,
             context=current_oarepo_ui.catalog.jinja_env.globals,
-            d=FieldData(record, self.ui_model),
+            d=FieldData.create(
+                api_data=api_record_serialization, 
+                ui_data=ui_serialization,
+                ui_definitions=self.ui_model,
+                item_getter=self.config.field_data_item_getter  
+            ),
         )
 
     def _get_form_config(self, identity, **kwargs):

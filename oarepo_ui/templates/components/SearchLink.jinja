@@ -1,5 +1,5 @@
 {#def className=None, search_link,  searchFacet, data, hasTooltip=True #}
-{% set data_dict = data | to_dict %}
+{% set data_dict = data %}
 {% set href = search_link ~ "?q=&f=" ~ searchFacet ~ ":" ~ data_dict.value %}
 
 {% set url_data = {

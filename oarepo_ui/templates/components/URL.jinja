@@ -1,5 +1,5 @@
 {# def data, className="", target=None, rel=None, hasTooltip=False#}
-{% set data_dict = data | to_dict %}
+{% set data_dict = data %}
 <a class="ui {{ className }}" 
    href="{{ data_dict.href | e }}" 
    {% if hasTooltip %} data-tooltip="🔎 {{ data_dict.title }}" {% endif %}

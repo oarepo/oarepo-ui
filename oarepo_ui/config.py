@@ -9,22 +9,19 @@ THEME_HEADER_LOGIN_TEMPLATE = "oarepo_ui/header_login.html"
 
 OAREPO_UI_THEME_HEADER_FRONTPAGE = "oarepo_ui/header_frontpage.html"
 
+# TODO: check for all removed filters in templates
 OAREPO_UI_JINJAX_FILTERS = {
-    "id": "oarepo_ui.resources.templating.filters:id_filter",
-    "to_dict": "oarepo_ui.resources.templating.filters:to_dict_filter",
-    "type": "oarepo_ui.resources.templating.filters:type_filter",
-    "keys": "oarepo_ui.resources.templating.filters:keys_filter",
-    "ijoin": "oarepo_ui.resources.templating.filters:ijoin_filter",
     "compact_number": "invenio_app_rdm.records_ui.views.filters:compact_number",
     "localize_number": "invenio_app_rdm.records_ui.views.filters:localize_number",
     "truncate_number": "invenio_app_rdm.records_ui.views.filters:truncate_number",
+    "as_dict": "oarepo_ui.resources.templating.filters:as_dict",
 }
 
 OAREPO_UI_JINJAX_GLOBALS = {
-    "array": "oarepo_ui.resources.templating.filters:ichain",
-    "field_value": "oarepo_ui.resources.templating.filters:field_value",
-    "field_data": "oarepo_ui.resources.templating.filters:field_data",
-    "field_get": "oarepo_ui.resources.templating.filters:field_get",
+    "ui_value": "oarepo_ui.resources.templating.filters:ui_value",
+    "as_array": "oarepo_ui.resources.templating.filters:as_array",
+    "value": "oarepo_ui.resources.templating.filters:value",
+    "as_dict": "oarepo_ui.resources.templating.filters:as_dict"
 }
 
 

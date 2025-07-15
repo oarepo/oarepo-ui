@@ -1,3 +1,6 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
 import inspect
 from pathlib import Path
 
@@ -27,7 +30,8 @@ from flask_resources.parsers import MultiDictSchema
 from marshmallow import fields, post_load, validate
 
 from oarepo_ui.resources.links import UIRecordLink
-
+if TYPE_CHECKING:
+    from oarepo_ui.resources.templating.data import FieldDataItemGetter
 
 def _(x):
     """Identity function used to trigger string extraction."""
@@ -160,6 +164,8 @@ class RecordsUIResourceConfig(UIResourceConfig):
         PermissionDeniedError: "permission_denied",
     }
 
+    field_data_item_getter: FieldDataItemGetter | None = None
+    
     @property
     def default_components(self):
         service = current_service_registry.get(self.api_service)
@@ -361,4 +367,4 @@ class RecordsUIResourceConfig(UIResourceConfig):
         return dict(
             overridableIdPrefix=f"{self.application_id.capitalize()}.Form",
             **kwargs,
-        )
+        )        
