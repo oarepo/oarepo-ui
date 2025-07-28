@@ -240,8 +240,6 @@ class RecordsUIResource(UIResource):
             api_record = self._get_record(pid_value, allow_draft=is_preview)
             render_method = self.get_jinjax_macro(
                 "preview",
-                identity=g.identity,
-                pid_value=pid_value,
                 default_macro=self.config.templates["detail"],
             )
 
@@ -249,8 +247,6 @@ class RecordsUIResource(UIResource):
             api_record = self._get_record(pid_value, allow_draft=is_preview)
             render_method = self.get_jinjax_macro(
                 "detail",
-                identity=g.identity,
-                pid_value=pid_value,
             )
 
         # TODO: handle permissions UI way - better response than generic error
@@ -485,9 +481,6 @@ class RecordsUIResource(UIResource):
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro(
                 "search",
-                identity=g.identity,
-                args=resource_requestctx.args,
-                view_args=resource_requestctx.view_args,
             ),
             search_app_config=search_app_config,
             ui_config=self.config,
@@ -627,9 +620,6 @@ class RecordsUIResource(UIResource):
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro(
                 "edit",
-                identity=g.identity,
-                args=resource_requestctx.args,
-                view_args=resource_requestctx.view_args,
             ),
             record=ui_serialization,
             api_record=api_record,
@@ -651,7 +641,7 @@ class RecordsUIResource(UIResource):
 
     @login_required
     @pass_query_args("create")
-    def create(self, community, *args, **kwargs):
+    def create(self, community=None, *args, **kwargs):
         if not self.has_deposit_permissions(g.identity):
             raise Forbidden()
         empty_record = self.empty_record(
@@ -703,7 +693,6 @@ class RecordsUIResource(UIResource):
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro(
                 "create",
-                identity=g.identity,
             ),
             record=empty_record,
             api_record=None,
@@ -812,7 +801,6 @@ class RecordsUIResource(UIResource):
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro(
                 "tombstone",
-                identity=g.identity,
                 default_macro="Tombstone",
             ),
             pid=getattr(error, "pid_value", None) or getattr(error, "pid", None),
@@ -823,7 +811,6 @@ class RecordsUIResource(UIResource):
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro(
                 "not_found",
-                identity=g.identity,
                 default_macro="NotFound",
             ),
             pid=getattr(error, "pid_value", None) or getattr(error, "pid", None),
@@ -833,7 +820,6 @@ class RecordsUIResource(UIResource):
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro(
                 "permission_denied",
-                identity=g.identity,
                 default_macro="PermissionDenied",
             ),
             pid=getattr(error, "pid_value", None) or getattr(error, "pid", None),
