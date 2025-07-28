@@ -26,11 +26,7 @@ from invenio_rdm_records.services.errors import RecordDeletedException
 from invenio_records_resources.pagination import Pagination
 from invenio_records_resources.proxies import current_service_registry
 from invenio_records_resources.records.systemfields import FilesField
-from invenio_records_resources.resources.records.resource import (
-    request_read_args,
-    request_search_args,
-    request_view_args,
-)
+from invenio_records_resources.resources.records.resource import request_search_args
 from invenio_records_resources.services import LinksTemplate
 from invenio_records_resources.services.base.config import ConfiguratorMixin
 from invenio_stats.proxies import current_stats
@@ -51,6 +47,9 @@ from .config import (
     RecordsUIResourceConfig,
     TemplatePageUIResourceConfig,
     UIResourceConfig,
+    pass_query_args,
+    pass_route_args,
+    request_parser,
 )
 from .signposting import response_header_signposting
 from .templating.data import FieldData
@@ -75,7 +74,7 @@ request_form_config_view_args = request_parser(
     from_conf("request_form_config_view_args"), location="view_args"
 )
 
-request_embed_args = request_parser(from_conf("request_embed_args"), location="args")
+pass_embed_args = request_parser(from_conf("request_embed_args"), location="args")
 
 
 class UIComponentsMixin:
@@ -142,7 +141,7 @@ class FormConfigResource(UIComponentsMixin, Resource):
     def _get_form_config(self, **kwargs):
         return self.config.form_config(**kwargs)
 
-    @request_view_args
+    @pass_route_args
     def form_config(self):
         form_config = self._get_form_config()
         self.run_components(
@@ -211,7 +210,7 @@ class RecordsUIResource(UIResource):
 
         return routes
 
-    def empty_record(self, resource_requestctx, **kwargs):
+    def empty_record(self, requestctx, selected_community=None, **kwargs):
         """Create an empty record with default values."""
         empty_data = dump_empty(self.api_config.schema)
         files_field = getattr(self.api_config.record_cls, "files", None)
@@ -222,8 +221,9 @@ class RecordsUIResource(UIResource):
         )
         self.run_components(
             "empty_record",
-            resource_requestctx=resource_requestctx,
+            resource_requestctx=requestctx,
             empty_data=empty_data,
+            selected_community=selected_community,
         )
 
         return empty_data
@@ -235,32 +235,22 @@ class RecordsUIResource(UIResource):
         )
 
     # helper function to avoid duplicating code between detail and preview handler
-    @request_read_args
-    @request_view_args
-    @response_header_signposting
-    @request_embed_args
-    def _detail(self, *, is_preview=False):
+    def _detail(self, pid_value, embed=False, is_preview=False):
         if is_preview:
-            api_record = self._get_record(
-                resource_requestctx.view_args["pid_value"], allow_draft=is_preview
-            )
+            api_record = self._get_record(pid_value, allow_draft=is_preview)
             render_method = self.get_jinjax_macro(
                 "preview",
                 identity=g.identity,
-                args=resource_requestctx.args,
-                view_args=resource_requestctx.view_args,
+                pid_value=pid_value,
                 default_macro=self.config.templates["detail"],
             )
 
         else:
-            api_record = self._get_record(
-                resource_requestctx.view_args["pid_value"], allow_draft=is_preview
-            )
+            api_record = self._get_record(pid_value, allow_draft=is_preview)
             render_method = self.get_jinjax_macro(
                 "detail",
                 identity=g.identity,
-                args=resource_requestctx.args,
-                view_args=resource_requestctx.view_args,
+                pid_value=pid_value,
             )
 
         # TODO: handle permissions UI way - better response than generic error
@@ -287,7 +277,6 @@ class RecordsUIResource(UIResource):
 
         self.make_links_absolute(ui_data_serialization["links"], self.api_service.config.url_prefix)
         extra_context = {}
-        embedded = resource_requestctx.args.get("embed", None) == "true"
         handlers = self._exportable_handlers()
         extra_context["exporters"] = {
             handler.export_code: handler for mimetype, handler in handlers
@@ -302,7 +291,7 @@ class RecordsUIResource(UIResource):
             view_args=resource_requestctx.view_args,
             ui_links=ui_links,
             is_preview=is_preview,
-            embedded=embedded,
+            embedded=embed,
         )
         metadata = dict(ui_data_serialization.get("metadata", ui_data_serialization))
         
@@ -322,7 +311,7 @@ class RecordsUIResource(UIResource):
                 item_getter=self.config.field_data_item_getter
             ),
             "is_preview": is_preview,
-            "embedded": embedded,
+            "embedded": embed,
         }
 
         response = Response(
@@ -336,12 +325,15 @@ class RecordsUIResource(UIResource):
         response._api_record = api_record
         return response
 
-    def detail(self):
+    # @pass_view_args
+    @pass_query_args("read", "embed", "export")
+    @response_header_signposting
+    def detail(self, pid_value, embed=False, is_preview=False):
         """Returns item detail page."""
-        return self._detail()
+        return self._detail(pid_value=pid_value, embed=embed, is_preview=is_preview)
 
-    @request_read_args
-    @request_file_view_args
+    # @pass_query_args
+    # @request_file_view_args
     def published_file_preview(self, *args, **kwargs):
         """Return file preview for published record."""
         record = self._get_record(
@@ -350,19 +342,13 @@ class RecordsUIResource(UIResource):
 
         return self._file_preview(record)
 
-    @request_read_args
-    @request_file_view_args
-    def draft_file_preview(self, *args, **kwargs):
+    @pass_route_args("view", "file_view")
+    def draft_file_preview(self, pid_value, filepath, *args, **kwargs):
         """Return file preview for draft record."""
-        record = self._get_record(
-            resource_requestctx.view_args["pid_value"], allow_draft=True
-        )._record
-        return self._file_preview(record)
+        record = self._get_record(pid_value, allow_draft=True)._record
+        return self._file_preview(record, pid_value, filepath)
 
-    def _file_preview(self, record):
-        pid_value = resource_requestctx.view_args["pid_value"]
-        filepath = resource_requestctx.view_args["filepath"]
-
+    def _file_preview(self, record, pid_value, filepath):
         file_service = get_file_service_for_record_class(type(record))
         file_metadata = file_service.read_file_metadata(g.identity, pid_value, filepath)
 
@@ -380,9 +366,12 @@ class RecordsUIResource(UIResource):
 
         return default_previewer.preview(fileobj)
 
-    def preview(self):
+    @pass_route_args("view")
+    @pass_query_args("read", "embed", "export", exclude=["is_preview"])
+    @response_header_signposting
+    def preview(self, pid_value, embed=False):
         """Returns detail page preview."""
-        return self._detail(is_preview=True)
+        return self._detail(pid_value=pid_value, embed=embed, is_preview=True)
 
     def make_links_absolute(self, links, api_prefix):
         # make links absolute
@@ -508,8 +497,7 @@ class RecordsUIResource(UIResource):
             context=current_oarepo_ui.catalog.jinja_env.globals,
         )
 
-    @request_read_args
-    @request_view_args
+    @pass_route_args
     @request_export_args
     def _export(self, *, is_preview=False):
         export_format = resource_requestctx.view_args["export_format"]
@@ -560,12 +548,7 @@ class RecordsUIResource(UIResource):
         return self._export(is_preview=True)
 
     def get_jinjax_macro(
-        self,
-        template_type,
-        identity=None,
-        args=None,
-        view_args=None,
-        default_macro=None,
+        self, template_type, default_macro=None
     ):
         """
         Returns which jinjax macro (name of the macro, including optional namespace in the form of "namespace.Macro")
@@ -575,8 +558,8 @@ class RecordsUIResource(UIResource):
             return self.config.templates.get(template_type, default_macro)
         return self.config.templates[template_type]
 
-    @request_read_args
-    @request_view_args
+    # @pass_query_args
+    # @pass_view_args
     def edit(self):
         try:
             api_record = self._get_record(
@@ -667,14 +650,13 @@ class RecordsUIResource(UIResource):
         return self.config.form_config(identity=identity, **kwargs)
 
     @login_required
-    @request_read_args
-    @request_view_args
-    @request_create_args
-    def create(self):
+    @pass_query_args("create")
+    def create(self, community, *args, **kwargs):
         if not self.has_deposit_permissions(g.identity):
             raise Forbidden()
-
-        empty_record = self.empty_record(resource_requestctx)
+        empty_record = self.empty_record(
+            resource_requestctx, selected_community=community
+        )
 
         # TODO: use api service create link when available
         form_config = self._get_form_config(
@@ -693,6 +675,7 @@ class RecordsUIResource(UIResource):
             record=None,
             data=empty_record,
             form_config=form_config,
+            selected_community=community,
             args=resource_requestctx.args,
             view_args=resource_requestctx.view_args,
             identity=g.identity,
@@ -700,7 +683,7 @@ class RecordsUIResource(UIResource):
             ui_links=ui_links,
         )
         empty_record = self.default_communities(
-            empty_record, form_config, resource_requestctx
+            empty_record, form_config, selected_community=community
         )
 
         self.run_components(
@@ -708,6 +691,7 @@ class RecordsUIResource(UIResource):
             data=empty_record,
             record=None,
             api_record=None,
+            selected_community=community,
             form_config=form_config,
             args=resource_requestctx.args,
             view_args=resource_requestctx.view_args,
@@ -720,12 +704,11 @@ class RecordsUIResource(UIResource):
             self.get_jinjax_macro(
                 "create",
                 identity=g.identity,
-                args=resource_requestctx.args,
-                view_args=resource_requestctx.view_args,
             ),
             record=empty_record,
             api_record=None,
             form_config=form_config,
+            selected_community=community,
             extra_context=extra_context,
             ui_links=ui_links,
             data=empty_record,
@@ -743,13 +726,12 @@ class RecordsUIResource(UIResource):
         else:
             return self.api_service.check_permission(identity, "create", record=None)
 
-    def default_communities(self, empty_record, form_config, resource_requestctx):
+    def default_communities(self, empty_record, form_config, selected_community=None):
         if "allowed_communities" not in form_config:
             return empty_record
-        if "community" in resource_requestctx.args:
-            community = resource_requestctx.args["community"]
+        if selected_community:
             for c in form_config["allowed_communities"]:
-                if c["slug"] == community:
+                if c["slug"] == selected_community:
                     empty_record["parent"]["communities"]["default"] = c["id"]
                     break
         elif len(form_config["allowed_communities"]) == 1:
@@ -933,7 +915,7 @@ class TemplatePageUIResource(UIResource):
             )
         return routes
 
-    @request_view_args
+    @pass_route_args
     def render(self, page, *args, **kwargs):
         extra_context = {}
 

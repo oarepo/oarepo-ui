@@ -58,20 +58,20 @@ class AllowedCommunitiesComponent(UIResourceComponent):
         data: Dict,
         identity: Identity,
         form_config: Dict,
+        selected_community: str,
         args: Dict,
         view_args: Dict,
         ui_links: Dict,
         extra_context: Dict,
         **kwargs,
     ):
-        preselected_community_slug = args.get("community", None)
-        if preselected_community_slug:
+        if selected_community:
             try:
                 preselected_community = next(
                     (
                         c
                         for c in form_config["allowed_communities"]
-                        if c["slug"] == preselected_community_slug
+                        if c["slug"] == selected_community
                     ),
                 )
             except StopIteration:
