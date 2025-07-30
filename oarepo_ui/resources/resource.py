@@ -38,6 +38,9 @@ from oarepo_runtime.datastreams.utils import get_file_service_for_record_class
 from oarepo_runtime.resources.responses import ExportableResponseHandler
 from werkzeug.exceptions import Forbidden
 
+from idutils import to_url
+
+
 from oarepo_ui.utils import dump_empty
 
 # Resource
@@ -788,9 +791,20 @@ class RecordsUIResource(UIResource):
             record = self._get_record(
                 error.record.get("id", None), include_deleted=True
             )
-            record_tombstone = record._record.get("tombstone", None)
+            record_dict = record._record
+            record_dict.setdefault("links", record.links)
+
         except RecordDeletedException as e:  # read with include_deleted=True raises an exception instead of just returning record
-            record_tombstone = e.record.get("tombstone")
+            record_dict = e.record
+
+        record_tombstone = record_dict.get("tombstone", None)
+        record_doi = record_dict.get("pids", {}).get("doi", {}).get("identifier", None)
+        if record_doi:
+            record_doi = to_url(record_doi, "doi", url_scheme="https")
+
+        tombstone_url = record_doi or record_dict.get("links", {}).get(
+            "self_html", None
+        )
 
         tombstone_dict = {}
         if record_tombstone:
@@ -798,6 +812,7 @@ class RecordsUIResource(UIResource):
                 "Removal reason": record_tombstone["removal_reason"]["id"],
                 "Note": record_tombstone.get("note", ""),
                 "Citation text": record_tombstone["citation_text"],
+                "URL": tombstone_url,
             }
 
         return current_oarepo_ui.catalog.render(
