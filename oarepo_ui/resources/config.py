@@ -130,8 +130,6 @@ def _pass_request_args(*field_configs, location=None, exclude=(), **options):
     else:
         passed_function = None
 
-    print("TEST", passed_function, field_configs, location, flush=True)
-
     def decorator(f):
         @wraps(f)
         def view(self, *args, **kwargs):

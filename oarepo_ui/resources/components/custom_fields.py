@@ -15,8 +15,6 @@ class CustomFieldsComponent(UIResourceComponent):
         data: Dict = None,
         identity: Identity,
         form_config: Dict,
-        args: Dict,
-        view_args: Dict,
         ui_links: Dict = None,
         extra_context: Dict = None,
         **kwargs,
@@ -28,8 +26,6 @@ class CustomFieldsComponent(UIResourceComponent):
                 record=record,
                 data=data,
                 form_config=form_config,
-                args=args,
-                view_args=view_args,
                 ui_links=ui_links,
                 extra_context=extra_context,
             )

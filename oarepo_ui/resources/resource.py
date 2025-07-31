@@ -13,10 +13,7 @@ from flask_login import current_user
 from flask_principal import PermissionDenied
 from flask_resources import (
     Resource,
-    from_conf,
-    request_parser,
-    resource_requestctx,
-    route,
+    route, resource_requestctx,
 )
 from flask_security import login_required
 from invenio_base.utils import obj_or_import_string
@@ -49,7 +46,6 @@ from .config import (
     UIResourceConfig,
     pass_query_args,
     pass_route_args,
-    request_parser,
 )
 from .signposting import response_header_signposting
 from .templating.data import FieldData
@@ -57,24 +53,7 @@ from .templating.data import FieldData
 if TYPE_CHECKING:
     from .components import UIResourceComponent
 
-
 log = logging.getLogger(__name__)
-
-request_export_args = request_parser(
-    from_conf("request_export_args"), location="view_args"
-)
-
-request_file_view_args = request_parser(
-    from_conf("request_file_view_args"), location="view_args"
-)
-
-request_create_args = request_parser(from_conf("request_create_args"), location="args")
-
-request_form_config_view_args = request_parser(
-    from_conf("request_form_config_view_args"), location="view_args"
-)
-
-pass_embed_args = request_parser(from_conf("request_embed_args"), location="args")
 
 
 class UIComponentsMixin:
@@ -147,8 +126,6 @@ class FormConfigResource(UIComponentsMixin, Resource):
         self.run_components(
             "form_config",
             form_config=form_config,
-            args=resource_requestctx.args,
-            view_args=resource_requestctx.view_args,
             identity=g.identity,
         )
         return form_config
@@ -210,7 +187,7 @@ class RecordsUIResource(UIResource):
 
         return routes
 
-    def empty_record(self, requestctx, selected_community=None, **kwargs):
+    def empty_record(self, selected_community=None, **kwargs):
         """Create an empty record with default values."""
         empty_data = dump_empty(self.api_config.schema)
         files_field = getattr(self.api_config.record_cls, "files", None)
@@ -221,7 +198,6 @@ class RecordsUIResource(UIResource):
         )
         self.run_components(
             "empty_record",
-            resource_requestctx=requestctx,
             empty_data=empty_data,
             selected_community=selected_community,
         )
@@ -283,8 +259,6 @@ class RecordsUIResource(UIResource):
             record=ui_data_serialization,
             identity=g.identity,
             extra_context=extra_context,
-            args=resource_requestctx.args,
-            view_args=resource_requestctx.view_args,
             ui_links=ui_links,
             is_preview=is_preview,
             embedded=embed,
@@ -321,22 +295,21 @@ class RecordsUIResource(UIResource):
         response._api_record = api_record
         return response
 
-    # @pass_view_args
+    @pass_route_args("view")
     @pass_query_args("read", "embed", "export")
     @response_header_signposting
     def detail(self, pid_value, embed=False, is_preview=False):
         """Returns item detail page."""
         return self._detail(pid_value=pid_value, embed=embed, is_preview=is_preview)
 
-    # @pass_query_args
-    # @request_file_view_args
-    def published_file_preview(self, *args, **kwargs):
+    @pass_route_args("view", "file_view")
+    def published_file_preview(self, pid_value, filepath):
         """Return file preview for published record."""
         record = self._get_record(
-            resource_requestctx.view_args["pid_value"], allow_draft=False
+            pid_value, allow_draft=False
         )._record
 
-        return self._file_preview(record)
+        return self._file_preview(record, pid_value, filepath)
 
     @pass_route_args("view", "file_view")
     def draft_file_preview(self, pid_value, filepath, *args, **kwargs):
@@ -379,16 +352,8 @@ class RecordsUIResource(UIResource):
                 links[k] = v
 
     def _get_record(
-        self, pid_value_or_resource_requestctx, allow_draft=False, include_deleted=False
+        self, pid_value, allow_draft=False, include_deleted=False
     ):
-        if isinstance(pid_value_or_resource_requestctx, str):
-            pid_value = pid_value_or_resource_requestctx
-        else:
-            log.warning(
-                "_get_record should receive only pid_value, not the whole resouce_request_ctx"
-            )
-            pid_value = pid_value_or_resource_requestctx.view_args["pid_value"]
-
         try:
             if allow_draft:
                 read_method = (
@@ -422,10 +387,8 @@ class RecordsUIResource(UIResource):
         else:
             return redirect(path_with_slash + "?" + split_path[1], code=302)
 
-    @request_search_args
-    def search(self):
-        page = resource_requestctx.args.get("page", 1)
-        size = resource_requestctx.args.get("size", 10)
+    @pass_query_args("search")
+    def search(self, page=1, size=10):
         pagination = Pagination(
             size,
             page,
@@ -465,8 +428,6 @@ class RecordsUIResource(UIResource):
             "before_ui_search",
             identity=g.identity,
             search_options=search_options,
-            args=resource_requestctx.args,
-            view_args=resource_requestctx.view_args,
             ui_config=self.config,
             ui_links=ui_links,
             extra_context=extra_context,
@@ -490,12 +451,9 @@ class RecordsUIResource(UIResource):
             context=current_oarepo_ui.catalog.jinja_env.globals,
         )
 
-    @pass_route_args
-    @request_export_args
-    def _export(self, *, is_preview=False):
-        export_format = resource_requestctx.view_args["export_format"]
+    def _export(self, pid_value, export_format, is_preview=False):
         record = self._get_record(
-            resource_requestctx.view_args["pid_value"], allow_draft=is_preview
+            pid_value, allow_draft=is_preview
         )
         handlers = self._exportable_handlers()
         handlers = [
@@ -534,11 +492,13 @@ class RecordsUIResource(UIResource):
         ]
         return handlers
 
-    def export(self):
-        return self._export()
+    @pass_route_args("view", "export")
+    def export(self, pid_value, export_format):
+        return self._export(pid_value, export_format)
 
-    def export_preview(self):
-        return self._export(is_preview=True)
+    @pass_route_args("view", "export")
+    def export_preview(self, pid_value, export_format):
+        return self._export(pid_value, export_format, is_preview=True)
 
     def get_jinjax_macro(
         self, template_type, default_macro=None
@@ -552,11 +512,11 @@ class RecordsUIResource(UIResource):
         return self.config.templates[template_type]
 
     # @pass_query_args
-    # @pass_view_args
-    def edit(self):
+    @pass_route_args("view")
+    def edit(self, pid_value):
         try:
             api_record = self._get_record(
-                resource_requestctx.view_args["pid_value"], allow_draft=True
+                pid_value, allow_draft=True
             )
         except:
             if not current_user.is_authenticated:
@@ -593,8 +553,6 @@ class RecordsUIResource(UIResource):
             record=ui_serialization,
             identity=g.identity,
             form_config=form_config,
-            args=resource_requestctx.args,
-            view_args=resource_requestctx.view_args,
             ui_links=ui_links,
             extra_context=extra_context,
         )
@@ -604,8 +562,6 @@ class RecordsUIResource(UIResource):
             record=ui_serialization,
             data=api_record_serialization,
             form_config=form_config,
-            args=resource_requestctx.args,
-            view_args=resource_requestctx.view_args,
             ui_links=ui_links,
             identity=g.identity,
             extra_context=extra_context,
@@ -645,7 +601,7 @@ class RecordsUIResource(UIResource):
         if not self.has_deposit_permissions(g.identity):
             raise Forbidden()
         empty_record = self.empty_record(
-            resource_requestctx, selected_community=community
+            selected_community=community
         )
 
         # TODO: use api service create link when available
@@ -666,8 +622,6 @@ class RecordsUIResource(UIResource):
             data=empty_record,
             form_config=form_config,
             selected_community=community,
-            args=resource_requestctx.args,
-            view_args=resource_requestctx.view_args,
             identity=g.identity,
             extra_context=extra_context,
             ui_links=ui_links,
@@ -683,8 +637,6 @@ class RecordsUIResource(UIResource):
             api_record=None,
             selected_community=community,
             form_config=form_config,
-            args=resource_requestctx.args,
-            view_args=resource_requestctx.view_args,
             identity=g.identity,
             extra_context=extra_context,
             ui_links=ui_links,
@@ -761,11 +713,11 @@ class RecordsUIResource(UIResource):
         )
         return tpl.expand(identity, record)
 
-    def expand_search_links(self, identity, pagination, args):
+    def expand_search_links(self, identity, pagination, query_args):
         """Get links for this result item."""
         tpl = LinksTemplate(
             self.config.ui_links_search,
-            {"config": self.config, "url_prefix": self.config.url_prefix, "args": args},
+            {"config": self.config, "url_prefix": self.config.url_prefix, "args": query_args},
         )
         return tpl.expand(identity, pagination)
 
@@ -826,7 +778,7 @@ class RecordsUIResource(UIResource):
             error=error,
         )
 
-    @request_form_config_view_args
+    @pass_route_args("form_config_view")
     def form_config(self):
         form_config = self._get_form_config(identity=g.identity)
         self.run_components(
@@ -837,8 +789,6 @@ class RecordsUIResource(UIResource):
             data=None,
             ui_links=None,
             extra_context=None,
-            args=resource_requestctx.args,
-            view_args=resource_requestctx.view_args,
             identity=g.identity,
         )
         return form_config
@@ -908,8 +858,6 @@ class TemplatePageUIResource(UIResource):
         self.run_components(
             "before_render",
             identity=g.identity,
-            args=resource_requestctx.args,
-            view_args=resource_requestctx.view_args,
             ui_config=self.config,
             extra_context=extra_context,
             page=page,
