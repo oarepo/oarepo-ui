@@ -12,6 +12,7 @@ export const I18nTextInputField = ({
   fieldPath,
   optimized,
   lngFieldWidth,
+  lngFieldError,
   usedLanguages,
   ...uiProps
 }) => {
@@ -33,6 +34,7 @@ export const I18nTextInputField = ({
           icon: "globe",
           fieldRepresentation: "compact",
         })}
+        error={lngFieldError}
       />
       <TextField
         fieldPath={textFieldPath}
