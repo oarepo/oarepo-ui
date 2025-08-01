@@ -2,9 +2,8 @@
 
 {% extends "oarepo_ui/detail.html" %}
 
-{% block record_main_content %}
-
-<div class="container centered rel-pt-2">
+{% block page_body %}
+<div class="ui container centered rel-pt-2">
   <h1 class="ui header inline-block">
     <i class="icon lightning" aria-hidden="true"></i>
     <div class="content pl-0 rel-pr-1">
@@ -22,16 +21,26 @@
     <table class="ui table">
       <tbody>
         {% for key, value in tombstone.items() %}
-          <tr>
-            <th class="left aligned pl-5">{{ _(key) }}:</th>
-            <td>{{ value }}</td>
-          </tr>
+          {% if key and value %}
+            <tr>
+              <th class="left aligned pl-5">{{ _(key) }}:</th>
+              <td>
+                {% if key == "URL" %}
+                  <a href="{{ value }}" target="_blank" rel="noopener noreferrer">
+                    {{ value }}
+                  </a>
+                  <ClipboardCopyButton copyText={value} />
+                {% else %}
+                  {{ value }}
+                {% endif %}
+              </td>
+            </tr>
+          {% endif %}
         {% endfor %}
-    </tbody>
+      </tbody>
     </table>
   {% else %}
     <p>No tombstone (e.g. removal reason, note) available.</p>
   {% endif %}
 </div>
-
-{% endblock %}
+{% endblock page_body %}
