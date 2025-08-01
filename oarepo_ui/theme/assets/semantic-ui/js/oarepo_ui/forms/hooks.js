@@ -273,8 +273,9 @@ export const useDepositApiClient = ({
             ),
         };
       } else {
-        errorsObj["httpErrors"] =
-          error?.response?.data?.message ?? error.message;
+        errorsObj["httpErrors"] = i18next.t(
+          error?.response?.data?.message ?? error.message
+        );
       }
       return false;
     } finally {

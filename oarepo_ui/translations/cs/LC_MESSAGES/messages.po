@@ -1023,3 +1023,187 @@ msgstr "Smazat"
 #: /home/martin/Projects/CESNET/OARepo/oarepo-ui/oarepo_ui/views.py:65
 msgid "Notification preferences were updated."
 msgstr "Předvolby oznámení byly aktualizovány."
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:12
+msgid ""
+"The browser (or proxy) sent a request that this server could not understand."
+msgstr ""
+"Prohlížeč (nebo proxy server) odeslal požadavek, kterému tento server "
+"nerozuměl."
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:13
+msgid ""
+"The server could not verify that you are authorized to access the URL "
+"requested. You either supplied the wrong credentials (e.g. a bad password), "
+"or your browser doesn't understand how to supply the credentials required."
+msgstr ""
+"Server nemohl ověřit, zda jste oprávněni přistupovat k požadované adrese "
+"URL. Buď jste zadali špatné přihlašovací údaje (např. špatné heslo), nebo "
+"váš prohlížeč nerozumí tomu, jak požadované přihlašovací údaje poskytnout."
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:19
+msgid ""
+"You don't have the permission to access the requested resource. It is either"
+" read-protected or not readable by the server."
+msgstr ""
+"Nemáte oprávnění k přístupu k požadovanému prostředku. Je buď chráněn proti "
+"čtení, nebo jej server nemůže přečíst."
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:23
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:41
+msgid ""
+"The requested URL was not found on the server. If you entered the URL "
+"manually please check your spelling and try again."
+msgstr ""
+"Požadovaná adresa URL nebyla na serveru nalezena. Pokud jste adresu URL "
+"zadali ručně, zkontrolujte prosím pravopis a zkuste to znovu."
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:27
+msgid "The method is not allowed for the requested URL."
+msgstr "Metoda není pro požadovanou adresu URL povolena."
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:28
+msgid ""
+"The resource identified by the request is only capable of generating "
+"response entities which have content characteristics not acceptable "
+"according to the accept headers sent in the request."
+msgstr ""
+"Prostředek identifikovaný požadavkem je schopen generovat pouze entity "
+"odpovědi, které mají charakteristiky obsahu, jež nejsou přijatelné podle "
+"hlaviček accept zaslaných v požadavku."
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:33
+msgid ""
+"The server closed the network connection because the browser didn't finish "
+"the request within the specified time."
+msgstr ""
+"Server ukončil síťové připojení, protože prohlížeč nedokončil požadavek v "
+"zadaném čase."
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:37
+msgid ""
+"A conflict happened while processing the request. The resource might have "
+"been modified while the request was being processed."
+msgstr ""
+"Při zpracování požadavku došlo ke konfliktu. Prostředek mohl být během "
+"zpracování požadavku změněn."
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:45
+msgid ""
+"The requested URL is no longer available on this server and there is no "
+"forwarding address. If you followed a link from a foreign page, please "
+"contact the author of this page."
+msgstr ""
+"Požadovaná adresa URL již na tomto serveru není k dispozici a neexistuje "
+"žádná adresa pro přesměrování. Pokud jste následovali odkaz z cizí stránky, "
+"kontaktujte prosím autora této stránky."
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:54
+msgid ""
+"The precondition on the request for the URL failed positive evaluation."
+msgstr ""
+"Předběžná podmínka v požadavku na adresu URL selhala při pozitivním "
+"vyhodnocení."
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:55
+msgid "The data value transmitted exceeds the capacity limit."
+msgstr "Přenášená hodnota dat překračuje kapacitní limit."
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:56
+msgid ""
+"The length of the requested URL exceeds the capacity limit for this server. "
+"The request cannot be processed."
+msgstr ""
+"Délka požadované adresy URL překračuje kapacitní limit tohoto serveru. "
+"Požadavek nelze zpracovat."
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:60
+msgid "The server does not support the media type transmitted in the request."
+msgstr "Server nepodporuje typ média přenášený v požadavku."
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:61
+msgid "The server cannot provide the requested range."
+msgstr "Server nemůže poskytnout požadovaný rozsah."
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:62
+msgid "The server could not meet the requirements of the Expect header"
+msgstr "Server nemohl splnit požadavky hlavičky Expect"
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:63
+msgid "This server is a teapot, not a coffee machine"
+msgstr "Tento server je čajová konvice, ne kávovar"
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:64
+msgid ""
+"The request was well-formed but was unable to be followed due to semantic "
+"errors."
+msgstr ""
+"Požadavek byl správně formulován, ale nebylo možné jej zpracovat kvůli "
+"sémantickým chybám."
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:68
+msgid "The resource that is being accessed is locked."
+msgstr "Prostředek, ke kterému se přistupuje, je uzamčen."
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:69
+msgid ""
+"The method could not be performed on the resource because the requested "
+"action depended on another action and that action failed."
+msgstr ""
+"Metodu nebylo možné na prostředku provést, protože požadovaná akce závisela "
+"na jiné akci a tato akce se nezdařila."
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:73
+msgid ""
+"This request is required to be conditional; try using 'If-Match' or 'If-"
+"Unmodified-Since'."
+msgstr ""
+"Tento požadavek musí být podmíněný; zkuste použít 'If-Match' nebo 'If-"
+"Unmodified-Since'."
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:77
+msgid "This user has exceeded an allotted request count. Try again later."
+msgstr ""
+"Tento uživatel překročil přidělený počet požadavků. Zkuste to znovu později."
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:78
+msgid "One or more header fields exceeds the maximum size."
+msgstr "Jedno nebo více polí záhlaví překračuje maximální velikost."
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:79
+msgid "Unavailable for legal reasons."
+msgstr "Nedostupné z právních důvodů."
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:80
+msgid ""
+"The server encountered an internal error and was unable to complete your "
+"request. Either the server is overloaded or there is an error in the "
+"application."
+msgstr ""
+"Server narazil na interní chybu a nemohl dokončit váš požadavek. Buď je "
+"server přetížen, nebo došlo k chybě v aplikaci."
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:85
+msgid "The server does not support the action requested by the browser."
+msgstr "Server nepodporuje akci požadovanou prohlížečem."
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:86
+msgid "The proxy server received an invalid response from an upstream server."
+msgstr "Proxy server obdržel neplatnou odpověď od nadřazeného serveru."
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:87
+msgid ""
+"The server is temporarily unable to service your request due to maintenance "
+"downtime or capacity problems. Please try again later."
+msgstr ""
+"Server je dočasně nedostupný z důvodu údržby nebo problémů s kapacitou. "
+"Zkuste to prosím znovu později."
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:91
+msgid "The connection to an upstream server timed out."
+msgstr "Vypršel časový limit připojení k nadřazenému serveru."
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:92
+msgid ""
+"The server does not support the HTTP protocol version used in the request."
+msgstr "Server nepodporuje verzi protokolu HTTP použitou v požadavku."
