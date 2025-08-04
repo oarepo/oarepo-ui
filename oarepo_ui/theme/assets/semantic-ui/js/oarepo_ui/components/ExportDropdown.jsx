@@ -14,9 +14,9 @@ export const ExportDropdown = ({
   recordExportInfo: { formatOptions, exportBaseUrl },
 }) => {
   const [selectedExportFormat, setSelectedExportFormat] = useState(
-    formatOptions[0].value
+    formatOptions?.[0]?.value
   );
-  return (
+  return selectedExportFormat ? (
     <Grid>
       <Grid.Column width={10}>
         <Dropdown
@@ -42,7 +42,7 @@ export const ExportDropdown = ({
         </Button>
       </Grid.Column>
     </Grid>
-  );
+  ) : null;
 };
 
 ExportDropdown.propTypes = {
