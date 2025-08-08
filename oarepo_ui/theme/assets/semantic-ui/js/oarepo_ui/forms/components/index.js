@@ -1,4 +1,3 @@
-export * from "./RelatedSelectField";
 export * from "./LanguageSelectField";
 export * from "./FormikStateLogger";
 export * from "./I18nString";
