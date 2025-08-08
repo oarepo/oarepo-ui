@@ -160,10 +160,10 @@ class ModelUIResourceConfig(RecordsUIResourceConfig):
 
 
 class ModelUIResource(RecordsUIResource):
-    def _get_record(self, allow_draft=False):
+    def _get_record(self, pid_value, allow_draft=False, include_deleted=False):
         # we are not testing drafts here, so always return published record
         # tests for drafts should be in oarepo-model-builder-drafts
-        return super()._get_record(allow_draft=False)
+        return super()._get_record(pid_value, allow_draft=False, include_deleted=False)
 
 
 class TitlePageUIResourceConfig(TemplatePageUIResourceConfig):
