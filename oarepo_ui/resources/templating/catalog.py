@@ -45,6 +45,7 @@ class OarepoCatalog(Catalog):
         use_cache: bool = True,
         auto_reload: bool = True,
     ) -> None:
+        self._key = id(self)
         self.prefixes: "dict[str, jinja2.FileSystemLoader]" = {}
         self.collected_css: "list[str]" = []
         self.collected_js: "list[str]" = []
@@ -86,8 +87,9 @@ class OarepoCatalog(Catalog):
 
         self.jinja_env = env
 
-        self.tmpl_globals: t.MutableMapping[str, t.Any] | None = None
+        self.tmpl_globals: t.MutableMapping[str, t.Any] | {} = {}
         self._cache: "dict[str, dict]" = {}
+
 
     def update_template_context(self, context: dict) -> None:
         """Update the template context with some commonly used variables.
@@ -141,7 +143,7 @@ class OarepoCatalog(Catalog):
             except ComponentNotFound:
                 pass
 
-        raise ComponentNotFound(str(names))
+        raise ComponentNotFound(str(names), self.file_ext)
 
     def get_source(self, cname: str, file_ext: "TFileExt" = "") -> str:
         prefix, name = self._split_name(cname)
@@ -232,7 +234,7 @@ class OarepoCatalog(Catalog):
             if name in paths:
                 return paths[name]
 
-        raise ComponentNotFound(name)
+        raise ComponentNotFound(name, self.file_ext)
 
     def list_templates(self):
         searchpath = []
@@ -244,6 +246,7 @@ class OarepoCatalog(Catalog):
                 continue
             jinja_template = self.jinja_env.loader.load(self.jinja_env, path)
             absolute_path = Path(jinja_template.filename)
+            relative_path = Path(path)
             template_name, stripped = strip_app_theme(jinja_template.name, app_theme)
 
             template_name = template_name[: -len(DEFAULT_EXTENSION)]
@@ -258,7 +261,7 @@ class OarepoCatalog(Catalog):
                 priority += 10
 
             searchpath.append(
-                SearchPathItem(template_name, absolute_path, path, priority)
+                SearchPathItem(template_name, absolute_path, relative_path, priority)
             )
 
         return searchpath
@@ -275,22 +278,22 @@ class OarepoCatalog(Catalog):
         )
 
     def _get_from_cache(
-        self, *, prefix: str, name: str, url_prefix: str, file_ext: str
+        self, *, prefix: str, name: str, file_ext: str
     ) -> "Component":
         return KeepGlobalContextComponent(
             self,
             super()._get_from_cache(
-                prefix=prefix, name=name, url_prefix=url_prefix, file_ext=file_ext
+                prefix=prefix, name=name, file_ext=file_ext
             ),
         )
 
     def _get_from_file(
-        self, *, prefix: str, name: str, url_prefix: str, file_ext: str
+        self, *, prefix: str, name: str, file_ext: str
     ) -> "Component":
         return KeepGlobalContextComponent(
             self,
             super()._get_from_file(
-                prefix=prefix, name=name, url_prefix=url_prefix, file_ext=file_ext
+                prefix=prefix, name=name, file_ext=file_ext
             ),
         )
 
