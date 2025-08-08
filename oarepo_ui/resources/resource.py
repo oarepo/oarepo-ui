@@ -23,7 +23,6 @@ from invenio_rdm_records.services.errors import RecordDeletedException
 from invenio_records_resources.pagination import Pagination
 from invenio_records_resources.proxies import current_service_registry
 from invenio_records_resources.records.systemfields import FilesField
-from invenio_records_resources.resources.records.resource import request_search_args
 from invenio_records_resources.services import LinksTemplate
 from invenio_records_resources.services.base.config import ConfiguratorMixin
 from invenio_stats.proxies import current_stats
@@ -641,7 +640,6 @@ class RecordsUIResource(UIResource):
             extra_context=extra_context,
             ui_links=ui_links,
         )
-
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro(
                 "create",
