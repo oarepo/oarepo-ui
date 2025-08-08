@@ -33,6 +33,7 @@ export const LanguageSelectField = ({
       onChange={({ e, data, formikProps }) => {
         formikProps.form.setFieldValue(fieldPath, data.value);
       }}
+      onValueChange={undefined}
       value={getIn(values, fieldPath, "") ?? ""}
       {...uiProps}
     />
