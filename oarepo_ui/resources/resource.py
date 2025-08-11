@@ -13,7 +13,8 @@ from flask_login import current_user
 from flask_principal import PermissionDenied
 from flask_resources import (
     Resource,
-    route, resource_requestctx,
+    route,
+    resource_requestctx,
 )
 from flask_security import login_required
 from invenio_base.utils import obj_or_import_string
@@ -186,7 +187,7 @@ class RecordsUIResource(UIResource):
 
         return routes
 
-    def empty_record(self, selected_community=None, **kwargs):
+    def empty_record(self, **kwargs):
         """Create an empty record with default values."""
         empty_data = dump_empty(self.api_config.schema)
         files_field = getattr(self.api_config.record_cls, "files", None)
@@ -195,11 +196,7 @@ class RecordsUIResource(UIResource):
         empty_data = deepmerge.always_merger.merge(
             empty_data, copy.deepcopy(self.config.empty_record)
         )
-        self.run_components(
-            "empty_record",
-            empty_data=empty_data,
-            selected_community=selected_community,
-        )
+        self.run_components("empty_record", empty_data=empty_data, **kwargs)
 
         return empty_data
 
@@ -210,7 +207,7 @@ class RecordsUIResource(UIResource):
         )
 
     # helper function to avoid duplicating code between detail and preview handler
-    def _detail(self, pid_value, embed=False, is_preview=False):
+    def _detail(self, pid_value, embed=False, is_preview=False, **kwargs):
         if is_preview:
             api_record = self._get_record(pid_value, allow_draft=is_preview)
             render_method = self.get_jinjax_macro(
@@ -246,7 +243,9 @@ class RecordsUIResource(UIResource):
             }
         )
 
-        self.make_links_absolute(ui_data_serialization["links"], self.api_service.config.url_prefix)
+        self.make_links_absolute(
+            ui_data_serialization["links"], self.api_service.config.url_prefix
+        )
         extra_context = {}
         handlers = self._exportable_handlers()
         extra_context["exporters"] = {
@@ -261,9 +260,10 @@ class RecordsUIResource(UIResource):
             ui_links=ui_links,
             is_preview=is_preview,
             embedded=embed,
+            **kwargs,
         )
         metadata = dict(ui_data_serialization.get("metadata", ui_data_serialization))
-        
+
         render_kwargs = {
             **extra_context,
             "extra_context": extra_context,  # for backward compatibility
@@ -274,10 +274,10 @@ class RecordsUIResource(UIResource):
             "ui_links": ui_links,
             "context": current_oarepo_ui.catalog.jinja_env.globals,
             "d": FieldData.create(
-                api_data=api_record.to_dict(), 
+                api_data=api_record.to_dict(),
                 ui_data=ui_data_serialization,
                 ui_definitions=self.ui_model,
-                item_getter=self.config.field_data_item_getter
+                item_getter=self.config.field_data_item_getter,
             ),
             "is_preview": is_preview,
             "embedded": embed,
@@ -295,23 +295,23 @@ class RecordsUIResource(UIResource):
         return response
 
     @pass_route_args("view")
-    @pass_query_args("read", "embed", "export")
+    @pass_query_args("read", "embed", exclude=["is_preview"])
     @response_header_signposting
-    def detail(self, pid_value, embed=False, is_preview=False):
+    def detail(self, pid_value, embed=False, is_preview=False, **kwargs):
         """Returns item detail page."""
-        return self._detail(pid_value=pid_value, embed=embed, is_preview=is_preview)
+        return self._detail(
+            pid_value=pid_value, embed=embed, is_preview=is_preview, **kwargs
+        )
 
     @pass_route_args("view", "file_view")
-    def published_file_preview(self, pid_value, filepath):
+    def published_file_preview(self, pid_value, filepath, **kwargs):
         """Return file preview for published record."""
-        record = self._get_record(
-            pid_value, allow_draft=False
-        )._record
+        record = self._get_record(pid_value, allow_draft=False)._record
 
         return self._file_preview(record, pid_value, filepath)
 
     @pass_route_args("view", "file_view")
-    def draft_file_preview(self, pid_value, filepath, *args, **kwargs):
+    def draft_file_preview(self, pid_value, filepath, **kwargs):
         """Return file preview for draft record."""
         record = self._get_record(pid_value, allow_draft=True)._record
         return self._file_preview(record, pid_value, filepath)
@@ -335,11 +335,11 @@ class RecordsUIResource(UIResource):
         return default_previewer.preview(fileobj)
 
     @pass_route_args("view")
-    @pass_query_args("read", "embed", "export", exclude=["is_preview"])
+    @pass_query_args("read", "embed", exclude=["is_preview"])
     @response_header_signposting
-    def preview(self, pid_value, embed=False):
+    def preview(self, pid_value, embed=False, **kwargs):
         """Returns detail page preview."""
-        return self._detail(pid_value=pid_value, embed=embed, is_preview=True)
+        return self._detail(pid_value=pid_value, embed=embed, is_preview=True, **kwargs)
 
     def make_links_absolute(self, links, api_prefix):
         # make links absolute
@@ -350,9 +350,7 @@ class RecordsUIResource(UIResource):
                 v = f"/api{api_prefix}{v}"
                 links[k] = v
 
-    def _get_record(
-        self, pid_value, allow_draft=False, include_deleted=False
-    ):
+    def _get_record(self, pid_value, allow_draft=False, include_deleted=False):
         try:
             if allow_draft:
                 read_method = (
@@ -387,7 +385,7 @@ class RecordsUIResource(UIResource):
             return redirect(path_with_slash + "?" + split_path[1], code=302)
 
     @pass_query_args("search")
-    def search(self, page=1, size=10):
+    def search(self, page=1, size=10, **kwargs):
         pagination = Pagination(
             size,
             page,
@@ -430,6 +428,7 @@ class RecordsUIResource(UIResource):
             ui_config=self.config,
             ui_links=ui_links,
             extra_context=extra_context,
+            **kwargs,
         )
 
         search_config = partial(self.config.search_app_config, **search_options)
@@ -451,9 +450,7 @@ class RecordsUIResource(UIResource):
         )
 
     def _export(self, pid_value, export_format, is_preview=False):
-        record = self._get_record(
-            pid_value, allow_draft=is_preview
-        )
+        record = self._get_record(pid_value, allow_draft=is_preview)
         handlers = self._exportable_handlers()
         handlers = [
             handler_tuple
@@ -492,16 +489,14 @@ class RecordsUIResource(UIResource):
         return handlers
 
     @pass_route_args("view", "export")
-    def export(self, pid_value, export_format):
+    def export(self, pid_value, export_format, **kwargs):
         return self._export(pid_value, export_format)
 
     @pass_route_args("view", "export")
-    def export_preview(self, pid_value, export_format):
+    def export_preview(self, pid_value, export_format, **kwargs):
         return self._export(pid_value, export_format, is_preview=True)
 
-    def get_jinjax_macro(
-        self, template_type, default_macro=None
-    ):
+    def get_jinjax_macro(self, template_type, default_macro=None):
         """
         Returns which jinjax macro (name of the macro, including optional namespace in the form of "namespace.Macro")
         should be used for rendering the template.
@@ -510,13 +505,10 @@ class RecordsUIResource(UIResource):
             return self.config.templates.get(template_type, default_macro)
         return self.config.templates[template_type]
 
-    # @pass_query_args
     @pass_route_args("view")
-    def edit(self, pid_value):
+    def edit(self, pid_value, **kwargs):
         try:
-            api_record = self._get_record(
-                pid_value, allow_draft=True
-            )
+            api_record = self._get_record(pid_value, allow_draft=True)
         except:
             if not current_user.is_authenticated:
                 return current_app.login_manager.unauthorized()
@@ -554,6 +546,7 @@ class RecordsUIResource(UIResource):
             form_config=form_config,
             ui_links=ui_links,
             extra_context=extra_context,
+            **kwargs,
         )
         self.run_components(
             "before_ui_edit",
@@ -564,6 +557,7 @@ class RecordsUIResource(UIResource):
             ui_links=ui_links,
             identity=g.identity,
             extra_context=extra_context,
+            **kwargs,
         )
 
         ui_serialization["extra_links"] = {
@@ -571,7 +565,6 @@ class RecordsUIResource(UIResource):
             "search_link": self.config.url_prefix,
         }
 
-        
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro(
                 "edit",
@@ -584,10 +577,10 @@ class RecordsUIResource(UIResource):
             data=api_record_serialization,
             context=current_oarepo_ui.catalog.jinja_env.globals,
             d=FieldData.create(
-                api_data=api_record_serialization, 
+                api_data=api_record_serialization,
                 ui_data=ui_serialization,
                 ui_definitions=self.ui_model,
-                item_getter=self.config.field_data_item_getter  
+                item_getter=self.config.field_data_item_getter,
             ),
         )
 
@@ -596,12 +589,10 @@ class RecordsUIResource(UIResource):
 
     @login_required
     @pass_query_args("create")
-    def create(self, community=None, *args, **kwargs):
+    def create(self, **kwargs):
         if not self.has_deposit_permissions(g.identity):
             raise Forbidden()
-        empty_record = self.empty_record(
-            selected_community=community
-        )
+        empty_record = self.empty_record(**kwargs)
 
         # TODO: use api service create link when available
         form_config = self._get_form_config(
@@ -620,25 +611,23 @@ class RecordsUIResource(UIResource):
             record=None,
             data=empty_record,
             form_config=form_config,
-            selected_community=community,
             identity=g.identity,
             extra_context=extra_context,
             ui_links=ui_links,
+            **kwargs,
         )
-        empty_record = self.default_communities(
-            empty_record, form_config, selected_community=community
-        )
+        empty_record = self.default_communities(empty_record, form_config, **kwargs)
 
         self.run_components(
             "before_ui_create",
             data=empty_record,
             record=None,
             api_record=None,
-            selected_community=community,
             form_config=form_config,
             identity=g.identity,
             extra_context=extra_context,
             ui_links=ui_links,
+            **kwargs,
         )
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro(
@@ -647,11 +636,11 @@ class RecordsUIResource(UIResource):
             record=empty_record,
             api_record=None,
             form_config=form_config,
-            selected_community=community,
             extra_context=extra_context,
             ui_links=ui_links,
             data=empty_record,
             context=current_oarepo_ui.catalog.jinja_env.globals,
+            **kwargs,
         )
 
     def has_deposit_permissions(self, identity):
@@ -715,7 +704,11 @@ class RecordsUIResource(UIResource):
         """Get links for this result item."""
         tpl = LinksTemplate(
             self.config.ui_links_search,
-            {"config": self.config, "url_prefix": self.config.url_prefix, "args": query_args},
+            {
+                "config": self.config,
+                "url_prefix": self.config.url_prefix,
+                "args": query_args,
+            },
         )
         return tpl.expand(identity, pagination)
 
@@ -727,7 +720,9 @@ class RecordsUIResource(UIResource):
             record_dict = record._record
             record_dict.setdefault("links", record.links)
 
-        except RecordDeletedException as e:  # read with include_deleted=True raises an exception instead of just returning record
+        except (
+            RecordDeletedException
+        ) as e:  # read with include_deleted=True raises an exception instead of just returning record
             record_dict = e.record
 
         record_tombstone = record_dict.get("tombstone", None)
@@ -777,7 +772,7 @@ class RecordsUIResource(UIResource):
         )
 
     @pass_route_args("form_config_view")
-    def form_config(self):
+    def form_config(self, **kwargs):
         form_config = self._get_form_config(identity=g.identity)
         self.run_components(
             "form_config",
@@ -788,6 +783,7 @@ class RecordsUIResource(UIResource):
             ui_links=None,
             extra_context=None,
             identity=g.identity,
+            **kwargs,
         )
         return form_config
 

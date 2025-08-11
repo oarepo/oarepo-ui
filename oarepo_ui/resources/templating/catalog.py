@@ -90,7 +90,6 @@ class OarepoCatalog(Catalog):
         self.tmpl_globals: t.MutableMapping[str, t.Any] | {} = {}
         self._cache: "dict[str, dict]" = {}
 
-
     def update_template_context(self, context: dict) -> None:
         """Update the template context with some commonly used variables.
         This injects request, session, config and g into the template
@@ -277,24 +276,16 @@ class OarepoCatalog(Catalog):
             super()._get_from_source(name=name, url_prefix=url_prefix, source=source),
         )
 
-    def _get_from_cache(
-        self, *, prefix: str, name: str, file_ext: str
-    ) -> "Component":
+    def _get_from_cache(self, *, prefix: str, name: str, file_ext: str) -> "Component":
         return KeepGlobalContextComponent(
             self,
-            super()._get_from_cache(
-                prefix=prefix, name=name, file_ext=file_ext
-            ),
+            super()._get_from_cache(prefix=prefix, name=name, file_ext=file_ext),
         )
 
-    def _get_from_file(
-        self, *, prefix: str, name: str, file_ext: str
-    ) -> "Component":
+    def _get_from_file(self, *, prefix: str, name: str, file_ext: str) -> "Component":
         return KeepGlobalContextComponent(
             self,
-            super()._get_from_file(
-                prefix=prefix, name=name, file_ext=file_ext
-            ),
+            super()._get_from_file(prefix=prefix, name=name, file_ext=file_ext),
         )
 
 

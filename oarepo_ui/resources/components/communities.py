@@ -56,7 +56,7 @@ class AllowedCommunitiesComponent(UIResourceComponent):
         data: Dict,
         identity: Identity,
         form_config: Dict,
-        selected_community: str,
+        selected_community: str | None = None,
         ui_links: Dict,
         extra_context: Dict,
         **kwargs,

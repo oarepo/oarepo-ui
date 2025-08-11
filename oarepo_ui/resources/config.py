@@ -33,8 +33,10 @@ from flask_resources.parsers import MultiDictSchema
 from marshmallow import fields, post_load, validate
 
 from oarepo_ui.resources.links import UIRecordLink
+
 if TYPE_CHECKING:
     from oarepo_ui.resources.templating.data import FieldDataItemGetter
+
 
 def _(x):
     """Identity function used to trigger string extraction."""
@@ -199,7 +201,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
     request_file_view_args = {**request_view_args, "filepath": ma.fields.Str()}
     request_export_args = {"export_format": ma.fields.Str()}
     request_search_args = SearchRequestArgsSchema
-    request_create_args = {"community": ma.fields.Str()}
+    request_create_args = {"selected_community": ma.fields.Str()}
     request_embed_args = {"embed": ma.fields.Bool()}
     request_form_config_view_args = {}
 
@@ -235,7 +237,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
     }
 
     field_data_item_getter: FieldDataItemGetter | None = None
-    
+
     @property
     def default_components(self):
         service = current_service_registry.get(self.api_service)
@@ -437,4 +439,4 @@ class RecordsUIResourceConfig(UIResourceConfig):
         return dict(
             overridableIdPrefix=f"{self.application_id.capitalize()}.Form",
             **kwargs,
-        )        
+        )
