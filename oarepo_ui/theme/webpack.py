@@ -80,6 +80,7 @@ theme = WebpackThemeBundle(
                 "oarepo_ui_theme": "./js/oarepo_ui/theme.js",
                 "oarepo_ui_components": "./js/oarepo_ui/custom-components.js",
                 "copy_to_clipboard": "./js/oarepo_ui/components/clipboard.js",
+                "record_actions": "./js/oarepo_ui/components/record-actions.js",
                 "record_export": "./js/oarepo_ui/components/record-export.js",
                 "record_versions": "./js/oarepo_ui/components/record-versions.js",
                 "record_sharing": "./js/oarepo_ui/components/record-sharing.js",
