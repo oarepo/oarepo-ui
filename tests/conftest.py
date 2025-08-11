@@ -21,7 +21,8 @@ from tests.model import (
     TitlePageUIResource,
     TitlePageUIResourceConfig,
 )
-
+import json
+from oarepo_ui.resources.templating.data import FieldData
 
 @pytest.fixture(scope="module")
 def extra_entry_points():
@@ -238,3 +239,310 @@ def record_cf(app, db, cache):
     from oarepo_runtime.services.custom_fields.mappings import prepare_cf_indices
 
     prepare_cf_indices()
+
+
+def rdm_value():
+    return json.loads("""
+	{
+		"id": "etzwa-8rf92",
+		"created": "2025-07-10T14:17:12.171491+00:00",
+		"updated": "2025-07-10T14:17:12.271642+00:00",
+		"links": {
+			"self": "https://inveniordm.web.cern.ch/api/records/etzwa-8rf92",
+			"self_html": "https://inveniordm.web.cern.ch/records/etzwa-8rf92",
+			"self_doi": "https://inveniordm.web.cern.ch/doi/10.81088/etzwa-8rf92",
+			"doi": "https://handle.stage.datacite.org/10.81088/etzwa-8rf92",
+			"parent": "https://inveniordm.web.cern.ch/api/records/bpmtx-jfm32",
+			"parent_html": "https://inveniordm.web.cern.ch/records/bpmtx-jfm32",
+			"parent_doi": "https://inveniordm.web.cern.ch/doi/10.81088/bpmtx-jfm32",
+			"self_iiif_manifest": "https://inveniordm.web.cern.ch/api/iiif/record:etzwa-8rf92/manifest",
+			"self_iiif_sequence": "https://inveniordm.web.cern.ch/api/iiif/record:etzwa-8rf92/sequence/default",
+			"files": "https://inveniordm.web.cern.ch/api/records/etzwa-8rf92/files",
+			"media_files": "https://inveniordm.web.cern.ch/api/records/etzwa-8rf92/media-files",
+			"archive": "https://inveniordm.web.cern.ch/api/records/etzwa-8rf92/files-archive",
+			"archive_media": "https://inveniordm.web.cern.ch/api/records/etzwa-8rf92/media-files-archive",
+			"latest": "https://inveniordm.web.cern.ch/api/records/etzwa-8rf92/versions/latest",
+			"latest_html": "https://inveniordm.web.cern.ch/records/etzwa-8rf92/latest",
+			"draft": "https://inveniordm.web.cern.ch/api/records/etzwa-8rf92/draft",
+			"versions": "https://inveniordm.web.cern.ch/api/records/etzwa-8rf92/versions",
+			"access_links": "https://inveniordm.web.cern.ch/api/records/etzwa-8rf92/access/links",
+			"access_grants": "https://inveniordm.web.cern.ch/api/records/etzwa-8rf92/access/grants",
+			"access_users": "https://inveniordm.web.cern.ch/api/records/etzwa-8rf92/access/users",
+			"access_groups": "https://inveniordm.web.cern.ch/api/records/etzwa-8rf92/access/groups",
+			"access_request": "https://inveniordm.web.cern.ch/api/records/etzwa-8rf92/access/request",
+			"access": "https://inveniordm.web.cern.ch/api/records/etzwa-8rf92/access",
+			"reserve_doi": "https://inveniordm.web.cern.ch/api/records/etzwa-8rf92/draft/pids/doi",
+			"communities": "https://inveniordm.web.cern.ch/api/records/etzwa-8rf92/communities",
+			"communities-suggestions": "https://inveniordm.web.cern.ch/api/records/etzwa-8rf92/communities-suggestions",
+			"requests": "https://inveniordm.web.cern.ch/api/records/etzwa-8rf92/requests"
+		},
+		"revision_id": 4,
+		"parent": {
+			"id": "bpmtx-jfm32",
+			"access": {
+				"owned_by": {
+					"user": "492"
+				},
+				"settings": {
+					"allow_user_requests": false,
+					"allow_guest_requests": false,
+					"accept_conditions_text": null,
+					"secret_link_expiration": 0
+				}
+			},
+			"communities": {},
+			"pids": {
+				"doi": {
+					"identifier": "10.81088/bpmtx-jfm32",
+					"provider": "datacite",
+					"client": "datacite"
+				}
+			}
+		},
+		"versions": {
+			"is_latest": true,
+			"index": 2
+		},
+		"is_published": true,
+		"is_draft": false,
+		"pids": {
+			"doi": {
+				"identifier": "10.81088/etzwa-8rf92",
+				"provider": "datacite",
+				"client": "datacite"
+			},
+			"oai": {
+				"identifier": "oai:inveniordm.web.cern.ch:etzwa-8rf92",
+				"provider": "oai"
+			}
+		},
+		"metadata": {
+			"resource_type": {
+				"id": "image-photo",
+				"title": {
+					"de": "Foto",
+					"en": "Photo",
+					"sv": "Foto"
+				}
+			},
+			"creators": [
+				{
+					"person_or_org": {
+						"type": "personal",
+						"name": "Hufnágl, Pišta",
+						"given_name": "Pišta",
+						"family_name": "Hufnágl"
+					},
+					"role": {
+						"id": "other",
+						"title": {
+							"de": "Andere",
+							"en": "Other",
+							"sv": "Övriga"
+						}
+					}
+				},
+                {
+                    "person_or_org": {
+                        "type": "personal",
+                        "name": "Testovací, Dummy",
+                        "given_name": "Dummy",
+                        "family_name": "Testovací"
+                    },
+                    "role": {
+                    "id": "other",
+                    "title": {
+                        "de": "Andere",
+                        "en": "Other",
+                        "sv": "Övriga"
+                        }
+                    }
+                }
+			],
+			"title": "Pištův testovací záznam",
+			"publisher": "DMiksik",
+			"publication_date": "2025-07-10",
+			"description": "<p>fotočka</p>"
+            
+		},
+		"custom_fields": {},
+		"access": {
+			"record": "public",
+			"files": "public",
+			"embargo": {
+				"active": false,
+				"reason": null
+			},
+			"status": "open"
+		},
+		"files": {
+			"enabled": true,
+			"default_preview": "jaycee-xie-unsplash-shiba.png",
+			"order": [],
+			"count": 1,
+			"total_bytes": 914231,
+			"entries": {
+				"jaycee-xie-unsplash-shiba.png": {
+					"id": "2c74d7cb-de54-4c15-a162-3d14dc15f2a9",
+					"checksum": "md5:b96a0e6d3fafd0c7961df26988f11cd9",
+					"ext": "png",
+					"size": 914231,
+					"mimetype": "image/png",
+					"key": "jaycee-xie-unsplash-shiba.png",
+					"metadata": {
+						"width": 960,
+						"height": 640
+					},
+					"access": {
+						"hidden": false
+					}
+				}
+			}
+		},
+		"media_files": {
+			"enabled": false,
+            "dummy_field": true,
+			"order": [],
+			"count": 0,
+			"total_bytes": 0,
+            "dummy_total_bytes": 123,
+            "dummy_field_empty_string": "",
+            "dummy_field_not_empty_string": "not_empty",
+			"entries": {}
+		},
+		"status": "published",
+		"deletion_status": {
+			"is_deleted": false,
+			"status": "P"
+		},
+		"stats": {
+			"this_version": {
+				"views": 0,
+				"unique_views": 0,
+				"downloads": 0,
+				"unique_downloads": 0,
+				"data_volume": {
+					"source": "0.0",
+					"parsedValue": 0
+				}
+			},
+			"all_versions": {
+				"views": 0,
+				"unique_views": 0,
+				"downloads": 0,
+				"unique_downloads": 0,
+				"data_volume": {
+					"source": "0.0",
+					"parsedValue": 0
+				}
+			}
+		},
+		"ui": {
+			"publication_date_l10n_medium": "Jul 10, 2025",
+			"publication_date_l10n_long": "July 10, 2025",
+			"created_date_l10n_long": "July 10, 2025",
+			"updated_date_l10n_long": "July 10, 2025",
+			"resource_type": {
+				"id": "image-photo",
+				"title_l10n": "Photo"
+			},
+			"custom_fields": {},
+			"access_status": {
+				"id": "open",
+				"title_l10n": "Open",
+				"description_l10n": "The record and files are publicly accessible.",
+				"icon": "unlock",
+				"embargo_date_l10n": null,
+				"message_class": ""
+			},
+            "creators": {
+                "creators": [
+                    {
+                        "person_or_org": {
+                            "type": "personal",
+                            "name": "Hufnágl, Pišta",
+                            "given_name": "Pišta",
+                            "family_name": "Hufnágl"
+                        },
+                        "role": {
+                            "id": "other",
+                            "title": "Other"
+                        }
+                    },
+                    {
+                    "person_or_org": {
+                            "type": "personal",
+                            "name": "Testovací, Dummy",
+                            "given_name": "Dummy",
+                            "family_name": "Testovací"
+                        },
+                        "role": {
+                            "id": "other",
+                            "title":"Other"
+                        } 
+                    }
+			    ],
+                "affiliations": []
+            },
+			"description_stripped": "fotočka",
+			"version": "v2",
+			"is_draft": false
+		}
+	}
+""")
+
+def item_getter(fd:FieldData, path: list[str]):
+    if path == ['metadata', 'creators']:
+        ui_data_creators = fd._ui_data.get('creators', {})
+        ui_definitions = fd._ui_definitions.get('children', {}).get(path[-1],{})
+        api_data_creators = {
+            'creators': fd._api_data.get('creators',[]),
+            'affiliations': ui_data_creators.get('affiliations',[])
+            }
+        
+        return FieldData(api_data=api_data_creators, 
+                         ui_data=ui_data_creators, 
+                         ui_definitions=ui_definitions, 
+                         path=path,
+                         item_getter=fd._item_getter)
+
+@pytest.fixture()
+def field_data_test_obj():
+    api_value_serialization = rdm_value() 
+    ui_value_serialization = api_value_serialization.pop("ui")   
+
+    ui_definitions = {
+        'children': {
+            'metadata': {
+                'children': {
+                    'title': {
+                        "help": "metadata/title.help",
+                        "label": "metadata/title.label",
+                        "hint": "metadata/title.hint",
+                    },
+                    'publication_date': {
+                        "help": "metadata/publication_date.help",
+                        "label": "metadata/publication_date.label",
+                        "hint": "metadata/publication_date.hint",
+                    },
+                    'resource_type':{
+                        'children': {
+                            'id': {
+                                'label': "metadata/resource_type/id.label",
+                                'help':"TODO",
+                                'hint':"TODO"    
+                            },
+                            'title':{
+                                'label': "TODO"
+                            }
+                        }
+                    }
+                },
+            }
+        }
+    }
+    # Can be called via __init__ but is supposed to be for internal use only
+    record = FieldData.create(api_data=api_value_serialization, ui_data={"ui": ui_value_serialization}, ui_definitions=ui_definitions, item_getter=item_getter)
+    
+    return api_value_serialization, ui_value_serialization, record
+    

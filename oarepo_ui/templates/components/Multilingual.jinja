@@ -14,7 +14,7 @@
                 <a class="green item 
                    {{ 'active' if (item.lang == current_i18n.language and ns.language_found) or 
                                   (loop.first and not ns.language_found) else '' }}" 
-                   data-tab="{{ item|id }}-{{ item.lang|e }}">
+                   data-tab="{{ item }}-{{ item.lang|e }}">
                     {{ item.lang|upper }}
                 </a>
                 {% if not loop.last %}
@@ -27,7 +27,7 @@
         <div class="ui tab 
             {{ 'active' if (item.lang == current_i18n.language and ns.language_found) or 
                            (loop.first and not ns.language_found) else '' }}" 
-            data-tab="{{ item|id }}-{{ item.lang|e }}">
+            data-tab="{{ item }}-{{ item.lang|e }}">
             {{ item.value|safe }}
         </div>
         {% endfor %}
