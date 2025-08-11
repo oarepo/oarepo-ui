@@ -1,8 +1,21 @@
-"""Oarepo ui utils module."""
+#
+# Copyright (c) 2025 CESNET z.s.p.o.
+#
+# This file is a part of oarepo-ui (see https://github.com/oarepo/oarepo-ui).
+#
+# oarepo-ui is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+#
+"""OARepo UI utils module.
+
+This module provides utility functions for OARepo UI, including schema dumping
+functions for generating empty data structures and permission checking utilities
+for deposit page access control.
+"""
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, overload
+from typing import TYPE_CHECKING, Any, overload
 
 from flask import current_app, g, session
 from flask_login import current_user
@@ -16,43 +29,38 @@ if TYPE_CHECKING:
 
 
 @overload
-def dump_empty(schema_or_field: Schema) -> dict: ...
+def dump_empty(  # pyright: ignore[reportOverlappingOverload]
+    schema_or_field: Schema,
+) -> dict: ...
 
 
 @overload
-def dump_empty(schema_or_field: SchemaMeta) -> dict: ...
+def dump_empty(schema_or_field: SchemaMeta) -> dict: ...  # type: ignore[overload-cannot-match]
 
 
 @overload
-def dump_empty(schema_or_field: fields.List) -> list: ...
+def dump_empty(schema_or_field: fields.List) -> list: ...  # type: ignore[overload-cannot-match]
 
 
 @overload
-def dump_empty(schema_or_field: fields.Nested | NestedAttribute) -> dict: ...
+def dump_empty(schema_or_field: fields.Nested | NestedAttribute) -> dict: ...  # type: ignore[overload-cannot-match]
 
 
 @overload
-def dump_empty(schema_or_field: fields.Str) -> str: ...
+def dump_empty(schema_or_field: fields.Str) -> str: ...  # type: ignore[overload-cannot-match]
 
 
 @overload
-def dump_empty(schema_or_field: fields.Dict) -> dict: ...
+def dump_empty(schema_or_field: fields.Dict) -> dict: ...  # type: ignore[overload-cannot-match]
 
 
 @overload
-def dump_empty(schema_or_field: object) -> None: ...
+def dump_empty(schema_or_field: object) -> None: ...  # type: ignore[overload-cannot-match]
 
 
-def dump_empty(
+def dump_empty(  # noqa: PLR0911 too many return branches
     schema_or_field: (
-        Schema
-        | SchemaMeta
-        | fields.List
-        | fields.Nested
-        | NestedAttribute
-        | fields.Str
-        | fields.Dict
-        | object
+        Schema | SchemaMeta | fields.List | fields.Nested | NestedAttribute | fields.Str | fields.Dict | object
     ),
 ) -> dict | list | str | None:
     """Return a full json-compatible dict of schema representation with empty values."""
@@ -72,7 +80,7 @@ def dump_empty(
         nested_schema = field.nested
         if callable(nested_schema):
             nested_schema = nested_schema()
-        return dump_empty(nested_schema)
+        return dump_empty(nested_schema)  # type: ignore[no-any-return]
     if isinstance(schema_or_field, fields.Str):
         return ""
     if isinstance(schema_or_field, fields.Dict):
@@ -93,20 +101,14 @@ def can_view_deposit_page() -> bool:
     if view_deposit_page_permission_key in session:
         return bool(session[view_deposit_page_permission_key])
 
-    repository_search_resources: list[dict[str, str]] = current_app.config.get(
-        "GLOBAL_SEARCH_MODELS", []
-    )
+    repository_search_resources: list[dict[str, str]] = current_app.config.get("GLOBAL_SEARCH_MODELS", [])
 
     if not repository_search_resources:
         return False
 
     for search_resource in repository_search_resources:
-        search_resource_service: Optional[str] = search_resource.get(
-            "model_service", None
-        )
-        search_resource_config: Optional[str] = search_resource.get(
-            "service_config", None
-        )
+        search_resource_service: str | None = search_resource.get("model_service", None)
+        search_resource_config: str | None = search_resource.get("service_config", None)
 
         if search_resource_service and search_resource_config:
             try:
@@ -115,9 +117,7 @@ def can_view_deposit_page() -> bool:
 
                 # Instantiate service and check permission
                 service: RecordService = service_def(service_cfg())
-                permission_to_deposit = service.check_permission(
-                    g.identity, "view_deposit_page", record=None
-                )
+                permission_to_deposit = service.check_permission(g.identity, "view_deposit_page", record=None)
                 if permission_to_deposit:
                     break
             except ImportError:
@@ -128,6 +128,9 @@ def can_view_deposit_page() -> bool:
     return permission_to_deposit
 
 
-def clear_view_deposit_page_permission_from_session(*args: Any, **kwargs: Any) -> None:
+def clear_view_deposit_page_permission_from_session(
+    *args: Any,  # noqa: ARG001 added to match signature of signal
+    **kwargs: Any,  # noqa: ARG001 added to match signature of signal
+) -> None:
     """Clear the cached permission for viewing the deposit page from the session."""
     session.pop(view_deposit_page_permission_key, None)

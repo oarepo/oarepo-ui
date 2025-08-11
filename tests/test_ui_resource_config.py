@@ -1,3 +1,13 @@
+#
+# Copyright (c) 2025 CESNET z.s.p.o.
+#
+# This file is a part of oarepo-ui (see https://github.com/oarepo/oarepo-ui).
+#
+# oarepo-ui is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+#
+from __future__ import annotations
+
 from invenio_access.permissions import system_identity
 from invenio_config.default import ALLOWED_HTML_ATTRS, ALLOWED_HTML_TAGS
 
@@ -5,9 +15,9 @@ from invenio_config.default import ALLOWED_HTML_ATTRS, ALLOWED_HTML_TAGS
 def test_ui_resource_form_config(app, test_record_ui_resource):
     # Special instance of record resource
     fc = test_record_ui_resource.config.form_config()
-    assert fc == dict(
-        overridableIdPrefix="Test.Form",
-    )
+    assert fc == {
+        "overridableIdPrefix": "Test.Form",
+    }
 
     test_record_ui_resource.run_components(
         "form_config",
@@ -21,17 +31,17 @@ def test_ui_resource_form_config(app, test_record_ui_resource):
         extra_context={},
     )
 
-    assert fc == dict(
-        current_locale="en",
-        locales=[
+    assert fc == {
+        "current_locale": "en",
+        "locales": [
             {"value": "en", "text": "English"},
             {"value": "cs", "text": "čeština"},
         ],
-        allowedHtmlTags=ALLOWED_HTML_TAGS,
-        allowedHtmlAttrs=ALLOWED_HTML_ATTRS,
-        default_locale="en",
-        overridableIdPrefix="Test.Form",
-        permissions={
+        "allowedHtmlTags": ALLOWED_HTML_TAGS,
+        "allowedHtmlAttrs": ALLOWED_HTML_ATTRS,
+        "default_locale": "en",
+        "overridableIdPrefix": "Test.Form",
+        "permissions": {
             "can_manage_record_access": False,
             "can_read": True,
             "can_read_deleted_files": True,
@@ -48,13 +58,12 @@ def test_ui_resource_form_config(app, test_record_ui_resource):
             "can_search": True,
             "can_view": False,
         },
-        custom_fields={
+        "custom_fields": {
             "ui": [
-                {"fields": [{"field": "bbb", "ui_widget": "Input"}], "section": "B"},
                 {
-                    "fields": [{"field": "nested_cf.aaa", "ui_widget": "Input"}],
+                    "fields": [{"field": "custom_fields.aaa", "ui_widget": "Input"}],
                     "section": "A",
                 },
             ]
         },
-    )
+    }

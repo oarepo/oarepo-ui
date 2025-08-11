@@ -6,12 +6,11 @@
 # oarepo-ui is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 #
+"""Template pages UI endpoint."""
+
 from __future__ import annotations
 
-from oarepo_ui.proxies import current_oarepo_ui
+from .config import TemplatePageUIResourceConfig
+from .resource import TemplatePageUIResource
 
-
-def test_component_paths(app):
-    component_paths = current_oarepo_ui.catalog.component_paths
-    assert "components.Field" in component_paths
-    assert "Field" in component_paths
+__all__ = ("TemplatePageUIResource", "TemplatePageUIResourceConfig")

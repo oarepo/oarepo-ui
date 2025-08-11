@@ -1,3 +1,13 @@
+#
+# Copyright (c) 2025 CESNET z.s.p.o.
+#
+# This file is a part of oarepo-ui (see https://github.com/oarepo/oarepo-ui).
+#
+# oarepo-ui is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+#
+from __future__ import annotations
+
 import json
 
 
@@ -7,12 +17,11 @@ def test_export(
     record_ui_resource,
     simple_record,
     client_with_credentials,
-    fake_manifest,
 ):
-    with client_with_credentials.get(
-        f"/simple-model/{simple_record.id}/export/json"
-    ) as c:
+    with client_with_credentials.get(f"/simple-model/{simple_record.id}/export/json") as c:
         text = json.loads(c.text)
+        text.pop("created")
+        text.pop("updated")
         assert text == {
             "expanded": {},
             "links": {
@@ -28,12 +37,24 @@ def test_inveniordm(
     record_ui_resource,
     simple_record,
     client_with_credentials,
-    fake_manifest,
+    search,
+    search_clear,
 ):
     with client_with_credentials.get(
         f"/simple-model/{simple_record.id}/export/ui_json"
-    ) as c:  # todo the serializer results dont differ here
+    ) as c:  # TODO: the serializer results dont differ here
         text = json.loads(c.text)
+        text.pop("created")
+        text.pop("updated")
+        ui = text.pop("ui")
+        assert "created_date_l10n_full" in ui
+        assert "created_date_l10n_long" in ui
+        assert "created_date_l10n_medium" in ui
+        assert "created_date_l10n_short" in ui
+        assert "updated_date_l10n_full" in ui
+        assert "updated_date_l10n_long" in ui
+        assert "updated_date_l10n_medium" in ui
+        assert "updated_date_l10n_short" in ui
         assert text == {
             "expanded": {},
             "links": {
@@ -43,10 +64,6 @@ def test_inveniordm(
         }
 
 
-def test_nonexistent(
-    app, record_ui_resource, simple_record, client_with_credentials, fake_manifest
-):
-    with client_with_credentials.get(
-        f"/simple-model/{simple_record.id}/export/blahblah"
-    ) as c:
+def test_nonexistent(app, record_ui_resource, simple_record, client_with_credentials):
+    with client_with_credentials.get(f"/simple-model/{simple_record.id}/export/blahblah") as c:
         assert c.status_code == 404

@@ -1,8 +1,27 @@
-# OAREPO_UI_BUILD_FRAMEWORK = 'vite'
-OAREPO_UI_BUILD_FRAMEWORK = "webpack"
+#
+# Copyright (c) 2025 CESNET z.s.p.o.
+#
+# This file is a part of oarepo-ui (see https://github.com/oarepo/oarepo-ui).
+#
+# oarepo-ui is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+#
 
-# this is set as environment variable when running nrp develop
-OAREPO_UI_DEVELOPMENT_MODE = False
+"""OARepo UI configuration module.
+
+This module contains configuration settings for the OARepo UI extension,
+including build framework settings, template configurations, action mappings,
+and filter/global function definitions for Jinjax templates.
+"""
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from .ui.components import UIComponent, UIComponentOverride
 
 # We set this to avoid https://github.com/inveniosoftware/invenio-administration/issues/180
 THEME_HEADER_LOGIN_TEMPLATE = "oarepo_ui/header_login.html"
@@ -14,14 +33,14 @@ OAREPO_UI_JINJAX_FILTERS = {
     "compact_number": "invenio_app_rdm.records_ui.views.filters:compact_number",
     "localize_number": "invenio_app_rdm.records_ui.views.filters:localize_number",
     "truncate_number": "invenio_app_rdm.records_ui.views.filters:truncate_number",
-    "as_dict": "oarepo_ui.resources.templating.filters:as_dict",
+    "as_dict": "oarepo_ui.templating.filters:as_dict",
 }
 
 OAREPO_UI_JINJAX_GLOBALS = {
-    "ui_value": "oarepo_ui.resources.templating.filters:ui_value",
-    "as_array": "oarepo_ui.resources.templating.filters:as_array",
-    "value": "oarepo_ui.resources.templating.filters:value",
-    "as_dict": "oarepo_ui.resources.templating.filters:as_dict",
+    "ui_value": "oarepo_ui.templating.filters:ui_value",
+    "as_array": "oarepo_ui.templating.filters:as_array",
+    "value": "oarepo_ui.templating.filters:value",
+    "as_dict": "oarepo_ui.templating.filters:as_dict",
 }
 
 
@@ -56,3 +75,10 @@ OAREPO_UI_DRAFT_ACTIONS = {
 }
 
 MATOMO_ANALYTICS_TEMPLATE = "oarepo_ui/matomo_analytics.html"
+
+OAREPO_UI_OVERRIDES: set[UIComponentOverride] = set()
+"""A set of javascript overrides. See UIComponentOverride for details."""
+
+OAREPO_UI_RESULT_LIST_ITEM_REGISTRATION_CALLBACK: list[
+    Callable[[set[UIComponentOverride], str, UIComponent], None]
+] = []
