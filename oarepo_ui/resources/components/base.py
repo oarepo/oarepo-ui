@@ -35,11 +35,10 @@ class UIResourceComponent:
         """The UI configuration."""
         return self.resource.config
 
-    def empty_record(self, *, resource_requestctx, empty_data: Dict, **kwargs):
+    def empty_record(self, *, empty_data: Dict, **kwargs):
         """
         Called before an empty record data are returned.
 
-        :param resource_requestctx: invenio request context (see https://github.com/inveniosoftware/flask-resources/blob/master/flask_resources/context.py)
         :param empty_data: empty record data
         """
 
@@ -56,8 +55,6 @@ class UIResourceComponent:
         api_record: RecordItem,
         record: Dict,
         identity: Identity,
-        args: Dict,
-        view_args: Dict,
         ui_links: Dict,
         extra_context: Dict,
         **kwargs,
@@ -68,8 +65,6 @@ class UIResourceComponent:
         :param api_record: the record being displayed
         :param record: UI serialization of the record
         :param identity: the current user identity
-        :param args: query parameters
-        :param view_args: view arguments
         :param ui_links: UI links for the record, a dictionary of link name -> link url
         :param extra_context: will be passed to the template as the "extra_context" variable
         """
@@ -79,8 +74,6 @@ class UIResourceComponent:
         *,
         identity: Identity,
         search_options: Dict,
-        args: Dict,
-        view_args: Dict,
         ui_links: Dict,
         extra_context: Dict,
         **kwargs,
@@ -93,8 +86,6 @@ class UIResourceComponent:
         :param identity: the current user identity
         :param search_options: dictionary of search options, containing api_config, identity, overrides.
             It is fed to self.config.search_app_config as **search_options
-        :param args: query parameters
-        :param view_args: view arguments
         :param ui_links: UI links for the search page, a dictionary of link name -> link url
         :param extra_context: will be passed to the template as the "extra_context" variable
         """
@@ -104,11 +95,8 @@ class UIResourceComponent:
         *,
         api_record: RecordItem,
         record: Dict,
-        data: Dict,
         identity: Identity,
         form_config: Dict,
-        args: Dict,
-        view_args: Dict,
         ui_links: Dict,
         extra_context: Dict,
         **kwargs,
@@ -118,9 +106,6 @@ class UIResourceComponent:
 
         :param api_record: the record being edited. Can be None if creating a new record.
         :param record: UI serialization of the record
-        :param data: data serialized by the API service serializer. If a record is being edited,
-                     this is the serialized record data. If a new record is being created, this is empty_data
-                     after being processed by the empty_record method on registered UI components.
         :param identity: the current user identity
         :param form_config: form configuration dictionary
         :param args: query parameters
@@ -137,8 +122,6 @@ class UIResourceComponent:
         data: Dict,
         identity: Identity,
         form_config: Dict,
-        args: Dict,
-        view_args: Dict,
         ui_links: Dict,
         extra_context: Dict,
         **kwargs,
@@ -164,8 +147,6 @@ class UIResourceComponent:
         data: Dict,
         identity: Identity,
         form_config: Dict,
-        args: Dict,
-        view_args: Dict,
         ui_links: Dict,
         extra_context: Dict,
         **kwargs,

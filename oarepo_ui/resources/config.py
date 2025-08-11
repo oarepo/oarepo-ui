@@ -2,14 +2,17 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import inspect
+import warnings
+from functools import wraps, partial
 from pathlib import Path
 
 import marshmallow as ma
 from flask import current_app
-from flask_resources import ResourceConfig
+from flask_resources import ResourceConfig, from_conf, RequestParser
 from flask_resources import (
     resource_requestctx,
 )
+from flask_resources.config import resolve_from_conf
 from invenio_base.utils import obj_or_import_string
 from invenio_pidstore.errors import (
     PIDDeletedError,
@@ -30,8 +33,10 @@ from flask_resources.parsers import MultiDictSchema
 from marshmallow import fields, post_load, validate
 
 from oarepo_ui.resources.links import UIRecordLink
+
 if TYPE_CHECKING:
     from oarepo_ui.resources.templating.data import FieldDataItemGetter
+
 
 def _(x):
     """Identity function used to trigger string extraction."""
@@ -86,6 +91,73 @@ class UIResourceConfig(ResourceConfig):
     request_view_args = {}
 
 
+def _resolve_parser(schema_or_parser, config, location, options):
+    """Helper to resolve and return a RequestParser instance."""
+    s = resolve_from_conf(schema_or_parser, config)
+    if isinstance(s, RequestParser):
+        parser = s
+        if location is not None:
+            warnings.warn("The location is ignored.")
+    else:
+        parser = RequestParser(s, location, **options)
+    return parser
+
+
+def request_parser(schema_or_parser, location=None, **options):
+    """Create decorator for parsing the request.
+
+    Both decorator parameters can be resolved from the resource configuration.
+
+    :param schema_or_parser: A mapping of content types to parsers.
+    :param default_content_type_name: The default content type used to select
+        a parser if no content type was provided.
+    """
+
+    def decorator(f):
+        @wraps(f)
+        def inner(self, *args, **kwargs):
+            parser = _resolve_parser(schema_or_parser, self.config, location, options)
+            merged_kwargs = {**parser.parse(), **kwargs}
+            return f(self, *args, **merged_kwargs)
+
+        return inner
+
+    return decorator
+
+
+def _pass_request_args(*field_configs, location=None, exclude=(), **options):
+    if field_configs and len(field_configs) >= 1 and callable(field_configs[0]):
+        passed_function = field_configs[0]
+        field_configs = field_configs[1:]
+    else:
+        passed_function = None
+
+    def decorator(f):
+        @wraps(f)
+        def view(self, *args, **kwargs):
+            request_args = {}
+            for field in field_configs:
+                schema = from_conf(f"request_{field}_args")
+                parser = _resolve_parser(schema, self.config, location, options)
+                parsed_args = {
+                    k: v for k, v in parser.parse().items() if k not in exclude
+                }
+                request_args.update(parsed_args)
+
+            return f(self, *args, **request_args, **kwargs)
+
+        return view
+
+    if passed_function:
+        return decorator(passed_function)
+
+    return decorator
+
+
+pass_query_args = partial(_pass_request_args, location="args")
+pass_route_args = partial(_pass_request_args, location="view_args")
+
+
 class FormConfigResourceConfig(ResourceConfig):
     application_id = "Default"
 
@@ -129,8 +201,8 @@ class RecordsUIResourceConfig(UIResourceConfig):
     request_file_view_args = {**request_view_args, "filepath": ma.fields.Str()}
     request_export_args = {"export_format": ma.fields.Str()}
     request_search_args = SearchRequestArgsSchema
-    request_create_args = {"community": ma.fields.Str()}
-    request_embed_args = {"embed": ma.fields.Str()}
+    request_create_args = {"selected_community": ma.fields.Str()}
+    request_embed_args = {"embed": ma.fields.Bool()}
     request_form_config_view_args = {}
 
     app_contexts = None
@@ -165,7 +237,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
     }
 
     field_data_item_getter: FieldDataItemGetter | None = None
-    
+
     @property
     def default_components(self):
         service = current_service_registry.get(self.api_service)
@@ -367,4 +439,4 @@ class RecordsUIResourceConfig(UIResourceConfig):
         return dict(
             overridableIdPrefix=f"{self.application_id.capitalize()}.Form",
             **kwargs,
-        )        
+        )

@@ -15,7 +15,7 @@
             <div class="header list-item">
               <i class="external alternate icon link-icon mb-5"></i>
               <URL target="_blank" rel="noopener noreferrer" className="inline" data={_data}></URL>
-              <ClipboardCopyButton copyText={_data["href"]} />
+              <ClipboardCopyButton copyText={{_data["href"]}} />
             </div>
           </div>
         {% else %}
@@ -23,7 +23,7 @@
             <div class="header list-item">
               <i class="id card icon link-icon"></i>
               <span>{{ pidObject.identifier }}</span>
-              <ClipboardCopyButton copyText={pidObject.identifier} />
+              <ClipboardCopyButton copyText={{pidObject.identifier}} />
             </div>
           </div>
         {% endif %}
@@ -41,7 +41,7 @@
             <div title="{{objectIdentifier.scheme}}"  class="header list-item">
               <i class="external alternate icon link-icon mb-5"></i>
               <URL target="_blank" rel="noopener noreferrer" className="inline" data={_data}></URL>
-              <ClipboardCopyButton copyText={objectIdentifier.url} />
+              <ClipboardCopyButton copyText={{objectIdentifier.url}} />
             </div>
            
         </div>
@@ -50,7 +50,7 @@
         <div class="header list-item">
           <i class="id card icon link-icon"></i>
           <span>{{ objectIdentifier.identifier }}</span>
-          <ClipboardCopyButton copyText={objectIdentifier.identifier} />
+          <ClipboardCopyButton copyText={{objectIdentifier.identifier}} />
         </div>
       </div>
       {% endif %}
@@ -66,7 +66,7 @@
           "label": _('metadata/originalRecord.label')
       }%}
         <i class="external alternate icon link-icon mb-5"></i>
-        <URL target="_blank" rel="noopener noreferrer" className="link" data={_data}></URL>
+        <URL target="_blank" rel="noopener noreferrer" className="link" data={{_data}}></URL>
       </div>
     </div>
     {% endif %}

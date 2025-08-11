@@ -17,8 +17,6 @@ def test_ui_resource_form_config(app, test_record_ui_resource):
         api_record=None,
         record={},
         data={},
-        args={},
-        view_args={},
         identity=system_identity,
         extra_context={},
     )

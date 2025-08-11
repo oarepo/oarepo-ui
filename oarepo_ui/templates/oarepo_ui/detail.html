@@ -3,7 +3,7 @@
 {%- endblock bypasslinks %}
 {%- block page_body %}
   {% if is_preview %}
-    <PreviewSubheader record={record} api_record={api_record} />
+    <PreviewSubheader record={{record}} api_record={{api_record}} />
   {% endif %}
   <div class="ui{% if not embedded %} main{% endif %} container">
     <div class="ui relaxed grid">
@@ -18,9 +18,9 @@
           {% endblock record_main_content %}
           {% if embedded %}
            <IdentifiersAndLinks 
-            originalRecordUrl={metadata.originalRecord} 
-            objectIdentifiers={metadata.objectIdentifiers} 
-            pids={record.get('pids', {})}
+            originalRecordUrl={{metadata.originalRecord}}
+            objectIdentifiers={{metadata.objectIdentifiers}}
+            pids={{record.get('pids', {})}}
           />
           {% endif %}
         </article>

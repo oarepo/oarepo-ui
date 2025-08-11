@@ -21,7 +21,7 @@ OAREPO_UI_JINJAX_GLOBALS = {
     "ui_value": "oarepo_ui.resources.templating.filters:ui_value",
     "as_array": "oarepo_ui.resources.templating.filters:as_array",
     "value": "oarepo_ui.resources.templating.filters:value",
-    "as_dict": "oarepo_ui.resources.templating.filters:as_dict"
+    "as_dict": "oarepo_ui.resources.templating.filters:as_dict",
 }
 
 

@@ -23,14 +23,24 @@ class AllowedCommunitiesComponent(UIResourceComponent):
         )
         super().__init__(resource)
 
+    def empty_record(self, *, empty_data: Dict, form_config, selected_community, **kwargs):
+        if "allowed_communities" not in form_config:
+            return empty_data
+        if selected_community:
+            for c in form_config["allowed_communities"]:
+                if c["slug"] == selected_community:
+                    empty_data["parent"]["communities"]["default"] = c["id"]
+                    break
+        elif len(form_config["allowed_communities"]) == 1:
+            community = form_config["allowed_communities"][0]
+            empty_data["parent"]["communities"]["default"] = community["id"]
+        return empty_data
+
     def form_config(
         self,
         *,
-        data: Dict = None,
         identity: Identity,
         form_config: Dict,
-        args: Dict,
-        view_args: Dict,
         ui_links: Dict = None,
         extra_context: Dict = None,
         **kwargs,
@@ -58,20 +68,18 @@ class AllowedCommunitiesComponent(UIResourceComponent):
         data: Dict,
         identity: Identity,
         form_config: Dict,
-        args: Dict,
-        view_args: Dict,
+        selected_community: str | None = None,
         ui_links: Dict,
         extra_context: Dict,
         **kwargs,
     ):
-        preselected_community_slug = args.get("community", None)
-        if preselected_community_slug:
+        if selected_community:
             try:
                 preselected_community = next(
                     (
                         c
                         for c in form_config["allowed_communities"]
-                        if c["slug"] == preselected_community_slug
+                        if c["slug"] == selected_community
                     ),
                 )
             except StopIteration:

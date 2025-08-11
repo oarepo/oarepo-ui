@@ -103,17 +103,15 @@ class FieldData:
     def _extract_children_ui_data(self, name: str, ui_data: dict) -> dict:
         if ui_data == EMPTY_FIELD_DATA_SENTINEL:
             return EMPTY_FIELD_DATA_SENTINEL
-        
-        # construct prefix for UI fields 
+
+        # construct prefix for UI fields
         prefix = f"{name}_"
-        
-        # try to find all fields with that prefix and keep only suffixes as keys(e.g. l10n_long etc.) 
+
+        # try to find all fields with that prefix and keep only suffixes as keys(e.g. l10n_long etc.)
         children_ui_data = {
-            k[len(prefix):]: v
-            for k, v in ui_data.items()
-            if k.startswith(prefix)
+            k[len(prefix) :]: v for k, v in ui_data.items() if k.startswith(prefix)
         }
-        
+
         if not children_ui_data:
             # check if there is exact match of the key
             if ui_data and name in ui_data:
@@ -121,8 +119,7 @@ class FieldData:
             else:
                 children_ui_data = {}
         return children_ui_data
-        
-    
+
     def __getitem__(self, name: str) -> FieldData:
         """
         Get 1 level deeper defined by name in the nested structure.
@@ -143,7 +140,9 @@ class FieldData:
 
         # Indexing in dictionaries is not supported
         if isinstance(self._api_data, list):
-            log.error("Indexing inside a list is not allowed, please call FiedData.array(value) first.")
+            log.error(
+                "Indexing inside a list is not allowed, please call FiedData.array(value) first."
+            )
             return EMPTY_FIELD_DATA
 
         if not isinstance(self._api_data, dict):
@@ -157,7 +156,7 @@ class FieldData:
 
         children_ui_defs = self._ui_definitions.get("children", {}).get(name, {})
         children_ui_data = self._extract_children_ui_data(name, self._ui_data)
-        
+
         return FieldData(
             api_data=children_api_data,
             ui_data=children_ui_data,
@@ -188,7 +187,9 @@ class FieldData:
         :return: UI or API value of the node (string, dict, list, etc.).
         """
         if fd._ui_data == EMPTY_FIELD_DATA_SENTINEL:
-            return fd._api_data if fd._api_data != EMPTY_FIELD_DATA_SENTINEL else default
+            return (
+                fd._api_data if fd._api_data != EMPTY_FIELD_DATA_SENTINEL else default
+            )
 
         if not isinstance(fd._ui_data, dict):
             return fd._ui_data
@@ -196,7 +197,9 @@ class FieldData:
         if format in fd._ui_data:
             return fd._ui_data[format]
         else:
-            return fd._api_data if fd._api_data != EMPTY_FIELD_DATA_SENTINEL else default
+            return (
+                fd._api_data if fd._api_data != EMPTY_FIELD_DATA_SENTINEL else default
+            )
 
     @staticmethod
     def label(fd: FieldData) -> str:
@@ -247,7 +250,7 @@ class FieldData:
                 "FieldData.array() called in dictionary! Returning empty array, please call FieldData.dict()"
             )
             return []
-        
+
         if isinstance(fd._api_data, list):
             res = []
             for api_item, ui_item in zip(fd._api_data, fd._ui_data):
