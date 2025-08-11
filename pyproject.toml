@@ -9,9 +9,14 @@ dependencies = [
     "oarepo-runtime>=2.0.0dev0,<3.0.0",
     "jinja2-simple-tags",
     "frozendict",
-    "jinjax>=0.60,<1.0.0"
+    "jinjax>=0.60,<1.0.0",
+    "deepmerge>=2.0",
 ]
 requires-python = ">=3.13,<3.14"
+
+[project.urls]
+Homepage = "https://github.com/oarepo/oarepo-ui"
+
 
 [project.optional-dependencies]
 dev = [
@@ -39,6 +44,9 @@ oarepo_ui_theme = "oarepo_ui.theme.webpack:theme"
 
 [project.entry-points."invenio_base.blueprints"]
 oarepo_ui = "oarepo_ui.views:create_blueprint"
+
+[project.entry-points."invenio_base.finalize_app"]
+oarepo_ui = "oarepo_ui.views:finalize_app"
 
 [build-system]
 requires = ["hatchling"]
