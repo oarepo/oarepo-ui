@@ -15,7 +15,6 @@ export function parseFormAppConfig(rootElementId = "form-app") {
   const recordPermissions = getInputFromDOM("record-permissions");
   const files = getInputFromDOM("files");
   const links = getInputFromDOM("links");
-
   return { rootEl, record, formConfig, recordPermissions, files, links };
 }
 
