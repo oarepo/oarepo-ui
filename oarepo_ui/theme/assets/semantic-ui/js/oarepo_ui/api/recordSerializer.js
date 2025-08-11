@@ -8,7 +8,7 @@ import _mapValues from "lodash/mapValues";
 import _pickBy from "lodash/pickBy";
 import _forEach from "lodash/forEach";
 import _omitBy from "lodash/omitBy";
-
+import _set from "lodash/set";
 export class DepositRecordSerializer {
   constructor(defaultLocale) {
     if (this.constructor === DepositRecordSerializer) {
@@ -145,4 +145,28 @@ export class OARepoDepositSerializer extends DepositRecordSerializer {
 
     return serializedRecord;
   };
+
+  deserializeErrors(errors) {
+    let deserializedErrors = {};
+    // TODO - WARNING: This doesn't convert backend error paths to frontend
+    //                 error paths. Doing so is non-trivial
+    //                 (re-using deserialize has some caveats)
+    //                 Form/Error UX is tackled in next sprint and this is good
+    //                 enough for now.
+    for (const e of errors) {
+      if ("severity" in e) {
+        // New error format with severity and description
+        _set(deserializedErrors, e.field, {
+          message: e.messages.join(" "),
+          severity: e.severity, // severity level of the error
+          description: e.description, // additional information about the rule that generated the error
+        });
+      } else {
+        // Backward compatibility with old error format, including just the error string
+        _set(deserializedErrors, e.field, e.messages.join(" "));
+      }
+    }
+
+    return deserializedErrors;
+  }
 }

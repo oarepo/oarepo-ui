@@ -1,23 +1,9 @@
 import React, { useMemo, memo } from "react";
-import ReactDOM from "react-dom";
 import { getInputFromDOM } from "@js/oarepo_ui/";
 import { CompactFieldLabel } from "./components/CompactFieldLabel";
-import { FormConfigProvider, FieldDataProvider } from "./contexts";
-import { Container } from "semantic-ui-react";
-import { BrowserRouter as Router } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { loadAppComponents } from "../util";
-import { overridableComponentIds as componentIds } from "./constants";
-import { buildUID } from "react-searchkit";
 import _get from "lodash/get";
 import { FieldLabel } from "react-invenio-forms";
 import { i18next } from "@translations/i18next";
-import Overridable, {
-  OverridableContext,
-  overrideStore,
-} from "react-overridable";
-import { BaseFormLayout } from "./components/BaseFormLayout";
-import { setIn } from "formik";
 import _deburr from "lodash/deburr";
 import _escapeRegExp from "lodash/escapeRegExp";
 import _filter from "lodash/filter";
@@ -31,63 +17,6 @@ export function parseFormAppConfig(rootElementId = "form-app") {
   const links = getInputFromDOM("links");
 
   return { rootEl, record, formConfig, recordPermissions, files, links };
-}
-
-/**
- * Initialize Formik form application.
- * @function
- * @param {object} defaultComponents - default components to load if no overriden have been registered.
- * @param {boolean} autoInit - if true then the application is getting registered to the DOM.
- * @returns {object} renderable React object
- */
-const queryClient = new QueryClient();
-export function createFormAppInit({
-  autoInit = true,
-  ContainerComponent = React.Fragment,
-  componentOverrides = {},
-} = {}) {
-  const initFormApp = async ({ rootEl, ...config }) => {
-    console.debug("Initializing Formik form app...");
-    console.debug({ ...config });
-    const overridableIdPrefix = config.formConfig.overridableIdPrefix;
-
-    loadAppComponents({
-      overridableIdPrefix,
-      componentIds,
-      resourceConfigComponents: config.formConfig.defaultComponents,
-      componentOverrides,
-    }).then(() => {
-      ReactDOM.render(
-        <ContainerComponent>
-          <QueryClientProvider client={queryClient}>
-            <Router>
-              <OverridableContext.Provider value={overrideStore.getAll()}>
-                <FormConfigProvider value={config}>
-                  <FieldDataProvider>
-                    <Overridable
-                      id={buildUID(overridableIdPrefix, "FormApp.layout")}
-                    >
-                      <Container fluid>
-                        <BaseFormLayout />
-                      </Container>
-                    </Overridable>
-                  </FieldDataProvider>
-                </FormConfigProvider>
-              </OverridableContext.Provider>
-            </Router>
-          </QueryClientProvider>
-        </ContainerComponent>,
-        rootEl
-      );
-    });
-  };
-
-  if (autoInit) {
-    const appConfig = parseFormAppConfig();
-    initFormApp(appConfig);
-  } else {
-    return initFormApp;
-  }
 }
 
 const MemoizedFieldLabel = memo(FieldLabel);
@@ -210,7 +139,7 @@ export function toModelPath(path) {
   return transformedParts.join(".");
 }
 
-export const getValidTagsForEditor = (tags, attr) => {
+export const getValidTagsForEditor = (tags = [], attr = {}) => {
   const specialAttributes = Object.fromEntries(
     Object.entries(attr).map(([key, value]) => [key, value.join("|")])
   );
@@ -227,32 +156,6 @@ export const getValidTagsForEditor = (tags, attr) => {
   );
 
   return result.join(",");
-};
-
-export const serializeErrors = (
-  errors,
-  message = i18next.t(
-    "Draft saved with validation errors. Fields listed below that failed validation were not saved to the server"
-  )
-) => {
-  if (errors?.length > 0) {
-    let errorsObj = {};
-    const errorPaths = [];
-    for (const error of errors) {
-      errorsObj = setIn(errorsObj, error.field, error.messages.join(" "));
-      errorPaths.push(error.field);
-    }
-
-    errorsObj["BEvalidationErrors"] = {
-      errors: errors,
-      errorMessage: message,
-      errorPaths,
-    };
-
-    return errorsObj;
-  } else {
-    return {};
-  }
 };
 
 // custom search function to avoid the issue of not being able to search

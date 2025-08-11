@@ -123,7 +123,10 @@ export const FilesFieldTable = ({
                       rel="noopener noreferrer"
                     >
                       {fileName &&
-                        _truncate(fileName, { length: 40, omission: "..." })}
+                        _truncate(fileName, {
+                          length: 40,
+                          omission: "...",
+                        })}
                     </a>
                   </Table.Cell>
                   <Table.Cell textAlign="center">

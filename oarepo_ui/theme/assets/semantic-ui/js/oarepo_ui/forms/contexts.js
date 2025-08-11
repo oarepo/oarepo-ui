@@ -1,4 +1,4 @@
-import React, { createContext, useMemo } from "react";
+import React, { createContext, useMemo, useRef } from "react";
 import { getFieldData, useFormConfig } from "@js/oarepo_ui";
 import PropTypes from "prop-types";
 
@@ -20,9 +20,7 @@ FormConfigProvider.propTypes = {
 export const FieldDataContext = createContext();
 
 export const FieldDataProvider = ({ children, fieldPathPrefix = "" }) => {
-  const {
-    formConfig: { ui_model },
-  } = useFormConfig();
+  const { ui_model } = useFormConfig();
 
   const fieldDataValue = useMemo(
     () => ({ getFieldData: getFieldData(ui_model, fieldPathPrefix) }),
@@ -39,4 +37,19 @@ export const FieldDataProvider = ({ children, fieldPathPrefix = "" }) => {
 FieldDataProvider.propTypes = {
   children: PropTypes.node,
   fieldPathPrefix: PropTypes.string,
+};
+
+export const FormikRefContext = createContext();
+
+export const FormikRefProvider = ({ children }) => {
+  const formikRef = useRef(null);
+  return (
+    <FormikRefContext.Provider value={formikRef}>
+      {children}
+    </FormikRefContext.Provider>
+  );
+};
+
+FormikRefProvider.propTypes = {
+  children: PropTypes.node,
 };

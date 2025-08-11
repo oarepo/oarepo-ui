@@ -1,24 +1,44 @@
 import React from "react";
 import { Button } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import { useDepositApiClient } from "@js/oarepo_ui";
+import { connect } from "react-redux";
+import { save } from "../../state/deposit/actions";
+import { useDepositFormAction } from "../../hooks";
+import { DRAFT_SAVE_STARTED } from "@js/invenio_rdm_records/src/deposit/state/types";
 
-export const SaveButton = React.memo(({ ...uiProps }) => {
-  const { isSubmitting, save } = useDepositApiClient();
-  return (
-    <Button
-      name="save"
-      disabled={isSubmitting}
-      loading={isSubmitting}
-      color="grey"
-      onClick={() => save()}
-      icon="save"
-      labelPosition="left"
-      content={i18next.t("Save")}
-      type="submit"
-      {...uiProps}
-    />
-  );
+const SaveButtonComponent = React.memo(
+  ({ saveAction, actionState, ...uiProps }) => {
+    const { handleAction: handleSave, isSubmitting } = useDepositFormAction({
+      action: saveAction,
+    });
+    return (
+      <Button
+        name="save"
+        disabled={isSubmitting}
+        loading={isSubmitting && actionState === DRAFT_SAVE_STARTED}
+        color="grey"
+        onClick={() => handleSave()}
+        icon="save"
+        labelPosition="left"
+        content={i18next.t("Save")}
+        type="submit"
+        {...uiProps}
+      />
+    );
+  }
+);
+
+const mapDispatchToProps = (dispatch) => ({
+  saveAction: (values, params) => dispatch(save(values, params)),
 });
+
+const mapStateToProps = (state) => ({
+  actionState: state.deposit.actionState,
+});
+
+export const SaveButton = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SaveButtonComponent);
 
 export default SaveButton;

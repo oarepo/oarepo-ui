@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Button, Icon } from "semantic-ui-react";
 import { FileEditWrapper, FileUploadWrapper } from "./FilesFieldWrappers";
-import { useDepositFileApiClient } from "@js/oarepo_ui";
 import { i18next } from "@translations/oarepo_ui/i18next";
 
 let LOCALE;
@@ -76,18 +75,17 @@ UploadFileButton.propTypes = {
 };
 
 export const DeleteFileButton = ({ file, handleFileDeletion }) => {
-  const { _delete } = useDepositFileApiClient();
   const [isDeleting, setIsDeleting] = useState(false);
-  const handleDelete = async () => {
+
+  const handleDelete = async (file) => {
     setIsDeleting(true);
-    _delete(file)
-      .then((response) => {
-        setIsDeleting(false);
-        if (response.status === 204) handleFileDeletion(file);
-      })
-      .catch((error) => {
-        setIsDeleting(false);
-      });
+    try {
+      await handleFileDeletion(file);
+      setIsDeleting(false);
+    } catch (error) {
+      setIsDeleting(false);
+      console.error(error);
+    }
   };
   return isDeleting ? (
     <Icon loading name="spinner" />
@@ -96,7 +94,7 @@ export const DeleteFileButton = ({ file, handleFileDeletion }) => {
       disabled={isDeleting}
       className="transparent"
       type="button"
-      onClick={handleDelete}
+      onClick={() => handleDelete(file)}
       aria-label={i18next.t("Delete file")}
     >
       <Icon aria-hidden="true" name="trash alternate" className="m-0" />
