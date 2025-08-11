@@ -95,7 +95,6 @@ class UIResourceComponent:
         *,
         api_record: RecordItem,
         record: Dict,
-        data: Dict,
         identity: Identity,
         form_config: Dict,
         ui_links: Dict,
@@ -107,9 +106,6 @@ class UIResourceComponent:
 
         :param api_record: the record being edited. Can be None if creating a new record.
         :param record: UI serialization of the record
-        :param data: data serialized by the API service serializer. If a record is being edited,
-                     this is the serialized record data. If a new record is being created, this is empty_data
-                     after being processed by the empty_record method on registered UI components.
         :param identity: the current user identity
         :param form_config: form configuration dictionary
         :param args: query parameters

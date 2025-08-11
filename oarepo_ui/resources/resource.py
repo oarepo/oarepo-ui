@@ -592,7 +592,6 @@ class RecordsUIResource(UIResource):
     def create(self, **kwargs):
         if not self.has_deposit_permissions(g.identity):
             raise Forbidden()
-        empty_record = self.empty_record(**kwargs)
 
         # TODO: use api service create link when available
         form_config = self._get_form_config(
@@ -609,14 +608,13 @@ class RecordsUIResource(UIResource):
             "form_config",
             api_record=None,
             record=None,
-            data=empty_record,
             form_config=form_config,
             identity=g.identity,
             extra_context=extra_context,
             ui_links=ui_links,
             **kwargs,
         )
-        empty_record = self.default_communities(empty_record, form_config, **kwargs)
+        empty_record = self.empty_record(form_config=form_config, **kwargs)
 
         self.run_components(
             "before_ui_create",
@@ -653,19 +651,6 @@ class RecordsUIResource(UIResource):
             )
         else:
             return self.api_service.check_permission(identity, "create", record=None)
-
-    def default_communities(self, empty_record, form_config, selected_community=None):
-        if "allowed_communities" not in form_config:
-            return empty_record
-        if selected_community:
-            for c in form_config["allowed_communities"]:
-                if c["slug"] == selected_community:
-                    empty_record["parent"]["communities"]["default"] = c["id"]
-                    break
-        elif len(form_config["allowed_communities"]) == 1:
-            community = form_config["allowed_communities"][0]
-            empty_record["parent"]["communities"]["default"] = community["id"]
-        return empty_record
 
     @property
     def api_service(self):
