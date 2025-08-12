@@ -5,10 +5,11 @@ import { importTemplate } from "./ComplexWidget";
 import PropTypes from "prop-types";
 import { GroupField } from "react-invenio-forms";
 
+// TODO(mirekys): where is this component used?
 export const ArrayWidget = ({
-  item_widget,
-  item_props,
-  item_initial_value,
+  item_widget: itemWidget,
+  item_props: itemProps,
+  item_initial_value: itemInitialValue,
   fieldPath,
   label,
 }) => {
@@ -21,21 +22,18 @@ export const ArrayWidget = ({
   // import nested widget
   useEffect(() => {
     const importComponent = async () => {
-      const ItemWidgetComponent = await importTemplate(item_widget);
+      const ItemWidgetComponent = await importTemplate(itemWidget);
       setImportedComponent({
         // can not return function here as it would be interpreted by the setter immediatelly
         component: (idx) => (
-          <ItemWidgetComponent
-            fieldPath={`${fieldPath}[${idx}]`}
-            {...item_props}
-          />
+          <ItemWidgetComponent fieldPath={`${fieldPath}[${idx}]`} {...itemProps} />
         ),
       });
     };
     importComponent().catch((e) => {
       console.error(e);
     });
-  }, []);
+  }, [fieldPath, itemProps, itemWidget]);
 
   const handleRemove = (indexToRemove) => {
     const updatedValues = [...existingValues];
@@ -46,38 +44,38 @@ export const ArrayWidget = ({
   const handleAdd = () => {
     const newIndex = existingValues.length;
     const newFieldPath = `${fieldPath}[${newIndex}]`;
-    setFieldValue(newFieldPath, item_initial_value ?? "");
+    setFieldValue(newFieldPath, itemInitialValue ?? "");
   };
 
   if (!importedComponent) {
-    return <></>;
+    return null;
   }
 
   return (
     <>
       <Header as="h3">{label}</Header>
       <Grid>
-       {existingValues.length>0 && <Grid.Column width={16} className="pb-0">
-          {existingValues.map((value, index) => (
-            <GroupField width={16} key={index}>
-              <Form.Field width={15}>
-                {importedComponent.component(index)}
-              </Form.Field>
-              <Form.Field>
-                <Button
-                  aria-label={"Remove field"}
-                  className={`close-btn ${item_props.label ? "mt-25" : "mt-5"}`}
-                  icon
-                  onClick={() => handleRemove({ value: index })}
-                  type="button"
-                >
-                  <Icon name="close" />
-                </Button>
-              </Form.Field>
-            </GroupField>
-          ))}
-        </Grid.Column>}
-        <Grid.Row className={existingValues.length>0 ? "pt-0" : ""}>
+        {existingValues.length > 0 && (
+          <Grid.Column width={16} className="pb-0">
+            {existingValues.map((value, index) => (
+              <GroupField width={16} key={value}>
+                <Form.Field width={15}>{importedComponent.component(index)}</Form.Field>
+                <Form.Field>
+                  <Button
+                    aria-label="Remove field"
+                    className={`close-btn ${itemProps.label ? "mt-25" : "mt-5"}`}
+                    icon
+                    onClick={() => handleRemove({ value: index })}
+                    type="button"
+                  >
+                    <Icon name="close" />
+                  </Button>
+                </Form.Field>
+              </GroupField>
+            ))}
+          </Grid.Column>
+        )}
+        <Grid.Row className={existingValues.length > 0 ? "pt-0" : ""}>
           <Grid.Column>
             <Button
               primary
@@ -101,5 +99,10 @@ ArrayWidget.propTypes = {
   item_props: PropTypes.object,
   item_initial_value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   fieldPath: PropTypes.string.isRequired,
-  label: PropTypes.string,
+  label: PropTypes.string.isRequired,
+};
+
+ArrayWidget.defaultProps = {
+  item_props: {},
+  item_initial_value: {},
 };

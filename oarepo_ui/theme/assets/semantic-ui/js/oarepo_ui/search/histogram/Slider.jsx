@@ -23,7 +23,9 @@ export class Slider extends Component {
   }
 
   componentDidMount() {
-    const element = document.getElementById(this.props.aggName);
+    const { aggName } = this.props;
+
+    const element = document.getElementById(aggName);
     if (element) {
       element.addEventListener("mouseup", (e) => this.dragEnd(e));
       element.addEventListener("keyup", (e) => this.handleKeyUp(e, 1000));
@@ -31,7 +33,9 @@ export class Slider extends Component {
   }
 
   componentWillUnmount() {
-    const element = document.getElementById(this.props.aggName);
+    const { aggName } = this.props;
+
+    const element = document.getElementById(aggName);
     if (element) {
       element.removeEventListener("mouseup", this.dragEnd);
       element.removeEventListener("keyup", this.dragEnd);
@@ -39,8 +43,10 @@ export class Slider extends Component {
   }
 
   dragStart = (index, e) => {
+    const { dragging } = this.state;
+
     e.stopPropagation();
-    if (!this.state.dragging) {
+    if (!dragging) {
       this.setState(
         {
           dragging: true,
@@ -65,45 +71,41 @@ export class Slider extends Component {
   };
 
   dragEnd = (e) => {
+    const { handleDragEnd } = this.props;
+    const { dragging } = this.state;
+
     e.stopPropagation();
-    if (this.state.dragging) {
+    if (dragging) {
       this.setState(
         {
           dragging: false,
           dragIndex: null,
         },
         () => {
-          this.props.handleDragEnd();
+          handleDragEnd();
         }
       );
     }
   };
 
   dragFromSVG = (e, scale) => {
-    if (!this.state.dragging) {
-      let selection = [...this.props.selection];
-      const selected = scale.invert(
-        e.nativeEvent.offsetX - this.props.marginLeft
-      );
+    const { selection, marginLeft, min, max, onChange = () => {} } = this.props;
+    const { dragging } = this.state;
+
+    if (!dragging) {
+      let _selection = [...selection];
+      const selected = scale.invert(e.nativeEvent.offsetX - marginLeft);
       let dragIndex;
 
-      if (
-        Math.abs(selected - selection[0]) >= Math.abs(selected - selection[1])
-      ) {
+      if (Math.abs(selected - _selection[0]) >= Math.abs(selected - _selection[1])) {
         dragIndex = 1;
-        selection[1] = Math.max(
-          selection[0],
-          Math.min(selected, this.props.max)
-        );
+        _selection[1] = Math.max(_selection[0], Math.min(selected, max));
       } else {
         dragIndex = 0;
-        selection[0] = Math.min(
-          selection[1],
-          Math.max(selected, this.props.min)
-        );
+        _selection[0] = Math.min(_selection[1], Math.max(selected, min));
       }
 
-      this.props.onChange(selection);
+      onChange(_selection);
       this.setState(
         {
           dragging: true,
@@ -115,58 +117,55 @@ export class Slider extends Component {
   };
 
   mouseMove = (e, scale) => {
-    if (this.state.dragging) {
-      let selection = [...this.props.selection];
-      let selected = scale.invert(
-        e.nativeEvent.offsetX - this.props.marginLeft
-      );
+    const { selection, marginLeft, min, max, onChange = () => {} } = this.props;
+    const { dragging, dragIndex } = this.state;
 
-      if (selected <= this.props.min) {
-        selected = this.props.min;
-      } else if (selected >= this.props.max) {
-        selected = this.props.max;
+    if (dragging) {
+      let _selection = [...selection];
+      let selected = scale.invert(e.nativeEvent.offsetX - marginLeft);
+
+      if (selected <= min) {
+        selected = min;
+      } else if (selected >= max) {
+        selected = max;
       }
 
-      if (this.state.dragIndex === 0) {
-        selection[0] = Math.min(
-          selection[1],
-          Math.max(selected, this.props.min)
-        );
+      if (dragIndex === 0) {
+        _selection[0] = Math.min(_selection[1], Math.max(selected, min));
       } else {
-        selection[1] = Math.max(
-          selection[0],
-          Math.min(selected, this.props.max)
-        );
+        _selection[1] = Math.max(_selection[0], Math.min(selected, max));
       }
 
-      this.props.onChange(selection);
+      onChange(_selection);
     }
   };
 
   keyDown = (index, e) => {
+    const { selection, onChange = () => {} } = this.props;
+
     this.setState({ dragging: true, dragIndex: index });
     const { min, max, diffFunc } = this.props;
 
     const keyboardStep = (max - min) / diffFunc(max, min);
 
     const direction = mapToKeyCode(e.keyCode);
-    let selection = [...this.props.selection];
-    let newValue = selection[index] + direction * keyboardStep;
+    let _selection = [...selection];
+    let newValue = _selection[index] + direction * keyboardStep;
     if (index === 0) {
-      selection[0] = Math.min(selection[1], Math.max(newValue, min));
+      _selection[0] = Math.min(_selection[1], Math.max(newValue, min));
     } else {
-      selection[1] = Math.max(selection[0], Math.min(newValue, max));
+      _selection[1] = Math.max(_selection[0], Math.min(newValue, max));
     }
 
-    this.props.onChange(selection);
+    onChange(_selection);
   };
   render() {
     const {
       selection,
-      formatLabelFunction,
-      width,
-      height,
-      showLabels,
+      formatLabelFunction = (x) => x,
+      width = 400,
+      height = 80,
+      showLabels = true,
       marginLeft,
       marginRight,
       max,
@@ -208,7 +207,7 @@ export class Slider extends Component {
             <g
               className="slider-thumb-container"
               transform={`translate(${scale(m) + marginLeft}, 0)`}
-              key={`handle-${i}`}
+              key={`handle-${m}`}
             >
               <circle
                 className="slider-thumb"
@@ -234,10 +233,15 @@ export class Slider extends Component {
 
 Slider.propTypes = {
   selection: PropTypes.arrayOf(PropTypes.number).isRequired,
+  // eslint-disable-next-line react/require-default-props
   height: PropTypes.number,
+  // eslint-disable-next-line react/require-default-props
   width: PropTypes.number,
+  // eslint-disable-next-line react/require-default-props
   onChange: PropTypes.func,
+  // eslint-disable-next-line react/require-default-props
   formatLabelFunction: PropTypes.func,
+  // eslint-disable-next-line react/require-default-props
   showLabels: PropTypes.bool,
   min: PropTypes.number.isRequired,
   max: PropTypes.number.isRequired,

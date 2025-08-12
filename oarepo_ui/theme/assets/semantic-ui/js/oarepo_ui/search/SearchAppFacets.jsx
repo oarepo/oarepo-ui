@@ -5,18 +5,36 @@ import { i18next } from "@translations/oarepo_ui/i18next";
 import { ErrorBoundary } from "react-error-boundary";
 import { Message, MessageHeader, Icon } from "semantic-ui-react";
 
-const SearchAppFacetsFallback = ({error, agg}) => (
-    <Message error attached='bottom'>
-      <MessageHeader>
-          <Icon name="warning sign" color="red" />
-          {i18next.t("Something went wrong")}
-      </MessageHeader>
-      <p>{i18next.t("Unable to load {{facet}} filter options", {facet: agg.title})}</p>
-      <p>{i18next.t("Please refresh the page, or contact support if the problem continues.")}</p>
-      <p>{i18next.t("Error")}: <code>{error.message}</code></p>
-    </Message>
+const SearchAppFacetsFallback = ({ error, agg }) => (
+  <Message error attached="bottom">
+    <MessageHeader>
+      <Icon name="warning sign" color="red" />
+      {i18next.t("Something went wrong")}
+    </MessageHeader>
+    <p>
+      {i18next.t("Unable to load {{facet}} filter options", {
+        facet: agg.title,
+      })}
+    </p>
+    <p>
+      {i18next.t(
+        "Please refresh the page, or contact support if the problem continues."
+      )}
+    </p>
+    <p>
+      {i18next.t("Error")}: <code>{error.message}</code>
+    </p>
+  </Message>
 );
 
+SearchAppFacetsFallback.propTypes = {
+  error: PropTypes.instanceOf(Error).isRequired,
+  agg: PropTypes.shape({
+    aggName: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    field: PropTypes.string.isRequired,
+  }).isRequired,
+};
 
 export const SearchAppFacets = ({ aggs, appName, allVersionsToggle }) => {
   return (
@@ -31,7 +49,9 @@ export const SearchAppFacets = ({ aggs, appName, allVersionsToggle }) => {
         )}
         {aggs.map((agg) => (
           <ErrorBoundary
-            FallbackComponent={(props) => <SearchAppFacetsFallback {...props} agg={agg} />}
+            FallbackComponent={(props) => (
+              <SearchAppFacetsFallback {...props} agg={agg} />
+            )}
             key={agg.aggName}
           >
             <BucketAggregation key={agg.aggName} title={agg.titles} agg={agg} />

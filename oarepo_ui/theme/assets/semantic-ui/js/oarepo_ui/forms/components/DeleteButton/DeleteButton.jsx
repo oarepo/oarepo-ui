@@ -15,7 +15,7 @@ const DeleteButtonComponent = React.memo(
     actionState,
     modalMessage,
     modalHeader,
-    redirectUrl,
+    redirectUrl = "",
   }) => {
     const {
       isOpen: isModalOpen,
@@ -76,6 +76,8 @@ const DeleteButtonComponent = React.memo(
   }
 );
 
+DeleteButtonComponent.displayName = "DeleteButtonComponent";
+
 const mapDispatchToProps = (dispatch) => ({
   deleteAction: (draft, params) => dispatch(delete_(draft, params)),
 });
@@ -86,11 +88,13 @@ const mapStateToProps = (state) => ({
 });
 
 DeleteButtonComponent.propTypes = {
+  record: PropTypes.object.isRequired,
   modalMessage: PropTypes.string,
   modalHeader: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   redirectUrl: PropTypes.string,
-  deleteAction: PropTypes.func,
-  actionState: PropTypes.string,
+  deleteAction: PropTypes.func.isRequired,
+  actionState: PropTypes.string.isRequired,
 };
 
 DeleteButtonComponent.defaultProps = {
@@ -105,7 +109,4 @@ export const DeleteButton = connect(
   mapDispatchToProps
 )(DeleteButtonComponent);
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DeleteButtonComponent);
+export default connect(mapStateToProps, mapDispatchToProps)(DeleteButtonComponent);

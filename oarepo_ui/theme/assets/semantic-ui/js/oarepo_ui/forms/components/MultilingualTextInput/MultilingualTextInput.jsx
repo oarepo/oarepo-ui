@@ -16,7 +16,7 @@ import { useFormikContext, getIn } from "formik";
 
 export const MultilingualTextInput = ({
   fieldPath,
-  labelIcon,
+  labelIcon = null,
   defaultNewValue = {
     lang: "",
     value: "",
@@ -26,7 +26,7 @@ export const MultilingualTextInput = ({
   lngFieldWidth = 3,
   showEmptyValue = false,
   prefillLanguageWithDefaultLocale = false,
-  removeButtonLabelClassName,
+  removeButtonLabelClassName = "",
   displayFirstInputRemoveButton = true,
   ...uiProps
 }) => {
@@ -110,13 +110,22 @@ export const MultilingualTextInput = ({
 
 MultilingualTextInput.propTypes = {
   fieldPath: PropTypes.string.isRequired,
+  // eslint-disable-next-line react/require-default-props
   labelIcon: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   rich: PropTypes.bool,
+  // eslint-disable-next-line react/require-default-props
   addButtonLabel: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   lngFieldWidth: PropTypes.number,
+  // eslint-disable-next-line react/require-default-props
   defaultNewValue: PropTypes.object,
+  // eslint-disable-next-line react/require-default-props
   showEmptyValue: PropTypes.bool,
+  // eslint-disable-next-line react/require-default-props
   prefillLanguageWithDefaultLocale: PropTypes.bool,
+  // eslint-disable-next-line react/require-default-props
   removeButtonLabelClassName: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   displayFirstInputRemoveButton: PropTypes.bool,
 };

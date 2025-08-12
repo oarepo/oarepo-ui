@@ -15,7 +15,7 @@ export const LanguageSelectField = ({
     'Search for a language by name (e.g "eng", "fr" or "Polish")'
   ),
   clearable = true,
-  usedLanguages,
+  usedLanguages = [],
   ...uiProps
 }) => {
   const { values } = useFormikContext();
@@ -42,12 +42,20 @@ export const LanguageSelectField = ({
 
 LanguageSelectField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
+  // eslint-disable-next-line react/require-default-props
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  // eslint-disable-next-line react/require-default-props
   labelIcon: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   required: PropTypes.bool,
+  // eslint-disable-next-line react/require-default-props
   multiple: PropTypes.bool,
+  // eslint-disable-next-line react/require-default-props
   clearable: PropTypes.bool,
+  // eslint-disable-next-line react/require-default-props
   placeholder: PropTypes.string,
-  options: PropTypes.array,
+  // eslint-disable-next-line react/require-default-props
   usedLanguages: PropTypes.array,
+  // eslint-disable-next-line react/require-default-props
+  vocabularyName: PropTypes.string,
 };

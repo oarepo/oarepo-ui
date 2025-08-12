@@ -1,18 +1,7 @@
 import * as React from "react";
 import axios from "axios";
-import {
-  useEffect,
-  useCallback,
-  useState,
-  useContext,
-  useMemo,
-  useRef,
-} from "react";
-import {
-  FormConfigContext,
-  FieldDataContext,
-  FormikRefContext,
-} from "./contexts";
+import { useEffect, useCallback, useState, useContext, useMemo, useRef } from "react";
+import { FormConfigContext, FieldDataContext, FormikRefContext } from "./contexts";
 import {} from "../api";
 import _get from "lodash/get";
 import _set from "lodash/set";
@@ -56,9 +45,7 @@ export const useDepositFormAction = ({ action, params }) => {
 export const useFormConfig = () => {
   const context = useContext(FormConfigContext);
   if (!context) {
-    throw new Error(
-      "useFormConfig must be used inside FormConfigContext.Provider"
-    );
+    throw new Error("useFormConfig must be used inside FormConfigContext.Provider");
   }
   return context;
 };
@@ -66,9 +53,7 @@ export const useFormConfig = () => {
 export const useFormikRef = () => {
   const context = useContext(FormikRefContext);
   if (!context) {
-    throw new Error(
-      "useFormikRef must be used inside FormikRefContext.Provider"
-    );
+    throw new Error("useFormikRef must be used inside FormikRefContext.Provider");
   }
   return context;
 };
@@ -76,17 +61,15 @@ export const useFormikRef = () => {
 export const useFieldData = () => {
   const context = useContext(FieldDataContext);
   if (!context) {
-    throw new Error(
-      "useFormConfig must be used inside FieldDataContext.Provider"
-    );
+    throw new Error("useFormConfig must be used inside FieldDataContext.Provider");
   }
   return context;
 };
 
 export const useDefaultLocale = () => {
-  const { default_locale } = useFormConfig();
+  const { default_locale: defaultLocale } = useFormConfig();
 
-  return { defaultLocale: default_locale };
+  return { defaultLocale };
 };
 
 export const useConfirmationModal = () => {
@@ -122,29 +105,20 @@ export const useFormFieldValue = ({
     _set(
       { ...initialVal },
       subValuesPath,
-      !usedSubValues?.includes(defaultValue) || !subValuesUnique
-        ? defaultValue
-        : ""
+      !usedSubValues?.includes(defaultValue) || !subValuesUnique ? defaultValue : ""
     );
 
   return { usedSubValues, defaultNewValue };
 };
 
-export const useShowEmptyValue = (
-  fieldPath,
-  defaultNewValue,
-  showEmptyValue
-) => {
+export const useShowEmptyValue = (fieldPath, defaultNewValue, showEmptyValue) => {
   const { values, setFieldValue } = useFormikContext();
   const currentFieldValue = getIn(values, fieldPath, []);
   useEffect(() => {
     if (!showEmptyValue) return;
     if (!_isEmpty(currentFieldValue)) return;
     if (defaultNewValue === undefined) {
-      console.error(
-        "Default value for new input must be provided. Field: ",
-        fieldPath
-      );
+      console.error("Default value for new input must be provided. Field: ", fieldPath);
       return;
     }
     if (!fieldPath) {
@@ -162,7 +136,7 @@ export const useShowEmptyValue = (
       currentFieldValue.push(defaultNewValue);
       setFieldValue(fieldPath, currentFieldValue);
     }
-  }, [showEmptyValue, setFieldValue, fieldPath, defaultNewValue]);
+  }, [showEmptyValue, setFieldValue, fieldPath, defaultNewValue, currentFieldValue]);
 };
 
 export const handleValidateAndBlur = (validateField, setFieldTouched) => {
@@ -231,10 +205,58 @@ export const useSuggestionApi = ({
   // Inspired by: https://dev.to/alexdrocks/using-lodash-debounce-with-react-hooks-for-an-async-data-fetching-input-2p4g
   const [didMount, setDidMount] = useState(false);
 
+  const fetchSuggestions = React.useCallback(
+    (cancelToken) => {
+      setLoading(true);
+      setNoResults(false);
+      setSuggestions(initialSuggestions);
+      setError(null);
+
+      axios
+        .get(suggestionAPIUrl, {
+          params: {
+            [searchQueryParamName]: query,
+            size: DEFAULT_SUGGESTION_SIZE,
+            ...suggestionAPIQueryParams,
+          },
+          headers: suggestionAPIHeaders,
+          cancelToken: cancelToken.token,
+          // There is a bug in axios that prevents brackets from being encoded,
+          // remove the paramsSerializer when fixed.
+          // https://github.com/axios/axios/issues/3316
+          paramsSerializer: (params) =>
+            queryString.stringify(params, { arrayFormat: "repeat" }),
+        })
+        .then((res) => {
+          const searchHits = res?.data?.hits?.hits;
+          if (searchHits.length === 0) {
+            setNoResults(true);
+          }
+
+          const serializedSuggestions = serializeSuggestions(searchHits);
+          setSuggestions(_uniqBy(serializedSuggestions, "value"));
+        })
+        .catch((err) => {
+          setError(err);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    },
+    [
+      initialSuggestions,
+      query,
+      searchQueryParamName,
+      serializeSuggestions,
+      suggestionAPIHeaders,
+      suggestionAPIQueryParams,
+      suggestionAPIUrl,
+    ]
+  );
+
   const debouncedSearch = useMemo(
-    () =>
-      _debounce((cancelToken) => fetchSuggestions(cancelToken), debounceTime),
-    [debounceTime, query]
+    () => _debounce((cancelToken) => fetchSuggestions(cancelToken), debounceTime),
+    [debounceTime, fetchSuggestions]
   );
 
   useEffect(() => {
@@ -257,45 +279,7 @@ export const useSuggestionApi = ({
     return () => {
       cancelToken.cancel();
     };
-  }, [query, suggestionAPIUrl, searchQueryParamName]); // suggestionAPIQueryParams, suggestionAPIHeaders]);
-
-  function fetchSuggestions(cancelToken) {
-    setLoading(true);
-    setNoResults(false);
-    setSuggestions(initialSuggestions);
-    setError(null);
-
-    axios
-      .get(suggestionAPIUrl, {
-        params: {
-          [searchQueryParamName]: query,
-          size: DEFAULT_SUGGESTION_SIZE,
-          ...suggestionAPIQueryParams,
-        },
-        headers: suggestionAPIHeaders,
-        cancelToken: cancelToken.token,
-        // There is a bug in axios that prevents brackets from being encoded,
-        // remove the paramsSerializer when fixed.
-        // https://github.com/axios/axios/issues/3316
-        paramsSerializer: (params) =>
-          queryString.stringify(params, { arrayFormat: "repeat" }),
-      })
-      .then((res) => {
-        const searchHits = res?.data?.hits?.hits;
-        if (searchHits.length === 0) {
-          setNoResults(true);
-        }
-
-        const serializedSuggestions = serializeSuggestions(searchHits);
-        setSuggestions(_uniqBy(serializedSuggestions, "value"));
-      })
-      .catch((err) => {
-        setError(err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }
+  }, [query, suggestionAPIUrl, searchQueryParamName, didMount, debouncedSearch]);
 
   const executeSearch = React.useCallback(
     (searchQuery) => {
@@ -307,7 +291,7 @@ export const useSuggestionApi = ({
 
       setQuery(newQuery);
     },
-    [query]
+    [preSearchChange, query]
   );
 
   return {

@@ -31,26 +31,28 @@ export const ClearableSearchbarElement = withState(
       }
     };
 
-    const icon = queryString ? { 
-      icon: { 
-        name: "close", 
-        className: "clear-button", 
-        link: true, 
-        onClick: () => onInputChange(""), 
-        role: "button", 
-        "aria-label": i18next.t("Clear"), 
-        ...actionProps 
-      } 
-    } : {};
+    const icon = queryString
+      ? {
+          icon: {
+            "name": "close",
+            "className": "clear-button",
+            "link": true,
+            "onClick": () => onInputChange(""),
+            "role": "button",
+            "aria-label": i18next.t("Clear"),
+            ...actionProps,
+          },
+        }
+      : {};
 
     return (
       <Input
         {...icon}
         action={{
-          icon: iconName,
-          className: "search",
-          color: iconColor,
-          onClick: onBtnSearchClick,
+          "icon": iconName,
+          "className": "search",
+          "color": iconColor,
+          "onClick": onBtnSearchClick,
           "aria-label": i18next.t("Search"),
           ...actionProps,
         }}

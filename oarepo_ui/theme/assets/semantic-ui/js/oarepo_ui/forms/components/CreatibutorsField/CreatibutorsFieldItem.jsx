@@ -30,7 +30,7 @@ export const CreatibutorsFieldItem = ({
   roleOptions,
   schema,
   autocompleteNames,
-  showRoleField,
+  showRoleField = false,
 }) => {
   const dropRef = React.useRef(null);
   // eslint-disable-next-line no-unused-vars
@@ -88,9 +88,7 @@ export const CreatibutorsFieldItem = ({
       <React.Fragment>
         <List.Item
           key={compKey}
-          className={
-            hidden ? "deposit-drag-listitem hidden" : "deposit-drag-listitem"
-          }
+          className={hidden ? "deposit-drag-listitem hidden" : "deposit-drag-listitem"}
         >
           <List.Content floated="right">
             <CreatibutorsModal
@@ -111,11 +109,7 @@ export const CreatibutorsFieldItem = ({
               }
               showRoleField={showRoleField}
             />
-            <Button
-              size="mini"
-              type="button"
-              onClick={() => removeCreatibutor(index)}
-            >
+            <Button size="mini" type="button" onClick={() => removeCreatibutor(index)}>
               {i18next.t("Remove")}
             </Button>
           </List.Content>
@@ -147,6 +141,7 @@ export const CreatibutorsFieldItem = ({
 
 CreatibutorsFieldItem.propTypes = {
   compKey: PropTypes.string.isRequired,
+  // eslint-disable-next-line react/require-default-props
   showRoleField: PropTypes.bool,
   identifiersError: PropTypes.array,
   index: PropTypes.number.isRequired,

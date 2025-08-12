@@ -20,10 +20,11 @@ export const FormikStateLogger = ({ render = false }) => {
   }
 
   console.debug("[form state]: ", state, "\n[form values]:", state.values);
-  return <></>;
+  return null;
 };
 
 FormikStateLogger.propTypes = {
+  // eslint-disable-next-line react/require-default-props
   render: PropTypes.bool,
 };
 

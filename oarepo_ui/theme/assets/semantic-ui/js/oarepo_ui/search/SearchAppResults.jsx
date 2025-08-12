@@ -20,11 +20,7 @@ export const SearchAppResultsComponent = ({
 }) => {
   const { resultsPerPage } = paginationOptions;
   const multipleLayouts = layoutOptions.listView && layoutOptions.gridView;
-  const listOrGridView = layoutOptions.listView ? (
-    <ResultsList />
-  ) : (
-    <ResultsGrid />
-  );
+  const listOrGridView = layoutOptions.listView ? <ResultsList /> : <ResultsGrid />;
 
   return (
     <Grid relaxed>
@@ -35,12 +31,8 @@ export const SearchAppResultsComponent = ({
       </Grid.Row>
       {total > 10 && (
         <Grid.Row verticalAlign="middle">
-          <Grid.Column className="computer tablet only" width={4}></Grid.Column>
-          <Grid.Column
-            className="computer tablet only"
-            width={8}
-            textAlign="center"
-          >
+          <Grid.Column className="computer tablet only" width={4} />
+          <Grid.Column className="computer tablet only" width={8} textAlign="center">
             <Pagination
               options={{
                 size: "mini",
@@ -59,25 +51,11 @@ export const SearchAppResultsComponent = ({
               }}
             />
           </Grid.Column>
-          <Grid.Column
-            className="computer tablet only "
-            textAlign="right"
-            width={4}
-          >
-            <ResultsPerPage
-              values={resultsPerPage}
-              label={ResultsPerPageLabel}
-            />
+          <Grid.Column className="computer tablet only " textAlign="right" width={4}>
+            <ResultsPerPage values={resultsPerPage} label={ResultsPerPageLabel} />
           </Grid.Column>
-          <Grid.Column
-            className="mobile only mt-10"
-            textAlign="center"
-            width={16}
-          >
-            <ResultsPerPage
-              values={resultsPerPage}
-              label={ResultsPerPageLabel}
-            />
+          <Grid.Column className="mobile only mt-10" textAlign="center" width={16}>
+            <ResultsPerPage values={resultsPerPage} label={ResultsPerPageLabel} />
           </Grid.Column>
         </Grid.Row>
       )}

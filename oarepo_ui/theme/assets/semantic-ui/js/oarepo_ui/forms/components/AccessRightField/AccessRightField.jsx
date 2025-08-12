@@ -16,7 +16,7 @@ export const AccessRightField = ({
   recordRestrictionGracePeriod,
   allowRecordRestriction,
 }) => {
-  const { allowed_communities } = useFormConfig();
+  const { allowed_communities: allowedCommunities } = useFormConfig();
 
   return (
     <I18nextProvider i18n={i18next}>
@@ -24,7 +24,7 @@ export const AccessRightField = ({
         {(formik) => {
           const mainCommunity =
             community ||
-            allowed_communities.find(
+            allowedCommunities.find(
               (c) => c.id === record?.parent?.communities?.default
             );
           return (

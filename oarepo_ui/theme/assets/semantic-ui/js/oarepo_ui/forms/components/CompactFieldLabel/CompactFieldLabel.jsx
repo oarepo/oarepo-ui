@@ -13,9 +13,7 @@ export class CompactFieldLabel extends Component {
           <Popup
             position="top center"
             content={<span className="helptext">{popupHelpText}</span>}
-            trigger={
-              <Icon className="ml-5" name="question circle outline"></Icon>
-            }
+            trigger={<Icon className="ml-5" name="question circle outline" />}
           />
         ) : null}
       </label>

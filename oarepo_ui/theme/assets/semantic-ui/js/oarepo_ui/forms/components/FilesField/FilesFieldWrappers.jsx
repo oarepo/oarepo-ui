@@ -6,10 +6,10 @@ import FileManagementDialog from "@oarepo/file-manager";
 export const FileUploadWrapper = ({
   uploadWrapperClassName,
   uploadButtonClassName,
-  props,
-  required,
+  props = {},
+  required = false,
 }) => {
-  const TriggerComponent = ({ onClick, ...props }) => (
+  const TriggerComponent = ({ onClick = () => {}, ...props }) => (
     <button
       className={uploadButtonClassName}
       onClick={onClick}
@@ -22,6 +22,11 @@ export const FileUploadWrapper = ({
     </button>
   );
 
+  TriggerComponent.propTypes = {
+    // eslint-disable-next-line react/require-default-props
+    onClick: PropTypes.func,
+  };
+
   return (
     <div className={uploadWrapperClassName}>
       <FileManagementDialog TriggerComponent={TriggerComponent} {...props} />
@@ -32,7 +37,9 @@ export const FileUploadWrapper = ({
 FileUploadWrapper.propTypes = {
   uploadWrapperClassName: PropTypes.string,
   uploadButtonClassName: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   required: PropTypes.bool,
+  // eslint-disable-next-line react/require-default-props
   props: PropTypes.object,
 };
 
@@ -42,9 +49,9 @@ FileUploadWrapper.defaultProps = {
 };
 
 export const FileEditWrapper = ({
-  editWrapperClassName,
-  editButtonClassName,
-  props,
+  editWrapperClassName = "",
+  editButtonClassName = "ui button transparent",
+  props = {},
 }) => {
   const TriggerComponent = ({ onClick, ...props }) => {
     return (
@@ -64,6 +71,11 @@ export const FileEditWrapper = ({
     );
   };
 
+  TriggerComponent.propTypes = {
+    // eslint-disable-next-line react/require-default-props
+    onClick: PropTypes.func,
+  };
+
   return (
     <div className={editWrapperClassName}>
       <FileManagementDialog TriggerComponent={TriggerComponent} {...props} />
@@ -71,13 +83,9 @@ export const FileEditWrapper = ({
   );
 };
 
+/* eslint-disable react/require-default-props */
 FileEditWrapper.propTypes = {
   editWrapperClassName: PropTypes.string,
   editButtonClassName: PropTypes.string,
   props: PropTypes.object,
-};
-
-FileEditWrapper.defaultProps = {
-  // editWrapperClassName: "ui container centered",
-  editButtonClassName: "ui button transparent",
 };

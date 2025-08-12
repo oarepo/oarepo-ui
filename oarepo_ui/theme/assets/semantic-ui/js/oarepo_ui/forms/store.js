@@ -40,8 +40,7 @@ const preloadFiles = (files) => {
         };
 
         return {
-          progressPercentage:
-            fileState.status === UploadState.completed ? 100 : 0,
+          progressPercentage: fileState.status === UploadState.completed ? 100 : 0,
           ...fileState,
         };
       })
@@ -57,15 +56,8 @@ export function configureStore(
   overridenDepositReducer,
   overridenFilesReducer
 ) {
-  const {
-    record,
-    errors,
-    preselectedCommunity,
-    files,
-    config,
-    permissions,
-    ...extra
-  } = appConfig;
+  const { record, errors, preselectedCommunity, files, config, permissions, ...extra } =
+    appConfig;
 
   const urlHash = window.location.hash.substring(1);
   let errorData;
@@ -88,9 +80,7 @@ export function configureStore(
     errors: calculatedErrors,
     config,
     permissions,
-    actionState: !_isEmpty(calculatedErrors)
-      ? DRAFT_HAS_VALIDATION_ERRORS
-      : null,
+    actionState: !_isEmpty(calculatedErrors) ? DRAFT_HAS_VALIDATION_ERRORS : null,
     actionStateExtra: {},
     formFeedbackMessage: errorData?.errorMessage || "",
   };
@@ -105,14 +95,11 @@ export function configureStore(
     files: createOverridenReducer(fileReducer, overridenFilesReducer),
   });
 
-  const composeEnhancers =
-    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
   return createStore(
     rootReducer,
     preloadedState,
-    composeEnhancers(
-      applyMiddleware(thunk.withExtraArgument({ config, ...extra }))
-    )
+    composeEnhancers(applyMiddleware(thunk.withExtraArgument({ config, ...extra })))
   );
 }

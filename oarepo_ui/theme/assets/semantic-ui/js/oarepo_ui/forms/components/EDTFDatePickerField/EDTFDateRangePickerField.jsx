@@ -19,7 +19,7 @@ export const EDTFDaterangePicker = ({
   label,
   icon = "calendar",
   helpText,
-  required,
+  required = false,
   dateRangeInputPlaceholder = i18next.t("Choose date range (From - To)."),
   singleDateInputPlaceholder = i18next.t("Choose one date."),
   datePickerPropsOverrides,
@@ -47,9 +47,7 @@ export const EDTFDaterangePicker = ({
   const endDate = dates[1];
 
   const handleChange = (dates) => {
-    const serializedDates = dates.map((date) =>
-      serializeDate(date, dateEdtfFormat)
-    );
+    const serializedDates = dates.map((date) => serializeDate(date, dateEdtfFormat));
     if (allEmptyStrings(serializedDates)) {
       setFieldValue(fieldPath, "");
     } else {
@@ -104,10 +102,7 @@ export const EDTFDaterangePicker = ({
     ...(helpText && { helpText }),
   };
   return (
-    <Form.Field
-      className="ui datepicker field mb-0"
-      required={fieldData.required}
-    >
+    <Form.Field className="ui datepicker field mb-0" required={fieldData.required}>
       <FieldLabel htmlFor={fieldPath} icon={icon} label={fieldData.label} />
       <Form.Field className="mb-0">
         <Radio
@@ -140,20 +135,25 @@ export const EDTFDaterangePicker = ({
           datePickerProps={{ ...pickerProps, ...datePickerPropsOverrides }}
         />
       </Form.Field>
-      {fieldData.helpText && (
-        <label className="helptext">{fieldData.helpText}</label>
-      )}
+      {fieldData.helpText && <label className="helptext">{fieldData.helpText}</label>}
     </Form.Field>
   );
 };
 
 EDTFDaterangePicker.propTypes = {
   fieldPath: PropTypes.string.isRequired,
+  // eslint-disable-next-line react/require-default-props
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  // eslint-disable-next-line react/require-default-props
   icon: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   helpText: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   required: PropTypes.bool,
+  // eslint-disable-next-line react/require-default-props
   singleDateInputPlaceholder: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   dateRangeInputPlaceholder: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   datePickerPropsOverrides: PropTypes.object,
 };

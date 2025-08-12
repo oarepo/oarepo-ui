@@ -4,24 +4,18 @@ import PropTypes from "prop-types";
 import { ShouldRender } from "@js/oarepo_ui";
 import { useActiveSearchFilters } from "./hooks";
 
-const ShouldActiveFiltersRenderComponent = ({
-  currentQueryState,
-  children,
-}) => {
+const ShouldActiveFiltersRenderComponent = ({ currentQueryState, children = null }) => {
   const { filters } = currentQueryState;
 
   const { activeFiltersCount } = useActiveSearchFilters(filters);
 
-  return (
-    <ShouldRender condition={activeFiltersCount > 0}>{children}</ShouldRender>
-  );
+  return <ShouldRender condition={activeFiltersCount > 0}>{children}</ShouldRender>;
 };
 
 ShouldActiveFiltersRenderComponent.propTypes = {
   currentQueryState: PropTypes.object.isRequired,
+  // eslint-disable-next-line react/require-default-props
   children: PropTypes.node,
 };
 
-export const ShouldActiveFiltersRender = withState(
-  ShouldActiveFiltersRenderComponent
-);
+export const ShouldActiveFiltersRender = withState(ShouldActiveFiltersRenderComponent);

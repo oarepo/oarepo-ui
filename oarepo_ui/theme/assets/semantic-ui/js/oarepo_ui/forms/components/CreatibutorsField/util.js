@@ -14,11 +14,7 @@ export const serializeAffiliations = (affiliations) =>
   }));
 
 export const creatibutorNameDisplay = (value) => {
-  const creatibutorType = _get(
-    value,
-    "person_or_org.type",
-    CREATIBUTOR_TYPE.PERSON
-  );
+  const creatibutorType = _get(value, "person_or_org.type", CREATIBUTOR_TYPE.PERSON);
   const isPerson = creatibutorType === CREATIBUTOR_TYPE.PERSON;
 
   const familyName = _get(value, "person_or_org.family_name", "");
@@ -63,21 +59,13 @@ export const serializeCreatibutor = (submittedCreatibutor) => {
   // identifiers with existing scheme are trimmed
   // Here we merge back the known scheme for the submitted identifiers
 
-  const submittedIdentifiers = _get(
-    submittedCreatibutor,
-    identifiersFieldPath,
-    []
-  );
+  const submittedIdentifiers = _get(submittedCreatibutor, identifiersFieldPath, []);
   const identifiers = submittedIdentifiers.map((submittedIdentifier) => {
     const [scheme, identifier] = splitOnce(submittedIdentifier, ":");
     return { scheme: scheme, identifier };
   });
 
-  const submittedAffiliations = _get(
-    submittedCreatibutor,
-    affiliationsFieldPath,
-    []
-  );
+  const submittedAffiliations = _get(submittedCreatibutor, affiliationsFieldPath, []);
 
   return {
     ...submittedCreatibutor,

@@ -7,9 +7,7 @@ import { withState } from "react-searchkit";
 import { ClearFiltersButton } from "@js/oarepo_ui";
 import { useActiveSearchFilters } from "./hooks";
 
-
 const getLabel = (filter, aggregations, additionalFilterLabels) => {
-
   const aggName = filter[0];
   const value = filter[1];
 
@@ -19,18 +17,12 @@ const getLabel = (filter, aggregations, additionalFilterLabels) => {
   // keep the original methodo of getting labels for backwards compatibility just in case
   // to not break existing applications
   const label =
-    _getValueLabel(aggregations) ||
-    _getValueLabel(additionalFilterLabels) ||
-    value;
+    _getValueLabel(aggregations) || _getValueLabel(additionalFilterLabels) || value;
 
   let currentFilter = [aggName, value];
   const hasChild = filter.length === 3;
   if (hasChild) {
-    const { activeFilter } = getLabel(
-      filter[2],
-      aggregations,
-      additionalFilterLabels
-    );
+    const { activeFilter } = getLabel(filter[2], aggregations, additionalFilterLabels);
     currentFilter.push(activeFilter);
   }
   return {
@@ -39,7 +31,7 @@ const getLabel = (filter, aggregations, additionalFilterLabels) => {
   };
 };
 const ActiveFiltersElementComponent = ({
-  filters,
+  filters = [],
   removeActiveFilter,
   currentResultsState: {
     data: { aggregations },
@@ -106,4 +98,8 @@ ActiveFiltersElementComponent.propTypes = {
       aggregations: PropTypes.object,
     }).isRequired,
   }).isRequired,
+};
+
+ActiveFiltersElementComponent.defaultProps = {
+  filters: [],
 };

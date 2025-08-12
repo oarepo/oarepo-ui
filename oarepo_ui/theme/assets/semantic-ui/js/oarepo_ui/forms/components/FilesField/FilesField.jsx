@@ -15,10 +15,12 @@ import _isEmpty from "lodash/isEmpty";
 import { useDepositFormAction } from "../../hooks";
 
 export const FilesFieldComponent = ({
-  fileUploaderMessage,
+  fileUploaderMessage = i18next.t(
+    "After publishing the draft, it is not possible to add, modify or delete files. It will be necessary to create a new version of the record."
+  ),
   record,
-  allowedFileTypes,
-  fileMetadataFields,
+  allowedFileTypes = ["*/*"],
+  fileMetadataFields = [],
   required = false,
   deleteFileAction,
   saveAction,
@@ -53,10 +55,7 @@ export const FilesFieldComponent = ({
     reset: resetImportParentFiles,
   } = useMutation({
     mutationFn: () =>
-      httpApplicationJson.post(
-        recordObject?.links?.self + "/actions/files-import",
-        {}
-      ),
+      httpApplicationJson.post(recordObject?.links?.self + "/actions/files-import", {}),
     onSuccess: (data) => {
       setFilesState(data.data.entries);
       resetImportParentFiles();
@@ -167,15 +166,12 @@ export const FilesFieldComponent = ({
                 <p className="mb-0">
                   <Icon name="info circle" />
                   <Trans i18next={i18next}>
-                    You must create a new version to add, modify or delete
-                    files. It can be done on record's{" "}
+                    You must create a new version to add, modify or delete files. It can
+                    be done on record's{" "}
                     <a
                       target="_blank"
                       rel="noopener noreferrer"
-                      href={recordObject.links.self_html.replace(
-                        "/preview",
-                        ""
-                      )}
+                      href={recordObject.links.self_html.replace("/preview", "")}
                     >
                       detail
                     </a>{" "}
@@ -197,10 +193,7 @@ export const FilesFieldComponent = ({
           </React.Fragment>
         )}
         {!recordObject.is_published && (
-          <Message
-            negative
-            className="flex justify-space-between align-items-center"
-          >
+          <Message negative className="flex justify-space-between align-items-center">
             <p className="mb-0">
               <Icon name="warning sign" />
               {fileUploaderMessage}
@@ -215,11 +208,18 @@ export const FilesFieldComponent = ({
 };
 
 FilesFieldComponent.propTypes = {
+  // eslint-disable-next-line react/require-default-props
   record: PropTypes.object,
-  recordFiles: PropTypes.object,
+  deleteFileAction: PropTypes.func.isRequired,
+  saveAction: PropTypes.func.isRequired,
+  files: PropTypes.array.isRequired,
+  // eslint-disable-next-line react/require-default-props
   allowedFileTypes: PropTypes.array,
+  // eslint-disable-next-line react/require-default-props
   fileUploaderMessage: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   required: PropTypes.bool,
+  // eslint-disable-next-line react/require-default-props
   fileMetadataFields: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,
@@ -227,13 +227,6 @@ FilesFieldComponent.propTypes = {
       isUserInput: PropTypes.bool.isRequired,
     })
   ),
-};
-
-FilesFieldComponent.defaultProps = {
-  fileUploaderMessage: i18next.t(
-    "After publishing the draft, it is not possible to add, modify or delete files. It will be necessary to create a new version of the record."
-  ),
-  allowedFileTypes: ["*/*"],
 };
 
 const mapDispatchToProps = (dispatch) => ({

@@ -74,10 +74,7 @@ const RecordVersionItem = ({ item, activeVersion, searchLinkPrefix = "" }) => {
   const doiLink = item?.pids.doi?.url;
 
   return (
-    <List.Item
-      key={item.id}
-      {...(activeVersion && { className: "version active" })}
-    >
+    <List.Item key={item.id} {...(activeVersion && { className: "version active" })}>
       <List.Content floated="left">
         <List.Header>
           {activeVersion ? (
@@ -133,6 +130,7 @@ const RecordVersionItem = ({ item, activeVersion, searchLinkPrefix = "" }) => {
 RecordVersionItem.propTypes = {
   item: PropTypes.object.isRequired,
   activeVersion: PropTypes.bool.isRequired,
+  // eslint-disable-next-line react/require-default-props
   searchLinkPrefix: PropTypes.string,
 };
 
@@ -231,11 +229,7 @@ export const RecordVersionsList = ({ uiRecord, isPreview }) => {
   };
 
   const errorMessagecmp = () => (
-    <ErrorMessage
-      className="rel-mr-1 rel-ml-1"
-      content={i18next.t(error)}
-      negative
-    />
+    <ErrorMessage className="rel-mr-1 rel-ml-1" content={i18next.t(error)} negative />
   );
 
   const searchLinkPrefix = uiRecord.links?.search_link.endsWith("/")
@@ -292,11 +286,7 @@ export const RecordVersionsList = ({ uiRecord, isPreview }) => {
     </>
   );
 
-  return loading
-    ? loadingcmp()
-    : error
-    ? errorMessagecmp()
-    : recordVersionscmp();
+  return loading ? loadingcmp() : error ? errorMessagecmp() : recordVersionscmp();
 };
 
 RecordVersionsList.propTypes = {

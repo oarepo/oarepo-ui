@@ -10,14 +10,14 @@ import { FieldLabel } from "react-invenio-forms";
 
 export const StringArrayField = ({
   fieldPath,
-  label,
-  required,
+  label = null,
+  required = false,
   defaultNewValue = "",
   addButtonLabel = i18next.t("Add"),
-  helpText,
-  labelIcon,
+  helpText = "",
+  labelIcon = "",
   showEmptyValue = false,
-  icon,
+  icon = null,
   fieldRepresentation = "text",
   ...uiProps
 }) => {
@@ -46,6 +46,8 @@ export const StringArrayField = ({
                 : fieldError;
               return (
                 <ArrayFieldItem
+                  // TODO: find a better key if possible
+                  // eslint-disable-next-line react/no-array-index-key
                   key={index}
                   indexPath={index}
                   arrayHelpers={arrayHelpers}
@@ -90,13 +92,22 @@ export const StringArrayField = ({
 
 StringArrayField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
+  // eslint-disable-next-line react/require-default-props
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  // eslint-disable-next-line react/require-default-props
   defaultNewValue: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   addButtonLabel: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  // eslint-disable-next-line react/require-default-props
   helpText: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   labelIcon: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   required: PropTypes.bool,
+  // eslint-disable-next-line react/require-default-props
   showEmptyValue: PropTypes.bool,
+  // eslint-disable-next-line react/require-default-props
   icon: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   fieldRepresentation: PropTypes.string,
 };

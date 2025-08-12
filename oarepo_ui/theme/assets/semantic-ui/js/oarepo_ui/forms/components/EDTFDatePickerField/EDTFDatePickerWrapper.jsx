@@ -9,13 +9,13 @@ import { InputElement } from "./InputElement";
 
 export const EDTFDatePickerWrapper = ({
   fieldPath,
-  placeholder,
-  clearButtonClassName,
+  placeholder = i18next.t("Choose a date."),
+  clearButtonClassName = "clear-icon",
   dateEdtfFormat,
   setDateEdtfFormat,
   handleClear,
-  datePickerProps,
-  customInputProps,
+  datePickerProps = {},
+  customInputProps = {},
   dateFormat,
 }) => {
   useLoadLocaleObjects();
@@ -62,20 +62,19 @@ export const EDTFDatePickerWrapper = ({
 
 EDTFDatePickerWrapper.propTypes = {
   fieldPath: PropTypes.string.isRequired,
+  // eslint-disable-next-line react/require-default-props
   datePickerProps: PropTypes.object,
+  // eslint-disable-next-line react/require-default-props
   required: PropTypes.bool,
+  // eslint-disable-next-line react/require-default-props
   placeholder: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   clearButtonClassName: PropTypes.string,
-  dateEdtfFormat: PropTypes.string,
-  setDateEdtfFormat: PropTypes.func,
-  handleChange: PropTypes.func,
+  dateEdtfFormat: PropTypes.string.isRequired,
+  setDateEdtfFormat: PropTypes.func.isRequired,
+  // eslint-disable-next-line react/require-default-props
   handleClear: PropTypes.func,
+  // eslint-disable-next-line react/require-default-props
   customInputProps: PropTypes.object,
-  dateFormat: PropTypes.string,
-};
-
-EDTFDatePickerWrapper.defaultProps = {
-  required: false,
-  placeholder: i18next.t("Choose a date."),
-  clearButtonClassName: "clear-icon",
+  dateFormat: PropTypes.string.isRequired,
 };

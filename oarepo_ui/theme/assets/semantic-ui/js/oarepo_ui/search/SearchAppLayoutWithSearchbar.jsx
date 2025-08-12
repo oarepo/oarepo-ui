@@ -37,9 +37,7 @@ export const SearchAppLayoutWithSearchbarHOC = ({
           >
             <ShouldActiveFiltersRender>
               <Overridable id={buildUID("ClearFiltersButton.container")}>
-                <ClearFiltersButton
-                  className={"clear-filters-button mobile tablet only"}
-                />
+                <ClearFiltersButton className="clear-filters-button mobile tablet only" />
               </Overridable>
             </ShouldActiveFiltersRender>
             <Overridable
@@ -73,16 +71,11 @@ export const SearchAppLayoutWithSearchbarHOC = ({
                   aria-label={i18next.t("Filter results")}
                   className="facets-sidebar-open-button"
                 >
-                  <Icon name="filter"></Icon>
+                  <Icon name="filter" />
                   <ActiveFiltersCountFloatingLabel />
                 </Button>
               </Grid.Column>
-              <Grid.Column
-                only="mobile tablet"
-                mobile={14}
-                tablet={14}
-                floated="right"
-              >
+              <Grid.Column only="mobile tablet" mobile={14} tablet={14} floated="right">
                 <SearchBar placeholder={placeholder} />
               </Grid.Column>
               {extraContent && (
@@ -120,10 +113,7 @@ export const SearchAppLayoutWithSearchbarHOC = ({
 SearchAppLayoutWithSearchbarHOC.propTypes = {
   placeholder: PropTypes.string,
   extraContent: PropTypes.oneOfType([PropTypes.func, PropTypes.oneOf([null])]),
-  mobileOnlyExtraRow: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.oneOf([null]),
-  ]),
+  mobileOnlyExtraRow: PropTypes.oneOfType([PropTypes.func, PropTypes.oneOf([null])]),
   appName: PropTypes.string,
 };
 

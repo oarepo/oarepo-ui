@@ -42,25 +42,23 @@ const ComplexWidget = ({ fieldPath, nested, label }) => {
       setImportedComponents(await Promise.all(nested.map(importComponent)));
     }
     loadImportedComponents();
-  }, []);
+  }, [fieldPath, nested]);
 
   return (
     <>
       <Header as="h3">{label}</Header>
       <Grid>
         <Grid.Column>
-          {importedComponents.map(
-            ({ nestedId, nestedConstructor }, index, array) => {
-              return (
-                <Grid.Row
-                  key={nestedId}
-                  className={array.length !== index + 1 ? "rel-mb-2" : ""}
-                >
-                  {nestedConstructor()}
-                </Grid.Row>
-              );
-            }
-          )}
+          {importedComponents.map(({ nestedId, nestedConstructor }, index, array) => {
+            return (
+              <Grid.Row
+                key={nestedId}
+                className={array.length !== index + 1 ? "rel-mb-2" : ""}
+              >
+                {nestedConstructor()}
+              </Grid.Row>
+            );
+          })}
         </Grid.Column>
       </Grid>
     </>

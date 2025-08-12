@@ -1,9 +1,5 @@
 import * as React from "react";
-import {
-  LanguageSelectField,
-  useSanitizeInput,
-  useFieldData,
-} from "@js/oarepo_ui";
+import { LanguageSelectField, useSanitizeInput, useFieldData } from "@js/oarepo_ui";
 import { TextField, GroupField } from "react-invenio-forms";
 import PropTypes from "prop-types";
 import { useFormikContext, getIn } from "formik";
@@ -12,7 +8,7 @@ export const I18nTextInputField = ({
   fieldPath,
   optimized,
   lngFieldWidth,
-  usedLanguages,
+  usedLanguages = [],
   ...uiProps
 }) => {
   const { values, setFieldValue, setFieldTouched } = useFormikContext();
@@ -57,6 +53,7 @@ I18nTextInputField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   optimized: PropTypes.bool,
   lngFieldWidth: PropTypes.number,
+  // eslint-disable-next-line react/require-default-props
   usedLanguages: PropTypes.array,
 };
 

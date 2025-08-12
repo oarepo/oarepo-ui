@@ -4,12 +4,7 @@ import { withState, ResultsLoader } from "react-searchkit";
 import { useLoadLocaleObjects, _getResultBuckets } from "@js/oarepo_ui";
 import PropTypes from "prop-types";
 import { Card } from "semantic-ui-react";
-import {
-  getAddFunc,
-  getDiffFunc,
-  getFormatString,
-  getSubtractFunc,
-} from "./utils";
+import { getAddFunc, getDiffFunc, getFormatString, getSubtractFunc } from "./utils";
 
 const HistogramComponent = ({
   currentResultsState: {

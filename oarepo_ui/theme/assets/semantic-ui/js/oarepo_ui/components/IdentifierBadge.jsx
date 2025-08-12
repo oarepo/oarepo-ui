@@ -4,10 +4,10 @@ import { Image } from "react-invenio-forms";
 
 export const IconIdentifier = ({
   link,
-  badgeTitle,
+  badgeTitle = "",
   icon,
-  alt,
-  className,
+  alt = "",
+  className = "",
   fallbackImage = "/static/images/square-placeholder.png",
 }) => {
   return link ? (
@@ -43,17 +43,25 @@ export const IconIdentifier = ({
 };
 
 IconIdentifier.propTypes = {
+  // eslint-disable-next-line react/require-default-props
   link: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   badgeTitle: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   icon: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   alt: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   className: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   fallbackImage: PropTypes.string,
 };
 
-export const IdentifierBadge = ({ identifier, creatibutorName, className }) => {
-  if (!identifier) return null;
-
+export const IdentifierBadge = ({
+  identifier,
+  creatibutorName = "",
+  className = "",
+}) => {
   const { scheme, identifier: identifierValue, url } = identifier;
 
   const badgeTitle = `${creatibutorName} ${scheme}: ${identifierValue}`;
@@ -76,7 +84,9 @@ IdentifierBadge.propTypes = {
     scheme: PropTypes.string,
     identifier: PropTypes.string,
     url: PropTypes.string,
-  }),
+  }).isRequired,
+  // eslint-disable-next-line react/require-default-props
   className: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   creatibutorName: PropTypes.string,
 };

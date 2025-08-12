@@ -4,10 +4,7 @@ export { BucketAggregationValuesElement } from "./BucketAggregationValuesElement
 export { ResultCountWithState, ResultCount, CountElement } from "./ResultCount";
 export { ErrorElement } from "./ErrorElement";
 export { SearchAppFacets } from "./SearchAppFacets";
-export {
-  SearchAppLayout,
-  ActiveFiltersCountFloatingLabel,
-} from "./SearchAppLayout";
+export { SearchAppLayout, ActiveFiltersCountFloatingLabel } from "./SearchAppLayout";
 export { SearchAppResultOptions } from "./SearchAppResultOptions";
 export { SearchAppSearchbarContainer } from "./SearchAppSearchbarContainer";
 export { SearchAppSort } from "./SearchAppSort";

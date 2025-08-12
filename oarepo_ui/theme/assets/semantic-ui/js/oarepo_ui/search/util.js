@@ -25,12 +25,8 @@ import {
 import { loadAppComponents } from "../util";
 import { RDMToggleComponent } from "@js/invenio_app_rdm/search/components";
 
-export function parseSearchAppConfigs(
-  configDataAttr = "invenio-search-config"
-) {
-  const searchAppRoots = [
-    ...document.querySelectorAll(`[data-${configDataAttr}]`),
-  ];
+export function parseSearchAppConfigs(configDataAttr = "invenio-search-config") {
+  const searchAppRoots = [...document.querySelectorAll(`[data-${configDataAttr}]`)];
 
   return searchAppRoots.map((rootEl) => {
     const config = JSON.parse(rootEl.dataset[_camelCase(configDataAttr)]);
@@ -63,12 +59,10 @@ export function createSearchAppsInit({
       [`${overridableIdPrefix}.Error.element`]: ErrorElement,
       [`${overridableIdPrefix}.SearchApp.facets`]: SearchAppFacets,
       [`${overridableIdPrefix}.SearchApp.layout`]: SearchAppLayout,
-      [`${overridableIdPrefix}.SearchApp.resultOptions`]:
-        SearchAppResultOptions,
+      [`${overridableIdPrefix}.SearchApp.resultOptions`]: SearchAppResultOptions,
       [`${overridableIdPrefix}.SearchApp.searchbarContainer`]:
         SearchAppSearchbarContainerWithConfig,
-      [`${overridableIdPrefix}.SearchFilters.Toggle.element`]:
-        RDMToggleComponent,
+      [`${overridableIdPrefix}.SearchFilters.Toggle.element`]: RDMToggleComponent,
       [`${overridableIdPrefix}.SearchApp.sort`]: SearchAppSort,
       [`${overridableIdPrefix}.SearchApp.results`]: SearchAppResults,
       [`${overridableIdPrefix}.SearchBar.element`]: ClearableSearchbarElement,
@@ -107,9 +101,10 @@ export const _getResultBuckets = (resultsAggregations, aggName) => {
   const thisAggs = _get(resultsAggregations, aggName, {});
   if ("buckets" in thisAggs) {
     if (!Array.isArray(thisAggs["buckets"])) {
-      thisAggs["buckets"] = Object.entries(thisAggs["buckets"]).map(
-        ([key, value]) => ({ ...value, key })
-      );
+      thisAggs["buckets"] = Object.entries(thisAggs["buckets"]).map(([key, value]) => ({
+        ...value,
+        key,
+      }));
     }
     return thisAggs["buckets"];
   }

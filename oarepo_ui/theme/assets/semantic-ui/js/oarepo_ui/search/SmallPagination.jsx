@@ -31,5 +31,6 @@ SmallPagination.propTypes = {
   totalResults: PropTypes.number.isRequired,
   currentSize: PropTypes.number.isRequired,
   onPageChange: PropTypes.func.isRequired,
+  // eslint-disable-next-line react/require-default-props
   maxTotalResults: PropTypes.number,
 };

@@ -6,10 +6,13 @@ import { ResultCountWithState } from "./ResultCount";
 import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
 import { SearchAppSort } from "./SearchAppSort";
 
-export const SearchAppResultOptions = ({ sortOptions, layoutOptions }) => {
+export const SearchAppResultOptions = ({
+  sortOptions = [],
+  layoutOptions = {},
+  paginationOptions = {},
+}) => {
   const { buildUID } = useContext(SearchConfigurationContext);
-  const multipleLayouts =
-    Object.values(layoutOptions).filter((i) => i).length > 1;
+  const multipleLayouts = Object.values(layoutOptions).filter((i) => i).length > 1;
   return (
     <React.Fragment>
       <ResultCountWithState />
@@ -24,15 +27,19 @@ export const SearchAppResultOptions = ({ sortOptions, layoutOptions }) => {
 };
 
 SearchAppResultOptions.propTypes = {
+  // eslint-disable-next-line react/require-default-props
   sortOptions: PropTypes.arrayOf(
     PropTypes.shape({
       sortBy: PropTypes.string,
       text: PropTypes.string,
+      sortOrder: PropTypes.string,
     })
   ),
+  // eslint-disable-next-line react/require-default-props
   paginationOptions: PropTypes.shape({
     defaultValue: PropTypes.number,
     resultsPerPage: PropTypes.array,
   }),
+  // eslint-disable-next-line react/require-default-props
   layoutOptions: PropTypes.object,
 };

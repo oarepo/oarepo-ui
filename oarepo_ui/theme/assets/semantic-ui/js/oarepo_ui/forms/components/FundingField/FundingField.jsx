@@ -3,23 +3,20 @@ import { FundingField as InvenioFundingField } from "@js/invenio_vocabularies";
 import { overrideStore, OverridableContext } from "react-overridable";
 import PropTypes from "prop-types";
 import { useFieldData } from "../../hooks";
-import {
-  deserializeFunder,
-  deserializeAward,
-  computeFundingContents,
-} from "./util";
+import { deserializeFunder, deserializeAward, computeFundingContents } from "./util";
 import { FundingRemoteSelectField } from "./FundingRemoteSelectField";
 import { SmallPagination } from "../../../search/SmallPagination";
 
 const storeComponents = overrideStore.getAll();
 
 export const FundingField = ({
+  // TODO: we should deal with overrides centrally,
+  // not at component-render-level - this might be quite non-deterministic
   overrides = {
     "InvenioVocabularies.CustomAwardForm.RemoteSelectField.Container":
       FundingRemoteSelectField,
     "awards.Pagination.element": SmallPagination,
   },
-  label,
   icon = "money bill alternate outline",
   fieldPath,
   ...props
@@ -68,8 +65,9 @@ export const FundingField = ({
 };
 
 FundingField.propTypes = {
+  // eslint-disable-next-line react/require-default-props
   overrides: PropTypes.object,
-  label: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   icon: PropTypes.string,
   fieldPath: PropTypes.string.isRequired,
 };

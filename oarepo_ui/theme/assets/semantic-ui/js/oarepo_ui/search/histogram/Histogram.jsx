@@ -9,22 +9,22 @@ import { getOpacityClass } from "./utils";
 
 export const Histogram = ({
   histogramData,
-  svgHeight,
-  sliderHeight,
-  svgMargins,
-  rectangleClassName,
-  rectangleOverlayClassName,
-  singleRectangleClassName,
+  svgHeight = 80,
+  sliderHeight = 80,
+  svgMargins = [20, 30, 0, 10],
+  rectangleClassName = "histogram-rectangle",
+  rectangleOverlayClassName = "histogram-rectangle-overlay",
+  singleRectangleClassName = "histogram-rectangle-single",
   updateQueryState,
   currentQueryState,
   aggName,
-  formatString,
-  facetDateFormat,
+  formatString = "yyyy",
+  facetDateFormat = "yyyy",
   diffFunc,
   addFunc,
   subtractFunc,
   rectanglePadding,
-  minimumInterval,
+  minimumInterval = "year",
   showLabels,
 }) => {
   const svgContainerRef = useRef();
@@ -92,10 +92,10 @@ export const Histogram = ({
             formatString,
             i18next.language
           )}: ${i18next.t("totalResults", { count: d?.doc_count })}`;
-    const rectangleClickValue = `${formatDate(
-      d.start,
+    const rectangleClickValue = `${formatDate(d.start, facetDateFormat)}/${formatDate(
+      d.end,
       facetDateFormat
-    )}/${formatDate(d.end, facetDateFormat)}`;
+    )}`;
 
     const barHeight = y(0) - y(d?.doc_count);
 
@@ -190,7 +190,7 @@ export const Histogram = ({
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [marginLeft, marginRight]);
+  }, [marginLeft, marginRight, width]);
 
   const handleReset = () => {
     updateQueryState({
@@ -294,21 +294,30 @@ Histogram.propTypes = {
       doc_count: PropTypes.number.isRequired,
     })
   ).isRequired,
+  // eslint-disable-next-line react/require-default-props
   svgHeight: PropTypes.number,
+  // eslint-disable-next-line react/require-default-props
   sliderHeight: PropTypes.number,
+  // eslint-disable-next-line react/require-default-props
   svgMargins: PropTypes.arrayOf(PropTypes.number.isRequired),
+  // eslint-disable-next-line react/require-default-props
   rectangleClassName: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   rectangleOverlayClassName: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   singleRectangleClassName: PropTypes.string,
   updateQueryState: PropTypes.func.isRequired,
   currentQueryState: PropTypes.object.isRequired,
   aggName: PropTypes.string.isRequired,
+  // eslint-disable-next-line react/require-default-props
   formatString: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   facetDateFormat: PropTypes.string,
   diffFunc: PropTypes.func.isRequired,
   addFunc: PropTypes.func.isRequired,
   subtractFunc: PropTypes.func.isRequired,
   rectanglePadding: PropTypes.number.isRequired,
-  minimumInterval: PropTypes.oneOf(["year", "day"]).isRequired,
+  // eslint-disable-next-line react/require-default-props
+  minimumInterval: PropTypes.oneOf(["year", "day"]),
   showLabels: PropTypes.bool.isRequired,
 };

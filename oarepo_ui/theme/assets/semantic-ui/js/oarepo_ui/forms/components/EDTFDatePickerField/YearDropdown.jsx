@@ -4,20 +4,20 @@ import PropTypes from "prop-types";
 import { getYear } from "date-fns";
 
 const YearDropdown = ({
-  adjustDateOnChange,
+  adjustDateOnChange = false,
   onChange,
   date,
   onSelect,
   setOpen,
   year,
-  minDate,
-  maxDate,
+  minDate = new Date("1900"),
+  maxDate = new Date("2100"),
 }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const renderSelectOptions = () => {
-    const minYear = minDate ? getYear(minDate) : 1900;
-    const maxYear = maxDate ? getYear(maxDate) : 2100;
+    const minYear = getYear(minDate);
+    const maxYear = getYear(maxDate);
 
     const options = [];
     for (let i = minYear; i <= maxYear; i++) {
@@ -53,9 +53,7 @@ const YearDropdown = ({
   };
 
   return (
-    <div
-      className={`react-datepicker__year-dropdown-container react-datepicker__year-dropdown-container--select`}
-    >
+    <div className="react-datepicker__year-dropdown-container react-datepicker__year-dropdown-container--select">
       <select
         value={year}
         className="react-datepicker__year-select"
@@ -68,13 +66,18 @@ const YearDropdown = ({
 };
 
 YearDropdown.propTypes = {
+  // eslint-disable-next-line react/require-default-props
   adjustDateOnChange: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
   date: PropTypes.instanceOf(Date).isRequired,
+  // eslint-disable-next-line react/require-default-props
   onSelect: PropTypes.func,
+  // eslint-disable-next-line react/require-default-props
   setOpen: PropTypes.func,
   year: PropTypes.number.isRequired,
+  // eslint-disable-next-line react/require-default-props
   minDate: PropTypes.instanceOf(Date),
+  // eslint-disable-next-line react/require-default-props
   maxDate: PropTypes.instanceOf(Date),
 };
 

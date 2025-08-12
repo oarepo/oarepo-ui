@@ -25,20 +25,21 @@ const StatusIcon = ({ status }) => {
 };
 
 StatusIcon.propTypes = {
-  status: PropTypes.string,
+  status: PropTypes.string.isRequired,
 };
 
-const DeleteFileButtonCmp = ({ file, handleFileDeletion, className }) => {
+const DeleteFileButtonCmp = ({
+  file,
+  handleFileDeletion = () => {},
+  className = "",
+}) => {
   return (
     <Popup
       position="top center"
       content={i18next.t("Delete file")}
       trigger={
         <div className={className}>
-          <DeleteFileButton
-            file={file}
-            handleFileDeletion={handleFileDeletion}
-          />
+          <DeleteFileButton file={file} handleFileDeletion={handleFileDeletion} />
         </div>
       }
     />
@@ -46,16 +47,18 @@ const DeleteFileButtonCmp = ({ file, handleFileDeletion, className }) => {
 };
 
 DeleteFileButtonCmp.propTypes = {
-  file: PropTypes.object,
+  file: PropTypes.object.isRequired,
+  // eslint-disable-next-line react/require-default-props
   handleFileDeletion: PropTypes.func,
+  // eslint-disable-next-line react/require-default-props
   className: PropTypes.string,
 };
 
 const EditFileButtonCmp = ({
   fileName,
   record,
-  className,
-  allowedFileTypes,
+  className = "",
+  allowedFileTypes = ["*/*"],
 }) => {
   return (
     <Popup
@@ -77,27 +80,26 @@ const EditFileButtonCmp = ({
 };
 
 EditFileButtonCmp.propTypes = {
-  fileName: PropTypes.string,
-  record: PropTypes.object,
+  fileName: PropTypes.string.isRequired,
+  record: PropTypes.object.isRequired,
+  // eslint-disable-next-line react/require-default-props
   className: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   allowedFileTypes: PropTypes.arrayOf(PropTypes.string),
 };
 
 export const FilesFieldTable = ({
   files,
   record,
-  handleFileDeletion,
-  lockFileUploader,
-  fileMetadataFields,
-  allowedFileTypes,
+  handleFileDeletion = () => {},
+  lockFileUploader = false,
+  fileMetadataFields = [],
+  allowedFileTypes = ["*/*"],
 }) => {
   return (
     files?.length > 0 && (
       <React.Fragment>
-        <Table
-          compact
-          className="computer tablet only files-table-computer-tablet"
-        >
+        <Table compact className="computer tablet only files-table-computer-tablet">
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>{i18next.t("File name")}</Table.HeaderCell>
@@ -107,8 +109,8 @@ export const FilesFieldTable = ({
               <Table.HeaderCell textAlign="center">
                 {i18next.t("Status")}
               </Table.HeaderCell>
-              <Table.HeaderCell></Table.HeaderCell>
-              <Table.HeaderCell></Table.HeaderCell>
+              <Table.HeaderCell />
+              <Table.HeaderCell />
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -129,9 +131,7 @@ export const FilesFieldTable = ({
                         })}
                     </a>
                   </Table.Cell>
-                  <Table.Cell textAlign="center">
-                    {humanReadableBytes(size)}
-                  </Table.Cell>
+                  <Table.Cell textAlign="center">{humanReadableBytes(size)}</Table.Cell>
                   <Table.Cell textAlign="center">
                     <StatusIcon status={status} />
                   </Table.Cell>
@@ -204,10 +204,7 @@ export const FilesFieldTable = ({
                       <Table.Cell width={6}>
                         <strong>{i18next.t("Delete")}</strong>
                       </Table.Cell>
-                      <Table.Cell
-                        textAlign="center"
-                        className="flex justify-center"
-                      >
+                      <Table.Cell textAlign="center" className="flex justify-center">
                         <DeleteFileButtonCmp
                           file={file}
                           handleFileDeletion={handleFileDeletion}
@@ -222,10 +219,7 @@ export const FilesFieldTable = ({
                         <Table.Cell width={6}>
                           <strong>{i18next.t("Edit")}</strong>
                         </Table.Cell>
-                        <Table.Cell
-                          textAlign="center"
-                          className="flex justify-center"
-                        >
+                        <Table.Cell textAlign="center" className="flex justify-center">
                           <EditFileButtonCmp
                             fileName={fileName}
                             record={record}
@@ -245,11 +239,14 @@ export const FilesFieldTable = ({
 };
 
 FilesFieldTable.propTypes = {
-  files: PropTypes.array,
-  record: PropTypes.object,
+  files: PropTypes.array.isRequired,
+  record: PropTypes.object.isRequired,
+  // eslint-disable-next-line react/require-default-props
   handleFileDeletion: PropTypes.func,
   lockFileUploader: PropTypes.bool.isRequired,
+  // eslint-disable-next-line react/require-default-props
   allowedFileTypes: PropTypes.arrayOf(PropTypes.string),
+  // eslint-disable-next-line react/require-default-props
   fileMetadataFields: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,

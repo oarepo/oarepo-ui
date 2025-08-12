@@ -39,8 +39,9 @@ export function ConfirmationModal({
 }
 
 ConfirmationModal.propTypes = {
-  header: PropTypes.string,
-  content: PropTypes.string,
+  header: PropTypes.string.isRequired,
+  content: PropTypes.string.isRequired,
+  /* eslint-disable react/require-default-props */
   trigger: PropTypes.element,
   actions: PropTypes.node,
   additionalInputs: PropTypes.node,

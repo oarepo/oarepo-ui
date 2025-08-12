@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 export const toolBar =
   "blocks | bold italic | bullist numlist | outdent indent | undo redo";
 
-export const OarepoRichEditor = ({ fieldPath, editorConfig }) => {
+export const OarepoRichEditor = ({ fieldPath, editorConfig = {} }) => {
   const { sanitizeInput, validEditorTags } = useSanitizeInput();
 
   const { values, setFieldValue, setFieldTouched } = useFormikContext();
@@ -33,5 +33,6 @@ export const OarepoRichEditor = ({ fieldPath, editorConfig }) => {
 
 OarepoRichEditor.propTypes = {
   fieldPath: PropTypes.string.isRequired,
+  // eslint-disable-next-line react/require-default-props
   editorConfig: PropTypes.object,
 };

@@ -37,13 +37,13 @@ const FormTitle = () => {
         {/* cannot set dangerously html to SUI header directly, I think it is some internal
         implementation quirk (it says you cannot have both children and dangerouslySethtml even though
         there is no children given to the component) */}
-        <span dangerouslySetInnerHTML={{ __html: sanitizedTitle }}></span>
+        <span dangerouslySetInnerHTML={{ __html: sanitizedTitle }} />
       </Header>
     )
   );
 };
 
-const BaseFormLayoutComponent = ({ formikProps, record, errors }) => {
+const BaseFormLayoutComponent = ({ formikProps = {}, record, errors = {} }) => {
   const { overridableIdPrefix, custom_fields: customFields } = useFormConfig();
   const sidebarRef = React.useRef(null);
   const formFeedbackRef = React.useRef(null);
@@ -81,9 +81,7 @@ const BaseFormLayoutComponent = ({ formikProps, record, errors }) => {
           <Grid.Column id="main-content" mobile={16} tablet={16} computer={11}>
             <FormTitle />
             <Sticky context={formFeedbackRef} offset={20}>
-              <Overridable
-                id={buildUID(overridableIdPrefix, "Errors.container")}
-              >
+              <Overridable id={buildUID(overridableIdPrefix, "Errors.container")}>
                 <FormFeedback />
               </Overridable>
             </Sticky>
@@ -94,15 +92,12 @@ const BaseFormLayoutComponent = ({ formikProps, record, errors }) => {
               <>
                 <pre>
                   Add your form input fields here by overriding{" "}
-                  {buildUID(overridableIdPrefix, "FormFields.container")}{" "}
-                  component
+                  {buildUID(overridableIdPrefix, "FormFields.container")} component
                 </pre>
-                <FormikStateLogger render={true} />
+                <FormikStateLogger render />
               </>
             </Overridable>
-            <Overridable
-              id={buildUID(overridableIdPrefix, "CustomFields.container")}
-            >
+            <Overridable id={buildUID(overridableIdPrefix, "CustomFields.container")}>
               <CustomFields
                 config={customFields?.ui}
                 templateLoaders={[
@@ -122,18 +117,10 @@ const BaseFormLayoutComponent = ({ formikProps, record, errors }) => {
               <Card fluid>
                 <Card.Content>
                   <Grid>
-                    <Grid.Column
-                      computer={8}
-                      mobile={16}
-                      className="left-btn-col"
-                    >
+                    <Grid.Column computer={8} mobile={16} className="left-btn-col">
                       <SaveButton fluid />
                     </Grid.Column>
-                    <Grid.Column
-                      computer={8}
-                      mobile={16}
-                      className="right-btn-col"
-                    >
+                    <Grid.Column computer={8} mobile={16} className="right-btn-col">
                       <PreviewButton fluid />
                     </Grid.Column>
                     <Grid.Column width={16} className="pt-10">
@@ -157,12 +144,13 @@ const mapStateToProps = (state) => {
   };
 };
 
-export const BaseFormLayout = connect(
-  mapStateToProps,
-  null
-)(BaseFormLayoutComponent);
+export const BaseFormLayout = connect(mapStateToProps, null)(BaseFormLayoutComponent);
 
 BaseFormLayoutComponent.propTypes = {
+  record: PropTypes.object.isRequired,
+  // eslint-disable-next-line react/require-default-props
+  errors: PropTypes.object,
+  // eslint-disable-next-line react/require-default-props
   formikProps: PropTypes.object,
 };
 

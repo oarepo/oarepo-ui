@@ -1,19 +1,15 @@
 import * as React from "react";
-import {
-  LanguageSelectField,
-  useFieldData,
-  OarepoRichEditor,
-} from "@js/oarepo_ui";
+import { LanguageSelectField, useFieldData, OarepoRichEditor } from "@js/oarepo_ui";
 import { RichInputField, GroupField } from "react-invenio-forms";
 import PropTypes from "prop-types";
 import { Form } from "semantic-ui-react";
 
 export const I18nRichInputField = ({
   fieldPath,
-  optimized,
-  editorConfig,
-  lngFieldWidth,
-  usedLanguages,
+  optimized = true,
+  editorConfig = {},
+  lngFieldWidth = 3,
+  usedLanguages = [],
   ...uiProps
 }) => {
   const lngFieldPath = `${fieldPath}.lang`;
@@ -51,13 +47,12 @@ export const I18nRichInputField = ({
 
 I18nRichInputField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
+  // eslint-disable-next-line react/require-default-props
   optimized: PropTypes.bool,
+  // eslint-disable-next-line react/require-default-props
   editorConfig: PropTypes.object,
+  // eslint-disable-next-line react/require-default-props
   lngFieldWidth: PropTypes.number,
+  // eslint-disable-next-line react/require-default-props
   usedLanguages: PropTypes.array,
-};
-
-I18nRichInputField.defaultProps = {
-  optimized: true,
-  lngFieldWidth: 3,
 };

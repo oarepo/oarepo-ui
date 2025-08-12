@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { Component } from "react";
 import {
   FormConfigProvider,
   FieldDataProvider,
@@ -8,10 +8,7 @@ import { Container } from "semantic-ui-react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { buildUID } from "react-searchkit";
-import Overridable, {
-  OverridableContext,
-  overrideStore,
-} from "react-overridable";
+import Overridable, { OverridableContext, overrideStore } from "react-overridable";
 import { BaseFormLayout } from "../BaseFormLayout";
 import { Provider } from "react-redux";
 import {
@@ -29,128 +26,127 @@ import { depositReducer as oarepoDepositReducer } from "../../state/deposit/redu
 
 const queryClient = new QueryClient();
 
-export function DepositFormApp(props) {
-  const overridableIdPrefix = props.config.overridableIdPrefix;
+export class DepositFormApp extends Component {
+  constructor(props) {
+    super(props);
+    this.overridableIdPrefix = props.config.overridableIdPrefix;
 
-  const recordSerializer = props.recordSerializer
-    ? props.recordSerializer
-    : new RDMDepositRecordSerializer(
-        props.config.default_locale,
-        props.config.custom_fields.vocabularies
+    const recordSerializer = props.recordSerializer
+      ? props.recordSerializer
+      : new RDMDepositRecordSerializer(
+          props.config.default_locale,
+          props.config.custom_fields.vocabularies
+        );
+
+    const apiHeaders = props.apiHeaders
+      ? props.apiHeaders
+      : {
+          "vnd+json": {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+          },
+        };
+
+    const additionalApiConfig = { headers: apiHeaders };
+
+    const apiClient =
+      props.apiClient ||
+      new RDMDepositApiClient(
+        additionalApiConfig,
+        props.config.createUrl,
+        recordSerializer
       );
 
-  const apiHeaders = props.apiHeaders
-    ? props.apiHeaders
-    : {
-        "vnd+json": {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      };
+    const fileApiClient =
+      props.fileApiClient ||
+      new RDMDepositFileApiClient(
+        additionalApiConfig,
+        props.config.default_transfer_type,
+        props.config.enabled_transfer_types
+      );
 
-  const additionalApiConfig = { headers: apiHeaders };
+    const draftsService = props.draftsService || new RDMDepositDraftsService(apiClient);
 
-  const apiClient =
-    props.apiClient ||
-    new RDMDepositApiClient(
-      additionalApiConfig,
-      props.config.createUrl,
-      recordSerializer
-    );
+    const filesService =
+      props.filesService ||
+      new RDMDepositFilesService(fileApiClient, props.config.fileUploadConcurrency);
 
-  const fileApiClient =
-    props.fileApiClient ||
-    new RDMDepositFileApiClient(
-      additionalApiConfig,
-      props.config.default_transfer_type,
-      props.config.enabled_transfer_types
-    );
+    const service =
+      props.depositService || new DepositService(draftsService, filesService);
 
-  const draftsService =
-    props.draftsService || new RDMDepositDraftsService(apiClient);
+    const appConfig = props.appConfig || {
+      config: props.config,
+      record: recordSerializer.deserialize(props.record),
+      preselectedCommunity: props.config.preselected_community,
+      files: props.files,
+      apiClient: apiClient,
+      fileApiClient: fileApiClient,
+      service: service,
+      permissions: props.config.permissions,
+      recordSerializer: recordSerializer,
+    };
 
-  const filesService =
-    props.filesService ||
-    new RDMDepositFilesService(
-      fileApiClient,
-      props.config.fileUploadConcurrency
-    );
+    this.config = props.config;
 
-  const service =
-    props.depositService || new DepositService(draftsService, filesService);
+    if (props?.record?.errors && props?.record?.errors.length > 0) {
+      appConfig.errors = recordSerializer.deserializeErrors(props.record.errors);
+    }
 
-  const appConfig = props.appConfig || {
-    config: props.config,
-    record: recordSerializer.deserialize(props.record),
-    preselectedCommunity: props.config.preselected_community,
-    files: props.files,
-    apiClient: apiClient,
-    fileApiClient: fileApiClient,
-    service: service,
-    permissions: props.config.permissions,
-    recordSerializer: recordSerializer,
-  };
+    const depositReducer = props.depositReducer || oarepoDepositReducer;
+    const filesReducer = props.filesReducer || undefined;
 
-  if (props?.record?.errors && props?.record?.errors.length > 0) {
-    appConfig.errors = recordSerializer.deserializeErrors(props.record.errors);
-  }
+    this.store = props.configureStore
+      ? props.configureStore(appConfig)
+      : configureStore(appConfig, depositReducer, filesReducer);
 
-  const depositReducer = props.depositReducer || oarepoDepositReducer;
-  const filesReducer = props.filesReducer || undefined;
+    const progressNotifier = new RDMUploadProgressNotifier(this.store.dispatch);
+    filesService.setProgressNotifier(progressNotifier);
 
-  const store = props.configureStore
-    ? props.configureStore(appConfig)
-    : configureStore(appConfig, depositReducer, filesReducer);
-
-  const progressNotifier = new RDMUploadProgressNotifier(store.dispatch);
-  filesService.setProgressNotifier(progressNotifier);
-
-  const ContainerComponent = props.ContainerComponent || React.Fragment;
-
-  const overridableContextValue = useMemo(
-    () => ({
+    this.overridableContextValue = {
       ...props.componentOverrides,
       ...overrideStore.getAll(),
-    }),
-    [props.componentOverrides]
-  );
+    };
+  }
 
-  const formConfigValue = useMemo(() => props.config, [props.config]);
+  render() {
+    const { ContainerComponent = null } = this.props;
+    const Wrapper = ContainerComponent || React.Fragment;
 
-  return (
-    <ContainerComponent>
-      <FormikRefProvider>
-        <Provider store={store}>
-          <QueryClientProvider client={queryClient}>
-            <Router>
-              <OverridableContext.Provider value={overridableContextValue}>
-                <FormConfigProvider value={formConfigValue}>
-                  <FieldDataProvider>
-                    <Overridable
-                      id={buildUID(overridableIdPrefix, "FormApp.layout")}
-                    >
-                      <Container fluid>
-                        <BaseFormLayout />
-                      </Container>
-                    </Overridable>
-                  </FieldDataProvider>
-                </FormConfigProvider>
-              </OverridableContext.Provider>
-            </Router>
-          </QueryClientProvider>
-        </Provider>
-      </FormikRefProvider>
-    </ContainerComponent>
-  );
+    return (
+      <Wrapper>
+        <FormikRefProvider>
+          <Provider store={this.store}>
+            <QueryClientProvider client={queryClient}>
+              <Router>
+                <OverridableContext.Provider value={this.overridableContextValue}>
+                  <FormConfigProvider value={this.config}>
+                    <FieldDataProvider>
+                      <Overridable
+                        id={buildUID(this.overridableIdPrefix, "FormApp.layout")}
+                      >
+                        <Container fluid>
+                          <BaseFormLayout />
+                        </Container>
+                      </Overridable>
+                    </FieldDataProvider>
+                  </FormConfigProvider>
+                </OverridableContext.Provider>
+              </Router>
+            </QueryClientProvider>
+          </Provider>
+        </FormikRefProvider>
+      </Wrapper>
+    );
+  }
 }
 
 DepositFormApp.propTypes = {
   config: PropTypes.object.isRequired,
-  formConfig: PropTypes.object,
+  /* eslint-disable react/require-default-props */
+  apiHeaders: PropTypes.object,
   record: PropTypes.object,
   files: PropTypes.object,
   errors: PropTypes.arrayOf(PropTypes.object),
-  preselectedCommunity: PropTypes.object,
   apiClient: PropTypes.object,
   fileApiClient: PropTypes.object,
   draftsService: PropTypes.object,
@@ -163,5 +159,4 @@ DepositFormApp.propTypes = {
   filesReducer: PropTypes.func,
   ContainerComponent: PropTypes.elementType,
   componentOverrides: PropTypes.object,
-  children: PropTypes.node,
 };

@@ -75,8 +75,8 @@ export const ArrayFieldItem = ({
 };
 
 ArrayFieldItem.propTypes = {
-  arrayHelpers: PropTypes.object,
-  indexPath: PropTypes.number,
+  arrayHelpers: PropTypes.object.isRequired,
+  indexPath: PropTypes.number.isRequired,
   children: PropTypes.node,
   className: PropTypes.string,
   removeButton: PropTypes.func,
@@ -87,9 +87,11 @@ ArrayFieldItem.propTypes = {
 };
 
 ArrayFieldItem.defaultProps = {
+  children: null,
   className: "invenio-group-field",
   removeButton: undefined,
   removeButtonProps: {},
+  removeButtonLabelClassName: "",
   // by default all inputs in array field can be removed, but in some instances this is not desirable.
   displayFirstInputRemoveButton: true,
 };

@@ -4,9 +4,9 @@ import { i18next } from "@translations/oarepo_ui/i18next";
 import { Button, Header, Icon, Segment } from "semantic-ui-react";
 
 export const EmptyResultsElement = ({
-  queryString,
+  queryString = "",
   resetQuery,
-  extraContent,
+  extraContent = null,
 }) => {
   return (
     <Segment placeholder textAlign="center">
@@ -28,7 +28,9 @@ export const EmptyResultsElement = ({
 };
 
 EmptyResultsElement.propTypes = {
+  // eslint-disable-next-line react/require-default-props
   queryString: PropTypes.string,
   resetQuery: PropTypes.func.isRequired,
+  // eslint-disable-next-line react/require-default-props
   extraContent: PropTypes.node,
 };

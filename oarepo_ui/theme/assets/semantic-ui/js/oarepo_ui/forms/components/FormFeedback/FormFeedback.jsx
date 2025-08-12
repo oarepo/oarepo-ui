@@ -1,6 +1,10 @@
 import React from "react";
 import { Message } from "semantic-ui-react";
 import _startCase from "lodash/startCase";
+import _isObject from "lodash/isObject";
+import _isDate from "lodash/isDate";
+import _isRegExp from "lodash/isRegExp";
+import _forOwn from "lodash/forOwn";
 import { scrollToElement, useFieldData } from "@js/oarepo_ui";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
@@ -18,8 +22,8 @@ import {
 // that apiClient sent to formik in auxilary keys. The keys are later removed when submitting the form
 
 function flattenToPathValueArray(obj, prefix = "", res = []) {
-  if (_.isObject(obj) && !_.isDate(obj) && !_.isRegExp(obj) && obj !== null) {
-    _.forOwn(obj, (value, key) => {
+  if (_isObject(obj) && !_isDate(obj) && !_isRegExp(obj) && obj !== null) {
+    _forOwn(obj, (value, key) => {
       const newKey = prefix ? `${prefix}.${key}` : key;
       flattenToPathValueArray(value, newKey, res);
     });
@@ -33,13 +37,9 @@ function flattenToPathValueArray(obj, prefix = "", res = []) {
 const titleCase = (fieldPath) =>
   _startCase(fieldPath.split(".")[fieldPath.split(".").length - 1]);
 
-const CustomMessageComponent = ({ clearErrors, children, ...uiProps }) => {
+const CustomMessageComponent = ({ clearErrors, children = null, ...uiProps }) => {
   return (
-    <Message
-      onDismiss={clearErrors}
-      className="rel-mb-2 form-feedback"
-      {...uiProps}
-    >
+    <Message onDismiss={clearErrors} className="rel-mb-2 form-feedback" {...uiProps}>
       {children}
     </Message>
   );
@@ -54,6 +54,8 @@ export const CustomMessage = connect(
 )(CustomMessageComponent);
 
 CustomMessageComponent.propTypes = {
+  clearErrors: PropTypes.func.isRequired,
+  // eslint-disable-next-line react/require-default-props
   children: PropTypes.node,
 };
 
@@ -79,11 +81,7 @@ const ErrorMessageItem = ({ error }) => {
 ErrorMessageItem.propTypes = {
   error: PropTypes.object.isRequired, // Expects the error object from BEvalidationErrors
 };
-const FormFeedbackComponent = ({
-  errors,
-  formFeedbackMessage,
-  actionState,
-}) => {
+const FormFeedbackComponent = ({ errors = [], formFeedbackMessage, actionState }) => {
   const flattenedErrors = flattenToPathValueArray(errors);
 
   if (actionState === DRAFT_HAS_VALIDATION_ERRORS) {
@@ -120,10 +118,7 @@ const FormFeedbackComponent = ({
     );
   }
 
-  if (
-    actionState === DRAFT_SAVE_SUCCEEDED ||
-    actionState?.endsWith("SUCCEEDED")
-  ) {
+  if (actionState === DRAFT_SAVE_SUCCEEDED || actionState?.endsWith("SUCCEEDED")) {
     return (
       <CustomMessage positive color="green">
         <Message.Header>{formFeedbackMessage}</Message.Header>
@@ -134,13 +129,18 @@ const FormFeedbackComponent = ({
   return null;
 };
 
+FormFeedbackComponent.propTypes = {
+  // eslint-disable-next-line react/require-default-props
+  errors: PropTypes.oneOfType([PropTypes.object, PropTypes.array]), // depends on flattenToPathValueArray input format
+  // eslint-disable-next-line react/require-default-props
+  formFeedbackMessage: PropTypes.string,
+  actionState: PropTypes.string.isRequired,
+};
+
 const mapStateToProps = (state) => ({
   errors: state.deposit.errors,
   formFeedbackMessage: state.deposit.formFeedbackMessage,
   actionState: state.deposit.actionState,
 });
 
-export const FormFeedback = connect(
-  mapStateToProps,
-  null
-)(FormFeedbackComponent);
+export const FormFeedback = connect(mapStateToProps, null)(FormFeedbackComponent);

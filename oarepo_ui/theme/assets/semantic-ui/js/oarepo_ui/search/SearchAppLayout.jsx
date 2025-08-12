@@ -54,18 +54,13 @@ export const SearchAppResultsGrid = ({
   appName,
   buildUID,
   resultsPaneLayout,
-  hasButtonSidebar,
+  hasButtonSidebar = false,
   resultSortLayout,
 }) => {
   const [sidebarVisible, setSidebarVisible] = useState(false);
 
   return (
-    <Grid
-      columns={columnsAmount}
-      relaxed
-      className="search-app rel-mt-2"
-      padded
-    >
+    <Grid columns={columnsAmount} relaxed className="search-app rel-mt-2" padded>
       <Grid.Row verticalAlign="middle" className="result-options">
         {facetsAvailable && (
           <Grid.Column
@@ -82,7 +77,7 @@ export const SearchAppResultsGrid = ({
               aria-label={i18next.t("Filter results")}
               className="facets-sidebar-open-button"
             >
-              <Icon name="filter"></Icon>
+              <Icon name="filter" />
               <ShouldActiveFiltersRender>
                 <ActiveFiltersCountFloatingLabel />
               </ShouldActiveFiltersRender>
@@ -125,15 +120,9 @@ export const SearchAppResultsGrid = ({
             onHideClick={() => setSidebarVisible(false)}
           >
             <ShouldActiveFiltersRender>
-              <ClearFiltersButton
-                className={"clear-filters-button mobile tablet only"}
-              />
+              <ClearFiltersButton className="clear-filters-button mobile tablet only" />
             </ShouldActiveFiltersRender>
-            <SearchAppFacets
-              aggs={config.aggs}
-              appName={appName}
-              buildUID={buildUID}
-            />
+            <SearchAppFacets aggs={config.aggs} appName={appName} buildUID={buildUID} />
           </GridResponsiveSidebarColumn>
         )}
         <Grid.Column {...resultsPaneLayout}>
@@ -153,7 +142,7 @@ export const SearchAppResultsGrid = ({
           >
             <Overridable
               id={buildUID("SearchApp.buttonSidebarContainer", "", appName)}
-            ></Overridable>
+            />
           </Grid.Column>
         )}
       </Grid.Row>
@@ -172,10 +161,12 @@ SearchAppResultsGrid.propTypes = {
   appName: PropTypes.string.isRequired,
   buildUID: PropTypes.func.isRequired,
   resultsPaneLayout: PropTypes.object.isRequired,
+  // eslint-disable-next-line react/require-default-props
   hasButtonSidebar: PropTypes.bool,
   resultSortLayout: PropTypes.object.isRequired,
 };
-export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
+
+export const SearchAppLayout = ({ config, hasButtonSidebar = false }) => {
   const { appName, buildUID } = useContext(SearchConfigurationContext);
   const facetsAvailable = !_isEmpty(config.aggs);
   let columnsAmount;
@@ -292,6 +283,7 @@ SearchAppLayout.propTypes = {
       layout: PropTypes.oneOf(["list", "grid"]),
     }),
     aggs: PropTypes.array,
-  }),
+  }).isRequired,
+  // eslint-disable-next-line react/require-default-props
   hasButtonSidebar: PropTypes.bool,
 };

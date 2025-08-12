@@ -27,9 +27,7 @@ const MonthDropdown = ({ locale, onChange, month }) => {
   );
 
   return (
-    <div
-      className={`react-datepicker__month-dropdown-container react-datepicker__month-dropdown-container--select`}
-    >
+    <div className="react-datepicker__month-dropdown-container react-datepicker__month-dropdown-container--select">
       <select
         value={month}
         className="react-datepicker__month-select"
@@ -42,7 +40,7 @@ const MonthDropdown = ({ locale, onChange, month }) => {
 };
 
 MonthDropdown.propTypes = {
-  locale: PropTypes.string,
+  locale: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   month: PropTypes.number.isRequired,
 };

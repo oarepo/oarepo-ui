@@ -4,10 +4,7 @@ import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import MonthDropdown from "./MonthDropdown";
 import YearDropdown from "./YearDropdown";
-import {
-  getYear,
-  getMonth,
-} from "date-fns";
+import { getYear, getMonth } from "date-fns";
 
 export const DatePickerHeader = ({
   dateEdtfFormat,
@@ -21,8 +18,8 @@ export const DatePickerHeader = ({
   edtfDateFormatOptions,
   changeYear,
   changeMonth,
-  prevMonthButtonDisabled,
-  nextMonthButtonDisabled,
+  prevMonthButtonDisabled = false,
+  nextMonthButtonDisabled = false,
   ...props
 }) => {
   return (
@@ -31,17 +28,12 @@ export const DatePickerHeader = ({
         <div>
           <button
             aria-label={i18next.t("Previous Month")}
-            className={
-              "react-datepicker__navigation react-datepicker__navigation--previous"
-            }
+            className="react-datepicker__navigation react-datepicker__navigation--previous"
             onClick={decreaseMonth}
             disabled={prevMonthButtonDisabled}
+            type="button"
           >
-            <span
-              className={
-                "react-datepicker__navigation-icon react-datepicker__navigation-icon--previous"
-              }
-            >
+            <span className="react-datepicker__navigation-icon react-datepicker__navigation-icon--previous">
               {"<"}
             </span>
           </button>
@@ -53,17 +45,12 @@ export const DatePickerHeader = ({
           </span>
           <button
             aria-label={i18next.t("Next Month")}
-            className={
-              "react-datepicker__navigation react-datepicker__navigation--next"
-            }
+            className="react-datepicker__navigation react-datepicker__navigation--next"
             onClick={increaseMonth}
             disabled={nextMonthButtonDisabled}
+            type="button"
           >
-            <span
-              className={
-                "react-datepicker__navigation-icon react-datepicker__navigation-icon--next"
-              }
-            >
+            <span className="react-datepicker__navigation-icon react-datepicker__navigation-icon--next">
               {">"}
             </span>
           </button>
@@ -73,36 +60,24 @@ export const DatePickerHeader = ({
         <div>
           <button
             aria-label={i18next.t("Previous Month")}
-            className={
-              "react-datepicker__navigation react-datepicker__navigation--previous"
-            }
+            className="react-datepicker__navigation react-datepicker__navigation--previous"
             onClick={decreaseYear}
             disabled={prevMonthButtonDisabled}
+            type="button"
           >
-            <span
-              className={
-                "react-datepicker__navigation-icon react-datepicker__navigation-icon--previous"
-              }
-            >
+            <span className="react-datepicker__navigation-icon react-datepicker__navigation-icon--previous">
               {"<"}
             </span>
           </button>
-          <span className="react-datepicker__current-month">
-            {date.getFullYear()}
-          </span>
+          <span className="react-datepicker__current-month">{date.getFullYear()}</span>
           <button
             aria-label={i18next.t("Next Month")}
-            className={
-              "react-datepicker__navigation react-datepicker__navigation--next"
-            }
+            className="react-datepicker__navigation react-datepicker__navigation--next"
             onClick={increaseYear}
             disabled={nextMonthButtonDisabled}
+            type="button"
           >
-            <span
-              className={
-                "react-datepicker__navigation-icon react-datepicker__navigation-icon--next"
-              }
-            >
+            <span className="react-datepicker__navigation-icon react-datepicker__navigation-icon--next">
               {">"}
             </span>
           </button>
@@ -139,7 +114,7 @@ export const DatePickerHeader = ({
 
 DatePickerHeader.propTypes = {
   dateEdtfFormat: PropTypes.string.isRequired,
-  monthDate: PropTypes.instanceOf(Date),
+  monthDate: PropTypes.instanceOf(Date).isRequired,
   decreaseMonth: PropTypes.func.isRequired,
   increaseMonth: PropTypes.func.isRequired,
   increaseYear: PropTypes.func.isRequired,
@@ -154,6 +129,8 @@ DatePickerHeader.propTypes = {
   ).isRequired,
   changeYear: PropTypes.func.isRequired,
   changeMonth: PropTypes.func.isRequired,
+  // eslint-disable-next-line react/require-default-props
   prevMonthButtonDisabled: PropTypes.bool,
+  // eslint-disable-next-line react/require-default-props
   nextMonthButtonDisabled: PropTypes.bool,
 };

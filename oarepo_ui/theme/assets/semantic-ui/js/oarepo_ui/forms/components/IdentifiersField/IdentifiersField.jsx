@@ -64,7 +64,7 @@ export const IdentifiersField = ({
   fieldPath,
   labelIcon,
   options,
-  className,
+  className = "",
   defaultNewValue,
   validateOnBlur,
   ...uiProps
@@ -139,6 +139,7 @@ IdentifiersField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   labelIcon: PropTypes.string,
   options: PropTypes.array.isRequired,
+  // eslint-disable-next-line react/require-default-props
   className: PropTypes.string,
   defaultNewValue: PropTypes.object,
   validateOnBlur: PropTypes.bool,
