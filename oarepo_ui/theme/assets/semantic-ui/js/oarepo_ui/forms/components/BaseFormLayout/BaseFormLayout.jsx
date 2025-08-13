@@ -8,13 +8,12 @@ import { DeleteButton } from "../DeleteButton";
 import { PreviewButton } from "../PreviewButton";
 import { Grid, Ref, Sticky, Card, Header } from "semantic-ui-react";
 import { connect } from "react-redux";
-import { useFormConfig, useFormikRef } from "../../../forms/hooks";
 import { getTitleFromMultilingualObject } from "../../../util";
 import { buildUID } from "react-searchkit";
 import Overridable from "react-overridable";
 import { CustomFields } from "react-invenio-forms";
 import { getIn, useFormikContext } from "formik";
-import { useSanitizeInput } from "../../hooks";
+import { useSanitizeInput, useFormConfig, useFormikRef } from "../../hooks";
 import _isEmpty from "lodash/isEmpty";
 
 const FormTitle = () => {

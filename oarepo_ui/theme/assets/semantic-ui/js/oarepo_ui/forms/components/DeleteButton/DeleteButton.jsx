@@ -3,11 +3,10 @@ import { Button } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { useConfirmationModal } from "../../hooks";
 import { ConfirmationModal } from "../ConfirmationModal";
 import { DRAFT_DELETE_STARTED } from "@js/invenio_rdm_records/src/deposit/state/types";
 import { delete_ } from "../../state/deposit/actions";
-import { useDepositFormAction } from "../../hooks";
+import { useDepositFormAction, useConfirmationModal } from "../../hooks";
 
 const DeleteButtonComponent = React.memo(
   ({

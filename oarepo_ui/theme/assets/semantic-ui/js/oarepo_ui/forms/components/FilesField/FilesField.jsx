@@ -1,19 +1,18 @@
 import React, { useState } from "react";
+import { useFormikContext } from "formik";
 import PropTypes from "prop-types";
+import _isEmpty from "lodash/isEmpty";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { Message, Icon, Button, Dimmer, Loader } from "semantic-ui-react";
 import { FilesFieldTable } from "./FilesFieldTable";
 import { UploadFileButton } from "./FilesFieldButtons";
-import { useFormConfig } from "../../hooks";
-import { httpApplicationJson } from "../../../util";
 import { Trans } from "react-i18next";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { connect } from "react-redux";
 import { deleteFile } from "@js/invenio_rdm_records/src/deposit/state/actions/files";
 import { save } from "../../state/deposit/actions";
-import { useFormikContext } from "formik";
-import _isEmpty from "lodash/isEmpty";
-import { useDepositFormAction } from "../../hooks";
+import { httpApplicationJson } from "../../../util";
+import { useDepositFormAction, useFormConfig } from "../../hooks";
 
 export const FilesFieldComponent = ({
   fileUploaderMessage = i18next.t(
