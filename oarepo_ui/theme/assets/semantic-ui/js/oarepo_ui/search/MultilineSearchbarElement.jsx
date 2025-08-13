@@ -13,9 +13,9 @@ export const MultilineSearchbarElement = withState(
     onInputChange,
     updateQueryState,
     currentQueryState,
-    iconName,
+    iconName = "search",
     iconColor,
-    placeholder: passedPlaceholder,
+    placeholder: passedPlaceholder = i18next.t("Search"),
     actionProps,
   }) => {
     const initialMaxRows = 10; // Default maximum number of rows for the textarea
@@ -109,9 +109,4 @@ MultilineSearchbarElement.propTypes = {
   currentQueryState: PropTypes.object,
   iconName: PropTypes.string,
   iconColor: PropTypes.string,
-};
-
-MultilineSearchbarElement.defaultProps = {
-  placeholder: i18next.t("Search"),
-  iconName: "search",
 };

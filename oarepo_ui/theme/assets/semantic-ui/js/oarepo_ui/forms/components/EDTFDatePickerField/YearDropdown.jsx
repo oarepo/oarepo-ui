@@ -66,19 +66,16 @@ const YearDropdown = ({
 };
 
 YearDropdown.propTypes = {
-  // eslint-disable-next-line react/require-default-props
+  /* eslint-disable react/require-default-props */
   adjustDateOnChange: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
   date: PropTypes.instanceOf(Date).isRequired,
-  // eslint-disable-next-line react/require-default-props
   onSelect: PropTypes.func,
-  // eslint-disable-next-line react/require-default-props
   setOpen: PropTypes.func,
   year: PropTypes.number.isRequired,
-  // eslint-disable-next-line react/require-default-props
   minDate: PropTypes.instanceOf(Date),
-  // eslint-disable-next-line react/require-default-props
   maxDate: PropTypes.instanceOf(Date),
+  /* eslint-enable react/require-default-props */
 };
 
 export default YearDropdown;

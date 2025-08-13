@@ -59,7 +59,10 @@ export const relativeUrl = (urlString) => {
   return `${pathname}${search}`;
 };
 
-export async function loadTemplateComponents(overridableIdPrefix, componentIds) {
+export async function loadTemplateComponents(
+  overridableIdPrefix,
+  componentIds
+) {
   const asyncImportTemplate = async (componentId, path) => {
     console.debug(`Searching for component ID '${componentId}' in ${path}`);
     try {
@@ -69,16 +72,23 @@ export async function loadTemplateComponents(overridableIdPrefix, componentIds) 
       };
     } catch (err) {
       if (err.message.startsWith("Cannot find module")) {
-        console.debug(`Component '${componentId}' not found in ${path}. Skipping.`);
+        console.debug(
+          `Component '${componentId}' not found in ${path}. Skipping.`
+        );
       } else {
-        console.error(`Error loading component '${componentId}' from ${path}: ${err}`);
+        console.error(
+          `Error loading component '${componentId}' from ${path}: ${err}`
+        );
       }
       return null;
     }
   };
 
   const components = componentIds.map((componentId) => {
-    const componentFilename = _startCase(_camelCase(componentId)).replace(/ /g, "");
+    const componentFilename = _startCase(_camelCase(componentId)).replace(
+      / /g,
+      ""
+    );
 
     const baseDir = overridableIdPrefix
       .split(".")
@@ -133,13 +143,17 @@ export const returnGroupError = (value, context) => {
   return i18next.t("Items must be unique");
 };
 
-export const invalidUrlMessage = i18next.t("Please provide an URL in valid format");
+export const invalidUrlMessage = i18next.t(
+  "Please provide an URL in valid format"
+);
 export const unique = (value, context, path, errorString) => {
   if (!value || value.length < 2) {
     return true;
   }
 
-  if (_uniqBy(value, (item) => (path ? item[path] : item)).length !== value.length) {
+  if (
+    _uniqBy(value, (item) => (path ? item[path] : item)).length !== value.length
+  ) {
     const errors = value
       .map((value, index) => {
         return new Yup.ValidationError(
@@ -157,7 +171,8 @@ export const unique = (value, context, path, errorString) => {
 export const scrollToElement = (fieldPath) => {
   const findElementAtPath = (path) => {
     const element =
-      document.querySelector(`label[for="${path}"]`) || document.getElementById(path);
+      document.querySelector(`label[for="${path}"]`) ||
+      document.getElementById(path);
     return element;
   };
 
@@ -237,7 +252,11 @@ export function formatDate(date, formatStr, locale) {
   //     `A locale object was not found for the provided string ["${locale}"].`
   //   );
   // }
-  if (!localeObj && !!getDefaultLocale() && !!getLocaleObject(getDefaultLocale())) {
+  if (
+    !localeObj &&
+    !!getDefaultLocale() &&
+    !!getLocaleObject(getDefaultLocale())
+  ) {
     localeObj = getLocaleObject(getDefaultLocale());
   }
   return format(date, formatStr, {
@@ -266,7 +285,7 @@ const baseAxiosConfigurationApplicationJson = {
   xsrfCookieName: "csrftoken",
   xsrfHeaderName: "X-CSRFToken",
   headers: {
-    "Accept": "application/json",
+    Accept: "application/json",
     "Content-Type": "application/json",
   },
 };
@@ -276,12 +295,14 @@ const baseAxiosConfigurationVnd = {
   xsrfCookieName: "csrftoken",
   xsrfHeaderName: "X-CSRFToken",
   headers: {
-    "Accept": "application/vnd.inveniordm.v1+json",
+    Accept: "application/vnd.inveniordm.v1+json",
     "Content-Type": "application/json",
   },
 };
 
-export const httpApplicationJson = axios.create(baseAxiosConfigurationApplicationJson);
+export const httpApplicationJson = axios.create(
+  baseAxiosConfigurationApplicationJson
+);
 
 export const httpVnd = axios.create(baseAxiosConfigurationVnd);
 

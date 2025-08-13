@@ -7,12 +7,12 @@ import PropTypes from "prop-types";
 export const ArrayFieldItem = ({
   arrayHelpers,
   indexPath,
-  children,
-  className,
+  children = null,
+  className = "invenio-group-field",
   removeButton: RemoveButton,
-  displayFirstInputRemoveButton,
+  displayFirstInputRemoveButton = true,
   removeButtonProps,
-  removeButtonLabelClassName,
+  removeButtonLabelClassName = "",
   fieldPathPrefix,
   ...uiProps
 }) => {
@@ -77,6 +77,7 @@ export const ArrayFieldItem = ({
 ArrayFieldItem.propTypes = {
   arrayHelpers: PropTypes.object.isRequired,
   indexPath: PropTypes.number.isRequired,
+  /* eslint-disable react/require-default-props */
   children: PropTypes.node,
   className: PropTypes.string,
   removeButton: PropTypes.func,
@@ -84,14 +85,5 @@ ArrayFieldItem.propTypes = {
   displayFirstInputRemoveButton: PropTypes.bool,
   removeButtonLabelClassName: PropTypes.string,
   fieldPathPrefix: PropTypes.string.isRequired,
-};
-
-ArrayFieldItem.defaultProps = {
-  children: null,
-  className: "invenio-group-field",
-  removeButton: undefined,
-  removeButtonProps: {},
-  removeButtonLabelClassName: "",
-  // by default all inputs in array field can be removed, but in some instances this is not desirable.
-  displayFirstInputRemoveButton: true,
+  /* eslint-enable react/require-default-props */
 };

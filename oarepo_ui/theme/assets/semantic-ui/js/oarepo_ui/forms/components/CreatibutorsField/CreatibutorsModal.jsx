@@ -95,7 +95,9 @@ export class CreatibutorsModal extends Component {
       }),
       name: Yup.string().when("type", (type, schema) => {
         if (type === CREATIBUTOR_TYPE.ORGANIZATION) {
-          return schema.required(i18next.t("Organization name is a required field."));
+          return schema.required(
+            i18next.t("Organization name is a required field.")
+          );
         }
       }),
     }),
@@ -201,7 +203,8 @@ export class CreatibutorsModal extends Component {
       const { isOrganization } = this.state;
 
       const selectedIdentifier =
-        Array.isArray(creatibutor.identifiers) && creatibutor.identifiers.length > 0
+        Array.isArray(creatibutor.identifiers) &&
+        creatibutor.identifiers.length > 0
           ? creatibutor.identifiers.find(
               (identifier) =>
                 identifier?.scheme?.toLowerCase() === "orcid" ||
@@ -238,7 +241,8 @@ export class CreatibutorsModal extends Component {
     const { autocompleteNames = "search" } = this.props;
 
     const showManualEntry =
-      autocompleteNames === NamesAutocompleteOptions.SEARCH_ONLY && !showPersonForm;
+      autocompleteNames === NamesAutocompleteOptions.SEARCH_ONLY &&
+      !showPersonForm;
 
     if (showManualEntry) {
       results.push({
@@ -314,9 +318,13 @@ export class CreatibutorsModal extends Component {
         organizationAffiliations: [],
       },
       () => {
-        const { organizationIdentifiers, organizationAffiliations } = this.state;
+        const { organizationIdentifiers, organizationAffiliations } =
+          this.state;
 
-        formikProps.form.setFieldValue("person_or_org.name", selectedSuggestion.name);
+        formikProps.form.setFieldValue(
+          "person_or_org.name",
+          selectedSuggestion.name
+        );
 
         this.updateIdentifiersAndAffiliations(
           formikProps,
@@ -438,7 +446,9 @@ export class CreatibutorsModal extends Component {
                     <RadioField
                       fieldPath={typeFieldPath}
                       label={i18next.t("Person")}
-                      checked={_get(values, typeFieldPath) === CREATIBUTOR_TYPE.PERSON}
+                      checked={
+                        _get(values, typeFieldPath) === CREATIBUTOR_TYPE.PERSON
+                      }
                       value={CREATIBUTOR_TYPE.PERSON}
                       onChange={({ formikProps }) => {
                         this.setState({
@@ -465,7 +475,8 @@ export class CreatibutorsModal extends Component {
                       fieldPath={typeFieldPath}
                       label={i18next.t("Organization")}
                       checked={
-                        _get(values, typeFieldPath) === CREATIBUTOR_TYPE.ORGANIZATION
+                        _get(values, typeFieldPath) ===
+                        CREATIBUTOR_TYPE.ORGANIZATION
                       }
                       value={CREATIBUTOR_TYPE.ORGANIZATION}
                       onChange={({ formikProps }) => {
@@ -488,7 +499,8 @@ export class CreatibutorsModal extends Component {
                       optimized
                     />
                   </Form.Group>
-                  {_get(values, typeFieldPath, "") === CREATIBUTOR_TYPE.PERSON ? (
+                  {_get(values, typeFieldPath, "") ===
+                  CREATIBUTOR_TYPE.PERSON ? (
                     <div>
                       {autocompleteNames !== NamesAutocompleteOptions.OFF && (
                         <RemoteSelectField
@@ -586,7 +598,8 @@ export class CreatibutorsModal extends Component {
                         placeholder={i18next.t("Organization name")}
                         fieldPath={organizationNameFieldPath}
                         required={
-                          _get(values, typeFieldPath) === CREATIBUTOR_TYPE.ORGANIZATION
+                          _get(values, typeFieldPath) ===
+                          CREATIBUTOR_TYPE.ORGANIZATION
                         }
                         // forward ref to Input component because Form.Input
                         // doesn't handle it
@@ -629,7 +642,10 @@ export class CreatibutorsModal extends Component {
                           vocabularyItem = data.value
                             ? { id: vocabularyItem?.value }
                             : {};
-                          formikProps.form.setFieldValue(roleFieldPath, vocabularyItem);
+                          formikProps.form.setFieldValue(
+                            roleFieldPath,
+                            vocabularyItem
+                          );
                         }}
                         value={_get(values, roleFieldPath, "")?.id}
                       />
@@ -656,7 +672,8 @@ export class CreatibutorsModal extends Component {
                         {
                           action: "saveAndContinue",
                           showPersonForm:
-                            autocompleteNames !== NamesAutocompleteOptions.SEARCH_ONLY,
+                            autocompleteNames !==
+                            NamesAutocompleteOptions.SEARCH_ONLY,
                         },
                         () => {
                           handleSubmit();
@@ -675,7 +692,8 @@ export class CreatibutorsModal extends Component {
                       {
                         action: "saveAndClose",
                         showPersonForm:
-                          autocompleteNames !== NamesAutocompleteOptions.SEARCH_ONLY,
+                          autocompleteNames !==
+                          NamesAutocompleteOptions.SEARCH_ONLY,
                       },
                       () => handleSubmit()
                     );
@@ -697,10 +715,9 @@ CreatibutorsModal.propTypes = {
   schema: PropTypes.oneOf(["creators", "contributors"]).isRequired,
   action: PropTypes.oneOf(["add", "edit"]).isRequired,
   addLabel: PropTypes.string.isRequired,
-  // eslint-disable-next-line react/require-default-props
+  /* eslint-disable react/require-default-props */
   autocompleteNames: PropTypes.oneOf(["search", "search_only", "off"]),
   editLabel: PropTypes.string.isRequired,
-  // eslint-disable-next-line react/require-default-props
   initialCreatibutor: PropTypes.shape({
     id: PropTypes.string,
     person_or_org: PropTypes.shape({
@@ -720,8 +737,7 @@ CreatibutorsModal.propTypes = {
   }),
   trigger: PropTypes.object.isRequired,
   onCreatibutorChange: PropTypes.func.isRequired,
-  // eslint-disable-next-line react/require-default-props
   roleOptions: PropTypes.array,
-  // eslint-disable-next-line react/require-default-props
   showRoleField: PropTypes.bool,
+  /* eslint-enable react/require-default-props */
 };

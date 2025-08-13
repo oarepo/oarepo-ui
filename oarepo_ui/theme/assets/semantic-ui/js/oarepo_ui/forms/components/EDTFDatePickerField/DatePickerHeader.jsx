@@ -69,7 +69,9 @@ export const DatePickerHeader = ({
               {"<"}
             </span>
           </button>
-          <span className="react-datepicker__current-month">{date.getFullYear()}</span>
+          <span className="react-datepicker__current-month">
+            {date.getFullYear()}
+          </span>
           <button
             aria-label={i18next.t("Next Month")}
             className="react-datepicker__navigation react-datepicker__navigation--next"

@@ -7,7 +7,9 @@ export const useLoadLocaleObjects = (localesArray = ["cs", "en-US"]) => {
   useEffect(() => {
     const importLocaleFile = async () => {
       for (const locale of localesArray) {
-        const dynamicLocale = await import(`date-fns/locale/${locale}/index.js`);
+        const dynamicLocale = await import(
+          `date-fns/locale/${locale}/index.js`
+        );
         registerLocale(locale, dynamicLocale.default);
       }
       setComponentRendered(true);

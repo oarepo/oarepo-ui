@@ -3,7 +3,8 @@ import { Button } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { useConfirmationModal, ConfirmationModal } from "@js/oarepo_ui";
+import { useConfirmationModal } from "../../hooks";
+import { ConfirmationModal } from "../ConfirmationModal";
 import { DRAFT_DELETE_STARTED } from "@js/invenio_rdm_records/src/deposit/state/types";
 import { delete_ } from "../../state/deposit/actions";
 import { useDepositFormAction } from "../../hooks";
@@ -13,8 +14,10 @@ const DeleteButtonComponent = React.memo(
     record,
     deleteAction,
     actionState,
-    modalMessage,
-    modalHeader,
+    modalMessage = i18next.t(
+      "If you delete the draft, the work you have done on it will be lost."
+    ),
+    modalHeader = i18next.t("Are you sure you wish delete this draft?"),
     redirectUrl = "",
   }) => {
     const {
@@ -89,19 +92,13 @@ const mapStateToProps = (state) => ({
 
 DeleteButtonComponent.propTypes = {
   record: PropTypes.object.isRequired,
+  /* eslint-disable react/require-default-props */
   modalMessage: PropTypes.string,
   modalHeader: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   redirectUrl: PropTypes.string,
+  /* eslint-enable react/require-default-props */
   deleteAction: PropTypes.func.isRequired,
   actionState: PropTypes.string.isRequired,
-};
-
-DeleteButtonComponent.defaultProps = {
-  modalHeader: i18next.t("Are you sure you wish delete this draft?"),
-  modalMessage: i18next.t(
-    "If you delete the draft, the work you have done on it will be lost."
-  ),
 };
 
 export const DeleteButton = connect(
@@ -109,4 +106,7 @@ export const DeleteButton = connect(
   mapDispatchToProps
 )(DeleteButtonComponent);
 
-export default connect(mapStateToProps, mapDispatchToProps)(DeleteButtonComponent);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DeleteButtonComponent);

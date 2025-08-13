@@ -1,10 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
+import _isEmpty from "lodash/isEmpty";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { useFormikContext, getIn, FieldArray } from "formik";
 import { Icon, Form, Label } from "semantic-ui-react";
 import { ArrayFieldItem } from "../ArrayFieldItem";
-import { useFieldData, useShowEmptyValue } from "../../hooks";
+import { useFieldData } from "../../hooks";
 import { TextField } from "../TextField";
 import { FieldLabel } from "react-invenio-forms";
 
@@ -21,7 +22,7 @@ export const StringArrayField = ({
   fieldRepresentation = "text",
   ...uiProps
 }) => {
-  const { values, errors } = useFormikContext();
+  const { values, setFieldValue, errors } = useFormikContext();
   const { getFieldData } = useFieldData();
 
   const fieldData = {
@@ -30,8 +31,19 @@ export const StringArrayField = ({
     ...(required && { required }),
     ...(helpText && { helpText }),
   };
-  useShowEmptyValue(fieldPath, defaultNewValue, showEmptyValue);
   const fieldError = getIn(errors, fieldPath, null);
+  const hasBeenShown = React.useRef(false);
+
+  React.useEffect(() => {
+    const existingValues = getIn(values, fieldPath, []);
+
+    if (!hasBeenShown.current && _isEmpty(existingValues) && showEmptyValue) {
+      existingValues.push(defaultNewValue);
+      hasBeenShown.current = true;
+      setFieldValue(fieldPath, existingValues);
+    }
+  }, [defaultNewValue, fieldPath, setFieldValue, showEmptyValue, values]);
+
   return (
     <Form.Field required={required}>
       <FieldLabel htmlFor={fieldPath} icon={icon} label={fieldData.label} />
@@ -92,22 +104,15 @@ export const StringArrayField = ({
 
 StringArrayField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
-  // eslint-disable-next-line react/require-default-props
+  /* eslint-disable react/require-default-props */
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  // eslint-disable-next-line react/require-default-props
   defaultNewValue: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   addButtonLabel: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  // eslint-disable-next-line react/require-default-props
   helpText: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   labelIcon: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   required: PropTypes.bool,
-  // eslint-disable-next-line react/require-default-props
   showEmptyValue: PropTypes.bool,
-  // eslint-disable-next-line react/require-default-props
   icon: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   fieldRepresentation: PropTypes.string,
+  /* eslint-enable react/require-default-props */
 };

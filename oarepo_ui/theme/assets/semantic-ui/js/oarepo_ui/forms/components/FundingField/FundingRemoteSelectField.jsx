@@ -41,7 +41,8 @@ export const FundingRemoteSelectField = () => {
         if (selectedFundersArray.length === 1) {
           const selectedFunder = selectedFundersArray[0];
           if (selectedFunder) {
-            const deserializedFunder = serializeFunderFromDropdown(selectedFunder);
+            const deserializedFunder =
+              serializeFunderFromDropdown(selectedFunder);
             formikProps.form.setFieldValue(
               "selectedFunding.funder",
               deserializedFunder

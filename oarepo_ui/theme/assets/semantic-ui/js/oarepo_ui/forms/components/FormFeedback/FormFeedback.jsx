@@ -5,7 +5,8 @@ import _isObject from "lodash/isObject";
 import _isDate from "lodash/isDate";
 import _isRegExp from "lodash/isRegExp";
 import _forOwn from "lodash/forOwn";
-import { scrollToElement, useFieldData } from "@js/oarepo_ui";
+import { scrollToElement } from "../../../util";
+import { useFieldData } from "../../hooks";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { connect } from "react-redux";
@@ -37,9 +38,17 @@ function flattenToPathValueArray(obj, prefix = "", res = []) {
 const titleCase = (fieldPath) =>
   _startCase(fieldPath.split(".")[fieldPath.split(".").length - 1]);
 
-const CustomMessageComponent = ({ clearErrors, children = null, ...uiProps }) => {
+const CustomMessageComponent = ({
+  clearErrors,
+  children = null,
+  ...uiProps
+}) => {
   return (
-    <Message onDismiss={clearErrors} className="rel-mb-2 form-feedback" {...uiProps}>
+    <Message
+      onDismiss={clearErrors}
+      className="rel-mb-2 form-feedback"
+      {...uiProps}
+    >
       {children}
     </Message>
   );
@@ -81,7 +90,11 @@ const ErrorMessageItem = ({ error }) => {
 ErrorMessageItem.propTypes = {
   error: PropTypes.object.isRequired, // Expects the error object from BEvalidationErrors
 };
-const FormFeedbackComponent = ({ errors = [], formFeedbackMessage, actionState }) => {
+const FormFeedbackComponent = ({
+  errors = [],
+  formFeedbackMessage,
+  actionState,
+}) => {
   const flattenedErrors = flattenToPathValueArray(errors);
 
   if (actionState === DRAFT_HAS_VALIDATION_ERRORS) {
@@ -92,6 +105,7 @@ const FormFeedbackComponent = ({ errors = [], formFeedbackMessage, actionState }
           {flattenedErrors?.map((error, index) => (
             <Message.Item
               onClick={() => scrollToElement(error.fieldPath)}
+              // eslint-disable-next-line react/no-array-index-key
               key={`${error.fieldPath}-${index}`}
             >
               <ErrorMessageItem error={error} />
@@ -118,7 +132,10 @@ const FormFeedbackComponent = ({ errors = [], formFeedbackMessage, actionState }
     );
   }
 
-  if (actionState === DRAFT_SAVE_SUCCEEDED || actionState?.endsWith("SUCCEEDED")) {
+  if (
+    actionState === DRAFT_SAVE_SUCCEEDED ||
+    actionState?.endsWith("SUCCEEDED")
+  ) {
     return (
       <CustomMessage positive color="green">
         <Message.Header>{formFeedbackMessage}</Message.Header>
@@ -143,4 +160,7 @@ const mapStateToProps = (state) => ({
   actionState: state.deposit.actionState,
 });
 
-export const FormFeedback = connect(mapStateToProps, null)(FormFeedbackComponent);
+export const FormFeedback = connect(
+  mapStateToProps,
+  null
+)(FormFeedbackComponent);

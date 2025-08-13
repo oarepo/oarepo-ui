@@ -8,11 +8,8 @@ import { DeleteButton } from "../DeleteButton";
 import { PreviewButton } from "../PreviewButton";
 import { Grid, Ref, Sticky, Card, Header } from "semantic-ui-react";
 import { connect } from "react-redux";
-import {
-  useFormConfig,
-  getTitleFromMultilingualObject,
-  useFormikRef,
-} from "@js/oarepo_ui";
+import { useFormConfig, useFormikRef } from "../../../forms/hooks";
+import { getTitleFromMultilingualObject } from "../../../util";
 import { buildUID } from "react-searchkit";
 import Overridable from "react-overridable";
 import { CustomFields } from "react-invenio-forms";
@@ -81,7 +78,9 @@ const BaseFormLayoutComponent = ({ formikProps = {}, record, errors = {} }) => {
           <Grid.Column id="main-content" mobile={16} tablet={16} computer={11}>
             <FormTitle />
             <Sticky context={formFeedbackRef} offset={20}>
-              <Overridable id={buildUID(overridableIdPrefix, "Errors.container")}>
+              <Overridable
+                id={buildUID(overridableIdPrefix, "Errors.container")}
+              >
                 <FormFeedback />
               </Overridable>
             </Sticky>
@@ -92,12 +91,15 @@ const BaseFormLayoutComponent = ({ formikProps = {}, record, errors = {} }) => {
               <>
                 <pre>
                   Add your form input fields here by overriding{" "}
-                  {buildUID(overridableIdPrefix, "FormFields.container")} component
+                  {buildUID(overridableIdPrefix, "FormFields.container")}{" "}
+                  component
                 </pre>
                 <FormikStateLogger render />
               </>
             </Overridable>
-            <Overridable id={buildUID(overridableIdPrefix, "CustomFields.container")}>
+            <Overridable
+              id={buildUID(overridableIdPrefix, "CustomFields.container")}
+            >
               <CustomFields
                 config={customFields?.ui}
                 templateLoaders={[
@@ -117,10 +119,18 @@ const BaseFormLayoutComponent = ({ formikProps = {}, record, errors = {} }) => {
               <Card fluid>
                 <Card.Content>
                   <Grid>
-                    <Grid.Column computer={8} mobile={16} className="left-btn-col">
+                    <Grid.Column
+                      computer={8}
+                      mobile={16}
+                      className="left-btn-col"
+                    >
                       <SaveButton fluid />
                     </Grid.Column>
-                    <Grid.Column computer={8} mobile={16} className="right-btn-col">
+                    <Grid.Column
+                      computer={8}
+                      mobile={16}
+                      className="right-btn-col"
+                    >
                       <PreviewButton fluid />
                     </Grid.Column>
                     <Grid.Column width={16} className="pt-10">
@@ -144,7 +154,10 @@ const mapStateToProps = (state) => {
   };
 };
 
-export const BaseFormLayout = connect(mapStateToProps, null)(BaseFormLayoutComponent);
+export const BaseFormLayout = connect(
+  mapStateToProps,
+  null
+)(BaseFormLayoutComponent);
 
 BaseFormLayoutComponent.propTypes = {
   record: PropTypes.object.isRequired,

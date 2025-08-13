@@ -8,18 +8,16 @@ import { SearchBar, ActiveFilters } from "react-searchkit";
 import { GridResponsiveSidebarColumn } from "react-invenio-forms";
 import { Grid, Button, Container, Icon } from "semantic-ui-react";
 import PropTypes from "prop-types";
-import {
-  SearchAppFacets,
-  ClearFiltersButton,
-  ShouldActiveFiltersRender,
-  ActiveFiltersCountFloatingLabel,
-} from "@js/oarepo_ui";
+import { SearchAppFacets } from "./SearchAppFacets";
+import { ClearFiltersButton } from "./ClearFiltersButton";
+import { ShouldActiveFiltersRender } from "./ShouldActiveFiltersRender";
+import { ActiveFiltersCountFloatingLabel } from "./SearchAppLayout";
 import Overridable from "react-overridable";
 
 export const SearchAppLayoutWithSearchbarHOC = ({
-  placeholder,
-  extraContent,
-  mobileOnlyExtraRow,
+  placeholder = "",
+  extraContent = null,
+  mobileOnlyExtraRow = null,
   appName,
 }) => {
   const SearchAppLayoutWithSearchbar = (props) => {
@@ -75,7 +73,12 @@ export const SearchAppLayoutWithSearchbarHOC = ({
                   <ActiveFiltersCountFloatingLabel />
                 </Button>
               </Grid.Column>
-              <Grid.Column only="mobile tablet" mobile={14} tablet={14} floated="right">
+              <Grid.Column
+                only="mobile tablet"
+                mobile={14}
+                tablet={14}
+                floated="right"
+              >
                 <SearchBar placeholder={placeholder} />
               </Grid.Column>
               {extraContent && (
@@ -113,13 +116,9 @@ export const SearchAppLayoutWithSearchbarHOC = ({
 SearchAppLayoutWithSearchbarHOC.propTypes = {
   placeholder: PropTypes.string,
   extraContent: PropTypes.oneOfType([PropTypes.func, PropTypes.oneOf([null])]),
-  mobileOnlyExtraRow: PropTypes.oneOfType([PropTypes.func, PropTypes.oneOf([null])]),
+  mobileOnlyExtraRow: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.oneOf([null]),
+  ]),
   appName: PropTypes.string,
-};
-
-SearchAppLayoutWithSearchbarHOC.defaultProps = {
-  extraContent: null,
-  mobileOnlyExtraRow: null,
-  appName: undefined,
-  placeholder: "",
 };

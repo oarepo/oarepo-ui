@@ -32,7 +32,11 @@ export const InputElement = forwardRef(
         autoComplete={autoComplete}
         icon={
           value ? (
-            <Icon className={clearButtonClassName} name="close" onClick={handleClear} />
+            <Icon
+              className={clearButtonClassName}
+              name="close"
+              onClick={handleClear}
+            />
           ) : null
         }
       />
@@ -46,7 +50,6 @@ InputElement.displayName = "InputElement";
 InputElement.propTypes = {
   value: PropTypes.string,
   onClick: PropTypes.func,
-  // eslint-disable-next-line react/require-default-props
   clearButtonClassName: PropTypes.string,
   handleClear: PropTypes.func,
   fieldPath: PropTypes.string,
@@ -56,3 +59,4 @@ InputElement.propTypes = {
   onKeyDown: PropTypes.func,
   autoComplete: PropTypes.string,
 };
+/* eslint-enable react/require-default-props */

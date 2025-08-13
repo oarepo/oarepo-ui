@@ -2,7 +2,7 @@ import React from "react";
 import { Field } from "formik";
 import { AccessRightFieldCmp } from "@js/invenio_rdm_records/src/deposit/fields/AccessField/AccessRightField";
 import PropTypes from "prop-types";
-import { useFormConfig } from "@js/oarepo_ui";
+import { useFormConfig } from "../../../forms/hooks";
 import { I18nextProvider } from "react-i18next";
 import { i18next } from "@translations/invenio_rdm_records/i18next";
 
@@ -10,7 +10,7 @@ export const AccessRightField = ({
   fieldPath,
   label,
   labelIcon,
-  showMetadataAccess,
+  showMetadataAccess = true,
   community,
   record,
   recordRestrictionGracePeriod,
@@ -50,14 +50,11 @@ AccessRightField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   labelIcon: PropTypes.string.isRequired,
+  // eslint-disable-next-line react/require-default-props
   showMetadataAccess: PropTypes.bool,
+  // eslint-disable-next-line react/require-default-props
   community: PropTypes.object,
   record: PropTypes.object.isRequired,
   recordRestrictionGracePeriod: PropTypes.number.isRequired,
   allowRecordRestriction: PropTypes.bool.isRequired,
-};
-
-AccessRightField.defaultProps = {
-  showMetadataAccess: true,
-  community: undefined,
 };

@@ -1,8 +1,9 @@
 import React from "react";
 import { useFormikContext, getIn } from "formik";
 import { Label } from "semantic-ui-react";
-import { useFieldData } from "@js/oarepo_ui";
+import { useFieldData } from "../../hooks";
 import PropTypes from "prop-types";
+
 // getfielddata must only be called on top level of component because it uses useMemo
 const ErrorMessageItem = ({ error }) => {
   const { getFieldData } = useFieldData();

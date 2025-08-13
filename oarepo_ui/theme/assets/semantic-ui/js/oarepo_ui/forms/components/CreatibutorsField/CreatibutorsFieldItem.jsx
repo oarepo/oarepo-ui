@@ -18,7 +18,6 @@ import { NestedErrors } from "../NestedErrors";
 
 export const CreatibutorsFieldItem = ({
   compKey,
-  identifiersError,
   index,
   replaceCreatibutor,
   removeCreatibutor,
@@ -88,7 +87,9 @@ export const CreatibutorsFieldItem = ({
       <React.Fragment>
         <List.Item
           key={compKey}
-          className={hidden ? "deposit-drag-listitem hidden" : "deposit-drag-listitem"}
+          className={
+            hidden ? "deposit-drag-listitem hidden" : "deposit-drag-listitem"
+          }
         >
           <List.Content floated="right">
             <CreatibutorsModal
@@ -109,7 +110,11 @@ export const CreatibutorsFieldItem = ({
               }
               showRoleField={showRoleField}
             />
-            <Button size="mini" type="button" onClick={() => removeCreatibutor(index)}>
+            <Button
+              size="mini"
+              type="button"
+              onClick={() => removeCreatibutor(index)}
+            >
               {i18next.t("Remove")}
             </Button>
           </List.Content>
@@ -141,26 +146,18 @@ export const CreatibutorsFieldItem = ({
 
 CreatibutorsFieldItem.propTypes = {
   compKey: PropTypes.string.isRequired,
-  // eslint-disable-next-line react/require-default-props
-  showRoleField: PropTypes.bool,
-  identifiersError: PropTypes.array,
   index: PropTypes.number.isRequired,
   replaceCreatibutor: PropTypes.func.isRequired,
   removeCreatibutor: PropTypes.func.isRequired,
   moveCreatibutor: PropTypes.func.isRequired,
-  addLabel: PropTypes.node,
-  editLabel: PropTypes.node,
   initialCreatibutor: PropTypes.object.isRequired,
-  displayName: PropTypes.string,
   roleOptions: PropTypes.array.isRequired,
   schema: PropTypes.string.isRequired,
+  /* eslint-disable react/require-default-props */
+  showRoleField: PropTypes.bool,
+  addLabel: PropTypes.node,
+  editLabel: PropTypes.node,
+  displayName: PropTypes.string,
   autocompleteNames: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
-};
-
-CreatibutorsFieldItem.defaultProps = {
-  identifiersError: undefined,
-  addLabel: undefined,
-  editLabel: undefined,
-  displayName: undefined,
-  autocompleteNames: undefined,
+  /* eslint-enable react/require-default-props */
 };

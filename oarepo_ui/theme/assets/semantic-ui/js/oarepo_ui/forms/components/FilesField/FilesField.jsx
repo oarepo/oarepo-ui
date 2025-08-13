@@ -4,7 +4,8 @@ import { i18next } from "@translations/oarepo_ui/i18next";
 import { Message, Icon, Button, Dimmer, Loader } from "semantic-ui-react";
 import { FilesFieldTable } from "./FilesFieldTable";
 import { UploadFileButton } from "./FilesFieldButtons";
-import { useFormConfig, httpApplicationJson } from "@js/oarepo_ui";
+import { useFormConfig } from "../../hooks";
+import { httpApplicationJson } from "../../../util";
 import { Trans } from "react-i18next";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { connect } from "react-redux";
@@ -55,7 +56,10 @@ export const FilesFieldComponent = ({
     reset: resetImportParentFiles,
   } = useMutation({
     mutationFn: () =>
-      httpApplicationJson.post(recordObject?.links?.self + "/actions/files-import", {}),
+      httpApplicationJson.post(
+        recordObject?.links?.self + "/actions/files-import",
+        {}
+      ),
     onSuccess: (data) => {
       setFilesState(data.data.entries);
       resetImportParentFiles();
@@ -166,12 +170,15 @@ export const FilesFieldComponent = ({
                 <p className="mb-0">
                   <Icon name="info circle" />
                   <Trans i18next={i18next}>
-                    You must create a new version to add, modify or delete files. It can
-                    be done on record's{" "}
+                    You must create a new version to add, modify or delete
+                    files. It can be done on record's{" "}
                     <a
                       target="_blank"
                       rel="noopener noreferrer"
-                      href={recordObject.links.self_html.replace("/preview", "")}
+                      href={recordObject.links.self_html.replace(
+                        "/preview",
+                        ""
+                      )}
                     >
                       detail
                     </a>{" "}
@@ -193,7 +200,10 @@ export const FilesFieldComponent = ({
           </React.Fragment>
         )}
         {!recordObject.is_published && (
-          <Message negative className="flex justify-space-between align-items-center">
+          <Message
+            negative
+            className="flex justify-space-between align-items-center"
+          >
             <p className="mb-0">
               <Icon name="warning sign" />
               {fileUploaderMessage}
@@ -208,18 +218,14 @@ export const FilesFieldComponent = ({
 };
 
 FilesFieldComponent.propTypes = {
-  // eslint-disable-next-line react/require-default-props
-  record: PropTypes.object,
   deleteFileAction: PropTypes.func.isRequired,
   saveAction: PropTypes.func.isRequired,
   files: PropTypes.array.isRequired,
-  // eslint-disable-next-line react/require-default-props
+  /* eslint-disable react/require-default-props */
+  record: PropTypes.object,
   allowedFileTypes: PropTypes.array,
-  // eslint-disable-next-line react/require-default-props
   fileUploaderMessage: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   required: PropTypes.bool,
-  // eslint-disable-next-line react/require-default-props
   fileMetadataFields: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,
@@ -227,6 +233,7 @@ FilesFieldComponent.propTypes = {
       isUserInput: PropTypes.bool.isRequired,
     })
   ),
+  /* eslint-enable react/require-default-props */
 };
 
 const mapDispatchToProps = (dispatch) => ({

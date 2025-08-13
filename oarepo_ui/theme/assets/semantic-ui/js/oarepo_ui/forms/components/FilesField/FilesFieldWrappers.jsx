@@ -4,8 +4,8 @@ import { i18next } from "@translations/oarepo_ui/i18next";
 import FileManagementDialog from "@oarepo/file-manager";
 
 export const FileUploadWrapper = ({
-  uploadWrapperClassName,
-  uploadButtonClassName,
+  uploadWrapperClassName = "ui container centered",
+  uploadButtonClassName = "ui button icon left labeled files-upload-button",
   props = {},
   required = false,
 }) => {
@@ -35,17 +35,12 @@ export const FileUploadWrapper = ({
 };
 
 FileUploadWrapper.propTypes = {
+  /* eslint-disable react/require-default-props */
   uploadWrapperClassName: PropTypes.string,
   uploadButtonClassName: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   required: PropTypes.bool,
-  // eslint-disable-next-line react/require-default-props
   props: PropTypes.object,
-};
-
-FileUploadWrapper.defaultProps = {
-  uploadWrapperClassName: "ui container centered",
-  uploadButtonClassName: "ui button icon left labeled files-upload-button",
+  /* eslint-enable react/require-default-props */
 };
 
 export const FileEditWrapper = ({
@@ -89,3 +84,4 @@ FileEditWrapper.propTypes = {
   editButtonClassName: PropTypes.string,
   props: PropTypes.object,
 };
+/* eslint-enable react/require-default-props */

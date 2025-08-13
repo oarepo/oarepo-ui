@@ -68,18 +68,13 @@ export const EDTFSingleDatePicker = ({
 
 EDTFSingleDatePicker.propTypes = {
   fieldPath: PropTypes.string.isRequired,
-  // eslint-disable-next-line react/require-default-props
+  /* eslint-disable react/require-default-props */
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  // eslint-disable-next-line react/require-default-props
   helpText: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   datePickerProps: PropTypes.object,
-  // eslint-disable-next-line react/require-default-props
   required: PropTypes.bool,
-  // eslint-disable-next-line react/require-default-props
   placeholder: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   customInputProps: PropTypes.object,
-  // eslint-disable-next-line react/require-default-props
   icon: PropTypes.string,
+  /* eslint-enable react/require-default-props */
 };

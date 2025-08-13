@@ -27,7 +27,10 @@ export const DynamicResultsListItem = ({
     return <FallbackComponent result={result} />;
   }
   return (
-    <Overridable id={buildUID("ResultsList.item", selectorValue)} result={result}>
+    <Overridable
+      id={buildUID("ResultsList.item", selectorValue)}
+      result={result}
+    >
       <FallbackComponent result={result} />
     </Overridable>
   );

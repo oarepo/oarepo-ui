@@ -36,7 +36,11 @@ SearchAppFacetsFallback.propTypes = {
   }).isRequired,
 };
 
-export const SearchAppFacets = ({ aggs, appName, allVersionsToggle }) => {
+export const SearchAppFacets = ({
+  aggs,
+  appName,
+  allVersionsToggle = false,
+}) => {
   return (
     <div className="facets-container">
       <div className="facet-list">
@@ -65,9 +69,6 @@ export const SearchAppFacets = ({ aggs, appName, allVersionsToggle }) => {
 SearchAppFacets.propTypes = {
   aggs: PropTypes.array.isRequired,
   appName: PropTypes.string.isRequired,
+  // eslint-disable-next-line react/require-default-props
   allVersionsToggle: PropTypes.bool,
-};
-
-SearchAppFacets.defaultProps = {
-  allVersionsToggle: false,
 };

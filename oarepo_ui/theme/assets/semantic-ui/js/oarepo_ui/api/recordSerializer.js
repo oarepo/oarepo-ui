@@ -52,7 +52,9 @@ export class OARepoDepositSerializer extends DepositRecordSerializer {
       });
       return filterValues;
     } else if (_isObject(obj)) {
-      let mappedValues = _mapValues(obj, (value) => this.removeEmptyValues(value));
+      let mappedValues = _mapValues(obj, (value) =>
+        this.removeEmptyValues(value)
+      );
       let pickedValues = _pickBy(mappedValues, (value, key) => {
         if (key === "metadata" && _isEmpty(value)) {
           return true;

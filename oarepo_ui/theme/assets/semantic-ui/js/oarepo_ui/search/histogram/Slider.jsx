@@ -97,7 +97,9 @@ export class Slider extends Component {
       const selected = scale.invert(e.nativeEvent.offsetX - marginLeft);
       let dragIndex;
 
-      if (Math.abs(selected - _selection[0]) >= Math.abs(selected - _selection[1])) {
+      if (
+        Math.abs(selected - _selection[0]) >= Math.abs(selected - _selection[1])
+      ) {
         dragIndex = 1;
         _selection[1] = Math.max(_selection[0], Math.min(selected, max));
       } else {
@@ -232,17 +234,14 @@ export class Slider extends Component {
 }
 
 Slider.propTypes = {
-  selection: PropTypes.arrayOf(PropTypes.number).isRequired,
-  // eslint-disable-next-line react/require-default-props
+  /* eslint-disable react/require-default-props */
   height: PropTypes.number,
-  // eslint-disable-next-line react/require-default-props
   width: PropTypes.number,
-  // eslint-disable-next-line react/require-default-props
   onChange: PropTypes.func,
-  // eslint-disable-next-line react/require-default-props
   formatLabelFunction: PropTypes.func,
-  // eslint-disable-next-line react/require-default-props
   showLabels: PropTypes.bool,
+  /* eslint-enable react/require-default-props */
+  selection: PropTypes.arrayOf(PropTypes.number).isRequired,
   min: PropTypes.number.isRequired,
   max: PropTypes.number.isRequired,
   aggName: PropTypes.string.isRequired,

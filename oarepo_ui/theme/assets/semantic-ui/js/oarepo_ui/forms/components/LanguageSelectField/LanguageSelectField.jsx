@@ -42,20 +42,14 @@ export const LanguageSelectField = ({
 
 LanguageSelectField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
-  // eslint-disable-next-line react/require-default-props
+  /* eslint-disable react/require-default-props */
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  // eslint-disable-next-line react/require-default-props
   labelIcon: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   required: PropTypes.bool,
-  // eslint-disable-next-line react/require-default-props
   multiple: PropTypes.bool,
-  // eslint-disable-next-line react/require-default-props
   clearable: PropTypes.bool,
-  // eslint-disable-next-line react/require-default-props
   placeholder: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   usedLanguages: PropTypes.array,
-  // eslint-disable-next-line react/require-default-props
   vocabularyName: PropTypes.string,
+  /* eslint-enable react/require-default-props */
 };

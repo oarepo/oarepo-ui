@@ -8,7 +8,10 @@ import { Container } from "semantic-ui-react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { buildUID } from "react-searchkit";
-import Overridable, { OverridableContext, overrideStore } from "react-overridable";
+import Overridable, {
+  OverridableContext,
+  overrideStore,
+} from "react-overridable";
 import { BaseFormLayout } from "../BaseFormLayout";
 import { Provider } from "react-redux";
 import {
@@ -43,7 +46,7 @@ export class DepositFormApp extends Component {
       : {
           "vnd+json": {
             "Content-Type": "application/json",
-            "Accept": "application/json",
+            Accept: "application/json",
           },
         };
 
@@ -65,11 +68,15 @@ export class DepositFormApp extends Component {
         props.config.enabled_transfer_types
       );
 
-    const draftsService = props.draftsService || new RDMDepositDraftsService(apiClient);
+    const draftsService =
+      props.draftsService || new RDMDepositDraftsService(apiClient);
 
     const filesService =
       props.filesService ||
-      new RDMDepositFilesService(fileApiClient, props.config.fileUploadConcurrency);
+      new RDMDepositFilesService(
+        fileApiClient,
+        props.config.fileUploadConcurrency
+      );
 
     const service =
       props.depositService || new DepositService(draftsService, filesService);
@@ -89,7 +96,9 @@ export class DepositFormApp extends Component {
     this.config = props.config;
 
     if (props?.record?.errors && props?.record?.errors.length > 0) {
-      appConfig.errors = recordSerializer.deserializeErrors(props.record.errors);
+      appConfig.errors = recordSerializer.deserializeErrors(
+        props.record.errors
+      );
     }
 
     const depositReducer = props.depositReducer || oarepoDepositReducer;
@@ -118,11 +127,16 @@ export class DepositFormApp extends Component {
           <Provider store={this.store}>
             <QueryClientProvider client={queryClient}>
               <Router>
-                <OverridableContext.Provider value={this.overridableContextValue}>
+                <OverridableContext.Provider
+                  value={this.overridableContextValue}
+                >
                   <FormConfigProvider value={this.config}>
                     <FieldDataProvider>
                       <Overridable
-                        id={buildUID(this.overridableIdPrefix, "FormApp.layout")}
+                        id={buildUID(
+                          this.overridableIdPrefix,
+                          "FormApp.layout"
+                        )}
                       >
                         <Container fluid>
                           <BaseFormLayout />

@@ -14,7 +14,11 @@ if (i18next.language === "cs") {
   LOCALE = i18next.language;
 }
 
-export const EditFileButton = ({ fileName, record, allowedFileTypes = ["*/*"] }) => {
+export const EditFileButton = ({
+  fileName,
+  record,
+  allowedFileTypes = ["*/*"],
+}) => {
   return (
     <FileEditWrapper
       props={{

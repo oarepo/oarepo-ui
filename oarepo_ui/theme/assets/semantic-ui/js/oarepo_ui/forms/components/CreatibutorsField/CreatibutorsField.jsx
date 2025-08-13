@@ -36,12 +36,12 @@ class CreatibutorsFieldForm extends Component {
       replace: formikArrayReplace,
       move: formikArrayMove,
       name: fieldPath,
-      label,
-      icon,
+      label = i18next.t("Creators"),
+      icon = "user",
       roleOptions,
       schema,
       modal,
-      autocompleteNames,
+      autocompleteNames = "search",
       addButtonLabel,
       required = false,
       showRoleField = false,
@@ -71,7 +71,10 @@ class CreatibutorsFieldForm extends Component {
           };
     return (
       <DndProvider backend={HTML5Backend}>
-        <Form.Field required={required} className={creatibutorsError ? "error" : ""}>
+        <Form.Field
+          required={required}
+          className={creatibutorsError ? "error" : ""}
+        >
           <FieldLabel htmlFor={fieldPath} label={label} icon={icon} />
           <List>
             {creatibutorsList.map((value, index) => {
@@ -137,7 +140,11 @@ class CreatibutorsFieldForm extends Component {
 
 export class CreatibutorsFieldComponent extends Component {
   render() {
-    const { fieldPath, autocompleteNames = "search", required = false } = this.props;
+    const {
+      fieldPath,
+      autocompleteNames = "search",
+      required = false,
+    } = this.props;
 
     return (
       <FieldArray
@@ -156,13 +163,10 @@ export class CreatibutorsFieldComponent extends Component {
 }
 
 CreatibutorsFieldForm.propTypes = {
-  // eslint-disable-next-line react/require-default-props
+  /* eslint-disable react/require-default-props */
   showRoleField: PropTypes.bool,
-  // eslint-disable-next-line react/require-default-props
   required: PropTypes.bool,
-  // eslint-disable-next-line react/require-default-props
   addButtonLabel: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   modal: PropTypes.shape({
     addLabel: PropTypes.string.isRequired,
     editLabel: PropTypes.string.isRequired,
@@ -171,6 +175,7 @@ CreatibutorsFieldForm.propTypes = {
   autocompleteNames: PropTypes.oneOf(["search", "search_only", "off"]),
   label: PropTypes.string,
   icon: PropTypes.string,
+  /* eslint-enable react/require-default-props */
   roleOptions: PropTypes.array.isRequired,
   form: PropTypes.object.isRequired,
   remove: PropTypes.func.isRequired,
@@ -180,34 +185,22 @@ CreatibutorsFieldForm.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
-CreatibutorsFieldForm.defaultProps = {
-  autocompleteNames: "search",
-  label: i18next.t("Creators"),
-  icon: "user",
-};
-
 CreatibutorsFieldComponent.propTypes = {
   fieldPath: PropTypes.string.isRequired,
-  // eslint-disable-next-line react/require-default-props
+  /* eslint-disable react/require-default-props */
   showRoleField: PropTypes.bool,
-  // eslint-disable-next-line react/require-default-props
   required: PropTypes.bool,
-  // eslint-disable-next-line react/require-default-props
   addButtonLabel: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   modal: PropTypes.shape({
     addLabel: PropTypes.string.isRequired,
     editLabel: PropTypes.string.isRequired,
   }),
   schema: PropTypes.oneOf(["creators", "contributors"]).isRequired,
-  // eslint-disable-next-line react/require-default-props
   autocompleteNames: PropTypes.oneOf(["search", "search_only", "off"]),
-  // eslint-disable-next-line react/require-default-props
   label: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   icon: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   roleOptions: PropTypes.array,
+  /* eslint-disable react/require-default-props */
 };
 
 export const CreatibutorsField = ({
@@ -224,7 +217,8 @@ export const CreatibutorsField = ({
   };
 
   const formConfig = useFormConfig();
-  const roleOptions = formConfig?.vocabularies?.["contributor-types"]?.all || [];
+  const roleOptions =
+    formConfig?.vocabularies?.["contributor-types"]?.all || [];
   return (
     <CreatibutorsFieldComponent
       fieldPath={fieldPath}

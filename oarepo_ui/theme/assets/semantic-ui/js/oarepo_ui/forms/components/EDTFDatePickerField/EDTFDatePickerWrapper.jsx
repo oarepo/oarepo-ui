@@ -4,7 +4,7 @@ import { DatePickerHeader } from "./DatePickerHeader";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { edtfDateFormatOptions } from "./utils";
-import { useLoadLocaleObjects } from "@js/oarepo_ui";
+import { useLoadLocaleObjects } from "../../../hooks";
 import { InputElement } from "./InputElement";
 
 export const EDTFDatePickerWrapper = ({
@@ -62,19 +62,15 @@ export const EDTFDatePickerWrapper = ({
 
 EDTFDatePickerWrapper.propTypes = {
   fieldPath: PropTypes.string.isRequired,
-  // eslint-disable-next-line react/require-default-props
+  /* eslint-disable react/require-default-props */
   datePickerProps: PropTypes.object,
-  // eslint-disable-next-line react/require-default-props
   required: PropTypes.bool,
-  // eslint-disable-next-line react/require-default-props
   placeholder: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   clearButtonClassName: PropTypes.string,
   dateEdtfFormat: PropTypes.string.isRequired,
   setDateEdtfFormat: PropTypes.func.isRequired,
-  // eslint-disable-next-line react/require-default-props
   handleClear: PropTypes.func,
-  // eslint-disable-next-line react/require-default-props
   customInputProps: PropTypes.object,
+  /* eslint-enable react/require-default-props */
   dateFormat: PropTypes.string.isRequired,
 };

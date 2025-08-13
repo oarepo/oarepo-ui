@@ -1,7 +1,7 @@
 import React from "react";
 import { RichEditor } from "react-invenio-forms";
 import { useFormikContext, getIn } from "formik";
-import { useSanitizeInput } from "@js/oarepo_ui";
+import { useSanitizeInput } from "../../hooks";
 import PropTypes from "prop-types";
 
 export const toolBar =

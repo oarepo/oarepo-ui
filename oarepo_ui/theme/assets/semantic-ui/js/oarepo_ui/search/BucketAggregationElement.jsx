@@ -15,7 +15,7 @@ export const BucketAggregationElement = ({ agg, ...rest }) => {
       aggName={agg.aggName}
       aggTitle={agg.title}
     >
-      <ContribBucketAggregationElement {...rest} />
+      <ContribBucketAggregationElement agg={agg} {...rest} />
     </Overridable>
   );
 };

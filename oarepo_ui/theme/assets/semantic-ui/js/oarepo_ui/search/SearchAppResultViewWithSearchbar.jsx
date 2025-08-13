@@ -1,16 +1,24 @@
 import React from "react";
-import { ResultsList, buildUID, Pagination, ResultsPerPage } from "react-searchkit";
+import {
+  ResultsList,
+  buildUID,
+  Pagination,
+  ResultsPerPage,
+} from "react-searchkit";
 import { Grid, Segment } from "semantic-ui-react";
 import PropTypes from "prop-types";
 import Overridable from "react-overridable";
-import {
-  ResultsPerPageLabel,
-  ResultCountWithState,
-  SearchAppSort,
-} from "@js/oarepo_ui";
+import { ResultsPerPageLabel } from "./ResultsPerPageLabel";
+import { ResultCountWithState } from "./ResultCount";
+import { SearchAppSort } from "./SearchAppSort";
 
 export function SearchAppResultViewWithSearchbar(props) {
-  const { sortOptions, paginationOptions, currentResultsState, appName } = props;
+  const {
+    sortOptions,
+    paginationOptions,
+    currentResultsState,
+    appName = "",
+  } = props;
   const { total } = currentResultsState.data;
   const { resultsPerPage } = paginationOptions;
   return (
@@ -70,7 +78,11 @@ export function SearchAppResultViewWithSearchbar(props) {
         >
           <Grid.Row verticalAlign="middle">
             <Grid.Column className="computer tablet only" width={4} />
-            <Grid.Column className="computer tablet only" width={8} textAlign="center">
+            <Grid.Column
+              className="computer tablet only"
+              width={8}
+              textAlign="center"
+            >
               <Pagination
                 options={{
                   size: "mini",
@@ -91,11 +103,25 @@ export function SearchAppResultViewWithSearchbar(props) {
                 showWhenOnlyOnePage={false}
               />
             </Grid.Column>
-            <Grid.Column className="computer tablet only " textAlign="right" width={4}>
-              <ResultsPerPage values={resultsPerPage} label={ResultsPerPageLabel} />
+            <Grid.Column
+              className="computer tablet only "
+              textAlign="right"
+              width={4}
+            >
+              <ResultsPerPage
+                values={resultsPerPage}
+                label={ResultsPerPageLabel}
+              />
             </Grid.Column>
-            <Grid.Column className="mobile only mt-10" textAlign="center" width={16}>
-              <ResultsPerPage values={resultsPerPage} label={ResultsPerPageLabel} />
+            <Grid.Column
+              className="mobile only mt-10"
+              textAlign="center"
+              width={16}
+            >
+              <ResultsPerPage
+                values={resultsPerPage}
+                label={ResultsPerPageLabel}
+              />
             </Grid.Column>
           </Grid.Row>
         </Overridable>
@@ -108,9 +134,6 @@ SearchAppResultViewWithSearchbar.propTypes = {
   sortOptions: PropTypes.array.isRequired,
   paginationOptions: PropTypes.object.isRequired,
   currentResultsState: PropTypes.object.isRequired,
+  // eslint-disable-next-line react/require-default-props
   appName: PropTypes.string,
-};
-
-SearchAppResultViewWithSearchbar.defaultProps = {
-  appName: "",
 };

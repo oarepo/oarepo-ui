@@ -19,7 +19,9 @@ const DefaultListItemErrorFallback = ({ result, error }) => {
             </Grid.Column>
             <Grid.Column className="results-list item-main">
               <div className="justify-space-between flex">
-                <Item.Header as="h2">{i18next.t("Something went wrong")}</Item.Header>
+                <Item.Header as="h2">
+                  {i18next.t("Something went wrong")}
+                </Item.Header>
                 <div className="item-access-rights">
                   <Label color="red">{i18next.t("Error")}</Label>
                 </div>
@@ -36,7 +38,9 @@ const DefaultListItemErrorFallback = ({ result, error }) => {
                 <Grid columns={1}>
                   <Grid.Column>
                     <Grid.Row className="ui separated">
-                      <p>{i18next.t("Record ID: {{pid}}", { pid: result.id })}</p>
+                      <p>
+                        {i18next.t("Record ID: {{pid}}", { pid: result.id })}
+                      </p>
                       <p>
                         {i18next.t("Error")}: <code>{error.message}</code>
                       </p>
@@ -67,9 +71,15 @@ const ListItem = ({ result, overridableId = "" }) => {
         <DefaultListItemErrorFallback {...props} result={result} />
       )}
     >
-      <Overridable id={buildUID("ResultsList.item", overridableId)} result={result}>
+      <Overridable
+        id={buildUID("ResultsList.item", overridableId)}
+        result={result}
+      >
         <Item href={`#${result.id}`}>
-          <Item.Image size="small" src={result.imgSrc || "https://placehold.co/200"} />
+          <Item.Image
+            size="small"
+            src={result.imgSrc || "https://placehold.co/200"}
+          />
           <Item.Content>
             <Item.Header>{result.title}</Item.Header>
             <Item.Description>{result.description}</Item.Description>
@@ -86,7 +96,10 @@ ListItem.propTypes = {
   overridableId: PropTypes.string,
 };
 
-const ListItemContainerComponent = ({ currentResultsState, overridableId = "" }) => {
+const ListItemContainerComponent = ({
+  currentResultsState,
+  overridableId = "",
+}) => {
   const _results = currentResultsState?.data?.hits?.map((result, index) => (
     // eslint-disable-next-line react/no-array-index-key
     <ListItem result={result} key={index} overridableId={overridableId} />

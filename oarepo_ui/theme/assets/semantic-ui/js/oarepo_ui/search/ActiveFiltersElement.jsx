@@ -4,7 +4,7 @@ import _groupBy from "lodash/groupBy";
 import _map from "lodash/map";
 import { Label, Icon, Grid } from "semantic-ui-react";
 import { withState } from "react-searchkit";
-import { ClearFiltersButton } from "@js/oarepo_ui";
+import { ClearFiltersButton } from "./ClearFiltersButton";
 import { useActiveSearchFilters } from "./hooks";
 
 const getLabel = (filter, aggregations, additionalFilterLabels) => {
@@ -17,12 +17,18 @@ const getLabel = (filter, aggregations, additionalFilterLabels) => {
   // keep the original methodo of getting labels for backwards compatibility just in case
   // to not break existing applications
   const label =
-    _getValueLabel(aggregations) || _getValueLabel(additionalFilterLabels) || value;
+    _getValueLabel(aggregations) ||
+    _getValueLabel(additionalFilterLabels) ||
+    value;
 
   let currentFilter = [aggName, value];
   const hasChild = filter.length === 3;
   if (hasChild) {
-    const { activeFilter } = getLabel(filter[2], aggregations, additionalFilterLabels);
+    const { activeFilter } = getLabel(
+      filter[2],
+      aggregations,
+      additionalFilterLabels
+    );
     currentFilter.push(activeFilter);
   }
   return {
@@ -91,6 +97,7 @@ const ActiveFiltersElementComponent = ({
 export const ActiveFiltersElement = withState(ActiveFiltersElementComponent);
 
 ActiveFiltersElementComponent.propTypes = {
+  // eslint-disable-next-line react/require-default-props
   filters: PropTypes.array,
   removeActiveFilter: PropTypes.func.isRequired,
   currentResultsState: PropTypes.shape({
@@ -98,8 +105,4 @@ ActiveFiltersElementComponent.propTypes = {
       aggregations: PropTypes.object,
     }).isRequired,
   }).isRequired,
-};
-
-ActiveFiltersElementComponent.defaultProps = {
-  filters: [],
 };

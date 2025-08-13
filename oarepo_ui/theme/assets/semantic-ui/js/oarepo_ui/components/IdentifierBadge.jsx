@@ -42,20 +42,16 @@ export const IconIdentifier = ({
   );
 };
 
+/* eslint-disable react/require-default-props */
 IconIdentifier.propTypes = {
-  // eslint-disable-next-line react/require-default-props
   link: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   badgeTitle: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   icon: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   alt: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   className: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   fallbackImage: PropTypes.string,
 };
+/* eslint-enable react/require-default-props */
 
 export const IdentifierBadge = ({
   identifier,

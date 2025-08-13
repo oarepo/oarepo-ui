@@ -6,18 +6,15 @@ import Overridable from "react-overridable";
 
 class ShouldRenderComponent extends Component {
   render() {
-    const { children, condition } = this.props;
+    const { children, condition = true } = this.props;
     return condition ? children : null;
   }
 }
 
 ShouldRenderComponent.propTypes = {
+  // eslint-disable-next-line react/require-default-props
   condition: PropTypes.bool,
   children: PropTypes.node.isRequired,
-};
-
-ShouldRenderComponent.defaultProps = {
-  condition: true,
 };
 
 export const ShouldRender = Overridable.component(

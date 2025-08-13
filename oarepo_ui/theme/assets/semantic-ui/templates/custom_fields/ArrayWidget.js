@@ -8,8 +8,8 @@ import { GroupField } from "react-invenio-forms";
 // TODO(mirekys): where is this component used?
 export const ArrayWidget = ({
   item_widget: itemWidget,
-  item_props: itemProps,
-  item_initial_value: itemInitialValue,
+  item_props: itemProps = {},
+  item_initial_value: itemInitialValue = {},
   fieldPath,
   label,
 }) => {
@@ -26,7 +26,10 @@ export const ArrayWidget = ({
       setImportedComponent({
         // can not return function here as it would be interpreted by the setter immediatelly
         component: (idx) => (
-          <ItemWidgetComponent fieldPath={`${fieldPath}[${idx}]`} {...itemProps} />
+          <ItemWidgetComponent
+            fieldPath={`${fieldPath}[${idx}]`}
+            {...itemProps}
+          />
         ),
       });
     };
@@ -59,11 +62,15 @@ export const ArrayWidget = ({
           <Grid.Column width={16} className="pb-0">
             {existingValues.map((value, index) => (
               <GroupField width={16} key={value}>
-                <Form.Field width={15}>{importedComponent.component(index)}</Form.Field>
+                <Form.Field width={15}>
+                  {importedComponent.component(index)}
+                </Form.Field>
                 <Form.Field>
                   <Button
                     aria-label="Remove field"
-                    className={`close-btn ${itemProps.label ? "mt-25" : "mt-5"}`}
+                    className={`close-btn ${
+                      itemProps.label ? "mt-25" : "mt-5"
+                    }`}
                     icon
                     onClick={() => handleRemove({ value: index })}
                     type="button"
@@ -96,13 +103,10 @@ export const ArrayWidget = ({
 
 ArrayWidget.propTypes = {
   item_widget: PropTypes.string.isRequired,
+  // eslint-disable-next-line react/require-default-props
   item_props: PropTypes.object,
+  // eslint-disable-next-line react/require-default-props
   item_initial_value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   fieldPath: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
-};
-
-ArrayWidget.defaultProps = {
-  item_props: {},
-  item_initial_value: {},
 };

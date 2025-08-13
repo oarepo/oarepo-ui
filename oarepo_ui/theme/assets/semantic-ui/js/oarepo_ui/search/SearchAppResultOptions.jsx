@@ -12,7 +12,8 @@ export const SearchAppResultOptions = ({
   paginationOptions = {},
 }) => {
   const { buildUID } = useContext(SearchConfigurationContext);
-  const multipleLayouts = Object.values(layoutOptions).filter((i) => i).length > 1;
+  const multipleLayouts =
+    Object.values(layoutOptions).filter((i) => i).length > 1;
   return (
     <React.Fragment>
       <ResultCountWithState />

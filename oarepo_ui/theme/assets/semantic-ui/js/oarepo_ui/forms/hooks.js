@@ -1,19 +1,27 @@
 import * as React from "react";
 import axios from "axios";
-import { useEffect, useCallback, useState, useContext, useMemo, useRef } from "react";
-import { FormConfigContext, FieldDataContext, FormikRefContext } from "./contexts";
-import {} from "../api";
+import {
+  useEffect,
+  useCallback,
+  useState,
+  useContext,
+  useMemo,
+  useRef,
+} from "react";
+import {
+  FormConfigContext,
+  FieldDataContext,
+  FormikRefContext,
+} from "./contexts";
 import _get from "lodash/get";
 import _set from "lodash/set";
-import { useFormikContext, getIn } from "formik";
-import _isEmpty from "lodash/isEmpty";
-import _isObject from "lodash/isObject";
+import { useFormikContext } from "formik";
 import _debounce from "lodash/debounce";
 import _uniqBy from "lodash/uniqBy";
 import { getTitleFromMultilingualObject } from "../util";
 import { decode } from "html-entities";
 import sanitizeHtml from "sanitize-html";
-import { getValidTagsForEditor } from "@js/oarepo_ui";
+import { getValidTagsForEditor } from "./util";
 import { DEFAULT_SUGGESTION_SIZE } from "./constants";
 import queryString from "query-string";
 
@@ -45,7 +53,9 @@ export const useDepositFormAction = ({ action, params }) => {
 export const useFormConfig = () => {
   const context = useContext(FormConfigContext);
   if (!context) {
-    throw new Error("useFormConfig must be used inside FormConfigContext.Provider");
+    throw new Error(
+      "useFormConfig must be used inside FormConfigContext.Provider"
+    );
   }
   return context;
 };
@@ -53,7 +63,9 @@ export const useFormConfig = () => {
 export const useFormikRef = () => {
   const context = useContext(FormikRefContext);
   if (!context) {
-    throw new Error("useFormikRef must be used inside FormikRefContext.Provider");
+    throw new Error(
+      "useFormikRef must be used inside FormikRefContext.Provider"
+    );
   }
   return context;
 };
@@ -61,7 +73,9 @@ export const useFormikRef = () => {
 export const useFieldData = () => {
   const context = useContext(FieldDataContext);
   if (!context) {
-    throw new Error("useFormConfig must be used inside FieldDataContext.Provider");
+    throw new Error(
+      "useFormConfig must be used inside FieldDataContext.Provider"
+    );
   }
   return context;
 };
@@ -105,38 +119,12 @@ export const useFormFieldValue = ({
     _set(
       { ...initialVal },
       subValuesPath,
-      !usedSubValues?.includes(defaultValue) || !subValuesUnique ? defaultValue : ""
+      !usedSubValues?.includes(defaultValue) || !subValuesUnique
+        ? defaultValue
+        : ""
     );
 
   return { usedSubValues, defaultNewValue };
-};
-
-export const useShowEmptyValue = (fieldPath, defaultNewValue, showEmptyValue) => {
-  const { values, setFieldValue } = useFormikContext();
-  const currentFieldValue = getIn(values, fieldPath, []);
-  useEffect(() => {
-    if (!showEmptyValue) return;
-    if (!_isEmpty(currentFieldValue)) return;
-    if (defaultNewValue === undefined) {
-      console.error("Default value for new input must be provided. Field: ", fieldPath);
-      return;
-    }
-    if (!fieldPath) {
-      console.error("Fieldpath must be provided");
-      return;
-    }
-    // to be used with invenio array fields that always push objects and add the __key property
-    if (!_isEmpty(defaultNewValue) && _isObject(defaultNewValue)) {
-      currentFieldValue.push({
-        __key: currentFieldValue.length,
-        ...defaultNewValue,
-      });
-      setFieldValue(fieldPath, currentFieldValue);
-    } else if (typeof defaultNewValue === "string") {
-      currentFieldValue.push(defaultNewValue);
-      setFieldValue(fieldPath, currentFieldValue);
-    }
-  }, [showEmptyValue, setFieldValue, fieldPath, defaultNewValue, currentFieldValue]);
 };
 
 export const handleValidateAndBlur = (validateField, setFieldTouched) => {
@@ -255,7 +243,8 @@ export const useSuggestionApi = ({
   );
 
   const debouncedSearch = useMemo(
-    () => _debounce((cancelToken) => fetchSuggestions(cancelToken), debounceTime),
+    () =>
+      _debounce((cancelToken) => fetchSuggestions(cancelToken), debounceTime),
     [debounceTime, fetchSuggestions]
   );
 
@@ -279,7 +268,13 @@ export const useSuggestionApi = ({
     return () => {
       cancelToken.cancel();
     };
-  }, [query, suggestionAPIUrl, searchQueryParamName, didMount, debouncedSearch]);
+  }, [
+    query,
+    suggestionAPIUrl,
+    searchQueryParamName,
+    didMount,
+    debouncedSearch,
+  ]);
 
   const executeSearch = React.useCallback(
     (searchQuery) => {

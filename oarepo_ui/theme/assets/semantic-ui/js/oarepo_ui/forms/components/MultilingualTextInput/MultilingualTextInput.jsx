@@ -2,15 +2,10 @@ import React, { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { ArrayField } from "react-invenio-forms";
 import { Form } from "semantic-ui-react";
-import {
-  I18nTextInputField,
-  I18nRichInputField,
-  ArrayFieldItem,
-  useDefaultLocale,
-  useFormFieldValue,
-  useShowEmptyValue,
-  useFieldData,
-} from "@js/oarepo_ui/forms";
+import { I18nTextInputField } from "../I18nTextInputField";
+import { I18nRichInputField } from "../I18nRichInputField";
+import { ArrayFieldItem } from "../ArrayFieldItem";
+import { useDefaultLocale, useFormFieldValue, useFieldData } from "../../hooks";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { useFormikContext, getIn } from "formik";
 
@@ -41,9 +36,6 @@ export const MultilingualTextInput = ({
   });
   const value = getIn(values, fieldPath);
   const usedLanguages = usedSubValues(value);
-
-  useShowEmptyValue(fieldPath, defaultNewValue, showEmptyValue);
-
   const fieldWrapperDOMNode = useRef(null);
 
   useEffect(() => {
@@ -67,6 +59,7 @@ export const MultilingualTextInput = ({
             : defaultNewValue
         }
         fieldPath={fieldPath}
+        showEmptyValue={showEmptyValue}
         addButtonClassName="array-field-add-button"
         {...getFieldData({ fieldPath, icon: labelIcon })}
         id={`${fieldPath}-array-field`}
@@ -110,22 +103,15 @@ export const MultilingualTextInput = ({
 
 MultilingualTextInput.propTypes = {
   fieldPath: PropTypes.string.isRequired,
-  // eslint-disable-next-line react/require-default-props
+  /* eslint-disable react/require-default-props */
   labelIcon: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   rich: PropTypes.bool,
-  // eslint-disable-next-line react/require-default-props
   addButtonLabel: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   lngFieldWidth: PropTypes.number,
-  // eslint-disable-next-line react/require-default-props
   defaultNewValue: PropTypes.object,
-  // eslint-disable-next-line react/require-default-props
   showEmptyValue: PropTypes.bool,
-  // eslint-disable-next-line react/require-default-props
   prefillLanguageWithDefaultLocale: PropTypes.bool,
-  // eslint-disable-next-line react/require-default-props
   removeButtonLabelClassName: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   displayFirstInputRemoveButton: PropTypes.bool,
+  /* eslint-enable react/require-default-props */
 };

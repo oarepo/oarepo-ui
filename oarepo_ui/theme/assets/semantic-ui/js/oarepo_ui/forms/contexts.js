@@ -1,12 +1,15 @@
 import React, { createContext, useMemo, useRef } from "react";
-import { getFieldData, useFormConfig } from "@js/oarepo_ui";
+import { getFieldData } from "./util";
+import { useFormConfig } from "./hooks";
 import PropTypes from "prop-types";
 
 export const FormConfigContext = createContext();
 
 export const FormConfigProvider = ({ children = null, value }) => {
   return (
-    <FormConfigContext.Provider value={value}>{children}</FormConfigContext.Provider>
+    <FormConfigContext.Provider value={value}>
+      {children}
+    </FormConfigContext.Provider>
   );
 };
 
@@ -18,7 +21,10 @@ FormConfigProvider.propTypes = {
 
 export const FieldDataContext = createContext();
 
-export const FieldDataProvider = ({ children = null, fieldPathPrefix = "" }) => {
+export const FieldDataProvider = ({
+  children = null,
+  fieldPathPrefix = "",
+}) => {
   const { ui_model: uiModel } = useFormConfig();
 
   const fieldDataValue = useMemo(
@@ -45,7 +51,9 @@ export const FormikRefContext = createContext();
 export const FormikRefProvider = ({ children = null }) => {
   const formikRef = useRef(null);
   return (
-    <FormikRefContext.Provider value={formikRef}>{children}</FormikRefContext.Provider>
+    <FormikRefContext.Provider value={formikRef}>
+      {children}
+    </FormikRefContext.Provider>
   );
 };
 

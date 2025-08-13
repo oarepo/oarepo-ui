@@ -7,7 +7,9 @@ export const ErrorElement = ({ error }) => {
   return (
     <Message
       content={
-        error?.response?.data?.message || error?.response?.statusText || error?.message
+        error?.response?.data?.message ||
+        error?.response?.statusText ||
+        error?.message
       }
       icon="warning sign"
     />

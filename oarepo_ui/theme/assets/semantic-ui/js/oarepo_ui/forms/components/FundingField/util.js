@@ -25,7 +25,9 @@ export const deserializeFunderToDropdown = (funderItem) => {
   }
 
   return {
-    text: [funderName, funderCountry, funderPID].filter((val) => val).join(", "),
+    text: [funderName, funderCountry, funderPID]
+      .filter((val) => val)
+      .join(", "),
     value: funderItem.id,
     key: funderItem.id,
     ...(funderName && { name: funderName }),

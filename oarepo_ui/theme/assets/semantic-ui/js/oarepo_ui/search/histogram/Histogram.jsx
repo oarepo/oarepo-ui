@@ -3,7 +3,7 @@ import * as d3 from "d3";
 import PropTypes from "prop-types";
 import { Popup, Button } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import { formatDate } from "@js/oarepo_ui";
+import { formatDate } from "../../util";
 import { Slider } from "./Slider";
 import { getOpacityClass } from "./utils";
 
@@ -92,10 +92,10 @@ export const Histogram = ({
             formatString,
             i18next.language
           )}: ${i18next.t("totalResults", { count: d?.doc_count })}`;
-    const rectangleClickValue = `${formatDate(d.start, facetDateFormat)}/${formatDate(
-      d.end,
+    const rectangleClickValue = `${formatDate(
+      d.start,
       facetDateFormat
-    )}`;
+    )}/${formatDate(d.end, facetDateFormat)}`;
 
     const barHeight = y(0) - y(d?.doc_count);
 
@@ -190,7 +190,9 @@ export const Histogram = ({
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [marginLeft, marginRight, width]);
+    // Adding width to deps here would cause indefinite recursion
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [marginLeft, marginRight]);
 
   const handleReset = () => {
     updateQueryState({
@@ -294,30 +296,23 @@ Histogram.propTypes = {
       doc_count: PropTypes.number.isRequired,
     })
   ).isRequired,
-  // eslint-disable-next-line react/require-default-props
+  /* eslint-disable react/require-default-props */
   svgHeight: PropTypes.number,
-  // eslint-disable-next-line react/require-default-props
   sliderHeight: PropTypes.number,
-  // eslint-disable-next-line react/require-default-props
   svgMargins: PropTypes.arrayOf(PropTypes.number.isRequired),
-  // eslint-disable-next-line react/require-default-props
   rectangleClassName: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   rectangleOverlayClassName: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   singleRectangleClassName: PropTypes.string,
   updateQueryState: PropTypes.func.isRequired,
   currentQueryState: PropTypes.object.isRequired,
   aggName: PropTypes.string.isRequired,
-  // eslint-disable-next-line react/require-default-props
   formatString: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   facetDateFormat: PropTypes.string,
   diffFunc: PropTypes.func.isRequired,
   addFunc: PropTypes.func.isRequired,
   subtractFunc: PropTypes.func.isRequired,
   rectanglePadding: PropTypes.number.isRequired,
-  // eslint-disable-next-line react/require-default-props
   minimumInterval: PropTypes.oneOf(["year", "day"]),
+  /* eslint-enable react/require-default-props */
   showLabels: PropTypes.bool.isRequired,
 };

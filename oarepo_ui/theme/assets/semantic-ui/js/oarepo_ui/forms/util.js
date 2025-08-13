@@ -1,5 +1,5 @@
 import React, { useMemo, memo } from "react";
-import { getInputFromDOM } from "@js/oarepo_ui/";
+import { getInputFromDOM } from "../util";
 import { CompactFieldLabel } from "./components/CompactFieldLabel";
 import _get from "lodash/get";
 import { FieldLabel } from "react-invenio-forms";
@@ -32,7 +32,9 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
     ignorePrefix = false,
   }) => {
     const fieldPathWithPrefix =
-      fieldPathPrefix && !ignorePrefix ? `${fieldPathPrefix}.${fieldPath}` : fieldPath;
+      fieldPathPrefix && !ignorePrefix
+        ? `${fieldPathPrefix}.${fieldPath}`
+        : fieldPath;
 
     // Handling labels, always taking result of i18next.t; if we get metadata/smth, we use it to debug
     // Help and hint: if result is same as the key, don't render; if it is different, render
@@ -47,8 +49,10 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
     } = _get(uiMetadata, path) || {};
 
     const label = modelLabel ? i18next.t(modelLabel) : modelLabel;
-    const help = i18next.t(modelHelp) === modelHelp ? null : i18next.t(modelHelp);
-    const hint = i18next.t(modelHint) === modelHint ? null : i18next.t(modelHint);
+    const help =
+      i18next.t(modelHelp) === modelHelp ? null : i18next.t(modelHelp);
+    const hint =
+      i18next.t(modelHint) === modelHint ? null : i18next.t(modelHint);
 
     const memoizedResult = useMemo(() => {
       switch (fieldRepresentation) {
@@ -92,7 +96,9 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
             detail,
           };
         default:
-          throw new Error(`Unknown fieldRepresentation: ${fieldRepresentation}`);
+          throw new Error(
+            `Unknown fieldRepresentation: ${fieldRepresentation}`
+          );
       }
     }, [
       fieldPath,
@@ -160,6 +166,8 @@ export const search = (filteredOptions, searchQuery, searchKey = "name") => {
 
   const re = new RegExp(_escapeRegExp(strippedQuery), "i");
 
-  filteredOptions = _filter(filteredOptions, (opt) => re.test(_deburr(opt[searchKey])));
+  filteredOptions = _filter(filteredOptions, (opt) =>
+    re.test(_deburr(opt[searchKey]))
+  );
   return filteredOptions;
 };

@@ -14,14 +14,14 @@ import {
 } from "@js/invenio_search_ui/components";
 import { ResultOptions } from "@js/invenio_search_ui/components/Results";
 import { ClearFiltersButton } from "./ClearFiltersButton";
-import { ShouldActiveFiltersRender } from "@js/oarepo_ui";
+import { ShouldActiveFiltersRender } from "./ShouldActiveFiltersRender";
 import { useActiveSearchFilters } from "./hooks";
 
 const ResultOptionsWithState = withState(ResultOptions);
 
 export const ActiveFiltersCountFloatingLabelComponent = ({
   currentQueryState: { filters },
-  className,
+  className = "active-filters-count-label",
 }) => {
   const { activeFiltersCount } = useActiveSearchFilters(filters);
 
@@ -35,12 +35,9 @@ export const ActiveFiltersCountFloatingLabelComponent = ({
 };
 
 ActiveFiltersCountFloatingLabelComponent.propTypes = {
+  // eslint-disable-next-line react/require-default-props
   className: PropTypes.string,
   currentQueryState: PropTypes.object.isRequired,
-};
-
-ActiveFiltersCountFloatingLabelComponent.defaultProps = {
-  className: "active-filters-count-label",
 };
 
 export const ActiveFiltersCountFloatingLabel = withState(
@@ -60,7 +57,12 @@ export const SearchAppResultsGrid = ({
   const [sidebarVisible, setSidebarVisible] = useState(false);
 
   return (
-    <Grid columns={columnsAmount} relaxed className="search-app rel-mt-2" padded>
+    <Grid
+      columns={columnsAmount}
+      relaxed
+      className="search-app rel-mt-2"
+      padded
+    >
       <Grid.Row verticalAlign="middle" className="result-options">
         {facetsAvailable && (
           <Grid.Column
@@ -122,7 +124,11 @@ export const SearchAppResultsGrid = ({
             <ShouldActiveFiltersRender>
               <ClearFiltersButton className="clear-filters-button mobile tablet only" />
             </ShouldActiveFiltersRender>
-            <SearchAppFacets aggs={config.aggs} appName={appName} buildUID={buildUID} />
+            <SearchAppFacets
+              aggs={config.aggs}
+              appName={appName}
+              buildUID={buildUID}
+            />
           </GridResponsiveSidebarColumn>
         )}
         <Grid.Column {...resultsPaneLayout}>

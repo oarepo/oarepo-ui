@@ -5,7 +5,9 @@ import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
 
 export const SearchAppSort = ({ options = [] }) => {
-  return <Sort sortOrderDisabled values={options} ariaLabel={i18next.t("Sort")} />;
+  return (
+    <Sort sortOrderDisabled values={options} ariaLabel={i18next.t("Sort")} />
+  );
 };
 
 SearchAppSort.propTypes = {
