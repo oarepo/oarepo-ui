@@ -3,36 +3,67 @@ import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import FileManagementDialog from "@oarepo/file-manager";
 
-export const FileUploadWrapper = ({
-  uploadWrapperClassName = "ui container centered",
-  uploadButtonClassName = "ui button icon left labeled files-upload-button",
-  props = {},
-  required = false,
-}) => {
-  const TriggerComponent = ({ onClick = () => {}, ...props }) => (
+const UploadTriggerButton = React.memo(
+  ({
+    onClick,
+    className = "",
+    icon = "upload",
+    label = i18next.t("Upload files"),
+    showLabel = true,
+    required = false,
+    ...props
+  }) => (
     <button
-      className={uploadButtonClassName}
+      className={className}
       onClick={onClick}
       type="button"
-      aria-label={i18next.t("Upload files")}
+      aria-label={label}
       {...props}
     >
-      {i18next.t("Upload files")} {required && <span>*</span>}
-      <i aria-hidden="true" className="upload icon" />
+      showLabel && ({i18next.t("Upload files")} {required && <span>*</span>})
+      <i
+        aria-hidden="true"
+        className={`${icon} icon`}
+        style={{ margin: "0", opacity: "1" }}
+      />
     </button>
-  );
+  )
+);
 
-  TriggerComponent.propTypes = {
-    // eslint-disable-next-line react/require-default-props
-    onClick: PropTypes.func,
-  };
-
-  return (
-    <div className={uploadWrapperClassName}>
-      <FileManagementDialog TriggerComponent={TriggerComponent} {...props} />
-    </div>
-  );
+UploadTriggerButton.displayName = "UploadTriggerButton";
+UploadTriggerButton.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  /* eslint-disable react/require-default-props */
+  className: PropTypes.string,
+  required: PropTypes.bool,
+  showLabel: PropTypes.bool,
+  icon: PropTypes.string,
+  label: PropTypes.string,
+  /* eslint-enable react/require-default-props */
 };
+
+export class FileUploadWrapper extends React.Component {
+  constructor(props) {
+    super(props);
+    // eslint-disable-next-line react/display-name
+    this.Trigger = (triggerProps) => (
+      <UploadTriggerButton
+        {...triggerProps}
+        className={props.uploadButtonClassName}
+        required={props.required}
+      />
+    );
+  }
+
+  render() {
+    const { uploadWrapperClassName, ...props } = this.props;
+    return (
+      <div className={uploadWrapperClassName}>
+        <FileManagementDialog TriggerComponent={this.Trigger} {...props} />
+      </div>
+    );
+  }
+}
 
 FileUploadWrapper.propTypes = {
   /* eslint-disable react/require-default-props */
@@ -43,40 +74,33 @@ FileUploadWrapper.propTypes = {
   /* eslint-enable react/require-default-props */
 };
 
-export const FileEditWrapper = ({
-  editWrapperClassName = "",
-  editButtonClassName = "ui button transparent",
-  props = {},
-}) => {
-  const TriggerComponent = ({ onClick, ...props }) => {
-    return (
-      <button
-        className={editButtonClassName}
-        onClick={onClick}
-        {...props}
-        aria-label={i18next.t("Edit file")}
-        type="button"
-      >
-        <i
-          aria-hidden="true"
-          className="pencil icon"
-          style={{ margin: "0", opacity: "1" }}
-        />
-      </button>
+export class FileEditWrapper extends React.Component {
+  constructor(props) {
+    super(props);
+    // eslint-disable-next-line react/display-name
+    this.Trigger = (triggerProps) => (
+      <UploadTriggerButton
+        {...triggerProps}
+        className={props.editButtonClassName}
+        showLabel={false}
+        label={i18next.t("Edit file")}
+        icon="pencil"
+      />
     );
-  };
+  }
 
-  TriggerComponent.propTypes = {
-    // eslint-disable-next-line react/require-default-props
-    onClick: PropTypes.func,
-  };
-
-  return (
-    <div className={editWrapperClassName}>
-      <FileManagementDialog TriggerComponent={TriggerComponent} {...props} />
-    </div>
-  );
-};
+  render() {
+    const { editWrapperClassName, ...props } = this.props;
+    return (
+      <div className={editWrapperClassName}>
+        <FileManagementDialog
+          TriggerComponent={this.TriggerComponent}
+          {...props}
+        />
+      </div>
+    );
+  }
+}
 
 /* eslint-disable react/require-default-props */
 FileEditWrapper.propTypes = {
