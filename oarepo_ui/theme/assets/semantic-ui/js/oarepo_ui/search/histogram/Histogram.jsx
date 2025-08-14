@@ -3,28 +3,28 @@ import * as d3 from "d3";
 import PropTypes from "prop-types";
 import { Popup, Button } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import { formatDate } from "@js/oarepo_ui";
+import { formatDate } from "../../util";
 import { Slider } from "./Slider";
 import { getOpacityClass } from "./utils";
 
 export const Histogram = ({
   histogramData,
-  svgHeight,
-  sliderHeight,
-  svgMargins,
-  rectangleClassName,
-  rectangleOverlayClassName,
-  singleRectangleClassName,
+  svgHeight = 80,
+  sliderHeight = 80,
+  svgMargins = [20, 30, 0, 10],
+  rectangleClassName = "histogram-rectangle",
+  rectangleOverlayClassName = "histogram-rectangle-overlay",
+  singleRectangleClassName = "histogram-rectangle-single",
   updateQueryState,
   currentQueryState,
   aggName,
-  formatString,
-  facetDateFormat,
+  formatString = "yyyy",
+  facetDateFormat = "yyyy",
   diffFunc,
   addFunc,
   subtractFunc,
   rectanglePadding,
-  minimumInterval,
+  minimumInterval = "year",
   showLabels,
 }) => {
   const svgContainerRef = useRef();
@@ -190,6 +190,8 @@ export const Histogram = ({
     return () => {
       window.removeEventListener("resize", handleResize);
     };
+    // Adding width to deps here would cause indefinite recursion
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [marginLeft, marginRight]);
 
   const handleReset = () => {
@@ -294,6 +296,7 @@ Histogram.propTypes = {
       doc_count: PropTypes.number.isRequired,
     })
   ).isRequired,
+  /* eslint-disable react/require-default-props */
   svgHeight: PropTypes.number,
   sliderHeight: PropTypes.number,
   svgMargins: PropTypes.arrayOf(PropTypes.number.isRequired),
@@ -309,6 +312,7 @@ Histogram.propTypes = {
   addFunc: PropTypes.func.isRequired,
   subtractFunc: PropTypes.func.isRequired,
   rectanglePadding: PropTypes.number.isRequired,
-  minimumInterval: PropTypes.oneOf(["year", "day"]).isRequired,
+  minimumInterval: PropTypes.oneOf(["year", "day"]),
+  /* eslint-enable react/require-default-props */
   showLabels: PropTypes.bool.isRequired,
 };

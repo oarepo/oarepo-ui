@@ -1207,3 +1207,6 @@ msgstr "Vypršel časový limit připojení k nadřazenému serveru."
 msgid ""
 "The server does not support the HTTP protocol version used in the request."
 msgstr "Server nepodporuje verzi protokolu HTTP použitou v požadavku."
+
+msgid "Draft could not be saved. Please try again later."
+msgstr "Záznam nelze uložit. Zkuste to prosím znovu později"

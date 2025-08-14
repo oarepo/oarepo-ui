@@ -1215,3 +1215,6 @@ msgstr ""
 msgid ""
 "The server does not support the HTTP protocol version used in the request."
 msgstr ""
+
+msgid "Draft could not be saved. Please try again later."
+msgstr ""

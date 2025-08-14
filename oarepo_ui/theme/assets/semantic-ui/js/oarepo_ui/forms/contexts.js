@@ -1,10 +1,11 @@
 import React, { createContext, useMemo, useRef } from "react";
-import { getFieldData, useFormConfig } from "@js/oarepo_ui";
+import { getFieldData } from "./util";
+import { useFormConfig } from "./hooks";
 import PropTypes from "prop-types";
 
 export const FormConfigContext = createContext();
 
-export const FormConfigProvider = ({ children, value }) => {
+export const FormConfigProvider = ({ children = null, value }) => {
   return (
     <FormConfigContext.Provider value={value}>
       {children}
@@ -14,17 +15,21 @@ export const FormConfigProvider = ({ children, value }) => {
 
 FormConfigProvider.propTypes = {
   value: PropTypes.object.isRequired,
+  // eslint-disable-next-line react/require-default-props
   children: PropTypes.node,
 };
 
 export const FieldDataContext = createContext();
 
-export const FieldDataProvider = ({ children, fieldPathPrefix = "" }) => {
-  const { ui_model } = useFormConfig();
+export const FieldDataProvider = ({
+  children = null,
+  fieldPathPrefix = "",
+}) => {
+  const { ui_model: uiModel } = useFormConfig();
 
   const fieldDataValue = useMemo(
-    () => ({ getFieldData: getFieldData(ui_model, fieldPathPrefix) }),
-    [ui_model, fieldPathPrefix]
+    () => ({ getFieldData: getFieldData(uiModel, fieldPathPrefix) }),
+    [uiModel, fieldPathPrefix]
   );
 
   return (
@@ -35,13 +40,15 @@ export const FieldDataProvider = ({ children, fieldPathPrefix = "" }) => {
 };
 
 FieldDataProvider.propTypes = {
+  // eslint-disable-next-line react/require-default-props
   children: PropTypes.node,
+  // eslint-disable-next-line react/require-default-props
   fieldPathPrefix: PropTypes.string,
 };
 
 export const FormikRefContext = createContext();
 
-export const FormikRefProvider = ({ children }) => {
+export const FormikRefProvider = ({ children = null }) => {
   const formikRef = useRef(null);
   return (
     <FormikRefContext.Provider value={formikRef}>
@@ -51,5 +58,6 @@ export const FormikRefProvider = ({ children }) => {
 };
 
 FormikRefProvider.propTypes = {
+  // eslint-disable-next-line react/require-default-props
   children: PropTypes.node,
 };

@@ -1,27 +1,24 @@
 import React from "react";
-import { SearchApp } from "@js/invenio_search_ui/components";
+import _get from "lodash/get";
 import _camelCase from "lodash/camelCase";
 import ReactDOM from "react-dom";
 import { parametrize } from "react-overridable";
+import { SearchApp } from "@js/invenio_search_ui/components";
 import { overridableComponentIds as componentIds } from "./constants";
-import _get from "lodash/get";
 import { ListItemContainer } from "./ResultsList";
-
-import {
-  ActiveFiltersElement,
-  BucketAggregationValuesElement,
-  CountElement,
-  EmptyResultsElement,
-  ErrorElement,
-  SearchAppFacets,
-  SearchAppLayout,
-  SearchAppResultOptions,
-  SearchAppSearchbarContainer,
-  SearchAppSort,
-  SearchAppResults,
-  FoldableBucketAggregationElement,
-  ClearableSearchbarElement,
-} from "@js/oarepo_ui/search";
+import { ActiveFiltersElement } from "./ActiveFiltersElement";
+import { BucketAggregationValuesElement } from "./BucketAggregationValuesElement";
+import { CountElement } from "./ResultCount";
+import { EmptyResultsElement } from "./EmptyResultsElement";
+import { ErrorElement } from "./ErrorElement";
+import { SearchAppFacets } from "./SearchAppFacets";
+import { SearchAppLayout } from "./SearchAppLayout";
+import { SearchAppResultOptions } from "./SearchAppResultOptions";
+import { SearchAppSearchbarContainer } from "./SearchAppSearchbarContainer";
+import { SearchAppSort } from "./SearchAppSort";
+import { SearchAppResults } from "./SearchAppResults";
+import { FoldableBucketAggregationElement } from "./FoldableBucketAggregationElement";
+import { ClearableSearchbarElement } from "./ClearableSearchbarElement";
 import { loadAppComponents } from "../util";
 import { RDMToggleComponent } from "@js/invenio_app_rdm/search/components";
 
@@ -108,7 +105,10 @@ export const _getResultBuckets = (resultsAggregations, aggName) => {
   if ("buckets" in thisAggs) {
     if (!Array.isArray(thisAggs["buckets"])) {
       thisAggs["buckets"] = Object.entries(thisAggs["buckets"]).map(
-        ([key, value]) => ({ ...value, key })
+        ([key, value]) => ({
+          ...value,
+          key,
+        })
       );
     }
     return thisAggs["buckets"];

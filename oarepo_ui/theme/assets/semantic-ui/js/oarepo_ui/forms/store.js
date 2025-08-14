@@ -7,7 +7,7 @@ import fileReducer, {
   UploadState,
 } from "@js/invenio_rdm_records/src/deposit/state/reducers/files";
 import depositReducer from "@js/invenio_rdm_records/src/deposit/state/reducers/deposit";
-import { decodeUnicodeBase64 } from "@js/oarepo_ui/";
+import { decodeUnicodeBase64 } from "../util";
 import { DRAFT_HAS_VALIDATION_ERRORS } from "@js/invenio_rdm_records/src/deposit/state/types";
 
 function createOverridenReducer(baseReducer, override = null) {

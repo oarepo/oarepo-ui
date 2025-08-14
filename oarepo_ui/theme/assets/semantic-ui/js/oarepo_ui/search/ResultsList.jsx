@@ -58,12 +58,12 @@ const DefaultListItemErrorFallback = ({ result, error }) => {
 
 DefaultListItemErrorFallback.propTypes = {
   result: PropTypes.object.isRequired,
-  error: PropTypes.object,
+  error: PropTypes.object.isRequired,
 };
 
 // Don't see another way, if we do not wish to put the error boundary directly
 // in result list items component, which would be tedious
-const ListItem = ({ result, overridableId }) => {
+const ListItem = ({ result, overridableId = "" }) => {
   const { buildUID } = useContext(AppContext);
   return (
     <ErrorBoundary
@@ -92,10 +92,14 @@ const ListItem = ({ result, overridableId }) => {
 
 ListItem.propTypes = {
   result: PropTypes.object.isRequired,
+  // eslint-disable-next-line react/require-default-props
   overridableId: PropTypes.string,
 };
 
-const ListItemContainerComponent = ({ currentResultsState, overridableId }) => {
+const ListItemContainerComponent = ({
+  currentResultsState,
+  overridableId = "",
+}) => {
   const _results = currentResultsState?.data?.hits?.map((result, index) => (
     // eslint-disable-next-line react/no-array-index-key
     <ListItem result={result} key={index} overridableId={overridableId} />
@@ -110,6 +114,7 @@ const ListItemContainerComponent = ({ currentResultsState, overridableId }) => {
 
 ListItemContainerComponent.propTypes = {
   currentResultsState: PropTypes.object.isRequired,
+  // eslint-disable-next-line react/require-default-props
   overridableId: PropTypes.string,
 };
 

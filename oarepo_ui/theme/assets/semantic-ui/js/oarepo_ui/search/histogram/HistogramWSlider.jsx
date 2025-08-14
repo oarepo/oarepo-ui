@@ -1,7 +1,8 @@
 import React from "react";
 import { Histogram } from "./Histogram";
 import { withState, ResultsLoader } from "react-searchkit";
-import { useLoadLocaleObjects, _getResultBuckets } from "@js/oarepo_ui";
+import { useLoadLocaleObjects } from "../../hooks";
+import { _getResultBuckets } from "../util";
 import PropTypes from "prop-types";
 import { Card } from "semantic-ui-react";
 import {
@@ -15,18 +16,18 @@ const HistogramComponent = ({
   currentResultsState: {
     data: { aggregations },
   },
-  svgHeight,
-  sliderHeight,
+  svgHeight = 220,
+  sliderHeight = 80,
   currentQueryState,
   updateQueryState,
   aggName,
-  minimumInterval,
-  rectanglePadding,
-  svgMargins,
-  rectangleClassName,
-  rectangleOverlayClassName,
-  singleRectangleClassName,
-  showLabels,
+  minimumInterval = "year",
+  rectanglePadding = 1,
+  svgMargins = [20, 30, 0, 10],
+  rectangleClassName = "histogram-rectangle",
+  rectangleOverlayClassName = "histogram-rectangle-overlay",
+  singleRectangleClassName = "histogram-rectangle-single",
+  showLabels = true,
 }) => {
   const addFunc = getAddFunc(minimumInterval);
   const diffFunc = getDiffFunc(minimumInterval);
@@ -81,6 +82,8 @@ HistogramComponent.propTypes = {
   currentQueryState: PropTypes.object.isRequired,
   updateQueryState: PropTypes.func.isRequired,
   aggName: PropTypes.string.isRequired,
+
+  /* eslint-disable react/require-default-props */
   minimumInterval: PropTypes.oneOf(["year", "day"]),
   svgHeight: PropTypes.number,
   rectanglePadding: PropTypes.number,
@@ -90,16 +93,7 @@ HistogramComponent.propTypes = {
   singleRectangleClassName: PropTypes.string,
   svgMargins: PropTypes.array,
   showLabels: PropTypes.bool,
+  /* eslint-enable react/require-default-props */
 };
-HistogramComponent.defaultProps = {
-  minimumInterval: "year",
-  svgHeight: 220,
-  rectanglePadding: 1,
-  sliderHeight: 80,
-  rectangleClassName: "histogram-rectangle",
-  rectangleOverlayClassName: "histogram-rectangle-overlay",
-  singleRectangleClassName: "histogram-rectangle-single",
-  svgMargins: [20, 30, 0, 10],
-  showLabels: true,
-};
+
 export const HistogramWSlider = withState(HistogramComponent);

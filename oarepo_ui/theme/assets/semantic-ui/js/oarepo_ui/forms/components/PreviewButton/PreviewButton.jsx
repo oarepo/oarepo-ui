@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { preview } from "../../state/deposit/actions";
 import { useDepositFormAction } from "../../hooks";
 import { DRAFT_PREVIEW_STARTED } from "@js/invenio_rdm_records/src/deposit/state/types";
+import PropTypes from "prop-types";
 
 const PreviewButtonComponent = React.memo(
   ({ previewAction, actionState, ...uiProps }) => {
@@ -26,6 +27,12 @@ const PreviewButtonComponent = React.memo(
     );
   }
 );
+
+PreviewButtonComponent.displayName = "PreviewButtonComponent";
+PreviewButtonComponent.propTypes = {
+  previewAction: PropTypes.func.isRequired,
+  actionState: PropTypes.string.isRequired,
+};
 
 const mapDispatchToProps = (dispatch) => ({
   previewAction: (values, params) => dispatch(preview(values, params)),

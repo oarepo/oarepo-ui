@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { withState } from "react-searchkit";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { Button, Icon } from "semantic-ui-react";
-import TextareaAutosize from 'react-textarea-autosize';
+import TextareaAutosize from "react-textarea-autosize";
 
 export const MultilineSearchbarElement = withState(
   ({
@@ -13,14 +13,14 @@ export const MultilineSearchbarElement = withState(
     onInputChange,
     updateQueryState,
     currentQueryState,
-    iconName,
+    iconName = "search",
     iconColor,
-    placeholder: passedPlaceholder,
+    placeholder: passedPlaceholder = i18next.t("Search"),
     actionProps,
   }) => {
     const initialMaxRows = 10; // Default maximum number of rows for the textarea
     const placeholder = passedPlaceholder || i18next.t("Search");
-    
+
     const [textAreaMaxRows, setTextAreaMaxRows] = useState(1);
 
     const onSearch = () => {
@@ -44,12 +44,15 @@ export const MultilineSearchbarElement = withState(
 
     const handleFocus = (event) => {
       setTextAreaMaxRows(initialMaxRows); // Expand to multiple lines when focused
-      event.target.removeAttribute('title');
+      event.target.removeAttribute("title");
     };
 
     const handleBlur = (event) => {
       setTextAreaMaxRows(1); // Reset to single line when blurred
-      event.target.setAttribute('title', `${i18next.t("Search")}: ${event.target.value}`); // Set title for tooltip effect
+      event.target.setAttribute(
+        "title",
+        `${i18next.t("Search")}: ${event.target.value}`
+      ); // Set title for tooltip effect
     };
 
     return (
@@ -68,7 +71,7 @@ export const MultilineSearchbarElement = withState(
             maxRows={textAreaMaxRows}
           />
           {queryString && (
-            <div className="textarea-overlay" aria-hidden={true}>
+            <div className="textarea-overlay" aria-hidden>
               {queryString}
             </div>
           )}
@@ -106,9 +109,4 @@ MultilineSearchbarElement.propTypes = {
   currentQueryState: PropTypes.object,
   iconName: PropTypes.string,
   iconColor: PropTypes.string,
-};
-
-MultilineSearchbarElement.defaultProps = {
-  placeholder: i18next.t("Search"),
-  iconName: "search",
 };

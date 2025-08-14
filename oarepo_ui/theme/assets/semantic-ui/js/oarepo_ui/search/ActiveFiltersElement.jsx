@@ -4,12 +4,10 @@ import _groupBy from "lodash/groupBy";
 import _map from "lodash/map";
 import { Label, Icon, Grid } from "semantic-ui-react";
 import { withState } from "react-searchkit";
-import { ClearFiltersButton } from "@js/oarepo_ui";
+import { ClearFiltersButton } from "./ClearFiltersButton";
 import { useActiveSearchFilters } from "./hooks";
 
-
 const getLabel = (filter, aggregations, additionalFilterLabels) => {
-
   const aggName = filter[0];
   const value = filter[1];
 
@@ -39,7 +37,7 @@ const getLabel = (filter, aggregations, additionalFilterLabels) => {
   };
 };
 const ActiveFiltersElementComponent = ({
-  filters,
+  filters = [],
   removeActiveFilter,
   currentResultsState: {
     data: { aggregations },
@@ -99,6 +97,7 @@ const ActiveFiltersElementComponent = ({
 export const ActiveFiltersElement = withState(ActiveFiltersElementComponent);
 
 ActiveFiltersElementComponent.propTypes = {
+  // eslint-disable-next-line react/require-default-props
   filters: PropTypes.array,
   removeActiveFilter: PropTypes.func.isRequired,
   currentResultsState: PropTypes.shape({

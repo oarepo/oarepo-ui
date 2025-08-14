@@ -9,6 +9,7 @@ import _pickBy from "lodash/pickBy";
 import _forEach from "lodash/forEach";
 import _omitBy from "lodash/omitBy";
 import _set from "lodash/set";
+
 export class DepositRecordSerializer {
   constructor(defaultLocale) {
     if (this.constructor === DepositRecordSerializer) {

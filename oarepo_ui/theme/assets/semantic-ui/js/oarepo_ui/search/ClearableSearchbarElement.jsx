@@ -12,9 +12,9 @@ export const ClearableSearchbarElement = withState(
     onInputChange,
     updateQueryState,
     currentQueryState,
-    iconName,
+    iconName = "search",
     iconColor,
-    placeholder: passedPlaceholder,
+    placeholder: passedPlaceholder = i18next.t("Search"),
     actionProps,
   }) => {
     const placeholder = passedPlaceholder || i18next.t("Search");
@@ -31,17 +31,19 @@ export const ClearableSearchbarElement = withState(
       }
     };
 
-    const icon = queryString ? { 
-      icon: { 
-        name: "close", 
-        className: "clear-button", 
-        link: true, 
-        onClick: () => onInputChange(""), 
-        role: "button", 
-        "aria-label": i18next.t("Clear"), 
-        ...actionProps 
-      } 
-    } : {};
+    const icon = queryString
+      ? {
+          icon: {
+            name: "close",
+            className: "clear-button",
+            link: true,
+            onClick: () => onInputChange(""),
+            role: "button",
+            "aria-label": i18next.t("Clear"),
+            ...actionProps,
+          },
+        }
+      : {};
 
     return (
       <Input
@@ -75,9 +77,4 @@ ClearableSearchbarElement.propTypes = {
   currentQueryState: PropTypes.object,
   iconName: PropTypes.string,
   iconColor: PropTypes.string,
-};
-
-ClearableSearchbarElement.defaultProps = {
-  placeholder: i18next.t("Search"),
-  iconName: "search",
 };

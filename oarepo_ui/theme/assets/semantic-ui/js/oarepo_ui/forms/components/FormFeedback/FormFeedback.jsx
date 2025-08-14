@@ -1,7 +1,12 @@
 import React from "react";
 import { Message } from "semantic-ui-react";
 import _startCase from "lodash/startCase";
-import { scrollToElement, useFieldData } from "@js/oarepo_ui";
+import _isObject from "lodash/isObject";
+import _isDate from "lodash/isDate";
+import _isRegExp from "lodash/isRegExp";
+import _forOwn from "lodash/forOwn";
+import { scrollToElement } from "../../../util";
+import { useFieldData } from "../../hooks";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { connect } from "react-redux";
@@ -18,8 +23,8 @@ import {
 // that apiClient sent to formik in auxilary keys. The keys are later removed when submitting the form
 
 function flattenToPathValueArray(obj, prefix = "", res = []) {
-  if (_.isObject(obj) && !_.isDate(obj) && !_.isRegExp(obj) && obj !== null) {
-    _.forOwn(obj, (value, key) => {
+  if (_isObject(obj) && !_isDate(obj) && !_isRegExp(obj) && obj !== null) {
+    _forOwn(obj, (value, key) => {
       const newKey = prefix ? `${prefix}.${key}` : key;
       flattenToPathValueArray(value, newKey, res);
     });
@@ -33,7 +38,11 @@ function flattenToPathValueArray(obj, prefix = "", res = []) {
 const titleCase = (fieldPath) =>
   _startCase(fieldPath.split(".")[fieldPath.split(".").length - 1]);
 
-const CustomMessageComponent = ({ clearErrors, children, ...uiProps }) => {
+const CustomMessageComponent = ({
+  clearErrors,
+  children = null,
+  ...uiProps
+}) => {
   return (
     <Message
       onDismiss={clearErrors}
@@ -54,6 +63,8 @@ export const CustomMessage = connect(
 )(CustomMessageComponent);
 
 CustomMessageComponent.propTypes = {
+  clearErrors: PropTypes.func.isRequired,
+  // eslint-disable-next-line react/require-default-props
   children: PropTypes.node,
 };
 
@@ -80,7 +91,7 @@ ErrorMessageItem.propTypes = {
   error: PropTypes.object.isRequired, // Expects the error object from BEvalidationErrors
 };
 const FormFeedbackComponent = ({
-  errors,
+  errors = [],
   formFeedbackMessage,
   actionState,
 }) => {
@@ -94,6 +105,7 @@ const FormFeedbackComponent = ({
           {flattenedErrors?.map((error, index) => (
             <Message.Item
               onClick={() => scrollToElement(error.fieldPath)}
+              // eslint-disable-next-line react/no-array-index-key
               key={`${error.fieldPath}-${index}`}
             >
               <ErrorMessageItem error={error} />
@@ -132,6 +144,14 @@ const FormFeedbackComponent = ({
   }
 
   return null;
+};
+
+FormFeedbackComponent.propTypes = {
+  // eslint-disable-next-line react/require-default-props
+  errors: PropTypes.oneOfType([PropTypes.object, PropTypes.array]), // depends on flattenToPathValueArray input format
+  // eslint-disable-next-line react/require-default-props
+  formFeedbackMessage: PropTypes.string,
+  actionState: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state) => ({

@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { save } from "../../state/deposit/actions";
 import { useDepositFormAction } from "../../hooks";
 import { DRAFT_SAVE_STARTED } from "@js/invenio_rdm_records/src/deposit/state/types";
+import PropTypes from "prop-types";
 
 const SaveButtonComponent = React.memo(
   ({ saveAction, actionState, ...uiProps }) => {
@@ -27,6 +28,12 @@ const SaveButtonComponent = React.memo(
     );
   }
 );
+
+SaveButtonComponent.displayName = "SaveButtonComponent";
+SaveButtonComponent.propTypes = {
+  saveAction: PropTypes.func.isRequired,
+  actionState: PropTypes.string.isRequired,
+};
 
 const mapDispatchToProps = (dispatch) => ({
   saveAction: (values, params) => dispatch(save(values, params)),

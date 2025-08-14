@@ -7,7 +7,7 @@ if (recordSharingDiv) {
   const record = JSON.parse(recordSharingDiv.dataset.record);
   const permissions = JSON.parse(recordSharingDiv.dataset.permissions);
   const groupsEnabled = JSON.parse(recordSharingDiv.dataset.groupsEnabled);
-  
+
   ReactDOM.render(
     <ShareButton
       record={record}

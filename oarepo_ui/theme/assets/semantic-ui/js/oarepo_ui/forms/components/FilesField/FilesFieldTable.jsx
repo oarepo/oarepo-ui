@@ -25,10 +25,14 @@ const StatusIcon = ({ status }) => {
 };
 
 StatusIcon.propTypes = {
-  status: PropTypes.string,
+  status: PropTypes.string.isRequired,
 };
 
-const DeleteFileButtonCmp = ({ file, handleFileDeletion, className }) => {
+const DeleteFileButtonCmp = ({
+  file,
+  handleFileDeletion = () => {},
+  className = "",
+}) => {
   return (
     <Popup
       position="top center"
@@ -46,16 +50,18 @@ const DeleteFileButtonCmp = ({ file, handleFileDeletion, className }) => {
 };
 
 DeleteFileButtonCmp.propTypes = {
-  file: PropTypes.object,
+  file: PropTypes.object.isRequired,
+  // eslint-disable-next-line react/require-default-props
   handleFileDeletion: PropTypes.func,
+  // eslint-disable-next-line react/require-default-props
   className: PropTypes.string,
 };
 
 const EditFileButtonCmp = ({
   fileName,
   record,
-  className,
-  allowedFileTypes,
+  className = "",
+  allowedFileTypes = ["*/*"],
 }) => {
   return (
     <Popup
@@ -77,19 +83,21 @@ const EditFileButtonCmp = ({
 };
 
 EditFileButtonCmp.propTypes = {
-  fileName: PropTypes.string,
-  record: PropTypes.object,
+  fileName: PropTypes.string.isRequired,
+  record: PropTypes.object.isRequired,
+  // eslint-disable-next-line react/require-default-props
   className: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   allowedFileTypes: PropTypes.arrayOf(PropTypes.string),
 };
 
 export const FilesFieldTable = ({
   files,
   record,
-  handleFileDeletion,
-  lockFileUploader,
-  fileMetadataFields,
-  allowedFileTypes,
+  handleFileDeletion = () => {},
+  lockFileUploader = false,
+  fileMetadataFields = [],
+  allowedFileTypes = ["*/*"],
 }) => {
   return (
     files?.length > 0 && (
@@ -107,8 +115,8 @@ export const FilesFieldTable = ({
               <Table.HeaderCell textAlign="center">
                 {i18next.t("Status")}
               </Table.HeaderCell>
-              <Table.HeaderCell></Table.HeaderCell>
-              <Table.HeaderCell></Table.HeaderCell>
+              <Table.HeaderCell />
+              <Table.HeaderCell />
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -245,10 +253,11 @@ export const FilesFieldTable = ({
 };
 
 FilesFieldTable.propTypes = {
-  files: PropTypes.array,
-  record: PropTypes.object,
-  handleFileDeletion: PropTypes.func,
+  files: PropTypes.array.isRequired,
+  record: PropTypes.object.isRequired,
   lockFileUploader: PropTypes.bool.isRequired,
+  /* eslint-disable react/require-default-props */
+  handleFileDeletion: PropTypes.func,
   allowedFileTypes: PropTypes.arrayOf(PropTypes.string),
   fileMetadataFields: PropTypes.arrayOf(
     PropTypes.shape({
@@ -257,4 +266,5 @@ FilesFieldTable.propTypes = {
       isUserInput: PropTypes.bool.isRequired,
     })
   ),
+  /* eslint-enable react/require-default-props */
 };

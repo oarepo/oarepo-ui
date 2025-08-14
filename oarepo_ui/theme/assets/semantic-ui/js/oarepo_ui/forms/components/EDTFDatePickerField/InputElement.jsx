@@ -12,7 +12,7 @@ export const InputElement = forwardRef(
       label,
       placeholder,
       className,
-      clearButtonClassName,
+      clearButtonClassName = "clear-icon",
       handleClear,
       onKeyDown,
       autoComplete,
@@ -44,6 +44,9 @@ export const InputElement = forwardRef(
   }
 );
 
+InputElement.displayName = "InputElement";
+
+/* eslint-disable react/require-default-props */
 InputElement.propTypes = {
   value: PropTypes.string,
   onClick: PropTypes.func,
@@ -56,7 +59,4 @@ InputElement.propTypes = {
   onKeyDown: PropTypes.func,
   autoComplete: PropTypes.string,
 };
-
-InputElement.defaultProps = {
-  clearButtonClassName: "clear-icon",
-};
+/* eslint-enable react/require-default-props */

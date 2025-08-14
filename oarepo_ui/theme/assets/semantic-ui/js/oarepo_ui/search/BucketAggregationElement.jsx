@@ -4,18 +4,18 @@ import { AppContext } from "react-searchkit";
 import { ContribBucketAggregationElement } from "@js/invenio_search_ui/components";
 import PropTypes from "prop-types";
 
-export const BucketAggregationElement = (props) => {
+export const BucketAggregationElement = ({ agg, ...rest }) => {
   const { buildUID } = useContext(AppContext);
   return (
     // Makes it possible to override UI components for certain buckets
     // by providing them in componentOverrides in the search app initialization
     // it is based on aggName
     <Overridable
-      id={buildUID(`BucketAggregation.element.${props.agg.aggName}`)}
-      aggName={props.agg.aggName}
-      aggTitle={props.agg.title}
+      id={buildUID(`BucketAggregation.element.${agg.aggName}`)}
+      aggName={agg.aggName}
+      aggTitle={agg.title}
     >
-      <ContribBucketAggregationElement {...props} />
+      <ContribBucketAggregationElement agg={agg} {...rest} />
     </Overridable>
   );
 };

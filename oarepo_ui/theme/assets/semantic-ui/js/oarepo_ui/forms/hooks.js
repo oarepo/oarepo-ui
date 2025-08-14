@@ -13,18 +13,15 @@ import {
   FieldDataContext,
   FormikRefContext,
 } from "./contexts";
-import {} from "../api";
 import _get from "lodash/get";
 import _set from "lodash/set";
-import { useFormikContext, getIn } from "formik";
-import _isEmpty from "lodash/isEmpty";
-import _isObject from "lodash/isObject";
+import { useFormikContext } from "formik";
 import _debounce from "lodash/debounce";
 import _uniqBy from "lodash/uniqBy";
 import { getTitleFromMultilingualObject } from "../util";
 import { decode } from "html-entities";
 import sanitizeHtml from "sanitize-html";
-import { getValidTagsForEditor } from "@js/oarepo_ui";
+import { getValidTagsForEditor } from "./util";
 import { DEFAULT_SUGGESTION_SIZE } from "./constants";
 import queryString from "query-string";
 
@@ -84,9 +81,9 @@ export const useFieldData = () => {
 };
 
 export const useDefaultLocale = () => {
-  const { default_locale } = useFormConfig();
+  const { default_locale: defaultLocale } = useFormConfig();
 
-  return { defaultLocale: default_locale };
+  return { defaultLocale };
 };
 
 export const useConfirmationModal = () => {
@@ -128,41 +125,6 @@ export const useFormFieldValue = ({
     );
 
   return { usedSubValues, defaultNewValue };
-};
-
-export const useShowEmptyValue = (
-  fieldPath,
-  defaultNewValue,
-  showEmptyValue
-) => {
-  const { values, setFieldValue } = useFormikContext();
-  const currentFieldValue = getIn(values, fieldPath, []);
-  useEffect(() => {
-    if (!showEmptyValue) return;
-    if (!_isEmpty(currentFieldValue)) return;
-    if (defaultNewValue === undefined) {
-      console.error(
-        "Default value for new input must be provided. Field: ",
-        fieldPath
-      );
-      return;
-    }
-    if (!fieldPath) {
-      console.error("Fieldpath must be provided");
-      return;
-    }
-    // to be used with invenio array fields that always push objects and add the __key property
-    if (!_isEmpty(defaultNewValue) && _isObject(defaultNewValue)) {
-      currentFieldValue.push({
-        __key: currentFieldValue.length,
-        ...defaultNewValue,
-      });
-      setFieldValue(fieldPath, currentFieldValue);
-    } else if (typeof defaultNewValue === "string") {
-      currentFieldValue.push(defaultNewValue);
-      setFieldValue(fieldPath, currentFieldValue);
-    }
-  }, [showEmptyValue, setFieldValue, fieldPath, defaultNewValue]);
 };
 
 export const handleValidateAndBlur = (validateField, setFieldTouched) => {
@@ -231,10 +193,59 @@ export const useSuggestionApi = ({
   // Inspired by: https://dev.to/alexdrocks/using-lodash-debounce-with-react-hooks-for-an-async-data-fetching-input-2p4g
   const [didMount, setDidMount] = useState(false);
 
+  const fetchSuggestions = React.useCallback(
+    (cancelToken) => {
+      setLoading(true);
+      setNoResults(false);
+      setSuggestions(initialSuggestions);
+      setError(null);
+
+      axios
+        .get(suggestionAPIUrl, {
+          params: {
+            [searchQueryParamName]: query,
+            size: DEFAULT_SUGGESTION_SIZE,
+            ...suggestionAPIQueryParams,
+          },
+          headers: suggestionAPIHeaders,
+          cancelToken: cancelToken.token,
+          // There is a bug in axios that prevents brackets from being encoded,
+          // remove the paramsSerializer when fixed.
+          // https://github.com/axios/axios/issues/3316
+          paramsSerializer: (params) =>
+            queryString.stringify(params, { arrayFormat: "repeat" }),
+        })
+        .then((res) => {
+          const searchHits = res?.data?.hits?.hits;
+          if (searchHits.length === 0) {
+            setNoResults(true);
+          }
+
+          const serializedSuggestions = serializeSuggestions(searchHits);
+          setSuggestions(_uniqBy(serializedSuggestions, "value"));
+        })
+        .catch((err) => {
+          setError(err);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    },
+    [
+      initialSuggestions,
+      query,
+      searchQueryParamName,
+      serializeSuggestions,
+      suggestionAPIHeaders,
+      suggestionAPIQueryParams,
+      suggestionAPIUrl,
+    ]
+  );
+
   const debouncedSearch = useMemo(
     () =>
       _debounce((cancelToken) => fetchSuggestions(cancelToken), debounceTime),
-    [debounceTime, query]
+    [debounceTime, fetchSuggestions]
   );
 
   useEffect(() => {
@@ -257,45 +268,13 @@ export const useSuggestionApi = ({
     return () => {
       cancelToken.cancel();
     };
-  }, [query, suggestionAPIUrl, searchQueryParamName]); // suggestionAPIQueryParams, suggestionAPIHeaders]);
-
-  function fetchSuggestions(cancelToken) {
-    setLoading(true);
-    setNoResults(false);
-    setSuggestions(initialSuggestions);
-    setError(null);
-
-    axios
-      .get(suggestionAPIUrl, {
-        params: {
-          [searchQueryParamName]: query,
-          size: DEFAULT_SUGGESTION_SIZE,
-          ...suggestionAPIQueryParams,
-        },
-        headers: suggestionAPIHeaders,
-        cancelToken: cancelToken.token,
-        // There is a bug in axios that prevents brackets from being encoded,
-        // remove the paramsSerializer when fixed.
-        // https://github.com/axios/axios/issues/3316
-        paramsSerializer: (params) =>
-          queryString.stringify(params, { arrayFormat: "repeat" }),
-      })
-      .then((res) => {
-        const searchHits = res?.data?.hits?.hits;
-        if (searchHits.length === 0) {
-          setNoResults(true);
-        }
-
-        const serializedSuggestions = serializeSuggestions(searchHits);
-        setSuggestions(_uniqBy(serializedSuggestions, "value"));
-      })
-      .catch((err) => {
-        setError(err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }
+  }, [
+    query,
+    suggestionAPIUrl,
+    searchQueryParamName,
+    didMount,
+    debouncedSearch,
+  ]);
 
   const executeSearch = React.useCallback(
     (searchQuery) => {
@@ -307,7 +286,7 @@ export const useSuggestionApi = ({
 
       setQuery(newQuery);
     },
-    [query]
+    [preSearchChange, query]
   );
 
   return {

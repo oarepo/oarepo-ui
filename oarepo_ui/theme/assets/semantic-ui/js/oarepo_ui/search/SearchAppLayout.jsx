@@ -14,14 +14,14 @@ import {
 } from "@js/invenio_search_ui/components";
 import { ResultOptions } from "@js/invenio_search_ui/components/Results";
 import { ClearFiltersButton } from "./ClearFiltersButton";
-import { ShouldActiveFiltersRender } from "@js/oarepo_ui";
+import { ShouldActiveFiltersRender } from "./ShouldActiveFiltersRender";
 import { useActiveSearchFilters } from "./hooks";
 
 const ResultOptionsWithState = withState(ResultOptions);
 
 export const ActiveFiltersCountFloatingLabelComponent = ({
   currentQueryState: { filters },
-  className,
+  className = "active-filters-count-label",
 }) => {
   const { activeFiltersCount } = useActiveSearchFilters(filters);
 
@@ -35,12 +35,9 @@ export const ActiveFiltersCountFloatingLabelComponent = ({
 };
 
 ActiveFiltersCountFloatingLabelComponent.propTypes = {
+  // eslint-disable-next-line react/require-default-props
   className: PropTypes.string,
   currentQueryState: PropTypes.object.isRequired,
-};
-
-ActiveFiltersCountFloatingLabelComponent.defaultProps = {
-  className: "active-filters-count-label",
 };
 
 export const ActiveFiltersCountFloatingLabel = withState(
@@ -54,7 +51,7 @@ export const SearchAppResultsGrid = ({
   appName,
   buildUID,
   resultsPaneLayout,
-  hasButtonSidebar,
+  hasButtonSidebar = false,
   resultSortLayout,
 }) => {
   const [sidebarVisible, setSidebarVisible] = useState(false);
@@ -82,7 +79,7 @@ export const SearchAppResultsGrid = ({
               aria-label={i18next.t("Filter results")}
               className="facets-sidebar-open-button"
             >
-              <Icon name="filter"></Icon>
+              <Icon name="filter" />
               <ShouldActiveFiltersRender>
                 <ActiveFiltersCountFloatingLabel />
               </ShouldActiveFiltersRender>
@@ -125,9 +122,7 @@ export const SearchAppResultsGrid = ({
             onHideClick={() => setSidebarVisible(false)}
           >
             <ShouldActiveFiltersRender>
-              <ClearFiltersButton
-                className={"clear-filters-button mobile tablet only"}
-              />
+              <ClearFiltersButton className="clear-filters-button mobile tablet only" />
             </ShouldActiveFiltersRender>
             <SearchAppFacets
               aggs={config.aggs}
@@ -153,7 +148,7 @@ export const SearchAppResultsGrid = ({
           >
             <Overridable
               id={buildUID("SearchApp.buttonSidebarContainer", "", appName)}
-            ></Overridable>
+            />
           </Grid.Column>
         )}
       </Grid.Row>
@@ -172,10 +167,12 @@ SearchAppResultsGrid.propTypes = {
   appName: PropTypes.string.isRequired,
   buildUID: PropTypes.func.isRequired,
   resultsPaneLayout: PropTypes.object.isRequired,
+  // eslint-disable-next-line react/require-default-props
   hasButtonSidebar: PropTypes.bool,
   resultSortLayout: PropTypes.object.isRequired,
 };
-export const SearchAppLayout = ({ config, hasButtonSidebar }) => {
+
+export const SearchAppLayout = ({ config, hasButtonSidebar = false }) => {
   const { appName, buildUID } = useContext(SearchConfigurationContext);
   const facetsAvailable = !_isEmpty(config.aggs);
   let columnsAmount;
@@ -292,6 +289,7 @@ SearchAppLayout.propTypes = {
       layout: PropTypes.oneOf(["list", "grid"]),
     }),
     aggs: PropTypes.array,
-  }),
+  }).isRequired,
+  // eslint-disable-next-line react/require-default-props
   hasButtonSidebar: PropTypes.bool,
 };

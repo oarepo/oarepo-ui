@@ -1,5 +1,5 @@
 import React, { useMemo, memo } from "react";
-import { getInputFromDOM } from "@js/oarepo_ui/";
+import { getInputFromDOM } from "../util";
 import { CompactFieldLabel } from "./components/CompactFieldLabel";
 import _get from "lodash/get";
 import { FieldLabel } from "react-invenio-forms";

@@ -1,27 +1,28 @@
 import React from "react";
 import PropTypes from "prop-types";
+import _isEmpty from "lodash/isEmpty";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { useFormikContext, getIn, FieldArray } from "formik";
 import { Icon, Form, Label } from "semantic-ui-react";
 import { ArrayFieldItem } from "../ArrayFieldItem";
-import { useFieldData, useShowEmptyValue } from "../../hooks";
+import { useFieldData } from "../../hooks";
 import { TextField } from "../TextField";
 import { FieldLabel } from "react-invenio-forms";
 
 export const StringArrayField = ({
   fieldPath,
-  label,
-  required,
+  label = null,
+  required = false,
   defaultNewValue = "",
   addButtonLabel = i18next.t("Add"),
-  helpText,
-  labelIcon,
+  helpText = "",
+  labelIcon = "",
   showEmptyValue = false,
-  icon,
+  icon = null,
   fieldRepresentation = "text",
   ...uiProps
 }) => {
-  const { values, errors } = useFormikContext();
+  const { values, setFieldValue, errors } = useFormikContext();
   const { getFieldData } = useFieldData();
 
   const fieldData = {
@@ -30,8 +31,19 @@ export const StringArrayField = ({
     ...(required && { required }),
     ...(helpText && { helpText }),
   };
-  useShowEmptyValue(fieldPath, defaultNewValue, showEmptyValue);
   const fieldError = getIn(errors, fieldPath, null);
+  const hasBeenShown = React.useRef(false);
+
+  React.useEffect(() => {
+    const existingValues = getIn(values, fieldPath, []);
+
+    if (!hasBeenShown.current && _isEmpty(existingValues) && showEmptyValue) {
+      existingValues.push(defaultNewValue);
+      hasBeenShown.current = true;
+      setFieldValue(fieldPath, existingValues);
+    }
+  }, [defaultNewValue, fieldPath, setFieldValue, showEmptyValue, values]);
+
   return (
     <Form.Field required={required}>
       <FieldLabel htmlFor={fieldPath} icon={icon} label={fieldData.label} />
@@ -46,6 +58,8 @@ export const StringArrayField = ({
                 : fieldError;
               return (
                 <ArrayFieldItem
+                  // TODO: find a better key if possible
+                  // eslint-disable-next-line react/no-array-index-key
                   key={index}
                   indexPath={index}
                   arrayHelpers={arrayHelpers}
@@ -90,6 +104,7 @@ export const StringArrayField = ({
 
 StringArrayField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
+  /* eslint-disable react/require-default-props */
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   defaultNewValue: PropTypes.string,
   addButtonLabel: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
@@ -99,4 +114,5 @@ StringArrayField.propTypes = {
   showEmptyValue: PropTypes.bool,
   icon: PropTypes.string,
   fieldRepresentation: PropTypes.string,
+  /* eslint-enable react/require-default-props */
 };

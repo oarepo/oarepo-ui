@@ -133,6 +133,7 @@ const RecordVersionItem = ({ item, activeVersion, searchLinkPrefix = "" }) => {
 RecordVersionItem.propTypes = {
   item: PropTypes.object.isRequired,
   activeVersion: PropTypes.bool.isRequired,
+  // eslint-disable-next-line react/require-default-props
   searchLinkPrefix: PropTypes.string,
 };
 

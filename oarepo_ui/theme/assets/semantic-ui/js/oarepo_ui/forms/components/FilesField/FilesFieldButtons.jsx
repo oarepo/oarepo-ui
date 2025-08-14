@@ -14,7 +14,11 @@ if (i18next.language === "cs") {
   LOCALE = i18next.language;
 }
 
-export const EditFileButton = ({ fileName, record, allowedFileTypes }) => {
+export const EditFileButton = ({
+  fileName,
+  record,
+  allowedFileTypes = ["*/*"],
+}) => {
   return (
     <FileEditWrapper
       props={{
@@ -32,15 +36,16 @@ export const EditFileButton = ({ fileName, record, allowedFileTypes }) => {
 EditFileButton.propTypes = {
   fileName: PropTypes.string.isRequired,
   record: PropTypes.object.isRequired,
+  // eslint-disable-next-line react/require-default-props
   allowedFileTypes: PropTypes.array,
 };
 
 export const UploadFileButton = ({
   record,
   handleFilesUpload,
-  allowedFileTypes,
-  fileMetadataFields,
-  required,
+  allowedFileTypes = ["*/*"],
+  fileMetadataFields = [],
+  required = false,
 }) => {
   return (
     <FileUploadWrapper
@@ -63,8 +68,11 @@ export const UploadFileButton = ({
 UploadFileButton.propTypes = {
   record: PropTypes.object.isRequired,
   handleFilesUpload: PropTypes.func.isRequired,
+  // eslint-disable-next-line react/require-default-props
   allowedFileTypes: PropTypes.array,
+  // eslint-disable-next-line react/require-default-props
   required: PropTypes.bool,
+  // eslint-disable-next-line react/require-default-props
   fileMetadataFields: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,

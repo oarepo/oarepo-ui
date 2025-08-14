@@ -16,10 +16,10 @@ export const EDTFSingleDatePicker = ({
   fieldPath,
   label,
   helpText,
-  required,
+  required = false,
   placeholder,
-  datePickerProps,
-  customInputProps,
+  datePickerProps = {},
+  customInputProps = {},
   icon = "calendar",
 }) => {
   const { setFieldValue } = useFormikContext();
@@ -68,6 +68,7 @@ export const EDTFSingleDatePicker = ({
 
 EDTFSingleDatePicker.propTypes = {
   fieldPath: PropTypes.string.isRequired,
+  /* eslint-disable react/require-default-props */
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   helpText: PropTypes.string,
   datePickerProps: PropTypes.object,
@@ -75,4 +76,5 @@ EDTFSingleDatePicker.propTypes = {
   placeholder: PropTypes.string,
   customInputProps: PropTypes.object,
   icon: PropTypes.string,
+  /* eslint-enable react/require-default-props */
 };

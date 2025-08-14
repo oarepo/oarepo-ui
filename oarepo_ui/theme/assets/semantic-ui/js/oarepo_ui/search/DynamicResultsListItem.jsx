@@ -1,13 +1,18 @@
 import React from "react";
 import _get from "lodash/get";
-import Overridable, { overrideStore } from "react-overridable";
+import Overridable from "react-overridable";
 import { AppContext } from "react-searchkit";
+import PropTypes from "prop-types";
 
 export const FallbackItemComponent = ({ result }) => (
   <div>
     <h2>{result.id}</h2>
   </div>
 );
+
+FallbackItemComponent.propTypes = {
+  result: PropTypes.object.isRequired,
+};
 
 export const DynamicResultsListItem = ({
   result,
@@ -29,6 +34,14 @@ export const DynamicResultsListItem = ({
       <FallbackComponent result={result} />
     </Overridable>
   );
+};
+
+DynamicResultsListItem.propTypes = {
+  result: PropTypes.object.isRequired,
+  // eslint-disable-next-line react/require-default-props
+  selector: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
+  FallbackComponent: PropTypes.elementType,
 };
 
 export default DynamicResultsListItem;

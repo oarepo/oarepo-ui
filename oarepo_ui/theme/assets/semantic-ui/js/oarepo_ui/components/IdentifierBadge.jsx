@@ -4,10 +4,10 @@ import { Image } from "react-invenio-forms";
 
 export const IconIdentifier = ({
   link,
-  badgeTitle,
+  badgeTitle = "",
   icon,
-  alt,
-  className,
+  alt = "",
+  className = "",
   fallbackImage = "/static/images/square-placeholder.png",
 }) => {
   return link ? (
@@ -42,6 +42,7 @@ export const IconIdentifier = ({
   );
 };
 
+/* eslint-disable react/require-default-props */
 IconIdentifier.propTypes = {
   link: PropTypes.string,
   badgeTitle: PropTypes.string,
@@ -50,10 +51,13 @@ IconIdentifier.propTypes = {
   className: PropTypes.string,
   fallbackImage: PropTypes.string,
 };
+/* eslint-enable react/require-default-props */
 
-export const IdentifierBadge = ({ identifier, creatibutorName, className }) => {
-  if (!identifier) return null;
-
+export const IdentifierBadge = ({
+  identifier,
+  creatibutorName = "",
+  className = "",
+}) => {
   const { scheme, identifier: identifierValue, url } = identifier;
 
   const badgeTitle = `${creatibutorName} ${scheme}: ${identifierValue}`;
@@ -76,7 +80,9 @@ IdentifierBadge.propTypes = {
     scheme: PropTypes.string,
     identifier: PropTypes.string,
     url: PropTypes.string,
-  }),
+  }).isRequired,
+  // eslint-disable-next-line react/require-default-props
   className: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   creatibutorName: PropTypes.string,
 };

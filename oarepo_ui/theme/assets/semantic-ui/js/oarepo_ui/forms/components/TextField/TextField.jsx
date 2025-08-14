@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 export const TextField = ({
   fieldPath,
   fieldRepresentation = "full",
-  icon,
+  icon = "",
   ...rest
 }) => {
   const { sanitizeInput } = useSanitizeInput();
@@ -31,6 +31,8 @@ export const TextField = ({
 
 TextField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
+  // eslint-disable-next-line react/require-default-props
   fieldRepresentation: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   icon: PropTypes.string,
 };

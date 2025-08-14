@@ -35,7 +35,7 @@ export const SearchAppResultsComponent = ({
       </Grid.Row>
       {total > 10 && (
         <Grid.Row verticalAlign="middle">
-          <Grid.Column className="computer tablet only" width={4}></Grid.Column>
+          <Grid.Column className="computer tablet only" width={4} />
           <Grid.Column
             className="computer tablet only"
             width={8}

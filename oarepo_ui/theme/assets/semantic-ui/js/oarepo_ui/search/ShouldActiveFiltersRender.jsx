@@ -1,12 +1,12 @@
 import React from "react";
 import { withState } from "react-searchkit";
 import PropTypes from "prop-types";
-import { ShouldRender } from "@js/oarepo_ui";
+import { ShouldRender } from "./ShouldRender";
 import { useActiveSearchFilters } from "./hooks";
 
 const ShouldActiveFiltersRenderComponent = ({
   currentQueryState,
-  children,
+  children = null,
 }) => {
   const { filters } = currentQueryState;
 
@@ -19,6 +19,7 @@ const ShouldActiveFiltersRenderComponent = ({
 
 ShouldActiveFiltersRenderComponent.propTypes = {
   currentQueryState: PropTypes.object.isRequired,
+  // eslint-disable-next-line react/require-default-props
   children: PropTypes.node,
 };
 

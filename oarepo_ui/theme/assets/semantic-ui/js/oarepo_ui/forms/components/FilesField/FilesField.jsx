@@ -1,24 +1,26 @@
 import React, { useState } from "react";
+import { useFormikContext } from "formik";
 import PropTypes from "prop-types";
+import _isEmpty from "lodash/isEmpty";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { Message, Icon, Button, Dimmer, Loader } from "semantic-ui-react";
 import { FilesFieldTable } from "./FilesFieldTable";
 import { UploadFileButton } from "./FilesFieldButtons";
-import { useFormConfig, httpApplicationJson } from "@js/oarepo_ui";
 import { Trans } from "react-i18next";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { connect } from "react-redux";
 import { deleteFile } from "@js/invenio_rdm_records/src/deposit/state/actions/files";
 import { save } from "../../state/deposit/actions";
-import { useFormikContext } from "formik";
-import _isEmpty from "lodash/isEmpty";
-import { useDepositFormAction } from "../../hooks";
+import { httpApplicationJson } from "../../../util";
+import { useDepositFormAction, useFormConfig } from "../../hooks";
 
 export const FilesFieldComponent = ({
-  fileUploaderMessage,
+  fileUploaderMessage = i18next.t(
+    "After publishing the draft, it is not possible to add, modify or delete files. It will be necessary to create a new version of the record."
+  ),
   record,
-  allowedFileTypes,
-  fileMetadataFields,
+  allowedFileTypes = ["*/*"],
+  fileMetadataFields = [],
   required = false,
   deleteFileAction,
   saveAction,
@@ -215,8 +217,11 @@ export const FilesFieldComponent = ({
 };
 
 FilesFieldComponent.propTypes = {
+  deleteFileAction: PropTypes.func.isRequired,
+  saveAction: PropTypes.func.isRequired,
+  files: PropTypes.array.isRequired,
+  /* eslint-disable react/require-default-props */
   record: PropTypes.object,
-  recordFiles: PropTypes.object,
   allowedFileTypes: PropTypes.array,
   fileUploaderMessage: PropTypes.string,
   required: PropTypes.bool,
@@ -227,13 +232,7 @@ FilesFieldComponent.propTypes = {
       isUserInput: PropTypes.bool.isRequired,
     })
   ),
-};
-
-FilesFieldComponent.defaultProps = {
-  fileUploaderMessage: i18next.t(
-    "After publishing the draft, it is not possible to add, modify or delete files. It will be necessary to create a new version of the record."
-  ),
-  allowedFileTypes: ["*/*"],
+  /* eslint-enable react/require-default-props */
 };
 
 const mapDispatchToProps = (dispatch) => ({

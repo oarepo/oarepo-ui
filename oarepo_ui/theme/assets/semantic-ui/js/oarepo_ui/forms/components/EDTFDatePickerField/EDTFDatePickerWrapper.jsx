@@ -4,18 +4,18 @@ import { DatePickerHeader } from "./DatePickerHeader";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { edtfDateFormatOptions } from "./utils";
-import { useLoadLocaleObjects } from "@js/oarepo_ui";
+import { useLoadLocaleObjects } from "../../../hooks";
 import { InputElement } from "./InputElement";
 
 export const EDTFDatePickerWrapper = ({
   fieldPath,
-  placeholder,
-  clearButtonClassName,
+  placeholder = i18next.t("Choose a date."),
+  clearButtonClassName = "clear-icon",
   dateEdtfFormat,
   setDateEdtfFormat,
   handleClear,
-  datePickerProps,
-  customInputProps,
+  datePickerProps = {},
+  customInputProps = {},
   dateFormat,
 }) => {
   useLoadLocaleObjects();
@@ -62,20 +62,15 @@ export const EDTFDatePickerWrapper = ({
 
 EDTFDatePickerWrapper.propTypes = {
   fieldPath: PropTypes.string.isRequired,
+  /* eslint-disable react/require-default-props */
   datePickerProps: PropTypes.object,
   required: PropTypes.bool,
   placeholder: PropTypes.string,
   clearButtonClassName: PropTypes.string,
-  dateEdtfFormat: PropTypes.string,
-  setDateEdtfFormat: PropTypes.func,
-  handleChange: PropTypes.func,
+  dateEdtfFormat: PropTypes.string.isRequired,
+  setDateEdtfFormat: PropTypes.func.isRequired,
   handleClear: PropTypes.func,
   customInputProps: PropTypes.object,
-  dateFormat: PropTypes.string,
-};
-
-EDTFDatePickerWrapper.defaultProps = {
-  required: false,
-  placeholder: i18next.t("Choose a date."),
-  clearButtonClassName: "clear-icon",
+  /* eslint-enable react/require-default-props */
+  dateFormat: PropTypes.string.isRequired,
 };

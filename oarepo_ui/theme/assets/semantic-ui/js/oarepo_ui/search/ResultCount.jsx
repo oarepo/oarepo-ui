@@ -13,6 +13,10 @@ export const CountElement = ({ totalResults }) => {
   );
 };
 
+CountElement.propTypes = {
+  totalResults: PropTypes.number.isRequired,
+};
+
 export const ResultCount = ({ currentResultsState = {} }) => {
   const total = currentResultsState?.data?.total;
   const { loading } = currentResultsState;
@@ -31,10 +35,8 @@ export const ResultCount = ({ currentResultsState = {} }) => {
   );
 };
 
-CountElement.propTypes = {
-  totalResults: PropTypes.number.isRequired,
-};
 ResultCount.propTypes = {
+  // eslint-disable-next-line react/require-default-props
   currentResultsState: PropTypes.object,
 };
 export const ResultCountWithState = withState(ResultCount);

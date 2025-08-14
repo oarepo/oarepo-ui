@@ -3,19 +3,21 @@ import { Button } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { useConfirmationModal, ConfirmationModal } from "@js/oarepo_ui";
+import { ConfirmationModal } from "../ConfirmationModal";
 import { DRAFT_DELETE_STARTED } from "@js/invenio_rdm_records/src/deposit/state/types";
 import { delete_ } from "../../state/deposit/actions";
-import { useDepositFormAction } from "../../hooks";
+import { useDepositFormAction, useConfirmationModal } from "../../hooks";
 
 const DeleteButtonComponent = React.memo(
   ({
     record,
     deleteAction,
     actionState,
-    modalMessage,
-    modalHeader,
-    redirectUrl,
+    modalMessage = i18next.t(
+      "If you delete the draft, the work you have done on it will be lost."
+    ),
+    modalHeader = i18next.t("Are you sure you wish delete this draft?"),
+    redirectUrl = "",
   }) => {
     const {
       isOpen: isModalOpen,
@@ -76,6 +78,8 @@ const DeleteButtonComponent = React.memo(
   }
 );
 
+DeleteButtonComponent.displayName = "DeleteButtonComponent";
+
 const mapDispatchToProps = (dispatch) => ({
   deleteAction: (draft, params) => dispatch(delete_(draft, params)),
 });
@@ -86,18 +90,14 @@ const mapStateToProps = (state) => ({
 });
 
 DeleteButtonComponent.propTypes = {
+  record: PropTypes.object.isRequired,
+  /* eslint-disable react/require-default-props */
   modalMessage: PropTypes.string,
   modalHeader: PropTypes.string,
   redirectUrl: PropTypes.string,
-  deleteAction: PropTypes.func,
-  actionState: PropTypes.string,
-};
-
-DeleteButtonComponent.defaultProps = {
-  modalHeader: i18next.t("Are you sure you wish delete this draft?"),
-  modalMessage: i18next.t(
-    "If you delete the draft, the work you have done on it will be lost."
-  ),
+  /* eslint-enable react/require-default-props */
+  deleteAction: PropTypes.func.isRequired,
+  actionState: PropTypes.string.isRequired,
 };
 
 export const DeleteButton = connect(

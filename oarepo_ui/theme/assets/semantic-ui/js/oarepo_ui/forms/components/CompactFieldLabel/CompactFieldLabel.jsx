@@ -4,7 +4,13 @@ import { Icon, Popup } from "semantic-ui-react";
 
 export class CompactFieldLabel extends Component {
   render() {
-    const { htmlFor, icon, label, className, popupHelpText } = this.props;
+    const {
+      htmlFor,
+      icon = "",
+      label,
+      className = "field-label-class compact-label",
+      popupHelpText,
+    } = this.props;
     return (
       <label htmlFor={htmlFor} className={className}>
         {icon ? <Icon name={icon} /> : null}
@@ -13,9 +19,7 @@ export class CompactFieldLabel extends Component {
           <Popup
             position="top center"
             content={<span className="helptext">{popupHelpText}</span>}
-            trigger={
-              <Icon className="ml-5" name="question circle outline"></Icon>
-            }
+            trigger={<Icon className="ml-5" name="question circle outline" />}
           />
         ) : null}
       </label>
@@ -24,17 +28,11 @@ export class CompactFieldLabel extends Component {
 }
 
 CompactFieldLabel.propTypes = {
+  /* eslint-disable react/require-default-props */
   htmlFor: PropTypes.string,
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   icon: PropTypes.string,
   className: PropTypes.string,
   popupHelpText: PropTypes.string,
-};
-
-CompactFieldLabel.defaultProps = {
-  className: "field-label-class compact-label",
-  icon: "",
-  htmlFor: undefined,
-  label: undefined,
-  popupHelpText: undefined,
+  /* eslint-enable react/require-default-props */
 };

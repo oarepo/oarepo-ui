@@ -52,7 +52,11 @@ export class CreatibutorsIdentifiers extends Component {
   };
 
   render() {
-    const { fieldPath, label, placeholder } = this.props;
+    const {
+      fieldPath,
+      label = i18next.t("Identifiers"),
+      placeholder = i18next.t("e.g. ORCID, ISNI or GND."),
+    } = this.props;
     const { selectedOptions } = this.state;
 
     return (
@@ -85,11 +89,8 @@ CreatibutorsIdentifiers.propTypes = {
     })
   ).isRequired,
   fieldPath: PropTypes.string.isRequired,
+  // eslint-disable-next-line react/require-default-props
   label: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
   placeholder: PropTypes.string,
-};
-
-CreatibutorsIdentifiers.defaultProps = {
-  label: i18next.t("Identifiers"),
-  placeholder: i18next.t("e.g. ORCID, ISNI or GND."),
 };

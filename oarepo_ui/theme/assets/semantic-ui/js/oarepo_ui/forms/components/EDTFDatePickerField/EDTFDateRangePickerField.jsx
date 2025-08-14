@@ -19,7 +19,7 @@ export const EDTFDaterangePicker = ({
   label,
   icon = "calendar",
   helpText,
-  required,
+  required = false,
   dateRangeInputPlaceholder = i18next.t("Choose date range (From - To)."),
   singleDateInputPlaceholder = i18next.t("Choose one date."),
   datePickerPropsOverrides,
@@ -149,6 +149,7 @@ export const EDTFDaterangePicker = ({
 
 EDTFDaterangePicker.propTypes = {
   fieldPath: PropTypes.string.isRequired,
+  /* eslint-disable react/require-default-props */
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   icon: PropTypes.string,
   helpText: PropTypes.string,
@@ -156,4 +157,5 @@ EDTFDaterangePicker.propTypes = {
   singleDateInputPlaceholder: PropTypes.string,
   dateRangeInputPlaceholder: PropTypes.string,
   datePickerPropsOverrides: PropTypes.object,
+  /* eslint-enable react/require-default-props */
 };

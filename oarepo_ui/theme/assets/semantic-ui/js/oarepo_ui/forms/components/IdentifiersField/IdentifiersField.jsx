@@ -62,11 +62,11 @@ export const IdentifiersValidationSchema = Yup.array().of(
 );
 export const IdentifiersField = ({
   fieldPath,
-  labelIcon,
+  labelIcon = "pencil",
   options,
-  className,
-  defaultNewValue,
-  validateOnBlur,
+  className = "",
+  defaultNewValue = { scheme: "", identifier: "" },
+  validateOnBlur = false,
   ...uiProps
 }) => {
   const { setFieldTouched } = useFormikContext();
@@ -137,15 +137,11 @@ export const IdentifiersField = ({
 
 IdentifiersField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
-  labelIcon: PropTypes.string,
   options: PropTypes.array.isRequired,
+  /* eslint-disable react/require-default-props */
+  labelIcon: PropTypes.string,
   className: PropTypes.string,
   defaultNewValue: PropTypes.object,
   validateOnBlur: PropTypes.bool,
-};
-
-IdentifiersField.defaultProps = {
-  labelIcon: "pencil",
-  defaultNewValue: { scheme: "", identifier: "" },
-  validateOnBlur: false,
+  /* eslint-enable react/require-default-props */
 };

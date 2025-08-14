@@ -8,18 +8,16 @@ import { SearchBar, ActiveFilters } from "react-searchkit";
 import { GridResponsiveSidebarColumn } from "react-invenio-forms";
 import { Grid, Button, Container, Icon } from "semantic-ui-react";
 import PropTypes from "prop-types";
-import {
-  SearchAppFacets,
-  ClearFiltersButton,
-  ShouldActiveFiltersRender,
-  ActiveFiltersCountFloatingLabel,
-} from "@js/oarepo_ui";
+import { SearchAppFacets } from "./SearchAppFacets";
+import { ClearFiltersButton } from "./ClearFiltersButton";
+import { ShouldActiveFiltersRender } from "./ShouldActiveFiltersRender";
+import { ActiveFiltersCountFloatingLabel } from "./SearchAppLayout";
 import Overridable from "react-overridable";
 
 export const SearchAppLayoutWithSearchbarHOC = ({
-  placeholder,
-  extraContent,
-  mobileOnlyExtraRow,
+  placeholder = "",
+  extraContent = null,
+  mobileOnlyExtraRow = null,
   appName,
 }) => {
   const SearchAppLayoutWithSearchbar = (props) => {
@@ -37,9 +35,7 @@ export const SearchAppLayoutWithSearchbarHOC = ({
           >
             <ShouldActiveFiltersRender>
               <Overridable id={buildUID("ClearFiltersButton.container")}>
-                <ClearFiltersButton
-                  className={"clear-filters-button mobile tablet only"}
-                />
+                <ClearFiltersButton className="clear-filters-button mobile tablet only" />
               </Overridable>
             </ShouldActiveFiltersRender>
             <Overridable
@@ -73,7 +69,7 @@ export const SearchAppLayoutWithSearchbarHOC = ({
                   aria-label={i18next.t("Filter results")}
                   className="facets-sidebar-open-button"
                 >
-                  <Icon name="filter"></Icon>
+                  <Icon name="filter" />
                   <ActiveFiltersCountFloatingLabel />
                 </Button>
               </Grid.Column>
@@ -125,11 +121,4 @@ SearchAppLayoutWithSearchbarHOC.propTypes = {
     PropTypes.oneOf([null]),
   ]),
   appName: PropTypes.string,
-};
-
-SearchAppLayoutWithSearchbarHOC.defaultProps = {
-  extraContent: null,
-  mobileOnlyExtraRow: null,
-  appName: undefined,
-  placeholder: "",
 };

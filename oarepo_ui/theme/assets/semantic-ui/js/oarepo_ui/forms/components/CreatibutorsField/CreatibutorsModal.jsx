@@ -43,17 +43,18 @@ const NamesAutocompleteOptions = {
 export class CreatibutorsModal extends Component {
   constructor(props) {
     super(props);
+    const { initialCreatibutor = {}, autocompleteNames = "search" } = props;
+
     this.state = {
       open: false,
       saveAndContinueLabel: i18next.t("Save and add another"),
       action: null,
       showPersonForm:
-        props.autocompleteNames !== NamesAutocompleteOptions.SEARCH_ONLY ||
-        !_isEmpty(props.initialCreatibutor),
+        autocompleteNames !== NamesAutocompleteOptions.SEARCH_ONLY ||
+        !_isEmpty(initialCreatibutor),
       isOrganization:
-        !_isEmpty(props.initialCreatibutor) &&
-        props.initialCreatibutor.person_or_org.type ===
-          CREATIBUTOR_TYPE.ORGANIZATION,
+        !_isEmpty(initialCreatibutor) &&
+        initialCreatibutor.person_or_org.type === CREATIBUTOR_TYPE.ORGANIZATION,
       personIdentifiers: [],
       personAffiliations: [],
       organizationIdentifiers: [],
@@ -109,7 +110,7 @@ export class CreatibutorsModal extends Component {
 
   openModal = () => {
     this.setState({ open: true, action: null }, () => {
-      const { initialCreatibutor } = this.props;
+      const { initialCreatibutor = {} } = this.props;
       if (!_isEmpty(initialCreatibutor)) {
         const { isOrganization } = this.state;
 
@@ -237,7 +238,7 @@ export class CreatibutorsModal extends Component {
     });
 
     const { showPersonForm } = this.state;
-    const { autocompleteNames } = this.props;
+    const { autocompleteNames = "search" } = this.props;
 
     const showManualEntry =
       autocompleteNames === NamesAutocompleteOptions.SEARCH_ONLY &&
@@ -387,9 +388,9 @@ export class CreatibutorsModal extends Component {
 
   render() {
     const {
-      initialCreatibutor,
-      autocompleteNames,
-      roleOptions,
+      initialCreatibutor = {},
+      autocompleteNames = "search",
+      roleOptions = [],
       trigger,
       action,
       showRoleField,
@@ -534,10 +535,10 @@ export class CreatibutorsModal extends Component {
                               label={i18next.t("Family name")}
                               placeholder={i18next.t("Family name")}
                               fieldPath={familyNameFieldPath}
-                              required={true}
+                              required
                             />
                             <TextField
-                              required={true}
+                              required
                               label={i18next.t("Given names")}
                               placeholder={i18next.t("Given names")}
                               fieldPath={givenNameFieldPath}
@@ -714,6 +715,7 @@ CreatibutorsModal.propTypes = {
   schema: PropTypes.oneOf(["creators", "contributors"]).isRequired,
   action: PropTypes.oneOf(["add", "edit"]).isRequired,
   addLabel: PropTypes.string.isRequired,
+  /* eslint-disable react/require-default-props */
   autocompleteNames: PropTypes.oneOf(["search", "search_only", "off"]),
   editLabel: PropTypes.string.isRequired,
   initialCreatibutor: PropTypes.shape({
@@ -737,10 +739,5 @@ CreatibutorsModal.propTypes = {
   onCreatibutorChange: PropTypes.func.isRequired,
   roleOptions: PropTypes.array,
   showRoleField: PropTypes.bool,
-};
-
-CreatibutorsModal.defaultProps = {
-  roleOptions: [],
-  initialCreatibutor: {},
-  autocompleteNames: "search",
+  /* eslint-enable react/require-default-props */
 };

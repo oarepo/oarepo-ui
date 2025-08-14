@@ -17,13 +17,10 @@ export class BaseForm extends Component {
 BaseForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   children: PropTypes.any.isRequired,
+  // eslint-disable-next-line react/require-default-props
   formik: PropTypes.shape({
     initialValues: PropTypes.object.isRequired,
     validationSchema: PropTypes.object,
     validate: PropTypes.func,
   }),
-};
-
-BaseForm.defaultProps = {
-  formik: undefined,
 };

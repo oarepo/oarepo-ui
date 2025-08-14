@@ -1,1 +1,1 @@
-export * from './I18nTextInputField'
+export * from "./I18nTextInputField";

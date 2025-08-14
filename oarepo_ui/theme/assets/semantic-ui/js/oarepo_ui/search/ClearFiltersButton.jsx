@@ -13,7 +13,7 @@ const ClearFiltersButtonComponent = ({
   updateQueryState,
   currentQueryState,
   currentResultsState,
-  clearFiltersButtonClassName,
+  clearFiltersButtonClassName = "clear-filters-button",
   ...uiProps
 }) => {
   const { filters } = currentQueryState;
@@ -46,9 +46,6 @@ ClearFiltersButtonComponent.propTypes = {
   updateQueryState: PropTypes.func.isRequired,
   currentQueryState: PropTypes.object.isRequired,
   currentResultsState: PropTypes.object.isRequired,
+  // eslint-disable-next-line react/require-default-props
   clearFiltersButtonClassName: PropTypes.string,
-};
-
-ClearFiltersButtonComponent.defaultProps = {
-  clearFiltersButtonClassName: "clear-filters-button",
 };

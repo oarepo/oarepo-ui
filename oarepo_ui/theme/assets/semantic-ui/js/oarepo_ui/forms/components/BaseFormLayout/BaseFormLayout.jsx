@@ -8,16 +8,12 @@ import { DeleteButton } from "../DeleteButton";
 import { PreviewButton } from "../PreviewButton";
 import { Grid, Ref, Sticky, Card, Header } from "semantic-ui-react";
 import { connect } from "react-redux";
-import {
-  useFormConfig,
-  getTitleFromMultilingualObject,
-  useFormikRef,
-} from "@js/oarepo_ui";
+import { getTitleFromMultilingualObject } from "../../../util";
 import { buildUID } from "react-searchkit";
 import Overridable from "react-overridable";
 import { CustomFields } from "react-invenio-forms";
 import { getIn, useFormikContext } from "formik";
-import { useSanitizeInput } from "../../hooks";
+import { useSanitizeInput, useFormConfig, useFormikRef } from "../../hooks";
 import _isEmpty from "lodash/isEmpty";
 
 const FormTitle = () => {
@@ -37,13 +33,13 @@ const FormTitle = () => {
         {/* cannot set dangerously html to SUI header directly, I think it is some internal
         implementation quirk (it says you cannot have both children and dangerouslySethtml even though
         there is no children given to the component) */}
-        <span dangerouslySetInnerHTML={{ __html: sanitizedTitle }}></span>
+        <span dangerouslySetInnerHTML={{ __html: sanitizedTitle }} />
       </Header>
     )
   );
 };
 
-const BaseFormLayoutComponent = ({ formikProps, record, errors }) => {
+const BaseFormLayoutComponent = ({ formikProps = {}, record, errors = {} }) => {
   const { overridableIdPrefix, custom_fields: customFields } = useFormConfig();
   const sidebarRef = React.useRef(null);
   const formFeedbackRef = React.useRef(null);
@@ -97,7 +93,7 @@ const BaseFormLayoutComponent = ({ formikProps, record, errors }) => {
                   {buildUID(overridableIdPrefix, "FormFields.container")}{" "}
                   component
                 </pre>
-                <FormikStateLogger render={true} />
+                <FormikStateLogger render />
               </>
             </Overridable>
             <Overridable
@@ -163,6 +159,10 @@ export const BaseFormLayout = connect(
 )(BaseFormLayoutComponent);
 
 BaseFormLayoutComponent.propTypes = {
+  record: PropTypes.object.isRequired,
+  // eslint-disable-next-line react/require-default-props
+  errors: PropTypes.object,
+  // eslint-disable-next-line react/require-default-props
   formikProps: PropTypes.object,
 };
 
