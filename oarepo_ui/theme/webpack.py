@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
@@ -16,6 +15,8 @@ You include one of the bundles in a page like the example below (using
     {{ webpack['base.js']}}
 
 """
+
+from __future__ import annotations
 
 from invenio_assets.webpack import WebpackThemeBundle
 from oarepo import __version__ as oarepo_version
@@ -72,8 +73,8 @@ theme = WebpackThemeBundle(
     "assets",
     default="semantic-ui",
     themes={
-        "semantic-ui": dict(
-            entry={
+        "semantic-ui": {
+            "entry": {
                 "oarepo_ui": "./js/oarepo_ui/index.js",
                 "oarepo_ui_search": "./js/oarepo_ui/search/index.js",
                 "oarepo_ui_forms": "./js/oarepo_ui/forms/index.js",
@@ -84,21 +85,15 @@ theme = WebpackThemeBundle(
                 "record_versions": "./js/oarepo_ui/components/record-versions.js",
                 "record_sharing": "./js/oarepo_ui/components/record-sharing.js",
             },
-            dependencies=dependencies,
-            devDependencies={"eslint-plugin-i18next": "^6.0.3"},
-            aliases={
+            "dependencies": dependencies,
+            "devDependencies": {"eslint-plugin-i18next": "^6.0.3"},
+            "aliases": {
                 **aliases,
                 "@translations/oarepo_ui": "translations/oarepo_ui",
                 # search and edit
                 "@less/oarepo_ui": "less/oarepo_ui",
                 "@js/oarepo_ui": "js/oarepo_ui",
-                # hack for communities being dependent on RDM
-                "@translations/invenio_app_rdm/i18next": "translations/oarepo_ui/i18next.js",
-                # hack for vocabularies being dependent on RDM
-                "@translations/invenio_rdm_records/i18next": "translations/oarepo_ui/i18next.js",
-                # another hack for communities
-                "@templates/custom_fields": "js/custom_fields",
             },
-        )
+        }
     },
 )
