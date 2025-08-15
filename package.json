@@ -1,0 +1,12 @@
+{
+  "name": "oarepo-ui",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@inveniosoftware/eslint-config-invenio": "2"
+  }
+}
