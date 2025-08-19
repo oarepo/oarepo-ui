@@ -19,7 +19,6 @@ if TYPE_CHECKING:
 
 
 # TODO: is this needed?
-# TODO: if yes, move it together with the FormConfigResource to oarepo_ui.resources.form_config
 class FormConfigResourceConfig(UIResourceConfig):
     """Configuration for the form configuration resource."""
 

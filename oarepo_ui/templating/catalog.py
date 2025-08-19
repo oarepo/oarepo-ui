@@ -15,7 +15,6 @@ and integration with Flask's static file serving for CSS and JavaScript assets.
 
 from __future__ import annotations
 
-import os
 import re
 from itertools import chain
 from pathlib import Path
@@ -99,10 +98,6 @@ class OarepoCatalog(Catalog):
         env = flask.templating.Environment(undefined=jinja2.Undefined, app=current_app, autoescape=True)
         extensions = [*(extensions or []), "jinja2.ext.do", JinjaX]
         globals = globals or {}  # noqa: A001
-        current_app.config.setdefault(
-            "DEPLOYMENT_VERSION",
-            os.environ.get("DEPLOYMENT_VERSION", "local development"),
-        )
         filters = filters or {}
         tests = tests or {}
 
