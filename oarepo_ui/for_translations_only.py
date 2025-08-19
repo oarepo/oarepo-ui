@@ -1,6 +1,23 @@
+#
+# Copyright (c) 2025 CESNET z.s.p.o.
+#
+# This file is a part of oarepo-ui (see https://github.com/oarepo/oarepo-ui).
+#
+# oarepo-ui is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+#
+"""OARepo UI translations module.
+
+This module contains string constants used for internationalization and
+localization purposes. It includes API-related strings and HTTP error
+messages that need to be translated in the user interface.
+"""
+
+from __future__ import annotations
+
 from gettext import gettext as _
 
-translated_strings = [
+translated_strings: list[str] = [
     _("api.draft"),
     _("api.latest"),
     _("api.files"),
@@ -49,27 +66,18 @@ translated_strings = [
     ),
     _("The precondition on the request for the URL failed positive evaluation."),
     _("The data value transmitted exceeds the capacity limit."),
-    _(
-        "The length of the requested URL exceeds the capacity limit for this "
-        "server. The request cannot be processed."
-    ),
+    _("The length of the requested URL exceeds the capacity limit for this server. The request cannot be processed."),
     _("The server does not support the media type transmitted in the request."),
     _("The server cannot provide the requested range."),
     _("The server could not meet the requirements of the Expect header"),
     _("This server is a teapot, not a coffee machine"),
-    _(
-        "The request was well-formed but was unable to be followed due to "
-        "semantic errors."
-    ),
+    _("The request was well-formed but was unable to be followed due to semantic errors."),
     _("The resource that is being accessed is locked."),
     _(
         "The method could not be performed on the resource because the "
         "requested action depended on another action and that action failed."
     ),
-    _(
-        "This request is required to be conditional; try using 'If-Match' or "
-        "'If-Unmodified-Since'."
-    ),
+    _("This request is required to be conditional; try using 'If-Match' or 'If-Unmodified-Since'."),
     _("This user has exceeded an allotted request count. Try again later."),
     _("One or more header fields exceeds the maximum size."),
     _("Unavailable for legal reasons."),

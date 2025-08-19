@@ -1,16 +1,58 @@
+#
+# Copyright (c) 2025 CESNET z.s.p.o.
+#
+# This file is a part of oarepo-ui (see https://github.com/oarepo/oarepo-ui).
+#
+# oarepo-ui is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+#
+from __future__ import annotations
+
 import json
 
 from invenio_config.default import ALLOWED_HTML_ATTRS, ALLOWED_HTML_TAGS
 
 
-def test_edit(
-    app, record_ui_resource, simple_record, client_with_credentials, fake_manifest
-):
+def test_edit(app, resources, simple_record, client_with_credentials):
     with client_with_credentials.get(f"/simple-model/{simple_record.id}/edit") as c:
-        assert json.loads(c.text) == {
+        response = json.loads(c.text)
+        response["data"].pop("created")
+        response["data"].pop("updated")
+        response["record"].pop("created")
+        response["record"].pop("updated")
+
+        ui = response["data"].pop("ui")
+        assert "created_date_l10n_full" in ui
+        assert "created_date_l10n_long" in ui
+        assert "created_date_l10n_medium" in ui
+        assert "created_date_l10n_short" in ui
+        assert "updated_date_l10n_full" in ui
+        assert "updated_date_l10n_long" in ui
+        assert "updated_date_l10n_medium" in ui
+        assert "updated_date_l10n_short" in ui
+
+        ui = response["record"].pop("ui")
+        assert "created_date_l10n_full" in ui
+        assert "created_date_l10n_long" in ui
+        assert "created_date_l10n_medium" in ui
+        assert "created_date_l10n_short" in ui
+        assert "updated_date_l10n_full" in ui
+        assert "updated_date_l10n_long" in ui
+        assert "updated_date_l10n_medium" in ui
+        assert "updated_date_l10n_short" in ui
+
+        assert response == {
             "api_record": simple_record.id,
             "data": {
                 "expanded": {},
+                "extra_links": {
+                    "search_link": "/simple-model",
+                    "ui_links": {
+                        "edit": f"https://127.0.0.1:5000/simple-model/{simple_record.id}/edit",
+                        "search": "https://127.0.0.1:5000/simple-model/",
+                        "self": f"https://127.0.0.1:5000/simple-model/{simple_record.id}",
+                    },
+                },
                 "links": {
                     "self": f"https://127.0.0.1:5000/api/simple-model/{simple_record.id}",
                     "ui": f"https://127.0.0.1:5000/simple-model/{simple_record.id}",
@@ -42,13 +84,7 @@ def test_edit(
                 "custom_fields": {
                     "ui": [
                         {
-                            "fields": [{"field": "bbb", "ui_widget": "Input"}],
-                            "section": "B",
-                        },
-                        {
-                            "fields": [
-                                {"field": "nested_cf.aaa", "ui_widget": "Input"}
-                            ],
+                            "fields": [{"field": "custom_fields.aaa", "ui_widget": "Input"}],
                             "section": "A",
                         },
                     ]
@@ -80,6 +116,7 @@ def test_edit(
                 "updateUrl": f"https://127.0.0.1:5000/api/simple-model/{simple_record.id}",
             },
             "record": {
+                "expanded": {},
                 "extra_links": {
                     "search_link": "/simple-model",
                     "ui_links": {
@@ -87,7 +124,11 @@ def test_edit(
                         "search": "https://127.0.0.1:5000/simple-model/",
                         "self": f"https://127.0.0.1:5000/simple-model/{simple_record.id}",
                     },
-                }
+                },
+                "links": {
+                    "self": f"https://127.0.0.1:5000/api/simple-model/{simple_record.id}",
+                    "ui": f"https://127.0.0.1:5000/simple-model/{simple_record.id}",
+                },
             },
             "ui_links": {
                 "edit": f"https://127.0.0.1:5000/simple-model/{simple_record.id}/edit",

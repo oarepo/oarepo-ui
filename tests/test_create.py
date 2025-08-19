@@ -1,14 +1,27 @@
+#
+# Copyright (c) 2025 CESNET z.s.p.o.
+#
+# This file is a part of oarepo-ui (see https://github.com/oarepo/oarepo-ui).
+#
+# oarepo-ui is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+#
+from __future__ import annotations
+
 import json
 
 from invenio_config.default import ALLOWED_HTML_ATTRS, ALLOWED_HTML_TAGS
 
 
-def test_create(
-    app, record_ui_resource, simple_record, client_with_credentials, fake_manifest
-):
+def test_create(app, record_ui_resource, simple_record, client_with_credentials):
     with client_with_credentials.get("/simple-model/_new") as c:
-        print(c.text)
-        assert json.loads(c.text) == {
+        response = json.loads(c.text)
+        response["data"].pop("created")
+        response["data"].pop("updated")
+        response["record"].pop("created")
+        response["record"].pop("updated")
+
+        assert response == {
             "data": {"title": ""},
             "extra_context": {
                 "permissions": {
@@ -37,13 +50,7 @@ def test_create(
                 "custom_fields": {
                     "ui": [
                         {
-                            "fields": [{"field": "bbb", "ui_widget": "Input"}],
-                            "section": "B",
-                        },
-                        {
-                            "fields": [
-                                {"field": "nested_cf.aaa", "ui_widget": "Input"}
-                            ],
+                            "fields": [{"field": "custom_fields.aaa", "ui_widget": "Input"}],
                             "section": "A",
                         },
                     ]

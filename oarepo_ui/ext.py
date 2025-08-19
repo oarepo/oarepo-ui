@@ -1,57 +1,82 @@
-import functools
-import json
-from pathlib import Path
+#
+# Copyright (c) 2025 CESNET z.s.p.o.
+#
+# This file is a part of oarepo-ui (see https://github.com/oarepo/oarepo-ui).
+#
+# oarepo-ui is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+#
+"""OARepo UI extension module.
 
-from deepmerge import always_merger
-from flask import Response, current_app
+This module contains the main Flask extension for OARepo UI, which provides
+user interface functionality for OARepo repositories. It includes state management,
+catalog configuration, resource registration, and UI component overrides.
+"""
+
+from __future__ import annotations
+
+import contextlib
+import warnings
+from functools import cached_property
+from typing import TYPE_CHECKING, Any, cast
+
+from flask import current_app
 from flask_login import user_logged_in, user_logged_out
 from flask_webpackext import current_manifest
 from flask_webpackext.errors import ManifestKeyNotFoundError
-from importlib_metadata import entry_points
-from invenio_base.utils import obj_or_import_string
+from jinja2 import FileSystemLoader
 from markupsafe import Markup
 
-import oarepo_ui.cli  # noqa
-from oarepo_ui.resources.templating.catalog import OarepoCatalog as Catalog
+from oarepo_ui.templating.catalog import OarepoCatalog as Catalog
 
 from .proxies import current_optional_manifest
-from .ui.components import DisabledComponent, FacetsWithVersionsToggle, UIComponent
 from .utils import clear_view_deposit_page_permission_from_session
 
+if TYPE_CHECKING:
+    from flask import Flask
+    from jinja2 import Environment
 
-def _prefixed_ui_overrides(prefix: str, components: dict):
-    return {f"{prefix}.{key}": value for key, value in components.items()}
+    from oarepo_ui.resources.records.resource import UIResource
+
+    from .ui.components import UIComponent
 
 
 class OARepoUIState:
-    def __init__(self, app):
-        self.app = app
-        self._resources = []
-        self.init_builder_plugin()
-        self._catalog = None
+    """API for the OARepo UI extension."""
 
-    def optional_manifest(self, key):
+    def __init__(self, app: Flask) -> None:
+        """Initialize the OARepo UI state."""
+        if not app:
+            raise ValueError("OARepoUIState must be initialized with a Flask app instance")
+        self.app = app
+        self._resources: list[UIResource] = []
+        self._catalog: Catalog | None = None
+
+    def optional_manifest(self, key: str) -> str | Markup:
+        """Get an optional manifest entry by key."""
         try:
             return current_manifest[key]
         except ManifestKeyNotFoundError as e:
-            return Markup(f"<!-- Warn: {e} -->")
+            if self.app.debug:
+                return Markup("<!-- Overridable %s not found: %s -->") % (key, e)
+            return ""
 
-    def reinitialize_catalog(self):
+    def reinitialize_catalog(self) -> None:
+        """Reinitialize the JinjaX catalog."""
         self._catalog = None
-        try:
-            del self.catalog  # noqa - this is a documented method of clearing the cache
-        except (
-            AttributeError
-        ):  # but does not work if the cache is not initialized yet, thus the try/except
-            pass
+        with contextlib.suppress(AttributeError):
+            del self.catalog
 
-    @functools.cached_property
-    def catalog(self):
+    @cached_property
+    def catalog(self) -> Catalog:
+        """Get the JinjaX catalog for OARepo UI. The catalog is cached and reused."""
         self._catalog = Catalog()
-        return self._catalog_config(self._catalog, self.app.jinja_env)
+        self._catalog_config(self._catalog, self.app.jinja_env)
+        return self._catalog
 
-    def _catalog_config(self, catalog, env):
-        context = {}
+    def _catalog_config(self, catalog: Catalog, env: Environment) -> None:
+        """Configure the JinjaX catalog for OARepo UI."""
+        context: dict[str, Any] = {}
         env.policies.setdefault("json.dumps_kwargs", {}).setdefault("default", str)
         self.app.update_template_context(context)
         catalog.jinja_env.loader = env.loader
@@ -66,31 +91,29 @@ class OARepoUIState:
         catalog.jinja_env.filters.update(env.filters)
         catalog.jinja_env.policies.update(env.policies)
 
-        catalog.prefixes[""] = catalog.jinja_env.loader
+        # replace the jinjax default loader
+        if not isinstance(catalog.jinja_env.loader, FileSystemLoader):
+            warnings.warn(
+                f"JinjaX default loader should be an instance of FileSystemLoader "
+                f"but is {type(catalog.jinja_env.loader)}. Expect problems.",
+                stacklevel=2,
+            )
+        catalog.prefixes[""] = cast("FileSystemLoader", catalog.jinja_env.loader)
 
-        return catalog
-
-    def register_resource(self, ui_resource):
+    def register_resource(self, ui_resource: UIResource) -> None:
+        """Register a UI resource."""
         self._resources.append(ui_resource)
 
-    def get_resources(self):
+    def get_resources(self) -> list[UIResource]:
+        """Get all registered UI resources."""
         return self._resources
 
-    def init_builder_plugin(self):
-        if self.app.config["OAREPO_UI_DEVELOPMENT_MODE"]:
-            self.app.after_request(self.development_after_request)
-
-    def development_after_request(self, response: Response):
-        if current_app.config["OAREPO_UI_BUILD_FRAMEWORK"] == "vite":
-            from oarepo_ui.vite import add_vite_tags
-
-            return add_vite_tags(response)
-
-    @property
+    @cached_property
     def record_actions(self) -> dict[str, str]:
-        """
-        Map of record actions to themselves. This is done to have the same
-        handling for record actions and draft actions in the UI.
+        """Get the mapping of api permissions (actions) to UI permission flags.
+
+        This is normally an identity for the published record actions, but can be
+        used to map to custom actions.
         """
         ret = self.app.config["OAREPO_UI_RECORD_ACTIONS"]
         if not isinstance(ret, dict):
@@ -98,97 +121,54 @@ class OARepoUIState:
             ret = {action: action for action in ret}
         return ret
 
-    @property
+    @cached_property
     def draft_actions(self) -> dict[str, str]:
+        """Get the mapping of api permissions (actions) to UI permission flags for drafts.
+
+        This maps the actions that are available for drafts, such as delete_draft,
+        to the same ui permission flags as the published record actions (delete in this case).
         """
-        Map of draft actions to record actions. The keys are the draft actions
-        and the values are the corresponding record actions.
+        return cast("dict[str, str]", self.app.config["OAREPO_UI_DRAFT_ACTIONS"])
+
+    @cached_property
+    def ui_overrides(self) -> dict:
+        """Get the UI overrides for the current app."""
+        return cast("dict", current_app.config.get("OAREPO_UI_OVERRIDES", {}))
+
+    def register_result_list_item(self, schema: str, component: UIComponent) -> None:
+        """Register a result list item javascript component.
+
+        The component will be automatically registered to the correct overridables so
+        that it is displayed on search results, dashboard and other search pages.
+
+        :param schema: jsonschema of the record that should be displayed by the component
+        :param component: the component to register
         """
-        return self.app.config["OAREPO_UI_DRAFT_ACTIONS"]
-
-    @functools.cached_property
-    def ui_models(self):
-        # load all models from json files registered in oarepo.ui entry point
-        ret = {}
-        eps = entry_points(group="oarepo.ui")
-        for ep in eps:
-            path = Path(obj_or_import_string(ep.module).__file__).parent / ep.attr
-            ret[ep.name] = json.loads(path.read_text())
-        return ret
-
-    @functools.cached_property
-    def ui_overrides(self):
-        # TODO: move to oarepo-global-search and respective libraries
-        try:
-            # Prepare model overrides for global-search apps if present
-            from oarepo_global_search.proxies import current_global_search
-        except ImportError:
-            return current_app.config.get("UI_OVERRIDES", {})
-
-        global_search_config = current_global_search.global_search_ui_resource.config
-
-        global_search_result_items = {}
-
-        for schema, search_component in global_search_config.default_components.items():
-            if isinstance(search_component, UIComponent):
-                global_search_result_items[schema] = search_component
-
-        def _global_search_ui(app_name):
-            return {
-                f"{app_name}.Search.SearchApp.facets": FacetsWithVersionsToggle,
-                **_prefixed_ui_overrides(
-                    f"{app_name}.Search.ResultsList.item",
-                    global_search_result_items,
-                ),
-            }
-
-        # Runtime overrides for 3rd-party libraries UI
-        runtime_overrides = {
-            "oarepo_communities.community_records": _global_search_ui(
-                "Community_records"
-            ),
-            "records_dashboard.search": _global_search_ui("Records_dashboard"),
-            "global_search_ui.search": _global_search_ui("Global_search"),
-            "oarepo_communities.members": {
-                "InvenioCommunities.CommunityMembers.InvitationsModal": UIComponent(
-                    "CommunityInvitationsModal", "@js/communities_components"
-                )
-            },
-            "oarepo_communities.community_invitations": {
-                "InvenioCommunities.CommunityMembers.InvitationsModal": UIComponent(
-                    "CommunityInvitationsModal",
-                    "@js/communities_components",
-                    props={"resetQueryOnSubmit": True},
-                )
-            },
-            "oarepo_communities.communities_settings": {
-                "InvenioCommunities.CommunityProfileForm.GridRow.DangerZone": DisabledComponent
-            },
-        }
-
-        if "UI_OVERRIDES" not in self.app.config:
-            overrides = runtime_overrides
-        else:
-            overrides = always_merger.merge(
-                runtime_overrides, self.app.config["UI_OVERRIDES"]
-            )
-
-        return overrides
+        with self.app.app_context():
+            for registration_callback in self.app.config.get("OAREPO_UI_RESULT_LIST_ITEM_REGISTRATION_CALLBACK", []):
+                if callable(registration_callback):
+                    registration_callback(self.ui_overrides, schema, component)
+                else:
+                    raise TypeError(f"Registration callback {registration_callback} is not callable.")
 
 
 class OARepoUIExtension:
-    def __init__(self, app=None):
+    """Flask extension for OARepo UI."""
+
+    def __init__(self, app: Flask | None = None) -> None:
+        """Initialize the OARepo UI extension."""
         if app:
             self.init_app(app)
 
-    def init_app(self, app):
+    def init_app(self, app: Flask) -> None:
+        """Initialize the OARepo UI extension with the Flask app."""
         self.init_config(app)
         app.extensions["oarepo_ui"] = OARepoUIState(app)
         user_logged_in.connect(clear_view_deposit_page_permission_from_session)
         user_logged_out.connect(clear_view_deposit_page_permission_from_session)
         app.add_template_global(current_optional_manifest, name="webpack_optional")
 
-    def init_config(self, app):
+    def init_config(self, app: Flask) -> None:
         """Initialize configuration."""
         from . import config
 
@@ -202,6 +182,8 @@ class OARepoUIExtension:
                 if name not in app.config[k]:
                     app.config[k][name] = val
 
-        app.config.setdefault(
-            "MATOMO_ANALYTICS_TEMPLATE", config.MATOMO_ANALYTICS_TEMPLATE
-        )
+        app.config.setdefault("MATOMO_ANALYTICS_TEMPLATE", config.MATOMO_ANALYTICS_TEMPLATE)
+
+        # set the version, should be overriden in INVENIO_DEPLOYMENT_VERSION
+        # in K8s cluster
+        app.config.setdefault("DEPLOYMENT_VERSION", "local development")

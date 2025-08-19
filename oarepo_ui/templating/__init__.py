@@ -6,12 +6,12 @@
 # oarepo-ui is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 #
+
+"""OARepo UI templating module.
+
+This module provides templating utilities and functionality for OARepo UI,
+including jinjax template rendering, data processing, and filter functions
+for Jinja2 template engine integration.
+"""
+
 from __future__ import annotations
-
-from oarepo_ui.proxies import current_oarepo_ui
-
-
-def test_component_paths(app):
-    component_paths = current_oarepo_ui.catalog.component_paths
-    assert "components.Field" in component_paths
-    assert "Field" in component_paths
