@@ -202,6 +202,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
     """Field data item getter for retrieving field data items in the UI.
     If not set, the default getter will be used."""
 
+    # TODO: this property should be refactored due to changes to component overrides
     @property
     def default_components(self) -> dict[str, UIResourceComponent]:
         """Return default UI components for the resource, based on the record schema and component.
