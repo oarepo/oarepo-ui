@@ -21,9 +21,12 @@ from flask import current_app
 from werkzeug.local import LocalProxy
 
 if TYPE_CHECKING:
+    from oarepo_ui.ui.components import UIComponentOverride
+
     from .ext import OARepoUIState
 
     current_oarepo_ui: OARepoUIState
+    current_ui_overrides: set[UIComponentOverride]
 
 current_oarepo_ui = LocalProxy(lambda: current_app.extensions["oarepo_ui"])  # type: ignore[assignment]
 """Proxy to the oarepo_ui state."""
