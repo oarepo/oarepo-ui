@@ -15,9 +15,9 @@ catalog configuration, resource registration, and UI component overrides.
 
 from __future__ import annotations
 
-from collections import defaultdict
 import contextlib
 import warnings
+from collections import defaultdict
 from functools import cached_property
 from typing import TYPE_CHECKING, Any, cast
 
@@ -140,7 +140,7 @@ class OARepoUIState:
     def ui_overrides_by_endpoint(self) -> dict[str, set[UIComponentOverride]]:
         """Get the UI overrides for the app, grouped by Flask Blueprint endpoint."""
         endpoint_overrides: dict[str, set[UIComponentOverride]] = defaultdict(set)
-        
+
         for component_override in self.ui_overrides:
             endpoint_overrides[component_override.endpoint].add(component_override)
 
@@ -158,7 +158,6 @@ class OARepoUIState:
         with self.app.app_context():
             for registration_callback in self.app.config.get("OAREPO_UI_RESULT_LIST_ITEM_REGISTRATION_CALLBACK", []):
                 if callable(registration_callback):
-                    print(registration_callback)
                     registration_callback(self.ui_overrides, schema, component)
                 else:
                     raise TypeError(f"Registration callback {registration_callback} is not callable.")
