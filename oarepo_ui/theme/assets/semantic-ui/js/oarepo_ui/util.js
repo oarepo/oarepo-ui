@@ -2,6 +2,7 @@ import _map from "lodash/map";
 import _reduce from "lodash/reduce";
 import _camelCase from "lodash/camelCase";
 import _startCase from "lodash/startCase";
+import _isEmpty from "lodash/isEmpty";
 import { importTemplate, loadComponents } from "@js/invenio_theme/templates";
 import _uniqBy from "lodash/uniqBy";
 import * as Yup from "yup";
@@ -26,15 +27,19 @@ export const scrollTop = () => {
   });
 };
 
-export const object2array = (obj, keyName, valueName) =>
+export const object2array = (obj, keyName, valueName) => {
   // Transforms object to array of objects.
   // Each key of original object will be stored as value of `keyName` key.
   // Each value of original object will be stored as value of `valueName` key.
+  if (_isEmpty(obj)) {
+    return [];
+  }
 
-  _map(obj, (value, key) => ({
+  return _map(obj, (value, key) => ({
     [keyName]: key,
     [valueName]: value,
   }));
+};
 
 export const array2object = (arr, keyName, valueName) =>
   // Transforms an array of objects to a single object.
@@ -50,15 +55,7 @@ export const array2object = (arr, keyName, valueName) =>
     {}
   );
 
-export const absoluteUrl = (urlString) => {
-  return new URL(urlString, window.location.origin);
-};
-
-export const relativeUrl = (urlString) => {
-  const { pathname, search } = absoluteUrl(urlString);
-  return `${pathname}${search}`;
-};
-
+// TODO: decommission old way of overriding
 export async function loadTemplateComponents(
   overridableIdPrefix,
   componentIds
@@ -111,6 +108,7 @@ export async function loadTemplateComponents(
   return componentOverrides;
 }
 
+// TODO: decommission old way of overriding
 export async function loadAppComponents({
   overridableIdPrefix,
   componentIds = [],
