@@ -31,7 +31,7 @@ if TYPE_CHECKING:
 current_oarepo_ui = LocalProxy(lambda: current_app.extensions["oarepo_ui"])  # type: ignore[assignment]
 """Proxy to the oarepo_ui state."""
 
-current_ui_overrides = LocalProxy(lambda: current_app.extensions["oarepo_ui"].ui_overrides)
+current_ui_overrides = LocalProxy(lambda: current_app.extensions["oarepo_ui"].ui_overrides)  # type: ignore[assignment]
 """Proxy to get the current ui_overrides."""
 
 current_optional_manifest = LocalProxy(lambda: current_oarepo_ui.optional_manifest)
