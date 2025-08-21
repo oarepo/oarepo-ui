@@ -17,10 +17,11 @@ from __future__ import annotations
 
 from typing import Any, override
 
+from ..records.config import RecordsUIResourceConfig
 from .base import UIResourceComponent
 
 
-class EmptyRecordAccessComponent(UIResourceComponent):
+class EmptyRecordAccessComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig](UIResourceComponent[T]):
     """Prefills empty record data with default public access settings.
 
     The component ensures that the required "access" structure exists and sets

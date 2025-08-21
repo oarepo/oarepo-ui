@@ -19,10 +19,11 @@ from typing import Any, override
 
 from flask import current_app
 
+from ..records.config import RecordsUIResourceConfig
 from .base import UIResourceComponent
 
 
-class RecordRestrictionComponent(UIResourceComponent):
+class RecordRestrictionComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig](UIResourceComponent[T]):
     """Populate form configuration with record restriction settings."""
 
     @override

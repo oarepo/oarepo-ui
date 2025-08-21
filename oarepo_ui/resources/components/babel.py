@@ -24,7 +24,7 @@ from ..records.config import RecordsUIResourceConfig
 from .base import UIResourceComponent
 
 
-class BabelComponent(UIResourceComponent[RecordsUIResourceConfig]):
+class BabelComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig](UIResourceComponent[T]):
     """Add i18n locale information to the form configuration.
 
     Populates current_locale, default_locale, and a list of available locales
