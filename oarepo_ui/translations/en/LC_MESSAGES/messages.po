@@ -1218,3 +1218,27 @@ msgstr ""
 
 msgid "Draft could not be saved. Please try again later."
 msgstr ""
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/config.py:89
+msgid "English"
+msgstr ""
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/config.py:90
+msgid "Czech"
+msgstr ""
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:288
+msgid "File preview requested but file service is not available on the model"
+msgstr ""
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:711
+msgid "No record found for the tombstone page"
+msgstr ""
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:714
+msgid "No record found for the tombstone page, incorrect parameter"
+msgstr ""
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:719
+msgid "No record found for the tombstone page, no id"
+msgstr ""

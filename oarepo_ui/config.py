@@ -16,6 +16,7 @@ and filter/global function definitions for Jinjax templates.
 
 from __future__ import annotations
 
+from gettext import gettext as _
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -82,3 +83,9 @@ OAREPO_UI_OVERRIDES: set[UIComponentOverride] = set()
 OAREPO_UI_RESULT_LIST_ITEM_REGISTRATION_CALLBACK: list[
     Callable[[set[UIComponentOverride], str, UIComponent], None]
 ] = []
+
+
+OAREPO_UI_MULTILINGUAL_FIELD_LANGUAGES = [
+    {"text": _("English"), "value": "en"},
+    {"text": _("Czech"), "value": "cs"},
+]
