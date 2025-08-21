@@ -58,6 +58,7 @@ class OverridableBundleProject(WebpackBundleProject):
         config: dict[str, Any] | None = None,
         config_path: str | None = None,
         overrides_bundle_path: str = "_overrides",
+        **kwargs
     ) -> None:
         """Initialize templated folder.
 
@@ -91,6 +92,7 @@ class OverridableBundleProject(WebpackBundleProject):
             bundles=bundles,
             config=config,
             config_path=config_path,
+            **kwargs
         )
         self._overrides_bundle_path = Path(overrides_bundle_path)
         self._generated_paths: list[str] = []
@@ -157,4 +159,5 @@ project = OverridableBundleProject(
     project_folder="assets",
     config_path="build/config.json",
     bundles=cast("list[WebpackBundle]", list(bundles_from_entry_point("invenio_assets.webpack"))),
+    package_json_source_path="rspack-package.json",
 )
