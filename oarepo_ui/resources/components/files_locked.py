@@ -16,10 +16,11 @@ from __future__ import annotations
 
 from typing import Any, override
 
+from ..records.config import RecordsUIResourceConfig
 from .base import UIResourceComponent
 
 
-class FilesLockedComponent(UIResourceComponent):
+class FilesLockedComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig](UIResourceComponent[T]):
     """Add files locked to form config, to be able to use the same logic as in RDM."""
 
     @override

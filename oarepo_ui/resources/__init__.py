@@ -20,8 +20,17 @@ from .base import (
     UIResource,
     UIResourceConfig,
 )
-from .components.babel import BabelComponent
-from .components.permissions import PermissionsComponent
+from .components import (
+    AllowedHtmlTagsComponent,
+    BabelComponent,
+    CustomFieldsComponent,
+    EmptyRecordAccessComponent,
+    FilesComponent,
+    FilesLockedComponent,
+    PermissionsComponent,
+    RecordRestrictionComponent,
+    UIResourceComponent,
+)
 from .form_config import FormConfigResource, FormConfigResourceConfig
 from .records import (
     RecordsUIResource,
@@ -30,15 +39,22 @@ from .records import (
 from .template_pages import TemplatePageUIResource, TemplatePageUIResourceConfig
 
 __all__ = (
+    "AllowedHtmlTagsComponent",
     "BabelComponent",
+    "CustomFieldsComponent",
+    "EmptyRecordAccessComponent",
+    "FilesComponent",
+    "FilesLockedComponent",
     "FormConfigResource",
     "FormConfigResourceConfig",
     "PermissionsComponent",
+    "RecordRestrictionComponent",
     "RecordsUIResource",
     "RecordsUIResourceConfig",
     "TemplatePageUIResource",
     "TemplatePageUIResourceConfig",
     "UIComponentsResource",
     "UIResource",
+    "UIResourceComponent",
     "UIResourceConfig",
 )

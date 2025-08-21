@@ -28,7 +28,7 @@ if TYPE_CHECKING:
     from invenio_records_resources.services.records.service import RecordService
 
 
-class PermissionsComponent(UIResourceComponent[RecordsUIResourceConfig]):
+class PermissionsComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig](UIResourceComponent[T]):
     """Compute and attach permission flags for UI templates and forms."""
 
     def _get_underlying_record(self, api_record: RecordItem | None) -> Record | None:

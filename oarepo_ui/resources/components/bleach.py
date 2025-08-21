@@ -23,7 +23,7 @@ from ..records.config import RecordsUIResourceConfig
 from .base import UIResourceComponent
 
 
-class AllowedHtmlTagsComponent(UIResourceComponent[RecordsUIResourceConfig]):
+class AllowedHtmlTagsComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig](UIResourceComponent[T]):
     """Component that injects allowed HTML tags and attributes into form configuration.
 
     Reads values from Flask configuration (ALLOWED_HTML_TAGS, ALLOWED_HTML_ATTRS) and

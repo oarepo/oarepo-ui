@@ -28,7 +28,7 @@ if TYPE_CHECKING:
     from invenio_records_resources.services.records.results import RecordItem
 
 
-class FilesComponent(UIResourceComponent[RecordsUIResourceConfig]):
+class FilesComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig](UIResourceComponent[T]):
     """Provide file metadata to be rendered on detail and edit pages."""
 
     @override
