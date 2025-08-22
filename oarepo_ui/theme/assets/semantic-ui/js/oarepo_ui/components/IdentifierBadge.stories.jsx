@@ -1,4 +1,5 @@
 import React from "react";
+import { expect } from "@storybook/test";
 import { IdentifierBadge, IconIdentifier } from "./IdentifierBadge";
 
 export default {
@@ -22,6 +23,22 @@ export const Default = {
   args: {
     identifier: exampleIdentifier,
     creatibutorName: "Jane Doe",
+  },
+  play: async ({ canvas, userEvent }) => {
+
+    // Wait for the image to appear
+    await expect(canvas.findByRole('img', { name: /ORCID/i })).toBeInTheDocument();
+
+    // Wait for the badge text
+    const badge = await canvas.findByText(/ORCID/i);
+    await expect(badge).toBeVisible();
+
+    // Try clicking the link wrapper
+    const link = img.closest('a');
+    await expect(link).toHaveAttribute('href', 'https://orcid.org/0000-0002-1825-0097');
+
+    // Simulate user clicking the link
+    await userEvent.click(link);
   },
 };
 
