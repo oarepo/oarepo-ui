@@ -58,7 +58,7 @@ class OverridableBundleProject(WebpackBundleProject):
         config: dict[str, Any] | None = None,
         config_path: str | None = None,
         overrides_bundle_path: str = "_overrides",
-        **kwargs: dict[str, Any],
+        **kwargs: Any,
     ) -> None:
         """Initialize templated folder.
 
