@@ -58,7 +58,7 @@ class OverridableBundleProject(WebpackBundleProject):
         config: dict[str, Any] | None = None,
         config_path: str | None = None,
         overrides_bundle_path: str = "_overrides",
-        **kwargs
+        **kwargs: dict[str, Any],
     ) -> None:
         """Initialize templated folder.
 
@@ -92,7 +92,7 @@ class OverridableBundleProject(WebpackBundleProject):
             bundles=bundles,
             config=config,
             config_path=config_path,
-            **kwargs
+            **kwargs,
         )
         self._overrides_bundle_path = Path(overrides_bundle_path)
         self._generated_paths: list[str] = []
