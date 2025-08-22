@@ -1,5 +1,5 @@
 import * as React from "react";
-import { VocabularyField } from "@js/oarepo_vocabularies";
+// import { VocabularyField } from "@js/oarepo_vocabularies";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import PropTypes from "prop-types";
 import { useFormikContext, getIn } from "formik";
@@ -19,24 +19,24 @@ export const LanguageSelectField = ({
   ...uiProps
 }) => {
   const { values } = useFormikContext();
-  return (
-    <VocabularyField
-      deburr
-      fieldPath={fieldPath}
-      placeholder={placeholder}
-      required={required}
-      clearable={clearable}
-      multiple={multiple}
-      label={label}
-      vocabularyName={vocabularyName}
-      usedOptions={usedLanguages}
-      onChange={({ e, data, formikProps }) => {
-        formikProps.form.setFieldValue(fieldPath, data.value);
-      }}
-      onValueChange={undefined}
-      value={getIn(values, fieldPath, "") ?? ""}
-      {...uiProps}
-    />
+  return (null
+    // <VocabularyField
+    //   deburr
+    //   fieldPath={fieldPath}
+    //   placeholder={placeholder}
+    //   required={required}
+    //   clearable={clearable}
+    //   multiple={multiple}
+    //   label={label}
+    //   vocabularyName={vocabularyName}
+    //   usedOptions={usedLanguages}
+    //   onChange={({ e, data, formikProps }) => {
+    //     formikProps.form.setFieldValue(fieldPath, data.value);
+    //   }}
+    //   onValueChange={undefined}
+    //   value={getIn(values, fieldPath, "") ?? ""}
+    //   {...uiProps}
+    // />
   );
 };
 

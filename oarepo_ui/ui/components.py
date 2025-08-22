@@ -84,7 +84,7 @@ class UIComponent:
 class UIComponentOverride:
     """Represents an override for a UI component.
 
-    An instance of this class should be placed to UI_OVERRIDES configuration
+    An instance of this class should be placed to OAREPO_UI_OVERRIDES configuration
     (set of UIComponentOverride instances).
 
     To minimize bundle size, Javascript overrides are packaged in a way that they apply
@@ -93,8 +93,11 @@ class UIComponentOverride:
     """
 
     endpoint: str
+    """Flask Blueprint endpoint name."""
     overridable_id: str
+    """Unique overridable component ID for react-overridable."""
     component: UIComponent
+    """UI component module description."""
 
     @override
     def __eq__(self, other: object) -> bool:
