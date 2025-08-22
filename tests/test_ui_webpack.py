@@ -8,7 +8,6 @@
 #
 from __future__ import annotations
 
-from contextlib import suppress
 from pathlib import Path
 
 from oarepo_ui.proxies import current_oarepo_ui, current_ui_overrides
@@ -96,10 +95,12 @@ def test_overridable_bundle_project_generated_paths(app):
 
 
 def test_overridable_result_item_registration(app):
+    assert app.extensions["oarepo_ui"].ui_overrides is not None
+    del app.extensions["oarepo_ui"].ui_overrides
+
     app.config["OAREPO_UI_OVERRIDES"] = set()
-    with suppress(AttributeError):
-        # Remove any previous cache
-        del current_oarepo_ui.ui_overrides
+    project.clean()
+    project.create()
 
     def _register_result_item_to_my_ui(
         ui_overrides: set[UIComponentOverride], schema: str, component: UIComponent
