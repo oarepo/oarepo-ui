@@ -1210,3 +1210,31 @@ msgstr "Server nepodporuje verzi protokolu HTTP použitou v požadavku."
 
 msgid "Draft could not be saved. Please try again later."
 msgstr "Záznam nelze uložit. Zkuste to prosím znovu později"
+
+msgid "English"
+msgstr "angličtina"
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/config.py:90
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:97
+msgid "Czech"
+msgstr "čeština"
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:288
+msgid "File preview requested but file service is not available on the model"
+msgstr ""
+"Byl požadován náhled souboru, ale služba pro soubory není v modelu dostupná"
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:711
+msgid "No record found for the tombstone page"
+msgstr "Pro stránku se záznamem o odstranění nebyl nalezen žádný záznam"
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:714
+msgid "No record found for the tombstone page, incorrect parameter"
+msgstr ""
+"Pro stránku se záznamem o odstranění nebyl nalezen žádný záznam, nesprávný "
+"parametr"
+
+#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:719
+msgid "No record found for the tombstone page, no id"
+msgstr ""
+"Pro stránku se záznamem o odstranění nebyl nalezen žádný záznam, chybí ID"
