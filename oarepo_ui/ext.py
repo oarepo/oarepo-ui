@@ -136,7 +136,7 @@ class OARepoUIState:
         """Get the UI overrides for the current app."""
         return cast("set[UIComponentOverride]", current_app.config.get("OAREPO_UI_OVERRIDES", {}))
 
-    @cached_property
+    @property
     def ui_overrides_by_endpoint(self) -> dict[str, set[UIComponentOverride]]:
         """Get the UI overrides for the app, grouped by Flask Blueprint endpoint."""
         endpoint_overrides: dict[str, set[UIComponentOverride]] = defaultdict(set)
