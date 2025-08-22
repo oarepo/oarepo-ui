@@ -11,6 +11,7 @@ dependencies = [
     "frozendict",
     "jinjax>=0.60,<1.0.0",
     "deepmerge>=2.0",
+    "python-dotenv>=1.1.1"
 ]
 requires-python = ">=3.13,<3.14"
 
