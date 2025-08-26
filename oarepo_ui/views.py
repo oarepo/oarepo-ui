@@ -60,3 +60,6 @@ def finalize_app(app: Flask) -> None:
         # hide the /admin (maximum recursion depth exceeded menu)
         admin_menu = current_menu.submenu("settings.admin")
         admin_menu.hide()
+
+        # Override webpack/rspack project from invenio-assets
+        app.config["WEBPACKEXT_PROJECT"] = "oarepo_ui.webpack:project"
