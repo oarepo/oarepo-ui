@@ -457,7 +457,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
         if overrides is None:
             overrides = {}
         opts = {
-            "endpoint": self.search_endpoint_url(identity, overrides=overrides, **kwargs),
+            "endpoint": f"/api{self.model.resource_config.url_prefix}",
             "headers": {"Accept": "application/vnd.inveniordm.v1+json"},
             "grid_view": False,
             "sort": self.search_sort_config(
