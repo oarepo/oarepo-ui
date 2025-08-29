@@ -31,7 +31,7 @@ const PreviewButtonComponent = React.memo(
 PreviewButtonComponent.displayName = "PreviewButtonComponent";
 PreviewButtonComponent.propTypes = {
   previewAction: PropTypes.func.isRequired,
-  actionState: PropTypes.string.isRequired,
+  actionState: PropTypes.string,
 };
 
 const mapDispatchToProps = (dispatch) => ({
