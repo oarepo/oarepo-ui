@@ -56,7 +56,11 @@ class FilesComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig](UIRes
         if not isinstance(self.resource, RecordsUIResource):
             return
 
-        file_service = self.resource.config.model.file_service
+        file_service = (
+            self.resource.config.model.file_service
+            if getattr(api_record._record, "is_draft", False) is False  # noqa: SLF001
+            else self.resource.config.model.draft_file_service
+        )
         if not file_service:
             return
         try:
