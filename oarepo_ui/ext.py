@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import contextlib
 import warnings
+from collections import defaultdict
 from functools import cached_property
 from typing import TYPE_CHECKING, Any, cast
 
@@ -38,7 +39,7 @@ if TYPE_CHECKING:
 
     from oarepo_ui.resources.records.resource import UIResource
 
-    from .ui.components import UIComponent
+    from .ui.components import UIComponent, UIComponentOverride
 
 
 class OARepoUIState:
@@ -131,9 +132,19 @@ class OARepoUIState:
         return cast("dict[str, str]", self.app.config["OAREPO_UI_DRAFT_ACTIONS"])
 
     @cached_property
-    def ui_overrides(self) -> dict:
+    def ui_overrides(self) -> set[UIComponentOverride]:
         """Get the UI overrides for the current app."""
-        return cast("dict", current_app.config.get("OAREPO_UI_OVERRIDES", {}))
+        return cast("set[UIComponentOverride]", current_app.config.get("OAREPO_UI_OVERRIDES", {}))
+
+    @property
+    def ui_overrides_by_endpoint(self) -> dict[str, set[UIComponentOverride]]:
+        """Get the UI overrides for the app, grouped by Flask Blueprint endpoint."""
+        endpoint_overrides: dict[str, set[UIComponentOverride]] = defaultdict(set)
+
+        for component_override in self.ui_overrides:
+            endpoint_overrides[component_override.endpoint].add(component_override)
+
+        return cast("dict[str, set[UIComponentOverride]]", endpoint_overrides)
 
     def register_result_list_item(self, schema: str, component: UIComponent) -> None:
         """Register a result list item javascript component.

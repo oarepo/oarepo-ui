@@ -23,29 +23,29 @@ from flask_webpackext import WebpackBundleProject
 from pywebpack import bundles_from_entry_point
 from pywebpack.helpers import cached
 
-from .proxies import current_ui_overrides
+from .proxies import current_oarepo_ui, current_ui_overrides
 
 if TYPE_CHECKING:
     from flask_webpackext.bundle import WebpackBundle
 
+
 overrides_js_template = """
 import { overrideStore, parametrize } from 'react-overridable';
 
-{% for key, component in overrides.items() -%}
-{{ component.import_statement | safe }}
+{% for componentOverride in overrides -%}
+{{ componentOverride.component.import_statement | safe }}
 {% endfor %}
 
-{%- for key, component in overrides.items() -%}
-{%- if component.props -%}{{ component.parametrize_statement | safe }}{%- endif -%}
+{%- for componentOverride in overrides -%}
+{%- if componentOverride.component.props -%}{{ componentOverride.component.parametrize_statement | safe }}{%- endif -%}
 {%- endfor %}
 
-{% for key, component in overrides.items() -%}
-overrideStore.add('{{ key }}', {{ component.name }});
+{% for componentOverride in overrides -%}
+overrideStore.add('{{ componentOverride.overridable_id }}', {{ componentOverride.component.name }});
 {% endfor %}
 """
 
 
-# TODO: Convert to rspack?
 class OverridableBundleProject(WebpackBundleProject):
     """A WebpackBundleProject that supports UI overrides and dynamic bundle generation."""
 
@@ -58,6 +58,7 @@ class OverridableBundleProject(WebpackBundleProject):
         config: dict[str, Any] | None = None,
         config_path: str | None = None,
         overrides_bundle_path: str = "_overrides",
+        **kwargs: Any,
     ) -> None:
         """Initialize templated folder.
 
@@ -91,6 +92,7 @@ class OverridableBundleProject(WebpackBundleProject):
             bundles=bundles,
             config=config,
             config_path=config_path,
+            **kwargs,
         )
         self._overrides_bundle_path = Path(overrides_bundle_path)
         self._generated_paths: list[str] = []
@@ -116,8 +118,11 @@ class OverridableBundleProject(WebpackBundleProject):
     def entry(self) -> dict[str, str]:
         """Get webpack entry points."""
         bundle_entries = cast("dict[str, str]", super().entry)
-        for bp_name in current_ui_overrides:
-            bundle_entries[f"overrides-{bp_name}"] = f"./{self.overrides_bundle_asset_path}/{bp_name}.js"
+
+        for component_override in current_ui_overrides:
+            bundle_entries[f"overrides-{component_override.endpoint}"] = (
+                f"./{self.overrides_bundle_asset_path}/{component_override.endpoint}.js"
+            )
         return bundle_entries
 
     @override
@@ -135,10 +140,10 @@ class OverridableBundleProject(WebpackBundleProject):
         if not Path(self.overrides_bundle_path).exists():
             Path(self.overrides_bundle_path).mkdir(parents=True, exist_ok=True)
 
-        for bp_name, overrides in current_ui_overrides.items():
+        for endpoint, component_overrides in current_oarepo_ui.ui_overrides_by_endpoint.items():
             template = current_app.jinja_env.from_string(overrides_js_template)
-            overrides_js_content = template.render({"overrides": overrides})
-            overrides_js_path = Path(self.overrides_bundle_path) / f"{bp_name}.js"
+            overrides_js_content = template.render({"overrides": component_overrides})
+            overrides_js_path = Path(self.overrides_bundle_path) / f"{endpoint}.js"
 
             with overrides_js_path.open("w+") as f:
                 f.write(overrides_js_content)
@@ -154,4 +159,5 @@ project = OverridableBundleProject(
     project_folder="assets",
     config_path="build/config.json",
     bundles=cast("list[WebpackBundle]", list(bundles_from_entry_point("invenio_assets.webpack"))),
+    package_json_source_path="rspack-package.json",
 )
