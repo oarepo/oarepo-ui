@@ -1,7 +1,6 @@
-import _map from "lodash/map";
-import _reduce from "lodash/reduce";
 import _camelCase from "lodash/camelCase";
 import _startCase from "lodash/startCase";
+import _isEmpty from "lodash/isEmpty";
 import { importTemplate, loadComponents } from "@js/invenio_theme/templates";
 import _uniqBy from "lodash/uniqBy";
 import * as Yup from "yup";
@@ -26,39 +25,34 @@ export const scrollTop = () => {
   });
 };
 
-export const object2array = (obj, keyName, valueName) =>
+export const object2array = (obj, keyName, valueName) => {
   // Transforms object to array of objects.
   // Each key of original object will be stored as value of `keyName` key.
   // Each value of original object will be stored as value of `valueName` key.
+  if (_isEmpty(obj)) {
+    return [];
+  }
 
-  _map(obj, (value, key) => ({
+  return Object.entries(obj).map(([key, value]) => ({
     [keyName]: key,
     [valueName]: value,
   }));
+};
 
-export const array2object = (arr, keyName, valueName) =>
+export function array2object(arr, keyName, valueName) {
   // Transforms an array of objects to a single object.
   // For each array item, it sets a key given by array item `keyName` value,
-  // with a value of array item's `valueVame` key.
+  // with a value of array item's `valueName` key.
+  if (!Array.isArray(arr) || arr.length === 0) {
+    return {};
+  }
+  return arr.reduce((result, item) => {
+    result[item[keyName]] = item[valueName];
+    return result;
+  }, {});
+}
 
-  _reduce(
-    arr,
-    (result, item) => {
-      result[item[keyName]] = item[valueName];
-      return result;
-    },
-    {}
-  );
-
-export const absoluteUrl = (urlString) => {
-  return new URL(urlString, window.location.origin);
-};
-
-export const relativeUrl = (urlString) => {
-  const { pathname, search } = absoluteUrl(urlString);
-  return `${pathname}${search}`;
-};
-
+// TODO: decommission old way of overriding
 export async function loadTemplateComponents(
   overridableIdPrefix,
   componentIds
@@ -111,6 +105,7 @@ export async function loadTemplateComponents(
   return componentOverrides;
 }
 
+// TODO: decommission old way of overriding
 export async function loadAppComponents({
   overridableIdPrefix,
   componentIds = [],
@@ -139,13 +134,22 @@ export async function loadAppComponents({
 export const requiredMessage = ({ label }) =>
   `${label} ${i18next.t("is a required field")}`;
 
-export const returnGroupError = (value, context) => {
-  return i18next.t("Items must be unique");
-};
+export const groupItemsNotUniqueError = i18next.t("Items must be unique");
 
 export const invalidUrlMessage = i18next.t(
   "Please provide an URL in valid format"
 );
+/**
+ * Checks if the array contains unique values for a given key (or the whole item).
+ * Used as a custom test function in Yup validation schemas to ensure uniqueness.
+ *
+ * @param {Array} value - The array to validate.
+ * @param {Object} context - Yup validation context (contains path, parent, etc).
+ * @param {string} path - The key in each object to check for uniqueness (optional).
+ * @param {string} errorString - The error message to use for duplicates.
+ * @returns {true|Yup.ValidationError} Returns true if unique, otherwise a ValidationError.
+ */
+
 export const unique = (value, context, path, errorString) => {
   if (!value || value.length < 2) {
     return true;
