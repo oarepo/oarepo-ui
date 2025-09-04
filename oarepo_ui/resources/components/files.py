@@ -18,6 +18,7 @@ from typing import TYPE_CHECKING, Any, override
 
 from invenio_previewer import current_previewer
 from invenio_records_resources.services.errors import PermissionDeniedError
+from oarepo_runtime import current_runtime
 
 from oarepo_ui.resources.components import UIResourceComponent
 
@@ -56,7 +57,7 @@ class FilesComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig](UIRes
         if not isinstance(self.resource, RecordsUIResource):
             return
 
-        file_service = self.resource.config.model.file_service
+        file_service = current_runtime.get_file_service_for_record(api_record._record)  # noqa: SLF001
         if not file_service:
             return
         try:

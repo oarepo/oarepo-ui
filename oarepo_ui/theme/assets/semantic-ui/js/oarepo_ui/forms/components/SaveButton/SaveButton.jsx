@@ -32,7 +32,7 @@ const SaveButtonComponent = React.memo(
 SaveButtonComponent.displayName = "SaveButtonComponent";
 SaveButtonComponent.propTypes = {
   saveAction: PropTypes.func.isRequired,
-  actionState: PropTypes.string.isRequired,
+  actionState: PropTypes.string,
 };
 
 const mapDispatchToProps = (dispatch) => ({
