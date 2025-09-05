@@ -115,6 +115,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
         "search": "",
         "create": "/_new",
         "detail": "/<pid_value>",
+        "latest": "/<pid_value>/latest",
         "edit": "/<pid_value>/edit",
         "export": "/<pid_value>/export/<export_format>",
         "export_preview": "/<pid_value>/preview/export/<export_format>",

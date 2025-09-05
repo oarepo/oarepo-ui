@@ -38,6 +38,7 @@ class FilesComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig](UIRes
         api_record: RecordItem,
         identity: Identity,
         extra_context: dict,
+        record: dict,
         **kwargs: Any,
     ) -> None:
         """Attach files list to extra_context prior to rendering the edit page.
@@ -56,7 +57,11 @@ class FilesComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig](UIRes
         if not isinstance(self.resource, RecordsUIResource):
             return
 
-        file_service = self.resource.config.model.file_service
+        file_service = (
+            self.resource.config.model.file_service
+            if not record.get("is_draft", False)
+            else self.resource.config.model.draft_file_service
+        )
         if not file_service:
             return
         try:
