@@ -259,6 +259,20 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         """Return item detail page."""
         return self._detail(pid_value=pid_value, embed=embed, is_preview=is_preview, **kwargs)
 
+    @pass_route_args("view")
+    @pass_query_args("read", "embed", exclude=["is_preview"])
+    @response_header_signposting
+    def latest(
+        self,
+        pid_value: str,
+        embed: bool = False,
+        is_preview: bool = False,
+        **kwargs: Any,
+    ) -> Response:
+        """Return latest item detail page."""
+        # TODO: just a hotfix implementation for now, not a proper latest version detail view
+        return self._detail(pid_value=pid_value, embed=embed, is_preview=is_preview, **kwargs)
+
     @pass_route_args("view", "file_view")
     def published_file_preview(
         self,
