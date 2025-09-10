@@ -13,7 +13,7 @@ import json
 from invenio_config.default import ALLOWED_HTML_ATTRS, ALLOWED_HTML_TAGS
 
 
-def test_create(app, record_ui_resource, simple_record, client_with_credentials):
+def test_create(app, record_ui_resource, record_api_resource, simple_record, client_with_credentials):
     with client_with_credentials.get("/simple-model/_new") as c:
         response = json.loads(c.text)
         response["data"].pop("created")
@@ -45,7 +45,7 @@ def test_create(app, record_ui_resource, simple_record, client_with_credentials)
             "form_config": {
                 "allowedHtmlTags": ALLOWED_HTML_TAGS,
                 "allowedHtmlAttrs": ALLOWED_HTML_ATTRS,
-                "createUrl": "/api/simple-model",
+                "createUrl": "https://127.0.0.1:5000/api/simple-model",
                 "current_locale": "en",
                 "custom_fields": {
                     "ui": [

@@ -22,6 +22,7 @@ from .bleach import AllowedHtmlTagsComponent
 from .custom_fields import CustomFieldsComponent
 from .files import FilesComponent
 from .files_locked import FilesLockedComponent
+from .files_quota import FilesQuotaAndTransferComponent
 from .multilingual_field_languages import MultilingualFieldLanguagesComponent
 from .permissions import PermissionsComponent
 from .record_restriction import RecordRestrictionComponent
@@ -33,6 +34,7 @@ __all__ = (
     "EmptyRecordAccessComponent",
     "FilesComponent",
     "FilesLockedComponent",
+    "FilesQuotaAndTransferComponent",
     "MultilingualFieldLanguagesComponent",
     "PermissionsComponent",
     "RecordRestrictionComponent",

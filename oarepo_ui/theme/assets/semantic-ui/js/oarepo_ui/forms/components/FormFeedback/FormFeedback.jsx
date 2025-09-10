@@ -151,7 +151,7 @@ FormFeedbackComponent.propTypes = {
   errors: PropTypes.oneOfType([PropTypes.object, PropTypes.array]), // depends on flattenToPathValueArray input format
   // eslint-disable-next-line react/require-default-props
   formFeedbackMessage: PropTypes.string,
-  actionState: PropTypes.string.isRequired,
+  actionState: PropTypes.string,
 };
 
 const mapStateToProps = (state) => ({

@@ -579,7 +579,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             raise Forbidden("User does not have permission to create a record.")
 
         # TODO: use api service create link when available
-        form_config = self._get_form_config(g.identity, createUrl=f"/api{self.api_service.config.url_prefix}")
+        form_config = self._get_form_config(g.identity, createUrl=self.config.model.api_url("create"))
 
         form_config["ui_model"] = self.ui_model
 

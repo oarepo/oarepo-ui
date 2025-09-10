@@ -97,7 +97,7 @@ DeleteButtonComponent.propTypes = {
   redirectUrl: PropTypes.string,
   /* eslint-enable react/require-default-props */
   deleteAction: PropTypes.func.isRequired,
-  actionState: PropTypes.string.isRequired,
+  actionState: PropTypes.string,
 };
 
 export const DeleteButton = connect(

@@ -182,7 +182,7 @@ class ModelResourceConfig(RecordResourceConfig, ConfiguratorMixin):
     """SimpleModelRecord resource config."""
 
     blueprint_name = "simple_model_api"
-    url_prefix = "/api/simple-model/"
+    url_prefix = "/api/simple-model"
 
     @property
     def response_handlers(self):
