@@ -1,11 +1,11 @@
 {# def d=True, label=None, placeholder=None, keep=false, field_class=None, level=0 #}
 
-{%- if d is true or d.ui_value or keep -%}
+{%- if d is true or ui_value(d) or keep -%}
     <IBaseTableField label={{label or d.label(d)}} field_class={{field_class}} level={{level}}>
         {%- if content is not none and ((content is not string) or content.strip()) -%}
             {{ content }}
         {%- else -%}
-            <IValue value={{d.ui_value(d)}} />
+            <IValue value={{ui_value(d)}} />
         {%- endif -%}
     </IBaseTableField>
 {%- elif placeholder -%}
