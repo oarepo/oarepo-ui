@@ -39,7 +39,6 @@ class FilesComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig](UIRes
         api_record: RecordItem,
         identity: Identity,
         extra_context: dict,
-        record: dict,
         **kwargs: Any,
     ) -> None:
         """Attach files list to extra_context prior to rendering the edit page.
