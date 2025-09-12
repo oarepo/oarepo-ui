@@ -1,15 +1,17 @@
-{# def d=True, label=None, placeholder=None, keep=false, field_class=None #}
+{# def d, label=None, placeholder=None, keep=false, field_class=None #}
 
-{%- if d is true or d._has_value or keep -%}
-    <IBaseField label={label or d._ui_label} field_class={field_class}>
-        {%- if content is not none and ((content is not string) or content.strip()) -%}
+{% set field_label = label or d.label(d) if d.label(d) != 'Item does not exist' else '' %}
+
+{%- if ui_value(d) or keep -%}
+    <IBaseField label={{field_label}} field_class={{field_class}}>
+        {%- if content and ((content is not string) or content.strip()) -%}
             {{ content }}
         {%- else -%}
-            <IValue value={d._ui_value} />
+            <IValue value={{ui_value(d)}} />
         {%- endif -%}
     </IBaseField>
 {%- elif placeholder -%}
-    <IBaseField label={label or d._ui_label} field_class={field_class}>
+    <IBaseField label={{field_label}} field_class={{field_class}}>
         {{ placeholder }}
     </IBaseField>
 {%- endif -%}
