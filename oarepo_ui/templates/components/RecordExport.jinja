@@ -14,7 +14,4 @@
     <h2 class="ui small header detail-sidebar-header">{{_('Export')}}</h2>
     <div data-formats='{{ data | tojson }}' id="recordExportDownload">
     </div>
-    {% if hasApiLinks %}
-        <SidebarApiLinks links={{record.links}}></SidebarApiLinks>
-    {% endif %}
 </section>
