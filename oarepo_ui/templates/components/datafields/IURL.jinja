@@ -1,6 +1,6 @@
-{# def href, title, label=None, class_name="" #}
+{# def href, title, label=None, class_name="", target="_blank", rel="" #}
 
-<a class="ui {{class_name}}" href="{{href}}" aria-label="{{title}}" title="{{title}}">
+<a class="ui {{class_name}}" href="{{href}}" aria-label="{{label}}" title="{{title}}" target="{{target}}" rel="{{rel}}">
     <span class="{{ class_name }} label">
         {{label if label else title}}
     </span>
