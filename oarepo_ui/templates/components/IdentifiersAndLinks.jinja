@@ -6,20 +6,16 @@
     {% if pids %}
       {% for scheme, pidObject in pids.items()%}
         {% if pidObject.url%}
-          {% set _data = {
-            "href":  pidObject.url | e,
-            "title": pidObject.identifier,
-            "label": pidObject.identifier
-          }%}
           <div class="item content">
             <div class="header list-item">
               <i class="external alternate icon link-icon mb-5"></i>
-              <URL target="_blank" rel="noopener noreferrer" className="inline" data={_data}></URL>
-              <ClipboardCopyButton copyText={{_data["href"]}} />
+              <IURL rel="noopener noreferrer" class_name="inline"
+                    href={{pidObject.url | e}} title={{pidObject.identifier}} label={{pidObject.identifier}} />
+              <ClipboardCopyButton copyText={{pidObject.url | e}} />
             </div>
           </div>
         {% else %}
-          <div title="{{pidObject.identifier}}" class="item content">
+          <div title={{pidObject.identifier}} class="item content">
             <div class="header list-item">
               <i class="id card icon link-icon"></i>
               <span>{{ pidObject.identifier }}</span>
@@ -33,17 +29,12 @@
       {% for objectIdentifier in objectIdentifiers %}
       {% if objectIdentifier.url%}
         <div class="item content">
-          {% set _data = {
-              "href": objectIdentifier.url,
-              "title": objectIdentifier.identifier,
-              "label": objectIdentifier.identifier
-          }%}
             <div title="{{objectIdentifier.scheme}}"  class="header list-item">
               <i class="external alternate icon link-icon mb-5"></i>
-              <URL target="_blank" rel="noopener noreferrer" className="inline" data={_data}></URL>
+              <IURL rel="noopener noreferrer" class_name="inline"
+                    href={{pidObject.url | e}} title={{pidObject.identifier}} label={{pidObject.identifier}} />
               <ClipboardCopyButton copyText={{objectIdentifier.url}} />
             </div>
-           
         </div>
       {% else %}
       <div title="{{objectIdentifier.scheme}}" class="item content">
@@ -66,7 +57,8 @@
           "label": _('metadata/originalRecord.label')
       }%}
         <i class="external alternate icon link-icon mb-5"></i>
-        <URL target="_blank" rel="noopener noreferrer" className="link" data={{_data}}></URL>
+        <IURL rel="noopener noreferrer" className="link"
+              href={{pidObject.url | e}} title={{pidObject.identifier}} label={{pidObject.identifier}} />
       </div>
     </div>
     {% endif %}

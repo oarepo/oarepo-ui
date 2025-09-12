@@ -1,4 +1,4 @@
 {#def label, label_class="ui field-label", data_class="ui field-data" #}
 
-<dt {% if label_class %}class="{{label_class}}"{% endif %}>{{ label }}</dt>
+<dt {% if label_class %}class="{{label_class}}"{% endif %} aria-label="{{label}}">{{ label }}</dt>
 <dd {% if data_class %}class="{{data_class}}"{% endif %}>{{ content }}</dd>
