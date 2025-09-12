@@ -1,14 +1,17 @@
-{#def isLast=False, label=False, ui={"separator_class": "double separator"} #}
+{#def d, label=None, isLast=False, label_class=None, content_class=None, separator_class="double separator" #}
+
+{% set field_label = label or d.label(d) if d.label(d) != 'Item does not exist' %}
+
 {% if content %}
-{% if label %}
-<span class="{% if ui.label_class is defined %}{{ui.label_class}}{% endif %}">
+{% if field_label %}
+<span aria-label="{{field_label}}" class="{% if label_class %}{{label_class}}{% endif %}">
     <strong>
-        {{label}}: 
+        {{field_label}}: 
     </strong>
 </span>
 {% endif%}
-<span class="{% if ui.content_class is defined %}{{ui.content_class}}{% endif %}">{{content}}</span>
+<span class="{% if content_class %}{{content_class}}{% endif %}">{{content}}</span>
 {% if not isLast %}
-    <span class="{{ui.separator_class}}"></span>
+    <span class="{{separator_class}}"></span>
 {% endif %}
 {% endif %}

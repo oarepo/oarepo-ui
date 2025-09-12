@@ -1,11 +1,5 @@
-{#def className=None, search_link,  searchFacet, data, hasTooltip=True #}
-{% set data_dict = data %}
-{% set href = search_link ~ "?q=&f=" ~ searchFacet ~ ":" ~ data_dict.value %}
+{#def d, class_name=None, search_link, searchFacet, hasTooltip=True #}
+{% set href = search_link ~ "?q=&f=" ~ searchFacet ~ ":" ~ value(d.value) %}
 
-{% set url_data = {
-    "href": href,
-    "title": data_dict.title,
-    "label": data_dict.label
-} %}
-
-<URL className={{className}} data={{url_data}} hasTooltip={{hasTooltip}}></URL>
+<IURL href={{href}} class_name={{className}} title={{ui_value(d.title)}}
+    label={{ui_value(d.label)}} hasTooltip={{hasTooltip}} />

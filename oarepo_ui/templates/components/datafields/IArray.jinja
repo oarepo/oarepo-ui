@@ -1,0 +1,7 @@
+{# def d #}
+
+<IValueList>
+{% for item in as_array(d) -%}
+    <IValue value={{ui_value(item)}} />
+{%- endfor %}
+</IValueList>

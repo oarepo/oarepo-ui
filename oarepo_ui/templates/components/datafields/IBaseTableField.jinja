@@ -2,6 +2,6 @@
 
 <tr>
 <th {% if label_class %}class="{{label_class}}"{% endif %}>
-    <span class="level-{{ level }}">{{ label }}</span></th>
+    <span class="level-{{ level }}" aria-label="{{label}}">{{ label }}</span></th>
 <td {% if data_class %}class="{{data_class}}"{% endif %}>{{ content }}</td>
 </tr>
