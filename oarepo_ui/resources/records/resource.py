@@ -551,7 +551,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         self.run_components(
             "before_ui_edit",
             api_record=api_record,
-            record=ui_serialization,
+        record=ui_serialization,
             data=api_record_serialization,
             form_config=form_config,
             ui_links=ui_links,
@@ -564,7 +564,6 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             "ui_links": ui_links,
             "search_link": self.config.url_prefix,
         }
-
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro(
                 "edit",
