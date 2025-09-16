@@ -156,7 +156,7 @@ class OARepoUIState:
         :param component: the component to register
         """
         with self.app.app_context():
-            for registration_callback in self.app.config.get("OAREPO_UI_RESULT_LIST_ITEM_REGISTRATION_CALLBACK", []):
+            for registration_callback in self.app.config.get("OAREPO_UI_RESULT_LIST_ITEM_REGISTRATION_CALLBACKS", []):
                 if callable(registration_callback):
                     registration_callback(self.ui_overrides, schema, component)
                 else:

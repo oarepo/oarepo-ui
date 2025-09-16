@@ -109,7 +109,7 @@ def test_overridable_result_item_registration(app):
         if component_override not in ui_overrides:
             ui_overrides.add(component_override)
 
-    app.config["OAREPO_UI_RESULT_LIST_ITEM_REGISTRATION_CALLBACK"] = [_register_result_item_to_my_ui]
+    app.config["OAREPO_UI_RESULT_LIST_ITEM_REGISTRATION_CALLBACKS"] = [_register_result_item_to_my_ui]
 
     some_component = UIComponent("ComponentA", "components/ComponentA")
     current_oarepo_ui.register_result_list_item("schema://component-v1", some_component)
