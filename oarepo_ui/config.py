@@ -25,8 +25,6 @@ if TYPE_CHECKING:
     from .ui.components import UIComponent, UIComponentOverride
 
 APP_THEME=['semantic-ui']
-# We set this to avoid https://github.com/inveniosoftware/invenio-administration/issues/180
-THEME_HEADER_LOGIN_TEMPLATE = "oarepo_ui/header_login.html"
 THEME_FRONTPAGE = "False"
 THEME_CSS_TEMPLATE = "oarepo_ui/css.html"
 INSTANCE_THEME_FILE = "./less/theme.less"
