@@ -39,7 +39,7 @@ if TYPE_CHECKING:
 
     from oarepo_ui.resources.records.resource import UIResource
 
-    from .ui.components import UIComponent, UIComponentOverride
+    from .overrides import UIComponent, UIComponentOverride
 
 
 class OARepoUIState:

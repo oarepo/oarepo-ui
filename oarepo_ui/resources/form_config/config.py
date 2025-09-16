@@ -18,7 +18,9 @@ if TYPE_CHECKING:
     from collections.abc import Mapping
 
 
-# TODO: is this needed?
+# TODO(mesemus): is this needed?
+# > mirekys: still actively used by oarepo-requests to fetch form-config for a request type:
+# https://github.com/oarepo/oarepo-requests/blob/main/oarepo_requests/ui/config.py#L64
 class FormConfigResourceConfig(UIResourceConfig):
     """Configuration for the form configuration resource."""
 

@@ -22,9 +22,9 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from .ui.components import UIComponent, UIComponentOverride
+    from .overrides import UIComponent, UIComponentOverride
 
-APP_THEME=['semantic-ui']
+APP_THEME = ["semantic-ui"]
 THEME_FRONTPAGE = "False"
 THEME_CSS_TEMPLATE = "oarepo_ui/css.html"
 INSTANCE_THEME_FILE = "./less/theme.less"

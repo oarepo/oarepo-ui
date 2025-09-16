@@ -21,7 +21,7 @@ from flask import current_app
 from werkzeug.local import LocalProxy
 
 if TYPE_CHECKING:
-    from oarepo_ui.ui.components import UIComponentOverride
+    from oarepo_ui.overrides.components import UIComponentOverride
 
     from .ext import OARepoUIState
 

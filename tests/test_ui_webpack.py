@@ -10,8 +10,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from oarepo_ui.overrides.components import UIComponent, UIComponentImportMode, UIComponentOverride
 from oarepo_ui.proxies import current_oarepo_ui, current_ui_overrides
-from oarepo_ui.ui.components import UIComponent, UIComponentImportMode, UIComponentOverride
 from oarepo_ui.webpack import OverridableBundleProject, project
 
 
