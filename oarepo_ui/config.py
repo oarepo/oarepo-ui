@@ -80,7 +80,7 @@ MATOMO_ANALYTICS_TEMPLATE = "oarepo_ui/matomo_analytics.html"
 OAREPO_UI_OVERRIDES: set[UIComponentOverride] = set()
 """A set of javascript overrides. See UIComponentOverride for details."""
 
-OAREPO_UI_RESULT_LIST_ITEM_REGISTRATION_CALLBACK: list[
+OAREPO_UI_RESULT_LIST_ITEM_REGISTRATION_CALLBACKS: list[
     Callable[[set[UIComponentOverride], str, UIComponent], None]
 ] = []
 

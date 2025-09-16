@@ -45,7 +45,7 @@ def enumerate_assets() -> tuple[dict[str, str], list[Path]]:
 @with_appcontext
 def list_components(fname: str) -> None:
     """List all LESS components into the specified json file."""
-    aliases, asset_dirs = enumerate_assets()
+    _, asset_dirs = enumerate_assets()
     less_component_files: list[Path] = []
 
     for asset_dir in asset_dirs:
