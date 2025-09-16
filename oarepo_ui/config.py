@@ -26,8 +26,17 @@ if TYPE_CHECKING:
 
 # We set this to avoid https://github.com/inveniosoftware/invenio-administration/issues/180
 THEME_HEADER_LOGIN_TEMPLATE = "oarepo_ui/header_login.html"
+THEME_FRONTPAGE = "False"
+THEME_CSS_TEMPLATE = "oarepo_ui/css.html"
+INSTANCE_THEME_FILE = "./less/theme.less"
 
 OAREPO_UI_THEME_HEADER_FRONTPAGE = "oarepo_ui/header_frontpage.html"
+JAVASCRIPT_PACKAGES_MANAGER = "pnpm"
+ASSETS_BUILDER = "rspack"
+WEBPACKEXT_NPM_PKG_CLS = "pynpm:PNPMPackage"
+# TODO: update this when oarepo-global-search gets migrated to RDM13
+SEARCH_UI_SEARCH_TEMPLATE = "oarepo_ui/search.html"
+
 
 # TODO: check for all removed filters in templates
 OAREPO_UI_JINJAX_FILTERS = {
