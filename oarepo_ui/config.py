@@ -24,17 +24,7 @@ if TYPE_CHECKING:
 
     from .overrides import UIComponent, UIComponentOverride
 
-APP_THEME = ["semantic-ui"]
-THEME_FRONTPAGE = "False"
-THEME_CSS_TEMPLATE = "oarepo_ui/css.html"
-INSTANCE_THEME_FILE = "./less/theme.less"
 
-OAREPO_UI_THEME_HEADER_FRONTPAGE = "oarepo_ui/header_frontpage.html"
-JAVASCRIPT_PACKAGES_MANAGER = "pnpm"
-ASSETS_BUILDER = "rspack"
-WEBPACKEXT_NPM_PKG_CLS = "pynpm:PNPMPackage"
-# TODO: update this when oarepo-global-search gets migrated to RDM13
-SEARCH_UI_SEARCH_TEMPLATE = "oarepo_ui/search.html"
 
 
 # TODO: check for all removed filters in templates
