@@ -184,14 +184,17 @@ class OARepoUIExtension:
         from . import config
 
         for k in dir(config):
-            app.config[k] = getattr(config, k)
+            if k.startswith("OAREPO_UI_"):
+                app.config.setdefault(k, getattr(config, k))
 
-            if k in ("OAREPO_UI_JINJAX_FILTERS", "OAREPO_UI_JINJAX_GLOBALS"):
-                # merge in default filters and globals if they have not been overridden
-                for name, val in getattr(config, k, {}).items():
-                    if name not in app.config.get(k, {}):
-                        app.config[k][name] = val
+        # merge in default filters and globals if they have not been overridden
+        for k in ("OAREPO_UI_JINJAX_FILTERS", "OAREPO_UI_JINJAX_GLOBALS"):
+            for name, val in getattr(config, k).items():
+                if name not in app.config[k]:
+                    app.config[k][name] = val
 
+        app.config.setdefault("MATOMO_ANALYTICS_TEMPLATE", config.MATOMO_ANALYTICS_TEMPLATE)  
+        
         # set the version, should be overriden in INVENIO_DEPLOYMENT_VERSION
         # in K8s cluster
         app.config.setdefault("DEPLOYMENT_VERSION", "local development")
