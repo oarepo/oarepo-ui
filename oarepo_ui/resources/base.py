@@ -131,7 +131,7 @@ def _pass_request_args[T: Callable](
                 parsed_args = {k: v for k, v in parser.parse().items() if k not in exclude}
                 request_args.update(parsed_args)
 
-            return f(self, *args, **request_args, **kwargs)  # type: ignore[no-any-return]
+            return f(self, *args, **{**request_args, **kwargs})  # type: ignore[no-any-return]
 
         return view  # type: ignore[return-value]
 
