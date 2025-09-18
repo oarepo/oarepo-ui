@@ -39,7 +39,7 @@ if TYPE_CHECKING:
 
     from oarepo_ui.resources.records.resource import UIResource
 
-    from .ui.components import UIComponent, UIComponentOverride
+    from .overrides import UIComponent, UIComponentOverride
 
 
 class OARepoUIState:
@@ -192,9 +192,3 @@ class OARepoUIExtension:
             for name, val in getattr(config, k).items():
                 if name not in app.config[k]:
                     app.config[k][name] = val
-
-        app.config.setdefault("MATOMO_ANALYTICS_TEMPLATE", config.MATOMO_ANALYTICS_TEMPLATE)
-
-        # set the version, should be overriden in INVENIO_DEPLOYMENT_VERSION
-        # in K8s cluster
-        app.config.setdefault("DEPLOYMENT_VERSION", "local development")

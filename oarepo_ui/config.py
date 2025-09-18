@@ -22,12 +22,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from .ui.components import UIComponent, UIComponentOverride
+    from .overrides import UIComponent, UIComponentOverride
 
-# We set this to avoid https://github.com/inveniosoftware/invenio-administration/issues/180
-THEME_HEADER_LOGIN_TEMPLATE = "oarepo_ui/header_login.html"
-
-OAREPO_UI_THEME_HEADER_FRONTPAGE = "oarepo_ui/header_frontpage.html"
 
 # TODO: check for all removed filters in templates
 OAREPO_UI_JINJAX_FILTERS = {
@@ -74,8 +70,6 @@ OAREPO_UI_DRAFT_ACTIONS = {
     "manage_files": "manage_files",
     "manage_record_access": "manage_record_access",
 }
-
-MATOMO_ANALYTICS_TEMPLATE = "oarepo_ui/matomo_analytics.html"
 
 OAREPO_UI_OVERRIDES: set[UIComponentOverride] = set()
 """A set of javascript overrides. See UIComponentOverride for details."""
