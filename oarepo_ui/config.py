@@ -25,8 +25,6 @@ if TYPE_CHECKING:
     from .overrides import UIComponent, UIComponentOverride
 
 
-
-
 # TODO: check for all removed filters in templates
 OAREPO_UI_JINJAX_FILTERS = {
     "compact_number": "invenio_app_rdm.records_ui.views.filters:compact_number",
@@ -72,8 +70,6 @@ OAREPO_UI_DRAFT_ACTIONS = {
     "manage_files": "manage_files",
     "manage_record_access": "manage_record_access",
 }
-
-MATOMO_ANALYTICS_TEMPLATE = "oarepo_ui/matomo_analytics.html"
 
 OAREPO_UI_OVERRIDES: set[UIComponentOverride] = set()
 """A set of javascript overrides. See UIComponentOverride for details."""
