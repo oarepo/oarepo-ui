@@ -192,7 +192,3 @@ class OARepoUIExtension:
             for name, val in getattr(config, k).items():
                 if name not in app.config[k]:
                     app.config[k][name] = val
-
-        # set the version, should be overriden in INVENIO_DEPLOYMENT_VERSION
-        # in K8s cluster
-        app.config.setdefault("DEPLOYMENT_VERSION", "local development")
