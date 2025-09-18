@@ -193,8 +193,6 @@ class OARepoUIExtension:
                 if name not in app.config[k]:
                     app.config[k][name] = val
 
-        app.config.setdefault("MATOMO_ANALYTICS_TEMPLATE", config.MATOMO_ANALYTICS_TEMPLATE)
-
         # set the version, should be overriden in INVENIO_DEPLOYMENT_VERSION
         # in K8s cluster
         app.config.setdefault("DEPLOYMENT_VERSION", "local development")
