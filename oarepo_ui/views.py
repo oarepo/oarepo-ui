@@ -54,16 +54,6 @@ def create_blueprint(app: Flask) -> Blueprint:
     return blueprint
 
 
-def create_rdm_templates_dummy_blueprint(app: Flask) -> Blueprint:  # noqa: ARG001
-    """Create a dummy blueprint for RDM templates."""
-    return Blueprint(
-        "rdm_templates",
-        "invenio_app_rdm",
-        template_folder="theme/templates",
-        static_folder="theme/static",
-    )
-
-
 def finalize_app(app: Flask) -> None:
     """Finalize the UI application."""
     with app.app_context():

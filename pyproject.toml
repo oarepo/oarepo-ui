@@ -52,7 +52,12 @@ oarepo_ui_theme = "oarepo_ui.theme.webpack:theme"
 [project.entry-points."invenio_base.blueprints"]
 oarepo_ui = "oarepo_ui.views:create_blueprint"
 # just to have html templates available. Does not register anything else
-rdm_templates = "oarepo_ui.views:create_rdm_templates_dummy_blueprint"
+templates_app_rdm_records = "oarepo_ui.rdm_templates:records_blueprint"
+templates_app_rdm = "oarepo_ui.rdm_templates:rdm_blueprint"
+templates_app_rdm_requests = "oarepo_ui.rdm_templates:requests_blueprint"
+templates_app_rdm_communities = "oarepo_ui.rdm_templates:communities_blueprint"
+templates_app_rdm_users = "oarepo_ui.rdm_templates:users_blueprint"
+templates_app_rdm_administration = "oarepo_ui.rdm_templates:administration_blueprint"
 
 [project.entry-points."invenio_base.finalize_app"]
 oarepo_ui = "oarepo_ui.views:finalize_app"
