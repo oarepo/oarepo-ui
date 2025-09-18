@@ -160,14 +160,14 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         :raises: May raise Forbidden if permissions are denied.
         """
         if is_preview:
-            api_record = self._get_record(pid_value, allow_draft=is_preview)
+            api_record = self._get_record(pid_value, allow_draft=is_preview, **kwargs)
             render_method = self.get_jinjax_macro(
                 "preview",
                 default_macro=self.config.templates["detail"],
             )
 
         else:
-            api_record = self._get_record(pid_value, allow_draft=is_preview)
+            api_record = self._get_record(pid_value, allow_draft=is_preview, **kwargs)
             render_method = self.get_jinjax_macro(
                 "detail",
             )
@@ -274,25 +274,15 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         return self._detail(pid_value=pid_value, embed=embed, is_preview=is_preview, **kwargs)
 
     @pass_route_args("view", "file_view")
-    def published_file_preview(
-        self,
-        pid_value: str,
-        filepath: str,
-        **kwargs: Any,  # noqa: ARG002 for inheritance
-    ) -> Response:
+    def published_file_preview(self, pid_value: str, filepath: str, **kwargs: Any) -> Response:
         """Return file preview for published record."""
-        record = self._get_record(pid_value, allow_draft=False)
+        record = self._get_record(pid_value, allow_draft=False, **kwargs)
         return self._file_preview(record, pid_value, filepath)
 
     @pass_route_args("view", "file_view")
-    def draft_file_preview(
-        self,
-        pid_value: str,
-        filepath: str,
-        **kwargs: Any,  # noqa: ARG002 for inheritance
-    ) -> Response:
+    def draft_file_preview(self, pid_value: str, filepath: str, **kwargs: Any) -> Response:
         """Return file preview for draft record."""
-        record = self._get_record(pid_value, allow_draft=True)
+        record = self._get_record(pid_value, allow_draft=True, **kwargs)
         return self._file_preview(record, pid_value, filepath)
 
     def _file_preview(self, record: RecordItem, pid_value: str, filepath: str) -> Response:
@@ -339,7 +329,13 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             if not v.startswith("/") and not v.startswith("https://"):
                 links[k] = f"/api{api_prefix}{v}"
 
-    def _get_record(self, pid_value: str, allow_draft: bool = False, include_deleted: bool = False) -> RecordItem:
+    def _get_record(
+        self,
+        pid_value: str,
+        allow_draft: bool = False,
+        include_deleted: bool = False,
+        **kwargs: Any,  # noqa: ARG002
+    ) -> RecordItem:
         """Retrieve a record by persistent identifier, optionally allowing draft or deleted records.
 
         :param pid_value: Persistent identifier value for the record.
@@ -441,7 +437,13 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             context=current_oarepo_ui.catalog.jinja_env.globals,
         )
 
-    def _export(self, pid_value: str, export_format: str, is_preview: bool = False) -> tuple[Any, int, dict[str, str]]:
+    def _export(
+        self,
+        pid_value: str,
+        export_format: str,
+        is_preview: bool = False,
+        **kwargs: Any,
+    ) -> tuple[Any, int, dict[str, str]]:
         """Export a record in the specified format.
 
         :param pid_value: Persistent identifier value for the record.
@@ -450,7 +452,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         :return: Tuple of (exported data, status code, headers).
         :raises: 404 if no exporter is found.
         """
-        record = self._get_record(pid_value, allow_draft=is_preview)
+        record = self._get_record(pid_value, allow_draft=is_preview, **kwargs)
         exports = [export for export in self.config.model.exports if export.code.lower() == export_format.lower()]
         if not exports:
             abort(404, f"No exporter for code {export_format}")
@@ -474,20 +476,20 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         self,
         pid_value: str,
         export_format: str,
-        **kwargs: Any,  # noqa: ARG002 for inheritance
+        **kwargs: Any,
     ) -> tuple[Any, int, dict[str, str]]:
         """Export a record in the specified format."""
-        return self._export(pid_value, export_format)
+        return self._export(pid_value, export_format, **kwargs)
 
     @pass_route_args("view", "export")
     def export_preview(
         self,
         pid_value: str,
         export_format: str,
-        **kwargs: Any,  # noqa: ARG002 for inheritance
+        **kwargs: Any,
     ) -> tuple[Any, int, dict[str, str]]:
         """Export a preview of a record in the specified format."""
-        return self._export(pid_value, export_format, is_preview=True)
+        return self._export(pid_value, export_format, is_preview=True, **kwargs)
 
     def get_jinjax_macro(self, template_type: str, default_macro: str | None = None) -> str:
         """Return which jinjax macro should be used for rendering the template.
@@ -507,7 +509,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
     def edit(self, pid_value: str, **kwargs: Any) -> str | Response:
         """Return edit page for a record."""
         try:
-            api_record = self._get_record(pid_value, allow_draft=True)
+            api_record = self._get_record(pid_value, allow_draft=True, **kwargs)
         except:
             if not current_user.is_authenticated:  # type: ignore[attr-defined]
                 # if user is not authenticated, force a login
@@ -708,7 +710,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         self,
         error: Exception,
         *args: Any,  # noqa: ARG002 for inheritance
-        **kwargs: Any,  # noqa: ARG002 for inheritance
+        **kwargs: Any,
     ) -> str | Response:
         """Error handler to render a tombstone page for deleted or tombstoned records.
 
@@ -731,7 +733,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             if pid_value is None:
                 # record does not have id, so we cannot get it
                 return _("No record found for the tombstone page, no id")
-            record = self._get_record(pid_value, include_deleted=True)
+            record = self._get_record(pid_value, include_deleted=True, **kwargs)
             record_dict = self._record_from_service_result(record)
             record_dict.setdefault("links", record.links)
         except RecordDeletedException as e:
