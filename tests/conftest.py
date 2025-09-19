@@ -101,6 +101,13 @@ def app_config(app_config, model):
     app_config["THEME_HEADER_LOGIN_TEMPLATE"] = "oarepo_ui/header_login.html"
     app_config["RDM_FACETS"] = RDM_FACETS
 
+    app_config["APP_RDM_ROUTES"] = {
+        "index": "/",
+        "robots": "/robots.txt",
+        "help_search": "/help/search",
+        "record_detail": "/records/<pid_value>",
+    }
+
     def dummy_jinja_filter(*args: Any, **kwargs: Any) -> str:
         """Return dummy value."""
         return "dummy"
