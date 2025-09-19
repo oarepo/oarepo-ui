@@ -47,8 +47,6 @@ from oarepo_ui.resources import (
     PermissionsComponent,
     RecordsUIResource,
     RecordsUIResourceConfig,
-    TemplatePageUIResource,
-    TemplatePageUIResourceConfig,
 )
 from oarepo_ui.resources.components.bleach import AllowedHtmlTagsComponent
 from oarepo_ui.resources.components.custom_fields import CustomFieldsComponent

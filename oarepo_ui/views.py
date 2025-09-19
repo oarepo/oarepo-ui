@@ -17,12 +17,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from flask import Blueprint, render_template, current_app
+from flask import Blueprint, current_app, render_template
 from flask_menu import current_menu
-from invenio_i18n import get_locale
-from invenio_base.utils import obj_or_import_string
-from invenio_sitemap import iterate_urls_of_sitemap_indices
 from invenio_app_rdm.views import create_url_rule
+from invenio_base.utils import obj_or_import_string
+from invenio_i18n import get_locale
+from invenio_sitemap import iterate_urls_of_sitemap_indices
 
 if TYPE_CHECKING:
     from flask import Flask
@@ -35,13 +35,8 @@ def create_blueprint(app: Flask) -> Blueprint:
     blueprint = Blueprint("oarepo_ui", __name__, template_folder="templates", static_folder="static")
 
     blueprint.add_url_rule(**create_url_rule(routes["index"], default_view_func=index))
-    blueprint.add_url_rule(
-        **create_url_rule(routes["robots"], default_view_func=robots)
-    )
-    blueprint.add_url_rule(
-        **create_url_rule(routes["help_search"], default_view_func=help_search)
-    )
-
+    blueprint.add_url_rule(**create_url_rule(routes["robots"], default_view_func=robots))
+    blueprint.add_url_rule(**create_url_rule(routes["help_search"], default_view_func=help_search))
 
     blueprint.app_context_processor(lambda: ({"current_app": app}))
 
@@ -67,8 +62,9 @@ def create_blueprint(app: Flask) -> Blueprint:
 
     return blueprint
 
+
 # Common UI views
-def index():
+def index() -> str:
     """Frontpage."""
     return render_template(
         current_app.config["THEME_FRONTPAGE_TEMPLATE"],
@@ -76,7 +72,7 @@ def index():
     )
 
 
-def robots():
+def robots() -> str:
     """Robots.txt."""
     return render_template(
         "invenio_app_rdm/robots.txt",
@@ -84,7 +80,7 @@ def robots():
     )
 
 
-def help_search():
+def help_search() -> str:
     """Search help guide."""
     # Default to rendering english page if locale page not found.
     locale = get_locale()
