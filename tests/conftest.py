@@ -26,6 +26,7 @@ from invenio_access.permissions import superuser_access, system_identity
 from invenio_accounts.models import Role
 from invenio_accounts.testutils import login_user_via_session
 from invenio_app.factory import create_app as _create_app
+from invenio_rdm_records.config import RDM_FACETS
 from invenio_records_resources.services.custom_fields import KeywordCF
 from oarepo_runtime.api import Model
 from sqlalchemy.exc import IntegrityError
@@ -100,6 +101,7 @@ def app_config(app_config, model):
     app_config["THEME_SEARCHBAR"] = False
     app_config["THEME_HEADER_TEMPLATE"] = "oarepo_ui/header.html"
     app_config["THEME_HEADER_LOGIN_TEMPLATE"] = "oarepo_ui/header_login.html"
+    app_config["RDM_FACETS"] = RDM_FACETS
 
     def dummy_jinja_filter(*args: Any, **kwargs: Any) -> str:
         """Return dummy value."""
