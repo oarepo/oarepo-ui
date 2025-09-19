@@ -26,6 +26,7 @@ from invenio_access.permissions import superuser_access, system_identity
 from invenio_accounts.models import Role
 from invenio_accounts.testutils import login_user_via_session
 from invenio_app.factory import create_app as _create_app
+from invenio_rdm_records.config import RDM_FACETS
 from invenio_records_resources.services.custom_fields import KeywordCF
 from oarepo_runtime.api import Model
 from sqlalchemy.exc import IntegrityError
@@ -36,8 +37,6 @@ from tests.model import (
     ModelResourceConfig,
     ModelUIResource,
     ModelUIResourceConfig,
-    TitlePageUIResource,
-    TitlePageUIResourceConfig,
 )
 
 
@@ -100,6 +99,14 @@ def app_config(app_config, model):
     app_config["THEME_SEARCHBAR"] = False
     app_config["THEME_HEADER_TEMPLATE"] = "oarepo_ui/header.html"
     app_config["THEME_HEADER_LOGIN_TEMPLATE"] = "oarepo_ui/header_login.html"
+    app_config["RDM_FACETS"] = RDM_FACETS
+
+    app_config["APP_RDM_ROUTES"] = {
+        "index": "/",
+        "robots": "/robots.txt",
+        "help_search": "/help/search",
+        "record_detail": "/records/<pid_value>",
+    }
 
     def dummy_jinja_filter(*args: Any, **kwargs: Any) -> str:
         """Return dummy value."""
@@ -170,15 +177,6 @@ def test_record_ui_resource_config():
 @pytest.fixture(scope="module")
 def test_record_ui_resource(app, test_record_ui_resource_config, record_service):
     ui_resource = ModelUIResource(test_record_ui_resource_config)
-    app.register_blueprint(ui_resource.as_blueprint(template_folder=Path(__file__).parent / "templates"))
-    return ui_resource
-
-
-@pytest.fixture(scope="module")
-def titlepage_ui_resource(
-    app,
-):
-    ui_resource = TitlePageUIResource(TitlePageUIResourceConfig())
     app.register_blueprint(ui_resource.as_blueprint(template_folder=Path(__file__).parent / "templates"))
     return ui_resource
 
@@ -592,9 +590,8 @@ def field_data_test_obj():
 
 
 @pytest.fixture
-def resources(record_api_resource, record_ui_resource, titlepage_ui_resource):
+def resources(record_api_resource, record_ui_resource):
     return {
         "record_api": record_api_resource,
         "record_ui": record_ui_resource,
-        "titlepage_ui": titlepage_ui_resource,
     }

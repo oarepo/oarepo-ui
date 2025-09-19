@@ -30,6 +30,9 @@ from invenio_app_rdm.records_ui.views.records import PreviewFile
 from invenio_i18n import gettext as _
 from invenio_previewer import current_previewer
 from invenio_previewer.extensions import default as default_previewer
+from invenio_rdm_records.records.systemfields.access.access_settings import (
+    AccessSettings,
+)
 from invenio_rdm_records.services.errors import RecordDeletedException
 from invenio_records_resources.pagination import Pagination
 from invenio_records_resources.records.systemfields import FilesField
@@ -172,6 +175,12 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
                 "detail",
             )
         # TODO: handle permissions UI way - better response than generic error
+
+        access = api_record._record.parent["access"]
+        if "settings" not in access or access["settings"] is None:
+            api_record._record.parent["access"]["settings"] = AccessSettings({}).dump()
+        print(self.config.ui_serializer)
+
         if not self.config.ui_serializer:
             ui_data_serialization = api_record.to_dict()
         else:
@@ -200,7 +209,6 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             }
         )
 
-        self.make_links_absolute(ui_data_serialization["links"], self.api_service.config.url_prefix)
         extra_context = {}
         extra_context["exporters"] = {export.code: export for export in self.config.model.exports}
         self.run_components(
@@ -221,7 +229,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             "extra_context": extra_context,  # for backward compatibility
             "metadata": metadata,
             "ui": dict(ui_data_serialization.get("ui", ui_data_serialization)),
-            "record": ui_data_serialization,
+            "record_ui": ui_data_serialization,
             "api_record": api_record,
             "ui_links": ui_links,
             "context": current_oarepo_ui.catalog.jinja_env.globals,
@@ -314,20 +322,6 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
     def preview(self, pid_value: str, embed: bool = False, **kwargs: Any) -> Response:
         """Return detail page preview."""
         return self._detail(pid_value=pid_value, embed=embed, is_preview=True, **kwargs)
-
-    # TODO: check this, might be removed by using EndpointLink etc.
-    def make_links_absolute(self, links: dict, api_prefix: str) -> None:
-        """Make all links in the dictionary absolute by prepending API prefix.
-
-        :param links: Dictionary of links to update.
-        :param api_prefix: API prefix to prepend to relative links.
-        """
-        # make links absolute
-        for k, v in list(links.items()):
-            if not isinstance(v, str):
-                continue
-            if not v.startswith("/") and not v.startswith("https://"):
-                links[k] = f"/api{api_prefix}{v}"
 
     def _get_record(
         self,
