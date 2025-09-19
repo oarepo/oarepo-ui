@@ -200,7 +200,6 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             }
         )
 
-        self.make_links_absolute(ui_data_serialization["links"], self.api_service.config.url_prefix)
         extra_context = {}
         extra_context["exporters"] = {export.code: export for export in self.config.model.exports}
         self.run_components(
@@ -221,7 +220,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             "extra_context": extra_context,  # for backward compatibility
             "metadata": metadata,
             "ui": dict(ui_data_serialization.get("ui", ui_data_serialization)),
-            "record": ui_data_serialization,
+            "record_ui": ui_data_serialization,
             "api_record": api_record,
             "ui_links": ui_links,
             "context": current_oarepo_ui.catalog.jinja_env.globals,
@@ -314,20 +313,6 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
     def preview(self, pid_value: str, embed: bool = False, **kwargs: Any) -> Response:
         """Return detail page preview."""
         return self._detail(pid_value=pid_value, embed=embed, is_preview=True, **kwargs)
-
-    # TODO: check this, might be removed by using EndpointLink etc.
-    def make_links_absolute(self, links: dict, api_prefix: str) -> None:
-        """Make all links in the dictionary absolute by prepending API prefix.
-
-        :param links: Dictionary of links to update.
-        :param api_prefix: API prefix to prepend to relative links.
-        """
-        # make links absolute
-        for k, v in list(links.items()):
-            if not isinstance(v, str):
-                continue
-            if not v.startswith("/") and not v.startswith("https://"):
-                links[k] = f"/api{api_prefix}{v}"
 
     def _get_record(
         self,
@@ -783,6 +768,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
                 "not_found",
                 default_macro="NotFound",
             ),
+            record_ui={},
             pid=getattr(error, "pid_value", None) or getattr(error, "pid", None),
         )
 
