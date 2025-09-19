@@ -1,5 +1,4 @@
-{% extends "invenio_theme/page.html" %}
-
+{% extends "invenio_app_rdm/page.html" %}
 
 {%- block head %}
 {{ super() }}
@@ -23,7 +22,7 @@
 {% if not embedded %}{{ super() }}{% endif %}
 {% endblock page_footer %}
 
-{%- block css%}
+{%- block css %}
 {{ super() }}
 {% include config.THEME_CSS_TEMPLATE %}
 {%- endblock css%}
