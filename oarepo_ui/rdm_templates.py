@@ -120,6 +120,6 @@ def administration_blueprint(app: Flask) -> Blueprint:  # noqa: ARG001
     return Blueprint(
         "templates_app_rdm_administration",
         "invenio_app_rdm.administration",
-        template_folder="theme/templates",
-        static_folder="theme/static",
+        template_folder="templates",
+        static_folder="static",
     )
