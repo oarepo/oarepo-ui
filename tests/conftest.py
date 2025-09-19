@@ -37,8 +37,6 @@ from tests.model import (
     ModelResourceConfig,
     ModelUIResource,
     ModelUIResourceConfig,
-    TitlePageUIResource,
-    TitlePageUIResourceConfig,
 )
 
 
@@ -172,15 +170,6 @@ def test_record_ui_resource_config():
 @pytest.fixture(scope="module")
 def test_record_ui_resource(app, test_record_ui_resource_config, record_service):
     ui_resource = ModelUIResource(test_record_ui_resource_config)
-    app.register_blueprint(ui_resource.as_blueprint(template_folder=Path(__file__).parent / "templates"))
-    return ui_resource
-
-
-@pytest.fixture(scope="module")
-def titlepage_ui_resource(
-    app,
-):
-    ui_resource = TitlePageUIResource(TitlePageUIResourceConfig())
     app.register_blueprint(ui_resource.as_blueprint(template_folder=Path(__file__).parent / "templates"))
     return ui_resource
 
@@ -594,9 +583,8 @@ def field_data_test_obj():
 
 
 @pytest.fixture
-def resources(record_api_resource, record_ui_resource, titlepage_ui_resource):
+def resources(record_api_resource, record_ui_resource):
     return {
         "record_api": record_api_resource,
         "record_ui": record_ui_resource,
-        "titlepage_ui": titlepage_ui_resource,
     }

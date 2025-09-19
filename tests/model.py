@@ -237,15 +237,3 @@ class ModelUIResource(RecordsUIResource):
         # we are not testing drafts here, so always return published record
         # tests for drafts should be in oarepo-model-builder-drafts
         return super()._get_record(pid_value, allow_draft=False, include_deleted=False)
-
-
-class TitlePageUIResourceConfig(TemplatePageUIResourceConfig):
-    """Configuration for TitlePageUIResource."""
-
-    blueprint_name = "titlepage"
-    url_prefix = "/"
-    pages: Mapping[str, str] = {"": "TitlePage"}
-
-
-class TitlePageUIResource(TemplatePageUIResource):
-    """TitlePage UI resource."""

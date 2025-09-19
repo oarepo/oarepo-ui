@@ -11,7 +11,7 @@ from __future__ import annotations
 import json
 
 
-def test_template_page(app, titlepage_ui_resource, client):
+def test_template_page(app, client):
     with client.get("/") as c:
         assert c.status_code == 200
         data = json.loads(c.text)
