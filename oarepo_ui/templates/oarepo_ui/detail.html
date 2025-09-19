@@ -1,10 +1,5 @@
 {% extends "invenio_app_rdm/records/detail.html" %}
-{%- block bypasslinks %}
-{%- endblock bypasslinks %}
 {%- block page_body %}
-  {% if is_preview %}
-    <PreviewSubheader record_ui={{record}} is_draft={{is_draft}} api_record={{api_record}} />
-  {% endif %}
   <div class="ui{% if not embedded %} main{% endif %} container">
     <div class="ui relaxed grid">
       {% block record_header %}

@@ -17,6 +17,8 @@ import marshmallow as ma
 from flask import current_app
 from flask_resources.parsers import MultiDictSchema
 from flask_resources.serializers import MarshmallowSerializer
+from invenio_app_rdm.records_ui.views.records import draft_not_found_error, not_found_error
+from invenio_drafts_resources.resources.records.errors import DraftNotCreatedError
 from invenio_pidstore.errors import (
     PIDDeletedError,
     PIDDoesNotExistError,
@@ -40,6 +42,7 @@ from invenio_vocabularies.records.systemfields.relations import CustomFieldsRela
 from marshmallow import Schema, fields, post_load, validate
 from oarepo_runtime import current_runtime
 from oarepo_runtime.services.facets.params import GroupedFacetsParam
+from sqlalchemy.orm.exc import NoResultFound
 
 from ..base import UIResourceConfig
 
@@ -189,12 +192,14 @@ class RecordsUIResourceConfig(UIResourceConfig):
     """Initial empty record data used when creating a new record."""
 
     error_handlers: Mapping[type[Exception], str | ErrorHandlerCallable] = {
+        DraftNotCreatedError: draft_not_found_error,
         PIDDeletedError: "tombstone",
         RecordDeletedException: "tombstone",
-        PIDDoesNotExistError: "not_found",
-        PIDUnregistered: "not_found",
-        KeyError: "not_found",
-        FileKeyNotFoundError: "not_found",
+        PIDDoesNotExistError: not_found_error,
+        PIDUnregistered: not_found_error,
+        KeyError: not_found_error,
+        FileKeyNotFoundError: not_found_error,
+        NoResultFound: not_found_error,
         PermissionDeniedError: "permission_denied",
     }
     """Error handlers for specific exceptions, mapping exceptions to template names."""

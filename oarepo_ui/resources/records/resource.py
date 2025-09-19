@@ -30,6 +30,9 @@ from invenio_app_rdm.records_ui.views.records import PreviewFile
 from invenio_i18n import gettext as _
 from invenio_previewer import current_previewer
 from invenio_previewer.extensions import default as default_previewer
+from invenio_rdm_records.records.systemfields.access.access_settings import (
+    AccessSettings,
+)
 from invenio_rdm_records.services.errors import RecordDeletedException
 from invenio_records_resources.pagination import Pagination
 from invenio_records_resources.records.systemfields import FilesField
@@ -172,6 +175,12 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
                 "detail",
             )
         # TODO: handle permissions UI way - better response than generic error
+
+        access = api_record._record.parent["access"]
+        if "settings" not in access or access["settings"] is None:
+            api_record._record.parent["access"]["settings"] = AccessSettings({}).dump()
+        print(self.config.ui_serializer)
+
         if not self.config.ui_serializer:
             ui_data_serialization = api_record.to_dict()
         else:
@@ -768,7 +777,6 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
                 "not_found",
                 default_macro="NotFound",
             ),
-            record_ui={},
             pid=getattr(error, "pid_value", None) or getattr(error, "pid", None),
         )
 
