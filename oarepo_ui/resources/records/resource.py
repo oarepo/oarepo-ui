@@ -179,12 +179,11 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         access = api_record._record.parent["access"]
         if "settings" not in access or access["settings"] is None:
             api_record._record.parent["access"]["settings"] = AccessSettings({}).dump()
-        print(self.config.ui_serializer)
 
         if not self.config.ui_serializer:
             ui_data_serialization = api_record.to_dict()
         else:
-            ui_data_serialization = self.config.ui_serializer.dump_obj(api_record.to_dict())
+            ui_data_serialization = self.config.ui_serializer.dump_obj(copy.copy(api_record.to_dict()))
         ui_data_serialization.setdefault("links", {})
 
         emitter = current_stats.get_event_emitter("record-view")  # type: ignore[attr-defined]
