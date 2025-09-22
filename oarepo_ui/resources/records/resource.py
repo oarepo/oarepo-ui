@@ -551,7 +551,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         self.run_components(
             "before_ui_edit",
             api_record=api_record,
-        record=ui_serialization,
+            record=ui_serialization,
             data=api_record_serialization,
             form_config=form_config,
             ui_links=ui_links,
