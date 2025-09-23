@@ -176,9 +176,9 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             )
         # TODO: handle permissions UI way - better response than generic error
 
-        access = api_record._record.parent["access"]
+        access = api_record._record.parent["access"]  # noqa
         if "settings" not in access or access["settings"] is None:
-            api_record._record.parent["access"]["settings"] = AccessSettings({}).dump()
+            api_record._record.parent["access"]["settings"] = AccessSettings({}).dump()  # noqa
 
         if not self.config.ui_serializer:
             ui_data_serialization = api_record.to_dict()
