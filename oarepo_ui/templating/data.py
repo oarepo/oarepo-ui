@@ -254,37 +254,37 @@ class FieldData:
         return str(ret)
 
     @staticmethod
-    def label(fd: FieldData) -> str:
+    def label(fd: FieldData, default_fallback: str | None = "Item does not exist") -> str | None:
         """Return label of the current node.
 
         :param fd: Current FieldData node.
         :return: String value of the label, or a fallback message if the item does not exist.
         """
         if fd._ui_definitions is None:
-            return "Item does not exist"
-        return cast("str", fd._ui_definitions.get("label", "Item does not exist"))
+            return default_fallback
+        return cast("str", fd._ui_definitions.get("label", default_fallback))
 
     @staticmethod
-    def help(fd: FieldData) -> str:
+    def help(fd: FieldData, default_fallback: str | None = "Item does not exist") -> str | None:
         """Return help of the current node.
 
         :param fd: Current FieldData node.
         :return: String value of the help, or a fallback message if the item does not exist.
         """
         if fd._ui_definitions is None:
-            return "Item does not exist"
-        return cast("str", fd._ui_definitions.get("help", "Item does not exist"))
+            return default_fallback
+        return cast("str", fd._ui_definitions.get("help", default_fallback))
 
     @staticmethod
-    def hint(fd: FieldData) -> str:
+    def hint(fd: FieldData, default_fallback: str | None = "Item does not exist") -> str | None:
         """Return hint of the current node.
 
         :param fd: Current FieldData node.
         :return: String value of the hint, or a fallback message if the item does not exist.
         """
         if fd._ui_definitions is None:
-            return "Item does not exist"
-        return cast("str", fd._ui_definitions.get("hint", "Item does not exist"))
+            return default_fallback
+        return cast("str", fd._ui_definitions.get("hint", default_fallback))
 
     @staticmethod
     def array(fd: FieldData) -> list[FieldData]:
