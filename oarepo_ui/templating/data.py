@@ -262,7 +262,7 @@ class FieldData:
         """
         if fd._ui_definitions is None:
             return default_fallback
-        return cast("str", fd._ui_definitions.get("label", default_fallback))
+        return cast("str | None", fd._ui_definitions.get("label", default_fallback))
 
     @staticmethod
     def help(fd: FieldData, default_fallback: str | None = "Item does not exist") -> str | None:
@@ -273,7 +273,7 @@ class FieldData:
         """
         if fd._ui_definitions is None:
             return default_fallback
-        return cast("str", fd._ui_definitions.get("help", default_fallback))
+        return cast("str | None", fd._ui_definitions.get("help", default_fallback))
 
     @staticmethod
     def hint(fd: FieldData, default_fallback: str | None = "Item does not exist") -> str | None:
@@ -284,7 +284,7 @@ class FieldData:
         """
         if fd._ui_definitions is None:
             return default_fallback
-        return cast("str", fd._ui_definitions.get("hint", default_fallback))
+        return cast("str | None", fd._ui_definitions.get("hint", default_fallback))
 
     @staticmethod
     def array(fd: FieldData) -> list[FieldData]:
