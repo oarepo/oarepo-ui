@@ -42,7 +42,7 @@ from invenio_vocabularies.records.systemfields.relations import CustomFieldsRela
 from marshmallow import Schema, fields, post_load, validate
 from oarepo_runtime import current_runtime
 from oarepo_runtime.services.facets.params import GroupedFacetsParam
-from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.exc import NoResultFound
 
 from ..base import UIResourceConfig
 

@@ -27,6 +27,7 @@ from invenio_sitemap import iterate_urls_of_sitemap_indices
 if TYPE_CHECKING:
     from flask import Flask
     from flask.blueprints import BlueprintSetupState
+    from flask.typing import ResponseReturnValue
 
 
 def create_blueprint(app: Flask) -> Blueprint:
@@ -34,9 +35,10 @@ def create_blueprint(app: Flask) -> Blueprint:
     routes = app.config.get("APP_RDM_ROUTES")
     blueprint = Blueprint("oarepo_ui", __name__, template_folder="templates", static_folder="static")
 
-    blueprint.add_url_rule(**create_url_rule(routes["index"], default_view_func=index))
-    blueprint.add_url_rule(**create_url_rule(routes["robots"], default_view_func=robots))
-    blueprint.add_url_rule(**create_url_rule(routes["help_search"], default_view_func=help_search))
+    if routes:
+        blueprint.add_url_rule(**create_url_rule(routes.get("index"), default_view_func=index))
+        blueprint.add_url_rule(**create_url_rule(routes.get("robots"), default_view_func=robots))
+        blueprint.add_url_rule(**create_url_rule(routes.get("help_search"), default_view_func=help_search))
 
     blueprint.app_context_processor(lambda: ({"current_app": app}))
 
@@ -64,7 +66,7 @@ def create_blueprint(app: Flask) -> Blueprint:
 
 
 # Common UI views
-def index() -> str:
+def index() -> ResponseReturnValue:
     """Frontpage."""
     return render_template(
         current_app.config["THEME_FRONTPAGE_TEMPLATE"],
@@ -72,7 +74,7 @@ def index() -> str:
     )
 
 
-def robots() -> str:
+def robots() -> ResponseReturnValue:
     """Robots.txt."""
     return render_template(
         "invenio_app_rdm/robots.txt",
@@ -80,7 +82,7 @@ def robots() -> str:
     )
 
 
-def help_search() -> str:
+def help_search() -> ResponseReturnValue:
     """Search help guide."""
     # Default to rendering english page if locale page not found.
     locale = get_locale()
