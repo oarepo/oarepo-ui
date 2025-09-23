@@ -273,7 +273,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
         """
         classes: list[type] = api_config.search.params_interpreters_cls
         grouped_facets_param_class: type[GroupedFacetsParam] | None = next(
-            (cls for cls in classes if issubclass(cls, GroupedFacetsParam)),
+            (cls for cls in classes if inspect.isclass(cls) and issubclass(cls, GroupedFacetsParam)),
             None,
         )
         if not grouped_facets_param_class:
