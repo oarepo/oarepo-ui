@@ -14,5 +14,4 @@ import json
 def test_template_page(app, client):
     with client.get("/") as c:
         assert c.status_code == 200
-        data = json.loads(c.text)
-        assert "ok" in data
+        assert 'frontpage-search-bar' in c.text

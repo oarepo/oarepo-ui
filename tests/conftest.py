@@ -28,16 +28,9 @@ from invenio_accounts.testutils import login_user_via_session
 from invenio_app.factory import create_app as _create_app
 from invenio_rdm_records.config import RDM_FACETS, RDM_SORT_OPTIONS
 from invenio_records_resources.services.custom_fields import KeywordCF
-from oarepo_runtime.api import Model
 from sqlalchemy.exc import IntegrityError
 
 from oarepo_ui.templating.data import FieldData
-from tests.model import (
-    ModelResource,
-    ModelResourceConfig,
-    ModelUIResource,
-    ModelUIResourceConfig,
-)
 
 
 def _create_user(user_fixture, app, db) -> None:
@@ -58,7 +51,6 @@ def extra_entry_points():
     """Extra entry points to load the mock_module features."""
     return {
         "invenio_i18n.translations": ["1000-test = tests"],
-        "oarepo.ui": ["simple_model = tests:simple_model.json"],
     }
 
 
@@ -97,8 +89,6 @@ def app_config(app_config, model):
     app_config["APP_THEME"] = ["semantic-ui"]
     app_config["THEME_FRONTPAGE"] = False
     app_config["THEME_SEARCHBAR"] = False
-    app_config["THEME_HEADER_TEMPLATE"] = "header.html"
-    app_config["THEME_HEADER_LOGIN_TEMPLATE"] = "header_login.html"
     app_config["THEME_SHOW_FRONTPAGE_INTRO_SECTION"] = False
     app_config["RDM_FACETS"] = RDM_FACETS
     app_config["RDM_SORT_OPTIONS"] = RDM_SORT_OPTIONS
@@ -109,6 +99,7 @@ def app_config(app_config, model):
         "help_search": "/help/search",
         "record_detail": "/records/<pid_value>",
     }
+
 
     def dummy_jinja_filter(*args: Any, **kwargs: Any) -> str:
         """Return dummy value."""
@@ -122,11 +113,12 @@ def app_config(app_config, model):
 
     app_config["WEBPACKEXT_PROJECT"] = "oarepo_ui.webpack:project"
 
-    app_config["OAREPO_MODELS"] = {model.code: model}
-
     app_config["WEBPACKEXT_MANIFEST_LOADER"] = MockManifestLoader
+    
+    model.register()
 
     return app_config
+
 
 
 @pytest.fixture(scope="module")
@@ -136,51 +128,8 @@ def create_app(instance_path, entry_points):
 
 
 @pytest.fixture(scope="module")
-def record_service(app):
-    from .model import ModelService, ModelServiceConfig
-
-    service = ModelService(ModelServiceConfig())
-    sregistry = app.extensions["invenio-records-resources"].registry
-    sregistry.register(service, service_id="simple_model")
-    return service
-
-
-@pytest.fixture(scope="module")
-def record_ui_resource_config(app):
-    return ModelUIResourceConfig()
-
-
-@pytest.fixture(scope="module")
-def record_ui_resource(app, record_ui_resource_config, record_service):
-    ui_resource = ModelUIResource(record_ui_resource_config)
-    app.register_blueprint(ui_resource.as_blueprint(template_folder=Path(__file__).parent / "templates"))
-    return ui_resource
-
-
-@pytest.fixture(scope="module")
-def record_api_resource_config(app):
-    return ModelResourceConfig()
-
-
-@pytest.fixture(scope="module")
-def record_api_resource(app, record_api_resource_config, record_service):
-    resource = ModelResource(record_api_resource_config, record_service)
-    app.register_blueprint(resource.as_blueprint(template_folder=Path(__file__).parent / "templates"))
-    return resource
-
-
-@pytest.fixture(scope="module")
-def test_record_ui_resource_config():
-    config = ModelUIResourceConfig()
-    config.application_id = "Test"
-    return config
-
-
-@pytest.fixture(scope="module")
-def test_record_ui_resource(app, test_record_ui_resource_config, record_service):
-    ui_resource = ModelUIResource(test_record_ui_resource_config)
-    app.register_blueprint(ui_resource.as_blueprint(template_folder=Path(__file__).parent / "templates"))
-    return ui_resource
+def record_service(app, model):
+    return model.service
 
 
 @pytest.fixture(scope="module")
@@ -212,13 +161,10 @@ def users(app):
 
 @pytest.fixture
 def simple_record(app, db, search_clear, record_service):
-    from .model import ModelRecord
-
     record = record_service.create(
         system_identity,
         {},
     )
-    ModelRecord.index.refresh()
     return record
 
 
@@ -256,16 +202,31 @@ def record_cf(app, db, cache):
 
 @pytest.fixture(scope="module")
 def model():
-    from .model import ModelResourceConfig, exports
+    from oarepo_model.api import model
+    from oarepo_model.presets.records_resources import records_resources_preset
+    from oarepo_model.presets.drafts import drafts_preset
+    from oarepo_rdm.model.presets import rdm_preset
+    from oarepo_model.presets.ui_links import ui_links_preset
+    from oarepo_model.datatypes.registry import from_yaml
 
-    return Model(
-        code="simple-model",
-        name="Simple Model",
+    return model(
+        "simple-model",
         version="1.0.0",
-        service="simple_model",
-        resource_config=ModelResourceConfig,
-        ui_model={"test": "ok"},
-        exports=exports,
+        types=[
+            from_yaml("metadata.yaml", __file__)
+        ],
+        metadata_type="Metadata",
+        presets=[
+            records_resources_preset,
+            drafts_preset,
+            rdm_preset,
+            ui_links_preset
+        ],
+        customizations=[
+        ],
+        configuration={
+            "ui_blueprint_name": "simple_model_ui"
+        }
     )
 
 
