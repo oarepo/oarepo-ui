@@ -116,15 +116,15 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
     routes: Mapping[str, str] = {
         "search": "",
-        "create": "/_new",
-        "detail": "/<pid_value>",
-        "latest": "/<pid_value>/latest",
-        "edit": "/<pid_value>/edit",
-        "export": "/<pid_value>/export/<export_format>",
-        "export_preview": "/<pid_value>/preview/export/<export_format>",
-        "preview": "/<pid_value>/preview",
-        "published_file_preview": "/<pid_value>/files/<path:filepath>/preview",
-        "draft_file_preview": "/<pid_value>/preview/files/<path:filepath>/preview",
+        "create": "/uploads/new",
+        "edit": "/uploads/<pid_value>",
+        "detail": "/records/<pid_value>",
+        "latest": "/records/<pid_value>/latest",
+        "export": "/records/<pid_value>/export/<export_format>",
+        "export_preview": "/records/<pid_value>/preview/export/<export_format>",
+        "preview": "/records/<pid_value>?preview=1",
+        "published_file_preview": "/records/<pid_value>/files/<path:filepath>/preview",
+        "draft_file_preview": "/records/<pid_value>/preview/files/<path:filepath>/preview",
     }
     """Routes for the resource, mapping route names to URL patterns."""
 

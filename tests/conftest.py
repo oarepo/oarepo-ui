@@ -12,6 +12,7 @@ import json
 from pathlib import Path
 from typing import Any, override
 
+from oarepo_runtime import current_runtime
 import pytest
 from flask_security import login_user
 from flask_security.utils import hash_password
@@ -47,8 +48,9 @@ def _create_user(user_fixture, app, db) -> None:
 
 
 @pytest.fixture(scope="module")
-def extra_entry_points():
+def extra_entry_points(record_model):
     """Extra entry points to load the mock_module features."""
+    record_model.register()
     return {
         "invenio_i18n.translations": ["1000-test = tests"],
     }
@@ -79,7 +81,7 @@ class MockManifestLoader(JinjaManifestLoader):
 
 
 @pytest.fixture(scope="module")
-def app_config(app_config, model):
+def app_config(app_config, record_model):
     app_config["I18N_LANGUAGES"] = [("cs", "Czech")]
     app_config["BABEL_DEFAULT_LOCALE"] = "en"
     app_config["RECORDS_REFRESOLVER_CLS"] = "invenio_records.resolver.InvenioRefResolver"
@@ -115,8 +117,6 @@ def app_config(app_config, model):
 
     app_config["WEBPACKEXT_MANIFEST_LOADER"] = MockManifestLoader
     
-    model.register()
-
     return app_config
 
 
@@ -128,8 +128,9 @@ def create_app(instance_path, entry_points):
 
 
 @pytest.fixture(scope="module")
-def record_service(app, model):
-    return model.service
+def record_service(app, record_model):
+    print(current_runtime.models)
+    return current_runtime.models["simple_model"].service
 
 
 @pytest.fixture(scope="module")
@@ -199,9 +200,8 @@ def record_cf(app, db, cache):
 
     prepare_cf_indices()
 
-
-@pytest.fixture(scope="module")
-def model():
+@pytest.fixture(scope="session")
+def record_model():
     from oarepo_model.api import model
     from oarepo_model.presets.records_resources import records_resources_preset
     from oarepo_model.presets.drafts import drafts_preset
@@ -213,7 +213,13 @@ def model():
         "simple-model",
         version="1.0.0",
         types=[
-            from_yaml("metadata.yaml", __file__)
+            {
+                "Metadata": {
+                    "properties": {
+                        "title": {"type": "keyword"},
+                    },
+                },
+        }
         ],
         metadata_type="Metadata",
         presets=[

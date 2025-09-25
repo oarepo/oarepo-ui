@@ -13,7 +13,7 @@ import json
 from invenio_config.default import ALLOWED_HTML_ATTRS, ALLOWED_HTML_TAGS
 
 
-def test_create(app, client_with_credentials):
+def test_create(app, record_service, client_with_credentials):
     with client_with_credentials.get("/simple-model/_new") as c:
         response = json.loads(c.text)
         response["data"].pop("created")
