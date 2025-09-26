@@ -104,7 +104,7 @@ class FieldData:
         """
         ui_value = dict(ui_data.get("ui", ui_data))
         ui_value = {"metadata": ui_value, **ui_value}
-
+        print(ui_value)
         return cls(
             api_data=api_data,
             ui_data=ui_value,
