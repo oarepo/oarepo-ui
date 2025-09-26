@@ -9,10 +9,8 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 from typing import Any, override
 
-from oarepo_runtime import current_runtime
 import pytest
 from flask_security import login_user
 from flask_security.utils import hash_password
@@ -29,6 +27,7 @@ from invenio_accounts.testutils import login_user_via_session
 from invenio_app.factory import create_app as _create_app
 from invenio_rdm_records.config import RDM_FACETS, RDM_SORT_OPTIONS
 from invenio_records_resources.services.custom_fields import KeywordCF
+from oarepo_runtime import current_runtime
 from sqlalchemy.exc import IntegrityError
 
 from oarepo_ui.templating.data import FieldData
@@ -102,7 +101,6 @@ def app_config(app_config, record_model):
         "record_detail": "/records/<pid_value>",
     }
 
-
     def dummy_jinja_filter(*args: Any, **kwargs: Any) -> str:
         """Return dummy value."""
         return "dummy"
@@ -116,9 +114,8 @@ def app_config(app_config, record_model):
     app_config["WEBPACKEXT_PROJECT"] = "oarepo_ui.webpack:project"
 
     app_config["WEBPACKEXT_MANIFEST_LOADER"] = MockManifestLoader
-    
-    return app_config
 
+    return app_config
 
 
 @pytest.fixture(scope="module")
@@ -200,14 +197,14 @@ def record_cf(app, db, cache):
 
     prepare_cf_indices()
 
+
 @pytest.fixture(scope="session")
 def record_model():
     from oarepo_model.api import model
-    from oarepo_model.presets.records_resources import records_resources_preset
     from oarepo_model.presets.drafts import drafts_preset
-    from oarepo_rdm.model.presets import rdm_preset
+    from oarepo_model.presets.records_resources import records_resources_preset
     from oarepo_model.presets.ui_links import ui_links_preset
-    from oarepo_model.datatypes.registry import from_yaml
+    from oarepo_rdm.model.presets import rdm_preset
 
     return model(
         "simple-model",
@@ -219,20 +216,12 @@ def record_model():
                         "title": {"type": "keyword"},
                     },
                 },
-        }
+            }
         ],
         metadata_type="Metadata",
-        presets=[
-            records_resources_preset,
-            drafts_preset,
-            rdm_preset,
-            ui_links_preset
-        ],
-        customizations=[
-        ],
-        configuration={
-            "ui_blueprint_name": "simple_model_ui"
-        }
+        presets=[records_resources_preset, drafts_preset, rdm_preset, ui_links_preset],
+        customizations=[],
+        configuration={"ui_blueprint_name": "simple_model_ui"},
     )
 
 

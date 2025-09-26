@@ -117,12 +117,11 @@ class RecordsUIResourceConfig(UIResourceConfig):
     routes: Mapping[str, str] = {
         "search": "",
         "create": "/uploads/new",
-        "edit": "/uploads/<pid_value>",
-        "detail": "/records/<pid_value>",
+        "deposit_edit": "/uploads/<pid_value>",
+        "record_detail": "/records/<pid_value>",
         "latest": "/records/<pid_value>/latest",
         "export": "/records/<pid_value>/export/<export_format>",
         "export_preview": "/records/<pid_value>/preview/export/<export_format>",
-        "preview": "/records/<pid_value>?preview=1",
         "published_file_preview": "/records/<pid_value>/files/<path:filepath>/preview",
         "draft_file_preview": "/records/<pid_value>/preview/files/<path:filepath>/preview",
     }
@@ -139,6 +138,10 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
     request_view_args: type[Schema] = MultiDictSchema.from_dict({"pid_value": ma.fields.Str()})
     """Request arguments for viewing a record, including the PID value."""
+
+    request_record_detail_args: type[Schema] = MultiDictSchema.from_dict(
+        {"preview": ma.fields.Bool(attribute="is_preview", missing=False), "include_deleted": ma.fields.Bool()}
+    )
 
     request_file_view_args: type[Schema] = MultiDictSchema.from_dict(
         {
@@ -180,9 +183,9 @@ class RecordsUIResourceConfig(UIResourceConfig):
     """Namespace of the React app components related to this resource."""
 
     templates: Mapping[str, str | None] = {
-        "detail": None,
+        "record_detail": None,
         "search": None,
-        "edit": None,
+        "deposit_edit": None,
         "create": None,
         "preview": None,
     }
@@ -226,8 +229,8 @@ class RecordsUIResourceConfig(UIResourceConfig):
     def ui_links_item(self) -> Mapping[str, EndpointLink]:
         """Return UI links for item detail, edit, and search."""
         return {
-            "self": RecordEndpointLink(f"{self.blueprint_name}.detail"),
-            "edit": RecordEndpointLink(f"{self.blueprint_name}.edit"),
+            "self": RecordEndpointLink(f"{self.blueprint_name}.record_detail"),
+            "edit": RecordEndpointLink(f"{self.blueprint_name}.deposit_edit"),
             "search": EndpointLink(f"{self.blueprint_name}.search"),
         }
 

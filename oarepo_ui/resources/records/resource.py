@@ -16,9 +16,10 @@ from functools import partial
 from http import HTTPStatus
 from mimetypes import guess_extension
 from typing import TYPE_CHECKING, Any, cast
-
+from invenio_users_resources.proxies import current_user_resources
+from invenio_rdm_records.proxies import current_rdm_records
 import deepmerge
-from flask import Blueprint, abort, current_app, g, redirect, request
+from flask import Blueprint, abort, current_app, g, redirect, render_template, request
 from flask_login import current_user
 from flask_principal import PermissionDenied
 from flask_resources import (
@@ -38,9 +39,11 @@ from invenio_records_resources.pagination import Pagination
 from invenio_records_resources.records.systemfields import FilesField
 from invenio_records_resources.services import LinksTemplate
 from invenio_stats.proxies import current_stats
+from marshmallow import ValidationError
 from werkzeug import Response
 from werkzeug.exceptions import Forbidden
 
+from oarepo_ui.resources.records.decorators import pass_record_files, pass_record_media_files, pass_record_or_draft
 from oarepo_ui.utils import dump_empty
 
 # Resource
@@ -145,126 +148,139 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
     def _record_from_service_result(self, result: RecordItem) -> Record:
         return cast("Record", result._record)  # noqa: SLF001  private attribute
 
-    # helper function to avoid duplicating code between detail and preview handler
-    def _detail(
-        self,
-        pid_value: str,
-        embed: bool = False,
-        is_preview: bool = False,
-        **kwargs: Any,
-    ) -> Response:
-        """Render detail or preview page for a record, called from detail and preview methods.
+    @pass_route_args("view")
+    @pass_query_args("record_detail")
+    @pass_record_or_draft(expand=True)
+    @pass_record_files
+    @pass_record_media_files
+    @response_header_signposting
+    def record_detail(self, pid_value, record, files, media_files, is_preview=False, include_deleted=False):
+        """Record detail page (aka landing page) adapted from invenio-app-rdm view."""
+        files_dict = None if files is None else files.to_dict()
+        media_files_dict = None if media_files is None else media_files.to_dict()
 
-        :param pid_value: Persistent identifier value for the record.
-        :param embed: Whether to embed the page.
-        :param is_preview: Whether to render as preview.
-        :param kwargs: Additional context for rendering.
-        :return: Flask Response object with rendered page.
-        :raises: May raise Forbidden if permissions are denied.
-        """
-        if is_preview:
-            api_record = self._get_record(pid_value, allow_draft=is_preview, **kwargs)
-            render_method = self.get_jinjax_macro(
-                "preview",
-                default_macro=self.config.templates["detail"],
-            )
-
-        else:
-            api_record = self._get_record(pid_value, allow_draft=is_preview, **kwargs)
-            render_method = self.get_jinjax_macro(
-                "detail",
-            )
-        # TODO: handle permissions UI way - better response than generic error
-
-        access = api_record._record.parent["access"]  # noqa
+        access = record._record.parent["access"]
         if "settings" not in access or access["settings"] is None:
-            api_record._record.parent["access"]["settings"] = AccessSettings({}).dump()  # noqa
+            record._record.parent["access"]["settings"] = AccessSettings({}).dump()
 
         if not self.config.ui_serializer:
-            ui_data_serialization = api_record.to_dict()
+            record_ui = copy.copy(record.to_dict())
         else:
-            ui_data_serialization = self.config.ui_serializer.dump_obj(copy.copy(api_record.to_dict()))
-        ui_data_serialization.setdefault("links", {})
+            record_ui = self.config.ui_serializer.dump_obj(copy.copy(record.to_dict()))
+        record_ui.setdefault("links", {})
 
-        emitter = current_stats.get_event_emitter("record-view")  # type: ignore[attr-defined]
-        if ui_data_serialization is not None and emitter is not None:
-            emitter(
-                current_app,
-                record=self._record_from_service_result(api_record),
-                via_api=False,
-            )
+        is_draft = record_ui["is_draft"]
 
-        ui_links = self.expand_detail_links(identity=g.identity, record=api_record)
-        export_path = request.path.split("?")[0]
-        if not export_path.endswith("/"):
-            export_path += "/"
-        export_path += "export"
+        # TODO: implement custom fields feature
+        # custom_fields = load_custom_fields()
+        # keep only landing page configurable custom fields
+        # custom_fields["ui"] = [cf for cf in custom_fields["ui"] if not cf.get("hide_from_landing_page", False)]
+        avatar = None
 
-        ui_data_serialization["links"].update(
-            {
-                "ui_links": ui_links,
-                "export_path": export_path,
-                "search_link": self.config.url_prefix,
-            }
-        )
+        if current_user.is_authenticated:
+            avatar = current_user_resources.users_service.links_item_tpl.expand(g.identity, current_user)["avatar"]
 
-        extra_context = {}
-        extra_context["exporters"] = {export.code: export for export in self.config.model.exports}
-        self.run_components(
-            "before_ui_detail",
-            api_record=api_record,
-            record=ui_data_serialization,
-            identity=g.identity,
-            extra_context=extra_context,
-            ui_links=ui_links,
+        if is_preview and is_draft:
+            # it is possible to save incomplete drafts that break the normal
+            # (preview) landing page rendering
+            # to prevent this from happening, we validate the draft's structure
+            # see: https://github.com/inveniosoftware/invenio-app-rdm/issues/1051
+            try:
+                current_rdm_records.records_service.validate_draft(g.identity, record.id, ignore_field_permissions=True)
+            except ValidationError:
+                abort(404)
+            # inject parent doi format for new drafts so we can show in preview if parent doi is required
+            if current_app.config["DATACITE_ENABLED"]:
+                service = current_rdm_records.records_service
+                datacite_provider = [
+                    v["datacite"]
+                    for p, v in service.config.parent_pids_providers.items()
+                    if p == "doi" and "datacite" in v
+                ]
+                if datacite_provider:
+                    should_mint_parent_doi = True
+                    is_doi_required = (
+                        current_app.config.get("RDM_PARENT_PERSISTENT_IDENTIFIERS", {}).get("doi", {}).get("required")
+                    )
+                    if not is_doi_required:
+                        # check if the draft has a reserved doi and mint parent doi only in that case
+                        record_doi = record._record.pids.get("doi", {})
+                        is_doi_reserved = record_doi.get("provider", "") == "datacite" and record_doi.get("identifier")
+                        if not is_doi_reserved:
+                            should_mint_parent_doi = False
+
+                    if should_mint_parent_doi:
+                        datacite_provider = datacite_provider[0]
+                        parent_doi = datacite_provider.client.generate_doi(record._record.parent)
+                        record_ui["ui"]["new_draft_parent_doi"] = parent_doi
+
+        # emit a record view stats event
+        emitter = current_stats.get_event_emitter("record-view")
+        if record is not None and emitter is not None:
+            emitter(current_app, record=record._record, via_api=False)
+
+        record_owner = record_ui.get("expanded", {}).get("parent", {}).get("access", {}).get("owned_by", {})
+        # TODO: implement communities
+        # resolved_community, _ = get_record_community(record_ui)
+        # resolved_community_ui = (
+        #     UICommunityJSONSerializer().dump_obj(resolved_community.to_dict()) if resolved_community else None
+        # )
+        # theme = resolved_community_ui.get("theme", {}) if resolved_community else None
+        resolved_community = None
+        resolved_community_ui = None
+
+        render_kwargs = dict(
+            record=record,
+            record_ui=record_ui,
+            files=files_dict,
+            media_files=media_files_dict,
+            # user_communities_memberships=get_user_communities_memberships(),
+            permissions=record.has_permissions_to(
+                [
+                    "edit",
+                    "new_version",
+                    "manage",
+                    "update_draft",
+                    "read_files",
+                    "review",
+                    "view",
+                    "media_read_files",
+                    "moderate",
+                ]
+            ),
+            # TODO: implement custom fields
+            # custom_fields_ui=custom_fields["ui"],
             is_preview=is_preview,
-            embedded=embed,
-            **kwargs,
-        )
-        metadata = dict(ui_data_serialization.get("metadata", ui_data_serialization))
-
-        render_kwargs = {
-            **extra_context,
-            "extra_context": extra_context,  # for backward compatibility
-            "metadata": metadata,
-            "ui": dict(ui_data_serialization.get("ui", ui_data_serialization)),
-            "record_ui": ui_data_serialization,
-            "api_record": api_record,
-            "ui_links": ui_links,
-            "context": current_oarepo_ui.catalog.jinja_env.globals,
-            "d": FieldData.create(
-                api_data=api_record.to_dict(),
-                ui_data=ui_data_serialization,
+            include_deleted=include_deleted,
+            is_draft=is_draft,
+            community=resolved_community,
+            community_ui=resolved_community_ui,
+            # TODO: implement external resources
+            # external_resources=get_external_resources(record),
+            user_avatar=avatar,
+            record_owner_id=(record_owner.get("id")),  # record created with system_identity have not owners e.g demo
+            # JinjaX support
+            context=current_oarepo_ui.catalog.jinja_env.globals,
+            d=FieldData.create(
+                api_data=record.to_dict(),
+                ui_data=record_ui,
                 ui_definitions=self.ui_model,
                 item_getter=self.config.field_data_item_getter,
             ),
-            "is_preview": is_preview,
-            "embedded": embed,
-        }
+        )
 
+        # TODO: implement render_community_theme_template?
         response = Response(
             current_oarepo_ui.catalog.render(
-                render_method,
+                self.get_jinjax_macro("record_detail"),
                 **render_kwargs,
             ),
             mimetype="text/html",
             status=200,
         )
-        set_api_record_to_response(response, api_record)
+        set_api_record_to_response(response, record)
         return response
 
-    @pass_route_args("view")
-    @pass_query_args("read", "embed", exclude=["is_preview"])
-    @response_header_signposting
-    def detail(
-        self,
-        pid_value: str,
-        embed: bool = False,
-        is_preview: bool = False,
-        **kwargs: Any,
-    ) -> Response:
-        """Return item detail page."""
-        return self._detail(pid_value=pid_value, embed=embed, is_preview=is_preview, **kwargs)
 
     @pass_route_args("view")
     @pass_query_args("read", "embed", exclude=["is_preview"])
@@ -499,7 +515,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         return tmpl
 
     @pass_route_args("view")
-    def edit(self, pid_value: str, **kwargs: Any) -> str | Response:
+    def deposit_edit(self, pid_value: str, **kwargs: Any) -> str | Response:
         """Return edit page for a record."""
         try:
             api_record = self._get_record(pid_value, allow_draft=True, **kwargs)
