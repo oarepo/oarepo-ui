@@ -116,7 +116,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
     routes: Mapping[str, str] = {
         "search": "",
-        "create": "/uploads/new",
+        "deposit_create": "/uploads/new",
         "deposit_edit": "/uploads/<pid_value>",
         "record_detail": "/records/<pid_value>",
         "latest": "/records/<pid_value>/latest",
@@ -186,7 +186,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
         "record_detail": None,
         "search": None,
         "deposit_edit": None,
-        "create": None,
+        "deposit_create": None,
         "preview": None,
     }
     """Templates used for rendering the UI. It is a name of a jinjax macro that renders the UI"""
@@ -242,8 +242,8 @@ class RecordsUIResourceConfig(UIResourceConfig):
         """
         return {
             **pagination_endpoint_links(f"{self.blueprint_name}.search"),
-            "create": EndpointLink(
-                f"{self.blueprint_name}.create",
+            "deposit_create": EndpointLink(
+                f"{self.blueprint_name}.deposit_create",
                 # ignore pagination etc from this link
                 vars=remove_pagination_args,
             ),
@@ -558,5 +558,5 @@ class RecordsUIResourceConfig(UIResourceConfig):
         """Get the react form configuration."""
         return dict(
             overridableIdPrefix=f"{self.application_id.capitalize()}.Form",
-            **kwargs,
+            **kwargs
         )

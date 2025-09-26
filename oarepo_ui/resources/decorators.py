@@ -10,24 +10,28 @@
 """Record views decorators."""
 
 from __future__ import annotations
+from collections.abc import Callable
 
 from functools import wraps
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
-from flask import g, redirect, url_for
+from flask import g, redirect, session, url_for
+from flask_security import login_required
 from invenio_records_resources.services.errors import PermissionDeniedError
 from sqlalchemy.orm.exc import NoResultFound
+from werkzeug import Response
+from invenio_pidstore.errors import PIDDoesNotExistError
 
 if TYPE_CHECKING:
     from oarepo_ui.resources.records.resource import RecordsUIResource
 
 
-def pass_record_or_draft(expand=True):
+def pass_record_or_draft[T: Callable](expand: bool=True) -> T:
     """Decorator to retrieve the draft using the record service."""
 
     def decorator(f):
         @wraps(f)
-        def view(self: RecordsUIResource, **kwargs):
+        def view(self: RecordsUIResource, **kwargs: Any):
             pid_value = kwargs.get("pid_value")
             is_preview = kwargs.get("is_preview")
             include_deleted = kwargs.get("include_deleted", False)
@@ -76,12 +80,64 @@ def pass_record_or_draft(expand=True):
 
     return decorator
 
+def pass_draft[T: Callable](expand=True) -> T:
+    def decorator(f):
+        @wraps(f)
+        def view(self: RecordsUIResource, **kwargs: Any):
+            pid_value = kwargs.get("pid_value")
+            try:
+                record_service = self.api_service
+                draft = record_service.read_draft(
+                    id_=pid_value,
+                    identity=g.identity,
+                    expand=expand,
+                )
+                kwargs["draft"] = draft
+                kwargs["files_locked"] = (
+                    record_service.config.lock_edit_published_files(
+                        record_service, g.identity, draft=draft, record=draft._record
+                    )
+                )
+                return f(self, **kwargs)
+            except PIDDoesNotExistError:
+                # Redirect to /records/:id because users are interchangeably
+                # using /records/:id and /uploads/:id when sharing links, so in
+                # case a draft doesn't exists, when check if the record exists
+                # always.
+                return redirect(
+                    url_for(
+                        f"{self.config.blueprint_name}.record_detail",
+                        pid_value=pid_value,
+                    )
+                )
 
-def pass_record_files(f):
+        return view
+
+    return decorator
+
+def pass_draft_files[T: Callable](f) -> T:
+    @wraps(f)
+    def view(self:RecordsUIResource,**kwargs):
+        try:
+            pid_value = kwargs.get("pid_value")
+            files = self.api_service.draft_files.list_files(id_=pid_value, identity=g.identity)
+            kwargs["draft_files"] = files
+        except PermissionDeniedError:
+            # this is handled here because we don't want a 404 on the landing
+            # page when a user is allowed to read the metadata but not the
+            # files
+            kwargs["draft_files"] = None
+
+        return f(self, **kwargs)
+
+    return view
+
+
+def pass_record_files[T: Callable](f: T) -> T:
     """Decorate a view to pass a record's files using the files service."""
 
     @wraps(f)
-    def view(self: RecordsUIResource, **kwargs):
+    def view(self: RecordsUIResource, **kwargs: Any):
         is_preview = kwargs.get("is_preview")
         pid_value = kwargs.get("pid_value")
         read_kwargs = {"id_": pid_value, "identity": g.identity}
@@ -106,11 +162,11 @@ def pass_record_files(f):
     return view
 
 
-def pass_record_media_files(f):
+def pass_record_media_files[T: Callable](f: T) -> T:
     """Decorate a view to pass a record's media files using the files service."""
 
     @wraps(f)
-    def view(self: RecordsUIResource, **kwargs):
+    def view(self: RecordsUIResource, **kwargs: Any):
         is_preview = kwargs.get("is_preview")
         pid_value = kwargs.get("pid_value")
         read_kwargs = {"id_": pid_value, "identity": g.identity}
@@ -137,3 +193,31 @@ def pass_record_media_files(f):
         return f(self, **kwargs)
 
     return view
+
+def secret_link_or_login_required[T: Callable]() -> T:
+    def decorator(f):
+        @wraps(f)
+        def view(self, **kwargs: Any):
+            secret_link_token_arg = "token"
+            session_token = session.get(secret_link_token_arg, None)
+            if session_token is None:
+                login_required(f)
+            return f(self, **kwargs)
+
+        return view
+
+    return decorator
+
+
+def no_cache_response[T: Callable](f: T) -> T:
+    @wraps(f)
+    def inner(*args: Any, **kwargs: Any) -> Response:
+        """Inner function to add signposting link to response headers."""
+        response = f(*args, **kwargs)
+
+        response.cache_control.no_cache = True
+        response.cache_control.no_store = True
+        response.cache_control.must_revalidate = True
+
+        return response
+    return inner   # type: ignore[return-value]

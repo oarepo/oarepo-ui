@@ -1,5 +1,3 @@
-{#def record, forms_config, community=None, preselectedCommunity=None, files=None, files_locked=False, community_use_jinja_header=False, permissions=None #}
-
 {%- if not record.is_published and record.versions.index and record.versions.index > 1 %}
   {%- set title = _("New version") %}
 {%- elif not record.is_published %}

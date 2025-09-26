@@ -19,12 +19,15 @@ from typing import TYPE_CHECKING, Any, cast
 from invenio_users_resources.proxies import current_user_resources
 from invenio_rdm_records.proxies import current_rdm_records
 import deepmerge
-from flask import Blueprint, abort, current_app, g, redirect, render_template, request
+from flask import Blueprint, abort, current_app, g, redirect, render_template, request, url_for
 from flask_login import current_user
 from flask_principal import PermissionDenied
 from flask_resources import (
     route,
 )
+from invenio_records_resources.services.errors import PermissionDeniedError
+from invenio_app_rdm.records_ui.views.deposits import get_actual_files_quota
+from invenio_app_rdm.records_ui.utils import set_default_value
 from flask_security import login_required
 from idutils.normalizers import to_url
 from invenio_app_rdm.records_ui.views.records import PreviewFile
@@ -42,8 +45,8 @@ from invenio_stats.proxies import current_stats
 from marshmallow import ValidationError
 from werkzeug import Response
 from werkzeug.exceptions import Forbidden
-
-from oarepo_ui.resources.records.decorators import pass_record_files, pass_record_media_files, pass_record_or_draft
+from invenio_app_rdm.records_ui.views.decorators import no_cache_response
+from oarepo_ui.resources.decorators import pass_draft, pass_draft_files, pass_record_files, pass_record_media_files, pass_record_or_draft, secret_link_or_login_required
 from oarepo_ui.utils import dump_empty
 
 # Resource
@@ -127,17 +130,30 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
 
     def empty_record(self, **kwargs: Any) -> dict[str, Any]:
         """Create an empty record with default values."""
-        empty_data = cast("dict[str, Any]", dump_empty(self.api_config.schema))
-        files_field = getattr(self.api_config.record_cls, "files", None)
-        if files_field and isinstance(files_field, FilesField):
-            empty_data["files"] = {"enabled": True}
-        empty_data = cast(
-            "dict[str, Any]",
-            deepmerge.always_merger.merge(empty_data, copy.deepcopy(self.config.empty_record)),
-        )
-        self.run_components("empty_record", empty_data=empty_data, **kwargs)
+        record = cast("dict[str, Any]", dump_empty(self.api_config.schema))
+        record["files"] = {"enabled": current_app.config.get("RDM_DEFAULT_FILES_ENABLED")}
+        
+        if "doi" in self.api_config.pids_providers:
+            if (
+                current_app.config["RDM_PERSISTENT_IDENTIFIERS"]
+                .get("doi", {})
+                .get("ui", {})
+                .get("default_selected")
+                == "yes"  # yes, no or not_needed
+            ):
+                record["pids"] = {"doi": {"provider": "external", "identifier": ""}}
+            else:
+                record["pids"] = {}
+        else:
+            record["pids"] = {}
+        record["status"] = "draft"
+        defaults = current_app.config.get("APP_RDM_DEPOSIT_FORM_DEFAULTS") or {}
+        for key, value in defaults.items():
+            set_default_value(record, value, key)
 
-        return empty_data
+        self.run_components("empty_record", empty_data=record, **kwargs)
+        return record
+
 
     @property
     def ui_model(self) -> Mapping[str, Any]:
@@ -515,102 +531,148 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         return tmpl
 
     @pass_route_args("view")
-    def deposit_edit(self, pid_value: str, **kwargs: Any) -> str | Response:
+    @secret_link_or_login_required()
+    @pass_draft(expand=True)
+    @pass_draft_files
+    @no_cache_response
+    def deposit_edit(self, pid_value, draft=None, draft_files=None, files_locked=True) -> str | Response:
         """Return edit page for a record."""
-        try:
-            api_record = self._get_record(pid_value, allow_draft=True, **kwargs)
-        except:
-            if not current_user.is_authenticated:  # type: ignore[attr-defined]
-                # if user is not authenticated, force a login
-                login_manager = current_app.login_manager  # type: ignore[attr-defined]
-                return login_manager.unauthorized()  # type: ignore[no-any-return]
-            raise
-        try:
-            underlying_record = self._record_from_service_result(api_record)
-            if getattr(underlying_record, "is_draft", False):
-                self.api_service.require_permission(
-                    g.identity, "update_draft", record=underlying_record
-                )  # ResultItem doesn't serialize state and owners field
-            else:
-                self.api_service.require_permission(g.identity, "update", record=underlying_record)
-        except PermissionDenied as e:
-            raise Forbidden(str(e)) from e
+        service = self.api_service
+        can_edit_draft = service.check_permission(
+            g.identity, "update_draft", record=draft._record
+        )
+        can_preview_draft = service.check_permission(
+            g.identity, "preview", record=draft._record
+        )
+        if not can_edit_draft:
+            if can_preview_draft:
+                return redirect(draft["links"]["preview_html"])
+            raise PermissionDeniedError()
 
-        api_record_serialization = api_record.to_dict()
-        ui_serialization = self.config.ui_serializer.dump_obj(api_record_serialization)
-        form_config = self._get_form_config(g.identity, updateUrl=api_record.links.get("self", None))
+        files_dict = None if draft_files is None else draft_files.to_dict()
+        record = self.config.ui_serializer.dump_obj(copy.copy(draft.to_dict()))
+        published_record = None
+        if record["is_published"]:
+            published_record_result = service.read(g.identity, id_=record["id"]).to_dict()
+            published_record = self.config.ui_serializer.dump_obj(copy.copy(published_record_result))
+            # TODO: implement rrecord deletion
 
+        form_config = self._get_form_config(g.identity, updateUrl=draft.links.get("self", None))
         form_config["ui_model"] = self.ui_model
 
-        ui_links = self.expand_detail_links(identity=g.identity, record=api_record)
+        ui_links = self.expand_detail_links(identity=g.identity, record=draft)
 
         extra_context: dict[str, Any] = {}
 
         self.run_components(
             "form_config",
-            api_record=api_record,
-            data=api_record_serialization,
-            record=ui_serialization,
+            api_record=draft,
+            data=record,
+            record=record,
             identity=g.identity,
             form_config=form_config,
             ui_links=ui_links,
             extra_context=extra_context,
-            **kwargs,
         )
         self.run_components(
             "before_ui_edit",
-            api_record=api_record,
-            record=ui_serialization,
-            data=api_record_serialization,
+            api_record=draft,
+            record=record,
+            data=record,
             form_config=form_config,
             ui_links=ui_links,
             identity=g.identity,
             extra_context=extra_context,
-            **kwargs,
         )
 
-        ui_serialization["extra_links"] = {
+        record["extra_links"] = {
             "ui_links": ui_links,
             "search_link": self.config.url_prefix,
         }
-        return current_oarepo_ui.catalog.render(
-            self.get_jinjax_macro(
-                "edit",
+
+        render_kwargs = dict(
+            forms_config=form_config,
+            record=record,
+            # TODO: implement communities
+            theme=None,
+            community=None,
+            community_ui={},
+            community_use_jinja_header=False,
+            files=files_dict,
+            searchbar_config=dict(searchUrl=url_for(f"{self.config.blueprint_name}.search")),
+            files_locked=files_locked,
+            permissions=draft.has_permissions_to(
+                [
+                    "manage",
+                    "new_version",
+                    "delete_draft",
+                    "manage_files",
+                    "manage_record_access",
+                ]
             ),
-            record=ui_serialization,
-            api_record=api_record,
-            form_config=form_config,
+            # TODO: implement rrecord deletion
+            # record_deletion=record_deletion,
             extra_context=extra_context,
             ui_links=ui_links,
-            data=api_record_serialization,
             context=current_oarepo_ui.catalog.jinja_env.globals,
             d=FieldData.create(
-                api_data=api_record_serialization,
-                ui_data=ui_serialization,
+                api_data=draft,
+                ui_data=record,
                 ui_definitions=self.ui_model,
                 item_getter=self.config.field_data_item_getter,
             ),
         )
 
+        return current_oarepo_ui.catalog.render(
+            self.get_jinjax_macro(
+                "deposit_edit",
+            ),
+            **render_kwargs
+        )
+
     def _get_form_config(self, identity: Identity, **kwargs: Any) -> dict[str, Any]:
         return self.config.form_config(identity=identity, **kwargs)
 
+    def get_record_permissions(self, actions, record=None):
+        """Helper for generating (default) record action permissions."""
+        service = self.api_service
+        return {
+            f"can_{action}": service.check_permission(g.identity, action, record=record)
+            for action in actions
+        }
+
     @login_required
+    @no_cache_response
     @pass_query_args("create")
-    def create(self, **kwargs: Any) -> str | Response:
+    def deposit_create(self, community=None, community_ui=None, **kwargs: Any) -> str | Response:
         """Return create page for a record."""
         if not self.has_deposit_permissions(g.identity):
-            raise Forbidden("User does not have permission to create a record.")
+            raise PermissionDeniedError(_("User does not have permission to create a record."))
 
-        # TODO: use api service create link when available
-        form_config = self._get_form_config(g.identity, createUrl=self.config.model.api_url("create"))
+        community_theme = None
+        if community is not None:
+            community_theme = community_ui.get("theme", {})
 
+        community_use_jinja_header = bool(community_theme)
+        dashboard_routes = current_app.config["APP_RDM_USER_DASHBOARD_ROUTES"]
+        is_doi_required = (
+            current_app.config.get("RDM_PERSISTENT_IDENTIFIERS", {})
+            .get("doi", {})
+            .get("required")
+        )
+
+        form_config=self._get_form_config(
+            g.identity,
+            dashboard_routes=dashboard_routes,
+            createUrl=url_for(f"{self.config.blueprint_name}.deposit_create"),
+            quota=get_actual_files_quota(None),
+            hide_community_selection=community_use_jinja_header,
+            is_doi_required=is_doi_required,
+        )
         form_config["ui_model"] = self.ui_model
-
-        extra_context: dict[str, Any] = {}
-
         ui_links: dict[str, str] = {}
-
+        extra_context: dict[str, Any] = {}
+        record=self.empty_record()
         self.run_components(
             "form_config",
             api_record=None,
@@ -621,11 +683,10 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             ui_links=ui_links,
             **kwargs,
         )
-        empty_record = self.empty_record(form_config=form_config, **kwargs)
 
         self.run_components(
             "before_ui_create",
-            data=empty_record,
+            data=record,
             record=None,
             api_record=None,
             form_config=form_config,
@@ -634,18 +695,36 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             ui_links=ui_links,
             **kwargs,
         )
-        return current_oarepo_ui.catalog.render(
-            self.get_jinjax_macro(
-                "create",
-            ),
-            record=empty_record,
-            api_record=None,
-            form_config=form_config,
+
+        render_kwargs = dict(
+            theme=community_theme,
+            forms_config=form_config,
+            searchbar_config=dict(searchUrl=url_for(f"{self.config.blueprint_name}.search")),
+            record=record,
+            community=community,
+            community_ui=community_ui,
+            community_use_jinja_header=community_use_jinja_header,
+            files=dict(default_preview=None, entries=[], links={}),
+            preselectedCommunity=community_ui,
+            files_locked=False,
             extra_context=extra_context,
             ui_links=ui_links,
-            data=empty_record,
             context=current_oarepo_ui.catalog.jinja_env.globals,
-            **kwargs,
+            permissions=self.get_record_permissions(
+                [
+                    "manage",
+                    "manage_files",
+                    "delete_draft",
+                    "manage_record_access",
+                ]
+            )
+        )
+
+        return current_oarepo_ui.catalog.render(
+            self.get_jinjax_macro(
+                "deposit_create",
+            ),
+            **render_kwargs,
         )
 
     def has_deposit_permissions(self, identity: Identity) -> bool:

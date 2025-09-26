@@ -1,43 +1,11 @@
 {% extends "invenio_app_rdm/records/detail.html" %}
 {%- block page_body %}
-  {%- block banners -%}
+  {%- block page_banners -%}
     {% include "oarepo_ui/record_detail/banners.html" %}
-    {%- block banner_community_header -%}
-    {%- endblock banner_community_header -%}
-    {%- block banner_preview_header -%}
-    {%- endblock banner_preview_header -%}
-    {%- block banner_version_header -%}
-    {%- endblock banner_version_header -%}
-  {%- endblock banners -%}
+  {%- endblock page_banners -%}
 
   {%- block page_main -%}
     {% include "oarepo_ui/record_detail/main.html" %}
-    {%- block record_body -%}
-      {%- block record_header -%}
-        {%- block record_header_button -%}
-        {%- endblock record_header_button -%}
-        {%- block record_header_info -%}
-        {%- endblock record_header_info -%}
-      {%- endblock record_header -%}
-      {%- block record_title -%}
-      {%- endblock record_title -%}
-      {%- block record_content -%}
-      {%- endblock record_content -%}
-      {%- block record_files -%}
-          {% block record_files_access_request %}
-          {% endblock record_files_access_request %}
-      {%- endblock record_files -%}
-      {%- block record_media_files -%}
-      {%- endblock record_media_files -%}
-      {%- block additional_record_details -%}
-      {%- endblock additional_record_details -%}
-      {%- block record_footer -%}
-      {%- endblock record_footer -%}
-    {%- endblock record_body -%}
-    {% block record_sidebar %}
-    {% endblock record_sidebar %}
-    {%- block jump -%}
-    {%- endblock jump -%}
   {%- endblock page_main -%}
 {% endblock page_body %}
 
