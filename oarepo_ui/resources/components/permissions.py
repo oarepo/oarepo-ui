@@ -16,6 +16,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, override
 
+from oarepo_runtime.typing import record_from_result
+
 from oarepo_ui.resources.components import UIResourceComponent
 
 from ...proxies import current_oarepo_ui
@@ -35,7 +37,7 @@ class PermissionsComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig]
         """Extract the underlying record from the RecordItem wrapper."""
         if not api_record:
             return None
-        return api_record._record  # noqa: SLF001 private access
+        return record_from_result(api_record)
 
     @override
     def before_ui_detail(

@@ -11,7 +11,7 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from flask import g
 from flask_resources import (
@@ -41,9 +41,9 @@ class TemplatePageUIResource(UIResource):
             url_prefix: str = self.config.url_prefix
             route_url_with_prefix = url_prefix.rstrip("/") + "/" + page_url_path.lstrip("/")
 
-            handler = getattr(self, f"render_{page_template_name}", None) or partial(
-                self.render, page=page_template_name
-            )
+            handler: Any = cast("Any | None", getattr(self, f"render_{page_template_name}", None))
+            if handler is None:
+                handler = partial(self.render, page=page_template_name)
             if not hasattr(handler, "__name__"):
                 handler.__name__ = self.render.__name__  # type: ignore[union-attr]
             if not hasattr(handler, "__self__"):
