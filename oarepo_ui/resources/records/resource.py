@@ -43,6 +43,7 @@ from invenio_records_resources.services.errors import PermissionDeniedError
 from invenio_stats.proxies import current_stats
 from invenio_users_resources.proxies import current_user_resources
 from marshmallow import ValidationError
+from oarepo_runtime.typing import record_from_result
 from werkzeug import Response
 from werkzeug.exceptions import Forbidden
 
@@ -109,12 +110,14 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
                 if not search_route.endswith("/"):
                     search_route += "/"
                 search_route_without_slash = search_route[:-1]
-                routes.append(route("GET", search_route, self.search))
+                # can't see how to correctly cast route which needs a FlaskResponse
+                # returning function and search that returns werkzeug's Response
+                routes.append(route("GET", search_route, cast("Any", self.search)))
                 routes.append(
                     route(
                         "GET",
                         search_route_without_slash,
-                        self.search_without_slash,
+                        cast("Any", self.search_without_slash),
                     )
                 )
             else:
@@ -170,7 +173,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         return self.config.model.ui_model  # type: ignore[no-any-return]
 
     def _record_from_service_result(self, result: RecordItem) -> Record:
-        return cast("Record", result._record)  # noqa: SLF001  private attribute
+        return cast("Record", record_from_result(result))
 
     def _prepare_files(self, files: FileList, media_files: FileList) -> tuple[dict | None, dict | None]:
         """Convert FileList objects to dictionaries for rendering."""
@@ -180,9 +183,11 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
 
     def _prepare_record_ui(self, record: RecordItem) -> dict[str, Any]:
         """Prepare record data for UI rendering."""
-        access = record._record.parent.get("access")  # noqa SLF001
-        if not access or access.get("settings") is None:
-            record._record.parent["access"]["settings"] = AccessSettings({}).dump()  # noqa SLF001
+        parent = getattr(record_from_result(record), "parent", None)
+        if parent is not None:
+            access = parent.get("access")
+            if not access or access.get("settings") is None:
+                parent["access"]["settings"] = AccessSettings({}).dump()
 
         if not self.config.ui_serializer:
             record_ui = copy.copy(record.to_dict())
@@ -225,14 +230,19 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
 
         is_doi_required = current_app.config.get("RDM_PARENT_PERSISTENT_IDENTIFIERS", {}).get("doi", {}).get("required")
         if not is_doi_required:
-            record_doi = record._record.pids.get("doi", {})  # noqa SLF001
+            pids = getattr(record_from_result(record), "pids", {})
+            record_doi = pids.get("doi", {})
             is_doi_reserved = record_doi.get("provider", "") == "datacite" and record_doi.get("identifier")
             if not is_doi_reserved:
                 should_mint_parent_doi = False
 
         if should_mint_parent_doi:
-            parent_doi = datacite_provider.client.generate_doi(record._record.parent)  # noqa SLF001
-            record_ui.setdefault("ui", {})["new_draft_parent_doi"] = parent_doi
+            parent = getattr(record_from_result(record), "parent", None)
+            if parent:
+                parent_doi = datacite_provider.client.generate_doi(parent)
+                record_ui.setdefault("ui", {})["new_draft_parent_doi"] = parent_doi
+            else:
+                raise ValueError(f"Record {record['id']} has no parent field.")
 
     @pass_route_args("view")
     @pass_query_args("record_detail")
@@ -268,7 +278,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         # emit a record view stats event
         emitter = current_stats.get_event_emitter("record-view")
         if record is not None and emitter is not None:
-            emitter(current_app, record=record._record, via_api=False)  # noqa SLF001
+            emitter(current_app, record=record_from_result(record), via_api=False)
 
         record_owner = record_ui.get("expanded", {}).get("parent", {}).get("access", {}).get("owned_by", {})
         # TODO: implement communities & community theme
@@ -328,7 +338,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
     @pass_record_latest
     def record_latest(self, record: RecordItem, **kwargs: Any):  # noqa ARG002
         """Redirect to record's latest version page."""
-        return redirect(record.links.get("self_html"), code=302)
+        return redirect(cast("str", record.links.get("self_html")), code=302)
 
     @pass_route_args("view", "file_view")
     def published_file_preview(self, pid_value: str, filepath: str, **kwargs: Any) -> Response:
@@ -555,8 +565,8 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
     ) -> str | Response:
         """Return edit page for a record."""
         service = self.api_service
-        can_edit_draft = service.check_permission(g.identity, "update_draft", record=draft._record)  # noqa SLF001
-        can_preview_draft = service.check_permission(g.identity, "preview", record=draft._record)  # noqa SLF001
+        can_edit_draft = service.check_permission(g.identity, "update_draft", record=record_from_result(draft))
+        can_preview_draft = service.check_permission(g.identity, "preview", record=record_from_result(draft))
         if not can_edit_draft:
             if can_preview_draft:
                 return redirect(draft["links"]["preview_html"])
@@ -652,7 +662,10 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
     @no_cache_response
     @pass_query_args("create")
     def deposit_create(
-        self, community: str | None = None, community_ui: dict | None = None, **kwargs: Any
+        self,
+        community: str | None = None,
+        community_ui: dict | None = None,
+        **kwargs: Any,
     ) -> str | Response:
         """Return create page for a record."""
         if not self.has_deposit_permissions(g.identity):
@@ -775,7 +788,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         tpl = LinksTemplate(self.config.ui_links_item, {"url_prefix": self.config.url_prefix})
         return cast(
             "dict[str, str]",
-            tpl.expand(identity, self._record_from_service_result(record)),
+            tpl.expand(identity, record_from_result(record)),
         )
 
     def expand_search_links(
@@ -832,7 +845,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
                 # record does not have id, so we cannot get it
                 return _("No record found for the tombstone page, no id")
             record = self._get_record(pid_value, include_deleted=True, **kwargs)
-            record_dict = self._record_from_service_result(record)
+            record_dict = record_from_result(record)
             record_dict.setdefault("links", record.links)
         except RecordDeletedException as e:
             # read with include_deleted=True raises an exception instead of just returning record

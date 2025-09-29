@@ -89,12 +89,14 @@ def _resolve_parser(
     :return: RequestParser instance.
     :raises: May raise warnings if location is ignored.
     """
-    s = resolve_from_conf(schema_or_parser, config)
+    s = resolve_from_conf(schema_or_parser, config)  # type: ignore[reportArgumentType]
     if isinstance(s, RequestParser):
         parser = s
         if location is not None:
             warnings.warn("The location is ignored.", stacklevel=1)
     else:
+        if location is None:
+            raise ValueError("Location must be specified when schema is provided.")
         parser = RequestParser(s, location, **options)
     return parser
 

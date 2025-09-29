@@ -10,7 +10,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, cast
 
 from flask import g
 from flask_resources import (
@@ -27,7 +27,7 @@ class FormConfigResource(UIComponentsResource[FormConfigResourceConfig]):
     def create_url_rules(self) -> list[dict[str, Any]]:
         """Create the URL rules for the record resource."""
         return [
-            route("GET", "", self.form_config),
+            route("GET", "", cast("Any", self.form_config)),
         ]
 
     def _get_form_config(self, **kwargs: Any) -> dict[str, Any]:

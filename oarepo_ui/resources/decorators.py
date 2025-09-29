@@ -18,7 +18,9 @@ from typing import TYPE_CHECKING, Any, ParamSpec, TypeVar, cast
 from flask import g, redirect, session, url_for
 from flask_security import login_required
 from invenio_pidstore.errors import PIDDoesNotExistError
+from invenio_rdm_records.services.services import RDMRecordService
 from invenio_records_resources.services.errors import PermissionDeniedError
+from oarepo_runtime.typing import record_from_result
 from sqlalchemy.exc import NoResultFound
 
 if TYPE_CHECKING:
@@ -30,7 +32,9 @@ P = ParamSpec("P")
 R = TypeVar("R")
 
 
-def pass_record_or_draft(expand: bool = True) -> Callable[[Callable[P, R]], Callable[P, R]]:
+def pass_record_or_draft(
+    expand: bool = True,
+) -> Callable[[Callable[P, R]], Callable[P, R]]:
     """Retrieve the published record or draft using the record service.
 
     Passes a draft record instance to decorated function when `is_preview` query arg is set,
@@ -44,7 +48,7 @@ def pass_record_or_draft(expand: bool = True) -> Callable[[Callable[P, R]], Call
 
             pid_value = kwargs.get("pid_value")
             is_preview = kwargs.get("is_preview")
-            include_deleted = kwargs.get("include_deleted", False)
+            include_deleted = cast("bool", kwargs.get("include_deleted", False))
             read_kwargs = {
                 "id_": pid_value,
                 "identity": g.identity,
@@ -58,7 +62,10 @@ def pass_record_or_draft(expand: bool = True) -> Callable[[Callable[P, R]], Call
                     record = service.read_draft(**read_kwargs)
                 except NoResultFound:
                     try:
-                        record = service.read(include_deleted=include_deleted, **read_kwargs)
+                        if isinstance(service, RDMRecordService):
+                            record = service.read(include_deleted=include_deleted, **read_kwargs)
+                        else:
+                            record = service.read(**read_kwargs)
                     except NoResultFound:
                         # If the parent pid is being used we can get the id of the latest record and redirect
                         latest_version = service.read_latest(**read_kwargs)
@@ -71,7 +78,10 @@ def pass_record_or_draft(expand: bool = True) -> Callable[[Callable[P, R]], Call
                         )
             else:
                 try:
-                    record = service.read(include_deleted=include_deleted, **read_kwargs)
+                    if isinstance(service, RDMRecordService):
+                        record = service.read(include_deleted=include_deleted, **read_kwargs)
+                    else:
+                        record = service.read(**read_kwargs)
                 except NoResultFound:
                     # If the parent pid is being used we can get the id of the latest record and redirect
                     latest_version = service.read_latest(**read_kwargs)
@@ -109,7 +119,7 @@ def pass_draft(expand: bool = True) -> Callable[[Callable[P, R]], Callable[P, R]
                     record_service,
                     g.identity,
                     draft=draft,
-                    record=draft._record,  # noqa SLF001
+                    record=record_from_result(draft),
                 )
                 return f(*args, **kwargs)
             except PIDDoesNotExistError:

@@ -22,6 +22,7 @@ Homepage = "https://github.com/oarepo/oarepo-ui"
 [project.optional-dependencies]
 dev = [
     "pytest>=7.1.2",
+    "oarepo-invenio-typing-stubs",
 ]
 tests = [
     "pytest>=7.1.2",

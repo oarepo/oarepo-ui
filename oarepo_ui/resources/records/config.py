@@ -17,7 +17,10 @@ import marshmallow as ma
 from flask import current_app
 from flask_resources.parsers import MultiDictSchema
 from flask_resources.serializers import MarshmallowSerializer
-from invenio_app_rdm.records_ui.views.records import draft_not_found_error, not_found_error
+from invenio_app_rdm.records_ui.views.records import (
+    draft_not_found_error,
+    not_found_error,
+)
 from invenio_drafts_resources.resources.records.errors import DraftNotCreatedError
 from invenio_pidstore.errors import (
     PIDDeletedError,
@@ -140,7 +143,10 @@ class RecordsUIResourceConfig(UIResourceConfig):
     """Request arguments for viewing a record, including the PID value."""
 
     request_record_detail_args: type[Schema] = MultiDictSchema.from_dict(
-        {"preview": ma.fields.Bool(attribute="is_preview", missing=False), "include_deleted": ma.fields.Bool()}
+        {
+            "preview": ma.fields.Bool(attribute="is_preview", missing=False),
+            "include_deleted": ma.fields.Bool(),
+        }
     )
 
     request_file_view_args: type[Schema] = MultiDictSchema.from_dict(
@@ -511,7 +517,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
                 prefix = "custom_fields."
 
-                config_key = relation_rel._fields_var  # noqa
+                config_key = cast("str", relation_rel._fields_var)  # noqa : SLF001
                 ui_config = self._get_custom_fields_ui_config(config_key, **kwargs)
                 if not ui_config:
                     continue
