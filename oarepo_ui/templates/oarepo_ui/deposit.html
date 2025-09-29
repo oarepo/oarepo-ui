@@ -1,15 +1,4 @@
 {%- extends "invenio_app_rdm/records/deposit.html" -%}
-
-{%- block css %}
-{{ super() }}
-{%- if community and community.theme and community.theme.enabled %}
-  <link rel="stylesheet" type="text/css" href="/communities/{{community.slug}}/community-theme-{{ community.revision_id }}.css">
-{%- endif %}
-{%- if config.APP_RDM_DEPOSIT_NG_FILES_UI_ENABLED %}
-  {{ webpack['uppy-file-uploader.css'] }}
-{%- endif %}
-{%- endblock %}
-
 {%- block page_body %}
     {%- include "oarepo_ui/deposit/form.html" -%}
 {%- endblock page_body %}
