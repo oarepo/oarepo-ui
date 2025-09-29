@@ -13,28 +13,31 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from functools import wraps
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, ParamSpec, TypeVar, cast
 
 from flask import g, redirect, session, url_for
 from flask_security import login_required
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_records_resources.services.errors import PermissionDeniedError
-from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.exc import NoResultFound
 
 if TYPE_CHECKING:
     from werkzeug import Response
 
     from oarepo_ui.resources.records.resource import RecordsUIResource
 
+P = ParamSpec("P")
+R = TypeVar("R")
 
-def pass_record_or_draft[T: Callable](expand: bool = True) -> T:
+
+def pass_record_or_draft(expand: bool = True) -> Callable[[Callable[P, R]], Callable[P, R]]:
     """Retrieve the published record or draft using the record service.
 
     Passes a draft record instance to decorated function when `is_preview` query arg is set,
     otherwise, a published record instance is passed
     """
 
-    def decorator(f: T) -> T:
+    def decorator(f: Callable[P, R]) -> Callable[P, R]:
         @wraps(f)
         def view(self: RecordsUIResource, **kwargs: Any) -> Any:
             pid_value = kwargs.get("pid_value")
@@ -79,15 +82,15 @@ def pass_record_or_draft[T: Callable](expand: bool = True) -> T:
             kwargs["record"] = record
             return f(self, **kwargs)
 
-        return view
+        return cast("Callable[P, R]", view)
 
     return decorator
 
 
-def pass_draft[T: Callable](expand: bool = True) -> T:
+def pass_draft(expand: bool = True) -> Callable[[Callable[P, R]], Callable[P, R]]:
     """Retrieve the draft record using the record service."""
 
-    def decorator(f: T) -> T:
+    def decorator(f: Callable[P, R]) -> Callable[P, R]:
         @wraps(f)
         def view(self: RecordsUIResource, **kwargs: Any) -> Any:
             pid_value = kwargs.get("pid_value")
@@ -118,7 +121,7 @@ def pass_draft[T: Callable](expand: bool = True) -> T:
                     )
                 )
 
-        return view
+        return cast("Callable[P, R]", view)
 
     return decorator
 
@@ -132,9 +135,10 @@ def pass_draft_files[T: Callable](f: T) -> T:
 
     @wraps(f)
     def view(self: RecordsUIResource, **kwargs: Any) -> Any:
+        files_service = self.api_service.draft_files
         try:
             pid_value = kwargs.get("pid_value")
-            files = self.api_service.draft_files.list_files(id_=pid_value, identity=g.identity)
+            files = files_service.list_files(id_=pid_value, identity=g.identity) if files_service else None
             kwargs["draft_files"] = files
         except PermissionDeniedError:
             # this is handled here because we don't want a 404 on the landing
@@ -144,7 +148,7 @@ def pass_draft_files[T: Callable](f: T) -> T:
 
         return f(self, **kwargs)
 
-    return view
+    return cast("T", view)
 
 
 def pass_record_files[T: Callable](f: T) -> T:
@@ -159,9 +163,9 @@ def pass_record_files[T: Callable](f: T) -> T:
         service = self.api_service
         try:
             if is_preview:
-                files = service.draft_files.list_files(**read_kwargs)
+                files = service.draft_files.list_files(**read_kwargs) if service.draft_files else None
             else:
-                files = service.files.list_files(**read_kwargs)
+                files = service.files.list_files(**read_kwargs) if service.files else None
 
             kwargs["files"] = files
 
@@ -173,7 +177,7 @@ def pass_record_files[T: Callable](f: T) -> T:
 
         return f(self, **kwargs)
 
-    return view
+    return cast("T", view)
 
 
 def pass_record_media_files[T: Callable](f: T) -> T:
@@ -187,17 +191,30 @@ def pass_record_media_files[T: Callable](f: T) -> T:
 
         return f(self, **kwargs)
 
-    return view
+    return cast("T", view)
 
 
-def secret_link_or_login_required[T: Callable]() -> T:
+def pass_record_latest[T: Callable](f: T) -> T:
+    """Decorate a view to pass the latest version of a record."""
+
+    @wraps(f)
+    def view(self: RecordsUIResource, **kwargs: Any) -> Any:
+        pid_value = kwargs.get("pid_value")
+        record_latest = self.api_service.read_latest(id_=pid_value, identity=g.identity)
+        kwargs["record"] = record_latest
+        return f(**kwargs)
+
+    return cast("T", view)
+
+
+def secret_link_or_login_required() -> Callable[[Callable[P, R]], Callable[P, R]]:
     """Require a secret link token or force login for the wrapped view.
 
     Checks for a token in the session (under key "token"). If the token is missing,
     the user is redirected to login. Otherwise, executes the wrapped view.
     """
 
-    def decorator(f: T) -> T:
+    def decorator(f: Callable[P, R]) -> Callable[P, R]:
         @wraps(f)
         def view(self: RecordsUIResource, **kwargs: Any) -> Any:
             secret_link_token_arg = "token"  # noqa S105
@@ -206,7 +223,7 @@ def secret_link_or_login_required[T: Callable]() -> T:
                 login_required(f)
             return f(self, **kwargs)
 
-        return view
+        return cast("Callable[P, R]", view)
 
     return decorator
 

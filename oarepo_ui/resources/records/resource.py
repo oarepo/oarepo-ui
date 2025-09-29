@@ -50,6 +50,7 @@ from oarepo_ui.resources.decorators import (
     pass_draft,
     pass_draft_files,
     pass_record_files,
+    pass_record_latest,
     pass_record_media_files,
     pass_record_or_draft,
     secret_link_or_login_required,
@@ -141,7 +142,10 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         record = cast("dict[str, Any]", dump_empty(self.api_config.schema))
         record["files"] = {"enabled": current_app.config.get("RDM_DEFAULT_FILES_ENABLED")}
 
-        if "doi" in self.api_config.pids_providers:
+        # Set by RDMRecordServiceConfig class
+        pids_providers = getattr(self.api_config, "pids_providers", None)
+
+        if pids_providers and "doi" in pids_providers:
             if (
                 current_app.config["RDM_PERSISTENT_IDENTIFIERS"].get("doi", {}).get("ui", {}).get("default_selected")
                 == "yes"  # yes, no or not_needed
@@ -174,7 +178,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         media_files_dict = None if media_files is None else media_files.to_dict()
         return files_dict, media_files_dict
 
-    def _prepare_record_ui(self, record: Record) -> dict:
+    def _prepare_record_ui(self, record: RecordItem) -> dict[str, Any]:
         """Prepare record data for UI rendering."""
         access = record._record.parent.get("access")  # noqa SLF001
         if not access or access.get("settings") is None:
@@ -186,22 +190,25 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             record_ui = self.config.ui_serializer.dump_obj(copy.copy(record.to_dict()))
 
         record_ui.setdefault("links", {})
-        return record_ui
+        return cast("dict[str, Any]", record_ui)
 
     def _get_user_avatar(self) -> str | None:
         """Retrieve the current user's avatar if authenticated."""
         if current_user.is_authenticated:
-            return current_user_resources.users_service.links_item_tpl.expand(g.identity, current_user)["avatar"]
+            return cast(
+                "str|None",
+                current_user_resources.users_service.links_item_tpl.expand(g.identity, current_user).get("avatar"),
+            )
         return None
 
-    def _validate_draft_preview(self, record: Record) -> None:
+    def _validate_draft_preview(self, record: RecordItem) -> None:
         """Validate draft structure and inject parent DOI if needed for preview."""
         try:
             current_rdm_records.records_service.validate_draft(g.identity, record.id, ignore_field_permissions=True)
         except ValidationError:
             abort(404)
 
-    def _inject_parent_doi_if_needed(self, record: Record, record_ui: dict) -> None:
+    def _inject_parent_doi_if_needed(self, record: RecordItem, record_ui: dict) -> None:
         """Inject a parent DOI into the draft UI if Datacite is enabled and required."""
         if not current_app.config.get("DATACITE_ENABLED"):
             return
@@ -235,7 +242,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
     @response_header_signposting
     def record_detail(
         self,
-        record: Record,
+        record: RecordItem,
         files: FileList,
         media_files: FileList,
         is_preview: bool = False,
@@ -318,19 +325,10 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         set_api_record_to_response(response, record)
         return response
 
-    @pass_route_args("view")
-    @pass_query_args("read", "embed", exclude=["is_preview"])
-    @response_header_signposting
-    def latest(
-        self,
-        pid_value: str,
-        embed: bool = False,
-        is_preview: bool = False,
-        **kwargs: Any,
-    ) -> Response:
-        """Return latest item detail page."""
-        # TODO: just a hotfix implementation for now, not a proper latest version detail view
-        return self._detail(pid_value=pid_value, embed=embed, is_preview=is_preview, **kwargs)
+    @pass_record_latest
+    def record_latest(self, record: RecordItem, **kwargs: Any):  # noqa ARG002
+        """Redirect to record's latest version page."""
+        return redirect(record.links.get("self_html"), code=302)
 
     @pass_route_args("view", "file_view")
     def published_file_preview(self, pid_value: str, filepath: str, **kwargs: Any) -> Response:
@@ -557,7 +555,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
     @no_cache_response
     def deposit_edit(
         self,
-        draft: Record | None = None,
+        draft: RecordItem,
         draft_files: FileList | None = None,
         files_locked: bool = True,
         **kwargs: Any,  # noqa ARG002
@@ -635,7 +633,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             "ui_links": ui_links,
             "context": current_oarepo_ui.catalog.jinja_env.globals,
             "d": FieldData.create(
-                api_data=draft,
+                api_data=draft.to_dict(),
                 ui_data=record,
                 ui_definitions=self.ui_model,
                 item_getter=self.config.field_data_item_getter,
@@ -668,7 +666,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             raise PermissionDeniedError(_("User does not have permission to create a record."))
 
         community_theme = None
-        if community is not None:
+        if community is not None and community_ui is not None:
             community_theme = community_ui.get("theme", {})
 
         community_use_jinja_header = bool(community_theme)

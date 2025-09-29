@@ -119,7 +119,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
         "deposit_create": "/uploads/new",
         "deposit_edit": "/uploads/<pid_value>",
         "record_detail": "/records/<pid_value>",
-        "latest": "/records/<pid_value>/latest",
+        "record_latest": "/records/<pid_value>/latest",
         "export": "/records/<pid_value>/export/<export_format>",
         "export_preview": "/records/<pid_value>/preview/export/<export_format>",
         "published_file_preview": "/records/<pid_value>/files/<path:filepath>/preview",
