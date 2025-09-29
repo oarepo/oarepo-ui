@@ -126,7 +126,6 @@ def create_app(instance_path, entry_points):
 
 @pytest.fixture(scope="module")
 def record_service(app, record_model):
-    print(current_runtime.models)
     return current_runtime.models["simple_model"].service
 
 
@@ -159,11 +158,10 @@ def users(app):
 
 @pytest.fixture
 def simple_record(app, db, search_clear, record_service):
-    record = record_service.create(
+    return record_service.create(
         system_identity,
         {},
     )
-    return record
 
 
 @pytest.fixture

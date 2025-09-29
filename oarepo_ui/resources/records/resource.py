@@ -16,37 +16,44 @@ from functools import partial
 from http import HTTPStatus
 from mimetypes import guess_extension
 from typing import TYPE_CHECKING, Any, cast
-from invenio_users_resources.proxies import current_user_resources
-from invenio_rdm_records.proxies import current_rdm_records
-import deepmerge
-from flask import Blueprint, abort, current_app, g, redirect, render_template, request, url_for
+
+from flask import Blueprint, abort, current_app, g, redirect, request, url_for
 from flask_login import current_user
 from flask_principal import PermissionDenied
 from flask_resources import (
     route,
 )
-from invenio_records_resources.services.errors import PermissionDeniedError
-from invenio_app_rdm.records_ui.views.deposits import get_actual_files_quota
-from invenio_app_rdm.records_ui.utils import set_default_value
 from flask_security import login_required
 from idutils.normalizers import to_url
+from invenio_app_rdm.records_ui.utils import set_default_value
+from invenio_app_rdm.records_ui.views.decorators import no_cache_response
+from invenio_app_rdm.records_ui.views.deposits import get_actual_files_quota
 from invenio_app_rdm.records_ui.views.records import PreviewFile
 from invenio_i18n import gettext as _
 from invenio_previewer import current_previewer
 from invenio_previewer.extensions import default as default_previewer
+from invenio_rdm_records.proxies import current_rdm_records
 from invenio_rdm_records.records.systemfields.access.access_settings import (
     AccessSettings,
 )
 from invenio_rdm_records.services.errors import RecordDeletedException
 from invenio_records_resources.pagination import Pagination
-from invenio_records_resources.records.systemfields import FilesField
 from invenio_records_resources.services import LinksTemplate
+from invenio_records_resources.services.errors import PermissionDeniedError
 from invenio_stats.proxies import current_stats
+from invenio_users_resources.proxies import current_user_resources
 from marshmallow import ValidationError
 from werkzeug import Response
 from werkzeug.exceptions import Forbidden
-from invenio_app_rdm.records_ui.views.decorators import no_cache_response
-from oarepo_ui.resources.decorators import pass_draft, pass_draft_files, pass_record_files, pass_record_media_files, pass_record_or_draft, secret_link_or_login_required
+
+from oarepo_ui.resources.decorators import (
+    pass_draft,
+    pass_draft_files,
+    pass_record_files,
+    pass_record_media_files,
+    pass_record_or_draft,
+    secret_link_or_login_required,
+)
 from oarepo_ui.utils import dump_empty
 
 # Resource
@@ -68,6 +75,7 @@ if TYPE_CHECKING:
         RecordService as DraftService,
     )
     from invenio_records_resources.records.api import Record
+    from invenio_records_resources.services.files.results import FileList
     from invenio_records_resources.services.records.config import RecordServiceConfig
     from invenio_records_resources.services.records.results import RecordItem
 
@@ -132,13 +140,10 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         """Create an empty record with default values."""
         record = cast("dict[str, Any]", dump_empty(self.api_config.schema))
         record["files"] = {"enabled": current_app.config.get("RDM_DEFAULT_FILES_ENABLED")}
-        
+
         if "doi" in self.api_config.pids_providers:
             if (
-                current_app.config["RDM_PERSISTENT_IDENTIFIERS"]
-                .get("doi", {})
-                .get("ui", {})
-                .get("default_selected")
+                current_app.config["RDM_PERSISTENT_IDENTIFIERS"].get("doi", {}).get("ui", {}).get("default_selected")
                 == "yes"  # yes, no or not_needed
             ):
                 record["pids"] = {"doi": {"provider": "external", "identifier": ""}}
@@ -154,7 +159,6 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         self.run_components("empty_record", empty_data=record, **kwargs)
         return record
 
-
     @property
     def ui_model(self) -> Mapping[str, Any]:
         """Get the UI model for the resource."""
@@ -164,94 +168,112 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
     def _record_from_service_result(self, result: RecordItem) -> Record:
         return cast("Record", result._record)  # noqa: SLF001  private attribute
 
+    def _prepare_files(self, files: FileList, media_files: FileList) -> tuple[dict | None, dict | None]:
+        """Convert FileList objects to dictionaries for rendering."""
+        files_dict = None if files is None else files.to_dict()
+        media_files_dict = None if media_files is None else media_files.to_dict()
+        return files_dict, media_files_dict
+
+    def _prepare_record_ui(self, record: Record) -> dict:
+        """Prepare record data for UI rendering."""
+        access = record._record.parent.get("access")  # noqa SLF001
+        if not access or access.get("settings") is None:
+            record._record.parent["access"]["settings"] = AccessSettings({}).dump()  # noqa SLF001
+
+        if not self.config.ui_serializer:
+            record_ui = copy.copy(record.to_dict())
+        else:
+            record_ui = self.config.ui_serializer.dump_obj(copy.copy(record.to_dict()))
+
+        record_ui.setdefault("links", {})
+        return record_ui
+
+    def _get_user_avatar(self) -> str | None:
+        """Retrieve the current user's avatar if authenticated."""
+        if current_user.is_authenticated:
+            return current_user_resources.users_service.links_item_tpl.expand(g.identity, current_user)["avatar"]
+        return None
+
+    def _validate_draft_preview(self, record: Record) -> None:
+        """Validate draft structure and inject parent DOI if needed for preview."""
+        try:
+            current_rdm_records.records_service.validate_draft(g.identity, record.id, ignore_field_permissions=True)
+        except ValidationError:
+            abort(404)
+
+    def _inject_parent_doi_if_needed(self, record: Record, record_ui: dict) -> None:
+        """Inject a parent DOI into the draft UI if Datacite is enabled and required."""
+        if not current_app.config.get("DATACITE_ENABLED"):
+            return
+
+        service = current_rdm_records.records_service
+        datacite_providers = [
+            v["datacite"] for p, v in service.config.parent_pids_providers.items() if p == "doi" and "datacite" in v
+        ]
+        if not datacite_providers:
+            return
+
+        datacite_provider = datacite_providers[0]
+        should_mint_parent_doi = True
+
+        is_doi_required = current_app.config.get("RDM_PARENT_PERSISTENT_IDENTIFIERS", {}).get("doi", {}).get("required")
+        if not is_doi_required:
+            record_doi = record._record.pids.get("doi", {})  # noqa SLF001
+            is_doi_reserved = record_doi.get("provider", "") == "datacite" and record_doi.get("identifier")
+            if not is_doi_reserved:
+                should_mint_parent_doi = False
+
+        if should_mint_parent_doi:
+            parent_doi = datacite_provider.client.generate_doi(record._record.parent)  # noqa SLF001
+            record_ui.setdefault("ui", {})["new_draft_parent_doi"] = parent_doi
+
     @pass_route_args("view")
     @pass_query_args("record_detail")
     @pass_record_or_draft(expand=True)
     @pass_record_files
     @pass_record_media_files
     @response_header_signposting
-    def record_detail(self, pid_value, record, files, media_files, is_preview=False, include_deleted=False):
+    def record_detail(
+        self,
+        record: Record,
+        files: FileList,
+        media_files: FileList,
+        is_preview: bool = False,
+        include_deleted: bool = False,
+        **kwargs: Any,  # noqa ARG002
+    ) -> Response:
         """Record detail page (aka landing page) adapted from invenio-app-rdm view."""
-        files_dict = None if files is None else files.to_dict()
-        media_files_dict = None if media_files is None else media_files.to_dict()
-
-        access = record._record.parent["access"]
-        if "settings" not in access or access["settings"] is None:
-            record._record.parent["access"]["settings"] = AccessSettings({}).dump()
-
-        if not self.config.ui_serializer:
-            record_ui = copy.copy(record.to_dict())
-        else:
-            record_ui = self.config.ui_serializer.dump_obj(copy.copy(record.to_dict()))
-        record_ui.setdefault("links", {})
-
+        files_dict, media_files_dict = self._prepare_files(files, media_files)
+        record_ui = self._prepare_record_ui(record)
         is_draft = record_ui["is_draft"]
+        avatar = self._get_user_avatar()
 
         # TODO: implement custom fields feature
-        # custom_fields = load_custom_fields()
-        # keep only landing page configurable custom fields
-        # custom_fields["ui"] = [cf for cf in custom_fields["ui"] if not cf.get("hide_from_landing_page", False)]
-        avatar = None
-
-        if current_user.is_authenticated:
-            avatar = current_user_resources.users_service.links_item_tpl.expand(g.identity, current_user)["avatar"]
 
         if is_preview and is_draft:
             # it is possible to save incomplete drafts that break the normal
             # (preview) landing page rendering
             # to prevent this from happening, we validate the draft's structure
             # see: https://github.com/inveniosoftware/invenio-app-rdm/issues/1051
-            try:
-                current_rdm_records.records_service.validate_draft(g.identity, record.id, ignore_field_permissions=True)
-            except ValidationError:
-                abort(404)
-            # inject parent doi format for new drafts so we can show in preview if parent doi is required
-            if current_app.config["DATACITE_ENABLED"]:
-                service = current_rdm_records.records_service
-                datacite_provider = [
-                    v["datacite"]
-                    for p, v in service.config.parent_pids_providers.items()
-                    if p == "doi" and "datacite" in v
-                ]
-                if datacite_provider:
-                    should_mint_parent_doi = True
-                    is_doi_required = (
-                        current_app.config.get("RDM_PARENT_PERSISTENT_IDENTIFIERS", {}).get("doi", {}).get("required")
-                    )
-                    if not is_doi_required:
-                        # check if the draft has a reserved doi and mint parent doi only in that case
-                        record_doi = record._record.pids.get("doi", {})
-                        is_doi_reserved = record_doi.get("provider", "") == "datacite" and record_doi.get("identifier")
-                        if not is_doi_reserved:
-                            should_mint_parent_doi = False
-
-                    if should_mint_parent_doi:
-                        datacite_provider = datacite_provider[0]
-                        parent_doi = datacite_provider.client.generate_doi(record._record.parent)
-                        record_ui["ui"]["new_draft_parent_doi"] = parent_doi
+            self._validate_draft_preview(record)
+            self._inject_parent_doi_if_needed(record, record_ui)
 
         # emit a record view stats event
         emitter = current_stats.get_event_emitter("record-view")
         if record is not None and emitter is not None:
-            emitter(current_app, record=record._record, via_api=False)
+            emitter(current_app, record=record._record, via_api=False)  # noqa SLF001
 
         record_owner = record_ui.get("expanded", {}).get("parent", {}).get("access", {}).get("owned_by", {})
-        # TODO: implement communities
-        # resolved_community, _ = get_record_community(record_ui)
-        # resolved_community_ui = (
-        #     UICommunityJSONSerializer().dump_obj(resolved_community.to_dict()) if resolved_community else None
-        # )
-        # theme = resolved_community_ui.get("theme", {}) if resolved_community else None
-        resolved_community = None
-        resolved_community_ui = None
+        # TODO: implement communities & community theme
+        resolved_community, resolved_community_ui = None, None
 
-        render_kwargs = dict(
-            record=record,
-            record_ui=record_ui,
-            files=files_dict,
-            media_files=media_files_dict,
-            # user_communities_memberships=get_user_communities_memberships(),
-            permissions=record.has_permissions_to(
+        render_kwargs = {
+            "record": record,
+            "record_ui": record_ui,
+            "files": files_dict,
+            "media_files": media_files_dict,
+            # TODO: implement user_communities_memberships
+            "permissions": record.has_permissions_to(
                 [
                     "edit",
                     "new_version",
@@ -265,25 +287,24 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
                 ]
             ),
             # TODO: implement custom fields
-            # custom_fields_ui=custom_fields["ui"],
-            is_preview=is_preview,
-            include_deleted=include_deleted,
-            is_draft=is_draft,
-            community=resolved_community,
-            community_ui=resolved_community_ui,
+            "is_preview": is_preview,
+            "include_deleted": include_deleted,
+            "is_draft": is_draft,
+            "community": resolved_community,
+            "community_ui": resolved_community_ui,
             # TODO: implement external resources
-            # external_resources=get_external_resources(record),
-            user_avatar=avatar,
-            record_owner_id=(record_owner.get("id")),  # record created with system_identity have not owners e.g demo
+            "user_avatar": avatar,
+            # record created with system_identity have not owners e.g demo
+            "record_owner_id": record_owner.get("id"),
             # JinjaX support
-            context=current_oarepo_ui.catalog.jinja_env.globals,
-            d=FieldData.create(
+            "context": current_oarepo_ui.catalog.jinja_env.globals,
+            "d": FieldData.create(
                 api_data=record.to_dict(),
                 ui_data=record_ui,
                 ui_definitions=self.ui_model,
                 item_getter=self.config.field_data_item_getter,
             ),
-        )
+        }
 
         # TODO: implement render_community_theme_template?
         response = Response(
@@ -296,7 +317,6 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         )
         set_api_record_to_response(response, record)
         return response
-
 
     @pass_route_args("view")
     @pass_query_args("read", "embed", exclude=["is_preview"])
@@ -535,27 +555,25 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
     @pass_draft(expand=True)
     @pass_draft_files
     @no_cache_response
-    def deposit_edit(self, pid_value, draft=None, draft_files=None, files_locked=True) -> str | Response:
+    def deposit_edit(
+        self,
+        draft: Record | None = None,
+        draft_files: FileList | None = None,
+        files_locked: bool = True,
+        **kwargs: Any,  # noqa ARG002
+    ) -> str | Response:
         """Return edit page for a record."""
         service = self.api_service
-        can_edit_draft = service.check_permission(
-            g.identity, "update_draft", record=draft._record
-        )
-        can_preview_draft = service.check_permission(
-            g.identity, "preview", record=draft._record
-        )
+        can_edit_draft = service.check_permission(g.identity, "update_draft", record=draft._record)  # noqa SLF001
+        can_preview_draft = service.check_permission(g.identity, "preview", record=draft._record)  # noqa SLF001
         if not can_edit_draft:
             if can_preview_draft:
                 return redirect(draft["links"]["preview_html"])
-            raise PermissionDeniedError()
+            raise PermissionDeniedError
 
         files_dict = None if draft_files is None else draft_files.to_dict()
         record = self.config.ui_serializer.dump_obj(copy.copy(draft.to_dict()))
-        published_record = None
-        if record["is_published"]:
-            published_record_result = service.read(g.identity, id_=record["id"]).to_dict()
-            published_record = self.config.ui_serializer.dump_obj(copy.copy(published_record_result))
-            # TODO: implement rrecord deletion
+        # TODO: implement edit action on published record (similar to RDM)
 
         form_config = self._get_form_config(g.identity, updateUrl=draft.links.get("self", None))
         form_config["ui_model"] = self.ui_model
@@ -590,18 +608,20 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             "search_link": self.config.url_prefix,
         }
 
-        render_kwargs = dict(
-            forms_config=form_config,
-            record=record,
+        render_kwargs = {
+            "forms_config": form_config,
+            "record": record,
             # TODO: implement communities
-            theme=None,
-            community=None,
-            community_ui={},
-            community_use_jinja_header=False,
-            files=files_dict,
-            searchbar_config=dict(searchUrl=url_for(f"{self.config.blueprint_name}.search")),
-            files_locked=files_locked,
-            permissions=draft.has_permissions_to(
+            "theme": None,
+            "community": None,
+            "community_ui": {},
+            "community_use_jinja_header": False,
+            "files": files_dict,
+            "searchbar_config": {
+                "searchUrl": url_for(f"{self.config.blueprint_name}.search"),
+            },
+            "files_locked": files_locked,
+            "permissions": draft.has_permissions_to(
                 [
                     "manage",
                     "new_version",
@@ -610,41 +630,39 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
                     "manage_record_access",
                 ]
             ),
-            # TODO: implement rrecord deletion
-            # record_deletion=record_deletion,
-            extra_context=extra_context,
-            ui_links=ui_links,
-            context=current_oarepo_ui.catalog.jinja_env.globals,
-            d=FieldData.create(
+            # TODO: implement record deletion
+            "extra_context": extra_context,
+            "ui_links": ui_links,
+            "context": current_oarepo_ui.catalog.jinja_env.globals,
+            "d": FieldData.create(
                 api_data=draft,
                 ui_data=record,
                 ui_definitions=self.ui_model,
                 item_getter=self.config.field_data_item_getter,
             ),
-        )
+        }
 
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro(
                 "deposit_edit",
             ),
-            **render_kwargs
+            **render_kwargs,
         )
 
     def _get_form_config(self, identity: Identity, **kwargs: Any) -> dict[str, Any]:
         return self.config.form_config(identity=identity, **kwargs)
 
-    def get_record_permissions(self, actions, record=None):
-        """Helper for generating (default) record action permissions."""
+    def get_record_permissions(self, actions: list[str], record: Record | None = None) -> dict[str, bool]:
+        """Generate (default) record action permissions."""
         service = self.api_service
-        return {
-            f"can_{action}": service.check_permission(g.identity, action, record=record)
-            for action in actions
-        }
+        return {f"can_{action}": service.check_permission(g.identity, action, record=record) for action in actions}
 
     @login_required
     @no_cache_response
     @pass_query_args("create")
-    def deposit_create(self, community=None, community_ui=None, **kwargs: Any) -> str | Response:
+    def deposit_create(
+        self, community: str | None = None, community_ui: dict | None = None, **kwargs: Any
+    ) -> str | Response:
         """Return create page for a record."""
         if not self.has_deposit_permissions(g.identity):
             raise PermissionDeniedError(_("User does not have permission to create a record."))
@@ -655,13 +673,9 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
 
         community_use_jinja_header = bool(community_theme)
         dashboard_routes = current_app.config["APP_RDM_USER_DASHBOARD_ROUTES"]
-        is_doi_required = (
-            current_app.config.get("RDM_PERSISTENT_IDENTIFIERS", {})
-            .get("doi", {})
-            .get("required")
-        )
+        is_doi_required = current_app.config.get("RDM_PERSISTENT_IDENTIFIERS", {}).get("doi", {}).get("required")
 
-        form_config=self._get_form_config(
+        form_config = self._get_form_config(
             g.identity,
             dashboard_routes=dashboard_routes,
             createUrl=url_for(f"{self.config.blueprint_name}.deposit_create"),
@@ -672,7 +686,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         form_config["ui_model"] = self.ui_model
         ui_links: dict[str, str] = {}
         extra_context: dict[str, Any] = {}
-        record=self.empty_record()
+        record = self.empty_record()
         self.run_components(
             "form_config",
             api_record=None,
@@ -696,29 +710,35 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             **kwargs,
         )
 
-        render_kwargs = dict(
-            theme=community_theme,
-            forms_config=form_config,
-            searchbar_config=dict(searchUrl=url_for(f"{self.config.blueprint_name}.search")),
-            record=record,
-            community=community,
-            community_ui=community_ui,
-            community_use_jinja_header=community_use_jinja_header,
-            files=dict(default_preview=None, entries=[], links={}),
-            preselectedCommunity=community_ui,
-            files_locked=False,
-            extra_context=extra_context,
-            ui_links=ui_links,
-            context=current_oarepo_ui.catalog.jinja_env.globals,
-            permissions=self.get_record_permissions(
+        render_kwargs = {
+            "theme": community_theme,
+            "forms_config": form_config,
+            "searchbar_config": {
+                "searchUrl": url_for(f"{self.config.blueprint_name}.search"),
+            },
+            "record": record,
+            "community": community,
+            "community_ui": community_ui,
+            "community_use_jinja_header": community_use_jinja_header,
+            "files": {
+                "default_preview": None,
+                "entries": [],
+                "links": {},
+            },
+            "preselectedCommunity": community_ui,
+            "files_locked": False,
+            "extra_context": extra_context,
+            "ui_links": ui_links,
+            "context": current_oarepo_ui.catalog.jinja_env.globals,
+            "permissions": self.get_record_permissions(
                 [
                     "manage",
                     "manage_files",
                     "delete_draft",
                     "manage_record_access",
                 ]
-            )
-        )
+            ),
+        }
 
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro(

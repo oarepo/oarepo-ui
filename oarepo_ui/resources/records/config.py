@@ -556,7 +556,4 @@ class RecordsUIResourceConfig(UIResourceConfig):
         :return: Dictionary with form configuration for React forms.
         """
         """Get the react form configuration."""
-        return dict(
-            overridableIdPrefix=f"{self.application_id.capitalize()}.Form",
-            **kwargs
-        )
+        return dict(overridableIdPrefix=f"{self.application_id.capitalize()}.Form", **kwargs)
