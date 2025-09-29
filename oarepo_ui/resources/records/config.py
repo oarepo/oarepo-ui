@@ -17,6 +17,8 @@ import marshmallow as ma
 from flask import current_app
 from flask_resources.parsers import MultiDictSchema
 from flask_resources.serializers import MarshmallowSerializer
+from invenio_app_rdm.records_ui.views.records import draft_not_found_error, not_found_error
+from invenio_drafts_resources.resources.records.errors import DraftNotCreatedError
 from invenio_pidstore.errors import (
     PIDDeletedError,
     PIDDoesNotExistError,
@@ -40,6 +42,7 @@ from invenio_vocabularies.records.systemfields.relations import CustomFieldsRela
 from marshmallow import Schema, fields, post_load, validate
 from oarepo_runtime import current_runtime
 from oarepo_runtime.services.facets.params import GroupedFacetsParam
+from sqlalchemy.exc import NoResultFound
 
 from ..base import UIResourceConfig
 
@@ -113,15 +116,14 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
     routes: Mapping[str, str] = {
         "search": "",
-        "create": "/_new",
-        "detail": "/<pid_value>",
-        "latest": "/<pid_value>/latest",
-        "edit": "/<pid_value>/edit",
-        "export": "/<pid_value>/export/<export_format>",
-        "export_preview": "/<pid_value>/preview/export/<export_format>",
-        "preview": "/<pid_value>/preview",
-        "published_file_preview": "/<pid_value>/files/<path:filepath>/preview",
-        "draft_file_preview": "/<pid_value>/preview/files/<path:filepath>/preview",
+        "deposit_create": "/uploads/new",
+        "deposit_edit": "/uploads/<pid_value>",
+        "record_detail": "/records/<pid_value>",
+        "record_latest": "/records/<pid_value>/latest",
+        "export": "/records/<pid_value>/export/<export_format>",
+        "export_preview": "/records/<pid_value>/preview/export/<export_format>",
+        "published_file_preview": "/records/<pid_value>/files/<path:filepath>/preview",
+        "draft_file_preview": "/records/<pid_value>/preview/files/<path:filepath>/preview",
     }
     """Routes for the resource, mapping route names to URL patterns."""
 
@@ -136,6 +138,10 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
     request_view_args: type[Schema] = MultiDictSchema.from_dict({"pid_value": ma.fields.Str()})
     """Request arguments for viewing a record, including the PID value."""
+
+    request_record_detail_args: type[Schema] = MultiDictSchema.from_dict(
+        {"preview": ma.fields.Bool(attribute="is_preview", missing=False), "include_deleted": ma.fields.Bool()}
+    )
 
     request_file_view_args: type[Schema] = MultiDictSchema.from_dict(
         {
@@ -177,10 +183,10 @@ class RecordsUIResourceConfig(UIResourceConfig):
     """Namespace of the React app components related to this resource."""
 
     templates: Mapping[str, str | None] = {
-        "detail": None,
+        "record_detail": None,
         "search": None,
-        "edit": None,
-        "create": None,
+        "deposit_edit": None,
+        "deposit_create": None,
         "preview": None,
     }
     """Templates used for rendering the UI. It is a name of a jinjax macro that renders the UI"""
@@ -189,12 +195,14 @@ class RecordsUIResourceConfig(UIResourceConfig):
     """Initial empty record data used when creating a new record."""
 
     error_handlers: Mapping[type[Exception], str | ErrorHandlerCallable] = {
+        DraftNotCreatedError: draft_not_found_error,
         PIDDeletedError: "tombstone",
         RecordDeletedException: "tombstone",
-        PIDDoesNotExistError: "not_found",
-        PIDUnregistered: "not_found",
-        KeyError: "not_found",
-        FileKeyNotFoundError: "not_found",
+        PIDDoesNotExistError: not_found_error,
+        PIDUnregistered: not_found_error,
+        KeyError: not_found_error,
+        FileKeyNotFoundError: not_found_error,
+        NoResultFound: not_found_error,
         PermissionDeniedError: "permission_denied",
     }
     """Error handlers for specific exceptions, mapping exceptions to template names."""
@@ -221,8 +229,8 @@ class RecordsUIResourceConfig(UIResourceConfig):
     def ui_links_item(self) -> Mapping[str, EndpointLink]:
         """Return UI links for item detail, edit, and search."""
         return {
-            "self": RecordEndpointLink(f"{self.blueprint_name}.detail"),
-            "edit": RecordEndpointLink(f"{self.blueprint_name}.edit"),
+            "self": RecordEndpointLink(f"{self.blueprint_name}.record_detail"),
+            "edit": RecordEndpointLink(f"{self.blueprint_name}.deposit_edit"),
             "search": EndpointLink(f"{self.blueprint_name}.search"),
         }
 
@@ -234,8 +242,8 @@ class RecordsUIResourceConfig(UIResourceConfig):
         """
         return {
             **pagination_endpoint_links(f"{self.blueprint_name}.search"),
-            "create": EndpointLink(
-                f"{self.blueprint_name}.create",
+            "deposit_create": EndpointLink(
+                f"{self.blueprint_name}.deposit_create",
                 # ignore pagination etc from this link
                 vars=remove_pagination_args,
             ),
@@ -548,7 +556,4 @@ class RecordsUIResourceConfig(UIResourceConfig):
         :return: Dictionary with form configuration for React forms.
         """
         """Get the react form configuration."""
-        return dict(
-            overridableIdPrefix=f"{self.application_id.capitalize()}.Form",
-            **kwargs,
-        )
+        return dict(overridableIdPrefix=f"{self.application_id.capitalize()}.Form", **kwargs)

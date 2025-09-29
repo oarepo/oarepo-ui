@@ -17,18 +17,29 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from flask import Blueprint
+from flask import Blueprint, current_app, render_template
 from flask_menu import current_menu
+from invenio_app_rdm.views import create_url_rule
 from invenio_base.utils import obj_or_import_string
+from invenio_i18n import get_locale
+from invenio_sitemap import iterate_urls_of_sitemap_indices
 
 if TYPE_CHECKING:
     from flask import Flask
     from flask.blueprints import BlueprintSetupState
+    from flask.typing import ResponseReturnValue
 
 
 def create_blueprint(app: Flask) -> Blueprint:
     """Create the OARepo UI blueprint to register templates, menu and filters."""
+    routes = app.config.get("APP_RDM_ROUTES")
     blueprint = Blueprint("oarepo_ui", __name__, template_folder="templates", static_folder="static")
+
+    if routes:
+        blueprint.add_url_rule(**create_url_rule(routes.get("index"), default_view_func=index))
+        blueprint.add_url_rule(**create_url_rule(routes.get("robots"), default_view_func=robots))
+        blueprint.add_url_rule(**create_url_rule(routes.get("help_search"), default_view_func=help_search))
+
     blueprint.app_context_processor(lambda: ({"current_app": app}))
 
     def add_jinja_filters(state: BlueprintSetupState) -> None:
@@ -54,13 +65,32 @@ def create_blueprint(app: Flask) -> Blueprint:
     return blueprint
 
 
-def create_rdm_templates_dummy_blueprint(app: Flask) -> Blueprint:  # noqa: ARG001
-    """Create a dummy blueprint for RDM templates."""
-    return Blueprint(
-        "rdm_templates",
-        "invenio_app_rdm",
-        template_folder="theme/templates",
-        static_folder="theme/static",
+# Common UI views
+def index() -> ResponseReturnValue:
+    """Frontpage."""
+    return render_template(
+        current_app.config["THEME_FRONTPAGE_TEMPLATE"],
+        show_intro_section=current_app.config["THEME_SHOW_FRONTPAGE_INTRO_SECTION"],
+    )
+
+
+def robots() -> ResponseReturnValue:
+    """Robots.txt."""
+    return render_template(
+        "invenio_app_rdm/robots.txt",
+        urls_of_sitemap_indices=iterate_urls_of_sitemap_indices(),
+    )
+
+
+def help_search() -> ResponseReturnValue:
+    """Search help guide."""
+    # Default to rendering english page if locale page not found.
+    locale = get_locale()
+    return render_template(
+        [
+            f"invenio_app_rdm/help/search.{locale}.html",
+            "invenio_app_rdm/help/search.en.html",
+        ]
     )
 
 

@@ -1,15 +1,3 @@
-{#def record, forms_config, community=None, preselectedCommunity=None, files=None, files_locked=False, community_use_jinja_header=False, permissions=None #}
-
-{%- block css %}
-{{ super() }}
-{%- if community and community.theme and community.theme.enabled %}
-  <link rel="stylesheet" type="text/css" href="/communities/{{community.slug}}/community-theme-{{ community.revision_id }}.css">
-{%- endif %}
-{%- if config.APP_RDM_DEPOSIT_NG_FILES_UI_ENABLED %}
-  {{ webpack['uppy-file-uploader.css'] }}
-{%- endif %}
-{%- endblock %}
-
 {%- if not record.is_published and record.versions.index and record.versions.index > 1 %}
   {%- set title = _("New version") %}
 {%- elif not record.is_published %}
@@ -17,8 +5,6 @@
 {% else %}
   {%- set title = _("Edit upload") %}
 {%- endif %}
-
-{%- block page_body %}
 
 {%- if community_use_jinja_header %}
 {%- include "invenio_communities/details/header.html" %}
@@ -66,5 +52,3 @@
   {%- endif %}
 
   <div id="deposit-form"></div>
-
-{%- endblock page_body %}

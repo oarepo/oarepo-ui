@@ -1,0 +1,19 @@
+{% extends "invenio_app_rdm/records/detail.html" %}
+{%- block page_body %}
+  {%- block page_banners -%}
+    {% include "oarepo_ui/record_detail/banners.html" %}
+  {%- endblock page_banners -%}
+
+  {%- block page_main -%}
+    {% include "oarepo_ui/record_detail/main.html" %}
+  {%- endblock page_main -%}
+{% endblock page_body %}
+
+{% if not embedded %}
+{%- block javascript %}
+{{super()}}
+{{webpack["record_export.js"]}}
+{{webpack["record_versions.js"]}}
+{{webpack["record_sharing.js"]}}
+{%- endblock javascript %}
+{% endif %}
