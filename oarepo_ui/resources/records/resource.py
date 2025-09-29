@@ -365,13 +365,6 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
 
         return cast("Response", default_previewer.preview(fileobj))
 
-    @pass_route_args("view")
-    @pass_query_args("read", "embed", exclude=["is_preview"])
-    @response_header_signposting
-    def preview(self, pid_value: str, embed: bool = False, **kwargs: Any) -> Response:
-        """Return detail page preview."""
-        return self._detail(pid_value=pid_value, embed=embed, is_preview=True, **kwargs)
-
     def _get_record(
         self,
         pid_value: str,

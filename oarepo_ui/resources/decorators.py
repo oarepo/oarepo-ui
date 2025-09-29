@@ -39,7 +39,9 @@ def pass_record_or_draft(expand: bool = True) -> Callable[[Callable[P, R]], Call
 
     def decorator(f: Callable[P, R]) -> Callable[P, R]:
         @wraps(f)
-        def view(self: RecordsUIResource, **kwargs: Any) -> Any:
+        def view(*args: P.args, **kwargs: P.kwargs) -> Any:
+            self = cast("RecordsUIResource", args[0])
+
             pid_value = kwargs.get("pid_value")
             is_preview = kwargs.get("is_preview")
             include_deleted = kwargs.get("include_deleted", False)
@@ -80,7 +82,7 @@ def pass_record_or_draft(expand: bool = True) -> Callable[[Callable[P, R]], Call
                         )
                     )
             kwargs["record"] = record
-            return f(self, **kwargs)
+            return f(*args, **kwargs)
 
         return cast("Callable[P, R]", view)
 
@@ -92,7 +94,8 @@ def pass_draft(expand: bool = True) -> Callable[[Callable[P, R]], Callable[P, R]
 
     def decorator(f: Callable[P, R]) -> Callable[P, R]:
         @wraps(f)
-        def view(self: RecordsUIResource, **kwargs: Any) -> Any:
+        def view(*args: P.args, **kwargs: P.kwargs) -> Any:
+            self = cast("RecordsUIResource", args[0])
             pid_value = kwargs.get("pid_value")
             try:
                 record_service = self.api_service
@@ -108,7 +111,7 @@ def pass_draft(expand: bool = True) -> Callable[[Callable[P, R]], Callable[P, R]
                     draft=draft,
                     record=draft._record,  # noqa SLF001
                 )
-                return f(self, **kwargs)
+                return f(*args, **kwargs)
             except PIDDoesNotExistError:
                 # Redirect to /records/:id because users are interchangeably
                 # using /records/:id and /uploads/:id when sharing links, so in
@@ -202,7 +205,7 @@ def pass_record_latest[T: Callable](f: T) -> T:
         pid_value = kwargs.get("pid_value")
         record_latest = self.api_service.read_latest(id_=pid_value, identity=g.identity)
         kwargs["record"] = record_latest
-        return f(**kwargs)
+        return f(self, **kwargs)
 
     return cast("T", view)
 
@@ -216,12 +219,13 @@ def secret_link_or_login_required() -> Callable[[Callable[P, R]], Callable[P, R]
 
     def decorator(f: Callable[P, R]) -> Callable[P, R]:
         @wraps(f)
-        def view(self: RecordsUIResource, **kwargs: Any) -> Any:
+        def view(*args: P.args, **kwargs: P.kwargs) -> Any:
+            self = cast("RecordsUIResource", args[0])
             secret_link_token_arg = "token"  # noqa S105
             session_token = session.get(secret_link_token_arg, None)
             if session_token is None:
-                login_required(f)
-            return f(self, **kwargs)
+                return login_required(f)(self, **kwargs)
+            return f(*args, **kwargs)
 
         return cast("Callable[P, R]", view)
 
