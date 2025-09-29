@@ -517,7 +517,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
                 prefix = "custom_fields."
 
-                config_key = cast("str", relation_rel._fields_var)  # noqa : SLF001
+                config_key = cast("str", relation_rel._fields_var)  # noqa: SLF001
                 ui_config = self._get_custom_fields_ui_config(config_key, **kwargs)
                 if not ui_config:
                     continue
