@@ -6,7 +6,9 @@ import thunk from "redux-thunk";
 import fileReducer, {
   UploadState,
 } from "@js/invenio_rdm_records/src/deposit/state/reducers/files";
-import depositReducer from "@js/invenio_rdm_records/src/deposit/state/reducers/deposit";
+import depositReducer, {
+  computeDepositState,
+} from "@js/invenio_rdm_records/src/deposit/state/reducers/deposit";
 import { decodeUnicodeBase64 } from "../util";
 import { DRAFT_HAS_VALIDATION_ERRORS } from "@js/invenio_rdm_records/src/deposit/state/types";
 
@@ -14,7 +16,7 @@ function createOverridenReducer(baseReducer, override = null) {
   return (state, action) => {
     if (override) {
       const result = override(state, action);
-      if (typeof result !== "undefined") {
+      if (result !== undefined) {
         return result;
       }
     }
@@ -83,14 +85,17 @@ export function configureStore(
     errorData?.errors?.length > 0
       ? extra.recordSerializer.deserializeErrors(errorData.errors)
       : errors || {};
+
+  const _preselectedCommunity = preselectedCommunity || undefined;
   const initialDepositState = {
     record,
     errors: calculatedErrors,
     config,
+    editorState: computeDepositState(record, _preselectedCommunity),
     permissions,
-    actionState: !_isEmpty(calculatedErrors)
-      ? DRAFT_HAS_VALIDATION_ERRORS
-      : null,
+    actionState: _isEmpty(calculatedErrors)
+      ? null
+      : DRAFT_HAS_VALIDATION_ERRORS,
     actionStateExtra: {},
     formFeedbackMessage: errorData?.errorMessage || "",
   };

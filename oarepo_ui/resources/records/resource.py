@@ -691,7 +691,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         form_config = self._get_form_config(
             g.identity,
             dashboard_routes=dashboard_routes,
-            createUrl=url_for(f"{self.config.blueprint_name}.deposit_create"),
+            createUrl=self.config.model.api_url("create"),
             quota=get_actual_files_quota(None),
             hide_community_selection=community_use_jinja_header,
             is_doi_required=is_doi_required,

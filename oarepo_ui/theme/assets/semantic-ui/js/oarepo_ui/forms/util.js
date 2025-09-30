@@ -8,13 +8,13 @@ import _deburr from "lodash/deburr";
 import _escapeRegExp from "lodash/escapeRegExp";
 import _filter from "lodash/filter";
 
-export function parseFormAppConfig(rootElementId = "form-app") {
+export function parseFormAppConfig(rootElementId = "deposit-form") {
   const rootEl = document.getElementById(rootElementId);
-  const record = getInputFromDOM("record");
-  const formConfig = getInputFromDOM("form-config");
-  const recordPermissions = getInputFromDOM("record-permissions");
-  const files = getInputFromDOM("files");
-  const links = getInputFromDOM("links");
+  const record = getInputFromDOM("deposits-record");
+  const formConfig = getInputFromDOM("deposits-config");
+  const recordPermissions = getInputFromDOM("deposits-permissions");
+  const files = getInputFromDOM("deposits-files");
+  const links = getInputFromDOM("deposits-links");
   return { rootEl, record, formConfig, recordPermissions, files, links };
 }
 
@@ -126,9 +126,9 @@ export function toModelPath(path) {
       return `children.${part}.children`;
     } else if (index === array.length - 1) {
       return part;
-    } else if (!isNaN(parseInt(part))) {
+    } else if (!Number.isNaN(Number.parseInt(part))) {
       return `child.children`;
-    } else if (!isNaN(parseInt(array[index + 1]))) {
+    } else if (!Number.isNaN(Number.parseInt(array[index + 1]))) {
       return part;
     } else {
       return `${part}.children`;

@@ -138,7 +138,7 @@ export class DepositFormApp extends Component {
                           "FormApp.layout"
                         )}
                       >
-                        <Container fluid>
+                        <Container className="rel-mt-1">
                           <BaseFormLayout />
                         </Container>
                       </Overridable>
