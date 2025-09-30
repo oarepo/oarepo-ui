@@ -1,0 +1,31 @@
+{#def
+    theme,
+    forms_config,
+    searchbar_config,
+    record,
+    community,
+    community_ui,
+    community_use_jinja_header,
+    files,
+    preselectedCommunity=None,
+    files_locked,
+    extra_context,
+    ui_links,
+    permissions
+#}
+{
+    "mode": "create",
+    "theme": {{ theme|tojson|safe }},
+    "forms_config": {{ forms_config|tojson|safe }},
+    "searchbar_config": {{ searchbar_config|tojson|safe }},
+    "record": {{ record|tojson|safe }},
+    "community": {{ community|tojson|safe }},
+    "community_ui": {{ community_ui|tojson|safe }},
+    "community_use_jinja_header": {{ community_use_jinja_header|tojson|safe }},
+    "files": {{ files|tojson|safe }},
+    "preselectedCommunity": {{ preselectedCommunity|tojson|safe }},
+    "files_locked": {{ files_locked|tojson|safe }},
+    "extra_context": {{ extra_context|tojson|safe }},
+    "ui_links": {{ ui_links|tojson|safe }},
+    "permissions": {{ permissions|tojson|safe }}
+}
