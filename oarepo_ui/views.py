@@ -24,6 +24,13 @@ from invenio_base.utils import obj_or_import_string
 from invenio_i18n import get_locale
 from invenio_sitemap import iterate_urls_of_sitemap_indices
 
+from oarepo_ui.overrides import (
+    UIComponent,
+    UIComponentOverride,
+)
+from oarepo_ui.overrides.components import UIComponentImportMode
+from oarepo_ui.proxies import current_ui_overrides
+
 if TYPE_CHECKING:
     from flask import Flask
     from flask.blueprints import BlueprintSetupState
@@ -62,6 +69,8 @@ def create_blueprint(app: Flask) -> Blueprint:
 
     blueprint.record_once(add_jinja_filters)
 
+    app.config.get("OAREPO_UI_RESULT_LIST_ITEM_REGISTRATION_CALLBACKS", []).append(_register_main_search_result_item)
+
     return blueprint
 
 
@@ -94,8 +103,38 @@ def help_search() -> ResponseReturnValue:
     )
 
 
+def ui_overrides(app: Flask) -> None:  # NOQA: ARG001
+    """Define overrides that this library will register."""
+    dynamic_result_list_item = UIComponent(
+        "DynamicResultsListItem",
+        "@js/oarepo_ui/search/DynamicResultsListItem",
+        UIComponentImportMode.DEFAULT,
+    )
+    dynamic_result_list_item_override = UIComponentOverride(
+        "invenio_search_ui.search",
+        "InvenioAppRdm.Search.ResultsList.item",
+        dynamic_result_list_item,
+    )
+    if dynamic_result_list_item_override not in current_ui_overrides:
+        current_ui_overrides.add(dynamic_result_list_item_override)
+
+
+def _register_main_search_result_item(
+    ui_overrides: set[UIComponentOverride], schema: str, component: UIComponent
+) -> None:
+    """Register a result list items for dashboard uploads."""
+    main_search_result_list_item = UIComponentOverride(
+        "invenio_search_ui.search",
+        f"InvenioAppRdm.Search.ResultsList.item.{schema}",
+        component,
+    )
+    if main_search_result_list_item not in ui_overrides:
+        ui_overrides.add(main_search_result_list_item)
+
+
 def finalize_app(app: Flask) -> None:
     """Finalize the UI application."""
+    ui_overrides(app)
     with app.app_context():
         # hide the /admin (maximum recursion depth exceeded menu)
         admin_menu = current_menu.submenu("settings.admin")

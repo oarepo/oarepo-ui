@@ -2,7 +2,7 @@ import React from "react";
 import { expect } from "@storybook/test";
 import { IdentifierBadge, IconIdentifier } from "./IdentifierBadge";
 
-export default {
+const Badge = {
   title: "Components/IdentifierBadge",
   component: IdentifierBadge,
   tags: ["autodocs"], // Storybook 9 autodocs
@@ -10,6 +10,8 @@ export default {
     className: "",
   },
 };
+
+export default Badge;
 
 const exampleIdentifier = {
   scheme: "orcid",
@@ -25,17 +27,20 @@ export const Default = {
     creatibutorName: "Jane Doe",
   },
   play: async ({ canvas, userEvent }) => {
-
     // Wait for the image to appear
-    await expect(canvas.findByRole('img', { name: /ORCID/i })).toBeInTheDocument();
+    const img = await canvas.findByRole("img", { name: /ORCID/i });
+    await expect(img).toBeInTheDocument();
 
     // Wait for the badge text
     const badge = await canvas.findByText(/ORCID/i);
     await expect(badge).toBeVisible();
 
     // Try clicking the link wrapper
-    const link = img.closest('a');
-    await expect(link).toHaveAttribute('href', 'https://orcid.org/0000-0002-1825-0097');
+    const link = img.closest("a");
+    await expect(link).toHaveAttribute(
+      "href",
+      "https://orcid.org/0000-0002-1825-0097"
+    );
 
     // Simulate user clicking the link
     await userEvent.click(link);

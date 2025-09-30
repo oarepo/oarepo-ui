@@ -85,8 +85,8 @@ export const depositReducer = (state = {}, action) => {
         actionState: DRAFT_HAS_VALIDATION_ERRORS,
         formFeedbackMessage: action.payload.formFeedbackMessage,
       };
-
+    // to make it fall through to invenio reducer if action is not handled here
     default:
-      return state;
+      return undefined;
   }
 };
