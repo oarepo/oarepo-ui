@@ -96,7 +96,6 @@ const FormFeedbackComponent = ({
   actionState,
 }) => {
   const flattenedErrors = flattenToPathValueArray(errors);
-
   if (actionState === DRAFT_HAS_VALIDATION_ERRORS) {
     return (
       <CustomMessage negative color="orange">
@@ -104,7 +103,9 @@ const FormFeedbackComponent = ({
         <Message.List>
           {flattenedErrors?.map((error, index) => (
             <Message.Item
-              onClick={() => scrollToElement(error.fieldPath)}
+              onClick={() => {
+                scrollToElement(error.fieldPath);
+              }}
               // eslint-disable-next-line react/no-array-index-key
               key={`${error.fieldPath}-${index}`}
             >

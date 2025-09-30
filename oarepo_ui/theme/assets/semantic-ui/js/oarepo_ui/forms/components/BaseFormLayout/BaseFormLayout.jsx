@@ -1,21 +1,16 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { FormFeedback } from "../FormFeedback";
-import { FormikStateLogger } from "../FormikStateLogger";
-import { SaveButton } from "../SaveButton";
-import { DeleteButton } from "../DeleteButton";
-import { PreviewButton } from "../PreviewButton";
-import { DepositStatusBox } from "@js/invenio_rdm_records/src/deposit/components/DepositStatus";
-import { PublishButton } from "@js/invenio_rdm_records/src/deposit/controls/PublishButton";
-import { ShareDraftButton } from "@js/invenio_app_rdm/deposit/ShareDraftButton";
-import { Grid, Ref, Sticky, Card, Header } from "semantic-ui-react";
+import { BaseForm } from "../BaseForm";
+import { Grid, Ref, Sticky, Header } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { getLocalizedValue } from "../../../util";
 import { buildUID } from "react-searchkit";
 import Overridable from "react-overridable";
-import { CustomFields } from "react-invenio-forms";
 import { getIn, useFormikContext } from "formik";
-import { useSanitizeInput, useFormConfig } from "../../hooks";
+import { useSanitizeInput, useFormConfig, useFormikRef } from "../../hooks";
+import _isEmpty from "lodash/isEmpty";
+import { save } from "../../state/deposit/actions";
+import { TabForm } from "../TabForm";
 
 export const FormTitle = () => {
   const { values } = useFormikContext();
@@ -40,119 +35,48 @@ export const FormTitle = () => {
   );
 };
 
-const BaseFormLayoutComponent = ({ formikProps = {}, record, errors = {} }) => {
-  const {
-    overridableIdPrefix,
-    custom_fields: customFields,
-    permissions,
-    groupsEnabled,
-  } = useFormConfig();
-  const sidebarRef = React.useRef(null);
+const BaseFormLayoutComponent = ({
+  sections,
+  formikProps = {},
+  record,
+  errors = {},
+}) => {
+  const { overridableIdPrefix } = useFormConfig();
   const formFeedbackRef = React.useRef(null);
-  // on chrome there is an annoying issue where after deletion you are redirected, and then
-  // if you click back on browser <-, it serves you the deleted page, which does not exist from the cache.
-  // on firefox it does not happen.
-  useEffect(() => {
-    const handleUnload = () => {};
-
-    const handleBeforeUnload = () => {};
-
-    window.addEventListener("unload", handleUnload);
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("unload", handleUnload);
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
+  const formikRef = useFormikRef();
 
   return (
-    <Grid>
-      <Ref innerRef={formFeedbackRef}>
-        <Grid.Column id="main-content" mobile={16} tablet={16} computer={11}>
-          <FormTitle />
-          <Sticky context={formFeedbackRef} offset={20}>
-            <Overridable id={buildUID(overridableIdPrefix, "Errors.container")}>
-              <FormFeedback />
+    <BaseForm
+      onSubmit={() => {}}
+      formik={{
+        initialValues: record,
+        innerRef: formikRef,
+        enableReinitialize: true,
+        initialErrors: _isEmpty(errors) ? {} : errors,
+        ...formikProps,
+      }}
+    >
+      <Grid>
+        <Ref innerRef={formFeedbackRef}>
+          <Grid.Column id="main-content" mobile={16} tablet={16} computer={16}>
+            <FormTitle />
+            <Sticky context={formFeedbackRef} offset={20}>
+              <Overridable
+                id={buildUID(overridableIdPrefix, "Errors.container")}
+              >
+                {/* <FormFeedback /> */}
+              </Overridable>
+            </Sticky>
+            <Overridable
+              id={buildUID(overridableIdPrefix, "FormFields.container")}
+              record={record}
+            >
+              <TabForm sections={sections} />
             </Overridable>
-          </Sticky>
-          <Overridable
-            id={buildUID(overridableIdPrefix, "FormFields.container")}
-            record={record}
-          >
-            <>
-              <pre>
-                Add your form input fields here by overriding{" "}
-                {buildUID(overridableIdPrefix, "FormFields.container")}{" "}
-                component
-              </pre>
-              <FormikStateLogger render />
-            </>
-          </Overridable>
-          <Overridable
-            id={buildUID(overridableIdPrefix, "CustomFields.container")}
-          >
-            <CustomFields
-              config={customFields?.ui}
-              templateLoaders={[
-                (widget) => import(`@templates/custom_fields/${widget}.js`),
-                (widget) => import(`react-invenio-forms`),
-              ]}
-            />
-          </Overridable>
-        </Grid.Column>
-      </Ref>
-      <Ref innerRef={sidebarRef}>
-        <Grid.Column id="control-panel" mobile={16} tablet={16} computer={5}>
-          <Overridable
-            id={buildUID(overridableIdPrefix, "FormActions.container")}
-            record={record}
-          >
-            <Card fluid>
-              <Card.Content>
-                <DepositStatusBox />
-              </Card.Content>
-              <Card.Content>
-                <Grid relaxed>
-                  <Grid.Column
-                    computer={8}
-                    mobile={16}
-                    className="pb-0 left-btn-col"
-                  >
-                    <SaveButton fluid />
-                  </Grid.Column>
-
-                  <Grid.Column
-                    computer={8}
-                    mobile={16}
-                    className="pb-0 right-btn-col"
-                  >
-                    <PreviewButton fluid />
-                  </Grid.Column>
-
-                  <Grid.Column width={16} className="pt-10">
-                    <PublishButton fluid record={record} />
-                  </Grid.Column>
-
-                  <Grid.Column width={16} className="pt-0">
-                    {(record.is_draft === null || permissions.can_manage) && (
-                      <ShareDraftButton
-                        record={record}
-                        permissions={permissions}
-                        groupsEnabled={groupsEnabled}
-                      />
-                    )}
-                  </Grid.Column>
-                  <Grid.Column width={16}>
-                    <DeleteButton fluid />
-                  </Grid.Column>
-                </Grid>
-              </Card.Content>
-            </Card>
-          </Overridable>
-        </Grid.Column>
-      </Ref>
-    </Grid>
+          </Grid.Column>
+        </Ref>
+      </Grid>
+    </BaseForm>
   );
 };
 
@@ -163,9 +87,13 @@ const mapStateToProps = (state) => {
   };
 };
 
+const mapDispatchToProps = {
+  saveAction: (values, params) => save(values, params),
+};
+
 export const BaseFormLayout = connect(
   mapStateToProps,
-  null
+  mapDispatchToProps,
 )(BaseFormLayoutComponent);
 
 BaseFormLayoutComponent.propTypes = {
@@ -174,6 +102,7 @@ BaseFormLayoutComponent.propTypes = {
   errors: PropTypes.object,
   // eslint-disable-next-line react/require-default-props
   formikProps: PropTypes.object,
+  sections: PropTypes.arrayOf(PropTypes.object),
 };
 
 export default BaseFormLayout;
