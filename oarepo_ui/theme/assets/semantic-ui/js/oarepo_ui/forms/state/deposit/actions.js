@@ -10,36 +10,53 @@ import {
   DRAFT_SAVE_STARTED,
   DRAFT_SAVE_SUCCEEDED,
 } from "@js/invenio_rdm_records/src/deposit/state/types";
-import { CLEAR_VALIDATION_ERRORS, SET_VALIDATION_ERRORS } from "./types";
+import {
+  CLEAR_VALIDATION_ERRORS,
+  SET_VALIDATION_ERRORS,
+  FORM_SESSION_SAVE_TRACKED,
+  SAVE_CANCELLED,
+} from "./types";
 import { i18next } from "@translations/oarepo_ui/i18next";
 
 async function changeURLAfterCreation(draftURL) {
   window.history.replaceState(undefined, "", draftURL);
 }
 
-export const saveDraftWithUrlUpdate = async (draft, draftsService) => {
+let currentSaveController = null;
+
+export const saveDraftWithUrlUpdate = async (
+  draft,
+  draftsService,
+  dispatchFn
+) => {
+  if (currentSaveController) {
+    currentSaveController.abort();
+  }
+
+  currentSaveController = new AbortController();
+
   const hasAlreadyId = !!draft.id;
-  const response = await draftsService.save(draft);
+
+  const response = await draftsService.save(draft, {
+    signal: currentSaveController.signal,
+  });
 
   const draftHasValidationErrors = !_isEmpty(response.errors);
 
-  // In case of invalid values, on the second draft save, the form doesn't report the errors. This happens
-  // because the backend doesn't save invalid metadata. Here we are merging draft state with backend
-  // response in order not to lose those invalid values from the form state and have the errors reported.
   if (draftHasValidationErrors) {
-    const mergingValues = {
+    // merge invalid metadata back into response
+    response.data = _.merge(response.data, {
       metadata: draft.metadata,
       custom_fields: draft.custom_fields,
-    };
-
-    response.data = _.merge(response.data, mergingValues);
+    });
   }
 
   if (!hasAlreadyId) {
-    // draft was created, change URL to add the draft PID
     const draftURL = response.data.links.edit_html;
     changeURLAfterCreation(draftURL);
   }
+  currentSaveController = null;
+
   return response;
 };
 
@@ -80,18 +97,30 @@ export async function _saveDraft(
   } = {}
 ) {
   let response;
+  // To track if the form has been saved in this session (i.e. to not display that tabs are OK due to lack of errors before we even tried to save)
+  if (!depositState.hasBeenSavedInSession) {
+    dispatchFn({
+      type: FORM_SESSION_SAVE_TRACKED,
+      payload: { hasBeenSavedInSession: true },
+    });
+  }
 
   try {
-    response = await saveDraftWithUrlUpdate(draft, draftsService);
+    response = await saveDraftWithUrlUpdate(draft, draftsService, dispatchFn);
   } catch (error) {
     console.error("Error saving draft", error, draft);
-    dispatchFn({
-      type: failType,
-      payload: {
-        errors: error.errors,
-        formFeedbackMessage: i18next.t(error?.errors?.message),
-      },
-    });
+    if (error.name === "CanceledError" || error.code === "ERR_CANCELED") {
+      dispatchFn({ type: SAVE_CANCELLED });
+    } else {
+      dispatchFn({
+        type: failType,
+        payload: {
+          errors: error.errors,
+          formFeedbackMessage: i18next.t(error?.errors?.message),
+        },
+      });
+    }
+
     throw error;
   }
 
@@ -180,6 +209,7 @@ export const preview = (
       successMessage,
       errorMessage,
     });
+
     // redirect to the preview page
     window.location = response.data.links.preview_html;
   };
