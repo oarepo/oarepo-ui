@@ -1,0 +1,30 @@
+{#def
+  record,
+  record_ui,
+  files,
+  media_files,
+  permissions,
+  is_preview,
+  include_deleted,
+  is_draft,
+  community,
+  community_ui,
+  user_avatar,
+  record_owner_id,
+  d
+#}
+{
+  "record": {{ record|tojson|safe }},
+  "record_ui": {{ record_ui|tojson|safe }},
+  "files": {{ files|tojson|safe }},
+  "media_files": {{ media_files|tojson|safe }},
+  "permissions": {{ permissions|tojson|safe }},
+  "is_preview": {{ is_preview|tojson|safe }},
+  "include_deleted": {{ include_deleted|tojson|safe }},
+  "is_draft": {{ is_draft|tojson|safe }},
+  "community": {{ community|tojson|safe }},
+  "community_ui": {{ community_ui|tojson|safe }},
+  "user_avatar": {{ user_avatar|tojson|safe }},
+  "record_owner_id": {{ record_owner_id|tojson|safe }},
+  "d": {{ d|tojson|safe }}
+}

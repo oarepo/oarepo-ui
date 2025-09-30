@@ -11,9 +11,14 @@ from __future__ import annotations
 import json
 
 
-def test_default_components(app, record_ui_resource, record_api_resource, simple_record, client_with_credentials):
-    with client_with_credentials.get("/simple-model/") as c:
-        txt = json.loads(c.text)
+def test_default_components(app, location, users, logged_client, record_factory):
+    record_factory(users[0].identity)
+    with logged_client(users[0]).get("/simple-model/") as resp:
+        assert resp.status_code == 200
+        txt = json.loads(resp.text)
         search_config = txt["search_config"]
 
-        assert search_config["defaultComponents"] == {}
+        assert (
+            "Simple_model.Search.ResultsList.item.local://simple_model-v1.0.0.json"
+            in search_config["defaultComponents"]
+        )

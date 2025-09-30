@@ -1,22 +1,30 @@
+#
+# Copyright (c) 2025 CESNET z.s.p.o.
+#
+# This file is a part of oarepo-ui (see https://github.com/oarepo/oarepo-ui).
+#
+# oarepo-ui is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+#
 import pytest
-from invenio_i18n import gettext as _
 from flask_menu import current_menu
+from invenio_i18n import gettext as _
 
-from oarepo_ui.resources.records.config import RecordsUIResourceConfig
-from oarepo_ui.resources.records.resource import RecordsUIResource
+from oarepo_ui.overrides import UIComponent, UIComponentImportMode
+from oarepo_ui.proxies import current_oarepo_ui
 from oarepo_ui.resources.components import (
     AllowedHtmlTagsComponent,
     BabelComponent,
-    PermissionsComponent,
-    FilesComponent,
     CustomFieldsComponent,
-    RecordRestrictionComponent,
     EmptyRecordAccessComponent,
+    FilesComponent,
     FilesLockedComponent,
     FilesQuotaAndTransferComponent,
+    PermissionsComponent,
+    RecordRestrictionComponent,
 )
-from oarepo_ui.overrides import UIComponent, UIComponentImportMode
-from oarepo_ui.proxies import current_oarepo_ui
+from oarepo_ui.resources.records.config import RecordsUIResourceConfig
+from oarepo_ui.resources.records.resource import RecordsUIResource
 from oarepo_ui.utils import can_view_deposit_page
 
 
@@ -58,8 +66,8 @@ class SimpleModelUIResourceConfig(RecordsUIResourceConfig):
     templates = {
         "record_detail": "simple_model.RecordDetail",
         "search": "simple_model.Search",
-        "deposit_edit": "simple_model.Deposit",
-        "deposit_create": "simple_model.Deposit",
+        "deposit_edit": "simple_model.TestDepositEdit",
+        "deposit_create": "simple_model.TestDepositCreate",
     }
 
 
@@ -92,6 +100,7 @@ def init_menu(app):
             visible_when=can_view_deposit_page,
         )
 
+
 def finalize_app(app):
     """Finalize app."""
     init_menu(app)
@@ -109,10 +118,6 @@ def create_blueprint(app):
 def simple_model_ui_module():
     """Provide the simple_model UI mock module for testing."""
     return {
-        "invenio_base.blueprints": [
-            "simple_model = tests.mock_simple_model_ui:create_blueprint"
-        ],
-        "invenio_base.finalize_app": [
-            "simple_model = tests.mock_simple_model_ui:finalize_app"
-        ],
+        "invenio_base.blueprints": ["simple_model = tests.mock_simple_model_ui:create_blueprint"],
+        "invenio_base.finalize_app": ["simple_model = tests.mock_simple_model_ui:finalize_app"],
     }
