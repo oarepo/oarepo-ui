@@ -13,8 +13,14 @@ import json
 from invenio_config.default import ALLOWED_HTML_ATTRS, ALLOWED_HTML_TAGS
 
 
-def test_create(app, record_service, client_with_credentials):
-    with client_with_credentials.get("/simple-model/_new") as c:
+def test_create(app, record_model, client_with_credentials, extra_entry_points):
+    for rule in app.url_map.iter_rules():
+        # Filter out rules we can't navigate to in a browser
+        # and rules that require parameters
+        print(rule.methods, rule.endpoint, rule)
+
+    with client_with_credentials.get("/simple-model/uploads/new") as c:
+        print(c.text)
         response = json.loads(c.text)
         response["data"].pop("created")
         response["data"].pop("updated")

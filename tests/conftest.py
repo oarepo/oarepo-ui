@@ -9,7 +9,7 @@
 from __future__ import annotations
 
 import json
-from typing import Any, override
+from typing import override
 
 import pytest
 from flask_security import login_user
@@ -25,8 +25,9 @@ from invenio_access.permissions import superuser_access, system_identity
 from invenio_accounts.models import Role
 from invenio_accounts.testutils import login_user_via_session
 from invenio_app.factory import create_app as _create_app
-from invenio_rdm_records.config import RDM_FACETS, RDM_SORT_OPTIONS
-from invenio_records_resources.services.custom_fields import KeywordCF
+from invenio_i18n import lazy_gettext as _
+from invenio_records_resources.services.custom_fields import TextCF
+from marshmallow_utils.fields import SanitizedHTML
 from oarepo_runtime import current_runtime
 from sqlalchemy.exc import IntegrityError
 
@@ -49,9 +50,9 @@ def _create_user(user_fixture, app, db) -> None:
 @pytest.fixture(scope="module")
 def extra_entry_points(record_model):
     """Extra entry points to load the mock_module features."""
-    record_model.register()
     return {
         "invenio_i18n.translations": ["1000-test = tests"],
+        # "invenio_base.blueprints": ["simple_model = simple_model.blueprints"]
     }
 
 
@@ -80,39 +81,74 @@ class MockManifestLoader(JinjaManifestLoader):
 
 
 @pytest.fixture(scope="module")
-def app_config(app_config, record_model):
-    app_config["I18N_LANGUAGES"] = [("cs", "Czech")]
-    app_config["BABEL_DEFAULT_LOCALE"] = "en"
+def app_config(app_config):
+    """Override pytest-invenio app_config fixture.
+
+    Needed to set the fields on the custom fields schema.
+    """
+    app_config["FILES_REST_STORAGE_CLASS_LIST"] = {
+        "L": "Local",
+    }
+
+    app_config["FILES_REST_DEFAULT_STORAGE_CLASS"] = "L"
+
     app_config["RECORDS_REFRESOLVER_CLS"] = "invenio_records.resolver.InvenioRefResolver"
     app_config["RECORDS_REFRESOLVER_STORE"] = "invenio_jsonschemas.proxies.current_refresolver_store"
 
-    # for ui tests
-    app_config["APP_THEME"] = ["semantic-ui"]
     app_config["THEME_FRONTPAGE"] = False
-    app_config["THEME_SEARCHBAR"] = False
-    app_config["THEME_SHOW_FRONTPAGE_INTRO_SECTION"] = False
-    app_config["RDM_FACETS"] = RDM_FACETS
-    app_config["RDM_SORT_OPTIONS"] = RDM_SORT_OPTIONS
 
-    app_config["APP_RDM_ROUTES"] = {
-        "index": "/",
-        "robots": "/robots.txt",
-        "help_search": "/help/search",
-        "record_detail": "/records/<pid_value>",
+    app_config["SQLALCHEMY_ENGINE_OPTIONS"] = {  # avoid pool_timeout set in invenio_app_rdm
+        "pool_pre_ping": False,
+        "pool_recycle": 3600,
     }
 
-    def dummy_jinja_filter(*args: Any, **kwargs: Any) -> str:
-        """Return dummy value."""
-        return "dummy"
+    app_config["RDM_NAMESPACES"] = {
+        "cern": "https://greybook.cern.ch/",
+    }
 
-    app_config["OAREPO_UI_JINJAX_FILTERS"] = {"dummy": dummy_jinja_filter}
+    app_config["RECORDS_CF_CUSTOM_FIELDS"] = {
+        TextCF(  # a text input field that will allow HTML tags
+            name="cern:experiment",
+            field_cls=SanitizedHTML,  # type: ignore[assignment]
+        ),
+    }
 
-    app_config["NESTED_CF"] = [KeywordCF("aaa")]
+    app_config["DRAFTS_CF_CUSTOM_FIELDS"] = app_config["RECORDS_CF_CUSTOM_FIELDS"]
 
-    app_config["NESTED_CF_UI"] = [{"section": "A", "fields": [{"field": "aaa", "ui_widget": "Input"}]}]
+    app_config["RECORDS_CF_CUSTOM_FIELDS_UI"] = [
+        {
+            "section": _("CERN Experiment"),
+            "fields": [
+                {
+                    "field": "cern:experiment",
+                    "ui_widget": "RichInput",
+                    "props": {
+                        "label": "Experiment description",
+                        "placeholder": "This experiment aims to...",
+                        "icon": "pencil",
+                        "description": ("You should fill this field with the experiment description.",),
+                    },
+                },
+            ],
+        },
+    ]
 
-    app_config["WEBPACKEXT_PROJECT"] = "oarepo_ui.webpack:project"
+    app_config["DRAFTS_CF_CUSTOM_FIELDS_UI"] = app_config["RECORDS_CF_CUSTOM_FIELDS_UI"]
 
+    # disable CSRF protection for tests
+    app_config["REST_CSRF_ENABLED"] = False
+
+    app_config["RDM_PERSISTENT_IDENTIFIERS"] = {}
+
+    app_config["RDM_OPTIONAL_DOI_VALIDATOR"] = lambda _draft, _previous_published, **_kwargs: True
+
+    app_config["DATACITE_TEST_MODE"] = True
+    app_config["RDM_RECORDS_ALLOW_RESTRICTION_AFTER_GRACE_PERIOD"] = True
+
+    # for RDM links
+    app_config["IIIF_FORMATS"] = ["jpg", "png"]
+    app_config["APP_RDM_RECORD_THUMBNAIL_SIZES"] = [500]
+    app_config["RDM_ARCHIVE_DOWNLOAD_ENABLED"] = True
     app_config["WEBPACKEXT_MANIFEST_LOADER"] = MockManifestLoader
 
     return app_config
@@ -201,10 +237,11 @@ def record_model():
     from oarepo_model.api import model
     from oarepo_model.presets.drafts import drafts_preset
     from oarepo_model.presets.records_resources import records_resources_preset
+    from oarepo_model.presets.ui import ui_preset
     from oarepo_model.presets.ui_links import ui_links_preset
     from oarepo_rdm.model.presets import rdm_preset
 
-    return model(
+    model_instance = model(
         "simple-model",
         version="1.0.0",
         types=[
@@ -217,10 +254,13 @@ def record_model():
             }
         ],
         metadata_type="Metadata",
-        presets=[records_resources_preset, drafts_preset, rdm_preset, ui_links_preset],
+        presets=[records_resources_preset, drafts_preset, rdm_preset, ui_preset, ui_links_preset],
         customizations=[],
         configuration={"ui_blueprint_name": "simple_model_ui"},
     )
+
+    model_instance.register()
+    return model_instance
 
 
 def rdm_value():
