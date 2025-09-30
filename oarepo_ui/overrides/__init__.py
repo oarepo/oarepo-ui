@@ -7,9 +7,10 @@
 
 from __future__ import annotations
 
-from .components import UIComponent, UIComponentOverride
+from .components import UIComponent, UIComponentOverride, UIComponentImportMode
 
 __all__ = [
     "UIComponent",
     "UIComponentOverride",
+    "UIComponentImportMode"
 ]

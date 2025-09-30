@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 from typing import override
 
+from flask import Blueprint
 import pytest
 from flask_security import login_user
 from flask_security.utils import hash_password
@@ -52,9 +53,9 @@ def extra_entry_points(record_model):
     """Extra entry points to load the mock_module features."""
     return {
         "invenio_i18n.translations": ["1000-test = tests"],
-        # "invenio_base.blueprints": ["simple_model = simple_model.blueprints"]
+        "invenio_base.blueprints": ["ui_simple_model = tests.simple_model:create_blueprint"],
+        "invenio_base.finalize_app": ["ui_simple_model = tests.simple_model:finalize_app"]
     }
-
 
 #
 # Mock the webpack manifest to avoid having to compile the full assets.

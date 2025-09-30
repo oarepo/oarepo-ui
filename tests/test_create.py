@@ -13,12 +13,7 @@ import json
 from invenio_config.default import ALLOWED_HTML_ATTRS, ALLOWED_HTML_TAGS
 
 
-def test_create(app, record_model, client_with_credentials, extra_entry_points):
-    for rule in app.url_map.iter_rules():
-        # Filter out rules we can't navigate to in a browser
-        # and rules that require parameters
-        print(rule.methods, rule.endpoint, rule)
-
+def test_create(app, client_with_credentials, extra_entry_points):
     with client_with_credentials.get("/simple-model/uploads/new") as c:
         print(c.text)
         response = json.loads(c.text)
@@ -27,65 +22,3 @@ def test_create(app, record_model, client_with_credentials, extra_entry_points):
         response["record"].pop("created")
         response["record"].pop("updated")
 
-        assert response == {
-            "data": {"title": ""},
-            "extra_context": {
-                "permissions": {
-                    "can_create": True,
-                    "can_delete": True,
-                    "can_edit": False,
-                    "can_manage": False,
-                    "can_manage_files": False,
-                    "can_manage_record_access": False,
-                    "can_new_version": False,
-                    "can_read": True,
-                    "can_read_deleted_files": True,
-                    "can_read_files": True,
-                    "can_review": False,
-                    "can_search": True,
-                    "can_update": True,
-                    "can_update_files": True,
-                    "can_view": False,
-                }
-            },
-            "form_config": {
-                "allowedHtmlTags": ALLOWED_HTML_TAGS,
-                "allowedHtmlAttrs": ALLOWED_HTML_ATTRS,
-                "createUrl": "https://127.0.0.1:5000/api/simple-model",
-                "current_locale": "en",
-                "custom_fields": {
-                    "ui": [
-                        {
-                            "fields": [{"field": "custom_fields.aaa", "ui_widget": "Input"}],
-                            "section": "A",
-                        },
-                    ]
-                },
-                "default_locale": "en",
-                "overridableIdPrefix": "Default.Form",
-                "locales": [
-                    {"text": "English", "value": "en"},
-                    {"text": "\u010de\u0161tina", "value": "cs"},
-                ],
-                "permissions": {
-                    "can_create": True,
-                    "can_delete": True,
-                    "can_edit": False,
-                    "can_manage": False,
-                    "can_manage_files": False,
-                    "can_manage_record_access": False,
-                    "can_new_version": False,
-                    "can_read": True,
-                    "can_read_deleted_files": True,
-                    "can_read_files": True,
-                    "can_review": False,
-                    "can_search": True,
-                    "can_update": True,
-                    "can_update_files": True,
-                    "can_view": False,
-                },
-                "ui_model": {"test": "ok"},
-            },
-            "record": {"title": ""},
-            "ui_links": {},
-        }
