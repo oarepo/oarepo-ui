@@ -75,7 +75,7 @@ def test_model(simple_model_ui_resource_config, record_model):
     assert isinstance(cfg.model, Model)
 
     cfg.model_name = ""
-    with pytest.raises(ValueError, match="Model name is not set in the resource configuration."):
+    with pytest.raises(ValueError, match="Model name is not set in the resource configuration"):
         _ = cfg.model
 
 
