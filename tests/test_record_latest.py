@@ -6,6 +6,8 @@
 # oarepo-ui is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 #
+from __future__ import annotations
+
 
 def test_record_latest_redirect(app, location, logged_client, users, record_factory, extra_entry_points):
     record = record_factory(users[0].identity)

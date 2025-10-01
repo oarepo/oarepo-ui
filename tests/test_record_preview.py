@@ -8,16 +8,15 @@
 #
 
 
+from __future__ import annotations
+
 import json
-from invenio_records_resources.services.records.results import RecordItem
 
 
-def test_record_preview(app, location,
-                                logged_client, users, draft_factory,
-                                extra_entry_points):
+def test_record_preview(app, location, logged_client, users, draft_factory, extra_entry_points):
     creator = users[0]
     draft = draft_factory(creator.identity)
-    
+
     assert "preview_html" in draft["links"]
     url = draft["links"]["preview_html"].split("/", 3)[-1]
     with logged_client(creator).get(f"/{url}") as resp:
