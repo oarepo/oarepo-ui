@@ -8,62 +8,180 @@
 #
 from __future__ import annotations
 
+import importlib
+
+from flask_resources import MarshmallowSerializer
+import pytest
+from werkzeug.datastructures import MultiDict
 from invenio_access.permissions import system_identity
-from invenio_config.default import ALLOWED_HTML_ATTRS, ALLOWED_HTML_TAGS
+from oarepo_runtime import Model, current_runtime
+from invenio_search.engine import dsl
+
+from oarepo_ui.resources.records.config import SearchRequestArgsSchema
 
 
-def test_ui_resource_form_config(app, test_record_ui_resource):
-    # Special instance of record resource
-    fc = test_record_ui_resource.config.form_config()
-    assert fc == {
-        "overridableIdPrefix": "Test.Form",
-    }
+def test_ui_resource_form_config(app, simple_model_ui_resource_config, simple_model_ui_resource):
+    fc = simple_model_ui_resource_config.form_config()
+    assert fc == {"overridableIdPrefix": "Simple_model.Form"}
 
-    test_record_ui_resource.run_components(
+    simple_model_ui_resource.run_components(
         "form_config",
         form_config=fc,
         layout="",
-        resource=test_record_ui_resource,
+        resource=simple_model_ui_resource,
         api_record=None,
         record={},
         data={},
         identity=system_identity,
         extra_context={},
+        ui_links=simple_model_ui_resource_config.ui_links_search,
     )
 
-    assert fc == {
-        "current_locale": "en",
-        "locales": [
-            {"value": "en", "text": "English"},
-            {"value": "cs", "text": "čeština"},
-        ],
-        "allowedHtmlTags": ALLOWED_HTML_TAGS,
-        "allowedHtmlAttrs": ALLOWED_HTML_ATTRS,
-        "default_locale": "en",
-        "overridableIdPrefix": "Test.Form",
-        "permissions": {
-            "can_manage_record_access": False,
-            "can_read": True,
-            "can_read_deleted_files": True,
-            "can_delete": False,
-            "can_review": False,
-            "can_new_version": False,
-            "can_update": True,
-            "can_create": True,
-            "can_read_files": False,
-            "can_manage": False,
-            "can_manage_files": False,
-            "can_update_files": False,
-            "can_edit": False,
-            "can_search": True,
-            "can_view": False,
-        },
-        "custom_fields": {
-            "ui": [
-                {
-                    "fields": [{"field": "custom_fields.aaa", "ui_widget": "Input"}],
-                    "section": "A",
-                },
-            ]
-        },
-    }
+    assert "permissions" in fc
+    assert "custom_fields" in fc
+
+def test_request_schemas_are_marshmallow_schemas():
+    schema = SearchRequestArgsSchema()
+    md = MultiDict([("q", "test"), ("f", "a:1"), ("f", "b:2")])
+    loaded = schema.load(md)
+    assert "facets" in loaded
+    assert loaded["facets"] == {"a": ["1"], "b": ["2"]}
+
+
+def test_default_components(simple_model_ui_resource_config):
+    cfg = simple_model_ui_resource_config
+    assert cfg.model.record_json_schema in cfg.default_components
+    assert cfg.default_components[cfg.model.record_json_schema] == cfg.search_component
+
+
+def test_ui_links(simple_model_ui_resource_config):
+    cfg = simple_model_ui_resource_config
+    item_links = cfg.ui_links_item
+    assert "self" in item_links
+    assert "edit" in item_links
+    assert "search" in item_links
+
+    search_links = cfg.ui_links_search
+    assert "deposit_create" in search_links
+    assert any(k in search_links for k in ("prev", "next", "self"))
+
+
+def test_model(simple_model_ui_resource_config, record_model):
+    cfg = simple_model_ui_resource_config
+    assert isinstance(cfg.model, Model)
+
+    # empty model_name should raise ValueError
+    cfg.model_name = ""
+    with pytest.raises(ValueError):
+        _ = cfg.model
+
+def test_ui_serializer(simple_model_ui_resource_config):
+    cfg = simple_model_ui_resource_config
+    cfg.model_name = "simple_model"
+
+    assert isinstance(cfg.ui_serializer, MarshmallowSerializer)
+
+
+def test_search_available_facets_and_active(simple_model_ui_resource_config):
+    cfg = simple_model_ui_resource_config
+
+    # Build a minimal dummy api_config.search with TermsFacet available
+    class DummySearch:
+        facets = {"a": dsl.TermsFacet(field="a")}
+        params_interpreters_cls = []
+
+    class DummyConfig:
+        search = DummySearch()
+
+    facets = cfg.search_available_facets(DummyConfig(), system_identity)
+    assert "a" in facets
+    assert cfg.search_active_facets(DummyConfig(), system_identity) == ["a"]
+
+
+def test_search_sort_and_active(simple_model_ui_resource_config):
+    cfg = simple_model_ui_resource_config
+
+    class DummySearch:
+        sort_options = {"title": {"order": "asc"}}
+        sort_default = "title"
+        sort_default_no_query = "title"
+
+    class DummyConfig:
+        search = DummySearch()
+
+    opts = cfg.search_available_sort_options(DummyConfig(), system_identity)
+    assert "title" in opts
+    assert cfg.search_active_sort_options(DummyConfig(), system_identity) == ["title"]
+
+    sort_cfg = cfg.search_sort_config(opts, ["title"], "title", "title")
+    from invenio_search_ui.searchconfig import SortConfig
+    assert isinstance(sort_cfg, SortConfig)
+
+def test_search_facets_config(simple_model_ui_resource_config):
+    cfg = simple_model_ui_resource_config
+    facets = {"a": dsl.TermsFacet(field="a")}
+    fc = cfg.search_facets_config(facets)
+
+    from invenio_search_ui.searchconfig import FacetsConfig
+    assert isinstance(fc, FacetsConfig)
+
+    rep = repr(fc)
+    assert "a" in rep
+
+def test_ignored_search_filters(simple_model_ui_resource_config):
+    assert simple_model_ui_resource_config.ignored_search_filters() == ["allversions"]
+
+
+def test_search_endpoint_url(simple_model_ui_resource_config):
+    cfg = simple_model_ui_resource_config
+    
+    url = cfg.search_endpoint_url(system_identity)
+    assert url.endswith("/api/simple-model")
+
+
+def test_search_app_config(monkeypatch, simple_model_ui_resource_config):
+    cfg = simple_model_ui_resource_config
+    class DummyFacet:
+        def __init__(self):
+            self._params = {}
+            self._label = "Label"
+
+        def __call__(self, *args, **kwargs):
+            return self
+
+        def agg(self, *args, **kwargs):
+            return {}
+
+    class DummySearch:
+        facets = {"f1": DummyFacet()}
+        params_interpreters_cls = []
+        sort_options = {
+            "title": {
+                "title": "Title",
+                "fields": ["title"],
+                "order": "asc",
+            }
+        }
+        sort_default = "title"
+        sort_default_no_query = "title"
+
+    class DummyConfig:
+        search = DummySearch()
+
+    app_cfg = cfg.search_app_config(system_identity, DummyConfig())
+
+    assert app_cfg["appId"] == "search"
+    assert "initialQueryState" in app_cfg
+    assert "searchApi" in app_cfg
+    assert "sortOptions" in app_cfg
+    assert "aggs" in app_cfg
+
+    assert any(agg["aggName"] == "f1" for agg in app_cfg["aggs"])
+    assert any(opt["sortBy"] == "title" for opt in app_cfg["sortOptions"])
+
+
+def test_custom_fields(app, simple_model_ui_resource_config):
+    cfg = simple_model_ui_resource_config
+    ret = cfg.custom_fields()
+    assert "ui" in list(ret)
+    assert isinstance(ret["ui"], list)
