@@ -39,8 +39,6 @@ def test_export_ui_json(
         # Timestamps
         assert "created" in data
         assert "updated" in data
-        assert data["created"].startswith("2025-09-30T")
-        assert data["updated"].startswith("2025-09-30T")
 
         # Links
         links = data["links"]

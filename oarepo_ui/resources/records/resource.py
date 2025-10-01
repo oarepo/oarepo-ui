@@ -285,7 +285,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         resolved_community, resolved_community_ui = None, None
 
         render_kwargs = {
-            "record": record,
+            "record": record.to_dict(),
             "record_ui": record_ui,
             "files": files_dict,
             "media_files": media_files_dict,
@@ -335,6 +335,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         set_api_record_to_response(response, record)
         return response
 
+    @pass_route_args("view")
     @pass_record_latest
     def record_latest(self, record: RecordItem, **kwargs: Any):  # noqa ARG002
         """Redirect to record's latest version page."""
