@@ -6,6 +6,12 @@
 # oarepo-ui is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 #
+"""Mock simple_model record model module."""
+
+from __future__ import annotations
+
+from typing import ClassVar
+
 import pytest
 from flask_menu import current_menu
 from invenio_i18n import gettext as _
@@ -29,6 +35,8 @@ from oarepo_ui.utils import can_view_deposit_page
 
 
 class SimpleModelUIResourceConfig(RecordsUIResourceConfig):
+    """Mock UI resource config for the `simple_model` records with test templates and components."""
+
     template_folder = "templates"
     url_prefix = "/simple-model"
     blueprint_name = "simple_model_ui"
@@ -40,7 +48,7 @@ class SimpleModelUIResourceConfig(RecordsUIResourceConfig):
         UIComponentImportMode.DEFAULT,
     )
 
-    components = [
+    components: ClassVar[list] = [
         AllowedHtmlTagsComponent,
         BabelComponent,
         PermissionsComponent,
@@ -61,9 +69,9 @@ class SimpleModelUIResourceConfig(RecordsUIResourceConfig):
     except ImportError:
         pass
 
-    application_id = "simple_model"
+    application_id: ClassVar[str] = "simple_model"
 
-    templates = {
+    templates: ClassVar[dict[str, str]] = {
         "record_detail": "simple_model.RecordDetail",
         "search": "simple_model.Search",
         "deposit_edit": "simple_model.TestDepositEdit",
@@ -109,8 +117,7 @@ def finalize_app(app):
 
 def create_blueprint(app):
     """Register blueprint for this resource."""
-    blueprint = SimpleModelUIResource(SimpleModelUIResourceConfig()).as_blueprint()
-    return blueprint
+    return SimpleModelUIResource(SimpleModelUIResourceConfig()).as_blueprint()
 
 
 # Optional pytest fixture to auto-load this mock module

@@ -8,16 +8,19 @@
 #
 from __future__ import annotations
 
-import importlib
+from typing import TYPE_CHECKING
 
-from flask_resources import MarshmallowSerializer
 import pytest
-from werkzeug.datastructures import MultiDict
+from flask_resources import MarshmallowSerializer
 from invenio_access.permissions import system_identity
-from oarepo_runtime import Model, current_runtime
 from invenio_search.engine import dsl
+from oarepo_runtime import Model
+from werkzeug.datastructures import MultiDict
 
 from oarepo_ui.resources.records.config import SearchRequestArgsSchema
+
+if TYPE_CHECKING:
+    from typing import Any, ClassVar
 
 
 def test_ui_resource_form_config(app, simple_model_ui_resource_config, simple_model_ui_resource):
@@ -39,6 +42,7 @@ def test_ui_resource_form_config(app, simple_model_ui_resource_config, simple_mo
 
     assert "permissions" in fc
     assert "custom_fields" in fc
+
 
 def test_request_schemas_are_marshmallow_schemas():
     schema = SearchRequestArgsSchema()
@@ -70,10 +74,10 @@ def test_model(simple_model_ui_resource_config, record_model):
     cfg = simple_model_ui_resource_config
     assert isinstance(cfg.model, Model)
 
-    # empty model_name should raise ValueError
     cfg.model_name = ""
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="model_name cannot be empty"):
         _ = cfg.model
+
 
 def test_ui_serializer(simple_model_ui_resource_config):
     cfg = simple_model_ui_resource_config
@@ -87,8 +91,8 @@ def test_search_available_facets_and_active(simple_model_ui_resource_config):
 
     # Build a minimal dummy api_config.search with TermsFacet available
     class DummySearch:
-        facets = {"a": dsl.TermsFacet(field="a")}
-        params_interpreters_cls = []
+        facets: ClassVar[dict[str, dsl.TermsFacet]] = {"a": dsl.TermsFacet(field="a")}
+        params_interpreters_cls: ClassVar[list] = []
 
     class DummyConfig:
         search = DummySearch()
@@ -102,7 +106,7 @@ def test_search_sort_and_active(simple_model_ui_resource_config):
     cfg = simple_model_ui_resource_config
 
     class DummySearch:
-        sort_options = {"title": {"order": "asc"}}
+        sort_options: ClassVar[dict[str, dict]] = {"title": {"order": "asc"}}
         sort_default = "title"
         sort_default_no_query = "title"
 
@@ -115,7 +119,9 @@ def test_search_sort_and_active(simple_model_ui_resource_config):
 
     sort_cfg = cfg.search_sort_config(opts, ["title"], "title", "title")
     from invenio_search_ui.searchconfig import SortConfig
+
     assert isinstance(sort_cfg, SortConfig)
+
 
 def test_search_facets_config(simple_model_ui_resource_config):
     cfg = simple_model_ui_resource_config
@@ -123,10 +129,12 @@ def test_search_facets_config(simple_model_ui_resource_config):
     fc = cfg.search_facets_config(facets)
 
     from invenio_search_ui.searchconfig import FacetsConfig
+
     assert isinstance(fc, FacetsConfig)
 
     rep = repr(fc)
     assert "a" in rep
+
 
 def test_ignored_search_filters(simple_model_ui_resource_config):
     assert simple_model_ui_resource_config.ignored_search_filters() == ["allversions"]
@@ -134,28 +142,29 @@ def test_ignored_search_filters(simple_model_ui_resource_config):
 
 def test_search_endpoint_url(simple_model_ui_resource_config):
     cfg = simple_model_ui_resource_config
-    
+
     url = cfg.search_endpoint_url(system_identity)
     assert url.endswith("/api/simple-model")
 
 
 def test_search_app_config(monkeypatch, simple_model_ui_resource_config):
     cfg = simple_model_ui_resource_config
+
     class DummyFacet:
         def __init__(self):
             self._params = {}
             self._label = "Label"
 
-        def __call__(self, *args, **kwargs):
+        def __call__(self, *args: Any, **kwargs: Any):  # noqa: ARG002
             return self
 
-        def agg(self, *args, **kwargs):
+        def agg(self, *args: Any, **kwargs: Any) -> dict:  # noqa: ARG002
             return {}
 
     class DummySearch:
-        facets = {"f1": DummyFacet()}
-        params_interpreters_cls = []
-        sort_options = {
+        facets: ClassVar[dict[str, Any]] = {"f1": DummyFacet()}
+        params_interpreters_cls: ClassVar[list] = []
+        sort_options: ClassVar[dict[str, dict]] = {
             "title": {
                 "title": "Title",
                 "fields": ["title"],

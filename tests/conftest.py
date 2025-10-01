@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import json
 from datetime import timedelta
-from pathlib import Path
 from typing import override
 
 import pytest
@@ -24,8 +23,9 @@ from invenio_i18n import lazy_gettext as _
 from invenio_records_resources.services.custom_fields import TextCF
 from marshmallow_utils.fields import SanitizedHTML
 from oarepo_runtime import current_runtime
-from tests.simple_model import SimpleModelUIResource, SimpleModelUIResourceConfig
+
 from oarepo_ui.templating.data import FieldData
+from tests.simple_model import SimpleModelUIResource, SimpleModelUIResourceConfig
 
 pytest_plugins = [
     "pytest_oarepo.files",
@@ -164,8 +164,8 @@ def simple_model_ui_resource_config():
 
 @pytest.fixture(scope="module")
 def simple_model_ui_resource(app, simple_model_ui_resource_config, record_service):
-    ui_resource = SimpleModelUIResource(simple_model_ui_resource_config)
-    return ui_resource
+    return SimpleModelUIResource(simple_model_ui_resource_config)
+
 
 @pytest.fixture(scope="session")
 def record_model():

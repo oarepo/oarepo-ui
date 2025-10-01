@@ -75,7 +75,7 @@ def test_deposit_edit(app, location, record_service, logged_client, users, draft
 
         files = response.pop("files")
         assert files is not None
-        assert files["enabled"] == False
+        assert not files["enabled"]
         assert isinstance(response["permissions"], dict)
 
         for key, value in expected_permissions.items():

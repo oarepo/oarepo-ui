@@ -8,13 +8,12 @@
 #
 
 
+from __future__ import annotations
+
 import json
-from invenio_records_resources.services.records.results import RecordItem
 
 
-def test_record_detail(app, location,
-                                logged_client, users, record_factory,
-                                extra_entry_points):
+def test_record_detail(app, location, logged_client, users, record_factory, extra_entry_points):
     creator = users[0]
     published_record = record_factory(creator.identity)
     assert "self_html" in published_record["links"]
