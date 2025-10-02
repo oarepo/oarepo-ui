@@ -170,6 +170,8 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
     def ui_model(self) -> Mapping[str, Any]:
         """Get the UI model for the resource."""
         # mypy seems to ignore the type in runtime, thus added ignore
+        if not self.config.model:
+            return {}
         return self.config.model.ui_model  # type: ignore[no-any-return]
 
     def _record_from_service_result(self, result: RecordItem) -> Record:
@@ -354,6 +356,9 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         return self._file_preview(record, pid_value, filepath)
 
     def _file_preview(self, record: RecordItem, pid_value: str, filepath: str) -> Response:
+        if not self.config.model:
+            raise RuntimeError(f"Model {self.config.model_name} not registered. File cannot be previewed.")
+
         file_service = self.config.model.file_service
         if file_service is None:
             return Response(
@@ -490,7 +495,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         export_format: str,
         is_preview: bool = False,
         **kwargs: Any,
-    ) -> tuple[Any, int, dict[str, str]]:
+    ) -> tuple[Any, int, dict[str, str]] | None:
         """Export a record in the specified format.
 
         :param pid_value: Persistent identifier value for the record.
@@ -500,9 +505,12 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         :raises: 404 if no exporter is found.
         """
         record = self._get_record(pid_value, allow_draft=is_preview, **kwargs)
-        exports = [export for export in self.config.model.exports if export.code.lower() == export_format.lower()]
+        exports = None
+        if self.config.model:
+            exports = [export for export in self.config.model.exports if export.code.lower() == export_format.lower()]
         if not exports:
             abort(404, f"No exporter for code {export_format}")
+            return None
         mimetype = exports[0].mimetype
         serializer = exports[0].serializer
         exported_record = serializer.serialize_object(record.to_dict())
@@ -524,7 +532,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         pid_value: str,
         export_format: str,
         **kwargs: Any,
-    ) -> tuple[Any, int, dict[str, str]]:
+    ) -> tuple[Any, int, dict[str, str]] | None:
         """Export a record in the specified format."""
         return self._export(pid_value, export_format, **kwargs)
 
@@ -534,7 +542,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         pid_value: str,
         export_format: str,
         **kwargs: Any,
-    ) -> tuple[Any, int, dict[str, str]]:
+    ) -> tuple[Any, int, dict[str, str]] | None:
         """Export a preview of a record in the specified format."""
         return self._export(pid_value, export_format, is_preview=True, **kwargs)
 
@@ -771,12 +779,16 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
     @property
     def api_service(self) -> DraftService:
         """Get the API service for this resource."""
+        if not self.config.model:
+            raise RuntimeError(f"Model {self.config.model_name} not registered.")
         # TODO: this is not correct, we should maybe differentiate normal UIRecord and DraftUIRecord
         return cast("DraftService", self.config.model.service)
 
     @property
     def api_config(self) -> RecordServiceConfig:
         """Get the API service configuration for this resource."""
+        if not self.config.model:
+            raise RuntimeError(f"Model {self.config.model_name} not registered.")
         return self.config.model.service_config
 
     def expand_detail_links(self, identity: Identity, record: RecordItem) -> dict[str, str]:
