@@ -688,10 +688,15 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         dashboard_routes = current_app.config["APP_RDM_USER_DASHBOARD_ROUTES"]
         is_doi_required = current_app.config.get("RDM_PERSISTENT_IDENTIFIERS", {}).get("doi", {}).get("required")
 
+        if not self.config.model:
+            raise RuntimeError(f"Model {self.config.model_name} not registered, cannot resolve create URL")
+
+        create_url = self.config.model.api_url("create")
+
         form_config = self._get_form_config(
             g.identity,
             dashboard_routes=dashboard_routes,
-            createUrl=self.config.model.api_url("create"),
+            createUrl=create_url,
             quota=get_actual_files_quota(None),
             hide_community_selection=community_use_jinja_header,
             is_doi_required=is_doi_required,
