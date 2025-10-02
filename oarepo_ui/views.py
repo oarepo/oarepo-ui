@@ -69,8 +69,6 @@ def create_blueprint(app: Flask) -> Blueprint:
 
     blueprint.record_once(add_jinja_filters)
 
-    app.config.get("OAREPO_UI_RESULT_LIST_ITEM_REGISTRATION_CALLBACKS", []).append(_register_main_search_result_item)
-
     return blueprint
 
 

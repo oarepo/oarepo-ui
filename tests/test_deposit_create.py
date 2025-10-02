@@ -48,7 +48,7 @@ def test_deposit_create(app, logged_client, users, extra_entry_points):
         assert set(response.keys()) >= expected_keys
         # Example: check a few key fields
         assert response["forms_config"]["allowEmptyFiles"] is True
-        assert response["forms_config"]["createUrl"] == "/api/simple-model"
+        assert response["forms_config"]["createUrl"] == "https://127.0.0.1:5000/api/simple-model"
         assert response["record"]["status"] == "draft"
         assert response["files"]["entries"] == []
         assert isinstance(response["permissions"], dict)
