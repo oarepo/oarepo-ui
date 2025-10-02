@@ -78,6 +78,9 @@ def test_model(simple_model_ui_resource_config, record_model):
     with pytest.raises(ValueError, match="Model name is not set in the resource configuration"):
         _ = cfg.model
 
+    cfg.model_name = "un-registered"
+    assert cfg.model is None
+
 
 def test_ui_serializer(simple_model_ui_resource_config):
     cfg = simple_model_ui_resource_config

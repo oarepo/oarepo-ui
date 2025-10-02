@@ -224,11 +224,12 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
         :return: Dictionary mapping schema value to component.
         """
-        service = self.model.service
-        schema = getattr(service.record_cls, "schema", None)
-        component = getattr(self, "search_component", None)
-        if schema and component:
-            return {schema.value: component}
+        if self.model:
+            service = self.model.service
+            schema = getattr(service.record_cls, "schema", None)
+            component = getattr(self, "search_component", None)
+            if schema and component:
+                return {schema.value: component}
         return {}
 
     @property
@@ -256,14 +257,14 @@ class RecordsUIResourceConfig(UIResourceConfig):
         }
 
     @property
-    def model(self) -> Model:
+    def model(self) -> Model | None:
         """Return the model name for the resource.
 
-        :return: Model name as a string.
+        :return: Model name as a string or None if model is not registered.
         """
         if not self.model_name:
             raise ValueError("Model name is not set in the resource configuration.")
-        return current_runtime.models[self.model_name]
+        return current_runtime.models.get(self.model_name)
 
     @property
     def ui_serializer(self) -> MarshmallowSerializer:
@@ -271,6 +272,9 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
         :return: UI serializer instance.
         """
+        if not self.model:
+            raise RuntimeError(f"Model {self.model_name} not registered, cannot resolve UI serializer.")
+
         serializer = next(x for x in self.model.exports if x.code == "ui_json").serializer
         if not serializer:
             raise ValueError(f"UI serializer is not set for model {self.model.code}.")
@@ -451,6 +455,9 @@ class RecordsUIResourceConfig(UIResourceConfig):
         """
         if overrides is None:
             overrides = {}
+
+        if not self.model:
+            raise RuntimeError(f"Model {self.model_name} not registered, cannot resolve search URL")
         # mypy seems to ignore the type in runtime, thus added ignore
         return self.model.api_url("search")  # type: ignore[no-any-return]
 
@@ -496,8 +503,11 @@ class RecordsUIResourceConfig(UIResourceConfig):
         :return: Dictionary with UI custom field configuration.
         """
         # get the record class
-        # TODO: this does not look right, why record and then draft if record is always present?
-        record_class = self.model.record_cls or self.model.draft_cls
+        record_class = None
+        if self.model:
+            # TODO: this does not look right, why record and then draft if record is always present?
+            record_class = self.model.record_cls or self.model.draft_cls
+
         ui: list[dict[str, Any]] = []
         ret = {
             "ui": ui,
