@@ -17,9 +17,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, overload
 
-from flask import current_app, g, session
+from flask import g, session
 from flask_login import current_user
-from invenio_base.utils import obj_or_import_string
 from marshmallow import Schema, fields
 from marshmallow.schema import SchemaMeta
 from marshmallow_utils.fields import NestedAttribute
@@ -92,7 +91,7 @@ def dump_empty(  # noqa: PLR0911 too many return branches
 view_deposit_page_permission_key: str = "view_deposit_page_permission"
 
 
-def can_view_deposit_page() -> bool:
+def can_view_deposit_page(model_name: str | None = None) -> bool:
     """Check if the current user can view the deposit page."""
     permission_to_deposit: bool = False
 
@@ -101,14 +100,16 @@ def can_view_deposit_page() -> bool:
     if view_deposit_page_permission_key in session:
         return bool(session[view_deposit_page_permission_key])
 
-    models: list[Model] = current_runtime.models 
+    models: dict[str, Model] = (
+        current_runtime.models if model_name is None else {model_name: current_runtime.models[model_name]}
+    )
 
     if not models:
         return False
     for model in models:
+        # Instantiate service and check permission
         service: RecordService = current_runtime.models[model].service
         permission_to_deposit = service.check_permission(g.identity, "view_deposit_page", record=None)
-        print(service, permission_to_deposit)
         if permission_to_deposit:
             break
 
