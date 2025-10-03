@@ -106,7 +106,6 @@ def can_view_deposit_page() -> bool:
     if not models:
         return False
     for model in models:
-        # Instantiate service and check permission
         service: RecordService = current_runtime.models[model].service
         permission_to_deposit = service.check_permission(g.identity, "view_deposit_page", record=None)
         print(service, permission_to_deposit)
