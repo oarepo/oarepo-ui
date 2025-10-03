@@ -17,12 +17,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, overload
 
-from flask import current_app, g, session
+from flask import g, session
 from flask_login import current_user
-from invenio_base.utils import obj_or_import_string
 from marshmallow import Schema, fields
 from marshmallow.schema import SchemaMeta
 from marshmallow_utils.fields import NestedAttribute
+from oarepo_runtime import Model, current_runtime
 
 if TYPE_CHECKING:
     from invenio_records_resources.services.records import RecordService
@@ -91,37 +91,27 @@ def dump_empty(  # noqa: PLR0911 too many return branches
 view_deposit_page_permission_key: str = "view_deposit_page_permission"
 
 
-def can_view_deposit_page() -> bool:
+def can_view_deposit_page(model_name: str | None = None) -> bool:
     """Check if the current user can view the deposit page."""
     permission_to_deposit: bool = False
 
     if not current_user.is_authenticated:
         return False
-
     if view_deposit_page_permission_key in session:
         return bool(session[view_deposit_page_permission_key])
 
-    repository_search_resources: list[dict[str, str]] = current_app.config.get("GLOBAL_SEARCH_MODELS", [])
+    models: dict[str, Model] = (
+        current_runtime.models if model_name is None else {model_name: current_runtime.models[model_name]}
+    )
 
-    if not repository_search_resources:
+    if not models:
         return False
-
-    for search_resource in repository_search_resources:
-        search_resource_service: str | None = search_resource.get("model_service", None)
-        search_resource_config: str | None = search_resource.get("service_config", None)
-
-        if search_resource_service and search_resource_config:
-            try:
-                service_def: Any = obj_or_import_string(search_resource_service)
-                service_cfg: Any = obj_or_import_string(search_resource_config)
-
-                # Instantiate service and check permission
-                service: RecordService = service_def(service_cfg())
-                permission_to_deposit = service.check_permission(g.identity, "view_deposit_page", record=None)
-                if permission_to_deposit:
-                    break
-            except ImportError:
-                continue
+    for model in models:
+        # Instantiate service and check permission
+        service: RecordService = current_runtime.models[model].service
+        permission_to_deposit = service.check_permission(g.identity, "view_deposit_page", record=None)
+        if permission_to_deposit:
+            break
 
     # Cache permission result in session
     session[view_deposit_page_permission_key] = permission_to_deposit
