@@ -38,6 +38,7 @@ from invenio_records_resources.services import (
 from invenio_records_resources.services.errors import (
     FileKeyNotFoundError,
     PermissionDeniedError,
+    RecordPermissionDeniedError,
 )
 from invenio_search.engine import dsl
 from invenio_search_ui.searchconfig import FacetsConfig, SearchAppConfig, SortConfig
@@ -209,7 +210,8 @@ class RecordsUIResourceConfig(UIResourceConfig):
         KeyError: not_found_error,
         FileKeyNotFoundError: not_found_error,
         NoResultFound: not_found_error,
-        PermissionDeniedError: "permission_denied",
+        PermissionDeniedError: "record_permission_denied_error",
+        RecordPermissionDeniedError: "record_permission_denied_error",
     }
     """Error handlers for specific exceptions, mapping exceptions to template names."""
 

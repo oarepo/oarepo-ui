@@ -17,7 +17,7 @@ from http import HTTPStatus
 from mimetypes import guess_extension
 from typing import TYPE_CHECKING, Any, cast
 
-from flask import Blueprint, abort, current_app, g, redirect, request, url_for
+from flask import Blueprint, abort, current_app, g, redirect, render_template, request, url_for
 from flask_login import current_user
 from flask_principal import PermissionDenied
 from flask_resources import (
@@ -916,27 +916,30 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             pid=getattr(error, "pid_value", None) or getattr(error, "pid", None),
         )
 
-    def permission_denied(
+    def record_permission_denied_error(
         self,
         error: Exception,
         *args: Any,  # noqa: ARG002 for inheritance
         **kwargs: Any,  # noqa: ARG002 for inheritance
     ) -> str | Response:
-        """Error handler to render a permission denied page for unauthorized access.
+        """Handle permission denied error on record views."""
+        if not current_user.is_authenticated:
+            # trigger the flask-login unauthorized handler
+            return Response(current_app.login_manager.unauthorized())  # type: ignore[attr-defined]
 
-        :param error: Exception containing record info.
-        :param args: Additional arguments.
-        :param kwargs: Additional keyword arguments.
-        :return: Rendered permission denied page.
-        """
-        return current_oarepo_ui.catalog.render(
-            self.get_jinjax_macro(
-                "permission_denied",
-                default_macro="PermissionDenied",
-            ),
-            pid=getattr(error, "pid_value", None) or getattr(error, "pid", None),
-            error=error,
-        )
+        record = getattr(error, "record", None)
+        if record:
+            is_restricted = record.get("access", {}).get("record", None) == "restricted"
+            has_doi = "doi" in record.get("pids", {})
+            if is_restricted and has_doi:
+                return Response(
+                    render_template(
+                        "invenio_app_rdm/records/restricted_with_doi_tombstone.html",
+                        record=record,
+                    ),
+                    403,
+                )
+        return Response(render_template(current_app.config["THEME_403_TEMPLATE"]), 403)
 
     @pass_route_args("form_config_view")
     def form_config(self, **kwargs: Any) -> dict[str, Any]:
