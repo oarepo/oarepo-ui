@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 
 import pytest
+from invenio_i18n.proxies import current_i18n
 
 from oarepo_ui.templating.data import (
     EMPTY_FIELD_DATA,
@@ -273,3 +274,43 @@ def test_filter_empty(field_data_test_obj):
 
     ret = as_dict(record["metadata"]["resource_type"])
     assert bool(ret)  # it is NOT empty or it WAS filled
+
+
+@pytest.mark.parametrize(
+    ("values", "language", "expected"),
+    [
+        # Exact match for full locale
+        ({"cs_CZ": "Název", "en": "Name"}, "cs_CZ", "Název"),
+        # Fallback to short locale
+        ({"cs": "Název", "en": "Name"}, "cs_CZ", "Název"),
+        # Fallback to English if preferred locale missing
+        ({"en": "Name"}, "cs_CZ", "Name"),
+        # Fallback to any non-und key
+        ({"de": "Titel", "und": "Unknown"}, "cs_CZ", "Titel"),
+        # Fallback to und if no other value available
+        ({"und": "Generic"}, "cs_CZ", "Generic"),
+        # Legacy string (not dict)
+        ("Just a string", "cs_CZ", "Just a string"),
+        # No values given → default fallback
+        (None, "cs_CZ", "Item does not exist"),
+    ],
+)
+def test_get_localized_value(monkeypatch, values, language, expected):
+    """Test locale preference and fallback order in _get_localized_value()."""
+    monkeypatch.setattr(current_i18n, "language", lambda: language)
+    result = FieldData._get_localized_value(values, default_fallback="Item does not exist")  # noqa: SLF001
+    assert result == expected
+
+
+def test_get_localized_value_partial_locales(monkeypatch):
+    """Ensure correct handling when only base locale exists."""
+    monkeypatch.setattr(current_i18n, "get_locale", lambda: "fr_CA")
+    values = {"fr": "Nom", "en": "Name"}
+    assert FieldData._get_localized_value(values) == "Nom"  # noqa: SLF001
+
+
+def test_get_localized_value_prefers_non_und(monkeypatch):
+    """Ensure 'und' is only used when nothing else exists."""
+    monkeypatch.setattr(current_i18n, "get_locale", lambda: "es_ES")
+    values = {"und": "Generic", "en": "Name"}
+    assert FieldData._get_localized_value(values) == "Name"  # noqa: SLF001

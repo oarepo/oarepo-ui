@@ -20,6 +20,7 @@ import logging
 from typing import TYPE_CHECKING, Any, Protocol, cast, override
 
 from invenio_i18n import gettext
+from invenio_i18n.proxies import current_i18n
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -104,6 +105,7 @@ class FieldData:
         """
         ui_value = dict(ui_data.get("ui", ui_data))
         ui_value = {"metadata": ui_value, **ui_value}
+
         return cls(
             api_data=api_data,
             ui_data=ui_value,
@@ -213,6 +215,48 @@ class FieldData:
         )
 
     @staticmethod
+    def _get_localized_value(
+        value: str | dict[str, str] | None,
+        default_fallback: str | None = "Item does not exist",
+    ) -> str | None:
+        """Return the best localized string possible from a multilingual value dict.
+
+        Priority:
+        1. Current user's locale
+        2. English ('en')
+        3. Any locale available except 'und'
+        4. Undefined locale ('und')
+        5. default_fallback
+        """
+        if not value:
+            return default_fallback
+
+        # Legacy case: value is a single string
+        if isinstance(value, str):
+            return value
+
+        locale = str(current_i18n.language)
+        short_locale = locale.split("_")[0]
+
+        # 1. Try exact locale
+        for lang in (locale, short_locale):
+            val = value.get(lang)
+            if val:
+                return val
+
+        # 2. English fallback
+        if val := value.get("en"):
+            return val
+
+        # 3. Any non-'und' available value
+        for k, v in value.items():
+            if k != "und" and v:
+                return v
+
+        # 4. 'und' fallback
+        return value.get("und", default_fallback)
+
+    @staticmethod
     def value(fd: FieldData, default: str = "") -> Any:
         """Return API value of the node.
 
@@ -261,7 +305,7 @@ class FieldData:
         """
         if fd._ui_definitions is None:
             return default_fallback
-        return cast("str | None", fd._ui_definitions.get("label", default_fallback))
+        return cast("str | None", fd._get_localized_value(fd._ui_definitions.get("label"), default_fallback))
 
     @staticmethod
     def help(fd: FieldData, default_fallback: str | None = "Item does not exist") -> str | None:
@@ -272,7 +316,7 @@ class FieldData:
         """
         if fd._ui_definitions is None:
             return default_fallback
-        return cast("str | None", fd._ui_definitions.get("help", default_fallback))
+        return cast("str | None", fd._get_localized_value(fd._ui_definitions.get("help"), default_fallback))
 
     @staticmethod
     def hint(fd: FieldData, default_fallback: str | None = "Item does not exist") -> str | None:
@@ -283,7 +327,7 @@ class FieldData:
         """
         if fd._ui_definitions is None:
             return default_fallback
-        return cast("str | None", fd._ui_definitions.get("hint", default_fallback))
+        return cast("str | None", fd._get_localized_value(fd._ui_definitions.get("hint"), default_fallback))
 
     @staticmethod
     def array(fd: FieldData) -> list[FieldData]:
