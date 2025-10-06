@@ -1,19 +1,18 @@
 import React, { useMemo, memo } from "react";
-import { getInputFromDOM } from "../util";
+import { getInputFromDOM, getLocalizedValue } from "../util";
 import { CompactFieldLabel } from "./components/CompactFieldLabel";
 import _get from "lodash/get";
 import { FieldLabel } from "react-invenio-forms";
 import _deburr from "lodash/deburr";
 import _escapeRegExp from "lodash/escapeRegExp";
 import _filter from "lodash/filter";
-import { getLocalizedValue } from "../util";
 
 export function parseFormAppConfig(rootElementId = "deposit-form") {
   const rootEl = document.getElementById(rootElementId);
   const record = getInputFromDOM("deposits-record");
   const formConfig = getInputFromDOM("deposits-config");
   const recordPermissions = getInputFromDOM("deposits-permissions");
-  const files = getInputFromDOM("deposits-files");
+  const files = getInputFromDOM("deposits-record-files");
   const links = getInputFromDOM("deposits-links");
   return { rootEl, record, formConfig, recordPermissions, files, links };
 }
@@ -126,10 +125,10 @@ export function toModelPath(path) {
       return part;
     } else if (!Number.isNaN(Number.parseInt(part))) {
       return `child.children`;
-    } else if (!Number.isNaN(Number.parseInt(array[index + 1]))) {
-      return part;
-    } else {
+    } else if (Number.isNaN(Number.parseInt(array[index + 1]))) {
       return `${part}.children`;
+    } else {
+      return part;
     }
   });
   // Join the transformed parts back into a single string
