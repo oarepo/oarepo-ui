@@ -7,6 +7,7 @@ import { i18next } from "@translations/i18next";
 import _deburr from "lodash/deburr";
 import _escapeRegExp from "lodash/escapeRegExp";
 import _filter from "lodash/filter";
+import { getTitleFromMultilingualObject } from "../util";
 
 export function parseFormAppConfig(rootElementId = "deposit-form") {
   const rootEl = document.getElementById(rootElementId);
@@ -40,6 +41,8 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
     // Help and hint: if result is same as the key, don't render; if it is different, render
     const path = toModelPath(fieldPathWithPrefix);
 
+    console.log(uiMetadata, path)
+
     const {
       help: modelHelp = undefined,
       label: modelLabel = undefined,
@@ -48,11 +51,9 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
       detail = undefined,
     } = _get(uiMetadata, path) || {};
 
-    const label = modelLabel ? i18next.t(modelLabel) : modelLabel;
-    const help =
-      i18next.t(modelHelp) === modelHelp ? null : i18next.t(modelHelp);
-    const hint =
-      i18next.t(modelHint) === modelHint ? null : i18next.t(modelHint);
+    const label = modelLabel ? getTitleFromMultilingualObject(modelLabel): "";
+    const help = modelHelp ? getTitleFromMultilingualObject(modelHelp): null;
+    const hint = modelHint ? getTitleFromMultilingualObject(modelHint): null;
 
     const memoizedResult = useMemo(() => {
       switch (fieldRepresentation) {
