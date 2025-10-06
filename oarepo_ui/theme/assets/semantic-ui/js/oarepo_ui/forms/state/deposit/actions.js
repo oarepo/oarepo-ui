@@ -181,9 +181,8 @@ export const preview = (
       successMessage,
       errorMessage,
     });
-    const recordUrl = response.data.links.self_html;
     // redirect to the preview page
-    window.location = recordUrl;
+    window.location = response.data.links.preview_html;;
   };
 };
 
@@ -193,7 +192,7 @@ export const preview = (
  * This function is different from the save/publish above because this thunk
  * is independent of form submission.
  */
-export const delete_ = (draft, { redirectUrl = "/me/records" }) => {
+export const delete_ = (draft, { redirectUrl = "/me/uploads" }) => {
   return async (dispatch, getState, config) => {
     dispatch({
       type: DRAFT_DELETE_STARTED,
