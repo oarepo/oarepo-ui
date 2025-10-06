@@ -13,7 +13,7 @@ export function parseFormAppConfig(rootElementId = "deposit-form") {
   const record = getInputFromDOM("deposits-record");
   const formConfig = getInputFromDOM("deposits-config");
   const recordPermissions = getInputFromDOM("deposits-permissions");
-  const files = getInputFromDOM("deposits-files");
+  const files = getInputFromDOM("deposits-record-files");
   const links = getInputFromDOM("deposits-links");
   return { rootEl, record, formConfig, recordPermissions, files, links };
 }
@@ -126,10 +126,10 @@ export function toModelPath(path) {
       return part;
     } else if (!Number.isNaN(Number.parseInt(part))) {
       return `child.children`;
-    } else if (!Number.isNaN(Number.parseInt(array[index + 1]))) {
-      return part;
-    } else {
+    } else if (Number.isNaN(Number.parseInt(array[index + 1]))) {
       return `${part}.children`;
+    } else {
+      return part;
     }
   });
   // Join the transformed parts back into a single string
