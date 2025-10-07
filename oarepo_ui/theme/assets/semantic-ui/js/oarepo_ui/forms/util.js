@@ -3,7 +3,6 @@ import { getInputFromDOM } from "../util";
 import { CompactFieldLabel } from "./components/CompactFieldLabel";
 import _get from "lodash/get";
 import { FieldLabel } from "react-invenio-forms";
-import { i18next } from "@translations/i18next";
 import _deburr from "lodash/deburr";
 import _escapeRegExp from "lodash/escapeRegExp";
 import _filter from "lodash/filter";
@@ -41,8 +40,6 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
     // Help and hint: if result is same as the key, don't render; if it is different, render
     const path = toModelPath(fieldPathWithPrefix);
 
-    console.log(uiMetadata, path)
-
     const {
       help: modelHelp = undefined,
       label: modelLabel = undefined,
@@ -51,9 +48,9 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
       detail = undefined,
     } = _get(uiMetadata, path) || {};
 
-    const label = modelLabel ? getLocalizedValue(modelLabel): "";
-    const help = modelHelp ? getLocalizedValue(modelHelp): null;
-    const hint = modelHint ? getLocalizedValue(modelHint): null;
+    const label = modelLabel ? getLocalizedValue(modelLabel) : path;
+    const help = modelHelp ? getLocalizedValue(modelHelp) : null;
+    const hint = modelHint ? getLocalizedValue(modelHint) : null;
 
     const memoizedResult = useMemo(() => {
       switch (fieldRepresentation) {

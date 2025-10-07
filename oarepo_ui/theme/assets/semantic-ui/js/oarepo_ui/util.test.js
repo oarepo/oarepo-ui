@@ -230,7 +230,6 @@ describe("timestampToRelativeTime", () => {
   });
 });
 
-
 describe("getLocalizedValue", () => {
   beforeEach(() => {
     i18next.language = "cs";
@@ -281,23 +280,29 @@ describe("getLocalizedValue", () => {
   test.each([
     ["object", multilingualObject],
     ["array", multilingualArray],
-  ])("returns 'en' match if fallbackLng missing for %s input", (_type, input) => {
-    i18next.language = "de";
-    delete i18next.options.fallbackLng;
-    expect(getLocalizedValue(input)).toBe("Hello world");
-  });
+  ])(
+    "returns 'en' match if fallbackLng missing for %s input",
+    (_type, input) => {
+      i18next.language = "de";
+      delete i18next.options.fallbackLng;
+      expect(getLocalizedValue(input)).toBe("Hello world");
+    }
+  );
 
   test.each([
     ["object", multilingualObject],
     ["array", multilingualArray],
-  ])("returns any available non-'und' value if no match for %s input", (_type, input) => {
-    i18next.language = "it";
-     const values = [
-      { lang: "es", value: "Hola" },
-      { lang: "und", value: "Undefined" },
-    ];
-    expect(getLocalizedValue(values)).toBe("Hola"); // first defined - en
-  });
+  ])(
+    "returns any available non-'und' value if no match for %s input",
+    (_type, input) => {
+      i18next.language = "it";
+      const values = [
+        { lang: "es", value: "Hola" },
+        { lang: "und", value: "Undefined" },
+      ];
+      expect(getLocalizedValue(values)).toBe("Hola"); // first defined - en
+    }
+  );
 
   test.each([
     ["object", { und: "Undefined" }],
