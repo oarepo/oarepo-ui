@@ -7,7 +7,6 @@ import {
   unique,
   scrollToElement,
   getLocalizedValue,
-  getValueFromMultilingualArray,
   encodeUnicodeBase64,
   decodeUnicodeBase64,
   timestampToRelativeTime,
@@ -139,28 +138,6 @@ describe("encodeUnicodeBase64 / decodeUnicodeBase64", () => {
     const encoded = encodeUnicodeBase64(str);
     const decoded = decodeUnicodeBase64(encoded);
     expect(decoded).toBe(str);
-  });
-});
-
-describe("getValueFromMultilingualArray", () => {
-  it("should return null for empty array", () => {
-    expect(getValueFromMultilingualArray([])).toBeNull();
-  });
-  it("should return value for current language", () => {
-    i18next.language = "en";
-    const arr = [
-      { lang: "en", value: "English" },
-      { lang: "fr", value: "Français" },
-    ];
-    expect(getValueFromMultilingualArray(arr)).toBe("English");
-  });
-  it("should return first value if current language not available", () => {
-    i18next.language = "cs";
-    const arr = [
-      { lang: "en", value: "English" },
-      { lang: "fr", value: "Français" },
-    ];
-    expect(getValueFromMultilingualArray(arr)).toBe("English");
   });
 });
 
