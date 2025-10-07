@@ -191,33 +191,90 @@ export const scrollToElement = (fieldPath) => {
     }
   }
 };
-//In some instances the I18nString component is problematic to use,
-// because it is actually a React node and not a string (i.e. text value
-// for drop down options)
-export const getTitleFromMultilingualObject = (multilingualObject) => {
-  if (!multilingualObject) {
-    return null;
-  }
-  if (typeof multilingualObject === "string") {
-    return multilingualObject;
-  }
-  const localizedValue =
-    multilingualObject[i18next.language] ||
-    multilingualObject[i18next.options.fallbackLng] ||
-    Object.values(multilingualObject)?.shift();
 
-  return localizedValue;
+
+/**
+ * Return the best localized value from either a multilingual object or array.
+ *
+ * Supports both:
+ * - Object shape: { en: "Hello", cs: "Ahoj" }
+ * - Array shape: [{ lang: "en", value: "Hello" }, { lang: "cs", value: "Ahoj" }]
+ *
+ * The lookup order is:
+ *  1. Exact locale match
+ *  2. English (`"en"`)
+ *  3. Fallback language defined in i18next (`i18next.options.fallbackLng`)
+ *  4. Any available key except `"und"`
+ *  5. `"und"` key (undefined locale)
+ *  6. Default fallback value (if nothing else is found)
+ */
+export const getLocalizedValue = (multilingualData, defaultFallback = null) => {
+  if (!multilingualData) {
+    return defaultFallback;
+  }
+
+  if (typeof multilingualData === "string") {
+    return multilingualData;
+  }
+
+  const fullLocale = i18next.language || "en";
+  const shortLocale = fullLocale.split("_")[0];
+  const fallbackLocale = i18next.options?.fallbackLng || "en";
+
+  // normalize to array of { lang, value }
+  const entries = Array.isArray(multilingualData)
+    ? multilingualData
+    : Object.entries(multilingualData).map(([lang, value]) => ({ lang, value }));
+
+  const find = (lang) => entries.find((e) => e.lang === lang)?.value ?? null;
+
+  // Lookup value
+  return (
+    find(fullLocale) ||
+    find(shortLocale) ||
+    find("en") ||
+    find(fallbackLocale) ||
+    entries.find((e) => e.lang && e.lang !== "und")?.value ||
+    find("und") ||
+    defaultFallback
+  );
 };
 
+/**
+ * Returns a localized string value from an array of multilingual objects.
+ *
+ * Each object in the array should have the shape:
+ *   { lang: string, value: string }
+ *
+ * Lookup order:
+ *   1. Exact match for the current i18next language.
+ *   2. Match for "en".
+ *   3. Match for the fallback language (i18next.options.fallbackLng).
+ *   4. Any available language except "und".
+ *   5. Value for "und" if present.
+ *   6. null if nothing found.
+ */
 export const getValueFromMultilingualArray = (multilingualArray) => {
-  if (!multilingualArray || multilingualArray.length === 0) {
+  if (!Array.isArray(multilingualArray) || multilingualArray.length === 0) {
     return null;
-  } else {
-    const value =
-      multilingualArray.find((a) => a.lang === i18next.language)?.value ||
-      multilingualArray[0].value;
-    return value;
   }
+
+  const locale = i18next.language || "en";
+  const shortLocale = locale.split("_")[0];
+  const fallbackLang = i18next.options?.fallbackLng || "en";
+
+  const findValue = (lang) =>
+    multilingualArray.find((entry) => entry.lang === lang)?.value;
+
+  return (
+    findValue(locale) ??
+    findValue(shortLocale) ??
+    findValue("en") ??
+    findValue(fallbackLang) ??
+    multilingualArray.find((entry) => entry.lang !== "und")?.value ??
+    findValue("und") ??
+    null
+  );
 };
 
 // Date utils

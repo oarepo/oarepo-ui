@@ -7,7 +7,7 @@ import { i18next } from "@translations/i18next";
 import _deburr from "lodash/deburr";
 import _escapeRegExp from "lodash/escapeRegExp";
 import _filter from "lodash/filter";
-import { getTitleFromMultilingualObject } from "../util";
+import { getLocalizedValue } from "../util";
 
 export function parseFormAppConfig(rootElementId = "deposit-form") {
   const rootEl = document.getElementById(rootElementId);
@@ -51,9 +51,9 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
       detail = undefined,
     } = _get(uiMetadata, path) || {};
 
-    const label = modelLabel ? getTitleFromMultilingualObject(modelLabel): "";
-    const help = modelHelp ? getTitleFromMultilingualObject(modelHelp): null;
-    const hint = modelHint ? getTitleFromMultilingualObject(modelHint): null;
+    const label = modelLabel ? getLocalizedValue(modelLabel): "";
+    const help = modelHelp ? getLocalizedValue(modelHelp): null;
+    const hint = modelHint ? getLocalizedValue(modelHint): null;
 
     const memoizedResult = useMemo(() => {
       switch (fieldRepresentation) {
