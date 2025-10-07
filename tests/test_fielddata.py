@@ -11,7 +11,6 @@ from __future__ import annotations
 import json
 
 import pytest
-from invenio_i18n.proxies import current_i18n
 
 from oarepo_ui.templating.data import (
     EMPTY_FIELD_DATA,
@@ -279,9 +278,7 @@ def test_filter_empty(field_data_test_obj):
 @pytest.mark.parametrize(
     ("values", "language", "expected"),
     [
-        # Exact match for full locale
-        ({"cs": "Název", "en": "Name"}, "cs_CZ", "Název"),
-        # Fallback to short locale
+        # Exact match
         ({"cs": "Název", "en": "Name"}, "cs_CZ", "Název"),
         # Fallback to English if preferred locale missing
         ({"en": "Name"}, "cs_CZ", "Name"),
@@ -298,7 +295,6 @@ def test_filter_empty(field_data_test_obj):
 def test_get_localized_value(app, values, language, expected):
     """Test locale preference and fallback order in _get_localized_value()."""
     app.config["BABEL_DEFAULT_LOCALE"] = language
-    print(current_i18n.language, language)
     with app.app_context():
         result = FieldData._get_localized_value(values, default_fallback="Item does not exist")  # noqa: SLF001
         assert result == expected
