@@ -6,7 +6,7 @@ import {
   requiredMessage,
   unique,
   scrollToElement,
-  getTitleFromMultilingualObject,
+  getLocalizedValue,
   getValueFromMultilingualArray,
   encodeUnicodeBase64,
   decodeUnicodeBase64,
@@ -142,25 +142,6 @@ describe("encodeUnicodeBase64 / decodeUnicodeBase64", () => {
   });
 });
 
-describe("getTitleFromMultilingualObject", () => {
-  it("should return string if input is string", () => {
-    expect(getTitleFromMultilingualObject("Test")).toBe("Test");
-  });
-  it("should return null if input is null", () => {
-    expect(getTitleFromMultilingualObject(null)).toBeNull();
-  });
-  it("should return value for current language", () => {
-    i18next.language = "en";
-    const obj = { en: "English", fr: "Français" };
-    expect(getTitleFromMultilingualObject(obj)).toBe(obj.en);
-  });
-  it("should return value of fr key when French is selected language", () => {
-    i18next.language = "fr";
-    const obj = { en: "English", fr: "Français" };
-    expect(getTitleFromMultilingualObject(obj)).toBe(obj.fr);
-  });
-});
-
 describe("getValueFromMultilingualArray", () => {
   it("should return null for empty array", () => {
     expect(getValueFromMultilingualArray([])).toBeNull();
@@ -246,5 +227,90 @@ describe("timestampToRelativeTime", () => {
     expect(() => timestampToRelativeTime({})).not.toThrow();
     expect(timestampToRelativeTime(12345)).toBeNull();
     expect(timestampToRelativeTime({})).toBeNull();
+  });
+});
+
+
+describe("getLocalizedValue", () => {
+  beforeEach(() => {
+    i18next.language = "cs";
+    i18next.options = { fallbackLng: "en" };
+  });
+
+  const multilingualObject = {
+    cs_CZ: "Nazdar světe",
+    cs: "Ahoj světe",
+    en: "Hello world",
+    fr: "Bonjour le monde",
+    und: "Undefined",
+  };
+
+  const multilingualArray = [
+    { lang: "cs_CZ", value: "Nazdar světe" },
+    { lang: "cs", value: "Ahoj světe" },
+    { lang: "en", value: "Hello world" },
+    { lang: "fr", value: "Bonjour le monde" },
+    { lang: "und", value: "Undefined" },
+  ];
+
+  test.each([
+    ["object", multilingualObject],
+    ["array", multilingualArray],
+  ])("returns exact locale match for %s input", (_type, input) => {
+    i18next.language = "cs_CZ";
+    expect(getLocalizedValue(input)).toBe("Nazdar světe");
+  });
+
+  test.each([
+    ["object", multilingualObject],
+    ["array", multilingualArray],
+  ])("returns base language match for %s input", (_type, input) => {
+    i18next.language = "cs_SK"; // not defined, but base 'cs' is
+    expect(getLocalizedValue(input)).toBe("Ahoj světe");
+  });
+
+  test.each([
+    ["object", multilingualObject],
+    ["array", multilingualArray],
+  ])("returns fallbackLng match for %s input", (_type, input) => {
+    i18next.language = "de";
+    i18next.options.fallbackLng = "en";
+    expect(getLocalizedValue(input)).toBe("Hello world");
+  });
+
+  test.each([
+    ["object", multilingualObject],
+    ["array", multilingualArray],
+  ])("returns 'en' match if fallbackLng missing for %s input", (_type, input) => {
+    i18next.language = "de";
+    delete i18next.options.fallbackLng;
+    expect(getLocalizedValue(input)).toBe("Hello world");
+  });
+
+  test.each([
+    ["object", multilingualObject],
+    ["array", multilingualArray],
+  ])("returns any available non-'und' value if no match for %s input", (_type, input) => {
+    i18next.language = "it";
+     const values = [
+      { lang: "es", value: "Hola" },
+      { lang: "und", value: "Undefined" },
+    ];
+    expect(getLocalizedValue(values)).toBe("Hola"); // first defined - en
+  });
+
+  test.each([
+    ["object", { und: "Undefined" }],
+    ["array", [{ lang: "und", value: "Undefined" }]],
+  ])("returns 'und' if no other value exists for %s input", (_type, input) => {
+    i18next.language = "ru";
+    expect(getLocalizedValue(input)).toBe("Undefined");
+  });
+
+  test.each([
+    ["object", {}],
+    ["array", []],
+  ])("returns null for empty %s input", (_type, input) => {
+    expect(getLocalizedValue(input)).toBeNull();
   });
 });
