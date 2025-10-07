@@ -1,4 +1,4 @@
-import { getTitleFromMultilingualObject } from "../../../util";
+import { getLocalizedValue } from "../../../util";
 
 export const deserializeFunder = (funder) => {
   return {
@@ -71,8 +71,8 @@ export const computeFundingContents = (funding) => {
       awardOrFunder = "award";
       descriptionContent = funderName;
       headerContent = acronym
-        ? `${acronym} — ${getTitleFromMultilingualObject(title)}`
-        : getTitleFromMultilingualObject(title);
+        ? `${acronym} — ${getLocalizedValue(title)}`
+        : getLocalizedValue(title);
     }
   }
 

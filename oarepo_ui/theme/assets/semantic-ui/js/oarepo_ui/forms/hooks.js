@@ -18,7 +18,7 @@ import _set from "lodash/set";
 import { useFormikContext } from "formik";
 import _debounce from "lodash/debounce";
 import _uniqBy from "lodash/uniqBy";
-import { getTitleFromMultilingualObject } from "../util";
+import { getLocalizedValue } from "../util";
 import { decode } from "html-entities";
 import sanitizeHtml from "sanitize-html";
 import { getValidTagsForEditor } from "./util";
@@ -170,7 +170,7 @@ export const useSuggestionApi = ({
   initialSuggestions = [],
   serializeSuggestions = (suggestions) =>
     suggestions.map((item) => ({
-      text: getTitleFromMultilingualObject(item.title),
+      text: getLocalizedValue(item.title),
       value: item.id,
       key: item.id,
     })),
