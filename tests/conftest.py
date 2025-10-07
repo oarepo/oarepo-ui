@@ -170,10 +170,7 @@ def simple_model_ui_resource(app, simple_model_ui_resource_config, record_servic
 @pytest.fixture(scope="session")
 def record_model():
     from oarepo_model.api import model
-    from oarepo_model.presets.drafts import drafts_preset
-    from oarepo_model.presets.records_resources import records_resources_preset
-    from oarepo_model.presets.ui_links import ui_links_preset
-    from oarepo_rdm.model.presets import rdm_preset
+    from oarepo_rdm.model.presets import rdm_minimal_preset
 
     model_instance = model(
         "simple-model",
@@ -188,7 +185,7 @@ def record_model():
             }
         ],
         metadata_type="Metadata",
-        presets=[records_resources_preset, drafts_preset, rdm_preset, ui_links_preset],
+        presets=[rdm_minimal_preset],
         customizations=[],
         configuration={"ui_blueprint_name": "simple_model_ui"},
     )
