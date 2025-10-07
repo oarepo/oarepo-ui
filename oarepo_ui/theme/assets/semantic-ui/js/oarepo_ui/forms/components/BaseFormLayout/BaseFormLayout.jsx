@@ -8,7 +8,7 @@ import { DeleteButton } from "../DeleteButton";
 import { PreviewButton } from "../PreviewButton";
 import { Grid, Ref, Sticky, Card, Header } from "semantic-ui-react";
 import { connect } from "react-redux";
-import { getTitleFromMultilingualObject } from "../../../util";
+import { getLocalizedValue } from "../../../util";
 import { buildUID } from "react-searchkit";
 import Overridable from "react-overridable";
 import { CustomFields } from "react-invenio-forms";
@@ -22,7 +22,7 @@ const FormTitle = () => {
 
   const recordTitle =
     getIn(values, "metadata.title", "") ||
-    getTitleFromMultilingualObject(getIn(values, "title", "")) ||
+    getLocalizedValue(getIn(values, "title", "")) ||
     "";
 
   const sanitizedTitle = sanitizeInput(recordTitle);
