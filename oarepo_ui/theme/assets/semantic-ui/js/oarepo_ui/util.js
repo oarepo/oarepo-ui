@@ -192,7 +192,6 @@ export const scrollToElement = (fieldPath) => {
   }
 };
 
-
 /**
  * Return the best localized value from either a multilingual object or array.
  *
@@ -224,7 +223,10 @@ export const getLocalizedValue = (multilingualData, defaultFallback = null) => {
   // normalize to array of { lang, value }
   const entries = Array.isArray(multilingualData)
     ? multilingualData
-    : Object.entries(multilingualData).map(([lang, value]) => ({ lang, value }));
+    : Object.entries(multilingualData).map(([lang, value]) => ({
+        lang,
+        value,
+      }));
 
   const find = (lang) => entries.find((e) => e.lang === lang)?.value ?? null;
 

@@ -182,7 +182,7 @@ export const preview = (
       errorMessage,
     });
     // redirect to the preview page
-    window.location = response.data.links.preview_html;;
+    window.location = response.data.links.preview_html;
   };
 };
 
