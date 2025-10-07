@@ -242,43 +242,6 @@ export const getLocalizedValue = (multilingualData, defaultFallback = null) => {
   );
 };
 
-/**
- * Returns a localized string value from an array of multilingual objects.
- *
- * Each object in the array should have the shape:
- *   { lang: string, value: string }
- *
- * Lookup order:
- *   1. Exact match for the current i18next language.
- *   2. Match for "en".
- *   3. Match for the fallback language (i18next.options.fallbackLng).
- *   4. Any available language except "und".
- *   5. Value for "und" if present.
- *   6. null if nothing found.
- */
-export const getValueFromMultilingualArray = (multilingualArray) => {
-  if (!Array.isArray(multilingualArray) || multilingualArray.length === 0) {
-    return null;
-  }
-
-  const locale = i18next.language || "en";
-  const shortLocale = locale.split("_")[0];
-  const fallbackLang = i18next.options?.fallbackLng || "en";
-
-  const findValue = (lang) =>
-    multilingualArray.find((entry) => entry.lang === lang)?.value;
-
-  return (
-    findValue(locale) ??
-    findValue(shortLocale) ??
-    findValue("en") ??
-    findValue(fallbackLang) ??
-    multilingualArray.find((entry) => entry.lang !== "und")?.value ??
-    findValue("und") ??
-    null
-  );
-};
-
 // Date utils
 
 export function getLocaleObject(localeSpec) {
