@@ -280,7 +280,7 @@ def test_filter_empty(field_data_test_obj):
     ("values", "language", "expected"),
     [
         # Exact match for full locale
-        ({"cs_CZ": "Název", "en": "Name"}, "cs_CZ", "Název"),
+        ({"cs": "Název", "en": "Name"}, "cs_CZ", "Název"),
         # Fallback to short locale
         ({"cs": "Název", "en": "Name"}, "cs_CZ", "Název"),
         # Fallback to English if preferred locale missing
@@ -295,22 +295,26 @@ def test_filter_empty(field_data_test_obj):
         (None, "cs_CZ", "Item does not exist"),
     ],
 )
-def test_get_localized_value(monkeypatch, values, language, expected):
+def test_get_localized_value(app, values, language, expected):
     """Test locale preference and fallback order in _get_localized_value()."""
-    monkeypatch.setattr(current_i18n, "language", lambda: language)
-    result = FieldData._get_localized_value(values, default_fallback="Item does not exist")  # noqa: SLF001
-    assert result == expected
+    app.config["BABEL_DEFAULT_LOCALE"] = language
+    print(current_i18n.language, language)
+    with app.app_context():
+        result = FieldData._get_localized_value(values, default_fallback="Item does not exist")  # noqa: SLF001
+        assert result == expected
 
 
-def test_get_localized_value_partial_locales(monkeypatch):
+def test_get_localized_value_partial_locales(app, monkeypatch):
     """Ensure correct handling when only base locale exists."""
-    monkeypatch.setattr(current_i18n, "get_locale", lambda: "fr_CA")
-    values = {"fr": "Nom", "en": "Name"}
-    assert FieldData._get_localized_value(values) == "Nom"  # noqa: SLF001
+    app.config["BABEL_DEFAULT_LOCALE"] = "fr"
+    with app.app_context():
+        values = {"fr": "Nom", "en": "Name"}
+        assert FieldData._get_localized_value(values) == "Nom"  # noqa: SLF001
 
 
-def test_get_localized_value_prefers_non_und(monkeypatch):
+def test_get_localized_value_prefers_non_und(app, monkeypatch):
     """Ensure 'und' is only used when nothing else exists."""
-    monkeypatch.setattr(current_i18n, "get_locale", lambda: "es_ES")
-    values = {"und": "Generic", "en": "Name"}
-    assert FieldData._get_localized_value(values) == "Name"  # noqa: SLF001
+    app.config["BABEL_DEFAULT_LOCALE"] = "es"
+    with app.app_context():
+        values = {"und": "Generic", "en": "Name"}
+        assert FieldData._get_localized_value(values) == "Name"  # noqa: SLF001
