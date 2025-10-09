@@ -192,9 +192,9 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
                 parent["access"]["settings"] = AccessSettings({}).dump()
 
         if not self.config.ui_serializer:
-            record_ui = copy.copy(record.to_dict())
+            record_ui = record.to_dict()
         else:
-            record_ui = self.config.ui_serializer.dump_obj(copy.copy(record.to_dict()))
+            record_ui = self.config.ui_serializer.dump_obj(record.to_dict())
 
         record_ui.setdefault("links", {})
         return cast("dict[str, Any]", record_ui)
@@ -287,7 +287,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         resolved_community, resolved_community_ui = None, None
 
         render_kwargs = {
-            "record": record.to_dict(),
+            "record": record,
             "record_ui": record_ui,
             "files": files_dict,
             "media_files": media_files_dict,
