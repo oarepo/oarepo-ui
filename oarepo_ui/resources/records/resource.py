@@ -144,7 +144,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         """Create an empty record with default values."""
         record = cast("dict[str, Any]", dump_empty(self.api_config.schema))
         record["files"] = {"enabled": current_app.config.get("RDM_DEFAULT_FILES_ENABLED")}
-
+        record.setdefault("expanded", {})
         # Set by RDMRecordServiceConfig class
         pids_providers = getattr(self.api_config, "pids_providers", None)
 

@@ -70,105 +70,92 @@ const BaseFormLayoutComponent = ({ formikProps = {}, record, errors = {} }) => {
   }, []);
 
   return (
-    <BaseForm
-      onSubmit={() => {}}
-      formik={{
-        initialValues: record,
-        innerRef: formikRef,
-        enableReinitialize: true,
-        initialErrors: !_isEmpty(errors) ? errors : {},
-        ...formikProps,
-      }}
-    >
-      <Grid>
-        <Ref innerRef={formFeedbackRef}>
-          <Grid.Column id="main-content" mobile={16} tablet={16} computer={11}>
-            <FormTitle />
-            <Sticky context={formFeedbackRef} offset={20}>
-              <Overridable
-                id={buildUID(overridableIdPrefix, "Errors.container")}
-              >
-                <FormFeedback />
-              </Overridable>
-            </Sticky>
-            <Overridable
-              id={buildUID(overridableIdPrefix, "FormFields.container")}
-              record={record}
-            >
-              <>
-                <pre>
-                  Add your form input fields here by overriding{" "}
-                  {buildUID(overridableIdPrefix, "FormFields.container")}{" "}
-                  component
-                </pre>
-                <FormikStateLogger render />
-              </>
+    <Grid>
+      <Ref innerRef={formFeedbackRef}>
+        <Grid.Column id="main-content" mobile={16} tablet={16} computer={11}>
+          <FormTitle />
+          <Sticky context={formFeedbackRef} offset={20}>
+            <Overridable id={buildUID(overridableIdPrefix, "Errors.container")}>
+              <FormFeedback />
             </Overridable>
-            <Overridable
-              id={buildUID(overridableIdPrefix, "CustomFields.container")}
-            >
-              <CustomFields
-                config={customFields?.ui}
-                templateLoaders={[
-                  (widget) => import(`@templates/custom_fields/${widget}.js`),
-                  (widget) => import(`react-invenio-forms`),
-                ]}
-              />
-            </Overridable>
-          </Grid.Column>
-        </Ref>
-        <Ref innerRef={sidebarRef}>
-          <Grid.Column id="control-panel" mobile={16} tablet={16} computer={5}>
-            <Overridable
-              id={buildUID(overridableIdPrefix, "FormActions.container")}
-              record={record}
-            >
-              <Card>
-                <Card.Content>
-                  <DepositStatusBox />
-                </Card.Content>
-                <Card.Content>
-                  <Grid relaxed>
-                    <Grid.Column
-                      computer={8}
-                      mobile={16}
-                      className="pb-0 left-btn-col"
-                    >
-                      <SaveButton fluid />
-                    </Grid.Column>
+          </Sticky>
+          <Overridable
+            id={buildUID(overridableIdPrefix, "FormFields.container")}
+            record={record}
+          >
+            <>
+              <pre>
+                Add your form input fields here by overriding{" "}
+                {buildUID(overridableIdPrefix, "FormFields.container")}{" "}
+                component
+              </pre>
+              <FormikStateLogger render />
+            </>
+          </Overridable>
+          <Overridable
+            id={buildUID(overridableIdPrefix, "CustomFields.container")}
+          >
+            <CustomFields
+              config={customFields?.ui}
+              templateLoaders={[
+                (widget) => import(`@templates/custom_fields/${widget}.js`),
+                (widget) => import(`react-invenio-forms`),
+              ]}
+            />
+          </Overridable>
+        </Grid.Column>
+      </Ref>
+      <Ref innerRef={sidebarRef}>
+        <Grid.Column id="control-panel" mobile={16} tablet={16} computer={5}>
+          <Overridable
+            id={buildUID(overridableIdPrefix, "FormActions.container")}
+            record={record}
+          >
+            <Card fluid>
+              <Card.Content>
+                <DepositStatusBox />
+              </Card.Content>
+              <Card.Content>
+                <Grid relaxed>
+                  <Grid.Column
+                    computer={8}
+                    mobile={16}
+                    className="pb-0 left-btn-col"
+                  >
+                    <SaveButton fluid />
+                  </Grid.Column>
 
-                    <Grid.Column
-                      computer={8}
-                      mobile={16}
-                      className="pb-0 right-btn-col"
-                    >
-                      <PreviewButton fluid />
-                    </Grid.Column>
+                  <Grid.Column
+                    computer={8}
+                    mobile={16}
+                    className="pb-0 right-btn-col"
+                  >
+                    <PreviewButton fluid />
+                  </Grid.Column>
 
-                    <Grid.Column width={16} className="pt-10">
-                      <PublishButton fluid record={record} />
-                    </Grid.Column>
+                  <Grid.Column width={16} className="pt-10">
+                    <PublishButton fluid record={record} />
+                  </Grid.Column>
 
-                    <Grid.Column width={16} className="pt-0">
-                      {(record.is_draft === null || permissions.can_manage) && (
-                        <ShareDraftButton
-                          record={record}
-                          permissions={permissions}
-                          groupsEnabled={groupsEnabled}
-                        />
-                      )}
-                    </Grid.Column>
-                    <Grid.Column width={16}>
-                      <DeleteButton fluid />
-                    </Grid.Column>
-                  </Grid>
-                </Card.Content>
-              </Card>
-            </Overridable>
-          </Grid.Column>
-        </Ref>
-      </Grid>
-    </BaseForm>
+                  <Grid.Column width={16} className="pt-0">
+                    {(record.is_draft === null || permissions.can_manage) && (
+                      <ShareDraftButton
+                        record={record}
+                        permissions={permissions}
+                        groupsEnabled={groupsEnabled}
+                      />
+                    )}
+                  </Grid.Column>
+                  <Grid.Column width={16}>
+                    <DeleteButton fluid />
+                  </Grid.Column>
+                </Grid>
+              </Card.Content>
+            </Card>
+          </Overridable>
+        </Grid.Column>
+      </Ref>
+    </Grid>
   );
 };
 

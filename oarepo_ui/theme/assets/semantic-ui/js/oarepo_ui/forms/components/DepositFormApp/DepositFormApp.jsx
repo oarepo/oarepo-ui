@@ -27,6 +27,7 @@ import { RDMUploadProgressNotifier } from "@js/invenio_rdm_records/src/deposit//
 import { configureStore } from "../../store";
 import PropTypes from "prop-types";
 import { depositReducer as oarepoDepositReducer } from "../../state/deposit/reducers";
+import { DepositBootstrap } from "@js/invenio_rdm_records/src/deposit/api/DepositBootstrap";
 
 const queryClient = new QueryClient();
 
@@ -119,7 +120,21 @@ export class DepositFormApp extends Component {
   }
 
   render() {
-    const { ContainerComponent = null } = this.props;
+    const {
+      ContainerComponent = null,
+      record,
+      preselectedCommunity,
+      files,
+      permissions,
+      filesLocked,
+      recordRestrictionGracePeriod,
+      allowRecordRestriction,
+      recordDeletion,
+      groupsEnabled,
+      allowEmptyFiles,
+      useUppy,
+    } = this.props;
+
     const Wrapper = ContainerComponent || React.Fragment;
 
     return (
@@ -131,42 +146,38 @@ export class DepositFormApp extends Component {
                 <OverridableContext.Provider
                   value={this.overridableContextValue}
                 >
-                  <DepositFormSubmitContext.Provider
-                    value={{ setSubmitContext: () => {} }}
+                  <FormConfigProvider
+                    value={{
+                      config: this.config,
+                      overridableIdPrefix: this.overridableIdPrefix,
+                      record,
+                      preselectedCommunity,
+                      files,
+                      permissions,
+                      filesLocked,
+                      recordRestrictionGracePeriod,
+                      allowRecordRestriction,
+                      recordDeletion,
+                      groupsEnabled,
+                      allowEmptyFiles,
+                      useUppy,
+                    }}
                   >
-                    <FormConfigProvider
-                      value={{
-                        config: this.config,
-                        overridableIdPrefix: this.overridableIdPrefix,
-                        record: this.props.record,
-                        preselectedCommunity: this.props.preselectedCommunity,
-                        files: this.props.files,
-                        permissions: this.props.permissions,
-                        filesLocked: this.props.filesLocked,
-                        recordRestrictionGracePeriod:
-                          this.props.recordRestrictionGracePeriod,
-                        allowRecordRestriction:
-                          this.props.allowRecordRestriction,
-                        recordDeletion: this.props.recordDeletion,
-                        groupsEnabled: this.props.groupsEnabled,
-                        allowEmptyFiles: this.props.allowEmptyFiles,
-                        useUppy: this.props.useUppy,
-                      }}
-                    >
-                      <FieldDataProvider>
-                        <Overridable
-                          id={buildUID(
-                            this.overridableIdPrefix,
-                            "FormApp.layout"
-                          )}
-                        >
-                          <Container className="rel-mt-1">
+                    <FieldDataProvider>
+                      <Overridable
+                        id={buildUID(
+                          this.overridableIdPrefix,
+                          "FormApp.layout"
+                        )}
+                      >
+                        <Container className="rel-mt-1">
+                          <DepositBootstrap>
                             <BaseFormLayout />
-                          </Container>
-                        </Overridable>
-                      </FieldDataProvider>
-                    </FormConfigProvider>
-                  </DepositFormSubmitContext.Provider>
+                          </DepositBootstrap>
+                        </Container>
+                      </Overridable>
+                    </FieldDataProvider>
+                  </FormConfigProvider>
                 </OverridableContext.Provider>
               </Router>
             </QueryClientProvider>
