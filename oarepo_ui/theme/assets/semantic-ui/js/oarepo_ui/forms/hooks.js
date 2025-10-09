@@ -12,6 +12,7 @@ import {
   FormConfigContext,
   FieldDataContext,
   FormikRefContext,
+  FormTabsContext,
 } from "./contexts";
 import _get from "lodash/get";
 import _set from "lodash/set";
@@ -300,3 +301,11 @@ export const useSuggestionApi = ({
 };
 
 export default useSanitizeInput;
+
+export const useFormTabs = () => {
+  const context = useContext(FormTabsContext);
+  if (!context) {
+    throw new Error("useFormTabs must be used inside FormTabsContext.Provider");
+  }
+  return context;
+};

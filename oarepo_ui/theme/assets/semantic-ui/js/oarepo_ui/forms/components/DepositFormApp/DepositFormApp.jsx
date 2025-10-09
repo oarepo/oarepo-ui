@@ -17,6 +17,7 @@ import { Provider } from "react-redux";
 import {
   RDMDepositApiClient,
   RDMDepositFileApiClient,
+  DepositApiClientResponse,
 } from "@js/invenio_rdm_records/src/deposit/api/DepositApiClient";
 import { RDMDepositRecordSerializer } from "@js/invenio_rdm_records/src/deposit/api/DepositRecordSerializer";
 import { RDMDepositDraftsService } from "@js/invenio_rdm_records/src/deposit/api/DepositDraftsService";
@@ -26,6 +27,66 @@ import { RDMUploadProgressNotifier } from "@js/invenio_rdm_records/src/deposit//
 import { configureStore } from "../../store";
 import PropTypes from "prop-types";
 import { depositReducer as oarepoDepositReducer } from "../../state/deposit/reducers";
+import _isEmpty from "lodash/isEmpty";
+import { severityChecksConfig } from "@js/invenio_app_rdm/deposit/config";
+
+class OArepoDepositDraftsService extends RDMDepositDraftsService {
+  async create(draft, params) {
+    return this.apiClient.createDraft(draft, params);
+  }
+
+  async save(draft, params) {
+    return this._draftAlreadyCreated(draft)
+      ? this.apiClient.saveDraft(draft, draft.links, params)
+      : this.create(draft, params);
+  }
+}
+
+class OArepoDepositApiClient extends RDMDepositApiClient {
+  async _createResponse(axiosRequest) {
+    try {
+      const response = await axiosRequest();
+      const data = this.recordSerializer.deserialize(response.data || {});
+      const errors = this.recordSerializer.deserializeErrors(
+        response?.data?.errors || []
+      );
+      return new DepositApiClientResponse(data, errors);
+    } catch (error) {
+      // throw specific cancellation error so that it can be handled differently
+      if (error.name === "CanceledError" || error.code === "ERR_CANCELED") {
+        throw error;
+      } else {
+        let errorData = error.response.data;
+        const errors = this.recordSerializer.deserializeErrors(
+          error.response.data.errors || []
+        );
+        // this is to serialize raised error from the backend on publish
+        if (!_isEmpty(errors)) errorData = errors;
+        throw new DepositApiClientResponse({}, errorData);
+      }
+    }
+  }
+
+  async createDraft(draft, { signal } = {}) {
+    const payload = this.recordSerializer.serialize(draft);
+    return this._createResponse(() =>
+      this.axiosWithConfig.post(this.createDraftURL, payload, {
+        params: { expand: 1 },
+        signal,
+      })
+    );
+  }
+
+  async saveDraft(draft, draftLinks, { signal } = {}) {
+    const payload = this.recordSerializer.serialize(draft);
+    return this._createResponse(() =>
+      this.axiosWithConfig.put(draftLinks.self, payload, {
+        params: { expand: 1 },
+        signal,
+      })
+    );
+  }
+}
 
 const queryClient = new QueryClient();
 
@@ -33,7 +94,7 @@ export class DepositFormApp extends Component {
   constructor(props) {
     super(props);
     this.overridableIdPrefix = props.config.overridableIdPrefix;
-
+    this.sections = props.sections || [];
     const recordSerializer = props.recordSerializer
       ? props.recordSerializer
       : new RDMDepositRecordSerializer(
@@ -52,9 +113,11 @@ export class DepositFormApp extends Component {
 
     const additionalApiConfig = { headers: apiHeaders };
 
+    const severityChecks = props.severityChecks ?? severityChecksConfig;
+
     const apiClient =
       props.apiClient ||
-      new RDMDepositApiClient(
+      new OArepoDepositApiClient(
         additionalApiConfig,
         props.config.createUrl,
         recordSerializer
@@ -69,7 +132,7 @@ export class DepositFormApp extends Component {
       );
 
     const draftsService =
-      props.draftsService || new RDMDepositDraftsService(apiClient);
+      props.draftsService || new OArepoDepositDraftsService(apiClient);
 
     const filesService =
       props.filesService ||
@@ -77,6 +140,8 @@ export class DepositFormApp extends Component {
         fileApiClient,
         props.config.fileUploadConcurrency
       );
+
+    props.config.severityChecks = severityChecks;
 
     const service =
       props.depositService || new DepositService(draftsService, filesService);
@@ -137,9 +202,10 @@ export class DepositFormApp extends Component {
                           this.overridableIdPrefix,
                           "FormApp.layout"
                         )}
+                        sections={this.sections}
                       >
                         <Container className="rel-mt-1">
-                          <BaseFormLayout />
+                          <BaseFormLayout sections={this.sections} />
                         </Container>
                       </Overridable>
                     </FieldDataProvider>
@@ -157,6 +223,8 @@ export class DepositFormApp extends Component {
 DepositFormApp.propTypes = {
   config: PropTypes.object.isRequired,
   /* eslint-disable react/require-default-props */
+  severityChecks: PropTypes.object,
+  sections: PropTypes.arrayOf(PropTypes.object),
   apiHeaders: PropTypes.object,
   record: PropTypes.object,
   files: PropTypes.object,

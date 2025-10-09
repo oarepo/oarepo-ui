@@ -98,6 +98,7 @@ export function configureStore(
       : DRAFT_HAS_VALIDATION_ERRORS,
     actionStateExtra: {},
     formFeedbackMessage: errorData?.errorMessage || "",
+    hasBeenSavedInSession: false,
   };
 
   const preloadedState = {

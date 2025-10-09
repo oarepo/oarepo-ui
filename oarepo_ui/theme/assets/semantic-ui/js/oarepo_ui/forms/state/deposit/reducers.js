@@ -8,9 +8,14 @@ import {
   DRAFT_SAVE_FAILED,
   DRAFT_SAVE_STARTED,
   DRAFT_SAVE_SUCCEEDED,
-  SET_COMMUNITY,
+  // SET_COMMUNITY,
 } from "@js/invenio_rdm_records/src/deposit/state/types";
-import { CLEAR_VALIDATION_ERRORS, SET_VALIDATION_ERRORS } from "./types";
+import {
+  CLEAR_VALIDATION_ERRORS,
+  SET_VALIDATION_ERRORS,
+  FORM_SESSION_SAVE_TRACKED,
+  SAVE_CANCELLED,
+} from "./types";
 
 export const depositReducer = (state = {}, action) => {
   switch (action.type) {
@@ -55,21 +60,33 @@ export const depositReducer = (state = {}, action) => {
         actionStateExtra: {},
         formFeedbackMessage: action.payload.formFeedbackMessage,
       };
-    case SET_COMMUNITY: {
+
+    case FORM_SESSION_SAVE_TRACKED:
       return {
         ...state,
-        record: {
-          ...state.record,
-          parent: {
-            ...state.record.parent,
-            communities: {
-              ...state.record.parent.communities,
-              default: action.payload, // action.payload is communityId
-            },
-          },
-        },
+        hasBeenSavedInSession: action.payload.hasBeenSavedInSession,
       };
-    }
+    // not yet sure how community selection will work in v 14
+    // case SET_COMMUNITY: {
+    //   return {
+    //     ...state,
+    //     record: {
+    //       ...state.record,
+    //       parent: {
+    //         ...state.record.parent,
+    //         communities: {
+    //           ...state.record.parent.communities,
+    //           default: action.payload, // action.payload is communityId
+    //         },
+    //       },
+    //     },
+    //   };
+    // }
+    case SAVE_CANCELLED:
+      return {
+        ...state,
+        actionState: action.type,
+      };
     case CLEAR_VALIDATION_ERRORS:
       return {
         ...state,

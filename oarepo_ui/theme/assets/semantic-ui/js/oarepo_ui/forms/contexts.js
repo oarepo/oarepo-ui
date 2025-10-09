@@ -61,3 +61,20 @@ FormikRefProvider.propTypes = {
   // eslint-disable-next-line react/require-default-props
   children: PropTypes.node,
 };
+
+export const FormTabsContext = createContext();
+
+export const FormTabsProvider = ({ value, children }) => {
+  return (
+    <FormTabsContext.Provider value={value}>
+      {children}
+    </FormTabsContext.Provider>
+  );
+};
+
+FormTabsProvider.propTypes = {
+  // eslint-disable-next-line react/require-default-props
+  children: PropTypes.node,
+  // eslint-disable-next-line react/require-default-props
+  value: PropTypes.object,
+};
