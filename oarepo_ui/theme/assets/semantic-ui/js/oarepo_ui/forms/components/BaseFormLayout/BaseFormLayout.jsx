@@ -6,6 +6,9 @@ import { FormikStateLogger } from "../FormikStateLogger";
 import { SaveButton } from "../SaveButton";
 import { DeleteButton } from "../DeleteButton";
 import { PreviewButton } from "../PreviewButton";
+import { DepositStatusBox } from "@js/invenio_rdm_records/src/deposit/components/DepositStatus";
+import { PublishButton } from "@js/invenio_rdm_records/src/deposit/controls/PublishButton";
+import { ShareDraftButton } from "@js/invenio_app_rdm/deposit/ShareDraftButton";
 import { Grid, Ref, Sticky, Card, Header } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { getLocalizedValue } from "../../../util";
@@ -40,7 +43,12 @@ const FormTitle = () => {
 };
 
 const BaseFormLayoutComponent = ({ formikProps = {}, record, errors = {} }) => {
-  const { overridableIdPrefix, custom_fields: customFields } = useFormConfig();
+  const {
+    overridableIdPrefix,
+    custom_fields: customFields,
+    permissions,
+    groupsEnabled,
+  } = useFormConfig();
   const sidebarRef = React.useRef(null);
   const formFeedbackRef = React.useRef(null);
   const formikRef = useFormikRef();
@@ -115,25 +123,43 @@ const BaseFormLayoutComponent = ({ formikProps = {}, record, errors = {} }) => {
               id={buildUID(overridableIdPrefix, "FormActions.container")}
               record={record}
             >
-              <Card fluid>
+              <Card>
                 <Card.Content>
-                  <Grid>
+                  <DepositStatusBox />
+                </Card.Content>
+                <Card.Content>
+                  <Grid relaxed>
                     <Grid.Column
                       computer={8}
                       mobile={16}
-                      className="left-btn-col"
+                      className="pb-0 left-btn-col"
                     >
                       <SaveButton fluid />
                     </Grid.Column>
+
                     <Grid.Column
                       computer={8}
                       mobile={16}
-                      className="right-btn-col"
+                      className="pb-0 right-btn-col"
                     >
                       <PreviewButton fluid />
                     </Grid.Column>
+
                     <Grid.Column width={16} className="pt-10">
-                      <DeleteButton redirectUrl="/me/records" />
+                      <PublishButton fluid record={record} />
+                    </Grid.Column>
+
+                    <Grid.Column width={16} className="pt-0">
+                      {(record.is_draft === null || permissions.can_manage) && (
+                        <ShareDraftButton
+                          record={record}
+                          permissions={permissions}
+                          groupsEnabled={groupsEnabled}
+                        />
+                      )}
+                    </Grid.Column>
+                    <Grid.Column width={16}>
+                      <DeleteButton fluid />
                     </Grid.Column>
                   </Grid>
                 </Card.Content>

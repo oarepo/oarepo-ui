@@ -18,6 +18,7 @@ import {
   RDMDepositApiClient,
   RDMDepositFileApiClient,
 } from "@js/invenio_rdm_records/src/deposit/api/DepositApiClient";
+import { DepositFormSubmitContext } from "@js/invenio_rdm_records/src/deposit/api/DepositFormSubmitContext";
 import { RDMDepositRecordSerializer } from "@js/invenio_rdm_records/src/deposit/api/DepositRecordSerializer";
 import { RDMDepositDraftsService } from "@js/invenio_rdm_records/src/deposit/api/DepositDraftsService";
 import { RDMDepositFilesService } from "@js/invenio_rdm_records/src/deposit/api/DepositFilesService";
@@ -130,20 +131,42 @@ export class DepositFormApp extends Component {
                 <OverridableContext.Provider
                   value={this.overridableContextValue}
                 >
-                  <FormConfigProvider value={this.config}>
-                    <FieldDataProvider>
-                      <Overridable
-                        id={buildUID(
-                          this.overridableIdPrefix,
-                          "FormApp.layout"
-                        )}
-                      >
-                        <Container className="rel-mt-1">
-                          <BaseFormLayout />
-                        </Container>
-                      </Overridable>
-                    </FieldDataProvider>
-                  </FormConfigProvider>
+                  <DepositFormSubmitContext.Provider
+                    value={{ setSubmitContext: () => {} }}
+                  >
+                    <FormConfigProvider
+                      value={{
+                        config: this.config,
+                        overridableIdPrefix: this.overridableIdPrefix,
+                        record: this.props.record,
+                        preselectedCommunity: this.props.preselectedCommunity,
+                        files: this.props.files,
+                        permissions: this.props.permissions,
+                        filesLocked: this.props.filesLocked,
+                        recordRestrictionGracePeriod:
+                          this.props.recordRestrictionGracePeriod,
+                        allowRecordRestriction:
+                          this.props.allowRecordRestriction,
+                        recordDeletion: this.props.recordDeletion,
+                        groupsEnabled: this.props.groupsEnabled,
+                        allowEmptyFiles: this.props.allowEmptyFiles,
+                        useUppy: this.props.useUppy,
+                      }}
+                    >
+                      <FieldDataProvider>
+                        <Overridable
+                          id={buildUID(
+                            this.overridableIdPrefix,
+                            "FormApp.layout"
+                          )}
+                        >
+                          <Container className="rel-mt-1">
+                            <BaseFormLayout />
+                          </Container>
+                        </Overridable>
+                      </FieldDataProvider>
+                    </FormConfigProvider>
+                  </DepositFormSubmitContext.Provider>
                 </OverridableContext.Provider>
               </Router>
             </QueryClientProvider>
@@ -156,10 +179,19 @@ export class DepositFormApp extends Component {
 
 DepositFormApp.propTypes = {
   config: PropTypes.object.isRequired,
+  record: PropTypes.object.isRequired,
+  preselectedCommunity: PropTypes.object,
+  files: PropTypes.object,
+  permissions: PropTypes.object,
+  filesLocked: PropTypes.bool,
+  recordRestrictionGracePeriod: PropTypes.number.isRequired,
+  allowRecordRestriction: PropTypes.bool.isRequired,
+  recordDeletion: PropTypes.object.isRequired,
+  groupsEnabled: PropTypes.bool.isRequired,
+  allowEmptyFiles: PropTypes.bool,
+  useUppy: PropTypes.bool,
   /* eslint-disable react/require-default-props */
   apiHeaders: PropTypes.object,
-  record: PropTypes.object,
-  files: PropTypes.object,
   errors: PropTypes.arrayOf(PropTypes.object),
   apiClient: PropTypes.object,
   fileApiClient: PropTypes.object,
