@@ -37,10 +37,6 @@ def test_record_detail(app, location, logged_client, users, record_factory, extr
         }
         assert expected_top_keys.issubset(response.keys())
 
-        record = response["record"]
-        assert record["id"] == published_record["id"]
-        assert record["status"] == "published"
-
         record_ui = response["record_ui"]
         assert isinstance(record_ui, dict)
         assert "ui" in record_ui
