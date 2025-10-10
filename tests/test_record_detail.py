@@ -22,7 +22,6 @@ def test_record_detail(app, location, logged_client, users, record_factory, extr
         assert resp.status_code == 200
         response = json.loads(resp.text)
         expected_top_keys = {
-            "record",
             "record_ui",
             "files",
             "media_files",

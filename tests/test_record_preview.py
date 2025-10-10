@@ -24,7 +24,6 @@ def test_record_preview(app, location, logged_client, users, draft_factory, extr
         response = json.loads(resp.text)
 
         expected_top_keys = {
-            "record",
             "record_ui",
             "files",
             "media_files",
