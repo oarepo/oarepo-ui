@@ -25,7 +25,9 @@ export const FieldDataProvider = ({
   children = null,
   fieldPathPrefix = "",
 }) => {
-  const { ui_model: uiModel } = useFormConfig();
+  const {
+    config: { ui_model: uiModel },
+  } = useFormConfig();
 
   const fieldDataValue = useMemo(
     () => ({ getFieldData: getFieldData(uiModel, fieldPathPrefix) }),

@@ -18,6 +18,7 @@ import {
   RDMDepositApiClient,
   RDMDepositFileApiClient,
 } from "@js/invenio_rdm_records/src/deposit/api/DepositApiClient";
+import { DepositFormSubmitContext } from "@js/invenio_rdm_records/src/deposit/api/DepositFormSubmitContext";
 import { RDMDepositRecordSerializer } from "@js/invenio_rdm_records/src/deposit/api/DepositRecordSerializer";
 import { RDMDepositDraftsService } from "@js/invenio_rdm_records/src/deposit/api/DepositDraftsService";
 import { RDMDepositFilesService } from "@js/invenio_rdm_records/src/deposit/api/DepositFilesService";
@@ -26,6 +27,7 @@ import { RDMUploadProgressNotifier } from "@js/invenio_rdm_records/src/deposit//
 import { configureStore } from "../../store";
 import PropTypes from "prop-types";
 import { depositReducer as oarepoDepositReducer } from "../../state/deposit/reducers";
+import { DepositBootstrap } from "@js/invenio_rdm_records/src/deposit/api/DepositBootstrap";
 
 const queryClient = new QueryClient();
 
@@ -118,7 +120,21 @@ export class DepositFormApp extends Component {
   }
 
   render() {
-    const { ContainerComponent = null } = this.props;
+    const {
+      ContainerComponent = null,
+      record,
+      preselectedCommunity,
+      files,
+      permissions,
+      filesLocked,
+      recordRestrictionGracePeriod,
+      allowRecordRestriction,
+      recordDeletion,
+      groupsEnabled,
+      allowEmptyFiles,
+      useUppy,
+    } = this.props;
+
     const Wrapper = ContainerComponent || React.Fragment;
 
     return (
@@ -130,7 +146,23 @@ export class DepositFormApp extends Component {
                 <OverridableContext.Provider
                   value={this.overridableContextValue}
                 >
-                  <FormConfigProvider value={this.config}>
+                  <FormConfigProvider
+                    value={{
+                      config: this.config,
+                      overridableIdPrefix: this.overridableIdPrefix,
+                      record,
+                      preselectedCommunity,
+                      files,
+                      permissions,
+                      filesLocked,
+                      recordRestrictionGracePeriod,
+                      allowRecordRestriction,
+                      recordDeletion,
+                      groupsEnabled,
+                      allowEmptyFiles,
+                      useUppy,
+                    }}
+                  >
                     <FieldDataProvider>
                       <Overridable
                         id={buildUID(
@@ -139,7 +171,9 @@ export class DepositFormApp extends Component {
                         )}
                       >
                         <Container className="rel-mt-1">
-                          <BaseFormLayout />
+                          <DepositBootstrap>
+                            <BaseFormLayout />
+                          </DepositBootstrap>
                         </Container>
                       </Overridable>
                     </FieldDataProvider>
@@ -156,10 +190,19 @@ export class DepositFormApp extends Component {
 
 DepositFormApp.propTypes = {
   config: PropTypes.object.isRequired,
+  record: PropTypes.object.isRequired,
+  preselectedCommunity: PropTypes.object,
+  files: PropTypes.object,
+  permissions: PropTypes.object,
+  filesLocked: PropTypes.bool,
+  recordRestrictionGracePeriod: PropTypes.number.isRequired,
+  allowRecordRestriction: PropTypes.bool.isRequired,
+  recordDeletion: PropTypes.object.isRequired,
+  groupsEnabled: PropTypes.bool.isRequired,
+  allowEmptyFiles: PropTypes.bool,
+  useUppy: PropTypes.bool,
   /* eslint-disable react/require-default-props */
   apiHeaders: PropTypes.object,
-  record: PropTypes.object,
-  files: PropTypes.object,
   errors: PropTypes.arrayOf(PropTypes.object),
   apiClient: PropTypes.object,
   fileApiClient: PropTypes.object,

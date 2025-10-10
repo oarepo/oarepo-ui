@@ -116,7 +116,9 @@ class OarepoCatalog(Catalog):
             env.add_extension(ext)
         env.globals.update(globals)
         env.filters.update(filters)
-        env.tests.update(tests)
+        env.filters.update(tests)
+        # Merge in the tests from packages like invenio-previewer
+        env.tests.update(current_app.jinja_env.tests)
         env.extend(catalog=self)
 
         self.jinja_env = env
@@ -139,7 +141,6 @@ class OarepoCatalog(Catalog):
         # A template may be rendered outside a request context.
         if request:
             names = chain(names, reversed(request.blueprints))
-
         # The values passed to render_template take precedence. Keep a
         # copy to re-apply after all context functions.
 
