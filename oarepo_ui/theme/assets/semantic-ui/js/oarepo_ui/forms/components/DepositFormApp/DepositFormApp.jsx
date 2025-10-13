@@ -18,7 +18,6 @@ import {
   RDMDepositApiClient,
   RDMDepositFileApiClient,
 } from "@js/invenio_rdm_records/src/deposit/api/DepositApiClient";
-import { DepositFormSubmitContext } from "@js/invenio_rdm_records/src/deposit/api/DepositFormSubmitContext";
 import { RDMDepositRecordSerializer } from "@js/invenio_rdm_records/src/deposit/api/DepositRecordSerializer";
 import { RDMDepositDraftsService } from "@js/invenio_rdm_records/src/deposit/api/DepositDraftsService";
 import { RDMDepositFilesService } from "@js/invenio_rdm_records/src/deposit/api/DepositFilesService";

@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import { BaseForm } from "../BaseForm";
 import { FormFeedback } from "../FormFeedback";
 import { FormikStateLogger } from "../FormikStateLogger";
 import { SaveButton } from "../SaveButton";
@@ -16,8 +15,7 @@ import { buildUID } from "react-searchkit";
 import Overridable from "react-overridable";
 import { CustomFields } from "react-invenio-forms";
 import { getIn, useFormikContext } from "formik";
-import { useSanitizeInput, useFormConfig, useFormikRef } from "../../hooks";
-import _isEmpty from "lodash/isEmpty";
+import { useSanitizeInput, useFormConfig } from "../../hooks";
 
 const FormTitle = () => {
   const { values } = useFormikContext();
@@ -51,7 +49,6 @@ const BaseFormLayoutComponent = ({ formikProps = {}, record, errors = {} }) => {
   } = useFormConfig();
   const sidebarRef = React.useRef(null);
   const formFeedbackRef = React.useRef(null);
-  const formikRef = useFormikRef();
   // on chrome there is an annoying issue where after deletion you are redirected, and then
   // if you click back on browser <-, it serves you the deleted page, which does not exist from the cache.
   // on firefox it does not happen.
