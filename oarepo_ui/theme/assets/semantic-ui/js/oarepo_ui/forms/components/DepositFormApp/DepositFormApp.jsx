@@ -1,9 +1,5 @@
 import React, { Component } from "react";
-import {
-  FormConfigProvider,
-  FieldDataProvider,
-  FormikRefProvider,
-} from "../../contexts";
+import { FormConfigProvider, FieldDataProvider } from "../../contexts";
 import { Container } from "semantic-ui-react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -138,50 +134,43 @@ export class DepositFormApp extends Component {
 
     return (
       <Wrapper>
-        <FormikRefProvider>
-          <Provider store={this.store}>
-            <QueryClientProvider client={queryClient}>
-              <Router>
-                <OverridableContext.Provider
-                  value={this.overridableContextValue}
+        <Provider store={this.store}>
+          <QueryClientProvider client={queryClient}>
+            <Router>
+              <OverridableContext.Provider value={this.overridableContextValue}>
+                <FormConfigProvider
+                  value={{
+                    config: this.config,
+                    overridableIdPrefix: this.overridableIdPrefix,
+                    record,
+                    preselectedCommunity,
+                    files,
+                    permissions,
+                    filesLocked,
+                    recordRestrictionGracePeriod,
+                    allowRecordRestriction,
+                    recordDeletion,
+                    groupsEnabled,
+                    allowEmptyFiles,
+                    useUppy,
+                  }}
                 >
-                  <FormConfigProvider
-                    value={{
-                      config: this.config,
-                      overridableIdPrefix: this.overridableIdPrefix,
-                      record,
-                      preselectedCommunity,
-                      files,
-                      permissions,
-                      filesLocked,
-                      recordRestrictionGracePeriod,
-                      allowRecordRestriction,
-                      recordDeletion,
-                      groupsEnabled,
-                      allowEmptyFiles,
-                      useUppy,
-                    }}
-                  >
-                    <FieldDataProvider>
-                      <Overridable
-                        id={buildUID(
-                          this.overridableIdPrefix,
-                          "FormApp.layout"
-                        )}
-                      >
-                        <Container className="rel-mt-1">
-                          <DepositBootstrap>
-                            <BaseFormLayout />
-                          </DepositBootstrap>
-                        </Container>
-                      </Overridable>
-                    </FieldDataProvider>
-                  </FormConfigProvider>
-                </OverridableContext.Provider>
-              </Router>
-            </QueryClientProvider>
-          </Provider>
-        </FormikRefProvider>
+                  <FieldDataProvider>
+                    <Overridable
+                      id={buildUID(this.overridableIdPrefix, "FormApp.layout")}
+                    >
+                      <Container className="rel-mt-1">
+                        <DepositBootstrap>
+                          <BaseFormLayout />
+                        </DepositBootstrap>
+                      </Container>
+                    </Overridable>
+                  </FieldDataProvider>
+                </FormConfigProvider>
+              </OverridableContext.Provider>
+            </Router>
+          </QueryClientProvider>
+        </Provider>
       </Wrapper>
     );
   }

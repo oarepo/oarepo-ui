@@ -1,4 +1,4 @@
-import React, { createContext, useMemo, useRef } from "react";
+import React, { createContext, useMemo } from "react";
 import { getFieldData } from "./util";
 import { useFormConfig } from "./hooks";
 import PropTypes from "prop-types";
@@ -46,20 +46,4 @@ FieldDataProvider.propTypes = {
   children: PropTypes.node,
   // eslint-disable-next-line react/require-default-props
   fieldPathPrefix: PropTypes.string,
-};
-
-export const FormikRefContext = createContext();
-
-export const FormikRefProvider = ({ children = null }) => {
-  const formikRef = useRef(null);
-  return (
-    <FormikRefContext.Provider value={formikRef}>
-      {children}
-    </FormikRefContext.Provider>
-  );
-};
-
-FormikRefProvider.propTypes = {
-  // eslint-disable-next-line react/require-default-props
-  children: PropTypes.node,
 };

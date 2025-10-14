@@ -8,11 +8,7 @@ import {
   useMemo,
   useRef,
 } from "react";
-import {
-  FormConfigContext,
-  FieldDataContext,
-  FormikRefContext,
-} from "./contexts";
+import { FormConfigContext, FieldDataContext } from "./contexts";
 import _get from "lodash/get";
 import _set from "lodash/set";
 import { useFormikContext } from "formik";
@@ -55,16 +51,6 @@ export const useFormConfig = () => {
   if (!context) {
     throw new Error(
       "useFormConfig must be used inside FormConfigContext.Provider"
-    );
-  }
-  return context;
-};
-
-export const useFormikRef = () => {
-  const context = useContext(FormikRefContext);
-  if (!context) {
-    throw new Error(
-      "useFormikRef must be used inside FormikRefContext.Provider"
     );
   }
   return context;
