@@ -1,9 +1,5 @@
 import React, { Component } from "react";
-import {
-  FormConfigProvider,
-  FieldDataProvider,
-  FormikRefProvider,
-} from "../../contexts";
+import { FormConfigProvider, FieldDataProvider } from "../../contexts";
 import { Container } from "semantic-ui-react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -26,6 +22,7 @@ import { RDMUploadProgressNotifier } from "@js/invenio_rdm_records/src/deposit//
 import { configureStore } from "../../store";
 import PropTypes from "prop-types";
 import { depositReducer as oarepoDepositReducer } from "../../state/deposit/reducers";
+import { DepositBootstrap } from "@js/invenio_rdm_records/src/deposit/api/DepositBootstrap";
 
 const queryClient = new QueryClient();
 
@@ -118,37 +115,62 @@ export class DepositFormApp extends Component {
   }
 
   render() {
-    const { ContainerComponent = null } = this.props;
+    const {
+      ContainerComponent = null,
+      record,
+      preselectedCommunity,
+      files,
+      permissions,
+      filesLocked,
+      recordRestrictionGracePeriod,
+      allowRecordRestriction,
+      recordDeletion,
+      groupsEnabled,
+      allowEmptyFiles,
+      useUppy,
+    } = this.props;
+
     const Wrapper = ContainerComponent || React.Fragment;
 
     return (
       <Wrapper>
-        <FormikRefProvider>
-          <Provider store={this.store}>
-            <QueryClientProvider client={queryClient}>
-              <Router>
-                <OverridableContext.Provider
-                  value={this.overridableContextValue}
+        <Provider store={this.store}>
+          <QueryClientProvider client={queryClient}>
+            <Router>
+              <OverridableContext.Provider value={this.overridableContextValue}>
+                <FormConfigProvider
+                  value={{
+                    config: this.config,
+                    overridableIdPrefix: this.overridableIdPrefix,
+                    record,
+                    preselectedCommunity,
+                    files,
+                    permissions,
+                    filesLocked,
+                    recordRestrictionGracePeriod,
+                    allowRecordRestriction,
+                    recordDeletion,
+                    groupsEnabled,
+                    allowEmptyFiles,
+                    useUppy,
+                  }}
                 >
-                  <FormConfigProvider value={this.config}>
-                    <FieldDataProvider>
-                      <Overridable
-                        id={buildUID(
-                          this.overridableIdPrefix,
-                          "FormApp.layout"
-                        )}
-                      >
-                        <Container className="rel-mt-1">
+                  <FieldDataProvider>
+                    <Overridable
+                      id={buildUID(this.overridableIdPrefix, "FormApp.layout")}
+                    >
+                      <Container className="rel-mt-1">
+                        <DepositBootstrap>
                           <BaseFormLayout />
-                        </Container>
-                      </Overridable>
-                    </FieldDataProvider>
-                  </FormConfigProvider>
-                </OverridableContext.Provider>
-              </Router>
-            </QueryClientProvider>
-          </Provider>
-        </FormikRefProvider>
+                        </DepositBootstrap>
+                      </Container>
+                    </Overridable>
+                  </FieldDataProvider>
+                </FormConfigProvider>
+              </OverridableContext.Provider>
+            </Router>
+          </QueryClientProvider>
+        </Provider>
       </Wrapper>
     );
   }
@@ -156,10 +178,19 @@ export class DepositFormApp extends Component {
 
 DepositFormApp.propTypes = {
   config: PropTypes.object.isRequired,
+  record: PropTypes.object.isRequired,
+  preselectedCommunity: PropTypes.object,
+  files: PropTypes.object,
+  permissions: PropTypes.object,
+  filesLocked: PropTypes.bool,
+  recordRestrictionGracePeriod: PropTypes.number.isRequired,
+  allowRecordRestriction: PropTypes.bool.isRequired,
+  recordDeletion: PropTypes.object.isRequired,
+  groupsEnabled: PropTypes.bool.isRequired,
+  allowEmptyFiles: PropTypes.bool,
+  useUppy: PropTypes.bool,
   /* eslint-disable react/require-default-props */
   apiHeaders: PropTypes.object,
-  record: PropTypes.object,
-  files: PropTypes.object,
   errors: PropTypes.arrayOf(PropTypes.object),
   apiClient: PropTypes.object,
   fileApiClient: PropTypes.object,

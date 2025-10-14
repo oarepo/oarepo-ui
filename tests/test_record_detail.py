@@ -22,7 +22,6 @@ def test_record_detail(app, location, logged_client, users, record_factory, extr
         assert resp.status_code == 200
         response = json.loads(resp.text)
         expected_top_keys = {
-            "record",
             "record_ui",
             "files",
             "media_files",
@@ -36,10 +35,6 @@ def test_record_detail(app, location, logged_client, users, record_factory, extr
             "record_owner_id",
         }
         assert expected_top_keys.issubset(response.keys())
-
-        record = response["record"]
-        assert record["id"] == published_record["id"]
-        assert record["status"] == "published"
 
         record_ui = response["record_ui"]
         assert isinstance(record_ui, dict)

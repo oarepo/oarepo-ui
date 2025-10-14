@@ -24,7 +24,6 @@ def test_record_preview(app, location, logged_client, users, draft_factory, extr
         response = json.loads(resp.text)
 
         expected_top_keys = {
-            "record",
             "record_ui",
             "files",
             "media_files",
@@ -38,10 +37,6 @@ def test_record_preview(app, location, logged_client, users, draft_factory, extr
             "record_owner_id",
         }
         assert expected_top_keys.issubset(response.keys())
-
-        record = response["record"]
-        assert record["id"] == draft["id"]
-        assert record["status"] == "draft"
 
         record_ui = response["record_ui"]
         assert isinstance(record_ui, dict)

@@ -10,12 +10,28 @@ import { getLocalizedValue } from "../util";
 
 export function parseFormAppConfig(rootElementId = "deposit-form") {
   const rootEl = document.getElementById(rootElementId);
-  const record = getInputFromDOM("deposits-record");
-  const formConfig = getInputFromDOM("deposits-config");
-  const recordPermissions = getInputFromDOM("deposits-permissions");
-  const files = getInputFromDOM("deposits-record-files");
-  const links = getInputFromDOM("deposits-links");
-  return { rootEl, record, formConfig, recordPermissions, files, links };
+
+  return {
+    rootEl,
+    record: getInputFromDOM("deposits-record"),
+    preselectedCommunity: getInputFromDOM("deposits-draft-community"),
+    files: getInputFromDOM("deposits-record-files"),
+    config: getInputFromDOM("deposits-config"),
+    useUppy: getInputFromDOM("deposits-use-uppy-ui"),
+    permissions: getInputFromDOM("deposits-record-permissions"),
+    filesLocked: getInputFromDOM("deposits-record-locked-files"),
+    recordRestrictionGracePeriod: getInputFromDOM(
+      "deposits-record-restriction-grace-period"
+    ),
+    allowRecordRestriction: getInputFromDOM(
+      "deposits-allow-record-restriction"
+    ),
+    recordDeletion: getInputFromDOM("deposits-record-deletion"),
+    groupsEnabled: getInputFromDOM("config-groups-enabled"),
+    allowEmptyFiles: getInputFromDOM("records-resources-allow-empty-files"),
+    isDoiRequired: getInputFromDOM("deposits-is-doi-required"),
+    links: getInputFromDOM("deposits-links"),
+  };
 }
 
 const MemoizedFieldLabel = memo(FieldLabel);
