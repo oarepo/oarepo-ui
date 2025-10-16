@@ -52,12 +52,6 @@ def test_request_schemas_are_marshmallow_schemas():
     assert loaded["facets"] == {"a": ["1"], "b": ["2"]}
 
 
-def test_default_components(simple_model_ui_resource_config):
-    cfg = simple_model_ui_resource_config
-    assert cfg.model.record_json_schema in cfg.default_components
-    assert cfg.default_components[cfg.model.record_json_schema] == cfg.search_component
-
-
 def test_ui_links(simple_model_ui_resource_config):
     cfg = simple_model_ui_resource_config
     item_links = cfg.ui_links_item

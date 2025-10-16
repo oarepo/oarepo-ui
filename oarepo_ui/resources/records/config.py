@@ -67,8 +67,6 @@ if TYPE_CHECKING:
         FieldDataItemGetter,
     )
 
-    from ..components.base import UIResourceComponent
-
 
 class SearchRequestArgsSchema(MultiDictSchema):
     """Request URL query string arguments for listing records."""
@@ -218,21 +216,6 @@ class RecordsUIResourceConfig(UIResourceConfig):
     field_data_item_getter: FieldDataItemGetter | None = None
     """Field data item getter for retrieving field data items in the UI.
     If not set, the default getter will be used."""
-
-    # TODO: this property should be refactored due to changes to component overrides
-    @property
-    def default_components(self) -> dict[str, UIResourceComponent]:
-        """Return default UI components for the resource, based on the record schema and component.
-
-        :return: Dictionary mapping schema value to component.
-        """
-        if self.model:
-            service = self.model.service
-            schema = getattr(service.record_cls, "schema", None)
-            component = getattr(self, "search_component", None)
-            if schema and component:
-                return {schema.value: component}
-        return {}
 
     @property
     def ui_links_item(self) -> Mapping[str, EndpointLink]:

@@ -17,7 +17,16 @@ from http import HTTPStatus
 from mimetypes import guess_extension
 from typing import TYPE_CHECKING, Any, cast
 
-from flask import Blueprint, abort, current_app, g, redirect, render_template, request, url_for
+from flask import (
+    Blueprint,
+    abort,
+    current_app,
+    g,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from flask_login import current_user
 from flask_principal import PermissionDenied
 from flask_resources import (
@@ -443,10 +452,6 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
 
         overridable_id_prefix = f"{self.config.application_id.capitalize()}.Search"
 
-        default_components = {}
-
-        for key, value in self.config.default_components.items():
-            default_components[f"{overridable_id_prefix}.ResultsList.item.{key}"] = value
         search_options = {
             "api_config": self.api_service.config,
             "identity": g.identity,
@@ -454,7 +459,6 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
                 "ui_endpoint": self.config.url_prefix,
                 "ui_links": ui_links,
                 "overridableIdPrefix": overridable_id_prefix,
-                "defaultComponents": default_components,
                 "allowedHtmlTags": ["sup", "sub", "em", "strong"],
                 "ignoredSearchFilters": self.config.ignored_search_filters(),
                 "additionalFilterLabels": self.config.additional_filter_labels(filters=kwargs.get("facets", {})),
