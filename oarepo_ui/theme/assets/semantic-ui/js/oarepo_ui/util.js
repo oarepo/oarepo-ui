@@ -1,13 +1,9 @@
-import _camelCase from "lodash/camelCase";
-import _startCase from "lodash/startCase";
 import _isEmpty from "lodash/isEmpty";
-import { importTemplate, loadComponents } from "@js/invenio_theme/templates";
 import _uniqBy from "lodash/uniqBy";
 import * as Yup from "yup";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { format } from "date-fns";
 import axios from "axios";
-import { overrideStore } from "react-overridable";
 import { DateTime } from "luxon";
 
 export const getInputFromDOM = (elementName) => {
@@ -52,93 +48,6 @@ export function array2object(arr, keyName, valueName) {
   }, {});
 }
 
-// TODO: decommission old way of overriding
-export async function loadTemplateComponents(
-  overridableIdPrefix,
-  componentIds
-) {
-  const asyncImportTemplate = async (componentId, path) => {
-    console.debug(`Searching for component ID '${componentId}' in ${path}`);
-    try {
-      return {
-        componentId,
-        component: await importTemplate(path),
-      };
-    } catch (err) {
-      if (err.message.startsWith("Cannot find module")) {
-        console.debug(
-          `Component '${componentId}' not found in ${path}. Skipping.`
-        );
-      } else {
-        console.error(
-          `Error loading component '${componentId}' from ${path}: ${err}`
-        );
-      }
-      return null;
-    }
-  };
-
-  const components = componentIds.map((componentId) => {
-    const componentFilename = _startCase(_camelCase(componentId)).replace(
-      / /g,
-      ""
-    );
-
-    const baseDir = overridableIdPrefix
-      .split(".")
-      .map((dir) => dir.toLowerCase())
-      .join("/");
-    return asyncImportTemplate(
-      `${overridableIdPrefix}.${componentId}`,
-      `${baseDir}/${componentFilename}.jsx`
-    );
-  });
-
-  const loadedComponents = await Promise.all(components);
-  const componentOverrides = loadedComponents
-    .filter((component) => component !== null)
-    .reduce((res, { componentId, component }) => {
-      res[componentId] = component;
-      return res;
-    }, {});
-
-  return componentOverrides;
-}
-
-// TODO: decommission old way of overriding
-export async function loadAppComponents({
-  overridableIdPrefix,
-  componentIds = [],
-  defaultComponents = {},
-  resourceConfigComponents = {},
-  componentOverrides = {},
-}) {
-  const templateComponents = await loadTemplateComponents(
-    overridableIdPrefix,
-    componentIds
-  );
-
-  const components = {
-    ...defaultComponents,
-    ...resourceConfigComponents,
-    ...componentOverrides,
-    ...templateComponents,
-    // make it possible to override from invenio.cfg as intermediary step, until this is decomissioned
-    ...overrideStore.getAll(),
-  };
-
-  return loadComponents(overridableIdPrefix, components);
-}
-
-// functions to help with validation schemas
-export const requiredMessage = ({ label }) =>
-  `${label} ${i18next.t("is a required field")}`;
-
-export const groupItemsNotUniqueError = i18next.t("Items must be unique");
-
-export const invalidUrlMessage = i18next.t(
-  "Please provide an URL in valid format"
-);
 /**
  * Checks if the array contains unique values for a given key (or the whole item).
  * Used as a custom test function in Yup validation schemas to ensure uniqueness.
