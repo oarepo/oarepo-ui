@@ -9,6 +9,7 @@ import _pickBy from "lodash/pickBy";
 import _forEach from "lodash/forEach";
 import _omitBy from "lodash/omitBy";
 import _set from "lodash/set";
+import { RDMDepositRecordSerializer } from "@js/invenio_rdm_records/src/deposit/api/DepositRecordSerializer";
 
 export class DepositRecordSerializer {
   constructor(defaultLocale) {
@@ -28,12 +29,12 @@ export class DepositRecordSerializer {
   }
 }
 
-export class OARepoDepositSerializer extends DepositRecordSerializer {
-  constructor(internalFieldsArray = [], keysToRemove = []) {
-    super();
-    this.internalFieldsArray = internalFieldsArray;
-    this.keysToRemove = keysToRemove;
-  }
+export class OARepoDepositSerializer extends RDMDepositRecordSerializer {
+  // constructor(internalFieldsArray = [], keysToRemove = []) {
+  //   super();
+  //   this.internalFieldsArray = internalFieldsArray;
+  //   this.keysToRemove = keysToRemove;
+  // }
 
   /**
    * Remove empty fields from record
@@ -41,78 +42,78 @@ export class OARepoDepositSerializer extends DepositRecordSerializer {
    * @param {object} obj - potentially empty object
    * @returns {object} record - without empty fields
    */
-  removeEmptyValues = (obj) => {
-    if (_isArray(obj)) {
-      let mappedValues = obj.map((value) => this.removeEmptyValues(value));
-      let filterValues = mappedValues.filter((value) => {
-        if (_isBoolean(value) || _isNumber(value)) {
-          return value;
-        }
-        return !_isEmpty(value);
-      });
-      return filterValues;
-    } else if (_isObject(obj)) {
-      let mappedValues = _mapValues(obj, (value) =>
-        this.removeEmptyValues(value)
-      );
-      let pickedValues = _pickBy(mappedValues, (value, key) => {
-        if (key === "metadata" && _isEmpty(value)) {
-          return true;
-        }
-        if (_isArray(value) || _isObject(value)) {
-          return !_isEmpty(value);
-        }
-        return !_isNull(value);
-      });
-      return pickedValues;
-    }
-    return _isNumber(obj) || _isBoolean(obj) || obj ? obj : null;
-  };
+  // removeEmptyValues = (obj) => {
+  //   if (_isArray(obj)) {
+  //     let mappedValues = obj.map((value) => this.removeEmptyValues(value));
+  //     let filterValues = mappedValues.filter((value) => {
+  //       if (_isBoolean(value) || _isNumber(value)) {
+  //         return value;
+  //       }
+  //       return !_isEmpty(value);
+  //     });
+  //     return filterValues;
+  //   } else if (_isObject(obj)) {
+  //     let mappedValues = _mapValues(obj, (value) =>
+  //       this.removeEmptyValues(value)
+  //     );
+  //     let pickedValues = _pickBy(mappedValues, (value, key) => {
+  //       if (key === "metadata" && _isEmpty(value)) {
+  //         return true;
+  //       }
+  //       if (_isArray(value) || _isObject(value)) {
+  //         return !_isEmpty(value);
+  //       }
+  //       return !_isNull(value);
+  //     });
+  //     return pickedValues;
+  //   }
+  //   return _isNumber(obj) || _isBoolean(obj) || obj ? obj : null;
+  // };
 
-  /**
-   * Remove some specific key(s) from the values object i.e. __key that is introduced for invenio's fieldArray cmp
-   * @method
-   * @param {object} obj - that contains some arbitrarily nested key(s) you wish to remove
-   * @returns {object} record - without those keys
-   */
+  // /**
+  //  * Remove some specific key(s) from the values object i.e. __key that is introduced for invenio's fieldArray cmp
+  //  * @method
+  //  * @param {object} obj - that contains some arbitrarily nested key(s) you wish to remove
+  //  * @returns {object} record - without those keys
+  //  */
 
-  removeKeysFromNestedObjects = (obj, keysToRemove) => {
-    for (let keyToRemove of keysToRemove) {
-      if (_isObject(obj)) {
-        if (obj[keyToRemove] !== undefined) {
-          delete obj[keyToRemove];
-        }
+  // removeKeysFromNestedObjects = (obj, keysToRemove) => {
+  //   for (let keyToRemove of keysToRemove) {
+  //     if (_isObject(obj)) {
+  //       if (obj[keyToRemove] !== undefined) {
+  //         delete obj[keyToRemove];
+  //       }
 
-        _forEach(obj, (value, key) => {
-          if (_isObject(value) || _isArray(value)) {
-            obj[key] = this.removeKeysFromNestedObjects(value, keysToRemove);
-          }
-        });
-      } else if (_isArray(obj)) {
-        _forEach(obj, (item, index) => {
-          obj[index] = this.removeKeysFromNestedObjects(item, keysToRemove);
-        });
-      }
-    }
+  //       _forEach(obj, (value, key) => {
+  //         if (_isObject(value) || _isArray(value)) {
+  //           obj[key] = this.removeKeysFromNestedObjects(value, keysToRemove);
+  //         }
+  //       });
+  //     } else if (_isArray(obj)) {
+  //       _forEach(obj, (item, index) => {
+  //         obj[index] = this.removeKeysFromNestedObjects(item, keysToRemove);
+  //       });
+  //     }
+  //   }
 
-    return obj;
-  };
+  //   return obj;
+  // };
 
-  /**
-   * Remove null and some other top level fields (i.e. some errors that I want to temporarily store in Formik's state)
-   * @method
-   * @param {object} obj - obj with potentiall null values and some other top level keys I wish to remove
-   * @returns {object} record - without null values or unwanted top level keys
-   */
-  removeNullAndInternalFields = (obj, internalFieldsArray) =>
-    _omitBy(
-      obj,
-      (value, key) =>
-        value === null ||
-        (Array.isArray(value) && value.every((item) => item === null)) ||
-        key.startsWith("_") ||
-        internalFieldsArray.includes(key)
-    );
+  // /**
+  //  * Remove null and some other top level fields (i.e. some errors that I want to temporarily store in Formik's state)
+  //  * @method
+  //  * @param {object} obj - obj with potentiall null values and some other top level keys I wish to remove
+  //  * @returns {object} record - without null values or unwanted top level keys
+  //  */
+  // removeNullAndInternalFields = (obj, internalFieldsArray) =>
+  //   _omitBy(
+  //     obj,
+  //     (value, key) =>
+  //       value === null ||
+  //       (Array.isArray(value) && value.every((item) => item === null)) ||
+  //       key.startsWith("_") ||
+  //       internalFieldsArray.includes(key)
+  //   );
 
   /**
    * Deserialize backend record into format compatible with frontend. We are not using deserialization yet. We are only currently serializing the record before sending
@@ -131,43 +132,43 @@ export class OARepoDepositSerializer extends DepositRecordSerializer {
    * @returns {object} record - in API format
    *
    */
-  serialize = (record) => {
-    let serializedRecord = this.removeNullAndInternalFields(
-      record,
-      this.internalFieldsArray
-    );
+  // serialize = (record) => {
+  //   let serializedRecord = this.removeNullAndInternalFields(
+  //     record,
+  //     this.internalFieldsArray
+  //   );
 
-    serializedRecord = this.removeKeysFromNestedObjects(
-      serializedRecord,
-      this.keysToRemove
-    );
+  //   serializedRecord = this.removeKeysFromNestedObjects(
+  //     serializedRecord,
+  //     this.keysToRemove
+  //   );
 
-    serializedRecord = this.removeEmptyValues(serializedRecord);
+  //   serializedRecord = this.removeEmptyValues(serializedRecord);
 
-    return serializedRecord;
-  };
+  //   return serializedRecord;
+  // };
 
-  deserializeErrors(errors) {
-    let deserializedErrors = {};
-    // TODO - WARNING: This doesn't convert backend error paths to frontend
-    //                 error paths. Doing so is non-trivial
-    //                 (re-using deserialize has some caveats)
-    //                 Form/Error UX is tackled in next sprint and this is good
-    //                 enough for now.
-    for (const e of errors) {
-      if ("severity" in e) {
-        // New error format with severity and description
-        _set(deserializedErrors, e.field, {
-          message: e.messages.join(" "),
-          severity: e.severity, // severity level of the error
-          description: e.description, // additional information about the rule that generated the error
-        });
-      } else {
-        // Backward compatibility with old error format, including just the error string
-        _set(deserializedErrors, e.field, e.messages.join(" "));
-      }
-    }
+  // deserializeErrors(errors) {
+  //   let deserializedErrors = {};
+  //   // TODO - WARNING: This doesn't convert backend error paths to frontend
+  //   //                 error paths. Doing so is non-trivial
+  //   //                 (re-using deserialize has some caveats)
+  //   //                 Form/Error UX is tackled in next sprint and this is good
+  //   //                 enough for now.
+  //   for (const e of errors) {
+  //     if ("severity" in e) {
+  //       // New error format with severity and description
+  //       _set(deserializedErrors, e.field, {
+  //         message: e.messages.join(" "),
+  //         severity: e.severity, // severity level of the error
+  //         description: e.description, // additional information about the rule that generated the error
+  //       });
+  //     } else {
+  //       // Backward compatibility with old error format, including just the error string
+  //       _set(deserializedErrors, e.field, e.messages.join(" "));
+  //     }
+  //   }
 
-    return deserializedErrors;
-  }
+  //   return deserializedErrors;
+  // }
 }

@@ -18,6 +18,7 @@ import { CreatibutorsFieldItem } from "./CreatibutorsFieldItem";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { useFieldData, useFormConfig } from "../../hooks";
 import { creatibutorNameDisplay } from "./util";
+import { useFormikContext } from "formik";
 
 function sortOptions(options) {
   return options.sort((o1, o2) => o1.title.localeCompare(o2.title));
@@ -46,7 +47,6 @@ class CreatibutorsFieldForm extends Component {
       required = false,
       showRoleField = false,
     } = this.props;
-
     const creatibutorsList = getIn(values, fieldPath, []);
     const formikInitialValues = getIn(initialValues, fieldPath, []);
 
@@ -55,9 +55,7 @@ class CreatibutorsFieldForm extends Component {
     const creatibutorsError =
       error || (creatibutorsList === formikInitialValues && initialError);
     const arrayAddButtonLabel =
-      addButtonLabel || schema === "creators"
-        ? i18next.t("Add creator")
-        : i18next.t("Add contributor");
+      addButtonLabel || `${i18next.t("Add")} ${label}`;
 
     const modalHeader =
       modal || schema === "creators"
@@ -230,11 +228,104 @@ export const CreatibutorsField = ({
 };
 
 CreatibutorsField.propTypes = {
-  // eslint-disable-next-line react/require-default-props
   label: PropTypes.string,
-  // eslint-disable-next-line react/require-default-props
   overrides: PropTypes.object,
-  // eslint-disable-next-line react/require-default-props
   icon: PropTypes.string,
   fieldPath: PropTypes.string.isRequired,
+};
+
+// Single creatibutor field
+
+export const CreatibutorField = ({
+  icon = "user",
+  label,
+  fieldPath,
+  schema,
+  autocompleteNames = "search",
+  required = false,
+  showRoleField = false,
+  ...props
+}) => {
+  const formConfig = useFormConfig();
+  const roleOptions =
+    formConfig?.vocabularies?.["contributor-types"]?.all || [];
+  const { setFieldValue, values, errors, initialErrors, initialValues } =
+    useFormikContext();
+  const value = getIn(values, fieldPath, null);
+  const error =
+    getIn(errors, fieldPath, null) ||
+    (value === getIn(initialValues, fieldPath, null) &&
+      getIn(initialErrors, fieldPath, null));
+  const modalHeader =
+    schema === "creators"
+      ? {
+          addLabel: i18next.t("Select creator"),
+          editLabel: i18next.t("Edit creator"),
+        }
+      : {
+          addLabel: i18next.t("Select contributor"),
+          editLabel: i18next.t("Edit contributor"),
+        };
+
+  return (
+    <DndProvider backend={HTML5Backend}>
+      <Form.Field required={required} className={error ? "error" : ""}>
+        <FieldLabel htmlFor={fieldPath} label={label} icon={icon} />
+        {value ? (
+          <CreatibutorsFieldItem
+            displayName={creatibutorNameDisplay(value)}
+            initialCreatibutor={value}
+            replaceCreatibutor={(idx, newValue) =>
+              setFieldValue(fieldPath, newValue)
+            }
+            removeCreatibutor={() => setFieldValue(fieldPath, null)}
+            index={0}
+            roleOptions={roleOptions}
+            schema={schema}
+            compKey={fieldPath}
+            addLabel={modalHeader.addLabel}
+            editLabel={modalHeader.editLabel}
+            autocompleteNames={autocompleteNames}
+            showRoleField={showRoleField}
+          />
+        ) : null}
+        <CreatibutorsModal
+          onCreatibutorChange={(selected) => setFieldValue(fieldPath, selected)}
+          action="add"
+          addLabel={modalHeader.addLabel}
+          editLabel={modalHeader.editLabel}
+          roleOptions={sortOptions(roleOptions)}
+          schema={schema}
+          autocompleteNames={autocompleteNames}
+          trigger={
+            <Form.Button
+              className="array-field-add-button inline-block"
+              type="button"
+              icon
+              labelPosition="left"
+            >
+              <Icon name="add" />
+              {modalHeader.addLabel}
+            </Form.Button>
+          }
+          showRoleField={showRoleField}
+        />
+        {error && typeof error == "string" && (
+          <Label pointing="left" prompt>
+            {error}
+          </Label>
+        )}
+      </Form.Field>
+    </DndProvider>
+  );
+};
+
+CreatibutorField.propTypes = {
+  label: PropTypes.string,
+  icon: PropTypes.string,
+  fieldPath: PropTypes.string.isRequired,
+  schema: PropTypes.oneOf(["creators", "contributors"]).isRequired,
+  autocompleteNames: PropTypes.oneOf(["search", "search_only", "off"]),
+  required: PropTypes.bool,
+  showRoleField: PropTypes.bool,
 };
