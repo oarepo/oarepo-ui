@@ -37,7 +37,10 @@ from idutils.normalizers import to_url
 from invenio_app_rdm.records_ui.utils import set_default_value
 from invenio_app_rdm.records_ui.views.decorators import no_cache_response
 from invenio_app_rdm.records_ui.views.deposits import get_actual_files_quota
-from invenio_app_rdm.records_ui.views.records import PreviewFile
+from invenio_app_rdm.records_ui.views.records import (
+    PreviewFile,
+    not_found_error,
+)
 from invenio_i18n import gettext as _
 from invenio_previewer import current_previewer
 from invenio_previewer.extensions import default as default_previewer
@@ -48,7 +51,9 @@ from invenio_rdm_records.records.systemfields.access.access_settings import (
 from invenio_rdm_records.services.errors import RecordDeletedException
 from invenio_records_resources.pagination import Pagination
 from invenio_records_resources.services import LinksTemplate
-from invenio_records_resources.services.errors import PermissionDeniedError
+from invenio_records_resources.services.errors import (
+    PermissionDeniedError,
+)
 from invenio_stats.proxies import current_stats
 from invenio_users_resources.proxies import current_user_resources
 from marshmallow import ValidationError
@@ -81,6 +86,7 @@ from .config import (
 if TYPE_CHECKING:
     from collections.abc import Mapping
 
+    from flask.typing import ResponseReturnValue
     from invenio_access.permissions import Identity
     from invenio_drafts_resources.services.records.service import (
         RecordService as DraftService,
@@ -269,7 +275,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         is_preview: bool = False,
         include_deleted: bool = False,
         **kwargs: Any,  # noqa ARG002
-    ) -> Response:
+    ) -> ResponseReturnValue:
         """Record detail page (aka landing page) adapted from invenio-app-rdm view."""
         files_dict, media_files_dict = self._prepare_files(files, media_files)
         record_ui = self._prepare_record_ui(record)
@@ -439,7 +445,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         return redirect(path_with_slash + "?" + split_path[1], code=302)
 
     @pass_query_args("search")
-    def search(self, page: int = 1, size: int = 10, **kwargs: Any) -> str | Response:
+    def search(self, page: int = 1, size: int = 10, **kwargs: Any) -> ResponseReturnValue:
         """Return search page."""
         pagination = Pagination(
             size,
@@ -575,7 +581,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         draft_files: FileList | None = None,
         files_locked: bool = True,
         **kwargs: Any,  # noqa ARG002
-    ) -> str | Response:
+    ) -> ResponseReturnValue:
         """Return edit page for a record."""
         service = self.api_service
         can_edit_draft = service.check_permission(g.identity, "update_draft", record=record_from_result(draft))
@@ -679,7 +685,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         community: str | None = None,
         community_ui: dict | None = None,
         **kwargs: Any,
-    ) -> str | Response:
+    ) -> ResponseReturnValue:
         """Return create page for a record."""
         if not self.has_deposit_permissions(g.identity):
             raise PermissionDeniedError(_("User does not have permission to create a record."))
@@ -844,7 +850,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         error: Exception,
         *args: Any,  # noqa: ARG002 for inheritance
         **kwargs: Any,
-    ) -> str | Response:
+    ) -> ResponseReturnValue:
         """Error handler to render a tombstone page for deleted or tombstoned records.
 
         :param error: Exception containing record info.
@@ -857,15 +863,15 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
 
             if not record_attr:
                 # there is no "record" attribute on the error
-                return _("No record found for the tombstone page")
+                return not_found_error(error)
             if not isinstance(record_attr, dict):
                 # record is not a dict, so we cannot get id from it
-                return _("No record found for the tombstone page, incorrect parameter")
+                return not_found_error(error)
 
             pid_value = record_attr.get("id", None)
             if pid_value is None:
                 # record does not have id, so we cannot get it
-                return _("No record found for the tombstone page, no id")
+                return not_found_error(error)
             record = self._get_record(pid_value, include_deleted=True, **kwargs)
             record_dict = record_from_result(record)
             record_dict.setdefault("links", record.links)
@@ -904,7 +910,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         error: Exception,
         *args: Any,  # noqa: ARG002 for inheritance
         **kwargs: Any,  # noqa: ARG002 for inheritance
-    ) -> str | Response:
+    ) -> ResponseReturnValue:
         """Error handler to render a not found page for missing records.
 
         :param error: Exception containing record info.
@@ -925,7 +931,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         error: Exception,
         *args: Any,  # noqa: ARG002 for inheritance
         **kwargs: Any,  # noqa: ARG002 for inheritance
-    ) -> str | Response:
+    ) -> ResponseReturnValue:
         """Handle permission denied error on record views."""
         if not current_user.is_authenticated:
             # trigger the flask-login unauthorized handler
@@ -936,14 +942,12 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             is_restricted = record.get("access", {}).get("record", None) == "restricted"
             has_doi = "doi" in record.get("pids", {})
             if is_restricted and has_doi:
-                return Response(
-                    render_template(
-                        "invenio_app_rdm/records/restricted_with_doi_tombstone.html",
-                        record=record,
-                    ),
-                    403,
-                )
-        return Response(render_template(current_app.config["THEME_403_TEMPLATE"]), 403)
+                return render_template(
+                    "invenio_app_rdm/records/restricted_with_doi_tombstone.html",
+                    record=record,
+                ), 403
+
+        return render_template(current_app.config["THEME_403_TEMPLATE"]), 403
 
     @pass_route_args("form_config_view")
     def form_config(self, **kwargs: Any) -> dict[str, Any]:
