@@ -108,13 +108,26 @@ def ui_overrides(app: Flask) -> None:  # NOQA: ARG001
         "@js/oarepo_ui/search/DynamicResultsListItem",
         UIComponentImportMode.DEFAULT,
     )
-    dynamic_result_list_item_override = UIComponentOverride(
+    dynamic_main_search_result_list_item_override = UIComponentOverride(
         "invenio_search_ui.search",
         "InvenioAppRdm.Search.ResultsList.item",
         dynamic_result_list_item,
     )
-    if dynamic_result_list_item_override not in current_ui_overrides:
-        current_ui_overrides.add(dynamic_result_list_item_override)
+    if dynamic_main_search_result_list_item_override not in current_ui_overrides:
+        current_ui_overrides.add(dynamic_main_search_result_list_item_override)
+
+    home_page_record_list = UIComponent(
+        "RecordsList",
+        "@js/oarepo_ui/search/RecordsList",
+        UIComponentImportMode.NAMED,
+    )
+    home_page_records_list_override = UIComponentOverride(
+        "oarepo_ui.index",
+        "InvenioAppRDM.RecordsList.layout",
+        home_page_record_list,
+    )
+    if home_page_records_list_override not in current_ui_overrides:
+        current_ui_overrides.add(home_page_records_list_override)
 
 
 def _register_main_search_result_item(
@@ -128,6 +141,19 @@ def _register_main_search_result_item(
     )
     if main_search_result_list_item not in ui_overrides:
         ui_overrides.add(main_search_result_list_item)
+
+
+def _register_home_page_search_result_item(
+    ui_overrides: set[UIComponentOverride], schema: str, component: UIComponent
+) -> None:
+    """Register a result list for home page records list."""
+    home_page_result_list_item = UIComponentOverride(
+        "oarepo_ui.index",
+        f"InvenioAppRDM.RecordsList.ResultsList.item.{schema}",
+        component,
+    )
+    if home_page_result_list_item not in ui_overrides:
+        ui_overrides.add(home_page_result_list_item)
 
 
 def finalize_app(app: Flask) -> None:
