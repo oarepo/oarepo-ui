@@ -19,7 +19,10 @@ from __future__ import annotations
 from gettext import gettext as _
 from typing import TYPE_CHECKING
 
-from oarepo_ui.views import _register_main_search_result_item
+from oarepo_ui.views import (
+    _register_home_page_search_result_item,
+    _register_main_search_result_item,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -78,7 +81,7 @@ OAREPO_UI_OVERRIDES: set[UIComponentOverride] = set()
 
 OAREPO_UI_RESULT_LIST_ITEM_REGISTRATION_CALLBACKS: list[
     Callable[[set[UIComponentOverride], str, UIComponent], None]
-] = [_register_main_search_result_item]
+] = [_register_main_search_result_item, _register_home_page_search_result_item]
 
 
 OAREPO_UI_MULTILINGUAL_FIELD_LANGUAGES = [

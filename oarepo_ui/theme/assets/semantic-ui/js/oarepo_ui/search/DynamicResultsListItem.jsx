@@ -1,7 +1,7 @@
 import React from "react";
 import _get from "lodash/get";
 import Overridable from "react-overridable";
-import { AppContext } from "react-searchkit";
+import { AppContext, buildUID as searchkitBuildUID } from "react-searchkit";
 import PropTypes from "prop-types";
 
 export const FallbackItemComponent = ({ result }) => (
@@ -18,8 +18,13 @@ export const DynamicResultsListItem = ({
   result,
   selector = "$schema",
   FallbackComponent = FallbackItemComponent,
+  appName,
 }) => {
-  const { buildUID } = React.useContext(AppContext);
+  const SearchAppContext = React.useContext(AppContext);
+  const buildUID =
+    SearchAppContext?.buildUID ||
+    ((element, overrideId) => searchkitBuildUID(element, overrideId, appName));
+
   const selectorValue = _get(result, selector);
 
   if (!selectorValue) {
@@ -42,6 +47,7 @@ DynamicResultsListItem.propTypes = {
   selector: PropTypes.string,
   // eslint-disable-next-line react/require-default-props
   FallbackComponent: PropTypes.elementType,
+  appName: PropTypes.string,
 };
 
 export default DynamicResultsListItem;
