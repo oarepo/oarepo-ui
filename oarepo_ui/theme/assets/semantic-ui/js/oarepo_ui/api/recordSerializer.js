@@ -9,6 +9,8 @@ import _pickBy from "lodash/pickBy";
 import _forEach from "lodash/forEach";
 import _omitBy from "lodash/omitBy";
 import _set from "lodash/set";
+import _pick from "lodash/pick";
+import _cloneDeep from "lodash/cloneDeep";
 import { RDMDepositRecordSerializer } from "@js/invenio_rdm_records/src/deposit/api/DepositRecordSerializer";
 
 export class DepositRecordSerializer {
@@ -30,11 +32,11 @@ export class DepositRecordSerializer {
 }
 
 export class OARepoDepositSerializer extends RDMDepositRecordSerializer {
-  // constructor(internalFieldsArray = [], keysToRemove = []) {
-  //   super();
-  //   this.internalFieldsArray = internalFieldsArray;
-  //   this.keysToRemove = keysToRemove;
-  // }
+  constructor(internalFieldsArray = [], keysToRemove = ["__key"]) {
+    super();
+    this.internalFieldsArray = internalFieldsArray;
+    this.keysToRemove = keysToRemove;
+  }
 
   /**
    * Remove empty fields from record
@@ -77,27 +79,27 @@ export class OARepoDepositSerializer extends RDMDepositRecordSerializer {
   //  * @returns {object} record - without those keys
   //  */
 
-  // removeKeysFromNestedObjects = (obj, keysToRemove) => {
-  //   for (let keyToRemove of keysToRemove) {
-  //     if (_isObject(obj)) {
-  //       if (obj[keyToRemove] !== undefined) {
-  //         delete obj[keyToRemove];
-  //       }
+  removeKeysFromNestedObjects = (obj, keysToRemove) => {
+    for (let keyToRemove of keysToRemove) {
+      if (_isObject(obj)) {
+        if (obj[keyToRemove] !== undefined) {
+          delete obj[keyToRemove];
+        }
 
-  //       _forEach(obj, (value, key) => {
-  //         if (_isObject(value) || _isArray(value)) {
-  //           obj[key] = this.removeKeysFromNestedObjects(value, keysToRemove);
-  //         }
-  //       });
-  //     } else if (_isArray(obj)) {
-  //       _forEach(obj, (item, index) => {
-  //         obj[index] = this.removeKeysFromNestedObjects(item, keysToRemove);
-  //       });
-  //     }
-  //   }
+        _forEach(obj, (value, key) => {
+          if (_isObject(value) || _isArray(value)) {
+            obj[key] = this.removeKeysFromNestedObjects(value, keysToRemove);
+          }
+        });
+      } else if (_isArray(obj)) {
+        _forEach(obj, (item, index) => {
+          obj[index] = this.removeKeysFromNestedObjects(item, keysToRemove);
+        });
+      }
+    }
 
-  //   return obj;
-  // };
+    return obj;
+  };
 
   // /**
   //  * Remove null and some other top level fields (i.e. some errors that I want to temporarily store in Formik's state)
@@ -122,7 +124,52 @@ export class OARepoDepositSerializer extends RDMDepositRecordSerializer {
    * @returns {object} frontend compatible record object
    */
   deserialize(record) {
-    return record;
+    // NOTE: cloning now allows us to manipulate the copy with impunity
+    //       without affecting the original
+    const originalRecord = _pick(_cloneDeep(record), [
+      "access",
+      "expanded",
+      "metadata",
+      "id",
+      "links",
+      "files",
+      "media_files",
+      "is_published",
+      "versions",
+      "parent",
+      "status",
+      "pids",
+      "ui",
+      "custom_fields",
+      "created",
+      "updated",
+      "revision_id",
+    ]);
+
+    // FIXME: move logic in a more sophisticated PIDField that allows empty values
+    // to be sent in the backend
+    const savedPIDsFieldValue = originalRecord.pids || {};
+
+    // Remove empty null values from record. This happens when we create a new
+    // draft and the backend produces an empty record filled in with null
+    // values, array of null values etc.
+    // TODO: Backend should not attempt to provide empty values. It should just
+    //       return existing record in case of edit or {} in case of new.
+    // let deserializedRecord = this._removeEmptyValues(originalRecord);
+
+    // FIXME: Add back pids field in case it was removed
+    let deserializedRecord = {
+      ...originalRecord,
+      ...(!_isEmpty(savedPIDsFieldValue) ? { pids: savedPIDsFieldValue } : {}),
+    };
+
+    for (const key in this.depositRecordSchema) {
+      deserializedRecord = this.depositRecordSchema[key].deserialize(
+        deserializedRecord,
+        this.defaultLocale
+      );
+    }
+    return deserializedRecord;
   }
 
   /**
@@ -132,43 +179,37 @@ export class OARepoDepositSerializer extends RDMDepositRecordSerializer {
    * @returns {object} record - in API format
    *
    */
-  // serialize = (record) => {
-  //   let serializedRecord = this.removeNullAndInternalFields(
-  //     record,
-  //     this.internalFieldsArray
-  //   );
+  serialize = (record) => {
+    let serializedRecord = this.removeKeysFromNestedObjects(
+      record,
+      this.keysToRemove
+    );
+    serializedRecord = super.serialize(record);
 
-  //   serializedRecord = this.removeKeysFromNestedObjects(
-  //     serializedRecord,
-  //     this.keysToRemove
-  //   );
+    return serializedRecord;
+  };
 
-  //   serializedRecord = this.removeEmptyValues(serializedRecord);
+  deserializeErrors(errors) {
+    let deserializedErrors = {};
+    // TODO - WARNING: This doesn't convert backend error paths to frontend
+    //                 error paths. Doing so is non-trivial
+    //                 (re-using deserialize has some caveats)
+    //                 Form/Error UX is tackled in next sprint and this is good
+    //                 enough for now.
+    for (const e of errors) {
+      if ("severity" in e) {
+        // New error format with severity and description
+        _set(deserializedErrors, e.field, {
+          message: e.messages.join(" "),
+          severity: e.severity, // severity level of the error
+          description: e.description, // additional information about the rule that generated the error
+        });
+      } else {
+        // Backward compatibility with old error format, including just the error string
+        _set(deserializedErrors, e.field, e.messages.join(" "));
+      }
+    }
 
-  //   return serializedRecord;
-  // };
-
-  // deserializeErrors(errors) {
-  //   let deserializedErrors = {};
-  //   // TODO - WARNING: This doesn't convert backend error paths to frontend
-  //   //                 error paths. Doing so is non-trivial
-  //   //                 (re-using deserialize has some caveats)
-  //   //                 Form/Error UX is tackled in next sprint and this is good
-  //   //                 enough for now.
-  //   for (const e of errors) {
-  //     if ("severity" in e) {
-  //       // New error format with severity and description
-  //       _set(deserializedErrors, e.field, {
-  //         message: e.messages.join(" "),
-  //         severity: e.severity, // severity level of the error
-  //         description: e.description, // additional information about the rule that generated the error
-  //       });
-  //     } else {
-  //       // Backward compatibility with old error format, including just the error string
-  //       _set(deserializedErrors, e.field, e.messages.join(" "));
-  //     }
-  //   }
-
-  //   return deserializedErrors;
-  // }
+    return deserializedErrors;
+  }
 }

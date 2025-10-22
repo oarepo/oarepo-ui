@@ -19,12 +19,12 @@ export const LanguageSelectField = ({
 }) => {
   const { values } = useFormikContext();
   const value = getIn(values, fieldPath, "") ?? "";
-  const { multilingualFieldLanguages } = useFormConfig();
+  const formConfig = useFormConfig();
 
   return (
     <SelectField
       deburr
-      options={multilingualFieldLanguages.filter(
+      options={formConfig.config.multilingualFieldLanguages.filter(
         (o) => !usedLanguages.includes(o.value) || o.value === value
       )}
       fieldPath={fieldPath}
