@@ -136,14 +136,18 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
                     )
                 )
             else:
-                routes.append(route("GET", route_url_with_prefix, getattr(self, route_name)))
+                routes.append(
+                    route("GET", route_url_with_prefix, getattr(self, route_name))
+                )
 
         for route_name, config_route_url in self.config.config_routes.items():
             if config_route_url:
-                config_route_url_with_prefix = "{config_prefix}/{url_prefix}/{route}".format(
-                    config_prefix=self.config.config_url_prefix.rstrip("/"),
-                    url_prefix=self.config.url_prefix.strip("/"),
-                    route=config_route_url.lstrip("/"),
+                config_route_url_with_prefix = (
+                    "{config_prefix}/{url_prefix}/{route}".format(
+                        config_prefix=self.config.config_url_prefix.rstrip("/"),
+                        url_prefix=self.config.url_prefix.strip("/"),
+                        route=config_route_url.lstrip("/"),
+                    )
                 )
             else:
                 config_route_url_with_prefix = "{config_prefix}/{url_prefix}".format(
@@ -151,21 +155,28 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
                     url_prefix=self.config.url_prefix.strip("/"),
                 )
 
-            routes.append(route("GET", config_route_url_with_prefix, getattr(self, route_name)))
+            routes.append(
+                route("GET", config_route_url_with_prefix, getattr(self, route_name))
+            )
 
         return routes
 
     def empty_record(self, **kwargs: Any) -> dict[str, Any]:
         """Create an empty record with default values."""
         record = cast("dict[str, Any]", dump_empty(self.api_config.schema))
-        record["files"] = {"enabled": current_app.config.get("RDM_DEFAULT_FILES_ENABLED")}
+        record["files"] = {
+            "enabled": current_app.config.get("RDM_DEFAULT_FILES_ENABLED")
+        }
         record.setdefault("expanded", {})
         # Set by RDMRecordServiceConfig class
         pids_providers = getattr(self.api_config, "pids_providers", None)
 
         if pids_providers and "doi" in pids_providers:
             if (
-                current_app.config["RDM_PERSISTENT_IDENTIFIERS"].get("doi", {}).get("ui", {}).get("default_selected")
+                current_app.config["RDM_PERSISTENT_IDENTIFIERS"]
+                .get("doi", {})
+                .get("ui", {})
+                .get("default_selected")
                 == "yes"  # yes, no or not_needed
             ):
                 record["pids"] = {"doi": {"provider": "external", "identifier": ""}}
@@ -192,7 +203,9 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
     def _record_from_service_result(self, result: RecordItem) -> Record:
         return cast("Record", record_from_result(result))
 
-    def _prepare_files(self, files: FileList, media_files: FileList) -> tuple[dict | None, dict | None]:
+    def _prepare_files(
+        self, files: FileList, media_files: FileList
+    ) -> tuple[dict | None, dict | None]:
         """Convert FileList objects to dictionaries for rendering."""
         files_dict = None if files is None else files.to_dict()
         media_files_dict = None if media_files is None else media_files.to_dict()
@@ -219,14 +232,18 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         if current_user.is_authenticated:
             return cast(
                 "str|None",
-                current_user_resources.users_service.links_item_tpl.expand(g.identity, current_user).get("avatar"),
+                current_user_resources.users_service.links_item_tpl.expand(
+                    g.identity, current_user
+                ).get("avatar"),
             )
         return None
 
     def _validate_draft_preview(self, record: RecordItem) -> None:
         """Validate draft structure and inject parent DOI if needed for preview."""
         try:
-            current_rdm_records.records_service.validate_draft(g.identity, record.id, ignore_field_permissions=True)
+            current_rdm_records.records_service.validate_draft(
+                g.identity, record.id, ignore_field_permissions=True
+            )
         except ValidationError:
             abort(404)
 
@@ -237,7 +254,9 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
 
         service = current_rdm_records.records_service
         datacite_providers = [
-            v["datacite"] for p, v in service.config.parent_pids_providers.items() if p == "doi" and "datacite" in v
+            v["datacite"]
+            for p, v in service.config.parent_pids_providers.items()
+            if p == "doi" and "datacite" in v
         ]
         if not datacite_providers:
             return
@@ -245,11 +264,17 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         datacite_provider = datacite_providers[0]
         should_mint_parent_doi = True
 
-        is_doi_required = current_app.config.get("RDM_PARENT_PERSISTENT_IDENTIFIERS", {}).get("doi", {}).get("required")
+        is_doi_required = (
+            current_app.config.get("RDM_PARENT_PERSISTENT_IDENTIFIERS", {})
+            .get("doi", {})
+            .get("required")
+        )
         if not is_doi_required:
             pids = getattr(record_from_result(record), "pids", {})
             record_doi = pids.get("doi", {})
-            is_doi_reserved = record_doi.get("provider", "") == "datacite" and record_doi.get("identifier")
+            is_doi_reserved = record_doi.get(
+                "provider", ""
+            ) == "datacite" and record_doi.get("identifier")
             if not is_doi_reserved:
                 should_mint_parent_doi = False
 
@@ -297,7 +322,12 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         if record is not None and emitter is not None:
             emitter(current_app, record=record_from_result(record), via_api=False)
 
-        record_owner = record_ui.get("expanded", {}).get("parent", {}).get("access", {}).get("owned_by", {})
+        record_owner = (
+            record_ui.get("expanded", {})
+            .get("parent", {})
+            .get("access", {})
+            .get("owned_by", {})
+        )
         # TODO: implement communities & community theme
         resolved_community, resolved_community_ui = None, None
 
@@ -359,25 +389,35 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         return redirect(cast("str", record.links.get("self_html")), code=302)
 
     @pass_route_args("view", "file_view")
-    def published_file_preview(self, pid_value: str, filepath: str, **kwargs: Any) -> Response:
+    def published_file_preview(
+        self, pid_value: str, filepath: str, **kwargs: Any
+    ) -> Response:
         """Return file preview for published record."""
         record = self._get_record(pid_value, allow_draft=False, **kwargs)
         return self._file_preview(record, pid_value, filepath)
 
     @pass_route_args("view", "file_view")
-    def draft_file_preview(self, pid_value: str, filepath: str, **kwargs: Any) -> Response:
+    def draft_file_preview(
+        self, pid_value: str, filepath: str, **kwargs: Any
+    ) -> Response:
         """Return file preview for draft record."""
         record = self._get_record(pid_value, allow_draft=True, **kwargs)
         return self._file_preview(record, pid_value, filepath)
 
-    def _file_preview(self, record: RecordItem, pid_value: str, filepath: str) -> Response:
+    def _file_preview(
+        self, record: RecordItem, pid_value: str, filepath: str
+    ) -> Response:
         if not self.config.model:
-            raise RuntimeError(f"Model {self.config.model_name} not registered. File cannot be previewed.")
+            raise RuntimeError(
+                f"Model {self.config.model_name} not registered. File cannot be previewed."
+            )
 
         file_service = self.config.model.file_service
         if file_service is None:
             return Response(
-                _("File preview requested but file service is not available on the model"),
+                _(
+                    "File preview requested but file service is not available on the model"
+                ),
                 status=HTTPStatus.NOT_FOUND,
             )
         file_metadata = file_service.read_file_metadata(g.identity, pid_value, filepath)
@@ -412,7 +452,9 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         :raises Forbidden: If permissions are denied.
         """
         try:
-            read_method = self.api_service.read_draft if allow_draft else self.api_service.read
+            read_method = (
+                self.api_service.read_draft if allow_draft else self.api_service.read
+            )
 
             if include_deleted:
                 # not all read methods support deleted records
@@ -445,7 +487,9 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         return redirect(path_with_slash + "?" + split_path[1], code=302)
 
     @pass_query_args("search")
-    def search(self, page: int = 1, size: int = 10, **kwargs: Any) -> ResponseReturnValue:
+    def search(
+        self, page: int = 1, size: int = 10, **kwargs: Any
+    ) -> ResponseReturnValue:
         """Return search page."""
         pagination = Pagination(
             size,
@@ -467,7 +511,9 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
                 "overridableIdPrefix": overridable_id_prefix,
                 "allowedHtmlTags": ["sup", "sub", "em", "strong"],
                 "ignoredSearchFilters": self.config.ignored_search_filters(),
-                "additionalFilterLabels": self.config.additional_filter_labels(filters=kwargs.get("facets", {})),
+                "additionalFilterLabels": self.config.additional_filter_labels(
+                    filters=kwargs.get("facets", {})
+                ),
             },
         }
 
@@ -485,7 +531,9 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
 
         search_config = partial(self.config.search_app_config, **search_options)
 
-        search_app_config = search_config(app_id=self.config.application_id.capitalize())
+        search_app_config = search_config(
+            app_id=self.config.application_id.capitalize()
+        )
 
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro(
@@ -517,7 +565,11 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         record = self._get_record(pid_value, allow_draft=is_preview, **kwargs)
         exports = None
         if self.config.model:
-            exports = [export for export in self.config.model.exports if export.code.lower() == export_format.lower()]
+            exports = [
+                export
+                for export in self.config.model.exports
+                if export.code.lower() == export_format.lower()
+            ]
         if not exports:
             abort(404, f"No exporter for code {export_format}")
             return None
@@ -556,7 +608,9 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         """Export a preview of a record in the specified format."""
         return self._export(pid_value, export_format, is_preview=True, **kwargs)
 
-    def get_jinjax_macro(self, template_type: str, default_macro: str | None = None) -> str:
+    def get_jinjax_macro(
+        self, template_type: str, default_macro: str | None = None
+    ) -> str:
         """Return which jinjax macro should be used for rendering the template.
 
         Name of the macro may include optional namespace in the form of "namespace.Macro".
@@ -567,7 +621,9 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         """
         tmpl = self.config.templates.get(template_type, default_macro)
         if not tmpl:
-            raise KeyError(f"Template {template_type} not found and default macro was not provided.")
+            raise KeyError(
+                f"Template {template_type} not found and default macro was not provided."
+            )
         return tmpl
 
     @pass_route_args("view")
@@ -584,8 +640,12 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
     ) -> ResponseReturnValue:
         """Return edit page for a record."""
         service = self.api_service
-        can_edit_draft = service.check_permission(g.identity, "update_draft", record=record_from_result(draft))
-        can_preview_draft = service.check_permission(g.identity, "preview", record=record_from_result(draft))
+        can_edit_draft = service.check_permission(
+            g.identity, "update_draft", record=record_from_result(draft)
+        )
+        can_preview_draft = service.check_permission(
+            g.identity, "preview", record=record_from_result(draft)
+        )
         if not can_edit_draft:
             if can_preview_draft:
                 return redirect(draft["links"]["preview_html"])
@@ -595,7 +655,9 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         record = self.config.ui_serializer.dump_obj(copy.copy(draft.to_dict()))
         # TODO: implement edit action on published record (similar to RDM)
 
-        form_config = self._get_form_config(g.identity, updateUrl=draft.links.get("self", None))
+        form_config = self._get_form_config(
+            g.identity, updateUrl=draft.links.get("self", None)
+        )
         form_config["ui_model"] = self.ui_model
 
         ui_links = self.expand_detail_links(identity=g.identity, record=draft)
@@ -672,10 +734,15 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
     def _get_form_config(self, identity: Identity, **kwargs: Any) -> dict[str, Any]:
         return self.config.form_config(identity=identity, **kwargs)
 
-    def get_record_permissions(self, actions: list[str], record: Record | None = None) -> dict[str, bool]:
+    def get_record_permissions(
+        self, actions: list[str], record: Record | None = None
+    ) -> dict[str, bool]:
         """Generate (default) record action permissions."""
         service = self.api_service
-        return {f"can_{action}": service.check_permission(g.identity, action, record=record) for action in actions}
+        return {
+            f"can_{action}": service.check_permission(g.identity, action, record=record)
+            for action in actions
+        }
 
     @login_required
     @no_cache_response
@@ -688,7 +755,9 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
     ) -> ResponseReturnValue:
         """Return create page for a record."""
         if not self.has_deposit_permissions(g.identity):
-            raise PermissionDeniedError(_("User does not have permission to create a record."))
+            raise PermissionDeniedError(
+                _("User does not have permission to create a record.")
+            )
 
         community_theme = None
         if community is not None and community_ui is not None:
@@ -696,12 +765,18 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
 
         community_use_jinja_header = bool(community_theme)
         dashboard_routes = current_app.config["APP_RDM_USER_DASHBOARD_ROUTES"]
-        is_doi_required = current_app.config.get("RDM_PERSISTENT_IDENTIFIERS", {}).get("doi", {}).get("required")
+        is_doi_required = (
+            current_app.config.get("RDM_PERSISTENT_IDENTIFIERS", {})
+            .get("doi", {})
+            .get("required")
+        )
 
         if not self.config.model:
-            raise RuntimeError(f"Model {self.config.model_name} not registered, cannot resolve create URL")
+            raise RuntimeError(
+                f"Model {self.config.model_name} not registered, cannot resolve create URL"
+            )
 
-        create_url = self.config.model.api_url("create")
+        create_url = self.config.model.api_url("create", **kwargs)
 
         form_config = self._get_form_config(
             g.identity,
@@ -742,7 +817,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             "theme": community_theme,
             "forms_config": form_config,
             "searchbar_config": {
-                "searchUrl": url_for(f"{self.config.blueprint_name}.search"),
+                "searchUrl": url_for(f"{self.config.blueprint_name}.search", **kwargs),
             },
             "record": record,
             "community": community,
@@ -787,9 +862,13 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         if hasattr(permission_policy, "can_view_deposit_page"):
             return cast(
                 "bool",
-                self.api_service.check_permission(identity, "view_deposit_page", record=None),
+                self.api_service.check_permission(
+                    identity, "view_deposit_page", record=None
+                ),
             )
-        return cast("bool", self.api_service.check_permission(identity, "create", record=None))
+        return cast(
+            "bool", self.api_service.check_permission(identity, "create", record=None)
+        )
 
     @property
     def api_service(self) -> DraftService:
@@ -806,14 +885,18 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             raise RuntimeError(f"Model {self.config.model_name} not registered.")
         return self.config.model.service_config
 
-    def expand_detail_links(self, identity: Identity, record: RecordItem) -> dict[str, str]:
+    def expand_detail_links(
+        self, identity: Identity, record: RecordItem
+    ) -> dict[str, str]:
         """Get links for a detail result item using the configured template.
 
         :param identity: User identity object.
         :param record: Record object.
         :return: Dictionary of expanded links.
         """
-        tpl = LinksTemplate(self.config.ui_links_item, {"url_prefix": self.config.url_prefix})
+        tpl = LinksTemplate(
+            self.config.ui_links_item, {"url_prefix": self.config.url_prefix}
+        )
         return cast(
             "dict[str, str]",
             tpl.expand(identity, record_from_result(record)),
@@ -885,7 +968,9 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         if record_doi:
             record_doi = to_url(record_doi, "doi", url_scheme="https")
 
-        tombstone_url = record_doi or record_dict.get("links", {}).get("self_html", None)
+        tombstone_url = record_doi or record_dict.get("links", {}).get(
+            "self_html", None
+        )
 
         tombstone_dict = {}
         if record_tombstone:
@@ -942,10 +1027,13 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             is_restricted = record.get("access", {}).get("record", None) == "restricted"
             has_doi = "doi" in record.get("pids", {})
             if is_restricted and has_doi:
-                return render_template(
-                    "invenio_app_rdm/records/restricted_with_doi_tombstone.html",
-                    record=record,
-                ), 403
+                return (
+                    render_template(
+                        "invenio_app_rdm/records/restricted_with_doi_tombstone.html",
+                        record=record,
+                    ),
+                    403,
+                )
 
         return render_template(current_app.config["THEME_403_TEMPLATE"]), 403
 
