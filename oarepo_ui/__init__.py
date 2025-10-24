@@ -16,7 +16,7 @@ from __future__ import annotations
 
 from .ext import OARepoUIExtension
 
-__version__ = "6.0.0dev15"
+__version__ = "6.0.0dev16"
 
 __all__ = [
     "OARepoUIExtension",
