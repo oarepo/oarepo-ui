@@ -1,7 +1,7 @@
-{#def record, extra_context, hasApiLinks=True #}
+{#def record, extra_context #}
 
 {% set format_options = [] %}
-{% for key, value in extra_context["exporters"].items() %}
+{% for key, value in extra_context.get("exporters", {}).items() %}
     {% set _ = format_options.append({"value": key, "key": key, "text": value.name}) %}
 {% endfor %}
 

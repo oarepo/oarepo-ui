@@ -1,6 +1,6 @@
 {# def d, label=None, placeholder=None, keep=false, field_class=None #}
 
-{% set field_label = label or d.label(d) if d.label(d) != 'Item does not exist' else '' %}
+{% set field_label = label if label else (d.label(d) if d.label(d) != 'Item does not exist' else '') %}
 {%- if ui_value(d) or keep -%}
     <IBaseField label={{field_label}} field_class={{field_class}}>
         {%- if content and ((content is not string) or content.strip()) -%}
