@@ -263,7 +263,6 @@ class OarepoCatalog(Catalog):
                     )
 
         self._component_paths = {k: (v[0], v[1]) for k, v in paths.items()}
-        print(self._component_paths.keys(), "dwadwadwadwad", flush=True)
         return self._component_paths
 
     @component_paths.deleter
