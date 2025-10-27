@@ -17,7 +17,7 @@ import { CustomFields } from "react-invenio-forms";
 import { getIn, useFormikContext } from "formik";
 import { useSanitizeInput, useFormConfig } from "../../hooks";
 
-const FormTitle = () => {
+export const FormTitle = () => {
   const { values } = useFormikContext();
   const { sanitizeInput } = useSanitizeInput();
 

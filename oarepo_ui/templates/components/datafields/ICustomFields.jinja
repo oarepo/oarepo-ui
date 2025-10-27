@@ -1,16 +1,15 @@
-{# def custom_fields, d #}
+{# def custom_fields_config, d #}
 
-{% set safe_cf=field_data(field_get(current_app.config, custom_fields)) %}
-{% if safe_cf._has_value %}
+{% if custom_fields_config %}
 <div class="icustom-field">
-    {% for cf_section in array(safe_cf) %}
+    {% for cf_section in custom_fields_config %}
         <ISection title={{cf_section.section}} title_hidden={{cf_section.hidden}}>
             <IValueList>
-                {% for cf in array(cf_section.fields) %}
-                    {% set val=field_get(d, cf.field) %}
+                {% for cf in cf_section.fields %}
+                    {% set val=d[cf.field] %}
                     <IField d={{val}} label={{cf.props.label}} placeholder={{_("Not set")}}>
-                        {% if field_value(cf.props.landing_page_component) %}
-                            {{ catalog.irender(field_value(cf.props.landing_page_component), d=val) }}
+                        {% if cf.props.landing_page_component %}
+                            {{ catalog.irender(cf.props.landing_page_component, d=val) }}
                         {% else %}
                             <IValue value={{ui_value(val)}} />
                         {% endif %}

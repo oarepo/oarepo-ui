@@ -77,7 +77,6 @@ export class DepositFormApp extends Component {
 
     const service =
       props.depositService || new DepositService(draftsService, filesService);
-
     const appConfig = props.appConfig || {
       config: props.config,
       record: recordSerializer.deserialize(props.record),
@@ -131,7 +130,6 @@ export class DepositFormApp extends Component {
     } = this.props;
 
     const Wrapper = ContainerComponent || React.Fragment;
-
     return (
       <Wrapper>
         <Provider store={this.store}>
