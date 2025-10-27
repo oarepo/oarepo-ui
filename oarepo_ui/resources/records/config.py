@@ -81,9 +81,7 @@ class SearchRequestArgsSchema(MultiDictSchema):
     layout = fields.String(validate=validate.OneOf(["grid", "list"]))
 
     @post_load(pass_original=True)
-    def facets(
-        self, data: dict[str, Any], original_data: MultiDict[str, Any], **_kwargs: Any
-    ) -> dict[str, Any]:
+    def facets(self, data: dict[str, Any], original_data: MultiDict[str, Any], **_kwargs: Any) -> dict[str, Any]:
         """Extract facet filters from 'f=facetName:facetValue' style arguments."""
         for value in original_data.getlist("f"):
             if ":" in value:
@@ -107,9 +105,7 @@ class LabeledAggregation(TypedDict):
     buckets: list[LabeledBucket]
 
 
-def remove_pagination_args(
-    _pagination: Pagination, context_variables: dict[str, Any]
-) -> None:
+def remove_pagination_args(_pagination: Pagination, context_variables: dict[str, Any]) -> None:
     """Remove pagination-related arguments from the request vars."""
     context_variables.pop("args", None)
 
@@ -142,9 +138,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
     }
     """Configuration routes for the resource, mapping route names to URL patterns."""
 
-    request_view_args: type[Schema] = MultiDictSchema.from_dict(
-        {"pid_value": ma.fields.Str()}
-    )
+    request_view_args: type[Schema] = MultiDictSchema.from_dict({"pid_value": ma.fields.Str()})
     """Request arguments for viewing a record, including the PID value."""
 
     request_record_detail_args: type[Schema] = MultiDictSchema.from_dict(
@@ -162,9 +156,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
     )
     """Request arguments for viewing a file associated with a record, including the file path."""
 
-    request_export_args: type[Schema] = MultiDictSchema.from_dict(
-        {"export_format": ma.fields.Str()}
-    )
+    request_export_args: type[Schema] = MultiDictSchema.from_dict({"export_format": ma.fields.Str()})
     """Request arguments for exporting a record, including the export format.
     Currently it only supports ?export_format=xyz"""
 
@@ -180,9 +172,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
     )
     """Request arguments for creating a record."""
 
-    request_embed_args: type[Schema] = MultiDictSchema.from_dict(
-        {"embed": ma.fields.Bool()}
-    )
+    request_embed_args: type[Schema] = MultiDictSchema.from_dict({"embed": ma.fields.Bool()})
     """Request arguments for embedding record page inside a dialogue or another page.
     This is represented in the URL as ?embed=true.
     """
@@ -268,24 +258,16 @@ class RecordsUIResourceConfig(UIResourceConfig):
         :return: UI serializer instance.
         """
         if not self.model:
-            raise RuntimeError(
-                f"Model {self.model_name} not registered, cannot resolve UI serializer."
-            )
+            raise RuntimeError(f"Model {self.model_name} not registered, cannot resolve UI serializer.")
 
-        serializer = next(
-            x for x in self.model.exports if x.code == "ui_json"
-        ).serializer
+        serializer = next(x for x in self.model.exports if x.code == "ui_json").serializer
         if not serializer:
             raise ValueError(f"UI serializer is not set for model {self.model.code}.")
         if not isinstance(serializer, MarshmallowSerializer):
-            raise TypeError(
-                f"UI serializer must be an instance of MarshmallowSerializer, got {type(serializer)}."
-            )
+            raise TypeError(f"UI serializer must be an instance of MarshmallowSerializer, got {type(serializer)}.")
         return serializer
 
-    def search_available_facets(
-        self, api_config: RecordServiceConfig, identity: Identity
-    ) -> dict[str, dsl.Facet]:
+    def search_available_facets(self, api_config: RecordServiceConfig, identity: Identity) -> dict[str, dsl.Facet]:
         """Return available facets for search, possibly using a grouped facets parameter class.
 
         :param api_config: API configuration object.
@@ -294,18 +276,12 @@ class RecordsUIResourceConfig(UIResourceConfig):
         """
         classes: list[type] = api_config.search.params_interpreters_cls
         grouped_facets_param_class: type[GroupedFacetsParam] | None = next(
-            (
-                cls
-                for cls in classes
-                if inspect.isclass(cls) and issubclass(cls, GroupedFacetsParam)
-            ),
+            (cls for cls in classes if inspect.isclass(cls) and issubclass(cls, GroupedFacetsParam)),
             None,
         )
         if not grouped_facets_param_class:
             return cast("dict[str, dsl.Facet]", api_config.search.facets)
-        grouped_facets_param_instance: GroupedFacetsParam = grouped_facets_param_class(
-            api_config.search
-        )
+        grouped_facets_param_instance: GroupedFacetsParam = grouped_facets_param_class(api_config.search)
 
         # mypy can not get the type, that's why we use ignore
         return grouped_facets_param_instance.identity_facets(identity)  # type: ignore[no-any-return]
@@ -323,9 +299,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
         """
         return cast("dict[str, dict[str, Any]]", api_config.search.sort_options)
 
-    def search_active_facets(
-        self, api_config: RecordServiceConfig, identity: Identity
-    ) -> list[str]:
+    def search_active_facets(self, api_config: RecordServiceConfig, identity: Identity) -> list[str]:
         """Return list of active facets that will be displayed by search app.
 
         By default, all facets are active but a repository can, for performance reasons,
@@ -337,9 +311,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
         """
         return list(self.search_available_facets(api_config, identity).keys())
 
-    def additional_filter_labels(
-        self, filters: dict[str, list[str]]
-    ) -> dict[str, LabeledAggregation]:
+    def additional_filter_labels(self, filters: dict[str, list[str]]) -> dict[str, LabeledAggregation]:
         """Return human-readable list of filters that are currently applied in the URL.
 
         Sometimes those are not available in the response from the search API.
@@ -364,9 +336,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
             value_labels_attr = getattr(facet, "_value_labels", None)
             if not value_labels_attr:
-                translated_filters[k]["buckets"] = [
-                    {"key": key} for key in filter_values
-                ]
+                translated_filters[k]["buckets"] = [{"key": key} for key in filter_values]
                 continue
 
             value_labels: dict[str, str]
@@ -378,8 +348,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
                 value_labels = {}
 
             translated_filters[k]["buckets"] = [
-                {"key": key, "label": value_labels.get(key, key)}
-                for key in filter_values
+                {"key": key, "label": value_labels.get(key, key)} for key in filter_values
             ]
 
         return translated_filters
@@ -399,9 +368,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
 
     def search_sort_config(
         self,
-        available_options: dict[
-            str, dict[str, Any]
-        ],  # contents of SearchOptions.sort_options field
+        available_options: dict[str, dict[str, Any]],  # contents of SearchOptions.sort_options field
         selected_options: list[str] | None = None,
         default_option: str | None = None,
         no_query_option: str | None = None,
@@ -416,9 +383,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
         """
         if selected_options is None:
             selected_options = []
-        return SortConfig(
-            available_options, selected_options, default_option, no_query_option
-        )
+        return SortConfig(available_options, selected_options, default_option, no_query_option)
 
     def search_facets_config(
         self,
@@ -477,9 +442,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
             overrides = {}
 
         if not self.model:
-            raise RuntimeError(
-                f"Model {self.model_name} not registered, cannot resolve search URL"
-            )
+            raise RuntimeError(f"Model {self.model_name} not registered, cannot resolve search URL")
         # mypy seems to ignore the type in runtime, thus added ignore
         return self.model.api_url("search")  # type: ignore[no-any-return]
 
@@ -501,15 +464,11 @@ class RecordsUIResourceConfig(UIResourceConfig):
         if overrides is None:
             overrides = {}
         opts = {
-            "endpoint": self.search_endpoint_url(
-                identity, overrides=overrides, **kwargs
-            ),
+            "endpoint": self.search_endpoint_url(identity, overrides=overrides, **kwargs),
             "headers": {"Accept": "application/vnd.inveniordm.v1+json"},
             "grid_view": False,
             "sort": self.search_sort_config(
-                available_options=self.search_available_sort_options(
-                    api_config, identity
-                ),
+                available_options=self.search_available_sort_options(api_config, identity),
                 selected_options=self.search_active_sort_options(api_config, identity),
                 default_option=api_config.search.sort_default,
                 no_query_option=api_config.search.sort_default_no_query,
@@ -598,6 +557,4 @@ class RecordsUIResourceConfig(UIResourceConfig):
         :return: Dictionary with form configuration for React forms.
         """
         """Get the react form configuration."""
-        return dict(
-            overridableIdPrefix=f"{self.application_id.capitalize()}.Form", **kwargs
-        )
+        return dict(overridableIdPrefix=f"{self.application_id.capitalize()}.Form", **kwargs)
