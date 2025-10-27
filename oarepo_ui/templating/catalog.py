@@ -95,9 +95,7 @@ class OarepoCatalog(Catalog):
 
         root_url = root_url.strip().rstrip(SLASH)
         self.root_url = f"{root_url}{SLASH}"
-        env = flask.templating.Environment(
-            undefined=jinja2.Undefined, app=current_app, autoescape=True
-        )
+        env = flask.templating.Environment(undefined=jinja2.Undefined, app=current_app, autoescape=True)
         extensions = [*(extensions or []), "jinja2.ext.do", JinjaX]
         globals = globals or {}  # noqa: A001
         filters = filters or {}
@@ -252,10 +250,7 @@ class OarepoCatalog(Catalog):
                 partial_priority = priority - idx * 10
 
                 # if the priority is greater, replace the path
-                if (
-                    partial_template_name not in paths
-                    or partial_priority > paths[partial_template_name][2]
-                ):
+                if partial_template_name not in paths or partial_priority > paths[partial_template_name][2]:
                     paths[partial_template_name] = (
                         absolute_template_path,
                         relative_template_path,
@@ -286,9 +281,7 @@ class OarepoCatalog(Catalog):
         return filename, priority
 
     @override
-    def _get_component_path(
-        self, prefix: str, name: str, file_ext: str = ""
-    ) -> tuple[Path, Path]:
+    def _get_component_path(self, prefix: str, name: str, file_ext: str = "") -> tuple[Path, Path]:
         """Get the absolute and relative path for a component template.
 
         :param prefix: Prefix for the component.
@@ -335,9 +328,7 @@ class OarepoCatalog(Catalog):
             jinja_template = loader.load(self.jinja_env, path)
             template_path = jinja_template.filename
             if template_path is None:
-                raise RuntimeError(
-                    f"Template {path} does not have a filename associated with it."
-                )
+                raise RuntimeError(f"Template {path} does not have a filename associated with it.")
             absolute_path = Path(template_path)
             relative_path = Path(path)
             template_name, stripped = strip_app_theme(template_path, app_theme)
@@ -353,9 +344,7 @@ class OarepoCatalog(Catalog):
             if stripped:
                 priority += 10
 
-            searchpath.append(
-                SearchPathItem(template_name, absolute_path, relative_path, priority)
-            )
+            searchpath.append(SearchPathItem(template_name, absolute_path, relative_path, priority))
 
         return searchpath
 
@@ -371,9 +360,7 @@ class OarepoCatalog(Catalog):
         :param source: Source code of the component.
         :return: Component instance with global context.
         """
-        loaded_component = super()._get_from_source(
-            name=name, prefix=prefix, source=source
-        )
+        loaded_component = super()._get_from_source(name=name, prefix=prefix, source=source)
         return cast(
             "Component",  # keep global is a proxy so can cast it to Component
             KeepGlobalContextComponent(
@@ -383,9 +370,7 @@ class OarepoCatalog(Catalog):
         )
 
     @override
-    def _get_from_cache(
-        self, *, prefix: str, name: str, file_ext: str
-    ) -> Component | None:
+    def _get_from_cache(self, *, prefix: str, name: str, file_ext: str) -> Component | None:
         """Get a component from cache, preserving global context.
 
         :param prefix: Prefix for the component.
@@ -393,9 +378,7 @@ class OarepoCatalog(Catalog):
         :param file_ext: File extension for the template.
         :return: Component instance with global context.
         """
-        cached_component = super()._get_from_cache(
-            prefix=prefix, name=name, file_ext=file_ext
-        )
+        cached_component = super()._get_from_cache(prefix=prefix, name=name, file_ext=file_ext)
         if cached_component is None:
             return None
         return cast(
@@ -407,9 +390,7 @@ class OarepoCatalog(Catalog):
         )
 
     @override
-    def _get_from_file(
-        self, *, prefix: str, name: str, file_ext: str
-    ) -> Component | None:
+    def _get_from_file(self, *, prefix: str, name: str, file_ext: str) -> Component | None:
         """Get a component from a file, preserving global context.
 
         :param prefix: Prefix for the component.
@@ -417,9 +398,7 @@ class OarepoCatalog(Catalog):
         :param file_ext: File extension for the template.
         :return: Component instance with global context.
         """
-        loaded_component = super()._get_from_file(
-            prefix=prefix, name=name, file_ext=file_ext
-        )
+        loaded_component = super()._get_from_file(prefix=prefix, name=name, file_ext=file_ext)
         if loaded_component is None:
             return None
         return cast(
@@ -443,9 +422,7 @@ class KeepGlobalContextComponent:
         self.__component = component
         self.__catalogue = catalogue
 
-    def filter_args(
-        self, kwargs: dict[str, Any]
-    ) -> tuple[dict[str, Any], dict[str, Any]]:
+    def filter_args(self, kwargs: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
         """Filter arguments for the component and update template context.
 
         :param kwargs: Keyword arguments for the component.

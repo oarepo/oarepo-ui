@@ -77,9 +77,3 @@ def empty(value: FieldData) -> bool:
     if not isinstance(value, FieldData):
         raise TypeError(f"Expected FieldData, got {type(value).__name__}")
     return not bool(value)
-
-
-def field_data(value, ui=None):
-    if isinstance(value, FieldData):
-        return value
-    return FieldData(api_data=value, ui_data=ui or {})

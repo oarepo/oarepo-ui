@@ -26,9 +26,7 @@ if TYPE_CHECKING:
     from invenio_records_resources.services.records.results import RecordItem
 
 
-class CustomFieldsComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig](
-    UIResourceComponent[T]
-):
+class CustomFieldsComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig](UIResourceComponent[T]):
     """Populate form configuration with UI-ready custom fields.
 
     The component relies on ``resource.config.custom_fields`` to generate the
@@ -45,7 +43,7 @@ class CustomFieldsComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig
         form_config: dict,
         ui_links: dict | None = None,
         extra_context: dict | None = None,
-        **_kwargs: Any,
+        **kwargs: Any,
     ) -> None:
         """Fill ``form_config['custom_fields']`` if configured on the resource.
 
@@ -64,4 +62,5 @@ class CustomFieldsComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig
                 form_config=form_config,
                 ui_links=ui_links,
                 extra_context=extra_context,
+                **kwargs,
             )

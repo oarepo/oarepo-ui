@@ -26,7 +26,7 @@ export const LanguageSelectField = ({
   return (
     <SelectField
       deburr
-      options={multilingualFieldLanguages?.filter(
+      options={multilingualFieldLanguages.filter(
         (o) => !usedLanguages?.includes(o.value) || o.value === value
       )}
       fieldPath={fieldPath}
