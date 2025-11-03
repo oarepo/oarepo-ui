@@ -5,6 +5,13 @@ import { useFormikContext, getIn } from "formik";
 import { useFormConfig } from "../../hooks";
 import { SelectField } from "react-invenio-forms";
 
+const serializer = (suggestions) =>
+  suggestions.map((item) => ({
+    text: item.title_l10n,
+    value: item.id,
+    key: item.id,
+  }));
+
 export const LanguageSelectField = ({
   fieldPath,
   label = i18next.t("Language"),
@@ -19,12 +26,14 @@ export const LanguageSelectField = ({
 }) => {
   const { values } = useFormikContext();
   const value = getIn(values, fieldPath, "") ?? "";
-  const { multilingualFieldLanguages } = useFormConfig();
-
+  const formConfig = useFormConfig();
+  const featuredLanguages = serializer(
+    formConfig.config.multilingualFieldLanguages
+  );
   return (
     <SelectField
       deburr
-      options={multilingualFieldLanguages.filter(
+      options={featuredLanguages.filter(
         (o) => !usedLanguages.includes(o.value) || o.value === value
       )}
       fieldPath={fieldPath}

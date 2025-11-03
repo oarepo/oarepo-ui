@@ -217,8 +217,9 @@ export const CreatibutorsField = ({
   };
 
   const formConfig = useFormConfig();
-  const roleOptions =
-    formConfig?.vocabularies?.["contributor-types"]?.all || [];
+  const roleOptions = formConfig?.vocabularies?.["contributor-types"]?.all || [
+    { text: "contact person", value: "contact-person" },
+  ];
   return (
     <CreatibutorsFieldComponent
       fieldPath={fieldPath}
