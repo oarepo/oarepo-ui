@@ -6,6 +6,15 @@ import { RichInputField, GroupField } from "react-invenio-forms";
 import PropTypes from "prop-types";
 import { Form } from "semantic-ui-react";
 
+import { LanguagesField } from "@js/invenio_rdm_records";
+
+const serializer = (suggestions) =>
+  suggestions.map((item) => ({
+    text: item.title_l10n,
+    value: item.id,
+    key: item.id,
+  }));
+
 export const I18nRichInputField = ({
   fieldPath,
   optimized = true,
@@ -20,7 +29,7 @@ export const I18nRichInputField = ({
 
   return (
     <GroupField fieldPath={fieldPath} optimized={optimized}>
-      <LanguageSelectField
+      <LanguagesField
         fieldPath={lngFieldPath}
         width={lngFieldWidth}
         usedLanguages={usedLanguages}
@@ -29,6 +38,7 @@ export const I18nRichInputField = ({
           icon: "globe",
           fieldRepresentation: "compact",
         })}
+        serializeSuggestions={serializer}
       />
 
       <Form.Field width={13}>

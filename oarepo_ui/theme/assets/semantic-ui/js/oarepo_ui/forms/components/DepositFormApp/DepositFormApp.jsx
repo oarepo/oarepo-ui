@@ -131,7 +131,6 @@ export class DepositFormApp extends Component {
     } = this.props;
 
     const Wrapper = ContainerComponent || React.Fragment;
-
     return (
       <Wrapper>
         <Provider store={this.store}>

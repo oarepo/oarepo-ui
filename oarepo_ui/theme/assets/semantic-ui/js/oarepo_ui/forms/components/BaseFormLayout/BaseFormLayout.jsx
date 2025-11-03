@@ -52,6 +52,7 @@ const BaseFormLayoutComponent = ({ formikProps = {}, record, errors = {} }) => {
   // on chrome there is an annoying issue where after deletion you are redirected, and then
   // if you click back on browser <-, it serves you the deleted page, which does not exist from the cache.
   // on firefox it does not happen.
+  console.log("baseformlayout render");
   useEffect(() => {
     const handleUnload = () => {};
 
@@ -72,9 +73,9 @@ const BaseFormLayoutComponent = ({ formikProps = {}, record, errors = {} }) => {
         <Grid.Column id="main-content" mobile={16} tablet={16} computer={11}>
           <FormTitle />
           <Sticky context={formFeedbackRef} offset={20}>
-            <Overridable id={buildUID(overridableIdPrefix, "Errors.container")}>
+            {/* <Overridable id={buildUID(overridableIdPrefix, "Errors.container")}>
               <FormFeedback />
-            </Overridable>
+            </Overridable> */}
           </Sticky>
           <Overridable
             id={buildUID(overridableIdPrefix, "FormFields.container")}

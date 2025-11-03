@@ -21,7 +21,9 @@ from ..records.config import RecordsUIResourceConfig
 from .base import UIResourceComponent
 
 
-class EmptyRecordAccessComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig](UIResourceComponent[T]):
+class EmptyRecordAccessComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig](
+    UIResourceComponent[T]
+):
     """Prefills empty record data with default public access settings.
 
     The component ensures that the required "access" structure exists and sets
@@ -39,3 +41,4 @@ class EmptyRecordAccessComponent[T: RecordsUIResourceConfig = RecordsUIResourceC
         empty_data.setdefault("access", {})
         empty_data["access"]["files"] = "public"
         empty_data["access"]["record"] = "public"
+        empty_data["access"]["status"] = "open"
