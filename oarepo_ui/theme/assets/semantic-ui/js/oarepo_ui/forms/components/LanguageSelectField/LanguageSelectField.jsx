@@ -4,7 +4,10 @@ import PropTypes from "prop-types";
 import { useFormikContext, getIn } from "formik";
 import { useFormConfig } from "../../hooks";
 import { SelectField } from "react-invenio-forms";
+import { serializer } from "./util";
 
+// Keep for oarepo-vocabularies form and potentially maybe some other use cases where
+// it will be necessary to use 2 character language codes
 export const LanguageSelectField = ({
   fieldPath,
   label = i18next.t("Language"),
@@ -26,8 +29,8 @@ export const LanguageSelectField = ({
   return (
     <SelectField
       deburr
-      options={multilingualFieldLanguages.filter(
-        (o) => !usedLanguages?.includes(o.value) || o.value === value
+      options={serializer(multilingualFieldLanguages)?.filter(
+        (o) => !usedLanguages.includes(o.value) || o.value === value
       )}
       fieldPath={fieldPath}
       placeholder={placeholder}

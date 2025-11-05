@@ -40,7 +40,7 @@ export const FormTitle = () => {
   );
 };
 
-const BaseFormLayoutComponent = ({ formikProps = {}, record, errors = {} }) => {
+const BaseFormLayoutComponent = ({ record, errors = {} }) => {
   const {
     overridableIdPrefix,
     custom_fields: customFields,
@@ -158,7 +158,7 @@ const BaseFormLayoutComponent = ({ formikProps = {}, record, errors = {} }) => {
 
 const mapStateToProps = (state) => {
   return {
-    record: state.deposit.record,
+    // record: state.deposit.record,
     errors: state.deposit.errors,
   };
 };
@@ -173,7 +173,6 @@ BaseFormLayoutComponent.propTypes = {
   // eslint-disable-next-line react/require-default-props
   errors: PropTypes.object,
   // eslint-disable-next-line react/require-default-props
-  formikProps: PropTypes.object,
 };
 
 export default BaseFormLayout;
