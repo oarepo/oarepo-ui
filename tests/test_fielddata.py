@@ -61,9 +61,10 @@ def test_field_data(field_data_test_obj):
     publication_date = metadata["publication_date"]
     assert isinstance(publication_date, FieldData)
     assert FieldData.value(publication_date) == api_value_serialization["metadata"]["publication_date"]
-    assert (
-        FieldData.ui_value(publication_date) == api_value_serialization["metadata"]["publication_date"]
-    )  # no format specified
+    if isinstance(publication_date._ui_data, dict):  # noqa: SLF001 private access  # no format specified
+        assert FieldData.ui_value(publication_date) == next(
+            iter(publication_date._ui_data.values())  # noqa: SLF001 private access  # no format specified
+        )
     assert (
         FieldData.ui_value(publication_date, format="l10n_medium")
         == ui_value_serialization["publication_date_l10n_medium"]
@@ -105,7 +106,8 @@ def test_field_data(field_data_test_obj):
     )
 
     assert (
-        FieldData.ui_value(metadata["description"]) == api_value_serialization["metadata"]["description"]
+        FieldData.ui_value(metadata["additional_description"])
+        == api_value_serialization["metadata"]["additional_description"]
     )  # fallback to api value
     assert FieldData.ui_value(metadata["description"], format="stripped") == "fotočka"
 
@@ -134,8 +136,11 @@ def test_field_data(field_data_test_obj):
     assert (
         FieldData.ui_value(resource_type_title, format="l10n") == ui_value_serialization["resource_type"]["title_l10n"]
     )
+    resource_type_title_without_ui_data = resource_type_title
+    resource_type_title_without_ui_data._ui_data = {}  # noqa: SLF001 private access
+
     assert (
-        json.loads(FieldData.ui_value(resource_type_title, format=""))
+        json.loads(FieldData.ui_value(resource_type_title_without_ui_data, format=""))
         == api_value_serialization["metadata"]["resource_type"]["title"]
     )  # no format, fallback to API value
 

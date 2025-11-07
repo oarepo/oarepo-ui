@@ -43,7 +43,7 @@ class CustomFieldsComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig
         form_config: dict,
         ui_links: dict | None = None,
         extra_context: dict | None = None,
-        **_kwargs: Any,
+        **kwargs: Any,
     ) -> None:
         """Fill ``form_config['custom_fields']`` if configured on the resource.
 
@@ -62,4 +62,5 @@ class CustomFieldsComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig
                 form_config=form_config,
                 ui_links=ui_links,
                 extra_context=extra_context,
+                **kwargs,
             )

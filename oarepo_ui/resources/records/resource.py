@@ -454,7 +454,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             # (but do not want to get the count as it is another request to Opensearch)
             (page + 1) * size,
         )
-        ui_links = self.expand_search_links(g.identity, pagination, kwargs)
+        ui_links = self.expand_search_links(g.identity, pagination, **kwargs)
 
         overridable_id_prefix = f"{self.config.application_id.capitalize()}.Search"
 
@@ -701,7 +701,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         if not self.config.model:
             raise RuntimeError(f"Model {self.config.model_name} not registered, cannot resolve create URL")
 
-        create_url = self.config.model.api_url("create")
+        create_url = self.config.model.api_url("create", **kwargs)
 
         form_config = self._get_form_config(
             g.identity,
@@ -742,7 +742,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             "theme": community_theme,
             "forms_config": form_config,
             "searchbar_config": {
-                "searchUrl": url_for(f"{self.config.blueprint_name}.search"),
+                "searchUrl": url_for(f"{self.config.blueprint_name}.search", **kwargs),
             },
             "record": record,
             "community": community,
@@ -820,7 +820,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         )
 
     def expand_search_links(
-        self, identity: Identity, pagination: Pagination, query_args: dict[str, str]
+        self, identity: Identity, pagination: Pagination, **kwargs: dict[str, Any]
     ) -> dict[str, str]:
         """Get links for a search result item using the configured template.
 
@@ -837,7 +837,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
                 "url_prefix": self.config.url_prefix,
                 # need to pass current page and size as they are not added in self link
                 "args": {
-                    **query_args,
+                    **kwargs,
                     "page": pagination.page,
                     "size": pagination.size,
                 },
@@ -942,10 +942,13 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             is_restricted = record.get("access", {}).get("record", None) == "restricted"
             has_doi = "doi" in record.get("pids", {})
             if is_restricted and has_doi:
-                return render_template(
-                    "invenio_app_rdm/records/restricted_with_doi_tombstone.html",
-                    record=record,
-                ), 403
+                return (
+                    render_template(
+                        "invenio_app_rdm/records/restricted_with_doi_tombstone.html",
+                        record=record,
+                    ),
+                    403,
+                )
 
         return render_template(current_app.config["THEME_403_TEMPLATE"]), 403
 

@@ -341,7 +341,8 @@ def rdm_value():
 			"title": "Pištův testovací záznam",
 			"publisher": "DMiksik",
 			"publication_date": "2025-07-10",
-			"description": "<p>fotočka</p>"
+			"description": "<p>fotočka</p>",
+            "additional_description": "<p>additional description</p>"
 
 		},
 		"custom_fields": {},

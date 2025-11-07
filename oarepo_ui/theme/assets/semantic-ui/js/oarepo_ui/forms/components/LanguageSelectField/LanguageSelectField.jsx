@@ -19,13 +19,15 @@ export const LanguageSelectField = ({
 }) => {
   const { values } = useFormikContext();
   const value = getIn(values, fieldPath, "") ?? "";
-  const { multilingualFieldLanguages } = useFormConfig();
+  const {
+    config: { multilingualFieldLanguages = [] },
+  } = useFormConfig();
 
   return (
     <SelectField
       deburr
       options={multilingualFieldLanguages.filter(
-        (o) => !usedLanguages.includes(o.value) || o.value === value
+        (o) => !usedLanguages?.includes(o.value) || o.value === value
       )}
       fieldPath={fieldPath}
       placeholder={placeholder}
@@ -40,12 +42,10 @@ export const LanguageSelectField = ({
 
 LanguageSelectField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
-  /* eslint-disable react/require-default-props */
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   labelIcon: PropTypes.string,
   required: PropTypes.bool,
   clearable: PropTypes.bool,
   placeholder: PropTypes.string,
   usedLanguages: PropTypes.array,
-  /* eslint-enable react/require-default-props */
 };
