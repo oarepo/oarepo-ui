@@ -18,11 +18,13 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast, override
 
+import re
 from flask import current_app
 from flask_webpackext import WebpackBundleProject
 from pywebpack import bundles_from_entry_point
 from pywebpack.helpers import cached
 
+from .cli.less import enumerate_assets, COMPONENT_LIST_RE, COMPONENT_RE
 from .proxies import current_oarepo_ui, current_ui_overrides
 
 if TYPE_CHECKING:
@@ -135,6 +137,7 @@ class OverridableBundleProject(WebpackBundleProject):
         bundle for any UI overrides.
         """
         super().create(force)
+        self.collect_and_register_less_components()
 
         # Generate special bundle for configured UI overrides
         if not Path(self.overrides_bundle_path).exists():
@@ -152,6 +155,47 @@ class OverridableBundleProject(WebpackBundleProject):
         """Clean created webpack project."""
         super().clean()
         self.generated_paths.clear()
+
+    def collect_and_register_less_components(self, theme_config_file: Path | None = None) -> None:
+        """Collect and register LESS components directly."""
+        # Collect LESS components
+        _, asset_dirs = enumerate_assets()
+        less_component_files: list[Path] = []
+
+        for asset_dir in asset_dirs:
+            less_dir = asset_dir / "less"
+            if less_dir.exists():
+                less_component_files.extend(f for f in less_dir.glob("**/custom-components.less"))
+
+        components = set()
+        for cmp_file in less_component_files:
+            for component_list in COMPONENT_LIST_RE.findall(cmp_file.read_text()):
+                for s in COMPONENT_RE.findall(component_list[0]):
+                    components.add(Path(s).stem)
+
+        # Register LESS components
+        if theme_config_file is None:
+            theme_config_file = (
+                Path(current_app.instance_path) / "assets" / "less" / "theme.config"
+            )
+
+        if not theme_config_file.exists():
+            raise FileNotFoundError(f"Theme configuration file {theme_config_file} does not exist.")
+
+        theme_data = theme_config_file.read_text()
+        for c in components:
+            match = re.search(f"^@{c}", theme_data, re.MULTILINE)
+            if not match:
+                autoregistration_position = theme_data.index(
+                    "/* --- autoregistration point, do not remove --- */"
+                )
+                theme_data = (
+                    theme_data[:autoregistration_position]
+                    + f"\n@{c}: 'default';\n"
+                    + theme_data[autoregistration_position:]
+                )
+
+        theme_config_file.write_text(theme_data)
 
 
 project = OverridableBundleProject(
