@@ -1,3 +1,8 @@
 #invenio-menu {
   width: auto !important;
 }
+
+.visually-hidden {
+  visibility: hidden;
+  white-space: nowrap;
+}
