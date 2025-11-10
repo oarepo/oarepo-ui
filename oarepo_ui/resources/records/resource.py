@@ -328,6 +328,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             "community_ui": resolved_community_ui,
             # TODO: implement external resources
             "user_avatar": avatar,
+            "model": self.config.model,
             # record created with system_identity have not owners e.g demo
             "record_owner_id": record_owner.get("id"),
             # JinjaX support
@@ -499,28 +500,21 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             context=current_oarepo_ui.catalog.jinja_env.globals,
         )
 
-    def _export(
-        self,
-        pid_value: str,
-        export_format: str,
-        is_preview: bool = False,
-        **kwargs: Any,
-    ) -> tuple[Any, int, dict[str, str]] | None:
-        """Export a record in the specified format.
-
-        :param pid_value: Persistent identifier value for the record.
-        :param export_format: Format code for export.
-        :param is_preview: Whether to export a preview version.
-        :return: Tuple of (exported data, status code, headers).
-        :raises: 404 if no exporter is found.
-        """
-        record = self._get_record(pid_value, allow_draft=is_preview, **kwargs)
+    @pass_route_args("view", "record_export")
+    @pass_query_args("record_detail")
+    @pass_record_or_draft(expand=False)
+    def record_export(
+        self, pid_value, record, export_format=None, permissions=None, is_preview=False, **kwargs
+    ):
+        """Export page view."""
+        # Get the configured serializer
         exports = None
         if self.config.model:
             exports = [export for export in self.config.model.exports if export.code.lower() == export_format.lower()]
         if not exports:
             abort(404, f"No exporter for code {export_format}")
             return None
+    
         mimetype = exports[0].mimetype
         serializer = exports[0].serializer
         exported_record = serializer.serialize_object(record.to_dict())
@@ -535,40 +529,6 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             "Content-Disposition": f"attachment; filename={filename}",
         }
         return (exported_record, 200, headers)
-
-    @pass_route_args("view", "export")
-    def export(
-        self,
-        pid_value: str,
-        export_format: str,
-        **kwargs: Any,
-    ) -> tuple[Any, int, dict[str, str]] | None:
-        """Export a record in the specified format."""
-        return self._export(pid_value, export_format, **kwargs)
-
-    @pass_route_args("view", "export")
-    def export_preview(
-        self,
-        pid_value: str,
-        export_format: str,
-        **kwargs: Any,
-    ) -> tuple[Any, int, dict[str, str]] | None:
-        """Export a preview of a record in the specified format."""
-        return self._export(pid_value, export_format, is_preview=True, **kwargs)
-
-    def get_jinjax_macro(self, template_type: str, default_macro: str | None = None) -> str:
-        """Return which jinjax macro should be used for rendering the template.
-
-        Name of the macro may include optional namespace in the form of "namespace.Macro".
-
-        :param template_type: Type of template to render (e.g., 'detail', 'search').
-        :param default_macro: Default macro name if not found in config.
-        :return: Macro name string.
-        """
-        tmpl = self.config.templates.get(template_type, default_macro)
-        if not tmpl:
-            raise KeyError(f"Template {template_type} not found and default macro was not provided.")
-        return tmpl
 
     @pass_route_args("view")
     @secret_link_or_login_required()
