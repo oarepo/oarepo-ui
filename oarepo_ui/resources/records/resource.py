@@ -629,6 +629,20 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             **render_kwargs,
         )
 
+    def get_jinjax_macro(self, template_type: str, default_macro: str | None = None) -> str:
+        """Return which jinjax macro should be used for rendering the template.
+
+        Name of the macro may include optional namespace in the form of "namespace.Macro".
+
+        :param template_type: Type of template to render (e.g., 'detail', 'search').
+        :param default_macro: Default macro name if not found in config.
+        :return: Macro name string.
+        """
+        tmpl = self.config.templates.get(template_type, default_macro)
+        if not tmpl:
+            raise KeyError(f"Template {template_type} not found and default macro was not provided.")
+        return tmpl
+
     def _get_form_config(self, identity: Identity, **kwargs: Any) -> dict[str, Any]:
         return self.config.form_config(identity=identity, **kwargs)
 

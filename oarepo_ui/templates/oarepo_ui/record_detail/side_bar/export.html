@@ -17,12 +17,13 @@
       {# dynamically create the list of export formats #}
       {% set formats = [] %}
 
-      {{model.configuration}}
+      {{model.blueprint_name}}
       {%- for exporter in model.exports -%}
         {% if is_preview %}
-          {%- set export_url = url_for('datasets_ui.export', pid_value=record_ui["id"], export_format=exporter.code, preview=1) -%}
+        <!-- TODO: how to use use correct flask endpoint from model? -->
+          {%- set export_url = url_for('datasets_ui.record_export', pid_value=record_ui["id"], export_format=exporter.code, preview=1) -%}
         {% else %}
-          {%- set export_url = url_for('datasets_ui.export', pid_value=record_ui["id"], export_format=exporter.code) -%}
+          {%- set export_url = url_for('datasets_ui.record_export', pid_value=record_ui["id"], export_format=exporter.code) -%}
         {% endif %}
 
         {% set formats = formats.append({ 'name': exporter.name, 'export_url': export_url }) %}
