@@ -504,8 +504,11 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
     @pass_query_args("record_detail")
     @pass_record_or_draft(expand=False)
     def record_export(
-        self, pid_value, record, export_format=None, permissions=None, is_preview=False, **kwargs
-    ):
+        self,
+        record: RecordItem,
+        export_format: str,
+        **kwargs: Any,  # noqa ARG002
+    ) -> tuple[str, int, dict[str, str]] | None:
         """Export page view."""
         # Get the configured serializer
         exports = None
@@ -513,8 +516,8 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             exports = [export for export in self.config.model.exports if export.code.lower() == export_format.lower()]
         if not exports:
             abort(404, f"No exporter for code {export_format}")
-            return None
-    
+
+        exports = cast("list", exports)
         mimetype = exports[0].mimetype
         serializer = exports[0].serializer
         exported_record = serializer.serialize_object(record.to_dict())
