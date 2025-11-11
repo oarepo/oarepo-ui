@@ -13,22 +13,12 @@
   <div class="sidebar-container">
     <h2 class="ui medium top attached header mt-0">{{ _('Export') }}</h2>
     <div id="export-record" class="ui segment bottom attached exports rdm-sidebar">
-
       {# dynamically create the list of export formats #}
       {% set formats = [] %}
-
-      {{model.blueprint_name}}
       {%- for exporter in model.exports -%}
-        {% if is_preview %}
-        <!-- TODO: how to use use correct flask endpoint from model? -->
-          {%- set export_url = url_for('datasets_ui.record_export', pid_value=record_ui["id"], export_format=exporter.code, preview=1) -%}
-        {% else %}
-          {%- set export_url = url_for('datasets_ui.record_export', pid_value=record_ui["id"], export_format=exporter.code) -%}
-        {% endif %}
-
+        {%- set export_url = model.ui_url(view_name="record_export", pid_value=record_ui["id"], export_format=exporter.code, preview=1 if is_preview else 0)  -%}
         {% set formats = formats.append({ 'name': exporter.name, 'export_url': export_url }) %}
       {%- endfor -%}
-
       <div id="recordExportDownload" data-formats='{{ formats | tojson }}'></div>
     </div>
   </div>
