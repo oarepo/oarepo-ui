@@ -19,6 +19,8 @@ from collections.abc import Callable
 from functools import wraps
 from typing import TYPE_CHECKING, Any
 
+from oarepo_runtime.resources.signposting import create_linkset, record_dict_to_linkset
+
 from .utils import get_api_record_from_response
 
 if TYPE_CHECKING:
@@ -44,13 +46,13 @@ def response_header_signposting[T: Callable](f: T) -> T:
         api_record = get_api_record_from_response(response)
         if not api_record:
             return response
-
-        signposting_link = api_record.links["self"]
-        response.headers.update(
-            {
-                "Link": f'<{signposting_link}> ; rel="linkset" ; type="application/linkset+json"',
-            }
-        )
+        record_linkset = record_dict_to_linkset(api_record.to_dict())
+        if record_linkset:
+            response.headers.update(
+                {
+                    "Link": record_linkset,
+                }
+            )
 
         return response
 

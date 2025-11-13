@@ -69,3 +69,12 @@ def test_record_detail(app, location, logged_client, users, record_factory, extr
 
         assert response["user_avatar"].endswith(f"/api/users/{creator.id}/avatar.svg")
         assert response["record_owner_id"] == creator.id
+
+        # # checky na link hlavicku v response
+        assert resp.headers["Link"] == (
+            f'<https://orcid.org/0000-0001-5727-2427>; rel=author; anchor="https://127.0.0.1:5000/simple-model/records/{record_ui["id"]}", '
+            f'<https://ror.org/04wxnsj81>; rel=author; anchor="https://127.0.0.1:5000/simple-model/records/{record_ui["id"]}", '
+            f'<https://doi.org/10.82433/b09z-4k37>; rel=cite-as; anchor="https://127.0.0.1:5000/simple-model/records/{record_ui["id"]}", '
+            f'<https://spdx.org/licenses/cc-by-4.0>; rel=license; anchor="https://127.0.0.1:5000/simple-model/records/{record_ui["id"]}", '
+            f'<https://schema.org/Dataset>; rel=type; anchor="https://127.0.0.1:5000/simple-model/records/{record_ui["id"]}", '
+            f'<https://schema.org/AboutPage>; rel=type; anchor="https://127.0.0.1:5000/simple-model/records/{record_ui["id"]}"')

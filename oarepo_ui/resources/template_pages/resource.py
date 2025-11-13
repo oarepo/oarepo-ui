@@ -20,7 +20,8 @@ from flask_resources import (
 
 from oarepo_ui.proxies import current_oarepo_ui
 
-from ..base import UIResource, pass_route_args
+from ..base import UIResource
+from ..decorators import pass_route_args
 
 if TYPE_CHECKING:
     from werkzeug import Response

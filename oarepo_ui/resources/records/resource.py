@@ -69,6 +69,9 @@ from oarepo_ui.resources.decorators import (
     pass_record_media_files,
     pass_record_or_draft,
     secret_link_or_login_required,
+    pass_query_args,
+    pass_route_args,
+    record_content_negotiation
 )
 from oarepo_ui.utils import dump_empty
 
@@ -76,7 +79,7 @@ from oarepo_ui.utils import dump_empty
 #
 from ...proxies import current_oarepo_ui
 from ...templating.data import FieldData
-from ..base import UIResource, pass_query_args, pass_route_args
+from ..base import UIResource
 from ..signposting import response_header_signposting
 from ..utils import set_api_record_to_response
 from .config import (
@@ -264,6 +267,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
     @pass_route_args("view")
     @pass_query_args("record_detail")
     @pass_record_or_draft(expand=True)
+    @record_content_negotiation
     @pass_record_files
     @pass_record_media_files
     @response_header_signposting
@@ -300,6 +304,11 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         record_owner = record_ui.get("expanded", {}).get("parent", {}).get("access", {}).get("owned_by", {})
         # TODO: implement communities & community theme
         resolved_community, resolved_community_ui = None, None
+
+        from oarepo_runtime import current_runtime
+        datacite_exporter = current_runtime.models_by_schema[record.data['$schema']].get_export_by_mimetype(
+            'application/vnd.datacite.datacite+json')
+        datacite_export = datacite_exporter.serializer.serialize_object(record.to_dict())
 
         render_kwargs = {
             "record": record,
@@ -338,6 +347,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
                 ui_definitions=self.ui_model,
                 item_getter=self.config.field_data_item_getter,
             ),
+            "datacite_export": datacite_export
         }
 
         # TODO: implement render_community_theme_template?
@@ -525,6 +535,8 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         serializer = exports[0].serializer
         exported_record = serializer.serialize_object(record.to_dict())
         extension = guess_extension(mimetype)
+        if exports[0].code == "lset":
+            extension = ".txt"
         if not extension:
             first, second = mimetype.rsplit("/", maxsplit=1)
             _, second = second.rsplit("+", maxsplit=1)
