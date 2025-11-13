@@ -305,6 +305,11 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         # TODO: implement communities & community theme
         resolved_community, resolved_community_ui = None, None
 
+        from oarepo_runtime import current_runtime
+        datacite_exporter = current_runtime.models_by_schema[record.data['$schema']].get_export_by_mimetype(
+            'application/vnd.datacite.datacite+json')
+        datacite_export = datacite_exporter.serializer.serialize_object(record.to_dict())
+
         render_kwargs = {
             "record": record,
             "record_ui": record_ui,
@@ -342,6 +347,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
                 ui_definitions=self.ui_model,
                 item_getter=self.config.field_data_item_getter,
             ),
+            "datacite_export": datacite_export
         }
 
         # TODO: implement render_community_theme_template?
