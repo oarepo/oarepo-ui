@@ -507,7 +507,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         self,
         record: RecordItem,
         export_format: str,
-        **kwargs: Any,  # noqa ARG002
+        **kwargs: Any,
     ) -> tuple[str, int, dict[str, str]] | None:
         """Export page view."""
         # Get the configured serializer
@@ -520,7 +520,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         exports = cast("list", exports)
         mimetype = exports[0].mimetype
         serializer = exports[0].serializer
-        exported_record = serializer.serialize_object(record.to_dict())
+        exported_record = serializer.serialize_object(self._get_record(**kwargs).to_dict())
         extension = guess_extension(mimetype)
         if not extension:
             first, second = mimetype.rsplit("/", maxsplit=1)
