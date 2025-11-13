@@ -46,6 +46,7 @@ def create_blueprint(app: Flask) -> Blueprint:
         blueprint.add_url_rule(**create_url_rule(routes.get("index"), default_view_func=index))
         blueprint.add_url_rule(**create_url_rule(routes.get("robots"), default_view_func=robots))
         blueprint.add_url_rule(**create_url_rule(routes.get("help_search"), default_view_func=help_search))
+        blueprint.add_url_rule(**create_url_rule(routes.get("help_statistics"), default_view_func=help_statistics))
 
     blueprint.app_context_processor(lambda: ({"current_app": app}))
 
@@ -97,6 +98,18 @@ def help_search() -> ResponseReturnValue:
         [
             f"invenio_app_rdm/help/search.{locale}.html",
             "invenio_app_rdm/help/search.en.html",
+        ]
+    )
+
+
+def help_statistics() -> ResponseReturnValue:
+    """Statistics help guide."""
+    # Default to rendering english page if locale page not found.
+    locale = get_locale()
+    return render_template(
+        [
+            f"invenio_app_rdm/help/statistics.{locale}.html",
+            "invenio_app_rdm/help/statistics.en.html",
         ]
     )
 
