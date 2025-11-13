@@ -502,7 +502,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
 
     @pass_route_args("view", "record_export")
     @pass_query_args("record_detail")
-    @pass_record_or_draft(expand=False)
+    @pass_record_or_draft(expand=True)
     def record_export(
         self,
         record: RecordItem,
@@ -520,7 +520,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         exports = cast("list", exports)
         mimetype = exports[0].mimetype
         serializer = exports[0].serializer
-        exported_record = serializer.serialize_object(self._get_record(**kwargs).to_dict())
+        exported_record = serializer.serialize_object(record.to_dict())
         extension = guess_extension(mimetype)
         if not extension:
             first, second = mimetype.rsplit("/", maxsplit=1)
