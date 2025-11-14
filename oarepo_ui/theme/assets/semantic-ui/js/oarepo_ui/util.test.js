@@ -3,7 +3,6 @@ import {
   scrollTop,
   object2array,
   array2object,
-  requiredMessage,
   unique,
   scrollToElement,
   getLocalizedValue,
@@ -120,15 +119,6 @@ describe("array2object", () => {
 
     const notArray4 = 42;
     expect(array2object(notArray4, "lang", "title")).toEqual({});
-  });
-});
-
-describe("requiredMessage", () => {
-  it("should return required message", () => {
-    const label = "Name";
-    const msg = requiredMessage({ label });
-    expect(msg).toContain(label);
-    expect(msg).toContain("is a required field");
   });
 });
 
