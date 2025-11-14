@@ -10,7 +10,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from oarepo_ui.overrides.components import UIComponent, UIComponentImportMode, UIComponentOverride
+from oarepo_ui.overrides.components import (
+    UIComponent,
+    UIComponentImportMode,
+    UIComponentOverride,
+)
 from oarepo_ui.proxies import current_oarepo_ui, current_ui_overrides
 from oarepo_ui.webpack import OverridableBundleProject, project
 
@@ -49,11 +53,19 @@ def test_overridable_bundle_project_entry_file(app):
     del app.extensions["oarepo_ui"].ui_overrides
 
     app.config["OAREPO_UI_OVERRIDES"] = {
-        UIComponentOverride("test_bp", "componentA.item", UIComponent("ComponentA", "components/ComponentA")),
+        UIComponentOverride(
+            "test_bp",
+            "componentA.item",
+            UIComponent("ComponentA", "components/ComponentA"),
+        ),
         UIComponentOverride(
             "test_bp",
             "componentB.item",
-            UIComponent("DefaultComponent", "components/DefaultComponent", UIComponentImportMode.DEFAULT),
+            UIComponent(
+                "DefaultComponent",
+                "components/DefaultComponent",
+                UIComponentImportMode.DEFAULT,
+            ),
         ),
     }
     with app.app_context():
@@ -83,8 +95,16 @@ overrideStore.add('componentB.item', DefaultComponent);
 
 def test_overridable_bundle_project_generated_paths(app):
     app.config["OAREPO_UI_OVERRIDES"] = {
-        UIComponentOverride("test_bp1", "componentA.item", UIComponent("ComponentA", "components/ComponentA")),
-        UIComponentOverride("test_bp2", "componentA.item", UIComponent("ComponentB", "components/ComponentB")),
+        UIComponentOverride(
+            "test_bp1",
+            "componentA.item",
+            UIComponent("ComponentA", "components/ComponentA"),
+        ),
+        UIComponentOverride(
+            "test_bp2",
+            "componentA.item",
+            UIComponent("ComponentB", "components/ComponentB"),
+        ),
     }
 
     project.clean()
@@ -137,3 +157,16 @@ overrideStore.add('MyUI.ResultList.item.schema://component-v1', ComponentA);
         with overrides_file_path.open() as f:
             overrides_file_path_content = f.read()
             assert overrides_file_path_content == expected
+
+
+def test_less_components_registration(app):
+    project.clean()
+    project.create()
+
+    project_path = Path(project.project_path)
+    theme_config_path = project_path / "less" / "theme.config"
+    custom_less_components = project.collect_less_components()
+    assert Path(theme_config_path).exists()
+    theme_config_content = theme_config_path.read_text()
+    for component in custom_less_components:
+        assert f"@{component}:" in theme_config_content, f"Component {component} not found in theme.config"
