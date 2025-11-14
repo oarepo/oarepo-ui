@@ -15,16 +15,17 @@ for React components with configurable properties.
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast, override
 
-import re
 from flask import current_app
 from flask_webpackext import WebpackBundleProject
 from pywebpack import bundles_from_entry_point
 from pywebpack.helpers import cached
 
-from .cli.less import enumerate_assets, COMPONENT_LIST_RE, COMPONENT_RE
+from oarepo_ui.less import COMPONENT_LIST_RE, COMPONENT_RE, enumerate_assets
+
 from .proxies import current_oarepo_ui, current_ui_overrides
 
 if TYPE_CHECKING:
@@ -137,13 +138,17 @@ class OverridableBundleProject(WebpackBundleProject):
         bundle for any UI overrides.
         """
         super().create(force)
+        # Collect and register LESS components
         self.collect_and_register_less_components()
 
         # Generate special bundle for configured UI overrides
         if not Path(self.overrides_bundle_path).exists():
             Path(self.overrides_bundle_path).mkdir(parents=True, exist_ok=True)
 
-        for endpoint, component_overrides in current_oarepo_ui.ui_overrides_by_endpoint.items():
+        for (
+            endpoint,
+            component_overrides,
+        ) in current_oarepo_ui.ui_overrides_by_endpoint.items():
             template = current_app.jinja_env.from_string(overrides_js_template)
             overrides_js_content = template.render({"overrides": component_overrides})
             overrides_js_path = Path(self.overrides_bundle_path) / f"{endpoint}.js"
@@ -156,16 +161,15 @@ class OverridableBundleProject(WebpackBundleProject):
         super().clean()
         self.generated_paths.clear()
 
-    def collect_and_register_less_components(self, theme_config_file: Path | None = None) -> None:
-        """Collect and register LESS components directly."""
-        # Collect LESS components
+    def collect_less_components(self) -> set[str]:
+        """Collect LESS components from asset directories."""
         _, asset_dirs = enumerate_assets()
         less_component_files: list[Path] = []
 
         for asset_dir in asset_dirs:
             less_dir = asset_dir / "less"
             if less_dir.exists():
-                less_component_files.extend(f for f in less_dir.glob("**/custom-components.less"))
+                less_component_files.extend(less_dir.glob("**/custom-components.less"))
 
         components = set()
         for cmp_file in less_component_files:
@@ -173,12 +177,10 @@ class OverridableBundleProject(WebpackBundleProject):
                 for s in COMPONENT_RE.findall(component_list[0]):
                     components.add(Path(s).stem)
 
-        # Register LESS components
-        if theme_config_file is None:
-            theme_config_file = (
-                Path(current_app.instance_path) / "assets" / "less" / "theme.config"
-            )
+        return components
 
+    def register_less_components(self, components: set[str], theme_config_file: Path) -> None:
+        """Register LESS components in the theme configuration file."""
         if not theme_config_file.exists():
             raise FileNotFoundError(f"Theme configuration file {theme_config_file} does not exist.")
 
@@ -186,9 +188,7 @@ class OverridableBundleProject(WebpackBundleProject):
         for c in components:
             match = re.search(f"^@{c}", theme_data, re.MULTILINE)
             if not match:
-                autoregistration_position = theme_data.index(
-                    "/* --- autoregistration point, do not remove --- */"
-                )
+                autoregistration_position = theme_data.index("/* --- autoregistration point, do not remove --- */")
                 theme_data = (
                     theme_data[:autoregistration_position]
                     + f"\n@{c}: 'default';\n"
@@ -196,6 +196,13 @@ class OverridableBundleProject(WebpackBundleProject):
                 )
 
         theme_config_file.write_text(theme_data)
+
+    def collect_and_register_less_components(self, theme_config_file: Path | None = None) -> None:
+        """Collect and register LESS components directly."""
+        components = self.collect_less_components()
+        if theme_config_file is None:
+            theme_config_file = Path(current_app.instance_path) / "assets" / "less" / "theme.config"
+        self.register_less_components(components, theme_config_file)
 
 
 project = OverridableBundleProject(
