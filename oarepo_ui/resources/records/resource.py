@@ -507,7 +507,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         self,
         record: RecordItem,
         export_format: str,
-        **kwargs: Any,
+        **kwargs: Any,  # noqa ARG002
     ) -> tuple[str, int, dict[str, str]] | None:
         """Export page view."""
         # Get the configured serializer
