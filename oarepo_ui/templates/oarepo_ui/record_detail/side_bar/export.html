@@ -1,0 +1,25 @@
+{#
+  Copyright (C) 2020 CERN.
+  Copyright (C) 2020 Northwestern University.
+  Copyright (C) 2021 TU Wien.
+  Copyright (C) 2022 New York University.
+
+  Invenio RDM Records is free software; you can redistribute it and/or modify
+  it under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{%- if model.exports | length > 0 -%}
+  {# if no export formats are specified, don't bother showing the box #}
+  <div class="sidebar-container">
+    <h2 class="ui medium top attached header mt-0">{{ _('Export') }}</h2>
+    <div id="export-record" class="ui segment bottom attached exports rdm-sidebar">
+      {# dynamically create the list of export formats #}
+      {% set formats = [] %}
+      {%- for exporter in model.exports -%}
+        {%- set export_url = model.ui_url(view_name="record_export", pid_value=record_ui["id"], export_format=exporter.code, preview=1 if is_preview else 0)  -%}
+        {% set formats = formats.append({ 'name': exporter.name, 'export_url': export_url }) %}
+      {%- endfor -%}
+      <div id="recordExportDownload" data-formats='{{ formats | tojson }}'></div>
+    </div>
+  </div>
+{%- endif -%}
