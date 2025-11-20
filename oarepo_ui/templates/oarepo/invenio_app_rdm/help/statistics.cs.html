@@ -1,0 +1,195 @@
+{#
+  Copyright (C) 2021-2023 CERN.
+  Copyright (C) 2021 Northwestern University.
+
+  Invenio App RDM is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+{%- set title = "Často kladené otázky - Statistiky" %}
+{%- extends config.BASE_TEMPLATE %}
+
+{%- block page_body %}
+  <div class="ui two column grid container rel-mt-2">
+    <div class="ui row">
+      <div class="ui sixteen wide column">
+        <h2 id="statistics">Statistiky</h2>
+        <p></p>
+      </div>
+      <div class="ui eight wide column">
+        <h3>
+          <p>Co sledujete?</p>
+        </h3>
+        <p>Sledujeme dva typy událostí:</p>
+        <ol>
+          <li>Návštěvy stránky záznamu.</li>
+          <li>Stažení souboru.</li>
+        </ol>
+        <p>U obou typů událostí sledujeme:</p>
+        <ol>
+          <li>
+            <strong>Návštěvník:</strong>
+            Anonymizované ID návštěvníka.
+          </li>
+          <li>
+            <strong>Typ návštěvníka:</strong>
+            Zda byl požadavek proveden a) člověkem, b) strojem nebo c) robotem.
+          </li>
+          <li>
+            <strong>Země:</strong>
+            Země původu požadavku (na základě IP adresy).
+          </li>
+          <li>
+            <strong>Odkaz:</strong>
+            Doména odkazu.
+          </li>
+        </ol>
+        <h3>
+          <p>
+            Co je
+            <em>zobrazení</em>
+            ?
+          </p>
+        </h3>
+        <p>Uživatel (člověk nebo stroj) navštěvující záznam, bez započítání dvojitých kliknutí a robotů.</p>
+        <h3>
+          <p>
+            Co je
+            <em>unikátní zobrazení</em>
+            ?
+          </p>
+        </h3>
+        <p>
+          <em>Unikátní zobrazení</em>
+          je definováno jako jedna nebo více návštěv uživatele v časovém okně 1 hodiny. To znamená, že pokud byl stejný záznam
+          navštíven vícekrát stejným uživatelem ve stejném časovém okně, považujeme to za jedno unikátní zobrazení.
+        </p>
+        <h3>
+          <p>
+            Co je
+            <em>stažení</em>
+            ?
+          </p>
+        </h3>
+        <p>Uživatel (člověk nebo stroj) stahující soubor ze záznamu, bez započítání dvojitých kliknutí a robotů. Pokud má záznam
+          více souborů a stáhnete všechny soubory, každý soubor se počítá jako jedno stažení.</p>
+        <h3>
+          <p>
+            Co je
+            <em>unikátní stažení</em>
+            ?
+          </p>
+        </h3>
+        <p>
+          <em>Unikátní stažení</em>
+          je definováno jako jedno nebo více stažení souborů z jednoho záznamu uživatelem v časovém okně 1 hodiny. To
+          znamená, že pokud byl jeden nebo více souborů stejného záznamu stažen vícekrát stejným uživatelem ve stejném
+          časovém okně, považujeme to za jedno unikátní stažení.
+        </p>
+        <h3>
+          <p>
+            Co je
+            <em>objem stažených dat</em>
+            ?
+          </p>
+        </h3>
+        <p>Celkový objem dat, který byl stažen pro všechny soubory v záznamu uživatelem (člověkem nebo strojem), bez
+          započítání dvojitých kliknutí a robotů. V případě, že uživatel zruší stahování souboru v průběhu, stále počítáme
+          celkovou velikost souboru jako plně staženou.</p>
+        <h3>
+          <p>Jak nakládáte s verzemi?</h3>
+        </h3>
+        <p>Ve výchozím nastavení u záznamu zobrazujeme agregované počty zobrazení, stažení a objemu dat pro všechny verze
+          záznamu. Můžete rozbalit box se statistikami použití na stránce záznamu a zobrazit počty pro konkrétní
+          verzi.</p>
+        <h3>
+          <p>Jak nakládáte s roboty?</p>
+        </h3>
+        <p>
+          Požadavky provedené roboty (také známými jako crawlery, spidery, boti) jsou odfiltrovány ze statistik použití. Roboty
+          detekujeme na základě standardizovaného seznamu robotů poskytovaného projekty
+          <a href="https://www.projectcounter.org/">COUNTER</a>
+          a
+          <a href="https://makedatacount.org/">Making Data Count</a>
+          .
+        </p>
+        <h3>
+          <p>Jak často aktualizujete statistiky použití?</p>
+        </h3>
+        <p>Jednou denně.</p>
+        <h3>
+          <p>Jak mohu zobrazit nejprohlíženější záznamy?</p>
+        </h3>
+        <p>
+          Každé vyhledávání na {{ config.THEME_SITENAME }} umožňuje seřadit výsledky vyhledávání podle "
+          <a href="/search?sort=mostviewed">nejprohlíženějších</a>
+          ".
+        </p>
+        <h3>
+          <p>Jak sledujete?</p>
+        </h3>
+        <p>
+          Při sledování dodržujeme
+          <a href="https://www.projectcounter.org/">COUNTER Code of Practice</a>
+          stejně jako
+          <a href="https://peerj.com/preprints/26505/">Code of Practice for Research Data Usage Metrics</a>
+          . To znamená, že naše statistiky použití lze porovnat s jinými repozitáři kompatibilními s COUNTER.
+        </p>
+      </div>
+      <div class="ui eight wide column">
+        <h3>
+          <p>Jaký je rozdíl mezi strojem a robotem?</p>
+        </h3>
+        <p>
+          <em>Strojový požadavek</em>
+          je automatizovaný požadavek iniciovaný lidským uživatelem, např. skript stahující data z {{ config.THEME_SITENAME }} a provádějící
+          analýzu dat.
+          <em>Robotický požadavek</em>
+          je automatizovaný požadavek provedený např. crawlerem vyhledávače.
+        </p>
+        <h3>
+          <p>Jak anonymizujete uživatele?</p>
+        </h3>
+        <p>Pro každou událost zobrazení/stažení sledujeme anonymizované ID návštěvníka. Toto anonymizované ID návštěvníka se
+          pro uživatele mění každých 24 hodin, takže uživatel zobrazující stejný záznam ve dvou různých dnech bude mít dvě různá
+          anonymizovaná ID návštěvníka. Důvodem, proč sledujeme anonymizované ID návštěvníka, je počítání unikátních zobrazení a stažení.</p>
+        <p>
+          Z bezpečnostních důvodů také vedeme log přístupu k webovému serveru, který obsahuje vaši
+          <a href="https://en.wikipedia.org/wiki/IP_address">IP adresu</a>
+          a řetězec
+          <a href="https://en.wikipedia.org/wiki/User_agent">user agent</a>
+          vašeho prohlížeče. Tento log přístupu k webovému serveru je automaticky smazán po maximálně 1 roce a je také striktně oddělen
+          od sběru statistik použití.
+        </p>
+        <p>Anonymizované ID návštěvníka je generováno z osobního identifikátoru, jako je:</p>
+        <ol>
+          <li>ID uživatele,</li>
+          <li>ID relace,</li>
+          <li>nebo IP adresa a řetězec user-agent vašeho prohlížeče.</li>
+        </ol>
+        <p>
+          Kombinujeme osobní identifikátor s náhodnou textovou hodnotou (salt) a aplikujeme jednosměrnou
+          <a href="https://en.wikipedia.org/wiki/Cryptographic_hash_function">kryptografickou hash funkci</a>
+          pro zakódování dat. Salt (náhodná textová hodnota) je zahozena a regenerována každých 24 hodin. Použití a
+          následné zahození náhodného saltu zajišťuje, že anonymizované ID návštěvníka je plně náhodné.
+        </p>
+        <h3>
+          <p>Mohu se odhlásit ze sledování statistik použití?</p>
+        </h3>
+        <p>Ne, není možné se odhlásit. Sledování statistik použití je plně anonymizované a probíhá na
+          straně serveru.</p>
+        <h3>
+          <p>Podporujete statistiky použití pro komunitu?</p>
+        </h3>
+        <p>Zatím ne, ale budeme přidávat agregované statistiky použití pro vaše komunity.</p>
+        <h3>
+          <p>Sledujete mé vyhledávací dotazy?</p>
+        </h3>
+        <p>Ne.</p>
+        <h3>
+          <p>Provádíte nějaké manuální nebo automatické profilování uživatelů?</p>
+        </h3>
+        <p>Ne.</p>
+      </div>
+    </div>
+  </div>
+{% endblock page_body %}
