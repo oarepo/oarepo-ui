@@ -122,8 +122,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
         "deposit_edit": "/uploads/<pid_value>",
         "record_detail": "/records/<pid_value>",
         "record_latest": "/records/<pid_value>/latest",
-        "export": "/records/<pid_value>/export/<export_format>",
-        "export_preview": "/records/<pid_value>/preview/export/<export_format>",
+        "record_export": "/records/<pid_value>/export/<export_format>",
         "published_file_preview": "/records/<pid_value>/files/<path:filepath>/preview",
         "draft_file_preview": "/records/<pid_value>/preview/files/<path:filepath>/preview",
     }
@@ -156,7 +155,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
     )
     """Request arguments for viewing a file associated with a record, including the file path."""
 
-    request_export_args: type[Schema] = MultiDictSchema.from_dict({"export_format": ma.fields.Str()})
+    request_record_export_args: type[Schema] = MultiDictSchema.from_dict({"export_format": ma.fields.Str()})
     """Request arguments for exporting a record, including the export format.
     Currently it only supports ?export_format=xyz"""
 
