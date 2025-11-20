@@ -1,0 +1,10 @@
+{#def record, permissions, groups_enabled #}
+
+<section 
+  id="record-actions"
+  aria-label="{{ _('Actions') }}" 
+  class="ui segment record-actions"
+  data-record='{{ record | tojson }}' 
+  data-permissions='{{ permissions | tojson }}' 
+  data-groups-enabled='{{ groups_enabled | tojson }}'
+></section>

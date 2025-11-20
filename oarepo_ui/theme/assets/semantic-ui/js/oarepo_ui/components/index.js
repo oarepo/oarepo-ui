@@ -5,3 +5,4 @@ import "./filepreview";
 export * from "./Disabled";
 export * from "./ClipboardCopyButton";
 export * from "./IdentifierBadge";
+export * from "./RecordActionButtons";
