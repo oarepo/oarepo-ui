@@ -65,10 +65,13 @@ from werkzeug.exceptions import Forbidden
 from oarepo_ui.resources.decorators import (
     pass_draft,
     pass_draft_files,
+    pass_query_args,
     pass_record_files,
     pass_record_latest,
     pass_record_media_files,
     pass_record_or_draft,
+    pass_route_args,
+    record_content_negotiation,
     secret_link_or_login_required,
 )
 from oarepo_ui.utils import dump_empty
@@ -77,7 +80,7 @@ from oarepo_ui.utils import dump_empty
 #
 from ...proxies import current_oarepo_ui
 from ...templating.data import FieldData
-from ..base import UIResource, pass_query_args, pass_route_args
+from ..base import UIResource
 from ..signposting import response_header_signposting
 from ..utils import set_api_record_to_response
 from .config import (

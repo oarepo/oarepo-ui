@@ -17,7 +17,8 @@ from flask_resources import (
     route,
 )
 
-from ..base import UIComponentsResource, pass_route_args
+from ..base import UIComponentsResource
+from ..decorators import pass_route_args
 from .config import FormConfigResourceConfig
 
 
