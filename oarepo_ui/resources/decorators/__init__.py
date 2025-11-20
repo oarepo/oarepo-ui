@@ -15,6 +15,7 @@ from .base import no_cache_response, pass_query_args, pass_route_args, secret_li
 from .content_negotiation import record_content_negotiation
 from .pass_draft import pass_draft, pass_draft_files
 from .pass_record import pass_record_files, pass_record_latest, pass_record_media_files, pass_record_or_draft
+from .signposting import response_header_signposting
 
 __all__ = (
     "no_cache_response",
@@ -27,5 +28,6 @@ __all__ = (
     "pass_record_or_draft",
     "pass_route_args",
     "record_content_negotiation",
+    "response_header_signposting",
     "secret_link_or_login_required",
 )

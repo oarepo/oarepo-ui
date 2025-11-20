@@ -72,6 +72,7 @@ from oarepo_ui.resources.decorators import (
     pass_record_or_draft,
     pass_route_args,
     record_content_negotiation,
+    response_header_signposting,
     secret_link_or_login_required,
 )
 from oarepo_ui.utils import dump_empty
@@ -81,7 +82,6 @@ from oarepo_ui.utils import dump_empty
 from ...proxies import current_oarepo_ui
 from ...templating.data import FieldData
 from ..base import UIResource
-from ..signposting import response_header_signposting
 from ..utils import set_api_record_to_response
 from .config import (
     RecordsUIResourceConfig,
@@ -268,6 +268,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
     @pass_route_args("view")
     @pass_query_args("record_detail")
     @pass_record_or_draft(expand=True)
+    @record_content_negotiation
     @pass_record_files
     @pass_record_media_files
     @response_header_signposting
