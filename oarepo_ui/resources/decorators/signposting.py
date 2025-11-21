@@ -46,7 +46,7 @@ def response_header_signposting[T: Callable](f: T) -> T:
         api_record = get_api_record_from_response(response)
         if not api_record:
             return response
-        record_linkset = record_dict_to_linkset(api_record.to_dict())
+        record_linkset = record_dict_to_linkset(api_record.to_dict(), include_reverse_relations=False)
         if record_linkset:
             response.headers.update(
                 {
