@@ -46,6 +46,7 @@ from invenio_vocabularies.records.systemfields.relations import CustomFieldsRela
 from marshmallow import Schema, fields, post_load, validate
 from oarepo_runtime import current_runtime
 from oarepo_runtime.services.facets.params import GroupedFacetsParam
+from oarepo_runtime.resources.serializers.rdm import DefaultRDMUISchema
 from sqlalchemy.exc import NoResultFound
 
 from ..base import UIResourceConfig
@@ -215,6 +216,9 @@ class RecordsUIResourceConfig(UIResourceConfig):
     field_data_item_getter: FieldDataItemGetter | None = None
     """Field data item getter for retrieving field data items in the UI.
     If not set, the default getter will be used."""
+    
+    rdm_ui_schema = DefaultRDMUISchema
+    """marshmallow schema that converts datacite serialization to rdm ui serialization"""
 
     @property
     def ui_links_item(self) -> Mapping[str, EndpointLink]:
@@ -260,6 +264,23 @@ class RecordsUIResourceConfig(UIResourceConfig):
             raise RuntimeError(f"Model {self.model_name} not registered, cannot resolve UI serializer.")
 
         serializer = next(x for x in self.model.exports if x.code == "ui_json").serializer
+        if not serializer:
+            raise ValueError(f"UI serializer is not set for model {self.model.code}.")
+        if not isinstance(serializer, MarshmallowSerializer):
+            raise TypeError(f"UI serializer must be an instance of MarshmallowSerializer, got {type(serializer)}.")
+        return serializer
+
+    @property
+    def rdm_ui_serializer(self) -> MarshmallowSerializer:
+        """Return an instance of the UI serializer class.
+
+        :return: UI serializer instance.
+        """
+        if not self.model:
+            raise RuntimeError(f"Model {self.model_name} not registered, cannot resolve UI serializer.")
+
+
+        serializer = next(x for x in self.model.exports if x.code == "rdm_ui_json").serializer
         if not serializer:
             raise ValueError(f"UI serializer is not set for model {self.model.code}.")
         if not isinstance(serializer, MarshmallowSerializer):

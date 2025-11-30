@@ -19,9 +19,7 @@ from collections.abc import Callable
 from functools import wraps
 from typing import TYPE_CHECKING, Any
 
-from oarepo_runtime.resources.signposting import record_dict_to_linkset
-
-from ..utils import get_api_record_from_response
+from oarepo_runtime.resources.signposting import create_linkset
 
 if TYPE_CHECKING:
     from flask import Response
@@ -43,10 +41,7 @@ def response_header_signposting[T: Callable](f: T) -> T:
         if response.status_code != 200:  # noqa: PLR2004 official 200 http code
             return response
 
-        api_record = get_api_record_from_response(response)
-        if not api_record:
-            return response
-        record_linkset = record_dict_to_linkset(api_record.to_dict(), include_reverse_relations=False)
+        record_linkset = create_linkset(kwargs["datacite_serialization"], kwargs["record"].to_dict(), include_reverse_relations=False)
         if record_linkset:
             response.headers.update(
                 {

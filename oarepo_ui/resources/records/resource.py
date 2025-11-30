@@ -82,7 +82,6 @@ from oarepo_ui.utils import dump_empty
 from ...proxies import current_oarepo_ui
 from ...templating.data import FieldData
 from ..base import UIResource
-from ..utils import set_api_record_to_response
 from .config import (
     RecordsUIResourceConfig,
 )
@@ -286,6 +285,9 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         record_ui = self._prepare_record_ui(record)
         is_draft = record_ui["is_draft"]
         avatar = self._get_user_avatar()
+        export_engine = ExportEngine()
+        datacite_serialization = export_engine.export(record_dict=record.to_dict(), export_code="datacite")
+        rdm_record_ui = self._prepare_rdm_record_ui(record, datacite_serialization=datacite_serialization)
 
         # TODO: implement custom fields feature
 
@@ -308,7 +310,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
 
         render_kwargs = {
             "record": record,
-            "record_ui": record_ui,
+            "record_ui": rdm_record_ui,
             "files": files_dict,
             "media_files": media_files_dict,
             # TODO: implement user_communities_memberships
@@ -344,6 +346,11 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
                 ui_definitions=self.ui_model,
                 item_getter=self.config.field_data_item_getter,
             ),
+            # "datacite_serialization": FieldData.create(
+            #     api_data=datacite_serialization,
+            #     ui_data={},
+            #     ui_definitions={}
+            # )
         }
 
         # TODO: implement render_community_theme_template?
@@ -355,7 +362,6 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             mimetype="text/html",
             status=200,
         )
-        set_api_record_to_response(response, record)
         return response
 
     @pass_route_args("view")
