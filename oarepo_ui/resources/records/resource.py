@@ -57,6 +57,7 @@ from invenio_stats.proxies import current_stats
 from invenio_users_resources.proxies import current_user_resources
 from marshmallow import ValidationError
 from oarepo_runtime import current_runtime
+from oarepo_runtime.api import ExportEngine
 from oarepo_runtime.ext import ExportRepresentation
 from oarepo_runtime.typing import record_from_result
 from werkzeug import Response
@@ -268,6 +269,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
     @pass_route_args("view")
     @pass_query_args("record_detail")
     @pass_record_or_draft(expand=True)
+    @ExportEngine.cache
     @record_content_negotiation
     @pass_record_files
     @pass_record_media_files

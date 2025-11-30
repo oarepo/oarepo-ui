@@ -19,7 +19,7 @@ from collections.abc import Callable
 from functools import wraps
 from typing import TYPE_CHECKING, Any
 
-from oarepo_runtime.resources.signposting import record_dict_to_linkset
+from oarepo_runtime.resources.signposting import create_linkset
 
 from ..utils import get_api_record_from_response
 
@@ -46,7 +46,7 @@ def response_header_signposting[T: Callable](f: T) -> T:
         api_record = get_api_record_from_response(response)
         if not api_record:
             return response
-        record_linkset = record_dict_to_linkset(api_record.to_dict(), include_reverse_relations=False)
+        record_linkset = create_linkset(kwargs["export_cache"].export("application/vnd.datacite.datacite+json"), api_record.to_dict(), include_reverse_relations=False)
         if record_linkset:
             response.headers.update(
                 {
