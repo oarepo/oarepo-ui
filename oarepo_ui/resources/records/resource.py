@@ -217,6 +217,21 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         record_ui.setdefault("links", {})
         return cast("dict[str, Any]", record_ui)
 
+    def _prepare_rdm_record_ui(self, record: RecordItem, datacite_serialization: dict = None) -> dict[str, Any]:
+        """Prepare rdm record data for UI rendering."""
+        parent = getattr(record_from_result(record), "parent", None)
+        if parent is not None:
+            access = parent.get("access")
+            if not access or access.get("settings") is None:
+                parent["access"]["settings"] = AccessSettings({}).dump()
+        if datacite_serialization is None:
+            record_ui = self.config.ui_serializer.dump_obj(record.to_dict())
+        else:
+            record_ui = self.config.rdm_ui_serializer.dump_obj(datacite_serialization)
+
+        record_ui.setdefault("links", {})
+        return cast("dict[str, Any]", record_ui)
+
     def _get_user_avatar(self) -> str | None:
         """Retrieve the current user's avatar if authenticated."""
         if current_user.is_authenticated:
@@ -346,11 +361,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
                 ui_definitions=self.ui_model,
                 item_getter=self.config.field_data_item_getter,
             ),
-            # "datacite_serialization": FieldData.create(
-            #     api_data=datacite_serialization,
-            #     ui_data={},
-            #     ui_definitions={}
-            # )
+            "datacite_serialization": FieldData.create(api_data=datacite_serialization, ui_data={}, ui_definitions={}),
         }
 
         # TODO: implement render_community_theme_template?

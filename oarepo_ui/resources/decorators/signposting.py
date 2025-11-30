@@ -41,7 +41,9 @@ def response_header_signposting[T: Callable](f: T) -> T:
         if response.status_code != 200:  # noqa: PLR2004 official 200 http code
             return response
 
-        record_linkset = create_linkset(kwargs["datacite_serialization"], kwargs["record"].to_dict(), include_reverse_relations=False)
+        record_linkset = create_linkset(
+            kwargs["datacite_serialization"], kwargs["record"].to_dict(), include_reverse_relations=False
+        )
         if record_linkset:
             response.headers.update(
                 {

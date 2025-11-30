@@ -45,8 +45,8 @@ from invenio_search_ui.searchconfig import FacetsConfig, SearchAppConfig, SortCo
 from invenio_vocabularies.records.systemfields.relations import CustomFieldsRelation
 from marshmallow import Schema, fields, post_load, validate
 from oarepo_runtime import current_runtime
-from oarepo_runtime.services.facets.params import GroupedFacetsParam
 from oarepo_runtime.resources.serializers.rdm import DefaultRDMUISchema
+from oarepo_runtime.services.facets.params import GroupedFacetsParam
 from sqlalchemy.exc import NoResultFound
 
 from ..base import UIResourceConfig
@@ -216,7 +216,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
     field_data_item_getter: FieldDataItemGetter | None = None
     """Field data item getter for retrieving field data items in the UI.
     If not set, the default getter will be used."""
-    
+
     rdm_ui_schema = DefaultRDMUISchema
     """marshmallow schema that converts datacite serialization to rdm ui serialization"""
 
@@ -278,7 +278,6 @@ class RecordsUIResourceConfig(UIResourceConfig):
         """
         if not self.model:
             raise RuntimeError(f"Model {self.model_name} not registered, cannot resolve UI serializer.")
-
 
         serializer = next(x for x in self.model.exports if x.code == "rdm_ui_json").serializer
         if not serializer:
