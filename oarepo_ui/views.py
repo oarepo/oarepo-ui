@@ -16,7 +16,7 @@ and notification settings handling.
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-
+from datetime import datetime
 from flask import Blueprint, current_app, render_template, send_from_directory
 from flask_menu import current_menu
 from invenio_app_rdm.views import create_url_rule
@@ -50,6 +50,7 @@ def create_blueprint(app: Flask) -> Blueprint:
         blueprint.add_url_rule(**create_url_rule("/.well-known/<path:filename>", default_view_func=well_known))
 
     blueprint.app_context_processor(lambda: ({"current_app": app}))
+    blueprint.app_context_processor(lambda: ({'now': datetime.utcnow()}))
     blueprint.app_context_processor(
         lambda: (
             {
