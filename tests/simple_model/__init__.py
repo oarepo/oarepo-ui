@@ -29,6 +29,7 @@ from oarepo_ui.resources.components import (
     PermissionsComponent,
     RecordRestrictionComponent,
 )
+from oarepo_ui.resources.decorators import allow_method
 from oarepo_ui.resources.records.config import RecordsUIResourceConfig
 from oarepo_ui.resources.records.resource import RecordsUIResource
 from oarepo_ui.utils import can_view_deposit_page
@@ -47,6 +48,11 @@ class SimpleModelUIResourceConfig(RecordsUIResourceConfig):
         "@js/simple-model/search/ResultsListItem",
         UIComponentImportMode.DEFAULT,
     )
+
+    routes: ClassVar[dict] = {
+        **RecordsUIResourceConfig.routes,
+        "multiple_methods": "multiple_methods",
+    }
 
     components: ClassVar[list] = [
         AllowedHtmlTagsComponent,
@@ -79,8 +85,24 @@ class SimpleModelUIResourceConfig(RecordsUIResourceConfig):
     }
 
 
+from flask import request
+
+
 class SimpleModelUIResource(RecordsUIResource):
     """UI resource for simple_model."""
+
+    @allow_method(["GET", "POST", "DELETE"])
+    def multiple_methods(self):
+        """Test multiple http methods."""
+        method = request.method
+
+        status_map = {
+            "GET": 200,
+            "POST": 201,
+            "DELETE": 200,
+        }
+
+        return "Inside.", status_map.get(method, 405)
 
 
 def ui_overrides(app):
