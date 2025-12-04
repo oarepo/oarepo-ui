@@ -11,7 +11,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, ParamSpec, TypeVar
+from typing import TYPE_CHECKING, ParamSpec, TypeVar
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable
@@ -25,9 +25,9 @@ def allow_method(methods: Iterable[str] | None = None) -> Callable[[Callable[P, 
     if methods is None:
         methods = ["GET"]
 
-    def inner(func: Any) -> Any:
+    def inner(func: Callable[P, R]) -> Callable[P, R]:
         """Attach the configured HTTP methods to the wrapped view function."""
-        func._http_methods = methods  # noqa: SLF001
+        func._http_methods = methods  # type: ignore[attr-defined]  # noqa: SLF001
         return func
 
     return inner
