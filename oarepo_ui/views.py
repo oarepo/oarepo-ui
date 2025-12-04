@@ -18,7 +18,7 @@ from __future__ import annotations
 import datetime
 from typing import TYPE_CHECKING
 
-from flask import Blueprint, current_app, render_template, send_from_directory
+from flask import Blueprint, current_app, render_template
 from flask_menu import current_menu
 from invenio_app_rdm.views import create_url_rule
 from invenio_base.utils import obj_or_import_string
@@ -48,7 +48,6 @@ def create_blueprint(app: Flask) -> Blueprint:
         blueprint.add_url_rule(**create_url_rule(routes.get("robots"), default_view_func=robots))
         blueprint.add_url_rule(**create_url_rule(routes.get("help_search"), default_view_func=help_search))
         blueprint.add_url_rule(**create_url_rule(routes.get("help_statistics"), default_view_func=help_statistics))
-        blueprint.add_url_rule(**create_url_rule("/.well-known/<path:filename>", default_view_func=well_known))
 
     blueprint.app_context_processor(lambda: ({"current_app": app}))
     blueprint.app_context_processor(lambda: ({"now": datetime.datetime.now(tz=datetime.UTC)}))
@@ -100,11 +99,6 @@ def robots() -> ResponseReturnValue:
         "invenio_app_rdm/robots.txt",
         urls_of_sitemap_indices=iterate_urls_of_sitemap_indices(),
     )
-
-
-def well_known(filename: str) -> ResponseReturnValue:
-    """Well-known static files."""
-    return send_from_directory("static/.well-known", filename)
 
 
 def help_search() -> ResponseReturnValue:
