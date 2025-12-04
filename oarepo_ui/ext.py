@@ -134,7 +134,10 @@ class OARepoUIState:
     @cached_property
     def ui_overrides(self) -> set[UIComponentOverride]:
         """Get the UI overrides for the current app."""
-        return cast("set[UIComponentOverride]", current_app.config.get("OAREPO_UI_OVERRIDES", {}))
+        return cast(
+            "set[UIComponentOverride]",
+            current_app.config.get("OAREPO_UI_OVERRIDES", {}),
+        )
 
     @property
     def ui_overrides_by_endpoint(self) -> dict[str, set[UIComponentOverride]]:

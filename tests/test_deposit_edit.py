@@ -15,7 +15,15 @@ from invenio_config.default import ALLOWED_HTML_ATTRS, ALLOWED_HTML_TAGS
 from tests.util import _clean_unstable_fields
 
 
-def test_deposit_edit(app, location, record_service, logged_client, users, draft_factory, extra_entry_points):
+def test_deposit_edit(
+    app,
+    location,
+    record_service,
+    logged_client,
+    users,
+    draft_factory,
+    extra_entry_points,
+):
     draft = draft_factory(users[0].identity)
 
     with logged_client(users[0]).get(f"/simple-model/uploads/{draft['id']}") as resp:

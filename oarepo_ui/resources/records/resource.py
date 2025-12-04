@@ -81,7 +81,7 @@ from oarepo_ui.utils import dump_empty
 #
 from ...proxies import current_oarepo_ui
 from ...templating.data import FieldData
-from ..base import UIResource
+from ..base import UIResource, multiple_methods_route
 from ..utils import set_api_record_to_response
 from .config import (
     RecordsUIResourceConfig,
@@ -140,8 +140,12 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
                     )
                 )
             else:
-                routes.append(route("GET", route_url_with_prefix, getattr(self, route_name)))
-
+                view = getattr(self, route_name)
+                methods = getattr(view, "_http_methods", ["GET"])
+                if len(methods) > 1:
+                    routes.append(multiple_methods_route(methods, route_url_with_prefix, view))
+                else:
+                    routes.append(route(methods[0], route_url_with_prefix, view))
         for route_name, config_route_url in self.config.config_routes.items():
             if config_route_url:
                 config_route_url_with_prefix = "{config_prefix}/{url_prefix}/{route}".format(

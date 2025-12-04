@@ -19,11 +19,13 @@ from typing import TYPE_CHECKING, Any, Self, override
 from flask_resources import (
     Resource,
 )
+from flask_resources.config import resolve_from_conf
+from flask_resources.context import ResourceRequestCtx
 from flask_resources.parsers import MultiDictSchema
 from marshmallow import Schema
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator, Mapping
+    from collections.abc import Iterable, Iterator, Mapping
 
     from flask import Blueprint
     from flask.typing import ErrorHandlerCallable
@@ -59,7 +61,11 @@ class UIResourceConfig:
             tf = Path(inspect.getfile(type(self))).parent.absolute().joinpath(tf).absolute()
         return str(tf)
 
-    response_handlers: Mapping[str, Any] = {"text/html": None, "application/json": None, "application/linkset": None}
+    response_handlers: Mapping[str, Any] = {
+        "text/html": None,
+        "application/json": None,
+        "application/linkset": None,
+    }
     default_accept_mimetype = "text/html"
 
     error_handlers: Mapping[type[Exception], str | ErrorHandlerCallable] = {}
@@ -118,3 +124,57 @@ class UIResource[T: UIResourceConfig = UIResourceConfig](UIComponentsResource[T]
         ret: dict[str, Any] = {}
         self.run_components("fill_jinja_context", context=ret)
         return ret
+
+
+# ruff: noqa: PLR0913
+def multiple_methods_route(
+    methods: Iterable[str],
+    rule: str,
+    view_meth: Any,
+    endpoint: str | None = None,
+    rule_options: Mapping[str, Any] | None = None,
+    apply_decorators: bool = True,
+) -> dict:
+    """Create a route.
+
+    Use this method in ``create_url_rules()`` to build your list of rules.
+
+    The ``view_method`` parameter should be a bound method (e.g.
+    ``self.myview``).
+
+    :param methods: The HTTP methods for this URL rule.
+    :param rule: A URL rule.
+    :param view_meth: The view method (a bound method) for this URL rule.
+    :param endpoint: The name of the endpoint. By default the name is taken
+        from the method name.
+    :param rule_options: A dictionary of extra options passed to
+        ``Blueprint.add_url_rule``.
+    :param apply_decorators: Apply the decorators defined by the resource.
+        Defaults to ``True``. This allows you to selective disable
+        decorators which are normally applied to all view methods.
+    """
+    view_name = view_meth.__name__
+    config = view_meth.__self__.config
+    decorators = view_meth.__self__.decorators
+
+    if apply_decorators:
+        # reversed so order is the same as when applied directly to method
+        for decorator in reversed(decorators):
+            view_meth = decorator(view_meth)
+
+    def view(*args: Any, **kwargs: Any) -> Any:
+        _, _ = args, kwargs
+        with ResourceRequestCtx(config):
+            # args and kwargs are ignored on purpose - use a request parser
+            # to retrieve the validated values.
+            return view_meth()
+
+    view.__name__ = view_name
+
+    return {
+        "rule": resolve_from_conf(rule, config),
+        "methods": methods,
+        "view_func": view,
+        "endpoint": endpoint,
+        **(rule_options or {}),
+    }
