@@ -66,7 +66,7 @@ function _hasValidationErrorsWithSeverityError(errors) {
   }
 }
 
-async function _saveDraft(
+export async function _saveDraft(
   draft,
   draftsService,
   {
