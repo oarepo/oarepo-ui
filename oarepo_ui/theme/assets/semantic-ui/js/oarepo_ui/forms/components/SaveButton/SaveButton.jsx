@@ -7,7 +7,7 @@ import { useDepositFormAction } from "../../hooks";
 import { DRAFT_SAVE_STARTED } from "@js/invenio_rdm_records/src/deposit/state/types";
 import PropTypes from "prop-types";
 
-const SaveButtonComponent = React.memo(
+export const SaveButtonComponent = React.memo(
   ({ saveAction, actionState, ...uiProps }) => {
     const { handleAction: handleSave, isSubmitting } = useDepositFormAction({
       action: saveAction,

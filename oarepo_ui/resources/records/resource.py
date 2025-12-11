@@ -529,27 +529,14 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             abort(404, f"No exporter for code {export_format}")
             raise
 
-    @pass_route_args("view")
-    @secret_link_or_login_required()
-    @pass_draft(expand=True)
-    @pass_draft_files
-    @no_cache_response
-    def deposit_edit(
+    def _edit(
         self,
         draft: RecordItem,
         draft_files: FileList | None = None,
         files_locked: bool = True,
         **kwargs: Any,  # noqa ARG002
     ) -> ResponseReturnValue:
-        """Return edit page for a record."""
-        service = self.api_service
-        can_edit_draft = service.check_permission(g.identity, "update_draft", record=record_from_result(draft))
-        can_preview_draft = service.check_permission(g.identity, "preview", record=record_from_result(draft))
-        if not can_edit_draft:
-            if can_preview_draft:
-                return redirect(draft["links"]["preview_html"])
-            raise PermissionDeniedError
-
+        """Return edit page for a record (core logic without decorators)."""
         files_dict = None if draft_files is None else draft_files.to_dict()
         record = self.config.ui_serializer.dump_obj(copy.copy(draft.to_dict()))
         # TODO: implement edit action on published record (similar to RDM)
@@ -628,6 +615,28 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             **render_kwargs,
         )
 
+    @pass_route_args("view")
+    @secret_link_or_login_required()
+    @pass_draft(expand=True)
+    @pass_draft_files
+    @no_cache_response
+    def deposit_edit(
+        self,
+        draft: RecordItem,
+        draft_files: FileList | None = None,
+        files_locked: bool = True,
+        **kwargs: Any,
+    ) -> ResponseReturnValue:
+        """Return edit page for a record."""
+        service = self.api_service
+        can_edit_draft = service.check_permission(g.identity, "update_draft", record=record_from_result(draft))
+        can_preview_draft = service.check_permission(g.identity, "preview", record=record_from_result(draft))
+        if not can_edit_draft:
+            if can_preview_draft:
+                return redirect(draft["links"]["preview_html"])
+            raise PermissionDeniedError
+        return self._edit(draft, draft_files, files_locked, **kwargs)
+
     def get_jinjax_macro(self, template_type: str, default_macro: str | None = None) -> str:
         """Return which jinjax macro should be used for rendering the template.
 
@@ -650,19 +659,13 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         service = self.api_service
         return {f"can_{action}": service.check_permission(g.identity, action, record=record) for action in actions}
 
-    @login_required
-    @no_cache_response
-    @pass_query_args("create")
-    def deposit_create(
+    def _create(
         self,
         community: str | None = None,
         community_ui: dict | None = None,
         **kwargs: Any,
     ) -> ResponseReturnValue:
-        """Return create page for a record."""
-        if not self.has_deposit_permissions(g.identity):
-            raise PermissionDeniedError(_("User does not have permission to create a record."))
-
+        """Return create page for a record (core logic without decorators)."""
         community_theme = None
         if community is not None and community_ui is not None:
             community_theme = community_ui.get("theme", {})
@@ -747,6 +750,20 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             ),
             **render_kwargs,
         )
+
+    @login_required
+    @no_cache_response
+    @pass_query_args("create")
+    def deposit_create(
+        self,
+        community: str | None = None,
+        community_ui: dict | None = None,
+        **kwargs: Any,
+    ) -> ResponseReturnValue:
+        """Return create page for a record."""
+        if not self.has_deposit_permissions(g.identity):
+            raise PermissionDeniedError(_("User does not have permission to create a record."))
+        return self._create(community, community_ui, **kwargs)
 
     def has_deposit_permissions(self, identity: Identity) -> bool:
         """Check if the identity has deposit permissions for creating records.
