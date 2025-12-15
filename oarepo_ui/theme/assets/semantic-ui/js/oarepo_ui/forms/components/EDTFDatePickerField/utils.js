@@ -59,19 +59,23 @@ export const getDateFormatStringFromEdtfFormat = (dateEdtfFormat) => {
 
 export const getInitialEdtfDateFormat = (fieldValue) => {
   let dateEdtfFormat;
-  if (fieldValue) {
-    const value = fieldValue.includes("/")
-      ? fieldValue.split("/")[0] || fieldValue.split("/")[1]
-      : fieldValue;
-    if (parse(_trim(value)).values.length === 1) {
-      dateEdtfFormat = "yyyy";
-    } else if (parse(_trim(value)).values.length === 2) {
-      dateEdtfFormat = "yyyy-mm";
+  try {
+    if (fieldValue) {
+      const value = fieldValue.includes("/")
+        ? fieldValue.split("/")[0] || fieldValue.split("/")[1]
+        : fieldValue;
+      if (parse(_trim(value)).values.length === 1) {
+        dateEdtfFormat = "yyyy";
+      } else if (parse(_trim(value)).values.length === 2) {
+        dateEdtfFormat = "yyyy-mm";
+      } else {
+        dateEdtfFormat = "yyyy-mm-dd";
+      }
     } else {
       dateEdtfFormat = "yyyy-mm-dd";
     }
-  } else {
-    dateEdtfFormat = "yyyy-mm-dd";
+  } catch (error) {
+    console.error("Error parsing EDTF date:", error);
   }
   return dateEdtfFormat;
 };

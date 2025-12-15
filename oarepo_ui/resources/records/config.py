@@ -11,7 +11,7 @@
 from __future__ import annotations
 
 import inspect
-from typing import TYPE_CHECKING, Any, NotRequired, TypedDict, cast
+from typing import TYPE_CHECKING, Any, ClassVar, NotRequired, TypedDict, cast
 
 import marshmallow as ma
 from flask import current_app
@@ -215,6 +215,36 @@ class RecordsUIResourceConfig(UIResourceConfig):
     field_data_item_getter: FieldDataItemGetter | None = None
     """Field data item getter for retrieving field data items in the UI.
     If not set, the default getter will be used."""
+
+    record_detail_permissions: ClassVar[list[str]] = [
+        "edit",
+        "new_version",
+        "manage",
+        "update_draft",
+        "read_files",
+        "review",
+        "view",
+        "media_read_files",
+        "moderate",
+    ]
+    """List of permission actions to check for record detail page."""
+
+    deposit_edit_permissions: ClassVar[list[str]] = [
+        "manage",
+        "new_version",
+        "delete_draft",
+        "manage_files",
+        "manage_record_access",
+    ]
+    """List of permission actions to check for deposit edit page."""
+
+    deposit_create_permissions: ClassVar[list[str]] = [
+        "manage",
+        "manage_files",
+        "delete_draft",
+        "manage_record_access",
+    ]
+    """List of permission actions to check for deposit create page."""
 
     @property
     def ui_links_item(self) -> Mapping[str, EndpointLink]:
