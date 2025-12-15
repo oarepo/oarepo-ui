@@ -90,7 +90,7 @@ export class RecordsList extends Component {
 
   render() {
     const { isLoading, data, error } = this.state;
-    const { title, appName } = this.props;
+    const { title, appName, searchEndpoint } = this.props;
 
     const listItems = data.hits?.map((record) => {
       return (
@@ -126,7 +126,9 @@ export class RecordsList extends Component {
                 </Item.Group>
 
                 <Container textAlign="center">
-                  <Button href="/search">{i18next.t("More")}</Button>
+                  <Button href={searchEndpoint || "/search"}>
+                    {i18next.t("More")}
+                  </Button>
                 </Container>
               </>
             ) : null}
@@ -141,6 +143,7 @@ RecordsList.propTypes = {
   title: PropTypes.string.isRequired,
   fetchUrl: PropTypes.string.isRequired,
   appName: PropTypes.string,
+  searchEndpoint: PropTypes.string,
 };
 
 RecordsList.defaultProps = {
