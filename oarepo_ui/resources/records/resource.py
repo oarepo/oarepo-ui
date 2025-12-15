@@ -269,23 +269,16 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             else:
                 raise ValueError(f"Record {record['id']} has no parent field.")
 
-    @pass_route_args("view")
-    @pass_query_args("record_detail")
-    @pass_record_or_draft(expand=True)
-    @record_content_negotiation
-    @pass_record_files
-    @pass_record_media_files
-    @response_header_signposting
-    def record_detail(
+    def _detail(
         self,
         record: RecordItem,
         files: FileList,
         media_files: FileList,
         is_preview: bool = False,
         include_deleted: bool = False,
-        **kwargs: Any,  # noqa ARG002
+        **kwargs: Any,
     ) -> ResponseReturnValue:
-        """Record detail page (aka landing page) adapted from invenio-app-rdm view."""
+        """Return detail page for a record (core logic without decorators)."""
         files_dict, media_files_dict = self._prepare_files(files, media_files)
         record_ui = self._prepare_record_ui(record)
         is_draft = record_ui["is_draft"]
@@ -310,25 +303,16 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         # TODO: implement communities & community theme
         resolved_community, resolved_community_ui = None, None
 
+        ui_links = self.expand_detail_links(identity=g.identity, record=record)
+        extra_context: dict[str, Any] = {}
+
         render_kwargs = {
             "record": record,
             "record_ui": record_ui,
             "files": files_dict,
             "media_files": media_files_dict,
             # TODO: implement user_communities_memberships
-            "permissions": record.has_permissions_to(
-                [
-                    "edit",
-                    "new_version",
-                    "manage",
-                    "update_draft",
-                    "read_files",
-                    "review",
-                    "view",
-                    "media_read_files",
-                    "moderate",
-                ]
-            ),
+            "permissions": (record.has_permissions_to(self.config.record_detail_permissions) if record else {}),
             # TODO: implement custom fields
             "is_preview": is_preview,
             "include_deleted": include_deleted,
@@ -342,13 +326,29 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             "record_owner_id": record_owner.get("id"),
             # JinjaX support
             "context": current_oarepo_ui.catalog.jinja_env.globals,
+            "ui_links": ui_links,
+            "extra_context": extra_context,
             "d": FieldData.create(
-                api_data=record.to_dict(),
+                api_data=record.to_dict() if record else {},
                 ui_data=record_ui,
                 ui_definitions=self.ui_model,
                 item_getter=self.config.field_data_item_getter,
             ),
         }
+
+        self.run_components(
+            "before_ui_detail",
+            api_record=record,
+            record=record,
+            record_ui=record_ui,
+            files=files_dict,
+            media_files=media_files_dict,
+            identity=g.identity,
+            ui_links=ui_links,
+            extra_context=extra_context,
+            render_kwargs=render_kwargs,
+            **kwargs,
+        )
 
         # TODO: implement render_community_theme_template?
         response = Response(
@@ -361,6 +361,25 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         )
         set_api_record_to_response(response, record)
         return response
+
+    @pass_route_args("view")
+    @pass_query_args("record_detail")
+    @pass_record_or_draft(expand=True)
+    @record_content_negotiation
+    @pass_record_files
+    @pass_record_media_files
+    @response_header_signposting
+    def record_detail(
+        self,
+        record: RecordItem,
+        files: FileList,
+        media_files: FileList,
+        is_preview: bool = False,
+        include_deleted: bool = False,
+        **kwargs: Any,
+    ) -> ResponseReturnValue:
+        """Record detail page (aka landing page) adapted from invenio-app-rdm view."""
+        return self._detail(record, files, media_files, is_preview, include_deleted, **kwargs)
 
     @pass_route_args("view")
     @pass_record_latest
@@ -454,9 +473,8 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             return redirect(path_with_slash, code=302)
         return redirect(path_with_slash + "?" + split_path[1], code=302)
 
-    @pass_query_args("search")
-    def search(self, page: int = 1, size: int = 10, **kwargs: Any) -> ResponseReturnValue:
-        """Return search page."""
+    def _search(self, page: int = 1, size: int = 10, **kwargs: Any) -> ResponseReturnValue:
+        """Return search page (core logic without decorators)."""
         pagination = Pagination(
             size,
             page,
@@ -509,6 +527,11 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             context=current_oarepo_ui.catalog.jinja_env.globals,
         )
 
+    @pass_query_args("search")
+    def search(self, page: int = 1, size: int = 10, **kwargs: Any) -> ResponseReturnValue:
+        """Return search page."""
+        return self._search(page, size, **kwargs)
+
     @pass_route_args("view", "record_export")
     @pass_query_args("record_detail")
     @pass_record_or_draft(expand=True)
@@ -534,7 +557,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         draft: RecordItem,
         draft_files: FileList | None = None,
         files_locked: bool = True,
-        **kwargs: Any,  # noqa ARG002
+        **kwargs: Any,
     ) -> ResponseReturnValue:
         """Return edit page for a record (core logic without decorators)."""
         files_dict = None if draft_files is None else draft_files.to_dict()
@@ -557,16 +580,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             form_config=form_config,
             ui_links=ui_links,
             extra_context=extra_context,
-        )
-        self.run_components(
-            "before_ui_edit",
-            api_record=draft,
-            record=record,
-            data=record,
-            form_config=form_config,
-            ui_links=ui_links,
-            identity=g.identity,
-            extra_context=extra_context,
+            **kwargs,
         )
 
         record["extra_links"] = {
@@ -587,15 +601,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
                 "searchUrl": url_for(f"{self.config.blueprint_name}.search"),
             },
             "files_locked": files_locked,
-            "permissions": draft.has_permissions_to(
-                [
-                    "manage",
-                    "new_version",
-                    "delete_draft",
-                    "manage_files",
-                    "manage_record_access",
-                ]
-            ),
+            "permissions": draft.has_permissions_to(self.config.deposit_edit_permissions),
             # TODO: implement record deletion
             "extra_context": extra_context,
             "ui_links": ui_links,
@@ -607,6 +613,19 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
                 item_getter=self.config.field_data_item_getter,
             ),
         }
+
+        self.run_components(
+            "before_ui_edit",
+            api_record=draft,
+            record=record,
+            data=record,
+            form_config=form_config,
+            ui_links=ui_links,
+            identity=g.identity,
+            extra_context=extra_context,
+            render_kwargs=render_kwargs,
+            **kwargs,
+        )
 
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro(
@@ -702,18 +721,6 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             **kwargs,
         )
 
-        self.run_components(
-            "before_ui_create",
-            data=record,
-            record=None,
-            api_record=None,
-            form_config=form_config,
-            identity=g.identity,
-            extra_context=extra_context,
-            ui_links=ui_links,
-            **kwargs,
-        )
-
         render_kwargs = {
             "theme": community_theme,
             "forms_config": form_config,
@@ -734,15 +741,21 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             "extra_context": extra_context,
             "ui_links": ui_links,
             "context": current_oarepo_ui.catalog.jinja_env.globals,
-            "permissions": self.get_record_permissions(
-                [
-                    "manage",
-                    "manage_files",
-                    "delete_draft",
-                    "manage_record_access",
-                ]
-            ),
+            "permissions": self.get_record_permissions(self.config.deposit_create_permissions),
         }
+
+        self.run_components(
+            "before_ui_create",
+            data=record,
+            record=None,
+            api_record=None,
+            form_config=form_config,
+            identity=g.identity,
+            extra_context=extra_context,
+            ui_links=ui_links,
+            render_kwargs=render_kwargs,
+            **kwargs,
+        )
 
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro(
