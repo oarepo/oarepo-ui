@@ -20,7 +20,7 @@ import { useFieldData, useFormConfig } from "../../hooks";
 import { creatibutorNameDisplay } from "./util";
 
 function sortOptions(options) {
-  return options.sort((o1, o2) => o1.title.localeCompare(o2.title));
+  return options.sort((o1, o2) => o1.text.localeCompare(o2.title));
 }
 
 class CreatibutorsFieldForm extends Component {
@@ -208,6 +208,7 @@ export const CreatibutorsField = ({
   icon = "user",
   label,
   fieldPath,
+  options,
   ...props
 }) => {
   const { getFieldData } = useFieldData();
@@ -216,9 +217,10 @@ export const CreatibutorsField = ({
     ...(label && { label }),
   };
 
-  const formConfig = useFormConfig();
-  const roleOptions =
-    formConfig?.vocabularies?.["contributor-types"]?.all || [];
+  const {
+    config: { vocabularies },
+  } = useFormConfig();
+  const roleOptions = options || vocabularies?.["contributors"]?.role || [];
   return (
     <CreatibutorsFieldComponent
       fieldPath={fieldPath}
@@ -232,6 +234,7 @@ export const CreatibutorsField = ({
 CreatibutorsField.propTypes = {
   // eslint-disable-next-line react/require-default-props
   label: PropTypes.string,
+  options: PropTypes.array,
   // eslint-disable-next-line react/require-default-props
   overrides: PropTypes.object,
   // eslint-disable-next-line react/require-default-props

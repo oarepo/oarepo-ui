@@ -43,7 +43,7 @@ export class DepositFormApp extends Component {
       : {
           "vnd+json": {
             "Content-Type": "application/json",
-            Accept: "application/json",
+            Accept: "application/vnd.inveniordm.v1+json",
           },
         };
 
@@ -156,10 +156,14 @@ export class DepositFormApp extends Component {
                   <FieldDataProvider>
                     <Overridable
                       id={buildUID(this.overridableIdPrefix, "FormApp.layout")}
+                      record={record}
                     >
                       <Container className="rel-mt-1">
                         <DepositBootstrap>
-                          <BaseFormLayout />
+                          {/* Ideally I would rather connect BaseFormLayout to the redux store, but they have different structure
+                          where they pass the record to UI components straight from html (before empty values get erased from it
+                          by the serializer). */}
+                          <BaseFormLayout record={record} />
                         </DepositBootstrap>
                       </Container>
                     </Overridable>

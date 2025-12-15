@@ -1,10 +1,10 @@
 import * as React from "react";
 import { useFieldData } from "../../hooks";
-import { LanguageSelectField } from "../LanguageSelectField";
 import { OarepoRichEditor } from "./OarepoRichEditor";
 import { RichInputField, GroupField } from "react-invenio-forms";
 import PropTypes from "prop-types";
 import { Form } from "semantic-ui-react";
+import { RemoteLanguageSelectField } from "../LanguageSelectField";
 
 export const I18nRichInputField = ({
   fieldPath,
@@ -20,15 +20,10 @@ export const I18nRichInputField = ({
 
   return (
     <GroupField fieldPath={fieldPath} optimized={optimized}>
-      <LanguageSelectField
+      <RemoteLanguageSelectField
         fieldPath={lngFieldPath}
-        width={lngFieldWidth}
+        lngFieldWidth={lngFieldWidth}
         usedLanguages={usedLanguages}
-        {...getFieldData({
-          fieldPath: lngFieldPath,
-          icon: "globe",
-          fieldRepresentation: "compact",
-        })}
       />
 
       <Form.Field width={13}>

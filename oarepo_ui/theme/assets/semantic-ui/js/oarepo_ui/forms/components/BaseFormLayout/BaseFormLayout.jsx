@@ -9,7 +9,6 @@ import { DepositStatusBox } from "@js/invenio_rdm_records/src/deposit/components
 import { PublishButton } from "@js/invenio_rdm_records/src/deposit/controls/PublishButton";
 import { ShareDraftButton } from "@js/invenio_app_rdm/deposit/ShareDraftButton";
 import { Grid, Ref, Sticky, Card, Header } from "semantic-ui-react";
-import { connect } from "react-redux";
 import { getLocalizedValue } from "../../../util";
 import { buildUID } from "react-searchkit";
 import Overridable from "react-overridable";
@@ -40,7 +39,7 @@ export const FormTitle = () => {
   );
 };
 
-const BaseFormLayoutComponent = ({ formikProps = {}, record, errors = {} }) => {
+export const BaseFormLayout = ({ record }) => {
   const {
     overridableIdPrefix,
     custom_fields: customFields,
@@ -156,24 +155,8 @@ const BaseFormLayoutComponent = ({ formikProps = {}, record, errors = {} }) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    record: state.deposit.record,
-    errors: state.deposit.errors,
-  };
-};
-
-export const BaseFormLayout = connect(
-  mapStateToProps,
-  null
-)(BaseFormLayoutComponent);
-
-BaseFormLayoutComponent.propTypes = {
+BaseFormLayout.propTypes = {
   record: PropTypes.object.isRequired,
-  // eslint-disable-next-line react/require-default-props
-  errors: PropTypes.object,
-  // eslint-disable-next-line react/require-default-props
-  formikProps: PropTypes.object,
 };
 
 export default BaseFormLayout;

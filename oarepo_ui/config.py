@@ -86,6 +86,6 @@ OAREPO_UI_RESULT_LIST_ITEM_REGISTRATION_CALLBACKS: list[
 
 
 OAREPO_UI_MULTILINGUAL_FIELD_LANGUAGES = [
-    {"text": _("English"), "value": "en"},
-    {"text": _("Czech"), "value": "cs"},
+    {"title_l10n": _("English"), "id": "en"},
+    {"title_l10n": _("Czech"), "id": "cs"},
 ]
