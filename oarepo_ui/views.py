@@ -125,7 +125,7 @@ def help_statistics() -> ResponseReturnValue:
     )
 
 
-def ui_overrides(app: Flask) -> None:  # NOQA: ARG001
+def ui_overrides(app: Flask) -> None:
     """Define overrides that this library will register."""
     dynamic_result_list_item = UIComponent(
         "DynamicResultsListItem",
@@ -144,6 +144,7 @@ def ui_overrides(app: Flask) -> None:  # NOQA: ARG001
         "RecordsList",
         "@js/oarepo_ui/search/RecordsList",
         UIComponentImportMode.NAMED,
+        props={"searchEndpoint": app.config.get("THEME_FRONTPAGE_RECORDS_LIST_SEARCH_MORE_ENDPOINT")},
     )
     home_page_records_list_override = UIComponentOverride(
         "oarepo_ui.index",
