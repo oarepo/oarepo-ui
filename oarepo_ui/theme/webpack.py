@@ -42,7 +42,7 @@ theme = WebpackThemeBundle(
                 "sanitize-html": "2.13.0",
                 "d3": "^7.8.5",
                 "@oarepo/file-manager": "^1.1.0",
-                "react-error-boundary": "^6.0.0",
+                "react-error-boundary": "6.0.0",
                 "react-textarea-autosize": "^8.5.0",
                 "@tanstack/react-query": "^4",
             },

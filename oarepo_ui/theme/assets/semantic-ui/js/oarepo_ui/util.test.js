@@ -9,6 +9,7 @@ import {
   encodeUnicodeBase64,
   decodeUnicodeBase64,
   timestampToRelativeTime,
+  collectNestedErrors,
 } from "./util";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import * as Yup from "yup";
@@ -119,6 +120,152 @@ describe("array2object", () => {
 
     const notArray4 = 42;
     expect(array2object(notArray4, "lang", "title")).toEqual({});
+  });
+});
+
+describe("collectNestedErrors", () => {
+  it("should return error for simple string", () => {
+    const result = collectNestedErrors("Error message", "field");
+    expect(result).toEqual([
+      { errorPath: "field", errorMessage: "Error message" },
+    ]);
+  });
+
+  it("should return error for string with empty base path", () => {
+    const result = collectNestedErrors("Error message");
+    expect(result).toEqual([{ errorPath: "", errorMessage: "Error message" }]);
+  });
+
+  it("should collect errors from nested object", () => {
+    const errors = {
+      name: "Name is required",
+      email: "Invalid email",
+    };
+    const result = collectNestedErrors(errors, "user");
+    expect(result).toEqual([
+      { errorPath: "user.name", errorMessage: "Name is required" },
+      { errorPath: "user.email", errorMessage: "Invalid email" },
+    ]);
+  });
+
+  it("should collect errors from array", () => {
+    const errors = ["First error", "Second error"];
+    const result = collectNestedErrors(errors, "items");
+    expect(result).toEqual([
+      { errorPath: "items.0", errorMessage: "First error" },
+      { errorPath: "items.1", errorMessage: "Second error" },
+    ]);
+  });
+
+  it("should collect errors from deeply nested structure", () => {
+    const errors = {
+      metadata: {
+        creators: [
+          { name: "Name is required", email: "Invalid email" },
+          { name: "Name too short" },
+        ],
+      },
+    };
+    const result = collectNestedErrors(errors);
+    expect(result).toEqual([
+      {
+        errorPath: "metadata.creators.0.name",
+        errorMessage: "Name is required",
+      },
+      {
+        errorPath: "metadata.creators.0.email",
+        errorMessage: "Invalid email",
+      },
+      {
+        errorPath: "metadata.creators.1.name",
+        errorMessage: "Name too short",
+      },
+    ]);
+  });
+
+  it("should collect errors from mixed nested structure with base path", () => {
+    const errors = {
+      title: "Title required",
+      authors: [
+        { name: "Name required" },
+        { email: "Invalid email", affiliation: "Affiliation required" },
+      ],
+    };
+    const result = collectNestedErrors(errors, "metadata");
+    expect(result).toEqual([
+      { errorPath: "metadata.title", errorMessage: "Title required" },
+      {
+        errorPath: "metadata.authors.0.name",
+        errorMessage: "Name required",
+      },
+      {
+        errorPath: "metadata.authors.1.email",
+        errorMessage: "Invalid email",
+      },
+      {
+        errorPath: "metadata.authors.1.affiliation",
+        errorMessage: "Affiliation required",
+      },
+    ]);
+  });
+
+  it("should return empty array for non-string, non-object, non-array values", () => {
+    expect(collectNestedErrors(null, "field")).toEqual([]);
+    expect(collectNestedErrors(undefined, "field")).toEqual([]);
+    expect(collectNestedErrors(123, "field")).toEqual([]);
+    expect(collectNestedErrors(true, "field")).toEqual([]);
+  });
+
+  it("should return empty array for empty object", () => {
+    const result = collectNestedErrors({}, "field");
+    expect(result).toEqual([]);
+  });
+
+  it("should return empty array for empty array", () => {
+    const result = collectNestedErrors([], "field");
+    expect(result).toEqual([]);
+  });
+
+  it("should handle deeply nested arrays", () => {
+    const errors = [["Error 1", "Error 2"], ["Error 3"]];
+    const result = collectNestedErrors(errors, "nested");
+    expect(result).toEqual([
+      { errorPath: "nested.0.0", errorMessage: "Error 1" },
+      { errorPath: "nested.0.1", errorMessage: "Error 2" },
+      { errorPath: "nested.1.0", errorMessage: "Error 3" },
+    ]);
+  });
+
+  it("should handle complex real-world Formik error structure", () => {
+    const errors = {
+      creators: [
+        null,
+        { person_or_org: { name: "Name is required" } },
+        {
+          person_or_org: { name: "Name too short", family_name: "Required" },
+          affiliations: [{ name: "Affiliation required" }],
+        },
+      ],
+    };
+    const result = collectNestedErrors(errors, "metadata");
+    expect(result).toEqual([
+      {
+        errorPath: "metadata.creators.1.person_or_org.name",
+        errorMessage: "Name is required",
+      },
+      {
+        errorPath: "metadata.creators.2.person_or_org.name",
+        errorMessage: "Name too short",
+      },
+      {
+        errorPath: "metadata.creators.2.person_or_org.family_name",
+        errorMessage: "Required",
+      },
+      {
+        errorPath: "metadata.creators.2.affiliations.0.name",
+        errorMessage: "Affiliation required",
+      },
+    ]);
   });
 });
 

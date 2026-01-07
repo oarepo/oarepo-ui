@@ -49,6 +49,37 @@ export function array2object(arr, keyName, valueName) {
 }
 
 /**
+ * Recursively collects all error messages from a nested object structure.
+ * Traverses through objects and arrays to find all string error messages,
+ * building the full path for each error.
+ *
+ * @param {any} obj - The object/array/string to traverse for errors.
+ * @param {string} basePath - The base path to prepend to collected errors.
+ * @returns {Array<{errorPath: string, errorMessage: string}>} Array of error objects.
+ */
+export const collectNestedErrors = (obj, basePath = "") => {
+  const errors = [];
+
+  if (typeof obj === "string") {
+    return [{ errorPath: basePath, errorMessage: obj }];
+  }
+
+  if (Array.isArray(obj)) {
+    obj.forEach((item, index) => {
+      const path = basePath ? `${basePath}.${index}` : `${index}`;
+      errors.push(...collectNestedErrors(item, path));
+    });
+  } else if (typeof obj === "object" && obj !== null) {
+    Object.keys(obj).forEach((key) => {
+      const path = basePath ? `${basePath}.${key}` : key;
+      errors.push(...collectNestedErrors(obj[key], path));
+    });
+  }
+
+  return errors;
+};
+
+/**
  * Checks if the array contains unique values for a given key (or the whole item).
  * Used as a custom test function in Yup validation schemas to ensure uniqueness.
  *
