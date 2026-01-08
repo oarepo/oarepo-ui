@@ -76,7 +76,9 @@ export function initCopyButtons(copyButtons) {
   copyButtons = copyButtons?.jquery ? copyButtons : $(copyButtons);
   // Firefox 1.0+
   const isFirefox = typeof InstallTrigger !== "undefined";
-  if (!isFirefox) {
+  // Safari
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  if (!isFirefox && !isSafari) {
     navigator.permissions
       .query({ name: "clipboard-write" })
       .then((result) => {
