@@ -47,6 +47,7 @@ def test_deposit_edit(
             "extra_context",
             "ui_links",
             "permissions",
+            "webpack_entry",
         }
 
         expected_permissions = {

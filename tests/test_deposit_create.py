@@ -35,6 +35,7 @@ def test_deposit_create(app, logged_client, users, extra_entry_points):
             "extra_context",
             "ui_links",
             "permissions",
+            "webpack_entry",
         }
 
         expected_permissions = {

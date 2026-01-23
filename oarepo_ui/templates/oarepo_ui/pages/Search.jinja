@@ -1,0 +1,14 @@
+{#def search_app_config, ui_config, webpack_entry #}
+{%- extends config.BASE_TEMPLATE %}
+{%- set title = _("Search results") ~ " | " ~ _(ui_config.model_name) %}
+
+{%- block javascript %}
+    {{ super() }}
+    {{ webpack[webpack_entry] }}
+{%- endblock %}
+
+{%- block page_body %}
+<div class="ui main container rel-mt-3">
+  <div data-invenio-search-config='{{ search_app_config | tojson }}'></div>
+</div>
+{%- endblock page_body %}
