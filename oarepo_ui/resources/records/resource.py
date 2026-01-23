@@ -322,6 +322,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             # TODO: implement external resources
             "user_avatar": avatar,
             "model": self.config.model,
+            "model_name": self.config.model_name,
             # record created with system_identity have not owners e.g demo
             "record_owner_id": record_owner.get("id"),
             # JinjaX support
@@ -485,6 +486,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         ui_links = self.expand_search_links(g.identity, pagination, **kwargs)
 
         overridable_id_prefix = f"{self.config.application_id.capitalize()}.Search"
+        webpack_entry = f"{self.config.model_name}_search.js"
 
         search_options = {
             "api_config": self.api_service.config,
@@ -507,6 +509,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             search_options=search_options,
             ui_config=self.config,
             ui_links=ui_links,
+            webpack_entry=webpack_entry,
             extra_context=extra_context,
             **kwargs,
         )
@@ -515,16 +518,19 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
 
         search_app_config = search_config(app_id=self.config.application_id.capitalize())
 
+        render_kwargs = {
+            "search_app_config": search_app_config,
+            "ui_config": self.config,
+            "ui_resource": self,
+            "ui_links": ui_links,
+            "webpack_entry": webpack_entry,
+            "extra_context": extra_context,
+            "context": current_oarepo_ui.catalog.jinja_env.globals,
+        }
+
         return current_oarepo_ui.catalog.render(
-            self.get_jinjax_macro(
-                "search",
-            ),
-            search_app_config=search_app_config,
-            ui_config=self.config,
-            ui_resource=self,
-            ui_links=ui_links,
-            extra_context=extra_context,
-            context=current_oarepo_ui.catalog.jinja_env.globals,
+            self.get_jinjax_macro("search"),
+            **render_kwargs,
         )
 
     @pass_query_args("search")
@@ -605,6 +611,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             # TODO: implement record deletion
             "extra_context": extra_context,
             "ui_links": ui_links,
+            "webpack_entry": f"{self.config.model_name}_deposit_form.js",
             "context": current_oarepo_ui.catalog.jinja_env.globals,
             "d": FieldData.create(
                 api_data=draft.to_dict(),
@@ -740,6 +747,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             "files_locked": False,
             "extra_context": extra_context,
             "ui_links": ui_links,
+            "webpack_entry": f"{self.config.model_name}_deposit_form.js",
             "context": current_oarepo_ui.catalog.jinja_env.globals,
             "permissions": self.get_record_permissions(self.config.deposit_create_permissions),
         }

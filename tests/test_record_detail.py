@@ -33,6 +33,7 @@ def test_record_detail(app, location, logged_client, users, record_factory, extr
             "community_ui",
             "user_avatar",
             "record_owner_id",
+            "model_name",
         }
         assert expected_top_keys.issubset(response.keys())
 

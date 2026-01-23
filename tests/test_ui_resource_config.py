@@ -191,3 +191,18 @@ def test_custom_fields(app, simple_model_ui_resource_config):
     ret = cfg.custom_fields()
     assert "ui" in list(ret)
     assert isinstance(ret["ui"], list)
+
+
+def test_default_templates_config():
+    """Test that default templates are set correctly in RecordsUIResourceConfig."""
+    from oarepo_ui.resources.records.config import RecordsUIResourceConfig
+
+    cfg = RecordsUIResourceConfig()
+    expected_templates = {
+        "record_detail": "oarepo_ui.pages.RecordDetail",
+        "search": "oarepo_ui.pages.Search",
+        "deposit_edit": "oarepo_ui.pages.DepositForm",
+        "deposit_create": "oarepo_ui.pages.DepositForm",
+        "preview": None,
+    }
+    assert cfg.templates == expected_templates

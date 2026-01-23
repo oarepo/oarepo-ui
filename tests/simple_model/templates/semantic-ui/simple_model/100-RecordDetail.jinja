@@ -11,6 +11,7 @@
   community_ui,
   user_avatar,
   record_owner_id,
+  model_name,
   d
 #}
 {
@@ -24,5 +25,6 @@
   "community": {{ community|tojson|safe }},
   "community_ui": {{ community_ui|tojson|safe }},
   "user_avatar": {{ user_avatar|tojson|safe }},
-  "record_owner_id": {{ record_owner_id|tojson|safe }}
+  "record_owner_id": {{ record_owner_id|tojson|safe }},
+  "model_name": {{ model_name|tojson|safe }}
 }
