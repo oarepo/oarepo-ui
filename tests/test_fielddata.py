@@ -319,3 +319,58 @@ def test_get_localized_value_prefers_non_und(app, monkeypatch):
     with app.app_context():
         values = {"und": "Generic", "en": "Name"}
         assert FieldData._get_localized_value(values) == "Name"  # noqa: SLF001
+
+
+def test_localized_filter_with_fielddata(field_data_test_obj, app):
+    """Test localized filter with FieldData instances."""
+    from oarepo_ui.templating.filters import localized
+
+    _, _, record = field_data_test_obj
+    resource_type_title = record["metadata"]["resource_type"]["title"]
+
+    # Test with en locale
+    app.config["BABEL_DEFAULT_LOCALE"] = "en"
+    with app.app_context():
+        assert localized(resource_type_title) == "Photo"
+
+    # Test with de locale
+    app.config["BABEL_DEFAULT_LOCALE"] = "de"
+    with app.app_context():
+        assert localized(resource_type_title) == "Foto"
+
+    # Test with sv locale
+    app.config["BABEL_DEFAULT_LOCALE"] = "sv"
+    with app.app_context():
+        assert localized(resource_type_title) == "Foto"
+
+    # Fallback to en if locale not found
+    app.config["BABEL_DEFAULT_LOCALE"] = "cs"
+    with app.app_context():
+        assert localized(resource_type_title) == "Photo"
+
+    # Test with custom default_fallback using empty FieldData
+    empty_fd = EMPTY_FIELD_DATA
+    app.config["BABEL_DEFAULT_LOCALE"] = "en"
+    with app.app_context():
+        assert localized(empty_fd, default_fallback="Custom fallback") == "Custom fallback"
+
+
+def test_localized_filter_type_error():
+    """Test localized filter raises TypeError for non-FieldData inputs."""
+    from oarepo_ui.templating.filters import localized
+
+    # Test that TypeError is raised for various non-FieldData inputs
+    with pytest.raises(TypeError, match="Expected FieldData, got dict"):
+        localized({"en": "English"})
+
+    with pytest.raises(TypeError, match="Expected FieldData, got str"):
+        localized("Just a string")
+
+    with pytest.raises(TypeError, match="Expected FieldData, got int"):
+        localized(42)
+
+    with pytest.raises(TypeError, match="Expected FieldData, got NoneType"):
+        localized(None)
+
+    with pytest.raises(TypeError, match="Expected FieldData, got list"):
+        localized(["en", "cs"])
