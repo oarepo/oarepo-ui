@@ -35,7 +35,8 @@ export const useDepositFormAction = ({ action, params }) => {
     if (!isMounted.current) return;
     setSubmitting(true);
     try {
-      await action(values, params);
+      const response = await action(values, params);
+      return response?.data;
     } catch (error) {
       console.error("Error occurred while performing action:", error);
     } finally {
