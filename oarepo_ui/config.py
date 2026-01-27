@@ -37,6 +37,7 @@ OAREPO_UI_JINJAX_FILTERS = {
     "truncate_number": "invenio_app_rdm.records_ui.views.filters:truncate_number",
     "as_dict": "oarepo_ui.templating.filters:as_dict",
     "ui_value": "oarepo_ui.templating.filters:ui_value",
+    "localized": "oarepo_ui.templating.filters:localized",
 }
 
 OAREPO_UI_JINJAX_GLOBALS = {
@@ -44,6 +45,7 @@ OAREPO_UI_JINJAX_GLOBALS = {
     "as_array": "oarepo_ui.templating.filters:as_array",
     "value": "oarepo_ui.templating.filters:value",
     "as_dict": "oarepo_ui.templating.filters:as_dict",
+    "localized": "oarepo_ui.templating.filters:localized",
 }
 
 

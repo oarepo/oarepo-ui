@@ -77,3 +77,24 @@ def empty(value: FieldData) -> bool:
     if not isinstance(value, FieldData):
         raise TypeError(f"Expected FieldData, got {type(value).__name__}")
     return not bool(value)
+
+
+def localized(value: FieldData, default_fallback: str | None = "Item does not exist") -> str | None:
+    """Return the best localized string from a multilingual FieldData value.
+
+    Priority:
+    1. Current user's locale
+    2. English ('en')
+    3. Any locale available except 'und'
+    4. Undefined locale ('und')
+    5. default_fallback
+
+    :param value: FieldData instance containing a multilingual dictionary.
+    :param default_fallback: Fallback value when no localized string is found.
+    :return: The best matching localized string, or default_fallback.
+    """
+    if not isinstance(value, FieldData):
+        raise TypeError(f"Expected FieldData, got {type(value).__name__}")
+    return FieldData._get_localized_value(  # noqa: SLF001
+        FieldData.value(value), default_fallback
+    )
