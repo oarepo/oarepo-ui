@@ -20,7 +20,9 @@ P = ParamSpec("P")
 R = TypeVar("R")
 
 
-def allow_method(methods: Iterable[str] | None = None) -> Callable[[Callable[P, R]], Callable[P, R]]:
+def allow_method(
+    methods: Iterable[str] | None = None,
+) -> Callable[[Callable[P, R]], Callable[P, R]]:
     """Handle allowed HTTP methods to a view function."""
     if methods is None:
         methods = ["GET"]

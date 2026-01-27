@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import json
+from unittest.mock import MagicMock, patch
 
 from invenio_config.default import ALLOWED_HTML_ATTRS, ALLOWED_HTML_TAGS
 
@@ -89,3 +90,43 @@ def test_deposit_edit(
 
         for key, value in expected_permissions.items():
             assert response["permissions"].get(key) == value
+
+
+def test_uploads_redirect(
+    app,
+    location,
+    record_service,
+    logged_client,
+    users,
+    draft_factory,
+    extra_entry_points,
+):
+    """Test that /uploads/<pid_value> redirects to the model-specific upload URL."""
+    client = logged_client(users[0])
+    draft = draft_factory(users[0].identity)
+    pid = draft["id"]
+
+    # 1. Happy path — valid PID redirects to model-specific URL
+    with client.get(f"/uploads/{pid}") as resp:
+        assert resp.status_code == 302
+        assert resp.location.endswith(f"/simple-model/uploads/{pid}")
+
+    # 2. PID does not exist → 404
+    with client.get("/uploads/nonexistent-pid") as resp:
+        assert resp.status_code == 404
+
+    # 3. Model not in model_by_pid_type → 404
+    with patch("oarepo_ui.views.current_runtime") as mock_runtime:
+        mock_runtime.find_pid_type_from_pid.return_value = "unknown_type"
+        mock_runtime.model_by_pid_type = {}
+        with client.get(f"/uploads/{pid}") as resp:
+            assert resp.status_code == 404
+
+    # 4. Model has no UI blueprint (ui_url returns None) → 404
+    with patch("oarepo_ui.views.current_runtime") as mock_runtime:
+        mock_runtime.find_pid_type_from_pid.return_value = "some_type"
+        mock_model = MagicMock()
+        mock_model.ui_url.return_value = None
+        mock_runtime.model_by_pid_type = {"some_type": mock_model}
+        with client.get(f"/uploads/{pid}") as resp:
+            assert resp.status_code == 404
