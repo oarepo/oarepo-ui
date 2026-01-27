@@ -52,7 +52,6 @@ The "embedded" context variable controls certain features.
 
 {%- block javascript %}
   {{ super() }}
-  {{ webpack['record_management.js'] }}
   {% if not embedded %}
     {{ webpack["record_sharing.js"] }}
   {% endif %}
