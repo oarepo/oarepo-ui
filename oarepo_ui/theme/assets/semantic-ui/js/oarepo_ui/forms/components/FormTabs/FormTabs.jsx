@@ -20,13 +20,18 @@ const FormTabsComponent = ({
             onTabChange(index);
           }}
           active={activeStep === index}
+          className="flex"
+          style={{ alignItems: "center", justifyContent: "space-between" }}
         >
-          <div>
+          <div className="flex">
             {hasBeenSavedInSession && (
               <FormTabErrors includesPaths={section.includedPaths} />
             )}
-            <span>{section.label}</span>
-            <Icon name="chevron right" style={{ float: "right" }} />
+
+            {section.label}
+          </div>
+          <div>
+            <Icon name="chevron right" />
           </div>
         </Menu.Item>
       ))}

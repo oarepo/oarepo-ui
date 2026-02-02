@@ -12,8 +12,10 @@ import { PreviewButton } from "../PreviewButton";
 import { DeleteButton } from "../DeleteButton";
 import Overridable from "react-overridable";
 import { buildUID } from "react-searchkit";
+import { PublishButton } from "@js/invenio_rdm_records/src/deposit/controls/PublishButton";
+import { FormFeedback } from "../FormFeedback";
 
-const TabFormComponent = ({ sections, saveAction }) => {
+const TabFormComponent = ({ sections, saveAction, record }) => {
   const sectionKeys = sections.map((s) => s.key);
 
   const { overridableIdPrefix } = useFormConfig();
@@ -90,14 +92,25 @@ const TabFormComponent = ({ sections, saveAction }) => {
       <Grid>
         <Grid.Row>
           <Overridable
+            id={buildUID(overridableIdPrefix, "TabForm.FormFeedback")}
+            activeStep={activeStep}
+            sections={sections}
+            onTabChange={handleSetStep}
+          >
+            <FormFeedback sections={sections} />
+          </Overridable>
+        </Grid.Row>
+        <Grid.Row>
+          <Overridable
             id={buildUID(overridableIdPrefix, "TabForm.tabs")}
             activeStep={activeStep}
             sections={sections}
             onTabChange={handleSetStep}
           >
             <Grid.Column
+              className="pl-0 pr-0"
               width={5}
-              style={{ minHeight: "80vh", overflowY: "auto" }}
+              style={{ minHeight: "80vh" }}
             >
               <FormTabs
                 activeStep={activeStep}
@@ -116,6 +129,7 @@ const TabFormComponent = ({ sections, saveAction }) => {
             <Grid.Column
               width={11}
               style={{ minHeight: "80vh", overflowY: "auto" }}
+              className="pl-0 pr-0"
             >
               <TabContent
                 activeStep={activeStep}
@@ -138,6 +152,9 @@ const TabFormComponent = ({ sections, saveAction }) => {
               <div>
                 <SaveButton className="ml-10" />
               </div>
+              <div>
+                <PublishButton record={record} className="ml-10" />
+              </div>
             </div>
           </Grid.Row>
         </Overridable>
@@ -153,6 +170,7 @@ const mapDispatchToProps = {
 export const TabForm = connect(null, mapDispatchToProps)(TabFormComponent);
 
 TabFormComponent.propTypes = {
+  record: PropTypes.object.isRequired,
   sections: PropTypes.arrayOf(PropTypes.object),
   //redux
   saveAction: PropTypes.func.isRequired,

@@ -1,5 +1,9 @@
 import React, { Component } from "react";
-import { FormConfigProvider, FieldDataProvider } from "../../contexts";
+import {
+  FormConfigProvider,
+  FieldDataProvider,
+  InitialRecordProvider,
+} from "../../contexts";
 import { Container } from "semantic-ui-react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -13,7 +17,6 @@ import { Provider } from "react-redux";
 import {
   RDMDepositApiClient,
   RDMDepositFileApiClient,
-  DepositApiClientResponse,
 } from "@js/invenio_rdm_records/src/deposit/api/DepositApiClient";
 import { RDMDepositRecordSerializer } from "@js/invenio_rdm_records/src/deposit/api/DepositRecordSerializer";
 import { RDMDepositDraftsService } from "@js/invenio_rdm_records/src/deposit/api/DepositDraftsService";
@@ -23,66 +26,8 @@ import { RDMUploadProgressNotifier } from "@js/invenio_rdm_records/src/deposit//
 import { configureStore } from "../../store";
 import PropTypes from "prop-types";
 import { depositReducer as oarepoDepositReducer } from "../../state/deposit/reducers";
-import _isEmpty from "lodash/isEmpty";
 import { severityChecksConfig } from "@js/invenio_app_rdm/deposit/config";
-
-class OArepoDepositDraftsService extends RDMDepositDraftsService {
-  async create(draft, params) {
-    return this.apiClient.createDraft(draft, params);
-  }
-
-  async save(draft, params) {
-    return this._draftAlreadyCreated(draft)
-      ? this.apiClient.saveDraft(draft, draft.links, params)
-      : this.create(draft, params);
-  }
-}
-
-class OArepoDepositApiClient extends RDMDepositApiClient {
-  async _createResponse(axiosRequest) {
-    try {
-      const response = await axiosRequest();
-      const data = this.recordSerializer.deserialize(response.data || {});
-      const errors = this.recordSerializer.deserializeErrors(
-        response?.data?.errors || [],
-      );
-      return new DepositApiClientResponse(data, errors);
-    } catch (error) {
-      // throw specific cancellation error so that it can be handled differently
-      if (error.name === "CanceledError" || error.code === "ERR_CANCELED") {
-        throw error;
-      } else {
-        let errorData = error.response.data;
-        const errors = this.recordSerializer.deserializeErrors(
-          error.response.data.errors || [],
-        );
-        // this is to serialize raised error from the backend on publish
-        if (!_isEmpty(errors)) errorData = errors;
-        throw new DepositApiClientResponse({}, errorData);
-      }
-    }
-  }
-
-  async createDraft(draft, { signal } = {}) {
-    const payload = this.recordSerializer.serialize(draft);
-    return this._createResponse(() =>
-      this.axiosWithConfig.post(this.createDraftURL, payload, {
-        params: { expand: 1 },
-        signal,
-      }),
-    );
-  }
-
-  async saveDraft(draft, draftLinks, { signal } = {}) {
-    const payload = this.recordSerializer.serialize(draft);
-    return this._createResponse(() =>
-      this.axiosWithConfig.put(draftLinks.self, payload, {
-        params: { expand: 1 },
-        signal,
-      }),
-    );
-  }
-}
+import { DepositBootstrap } from "@js/invenio_rdm_records/src/deposit/api/DepositBootstrap";
 
 const queryClient = new QueryClient();
 
@@ -97,8 +42,7 @@ export class DepositFormApp extends Component {
           props.config.default_locale,
           props.config.custom_fields.vocabularies,
         );
-    // TODO: switch to vnd accept header, in order to receive UI serialization in API responses in the form
-    // not possible to do currently, as our files service needs to be modified https://linear.app/ducesnet/issue/BE-1011/files-service
+
     const apiHeaders = props.apiHeaders
       ? props.apiHeaders
       : {
@@ -114,7 +58,7 @@ export class DepositFormApp extends Component {
 
     const apiClient =
       props.apiClient ||
-      new OArepoDepositApiClient(
+      new RDMDepositApiClient(
         additionalApiConfig,
         props.config.createUrl,
         recordSerializer,
@@ -129,7 +73,7 @@ export class DepositFormApp extends Component {
       );
 
     const draftsService =
-      props.draftsService || new OArepoDepositDraftsService(apiClient);
+      props.draftsService || new RDMDepositDraftsService(apiClient);
 
     const filesService =
       props.filesService ||
@@ -155,6 +99,7 @@ export class DepositFormApp extends Component {
     };
 
     this.config = props.config;
+    this.initialRecordContextValue = { initialRecord: props.record };
 
     if (props?.record?.errors && props?.record?.errors.length > 0) {
       appConfig.errors = recordSerializer.deserializeErrors(
@@ -192,6 +137,8 @@ export class DepositFormApp extends Component {
       groupsEnabled,
       allowEmptyFiles,
       useUppy,
+      sections,
+      useWizardForm,
     } = this.props;
 
     const Wrapper = ContainerComponent || React.Fragment;
@@ -218,17 +165,26 @@ export class DepositFormApp extends Component {
                     useUppy,
                   }}
                 >
-                  <FieldDataProvider>
-                    <Overridable
-                      id={buildUID(this.overridableIdPrefix, "FormApp.layout")}
-                    >
-                      <Container className="rel-mt-1">
-                        <DepositBootstrap>
-                          <BaseFormLayout record={record} />
-                        </DepositBootstrap>
-                      </Container>
-                    </Overridable>
-                  </FieldDataProvider>
+                  <InitialRecordProvider value={this.initialRecordContextValue}>
+                    <FieldDataProvider>
+                      <Overridable
+                        id={buildUID(
+                          this.overridableIdPrefix,
+                          "FormApp.layout",
+                        )}
+                      >
+                        <Container className="rel-mt-1">
+                          <DepositBootstrap>
+                            <BaseFormLayout
+                              sections={sections}
+                              record={record}
+                              useWizardForm={useWizardForm}
+                            />
+                          </DepositBootstrap>
+                        </Container>
+                      </Overridable>
+                    </FieldDataProvider>
+                  </InitialRecordProvider>
                 </FormConfigProvider>
               </OverridableContext.Provider>
             </Router>
@@ -269,4 +225,9 @@ DepositFormApp.propTypes = {
   filesReducer: PropTypes.func,
   ContainerComponent: PropTypes.elementType,
   componentOverrides: PropTypes.object,
+  useWizardForm: PropTypes.bool,
+};
+
+DepositFormApp.defaultProps = {
+  useWizardForm: false,
 };
