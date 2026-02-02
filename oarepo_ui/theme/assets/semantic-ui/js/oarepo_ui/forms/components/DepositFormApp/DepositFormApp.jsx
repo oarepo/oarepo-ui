@@ -25,6 +25,7 @@ import PropTypes from "prop-types";
 import { depositReducer as oarepoDepositReducer } from "../../state/deposit/reducers";
 import _isEmpty from "lodash/isEmpty";
 import { severityChecksConfig } from "@js/invenio_app_rdm/deposit/config";
+import { DepositBootstrap } from "@js/invenio_rdm_records/src/deposit/api/DepositBootstrap";
 
 class OArepoDepositDraftsService extends RDMDepositDraftsService {
   async create(draft, params) {
@@ -44,7 +45,7 @@ class OArepoDepositApiClient extends RDMDepositApiClient {
       const response = await axiosRequest();
       const data = this.recordSerializer.deserialize(response.data || {});
       const errors = this.recordSerializer.deserializeErrors(
-        response?.data?.errors || [],
+        response?.data?.errors || []
       );
       return new DepositApiClientResponse(data, errors);
     } catch (error) {
@@ -54,7 +55,7 @@ class OArepoDepositApiClient extends RDMDepositApiClient {
       } else {
         let errorData = error.response.data;
         const errors = this.recordSerializer.deserializeErrors(
-          error.response.data.errors || [],
+          error.response.data.errors || []
         );
         // this is to serialize raised error from the backend on publish
         if (!_isEmpty(errors)) errorData = errors;
@@ -69,7 +70,7 @@ class OArepoDepositApiClient extends RDMDepositApiClient {
       this.axiosWithConfig.post(this.createDraftURL, payload, {
         params: { expand: 1 },
         signal,
-      }),
+      })
     );
   }
 
@@ -79,7 +80,7 @@ class OArepoDepositApiClient extends RDMDepositApiClient {
       this.axiosWithConfig.put(draftLinks.self, payload, {
         params: { expand: 1 },
         signal,
-      }),
+      })
     );
   }
 }
@@ -95,7 +96,7 @@ export class DepositFormApp extends Component {
       ? props.recordSerializer
       : new RDMDepositRecordSerializer(
           props.config.default_locale,
-          props.config.custom_fields.vocabularies,
+          props.config.custom_fields.vocabularies
         );
 
     const apiHeaders = props.apiHeaders
@@ -116,7 +117,7 @@ export class DepositFormApp extends Component {
       new OArepoDepositApiClient(
         additionalApiConfig,
         props.config.createUrl,
-        recordSerializer,
+        recordSerializer
       );
 
     const fileApiClient =
@@ -124,7 +125,7 @@ export class DepositFormApp extends Component {
       new RDMDepositFileApiClient(
         additionalApiConfig,
         props.config.default_transfer_type,
-        props.config.enabled_transfer_types,
+        props.config.enabled_transfer_types
       );
 
     const draftsService =
@@ -134,7 +135,7 @@ export class DepositFormApp extends Component {
       props.filesService ||
       new RDMDepositFilesService(
         fileApiClient,
-        props.config.fileUploadConcurrency,
+        props.config.fileUploadConcurrency
       );
 
     props.config.severityChecks = severityChecks;
@@ -157,7 +158,7 @@ export class DepositFormApp extends Component {
 
     if (props?.record?.errors && props?.record?.errors.length > 0) {
       appConfig.errors = recordSerializer.deserializeErrors(
-        props.record.errors,
+        props.record.errors
       );
     }
 
@@ -191,6 +192,7 @@ export class DepositFormApp extends Component {
       groupsEnabled,
       allowEmptyFiles,
       useUppy,
+      sections,
     } = this.props;
 
     const Wrapper = ContainerComponent || React.Fragment;
@@ -223,7 +225,7 @@ export class DepositFormApp extends Component {
                     >
                       <Container className="rel-mt-1">
                         <DepositBootstrap>
-                          <BaseFormLayout />
+                          <BaseFormLayout sections={sections} record={record} />
                         </DepositBootstrap>
                       </Container>
                     </Overridable>

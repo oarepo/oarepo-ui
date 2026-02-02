@@ -1,23 +1,131 @@
-import React from "react";
-import { Message } from "semantic-ui-react";
-import _startCase from "lodash/startCase";
+import { i18next } from "@translations/invenio_rdm_records/i18next";
+import _get from "lodash/get";
 import _isObject from "lodash/isObject";
 import _isDate from "lodash/isDate";
 import _isRegExp from "lodash/isRegExp";
 import _forOwn from "lodash/forOwn";
-import { scrollToElement } from "../../../util";
-import { useFieldData } from "../../hooks";
-import PropTypes from "prop-types";
-import { i18next } from "@translations/oarepo_ui/i18next";
+import _startCase from "lodash/startCase";
+import React, { useCallback } from "react";
 import { connect } from "react-redux";
-import { clearErrors } from "../../state/deposit/actions";
+import { Message } from "semantic-ui-react";
+import { useFormTabs } from "../../hooks";
 import {
-  DRAFT_HAS_VALIDATION_ERRORS,
-  DRAFT_SAVE_SUCCEEDED,
-  DRAFT_SAVE_FAILED,
+  DISCARD_PID_FAILED,
   DRAFT_DELETE_FAILED,
+  DRAFT_HAS_VALIDATION_ERRORS,
   DRAFT_PREVIEW_FAILED,
+  DRAFT_PUBLISH_FAILED,
+  DRAFT_PUBLISH_FAILED_WITH_VALIDATION_ERRORS,
+  DRAFT_SAVE_FAILED,
+  DRAFT_SAVE_SUCCEEDED,
+  DRAFT_LOADED_WITH_VALIDATION_ERRORS,
+  DRAFT_SUBMIT_REVIEW_FAILED,
+  DRAFT_SUBMIT_REVIEW_FAILED_WITH_VALIDATION_ERRORS,
+  FILE_IMPORT_FAILED,
+  FILE_UPLOAD_SAVE_DRAFT_FAILED,
+  RESERVE_PID_FAILED,
 } from "@js/invenio_rdm_records/src/deposit/state/types";
+import PropTypes from "prop-types";
+import { clearErrors } from "../../../forms/state/deposit/actions";
+import { useFieldData } from "../../hooks";
+import { scrollToElement } from "../../../util";
+
+const ACTIONS = {
+  [DRAFT_SAVE_SUCCEEDED]: {
+    feedback: "positive",
+    message: i18next.t("Record successfully saved."),
+  },
+  [DRAFT_HAS_VALIDATION_ERRORS]: {
+    feedback: "warning",
+    message: i18next.t("Record saved with validation feedback in"),
+  },
+  [DRAFT_LOADED_WITH_VALIDATION_ERRORS]: {
+    feedback: "warning",
+    message: i18next.t("Draft has validation feedback in"),
+  },
+  [DRAFT_SAVE_FAILED]: {
+    feedback: "negative",
+    message: i18next.t(
+      "The draft was not saved. Please try again. If the problem persists, contact user support."
+    ),
+  },
+  [DRAFT_PUBLISH_FAILED]: {
+    feedback: "negative",
+    message: i18next.t(
+      "The draft was not published. Please try again. If the problem persists, contact user support."
+    ),
+  },
+  [DRAFT_PUBLISH_FAILED_WITH_VALIDATION_ERRORS]: {
+    feedback: "negative",
+    message: i18next.t(
+      "The draft was not published. Record saved with validation feedback in"
+    ),
+  },
+  [DRAFT_SUBMIT_REVIEW_FAILED]: {
+    feedback: "negative",
+    message: i18next.t(
+      "The draft was not submitted for review. Please try again. If the problem persists, contact user support."
+    ),
+  },
+  [DRAFT_SUBMIT_REVIEW_FAILED_WITH_VALIDATION_ERRORS]: {
+    feedback: "negative",
+    message: i18next.t(
+      "The draft was not submitted for review. Record saved with validation feedback in"
+    ),
+  },
+  [DRAFT_DELETE_FAILED]: {
+    feedback: "negative",
+    message: i18next.t(
+      "Draft deletion failed. Please try again. If the problem persists, contact user support."
+    ),
+  },
+  [DRAFT_PREVIEW_FAILED]: {
+    feedback: "negative",
+    message: i18next.t(
+      "Draft preview failed. Please try again. If the problem persists, contact user support."
+    ),
+  },
+  [RESERVE_PID_FAILED]: {
+    feedback: "negative",
+    message: i18next.t(
+      "Identifier reservation failed. Please try again. If the problem persists, contact user support."
+    ),
+  },
+  [DISCARD_PID_FAILED]: {
+    feedback: "negative",
+    message: i18next.t(
+      "Identifier could not be discarded. Please try again. If the problem persists, contact user support."
+    ),
+  },
+  [FILE_UPLOAD_SAVE_DRAFT_FAILED]: {
+    feedback: "negative",
+    message: i18next.t(
+      "Draft save failed before file upload. Please try again. If the problem persists, contact user support."
+    ),
+  },
+  [FILE_IMPORT_FAILED]: {
+    feedback: "negative",
+    message: i18next.t(
+      "Files import from the previous version failed. Please try again. If the problem persists, contact user support."
+    ),
+  },
+};
+
+const FEEDBACK_COLORS = {
+  positive: "green",
+  warning: "yellow",
+  negative: "red",
+  info: "blue",
+};
+
+const findSectionIndexForFieldPath = (sections, fieldPath) => {
+  if (!sections || !fieldPath) return -1;
+  return sections.findIndex((section) =>
+    section.includedPaths?.some(
+      (path) => fieldPath === path || fieldPath.startsWith(`${path}.`)
+    )
+  );
+};
 
 // component to be used downstream of Formik that plugs into Formik's state and displays any errors
 // that apiClient sent to formik in auxilary keys. The keys are later removed when submitting the form
@@ -45,8 +153,9 @@ const CustomMessageComponent = ({
 }) => {
   return (
     <Message
+      style={{ width: "100%", color: "black" }}
       onDismiss={clearErrors}
-      className="rel-mb-2 form-feedback"
+      className="form-feedback"
       {...uiProps}
     >
       {children}
@@ -91,68 +200,66 @@ ErrorMessageItem.propTypes = {
   error: PropTypes.object.isRequired, // Expects the error object from BEvalidationErrors
 };
 const FormFeedbackComponent = ({
-  errors = [],
+  errors = {},
   formFeedbackMessage,
   actionState,
+  actions = {},
+  sections = [],
 }) => {
+  const { activeStep, setActiveStep } = useFormTabs();
+  const allActions = { ...ACTIONS, ...actions };
   const flattenedErrors = flattenToPathValueArray(errors);
-  if (actionState === DRAFT_HAS_VALIDATION_ERRORS) {
-    return (
-      <CustomMessage negative color="orange">
-        <Message.Header>{formFeedbackMessage}</Message.Header>
-        <Message.List>
-          {flattenedErrors?.map((error, index) => (
-            <Message.Item
-              onClick={() => {
-                scrollToElement(error.fieldPath);
-              }}
-              // eslint-disable-next-line react/no-array-index-key
-              key={`${error.fieldPath}-${index}`}
-            >
-              <ErrorMessageItem error={error} />
-            </Message.Item>
-          ))}
-        </Message.List>
-      </CustomMessage>
-    );
-  }
+  const feedbackType = _get(allActions, [actionState, "feedback"]);
+  const color = FEEDBACK_COLORS[feedbackType];
 
-  if (
-    actionState === DRAFT_SAVE_FAILED ||
-    actionState === DRAFT_DELETE_FAILED ||
-    actionState === DRAFT_PREVIEW_FAILED ||
-    actionState?.endsWith("FAILED")
-  ) {
-    return (
-      <CustomMessage negative color="orange">
-        <Message.Header>
-          {formFeedbackMessage ||
-            i18next.t("Draft could not be saved. Please try again later.")}
-        </Message.Header>
-      </CustomMessage>
-    );
-  }
+  const message =
+    formFeedbackMessage || _get(allActions, [actionState, "message"]);
+  const backendErrorMessage = errors.message || errors._schema;
 
-  if (
-    actionState === DRAFT_SAVE_SUCCEEDED ||
-    actionState?.endsWith("SUCCEEDED")
-  ) {
-    return (
-      <CustomMessage positive color="green">
-        <Message.Header>{formFeedbackMessage}</Message.Header>
-      </CustomMessage>
-    );
-  }
-
-  return null;
+  const handleErrorClick = useCallback(
+    (fieldPath) => {
+      if (activeStep && sections.length > 0) {
+        const sectionIndex = findSectionIndexForFieldPath(sections, fieldPath);
+        if (sectionIndex >= 0 && sectionIndex !== activeStep) {
+          setActiveStep(sectionIndex);
+          setTimeout(() => scrollToElement(fieldPath), 100);
+          return;
+        }
+      }
+      scrollToElement(fieldPath);
+    },
+    [activeStep, setActiveStep, sections]
+  );
+  if (!message) return null;
+  return (
+    <CustomMessage color={color}>
+      <Message.Header>{backendErrorMessage || message}</Message.Header>
+      <Message.List>
+        {flattenedErrors?.map((error, index) => (
+          <Message.Item
+            onClick={() => handleErrorClick(error.fieldPath)}
+            // eslint-disable-next-line react/no-array-index-key
+            key={`${error.fieldPath}-${index}`}
+          >
+            <ErrorMessageItem error={error} />
+          </Message.Item>
+        ))}
+      </Message.List>
+    </CustomMessage>
+  );
 };
 
 FormFeedbackComponent.propTypes = {
-  // eslint-disable-next-line react/require-default-props
-  errors: PropTypes.oneOfType([PropTypes.object, PropTypes.array]), // depends on flattenToPathValueArray input format
-  // eslint-disable-next-line react/require-default-props
+  errors: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   formFeedbackMessage: PropTypes.string,
   actionState: PropTypes.string,
+  actions: PropTypes.object,
+  sections: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      includedPaths: PropTypes.arrayOf(PropTypes.string),
+    })
+  ),
 };
 
 const mapStateToProps = (state) => ({

@@ -55,10 +55,12 @@ const FormTabErrorsComponent = ({ includesPaths, actionState }) => {
   const subfieldErrors = getSubfieldErrors(
     errors,
     initialErrors,
-    includesPaths
+    includesPaths,
   );
   const categorizedErrors = categorizeErrors(subfieldErrors);
-  const noMessages = Object.values(categorizedErrors).every(isEmpty);
+  const noMessages = Object.values(categorizedErrors).every(
+    (categorizedErrors) => isEmpty(categorizedErrors),
+  );
   if (
     isSubmitting ||
     actionState === DRAFT_SAVE_STARTED ||
@@ -83,7 +85,7 @@ const FormTabErrorsComponent = ({ includesPaths, actionState }) => {
             >
               {messages.length}
             </Label>
-          )
+          ),
       )}
     </>
   );
@@ -99,7 +101,7 @@ export default connect(mapStateToProps, null)(FormTabErrorsComponent);
 
 export const FormTabErrors = connect(
   mapStateToProps,
-  null
+  null,
 )(FormTabErrorsComponent);
 
 FormTabErrorsComponent.propTypes = {

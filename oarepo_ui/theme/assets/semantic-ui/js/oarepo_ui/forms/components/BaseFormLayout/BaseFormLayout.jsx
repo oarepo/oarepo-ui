@@ -1,14 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { BaseForm } from "../BaseForm";
 import { Grid, Ref, Sticky, Header } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { getLocalizedValue } from "../../../util";
 import { buildUID } from "react-searchkit";
 import Overridable from "react-overridable";
 import { getIn, useFormikContext } from "formik";
-import { useSanitizeInput, useFormConfig, useFormikRef } from "../../hooks";
-import _isEmpty from "lodash/isEmpty";
+import { useSanitizeInput, useFormConfig } from "../../hooks";
 import { save } from "../../state/deposit/actions";
 import { TabForm } from "../TabForm";
 
@@ -35,48 +33,29 @@ export const FormTitle = () => {
   );
 };
 
-const BaseFormLayoutComponent = ({
-  sections,
-  formikProps = {},
-  record,
-  errors = {},
-}) => {
+const BaseFormLayoutComponent = ({ sections, record }) => {
   const { overridableIdPrefix } = useFormConfig();
   const formFeedbackRef = React.useRef(null);
-  const formikRef = useFormikRef();
 
   return (
-    <BaseForm
-      onSubmit={() => {}}
-      formik={{
-        initialValues: record,
-        innerRef: formikRef,
-        enableReinitialize: true,
-        initialErrors: _isEmpty(errors) ? {} : errors,
-        ...formikProps,
-      }}
-    >
-      <Grid>
-        <Ref innerRef={formFeedbackRef}>
-          <Grid.Column id="main-content" mobile={16} tablet={16} computer={16}>
-            <FormTitle />
-            <Sticky context={formFeedbackRef} offset={20}>
-              <Overridable
-                id={buildUID(overridableIdPrefix, "Errors.container")}
-              >
-                {/* <FormFeedback /> */}
-              </Overridable>
-            </Sticky>
-            <Overridable
-              id={buildUID(overridableIdPrefix, "FormFields.container")}
-              record={record}
-            >
-              <TabForm sections={sections} />
+    <Grid>
+      <Ref innerRef={formFeedbackRef}>
+        <Grid.Column id="main-content" mobile={16} tablet={16} computer={16}>
+          <FormTitle />
+          <Sticky context={formFeedbackRef} offset={20}>
+            <Overridable id={buildUID(overridableIdPrefix, "Errors.container")}>
+              {/* <FormFeedback /> */}
             </Overridable>
-          </Grid.Column>
-        </Ref>
-      </Grid>
-    </BaseForm>
+          </Sticky>
+          <Overridable
+            id={buildUID(overridableIdPrefix, "FormFields.container")}
+            record={record}
+          >
+            <TabForm sections={sections} record={record} />
+          </Overridable>
+        </Grid.Column>
+      </Ref>
+    </Grid>
   );
 };
 
@@ -93,15 +72,13 @@ const mapDispatchToProps = {
 
 export const BaseFormLayout = connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(BaseFormLayoutComponent);
 
 BaseFormLayoutComponent.propTypes = {
   record: PropTypes.object.isRequired,
   // eslint-disable-next-line react/require-default-props
-  errors: PropTypes.object,
-  // eslint-disable-next-line react/require-default-props
-  formikProps: PropTypes.object,
+
   sections: PropTypes.arrayOf(PropTypes.object),
 };
 

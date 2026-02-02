@@ -25,6 +25,7 @@ export const depositReducer = (state = {}, action) => {
       return {
         ...state,
         actionState: action.type,
+        formFeedbackMessage: "",
       };
     case DRAFT_FETCHED:
     case DRAFT_SAVE_SUCCEEDED:
