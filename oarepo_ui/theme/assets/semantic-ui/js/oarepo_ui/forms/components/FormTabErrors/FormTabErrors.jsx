@@ -58,8 +58,8 @@ const FormTabErrorsComponent = ({ includesPaths, actionState }) => {
     includesPaths,
   );
   const categorizedErrors = categorizeErrors(subfieldErrors);
-  const noMessages = Object.values(categorizedErrors).every(
-    (categorizedErrors) => isEmpty(categorizedErrors),
+  const noMessages = Object.values(categorizedErrors).every((value) =>
+    isEmpty(value),
   );
   if (
     isSubmitting ||
@@ -96,8 +96,6 @@ const mapStateToProps = (state) => {
     actionState: state.deposit.actionState,
   };
 };
-
-export default connect(mapStateToProps, null)(FormTabErrorsComponent);
 
 export const FormTabErrors = connect(
   mapStateToProps,

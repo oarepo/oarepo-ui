@@ -27,7 +27,7 @@ let currentSaveController = null;
 export const saveDraftWithUrlUpdate = async (
   draft,
   draftsService,
-  dispatchFn
+  dispatchFn,
 ) => {
   if (currentSaveController) {
     currentSaveController.abort();
@@ -52,8 +52,8 @@ export const saveDraftWithUrlUpdate = async (
   }
 
   if (!hasAlreadyId) {
-    const draftURL = response.data.links.edit_html;
-    changeURLAfterCreation(draftURL);
+    const draftURL = response?.data?.links?.edit_html;
+    if (draftURL) changeURLAfterCreation(draftURL);
   }
   currentSaveController = null;
 
@@ -94,7 +94,7 @@ export async function _saveDraft(
     ignoreValidationErrors = false,
     successMessage,
     errorMessage,
-  } = {}
+  } = {},
 ) {
   let response;
   // To track if the form has been saved in this session (i.e. to not display that tabs are OK due to lack of errors before we even tried to save)
@@ -160,10 +160,10 @@ export const save = (
   {
     successMessage = i18next.t("Draft saved successfully."),
     errorMessage = i18next.t(
-      "Draft saved with validation errors. Please correct the following issues and try again:"
+      "Draft saved with validation errors. Please correct the following issues and try again:",
     ),
     ignoreValidationErrors = false,
-  } = {}
+  } = {},
 ) => {
   return async (dispatch, getState, config) => {
     dispatch({
@@ -189,10 +189,10 @@ export const preview = (
   {
     ignoreValidationErrors = true,
     successMessage = i18next.t(
-      "Your draft was saved. Redirecting to the preview page..."
+      "Your draft was saved. Redirecting to the preview page...",
     ),
     errorMessage,
-  } = {}
+  } = {},
 ) => {
   return async (dispatch, getState, config) => {
     dispatch({

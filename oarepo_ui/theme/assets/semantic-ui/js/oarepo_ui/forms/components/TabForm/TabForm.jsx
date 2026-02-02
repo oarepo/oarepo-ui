@@ -14,17 +14,17 @@ import Overridable from "react-overridable";
 import { buildUID } from "react-searchkit";
 import { PublishButton } from "@js/invenio_rdm_records/src/deposit/controls/PublishButton";
 import { FormFeedback } from "../FormFeedback";
+import { useFormikContext } from "formik";
 
-const TabFormComponent = ({ sections, saveAction, record }) => {
-  const sectionKeys = sections.map((s) => s.key);
-
+const TabFormComponent = ({ sections = [], saveAction, record }) => {
+  const sectionKeys = useMemo(() => sections.map((s) => s.key), [sections]);
   const { overridableIdPrefix } = useFormConfig();
-
+  const { dirty } = useFormikContext();
   const params = new URLSearchParams(window.location.search);
   const initialTabKey = params.get("tab");
   const initialStep = sectionKeys.indexOf(initialTabKey);
   const [activeStep, setActiveStepState] = React.useState(
-    Math.max(initialStep, 0)
+    Math.max(initialStep, 0),
   );
 
   const { handleAction: handleSave } = useDepositFormAction({
@@ -37,9 +37,11 @@ const TabFormComponent = ({ sections, saveAction, record }) => {
       const url = new URL(window.location);
       url.searchParams.set("tab", sectionKeys[index]);
       window.history.replaceState({}, "", url);
-      handleSave();
+      if (dirty) {
+        handleSave();
+      }
     },
-    [sectionKeys, handleSave]
+    [sectionKeys, handleSave, dirty],
   );
 
   useEffect(() => {
@@ -84,7 +86,7 @@ const TabFormComponent = ({ sections, saveAction, record }) => {
       next,
       back,
     }),
-    [activeStep, handleSetStep, next, back]
+    [activeStep, handleSetStep, next, back],
   );
 
   return (

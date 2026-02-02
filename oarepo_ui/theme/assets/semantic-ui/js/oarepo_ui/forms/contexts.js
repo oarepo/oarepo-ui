@@ -30,7 +30,7 @@ export const FieldDataProvider = ({
   } = useFormConfig();
   const fieldDataValue = useMemo(
     () => ({ getFieldData: getFieldData(uiModel, fieldPathPrefix) }),
-    [uiModel, fieldPathPrefix]
+    [uiModel, fieldPathPrefix],
   );
 
   return (
@@ -60,6 +60,5 @@ export const FormTabsProvider = ({ value, children }) => {
 FormTabsProvider.propTypes = {
   // eslint-disable-next-line react/require-default-props
   children: PropTypes.node,
-  // eslint-disable-next-line react/require-default-props
-  value: PropTypes.object,
+  value: PropTypes.object.isRequired,
 };
