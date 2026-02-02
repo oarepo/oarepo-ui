@@ -45,7 +45,7 @@ class OArepoDepositApiClient extends RDMDepositApiClient {
       const response = await axiosRequest();
       const data = this.recordSerializer.deserialize(response.data || {});
       const errors = this.recordSerializer.deserializeErrors(
-        response?.data?.errors || []
+        response?.data?.errors || [],
       );
       return new DepositApiClientResponse(data, errors);
     } catch (error) {
@@ -53,9 +53,9 @@ class OArepoDepositApiClient extends RDMDepositApiClient {
       if (error.name === "CanceledError" || error.code === "ERR_CANCELED") {
         throw error;
       } else {
-        let errorData = error.response.data;
+        let errorData = error?.response?.data;
         const errors = this.recordSerializer.deserializeErrors(
-          error.response.data.errors || []
+          error?.response?.data?.errors || [],
         );
         // this is to serialize raised error from the backend on publish
         if (!_isEmpty(errors)) errorData = errors;
@@ -70,7 +70,7 @@ class OArepoDepositApiClient extends RDMDepositApiClient {
       this.axiosWithConfig.post(this.createDraftURL, payload, {
         params: { expand: 1 },
         signal,
-      })
+      }),
     );
   }
 
@@ -80,7 +80,7 @@ class OArepoDepositApiClient extends RDMDepositApiClient {
       this.axiosWithConfig.put(draftLinks.self, payload, {
         params: { expand: 1 },
         signal,
-      })
+      }),
     );
   }
 }
@@ -96,7 +96,7 @@ export class DepositFormApp extends Component {
       ? props.recordSerializer
       : new RDMDepositRecordSerializer(
           props.config.default_locale,
-          props.config.custom_fields.vocabularies
+          props.config.custom_fields.vocabularies,
         );
 
     const apiHeaders = props.apiHeaders
@@ -117,7 +117,7 @@ export class DepositFormApp extends Component {
       new OArepoDepositApiClient(
         additionalApiConfig,
         props.config.createUrl,
-        recordSerializer
+        recordSerializer,
       );
 
     const fileApiClient =
@@ -125,7 +125,7 @@ export class DepositFormApp extends Component {
       new RDMDepositFileApiClient(
         additionalApiConfig,
         props.config.default_transfer_type,
-        props.config.enabled_transfer_types
+        props.config.enabled_transfer_types,
       );
 
     const draftsService =
@@ -135,7 +135,7 @@ export class DepositFormApp extends Component {
       props.filesService ||
       new RDMDepositFilesService(
         fileApiClient,
-        props.config.fileUploadConcurrency
+        props.config.fileUploadConcurrency,
       );
 
     props.config.severityChecks = severityChecks;
@@ -158,7 +158,7 @@ export class DepositFormApp extends Component {
 
     if (props?.record?.errors && props?.record?.errors.length > 0) {
       appConfig.errors = recordSerializer.deserializeErrors(
-        props.record.errors
+        props.record.errors,
       );
     }
 

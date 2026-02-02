@@ -5,10 +5,10 @@ import _isDate from "lodash/isDate";
 import _isRegExp from "lodash/isRegExp";
 import _forOwn from "lodash/forOwn";
 import _startCase from "lodash/startCase";
-import React, { useCallback } from "react";
+import React, { useCallback, useRef, useEffect } from "react";
 import { connect } from "react-redux";
 import { Message } from "semantic-ui-react";
-import { useFormTabs } from "../../hooks";
+import { useFormTabs, useFieldData } from "../../hooks";
 import {
   DISCARD_PID_FAILED,
   DRAFT_DELETE_FAILED,
@@ -27,7 +27,6 @@ import {
 } from "@js/invenio_rdm_records/src/deposit/state/types";
 import PropTypes from "prop-types";
 import { clearErrors } from "../../../forms/state/deposit/actions";
-import { useFieldData } from "../../hooks";
 import { scrollToElement } from "../../../util";
 
 const ACTIONS = {
@@ -46,67 +45,67 @@ const ACTIONS = {
   [DRAFT_SAVE_FAILED]: {
     feedback: "negative",
     message: i18next.t(
-      "The draft was not saved. Please try again. If the problem persists, contact user support."
+      "The draft was not saved. Please try again. If the problem persists, contact user support.",
     ),
   },
   [DRAFT_PUBLISH_FAILED]: {
     feedback: "negative",
     message: i18next.t(
-      "The draft was not published. Please try again. If the problem persists, contact user support."
+      "The draft was not published. Please try again. If the problem persists, contact user support.",
     ),
   },
   [DRAFT_PUBLISH_FAILED_WITH_VALIDATION_ERRORS]: {
     feedback: "negative",
     message: i18next.t(
-      "The draft was not published. Record saved with validation feedback in"
+      "The draft was not published. Record saved with validation feedback in",
     ),
   },
   [DRAFT_SUBMIT_REVIEW_FAILED]: {
     feedback: "negative",
     message: i18next.t(
-      "The draft was not submitted for review. Please try again. If the problem persists, contact user support."
+      "The draft was not submitted for review. Please try again. If the problem persists, contact user support.",
     ),
   },
   [DRAFT_SUBMIT_REVIEW_FAILED_WITH_VALIDATION_ERRORS]: {
     feedback: "negative",
     message: i18next.t(
-      "The draft was not submitted for review. Record saved with validation feedback in"
+      "The draft was not submitted for review. Record saved with validation feedback in",
     ),
   },
   [DRAFT_DELETE_FAILED]: {
     feedback: "negative",
     message: i18next.t(
-      "Draft deletion failed. Please try again. If the problem persists, contact user support."
+      "Draft deletion failed. Please try again. If the problem persists, contact user support.",
     ),
   },
   [DRAFT_PREVIEW_FAILED]: {
     feedback: "negative",
     message: i18next.t(
-      "Draft preview failed. Please try again. If the problem persists, contact user support."
+      "Draft preview failed. Please try again. If the problem persists, contact user support.",
     ),
   },
   [RESERVE_PID_FAILED]: {
     feedback: "negative",
     message: i18next.t(
-      "Identifier reservation failed. Please try again. If the problem persists, contact user support."
+      "Identifier reservation failed. Please try again. If the problem persists, contact user support.",
     ),
   },
   [DISCARD_PID_FAILED]: {
     feedback: "negative",
     message: i18next.t(
-      "Identifier could not be discarded. Please try again. If the problem persists, contact user support."
+      "Identifier could not be discarded. Please try again. If the problem persists, contact user support.",
     ),
   },
   [FILE_UPLOAD_SAVE_DRAFT_FAILED]: {
     feedback: "negative",
     message: i18next.t(
-      "Draft save failed before file upload. Please try again. If the problem persists, contact user support."
+      "Draft save failed before file upload. Please try again. If the problem persists, contact user support.",
     ),
   },
   [FILE_IMPORT_FAILED]: {
     feedback: "negative",
     message: i18next.t(
-      "Files import from the previous version failed. Please try again. If the problem persists, contact user support."
+      "Files import from the previous version failed. Please try again. If the problem persists, contact user support.",
     ),
   },
 };
@@ -122,8 +121,8 @@ const findSectionIndexForFieldPath = (sections, fieldPath) => {
   if (!sections || !fieldPath) return -1;
   return sections.findIndex((section) =>
     section.includedPaths?.some(
-      (path) => fieldPath === path || fieldPath.startsWith(`${path}.`)
-    )
+      (path) => fieldPath === path || fieldPath.startsWith(`${path}.`),
+    ),
   );
 };
 
@@ -168,7 +167,7 @@ const mapDispatchToPropsErrors = (dispatch) => ({
 });
 export const CustomMessage = connect(
   null,
-  mapDispatchToPropsErrors
+  mapDispatchToPropsErrors,
 )(CustomMessageComponent);
 
 CustomMessageComponent.propTypes = {
@@ -207,6 +206,7 @@ const FormFeedbackComponent = ({
   sections = [],
 }) => {
   const { activeStep, setActiveStep } = useFormTabs();
+  const timeoutRef = useRef(null);
   const allActions = { ...ACTIONS, ...actions };
   const flattenedErrors = flattenToPathValueArray(errors);
   const feedbackType = _get(allActions, [actionState, "feedback"]);
@@ -216,19 +216,34 @@ const FormFeedbackComponent = ({
     formFeedbackMessage || _get(allActions, [actionState, "message"]);
   const backendErrorMessage = errors.message || errors._schema;
 
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
   const handleErrorClick = useCallback(
     (fieldPath) => {
-      if (activeStep && sections.length > 0) {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      if (activeStep !== undefined && sections.length > 0) {
         const sectionIndex = findSectionIndexForFieldPath(sections, fieldPath);
         if (sectionIndex >= 0 && sectionIndex !== activeStep) {
           setActiveStep(sectionIndex);
-          setTimeout(() => scrollToElement(fieldPath), 100);
+          timeoutRef.current = setTimeout(
+            () => scrollToElement(fieldPath),
+            100,
+          );
           return;
         }
       }
       scrollToElement(fieldPath);
     },
-    [activeStep, setActiveStep, sections]
+    [activeStep, setActiveStep, sections],
   );
   if (!message) return null;
   return (
@@ -258,7 +273,7 @@ FormFeedbackComponent.propTypes = {
     PropTypes.shape({
       key: PropTypes.string.isRequired,
       includedPaths: PropTypes.arrayOf(PropTypes.string),
-    })
+    }),
   ),
 };
 
@@ -270,5 +285,5 @@ const mapStateToProps = (state) => ({
 
 export const FormFeedback = connect(
   mapStateToProps,
-  null
+  null,
 )(FormFeedbackComponent);

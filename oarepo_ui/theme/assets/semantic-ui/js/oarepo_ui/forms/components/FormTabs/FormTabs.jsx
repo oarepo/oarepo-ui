@@ -10,31 +10,47 @@ const FormTabsComponent = ({
   onTabChange,
   hasBeenSavedInSession,
 }) => {
-  return (
-    <Menu className="form form-tabs" fluid vertical tabular>
-      {sections.map((section, index) => (
-        <Menu.Item
-          key={section.key}
-          onClick={() => {
-            if (activeStep === index) return;
-            onTabChange(index);
-          }}
-          active={activeStep === index}
-          className="flex"
-          style={{ alignItems: "center", justifyContent: "space-between" }}
-        >
-          <div className="flex">
-            {hasBeenSavedInSession && (
-              <FormTabErrors includesPaths={section.includedPaths} />
-            )}
+  const handleKeyDown = (event, index) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      if (index !== activeStep) {
+        onTabChange(index);
+      }
+    }
+  };
 
-            {section.label}
-          </div>
-          <div>
-            <Icon name="chevron right" />
-          </div>
-        </Menu.Item>
-      ))}
+  return (
+    <Menu className="form form-tabs" fluid vertical tabular role="tablist">
+      {sections.map((section, index) => {
+        const isActive = activeStep === index;
+        return (
+          <Menu.Item
+            as="a"
+            key={section.key}
+            onClick={() => {
+              if (isActive) return;
+              onTabChange(index);
+            }}
+            onKeyDown={(event) => handleKeyDown(event, index)}
+            active={isActive}
+            role="tab"
+            aria-selected={isActive}
+            tabIndex={0}
+            className="flex"
+            style={{ alignItems: "center", justifyContent: "space-between" }}
+          >
+            <div className="flex">
+              {hasBeenSavedInSession && (
+                <FormTabErrors includesPaths={section.includedPaths} />
+              )}
+              {section.label}
+            </div>
+            <div>
+              <Icon name="chevron right" />
+            </div>
+          </Menu.Item>
+        );
+      })}
     </Menu>
   );
 };
