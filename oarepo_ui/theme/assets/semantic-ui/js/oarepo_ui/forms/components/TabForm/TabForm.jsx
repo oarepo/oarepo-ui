@@ -106,7 +106,7 @@ const TabFormComponent = ({ sections = [], saveAction, record }) => {
 
         {/* Mobile/Tablet: horizontal steps on top */}
         <Grid.Row className="mobile tablet only" centered>
-          <Grid.Column width={16}>
+          <Grid.Column className="pl-0 pr-0" width={16}>
             <Overridable
               id={buildUID(overridableIdPrefix, "TabForm.steps")}
               activeStep={activeStep}
