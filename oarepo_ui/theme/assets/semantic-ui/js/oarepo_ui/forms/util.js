@@ -1,12 +1,11 @@
 import React, { useMemo, memo } from "react";
-import { getInputFromDOM } from "../util";
+import { getInputFromDOM, getLocalizedValue } from "../util";
 import { CompactFieldLabel } from "./components/CompactFieldLabel";
 import _get from "lodash/get";
 import { FieldLabel } from "react-invenio-forms";
 import _deburr from "lodash/deburr";
 import _escapeRegExp from "lodash/escapeRegExp";
 import _filter from "lodash/filter";
-import { getLocalizedValue } from "../util";
 
 export function parseFormAppConfig(rootElementId = "deposit-form") {
   const rootEl = document.getElementById(rootElementId);
@@ -51,7 +50,6 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
       fieldPathPrefix && !ignorePrefix
         ? `${fieldPathPrefix}.${fieldPath}`
         : fieldPath;
-
     // Handling labels, always taking result of i18next.t; if we get metadata/smth, we use it to debug
     // Help and hint: if result is same as the key, don't render; if it is different, render
     const path = toModelPath(fieldPathWithPrefix);
