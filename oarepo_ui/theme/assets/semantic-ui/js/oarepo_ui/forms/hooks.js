@@ -59,7 +59,7 @@ export const useFormConfig = () => {
   const context = useContext(FormConfigContext);
   if (!context) {
     throw new Error(
-      "useFormConfig must be used inside FormConfigContext.Provider"
+      "useFormConfig must be used inside FormConfigContext.Provider",
     );
   }
   return context;
@@ -69,7 +69,7 @@ export const useFieldData = () => {
   const context = useContext(FieldDataContext);
   if (!context) {
     throw new Error(
-      "useFormConfig must be used inside FieldDataContext.Provider"
+      "useFormConfig must be used inside FieldDataContext.Provider",
     );
   }
   return context;
@@ -116,7 +116,7 @@ export const useFormFieldValue = ({
       subValuesPath,
       !usedSubValues?.includes(defaultValue) || !subValuesUnique
         ? defaultValue
-        : ""
+        : "",
     );
 
   return { usedSubValues, defaultNewValue };
@@ -147,11 +147,11 @@ export const useSanitizeInput = () => {
       });
       return cleanInput;
     },
-    [allowedHtmlTags, allowedHtmlAttrs]
+    [allowedHtmlTags, allowedHtmlAttrs],
   );
   const validEditorTags = useMemo(
     () => getValidTagsForEditor(allowedHtmlTags, allowedHtmlAttrs),
-    [allowedHtmlTags, allowedHtmlAttrs]
+    [allowedHtmlTags, allowedHtmlAttrs],
   );
   return {
     sanitizeInput,
@@ -234,13 +234,13 @@ export const useSuggestionApi = ({
       suggestionAPIHeaders,
       suggestionAPIQueryParams,
       suggestionAPIUrl,
-    ]
+    ],
   );
 
   const debouncedSearch = useMemo(
     () =>
       _debounce((cancelToken) => fetchSuggestions(cancelToken), debounceTime),
-    [debounceTime, fetchSuggestions]
+    [debounceTime, fetchSuggestions],
   );
 
   useEffect(() => {
@@ -281,7 +281,7 @@ export const useSuggestionApi = ({
 
       setQuery(newQuery);
     },
-    [preSearchChange, query]
+    [preSearchChange, query],
   );
 
   return {
@@ -299,7 +299,7 @@ export default useSanitizeInput;
 export const useFormTabs = () => {
   const context = useContext(FormTabsContext);
   if (!context) {
-    throw new Error("useFormTabs must be used inside FormTabsContext.Provider");
+    console.warn("useFormTabs must be used inside FormTabsContext.Provider");
   }
   return context;
 };
