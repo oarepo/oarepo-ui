@@ -14,10 +14,10 @@ const DeleteButtonComponent = React.memo(
     deleteAction,
     actionState,
     modalMessage = i18next.t(
-      "If you delete the draft, the work you have done on it will be lost."
+      "If you delete the draft, the work you have done on it will be lost.",
     ),
     modalHeader = i18next.t("Are you sure you wish delete this draft?"),
-    redirectUrl = "",
+    redirectUrl = undefined,
   }) => {
     const {
       isOpen: isModalOpen,
@@ -75,7 +75,7 @@ const DeleteButtonComponent = React.memo(
         />
       )
     );
-  }
+  },
 );
 
 DeleteButtonComponent.displayName = "DeleteButtonComponent";
@@ -102,10 +102,10 @@ DeleteButtonComponent.propTypes = {
 
 export const DeleteButton = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(DeleteButtonComponent);
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(DeleteButtonComponent);
