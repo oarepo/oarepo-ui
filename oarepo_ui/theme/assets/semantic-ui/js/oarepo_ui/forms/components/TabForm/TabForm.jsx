@@ -6,6 +6,7 @@ import { save } from "../../state/deposit/actions";
 import { useDepositFormAction, useFormConfig } from "../../hooks";
 import { FormTabsProvider } from "../../contexts";
 import { FormTabs } from "../FormTabs";
+import { FormSteps } from "../FormSteps";
 import { TabContent } from "../TabContent";
 import { SaveButton } from "../SaveButton";
 import { PreviewButton } from "../PreviewButton";
@@ -91,7 +92,7 @@ const TabFormComponent = ({ sections = [], saveAction, record }) => {
 
   return (
     <FormTabsProvider value={formTabContextValue}>
-      <Grid>
+      <Grid stackable>
         <Grid.Row>
           <Overridable
             id={buildUID(overridableIdPrefix, "TabForm.FormFeedback")}
@@ -102,7 +103,27 @@ const TabFormComponent = ({ sections = [], saveAction, record }) => {
             <FormFeedback sections={sections} />
           </Overridable>
         </Grid.Row>
+
+        {/* Mobile/Tablet: horizontal steps on top */}
+        <Grid.Row className="mobile tablet only" centered>
+          <Grid.Column width={16}>
+            <Overridable
+              id={buildUID(overridableIdPrefix, "TabForm.steps")}
+              activeStep={activeStep}
+              sections={sections}
+              onTabChange={handleSetStep}
+            >
+              <FormSteps
+                activeStep={activeStep}
+                sections={sections}
+                onTabChange={handleSetStep}
+              />
+            </Overridable>
+          </Grid.Column>
+        </Grid.Row>
+
         <Grid.Row>
+          {/* Desktop: vertical tabs on left */}
           <Overridable
             id={buildUID(overridableIdPrefix, "TabForm.tabs")}
             activeStep={activeStep}
@@ -110,7 +131,7 @@ const TabFormComponent = ({ sections = [], saveAction, record }) => {
             onTabChange={handleSetStep}
           >
             <Grid.Column
-              className="pl-0 pr-0"
+              className="computer only pl-0 pr-0"
               width={5}
               style={{ minHeight: "80vh" }}
             >
@@ -121,6 +142,8 @@ const TabFormComponent = ({ sections = [], saveAction, record }) => {
               />
             </Grid.Column>
           </Overridable>
+
+          {/* Content: full width on mobile/tablet, 11 cols on desktop */}
           <Overridable
             id={buildUID(overridableIdPrefix, "TabForm.content")}
             activeStep={activeStep}
@@ -129,7 +152,9 @@ const TabFormComponent = ({ sections = [], saveAction, record }) => {
             back={back}
           >
             <Grid.Column
-              width={11}
+              computer={11}
+              tablet={16}
+              mobile={16}
               style={{ minHeight: "80vh", overflowY: "auto" }}
               className="pl-0 pr-0"
             >

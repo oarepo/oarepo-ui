@@ -154,7 +154,7 @@ const CustomMessageComponent = ({
     <Message
       style={{ width: "100%", color: "black" }}
       onDismiss={clearErrors}
-      className="form-feedback"
+      className="mb-5 form-feedback"
       {...uiProps}
     >
       {children}
@@ -196,7 +196,7 @@ const ErrorMessageItem = ({ error }) => {
 };
 
 ErrorMessageItem.propTypes = {
-  error: PropTypes.object.isRequired, // Expects the error object from BEvalidationErrors
+  error: PropTypes.object.isRequired,
 };
 const FormFeedbackComponent = ({
   errors = {},
@@ -205,7 +205,7 @@ const FormFeedbackComponent = ({
   actions = {},
   sections = [],
 }) => {
-  const { activeStep, setActiveStep } = useFormTabs();
+  const { activeStep, setActiveStep } = useFormTabs() || {};
   const timeoutRef = useRef(null);
   const allActions = { ...ACTIONS, ...actions };
   const flattenedErrors = flattenToPathValueArray(errors);
@@ -230,7 +230,7 @@ const FormFeedbackComponent = ({
         clearTimeout(timeoutRef.current);
       }
 
-      if (activeStep !== undefined && sections.length > 0) {
+      if (setActiveStep && activeStep !== undefined && sections.length > 0) {
         const sectionIndex = findSectionIndexForFieldPath(sections, fieldPath);
         if (sectionIndex >= 0 && sectionIndex !== activeStep) {
           setActiveStep(sectionIndex);

@@ -193,6 +193,7 @@ export class DepositFormApp extends Component {
       allowEmptyFiles,
       useUppy,
       sections,
+      useWizardForm,
     } = this.props;
 
     const Wrapper = ContainerComponent || React.Fragment;
@@ -225,7 +226,11 @@ export class DepositFormApp extends Component {
                     >
                       <Container className="rel-mt-1">
                         <DepositBootstrap>
-                          <BaseFormLayout sections={sections} record={record} />
+                          <BaseFormLayout
+                            sections={sections}
+                            record={record}
+                            useWizardForm={useWizardForm}
+                          />
                         </DepositBootstrap>
                       </Container>
                     </Overridable>
@@ -270,4 +275,9 @@ DepositFormApp.propTypes = {
   filesReducer: PropTypes.func,
   ContainerComponent: PropTypes.elementType,
   componentOverrides: PropTypes.object,
+  useWizardForm: PropTypes.bool,
+};
+
+DepositFormApp.defaultProps = {
+  useWizardForm: false,
 };
