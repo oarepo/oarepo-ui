@@ -236,7 +236,7 @@ class FieldData:
             return value
 
         locale = str(current_i18n.language)
-        short_locale = locale.split("_")[0]
+        short_locale = locale.split("_", maxsplit=1)[0]
 
         # 1. Try exact locale
         for lang in (locale, short_locale):

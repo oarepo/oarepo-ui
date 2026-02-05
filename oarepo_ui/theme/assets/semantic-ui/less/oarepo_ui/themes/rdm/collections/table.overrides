@@ -1,0 +1,59 @@
+.ui.value-list {
+  dl {
+    display: flex;
+    flex-flow: row wrap;
+
+    & > dt {
+      flex-basis: 20%;
+      padding: 0px 4px;
+      font-weight: 600;
+      min-width: 20em;
+    }
+
+    & > dd {
+      flex-basis: 65%;
+      flex-grow: 1;
+      margin-bottom: 1em;
+      break-after: always;
+    }
+
+    @media only screen and (max-width: @largestMobileScreen) {
+      & > dt {
+        flex-basis: 100%;
+      }
+
+      & > dd {
+        flex-basis: 100%;
+      }
+    }
+  }
+}
+
+dl.ui.table {
+  font-size: 1rem;
+  display: flex;
+  flex-flow: row wrap;
+
+  & > dt {
+    flex-basis: 25%;
+    padding: 0px 4px;
+    margin-bottom: 1em;
+    font-weight: 600;
+    min-width: 10em;
+  }
+  & > dd {
+    flex-basis: 70%;
+    flex-grow: 1;
+    margin-bottom: 1em;
+    break-after: always;
+  }
+
+  @media only screen and (max-width: @largestMobileScreen) {
+    & > dt {
+      flex-basis: 100%;
+    }
+    & > dd {
+      flex-basis: 100%;
+    }
+  }
+}
