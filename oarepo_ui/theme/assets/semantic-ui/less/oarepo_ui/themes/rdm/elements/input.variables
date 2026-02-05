@@ -1,0 +1,6 @@
+@multilineTextAreaMinHeight: 38px; // 38px is the default height of a textarea
+@multilineTextAreaBorderRadius: 0.28571429rem 0 0 0.28571429rem;
+@multilineTextAreaPadding: 0.5em 2.7em 0.5em 1em;
+@multilineTextAreaBorder: 1px solid @borderColor;
+@multilineTextAreaLineHeight: 1.15em;
+@multilineTextAreaBackground: @white;
