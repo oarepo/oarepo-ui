@@ -13,6 +13,4 @@ import "./sample-component.js"
 
 // This file will import the css templates for your custom components
 
-import "../../less/oarepo_ui/custom-components.less";
-
 import "./components/index.js";

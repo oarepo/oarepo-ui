@@ -176,7 +176,6 @@ class OverridableBundleProject(WebpackBundleProject):
             for component_list in COMPONENT_LIST_RE.findall(cmp_file.read_text()):
                 for s in COMPONENT_RE.findall(component_list[0]):
                     components.add(Path(s).stem)
-
         return components
 
     def register_less_components(self, components: set[str], theme_config_file: Path) -> None:
