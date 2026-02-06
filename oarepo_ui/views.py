@@ -18,12 +18,15 @@ from __future__ import annotations
 import datetime
 from typing import TYPE_CHECKING
 
-from flask import Blueprint, current_app, render_template
+from flask import Blueprint, abort, current_app, redirect, render_template
 from flask_menu import current_menu
 from invenio_app_rdm.views import create_url_rule
 from invenio_base.utils import obj_or_import_string
 from invenio_i18n import get_locale
+from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_sitemap import iterate_urls_of_sitemap_indices
+from oarepo_runtime.proxies import current_runtime
+from werkzeug.routing.exceptions import BuildError
 
 from oarepo_ui.overrides import (
     UIComponent,
@@ -48,6 +51,8 @@ def create_blueprint(app: Flask) -> Blueprint:
         blueprint.add_url_rule(**create_url_rule(routes.get("robots"), default_view_func=robots))
         blueprint.add_url_rule(**create_url_rule(routes.get("help_search"), default_view_func=help_search))
         blueprint.add_url_rule(**create_url_rule(routes.get("help_statistics"), default_view_func=help_statistics))
+
+    blueprint.add_url_rule("/uploads/<pid_value>", view_func=uploads_redirect, methods=["GET"])
 
     blueprint.app_context_processor(lambda: ({"current_app": app}))
     blueprint.app_context_processor(lambda: ({"now": datetime.datetime.now(tz=datetime.UTC)}))
@@ -111,6 +116,24 @@ def help_search() -> ResponseReturnValue:
             "invenio_app_rdm/help/search.en.html",
         ]
     )
+
+
+def uploads_redirect(pid_value: str) -> ResponseReturnValue:
+    """Redirect /uploads/<pid_value> to the model-specific upload URL (/modelname/uploads/<pid_value>)."""
+    try:
+        pid_type = current_runtime.find_pid_type_from_pid(pid_value)
+    except PIDDoesNotExistError:
+        abort(404)
+    model = current_runtime.model_by_pid_type.get(pid_type)
+    if not model:
+        abort(404)
+    try:
+        url = model.ui_url("deposit_edit", pid_value=pid_value)
+    except BuildError:
+        abort(404)
+    if not url:
+        abort(404)
+    return redirect(url)
 
 
 def help_statistics() -> ResponseReturnValue:
