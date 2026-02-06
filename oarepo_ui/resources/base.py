@@ -105,7 +105,7 @@ class UIResource[T: UIResourceConfig = UIResourceConfig](UIComponentsResource[T]
             if template_folder:
                 options["template_folder"] = template_folder
         blueprint: Blueprint = super().as_blueprint(**options)
-        blueprint.app_context_processor(lambda: self.get_jinja_context())
+        blueprint.app_context_processor(self.get_jinja_context)
 
         for (
             exception_class,

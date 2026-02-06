@@ -26,6 +26,7 @@ from invenio_i18n import get_locale
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_sitemap import iterate_urls_of_sitemap_indices
 from oarepo_runtime.proxies import current_runtime
+from werkzeug.routing.exceptions import BuildError
 
 from oarepo_ui.overrides import (
     UIComponent,
@@ -126,7 +127,10 @@ def uploads_redirect(pid_value: str) -> ResponseReturnValue:
     model = current_runtime.model_by_pid_type.get(pid_type)
     if not model:
         abort(404)
-    url = model.ui_url("deposit_edit", pid_value=pid_value)
+    try:
+        url = model.ui_url("deposit_edit", pid_value=pid_value)
+    except BuildError:
+        abort(404)
     if not url:
         abort(404)
     return redirect(url)
