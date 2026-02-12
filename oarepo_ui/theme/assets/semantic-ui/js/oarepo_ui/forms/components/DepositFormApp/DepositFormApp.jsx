@@ -35,9 +35,10 @@ export class DepositFormApp extends Component {
       ? props.recordSerializer
       : new RDMDepositRecordSerializer(
           props.config.default_locale,
-          props.config.custom_fields.vocabularies
+          props.config.custom_fields.vocabularies,
         );
-
+    // TODO: switch to vnd accept header, in orderto receive UI serialization in API responses in the form
+    // not possible to do currently, as our files service needs to be modified https://linear.app/ducesnet/issue/BE-1011/files-service
     const apiHeaders = props.apiHeaders
       ? props.apiHeaders
       : {
@@ -54,7 +55,7 @@ export class DepositFormApp extends Component {
       new RDMDepositApiClient(
         additionalApiConfig,
         props.config.createUrl,
-        recordSerializer
+        recordSerializer,
       );
 
     const fileApiClient =
@@ -62,7 +63,7 @@ export class DepositFormApp extends Component {
       new RDMDepositFileApiClient(
         additionalApiConfig,
         props.config.default_transfer_type,
-        props.config.enabled_transfer_types
+        props.config.enabled_transfer_types,
       );
 
     const draftsService =
@@ -72,7 +73,7 @@ export class DepositFormApp extends Component {
       props.filesService ||
       new RDMDepositFilesService(
         fileApiClient,
-        props.config.fileUploadConcurrency
+        props.config.fileUploadConcurrency,
       );
 
     const service =
@@ -93,7 +94,7 @@ export class DepositFormApp extends Component {
 
     if (props?.record?.errors && props?.record?.errors.length > 0) {
       appConfig.errors = recordSerializer.deserializeErrors(
-        props.record.errors
+        props.record.errors,
       );
     }
 
@@ -159,7 +160,7 @@ export class DepositFormApp extends Component {
                     >
                       <Container className="rel-mt-1">
                         <DepositBootstrap>
-                          <BaseFormLayout />
+                          <BaseFormLayout record={record} />
                         </DepositBootstrap>
                       </Container>
                     </Overridable>

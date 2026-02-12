@@ -8,7 +8,6 @@ import {
   DRAFT_SAVE_FAILED,
   DRAFT_SAVE_STARTED,
   DRAFT_SAVE_SUCCEEDED,
-  SET_COMMUNITY,
 } from "@js/invenio_rdm_records/src/deposit/state/types";
 import { CLEAR_VALIDATION_ERRORS, SET_VALIDATION_ERRORS } from "./types";
 
@@ -55,21 +54,7 @@ export const depositReducer = (state = {}, action) => {
         actionStateExtra: {},
         formFeedbackMessage: action.payload.formFeedbackMessage,
       };
-    case SET_COMMUNITY: {
-      return {
-        ...state,
-        record: {
-          ...state.record,
-          parent: {
-            ...state.record.parent,
-            communities: {
-              ...state.record.parent.communities,
-              default: action.payload, // action.payload is communityId
-            },
-          },
-        },
-      };
-    }
+
     case CLEAR_VALIDATION_ERRORS:
       return {
         ...state,

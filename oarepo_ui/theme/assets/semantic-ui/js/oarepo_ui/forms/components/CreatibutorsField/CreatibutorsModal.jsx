@@ -101,7 +101,7 @@ export class CreatibutorsModal extends Component {
         }
       }),
     }),
-    role: Yup.object().when("_", (_, schema) => {
+    role: Yup.string().when("_", (_, schema) => {
       if (!this.isCreator()) {
         return schema.required(i18next.t("Role is a required field."));
       }
@@ -635,19 +635,6 @@ export class CreatibutorsModal extends Component {
                         required={!this.isCreator()}
                         optimized
                         scrolling
-                        onChange={({ data, formikProps }) => {
-                          let vocabularyItem = roleOptions.find(
-                            (o) => o.value === data.value
-                          );
-                          vocabularyItem = data.value
-                            ? { id: vocabularyItem?.value }
-                            : {};
-                          formikProps.form.setFieldValue(
-                            roleFieldPath,
-                            vocabularyItem
-                          );
-                        }}
-                        value={_get(values, roleFieldPath, "")?.id}
                       />
                     </div>
                   )}
