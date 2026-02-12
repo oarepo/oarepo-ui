@@ -20,7 +20,7 @@ import { useFieldData, useFormConfig } from "../../hooks";
 import { creatibutorNameDisplay } from "./util";
 
 function sortOptions(options) {
-  return options.sort((o1, o2) => o1.title.localeCompare(o2.title));
+  return options.sort((o1, o2) => o1?.text.localeCompare(o2?.text));
 }
 
 class CreatibutorsFieldForm extends Component {
@@ -218,7 +218,7 @@ export const CreatibutorsField = ({
 
   const formConfig = useFormConfig();
   const roleOptions =
-    formConfig?.vocabularies?.["contributor-types"]?.all || [];
+    formConfig?.config?.vocabularies?.contributors?.role || [];
   return (
     <CreatibutorsFieldComponent
       fieldPath={fieldPath}

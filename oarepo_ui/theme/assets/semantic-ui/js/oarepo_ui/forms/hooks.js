@@ -24,6 +24,10 @@ import queryString from "query-string";
 export const useDepositFormAction = ({ action, params }) => {
   const isMounted = useRef(null);
   const { values, isSubmitting, setSubmitting } = useFormikContext();
+
+  const valuesRef = useRef(values);
+  // using ref to always have the latest values in the handleAction callback i.e. it avoids stale closure problem
+  valuesRef.current = values;
   useEffect(() => {
     isMounted.current = true;
     return () => {
@@ -35,7 +39,7 @@ export const useDepositFormAction = ({ action, params }) => {
     if (!isMounted.current) return;
     setSubmitting(true);
     try {
-      const response = await action(values, params);
+      const response = await action(valuesRef.current, params);
       return response?.data;
     } catch (error) {
       console.error("Error occurred while performing action:", error);
@@ -51,7 +55,7 @@ export const useFormConfig = () => {
   const context = useContext(FormConfigContext);
   if (!context) {
     throw new Error(
-      "useFormConfig must be used inside FormConfigContext.Provider"
+      "useFormConfig must be used inside FormConfigContext.Provider",
     );
   }
   return context;
@@ -61,7 +65,7 @@ export const useFieldData = () => {
   const context = useContext(FieldDataContext);
   if (!context) {
     throw new Error(
-      "useFormConfig must be used inside FieldDataContext.Provider"
+      "useFormConfig must be used inside FieldDataContext.Provider",
     );
   }
   return context;
@@ -108,7 +112,7 @@ export const useFormFieldValue = ({
       subValuesPath,
       !usedSubValues?.includes(defaultValue) || !subValuesUnique
         ? defaultValue
-        : ""
+        : "",
     );
 
   return { usedSubValues, defaultNewValue };
@@ -139,11 +143,11 @@ export const useSanitizeInput = () => {
       });
       return cleanInput;
     },
-    [allowedHtmlTags, allowedHtmlAttrs]
+    [allowedHtmlTags, allowedHtmlAttrs],
   );
   const validEditorTags = useMemo(
     () => getValidTagsForEditor(allowedHtmlTags, allowedHtmlAttrs),
-    [allowedHtmlTags, allowedHtmlAttrs]
+    [allowedHtmlTags, allowedHtmlAttrs],
   );
   return {
     sanitizeInput,
@@ -226,13 +230,13 @@ export const useSuggestionApi = ({
       suggestionAPIHeaders,
       suggestionAPIQueryParams,
       suggestionAPIUrl,
-    ]
+    ],
   );
 
   const debouncedSearch = useMemo(
     () =>
       _debounce((cancelToken) => fetchSuggestions(cancelToken), debounceTime),
-    [debounceTime, fetchSuggestions]
+    [debounceTime, fetchSuggestions],
   );
 
   useEffect(() => {
@@ -273,7 +277,7 @@ export const useSuggestionApi = ({
 
       setQuery(newQuery);
     },
-    [preSearchChange, query]
+    [preSearchChange, query],
   );
 
   return {
