@@ -158,14 +158,13 @@ const BaseFormLayoutComponent = ({ formikProps = {}, record, errors = {} }) => {
 
 const mapStateToProps = (state) => {
   return {
-    record: state.deposit.record,
     errors: state.deposit.errors,
   };
 };
 
 export const BaseFormLayout = connect(
   mapStateToProps,
-  null
+  null,
 )(BaseFormLayoutComponent);
 
 BaseFormLayoutComponent.propTypes = {

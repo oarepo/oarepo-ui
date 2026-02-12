@@ -9,7 +9,6 @@ import {
   DRAFT_SAVE_FAILED,
   DRAFT_SAVE_STARTED,
   DRAFT_SAVE_SUCCEEDED,
-  SET_COMMUNITY,
 } from "@js/invenio_rdm_records/src/deposit/state/types";
 import { CLEAR_VALIDATION_ERRORS, SET_VALIDATION_ERRORS } from "./types";
 import { i18next } from "@translations/oarepo_ui/i18next";
@@ -210,15 +209,6 @@ export const delete_ = (draft, { redirectUrl = "/me/uploads" }) => {
       });
       throw error;
     }
-  };
-};
-
-export const changeSelectedCommunity = (communityId) => {
-  return async (dispatch) => {
-    dispatch({
-      type: SET_COMMUNITY,
-      payload: communityId,
-    });
   };
 };
 
