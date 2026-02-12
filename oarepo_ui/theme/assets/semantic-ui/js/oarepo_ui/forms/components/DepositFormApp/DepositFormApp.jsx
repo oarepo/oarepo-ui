@@ -37,7 +37,7 @@ export class DepositFormApp extends Component {
           props.config.default_locale,
           props.config.custom_fields.vocabularies,
         );
-    // TODO: switch to vnd accept header, in orderto receive UI serialization in API responses in the form
+    // TODO: switch to vnd accept header, in order to receive UI serialization in API responses in the form
     // not possible to do currently, as our files service needs to be modified https://linear.app/ducesnet/issue/BE-1011/files-service
     const apiHeaders = props.apiHeaders
       ? props.apiHeaders
