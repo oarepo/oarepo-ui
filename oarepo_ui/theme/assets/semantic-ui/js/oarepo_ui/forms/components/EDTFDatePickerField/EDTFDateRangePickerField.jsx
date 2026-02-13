@@ -23,6 +23,7 @@ export const EDTFDaterangePicker = ({
   dateRangeInputPlaceholder = i18next.t("Choose date range (From - To)."),
   singleDateInputPlaceholder = i18next.t("Choose one date."),
   datePickerPropsOverrides,
+  width = 16,
 }) => {
   const { setFieldValue } = useFormikContext();
   const { getFieldData } = useFieldData();
@@ -107,6 +108,7 @@ export const EDTFDaterangePicker = ({
     <Form.Field
       className="ui datepicker field mb-0"
       required={fieldData.required}
+      width={width}
     >
       <FieldLabel htmlFor={fieldPath} icon={icon} label={fieldData.label} />
       <Form.Field className="mb-0">
@@ -157,5 +159,6 @@ EDTFDaterangePicker.propTypes = {
   singleDateInputPlaceholder: PropTypes.string,
   dateRangeInputPlaceholder: PropTypes.string,
   datePickerPropsOverrides: PropTypes.object,
+  width: PropTypes.number,
   /* eslint-enable react/require-default-props */
 };

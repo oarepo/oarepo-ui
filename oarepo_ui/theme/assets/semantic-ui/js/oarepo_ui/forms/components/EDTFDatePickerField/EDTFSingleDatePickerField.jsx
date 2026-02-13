@@ -21,6 +21,7 @@ export const EDTFSingleDatePicker = ({
   datePickerProps = {},
   customInputProps = {},
   icon = "calendar",
+  width = 16,
 }) => {
   const { setFieldValue } = useFormikContext();
   const { getFieldData } = useFieldData();
@@ -43,7 +44,11 @@ export const EDTFSingleDatePicker = ({
     ...(placeholder && { placeholder }),
   };
   return (
-    <Form.Field className="ui datepicker field" required={fieldData.required}>
+    <Form.Field
+      className="ui datepicker field"
+      required={fieldData.required}
+      width={width}
+    >
       <FieldLabel htmlFor={fieldPath} icon={icon} label={fieldData.label} />
       <EDTFDatePickerWrapper
         fieldPath={fieldPath}
@@ -76,5 +81,6 @@ EDTFSingleDatePicker.propTypes = {
   placeholder: PropTypes.string,
   customInputProps: PropTypes.object,
   icon: PropTypes.string,
+  width: PropTypes.number,
   /* eslint-enable react/require-default-props */
 };
