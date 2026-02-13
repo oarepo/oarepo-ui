@@ -20,7 +20,9 @@ import { useFieldData, useFormConfig } from "../../hooks";
 import { creatibutorNameDisplay } from "./util";
 
 function sortOptions(options) {
-  return options.sort((o1, o2) => o1?.text.localeCompare(o2?.text));
+  return options.sort((o1, o2) =>
+    (o1?.text || "").localeCompare(o2?.text || ""),
+  );
 }
 
 class CreatibutorsFieldForm extends Component {
