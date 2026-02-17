@@ -187,10 +187,6 @@ class RecordsUIResourceConfig(UIResourceConfig):
     """Namespace of the React app components related to this resource."""
 
     templates: Mapping[str, str | None] = {
-        "record_detail": "oarepo_ui.pages.RecordDetail",
-        "search": "oarepo_ui.pages.Search",
-        "deposit_edit": "oarepo_ui.pages.DepositForm",
-        "deposit_create": "oarepo_ui.pages.DepositForm",
         "preview": None,
     }
     """Templates used for rendering the UI. It is a name of a jinjax macro that renders the UI"""

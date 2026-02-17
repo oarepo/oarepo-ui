@@ -1,0 +1,25 @@
+{# def pid #}
+
+{% extends config.THEME_ERROR_TEMPLATE %}
+{% block page_body %}
+<div class="ui container centered rel-pt-2">
+  <h1 class="ui header inline-block">
+    <i class="icon search" aria-hidden="true"></i>
+    <div class="content pl-0 rel-pr-1">
+      {{ _('Not found') }}
+    </div>
+  </h1>
+
+  <p>
+    {%- trans sitename=config.THEME_SITENAME %}
+      The record you are trying to access does not exist in the repository.
+    {%- endtrans %}
+  </p>
+
+  {% if pid %}
+    <p>
+      {{ _('PID') }}: <code>{{ pid }}</code>
+    </p>
+  {% endif %}
+</div>
+{% endblock page_body %}
