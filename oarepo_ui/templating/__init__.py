@@ -15,3 +15,7 @@ for Jinja2 template engine integration.
 """
 
 from __future__ import annotations
+
+from oarepo_ui.templating.page_component_generator import generate_page_component
+
+__all__ = ["generate_page_component"]
