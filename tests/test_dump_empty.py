@@ -47,7 +47,7 @@ class SimpleMetadataSchema(ma.Schema):
     simple_arr = ma.fields.List(ma.fields.String())
     object_arr = ma.fields.List(ma.fields.Nested(NestedSchema))
     nested_obj = ma.fields.Nested(NestedSchema)
-    nested_via_func = ma.fields.Nested(lambda: NestedSchema())
+    nested_via_func = ma.fields.Nested(lambda: NestedSchema())  # noqa: PLW0108
 
     class Meta:
         """Schema metadata."""
