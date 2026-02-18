@@ -4,6 +4,7 @@
 {%- block javascript %}
     {{ super() }}
     {{ webpack[webpack_entry] }}
+    {% include model_name ~ "/record_search/javascript.html" ignore missing %}
 {%- endblock %}
 
 {%- block page_body %}
