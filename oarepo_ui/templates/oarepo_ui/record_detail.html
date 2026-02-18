@@ -1,0 +1,8 @@
+{% extends "invenio_app_rdm/records/detail.html" %}
+
+{%- block javascript %}
+  {{ super() }}
+  {% if not embedded %}
+    {{ webpack["record_sharing.js"] }}
+  {% endif %}
+{%- endblock javascript %}

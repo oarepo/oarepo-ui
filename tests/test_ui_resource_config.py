@@ -198,11 +198,8 @@ def test_default_templates_config():
     from oarepo_ui.resources.records.config import RecordsUIResourceConfig
 
     cfg = RecordsUIResourceConfig()
-    expected_templates = {
-        "record_detail": "oarepo_ui.pages.RecordDetail",
-        "search": "oarepo_ui.pages.Search",
-        "deposit_edit": "oarepo_ui.pages.DepositForm",
-        "deposit_create": "oarepo_ui.pages.DepositForm",
+    # By default, only preview is set to None; other templates use runtime component generation
+    expected_templates: dict[str, str | None] = {
         "preview": None,
     }
     assert cfg.templates == expected_templates
