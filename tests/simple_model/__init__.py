@@ -13,6 +13,7 @@ from __future__ import annotations
 from typing import ClassVar
 
 import pytest
+from flask import request
 from flask_menu import current_menu
 from invenio_i18n import gettext as _
 
@@ -83,9 +84,6 @@ class SimpleModelUIResourceConfig(RecordsUIResourceConfig):
         "deposit_edit": "simple_model.TestDepositEdit",
         "deposit_create": "simple_model.TestDepositCreate",
     }
-
-
-from flask import request
 
 
 class SimpleModelUIResource(RecordsUIResource):
