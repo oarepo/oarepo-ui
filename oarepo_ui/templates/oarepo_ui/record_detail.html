@@ -1,8 +1,32 @@
 {% extends "invenio_app_rdm/records/detail.html" %}
 
+{%- block css %}
+  {{ super() }}
+  {% include model_name ~ "/record_detail/css.html" ignore missing %}
+{%- endblock css %}
+  
+{% block head_meta %}
+  {{ super() }}
+  {% include model_name ~ "/record_detail/head_meta.html" ignore missing %}
+{% endblock head_meta %}
+
+{%- block banners -%}
+  {%- include [ model_name ~ "/record_detail/banners.html", "oarepo_ui/record_detail/banners.html"]  -%}
+{%- endblock banners -%}
+
+{%- block record_body -%}
+  {%- include model_name ~ "/record_detail/main.html" -%}
+{%- endblock record_body -%}
+
 {%- block javascript %}
   {{ super() }}
   {% if not embedded %}
     {{ webpack["record_sharing.js"] }}
-  {% endif %}
+  {% endif %}  
+  {% include model_name ~ "/record_detail/javascript.html" ignore missing %}
 {%- endblock javascript %}
+  
+{%- block record_sidebar %}
+  {{ super() }}
+  {% include model_name ~ "/record_detail/record_sidebar.html" ignore missing %}
+{%- endblock record_sidebar %}
