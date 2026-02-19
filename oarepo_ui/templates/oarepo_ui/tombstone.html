@@ -1,12 +1,10 @@
-{# def pid, tombstone #}
-
-{% extends config.THEME_ERROR_TEMPLATE %} 
+{% extends config.THEME_ERROR_TEMPLATE %}
 {% block page_body %}
 <div class="ui container centered rel-pt-2">
   <h1 class="ui header inline-block">
     <i class="icon lightning" aria-hidden="true"></i>
     <div class="content pl-0 rel-pr-1">
-      {{ _('Gone') }}
+      {{ _("Gone") }}
     </div>
   </h1>
 
@@ -16,6 +14,8 @@
       metadata of the record is kept for archival purposes.
     {%- endtrans %}
   </p>
+
+  {% block tombstone_content %}
   {% if tombstone %}
     <table class="ui table">
       <tbody>
@@ -41,5 +41,6 @@
   {% else %}
     <p>No tombstone (e.g. removal reason, note) available.</p>
   {% endif %}
+  {% endblock tombstone_content %}
 </div>
 {% endblock page_body %}
