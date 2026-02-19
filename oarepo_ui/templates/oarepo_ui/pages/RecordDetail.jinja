@@ -1,4 +1,4 @@
-{#def
+{# def
   record,
   record_ui,
   files,
@@ -9,12 +9,13 @@
   is_draft,
   model,
   model_name,
-  community,
-  community_ui,
-  user_avatar,
-  record_owner_id,
   ui_links,
   extra_context,
+  context,
   d,
+  community = None,
+  community_ui = None,
+  user_avatar = None,
+  record_owner_id = None,
 #}
 {% extends model_name ~ "/record_detail.html" %}

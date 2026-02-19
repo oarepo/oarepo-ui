@@ -189,8 +189,8 @@ class RecordsUIResourceConfig(UIResourceConfig):
     templates: Mapping[str, str | None] = {
         "record_detail": "oarepo_ui.pages.RecordDetail",
         "search": "oarepo_ui.pages.RecordSearch",
-        "deposit_edit": "oarepo_ui.pages.DepositForm",
-        "deposit_create": "oarepo_ui.pages.DepositForm",
+        "deposit_edit": "oarepo_ui.pages.DepositEdit",
+        "deposit_create": "oarepo_ui.pages.DepositCreate",
         "preview": None,
     }
     """Templates used for rendering the UI. It is a name of a jinjax macro that renders the UI"""

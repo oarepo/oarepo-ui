@@ -80,7 +80,6 @@ from oarepo_ui.utils import dump_empty
 # Resource
 #
 from ...proxies import current_oarepo_ui
-from ...templating import generate_page_component
 from ...templating.data import FieldData
 from ..base import UIResource, multiple_methods_route
 from ..utils import set_api_record_to_response
@@ -355,7 +354,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         # TODO: implement render_community_theme_template?
         response = Response(
             current_oarepo_ui.catalog.render(
-                self.get_jinjax_macro("record_detail", render_kwargs=render_kwargs),
+                self.get_jinjax_macro("record_detail"),
                 **render_kwargs,
             ),
             mimetype="text/html",
@@ -527,10 +526,11 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             "webpack_entry": webpack_entry,
             "extra_context": extra_context,
             "context": current_oarepo_ui.catalog.jinja_env.globals,
+            "model_name": self.config.model_name,
         }
 
         return current_oarepo_ui.catalog.render(
-            self.get_jinjax_macro("search", render_kwargs=render_kwargs),
+            self.get_jinjax_macro("search"),
             **render_kwargs,
         )
 
@@ -620,6 +620,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
                 ui_definitions=self.ui_model,
                 item_getter=self.config.field_data_item_getter,
             ),
+            "model_name": self.config.model_name,
         }
 
         self.run_components(
@@ -636,7 +637,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         )
 
         return current_oarepo_ui.catalog.render(
-            self.get_jinjax_macro("deposit_edit", render_kwargs=render_kwargs),
+            self.get_jinjax_macro("deposit_edit"),
             **render_kwargs,
         )
 
@@ -666,37 +667,21 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         self,
         template_type: str,
         default_macro: str | None = None,
-        render_kwargs: dict[str, Any] | None = None,
     ) -> str:
         """Return which jinjax macro should be used for rendering the template.
 
         Name of the macro may include optional namespace in the form of "namespace.Macro".
 
-        If template is not configured, generates a runtime JinjaX component
-        that extends the base template for the given page type.
-
         :param template_type: Type of template to render (e.g., 'detail', 'search').
-        :param default_macro: Default macro name if neither template nor generator available.
-        :param render_kwargs: Keyword arguments for rendering (used for prop detection).
+        :param default_macro: Default macro name if template not in config.
         :return: Macro name string.
-        :raises KeyError: If template is not found and no default macro provided.
+        :raises KeyError: If template is not found and no default_macro provided.
         """
         tmpl = self.config.templates.get(template_type, default_macro)
         if tmpl:
             return tmpl
 
-        # Template not configured - generate runtime component
-        if render_kwargs and self.config.model_name:
-            return generate_page_component(
-                catalog=current_oarepo_ui.catalog,
-                page_type=template_type,
-                model_name=self.config.model_name,
-                render_kwargs=render_kwargs,
-            )
-
-        raise KeyError(
-            f"Template {template_type} not found and cannot generate component without model_name and render_kwargs."
-        )
+        raise KeyError(f"Template {template_type} not found in config.templates and no default_macro provided.")
 
     def _get_form_config(self, identity: Identity, **kwargs: Any) -> dict[str, Any]:
         return self.config.form_config(identity=identity, **kwargs)
@@ -771,6 +756,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             "webpack_entry": f"{self.config.model_name}_deposit_form.js",
             "context": current_oarepo_ui.catalog.jinja_env.globals,
             "permissions": self.get_record_permissions(self.config.deposit_create_permissions),
+            "model_name": self.config.model_name,
         }
 
         self.run_components(
@@ -787,7 +773,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         )
 
         return current_oarepo_ui.catalog.render(
-            self.get_jinjax_macro("deposit_create", render_kwargs=render_kwargs),
+            self.get_jinjax_macro("deposit_create"),
             **render_kwargs,
         )
 
@@ -927,13 +913,13 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             }
 
         pid_value = getattr(error, "pid_value", None) or getattr(error, "pid", None)
-        tombstone_render_kwargs: dict[str, Any] = {"pid": pid_value, "tombstone": tombstone_dict}
+        tombstone_render_kwargs: dict[str, Any] = {
+            "pid": pid_value,
+            "tombstone": tombstone_dict,
+            "model_name": self.config.model_name,
+        }
         return current_oarepo_ui.catalog.render(
-            self.get_jinjax_macro(
-                "tombstone",
-                default_macro="Tombstone",
-                render_kwargs=tombstone_render_kwargs,
-            ),
+            self.get_jinjax_macro("tombstone", default_macro="Tombstone"),
             **tombstone_render_kwargs,
         )
 
@@ -951,13 +937,9 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         :return: Rendered not found page.
         """
         pid_value = getattr(error, "pid_value", None) or getattr(error, "pid", None)
-        not_found_render_kwargs = {"pid": pid_value}
+        not_found_render_kwargs = {"pid": pid_value, "model_name": self.config.model_name}
         return current_oarepo_ui.catalog.render(
-            self.get_jinjax_macro(
-                "not_found",
-                default_macro="NotFound",
-                render_kwargs=not_found_render_kwargs,
-            ),
+            self.get_jinjax_macro("not_found", default_macro="NotFound"),
             **not_found_render_kwargs,
         )
 
