@@ -678,10 +678,9 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         :raises KeyError: If template is not found and no default_macro provided.
         """
         tmpl = self.config.templates.get(template_type, default_macro)
-        if tmpl:
-            return tmpl
-
-        raise KeyError(f"Template {template_type} not found in config.templates and no default_macro provided.")
+        if not tmpl:
+            raise KeyError(f"Template {template_type} not found and default macro was not provided.")
+        return tmpl
 
     def _get_form_config(self, identity: Identity, **kwargs: Any) -> dict[str, Any]:
         return self.config.form_config(identity=identity, **kwargs)
@@ -940,7 +939,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         not_found_render_kwargs = {"pid": pid_value, "model_name": self.config.model_name}
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro("not_found", default_macro="NotFound"),
-            **not_found_render_kwargs,
+            **not_found_render_kwargs,  # type: ignore[arg-type]
         )
 
     def record_permission_denied_error(
