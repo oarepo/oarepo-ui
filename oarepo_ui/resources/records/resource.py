@@ -40,6 +40,11 @@ from invenio_app_rdm.records_ui.views.records import (
     PreviewFile,
     not_found_error,
 )
+from invenio_communities.communities.resources.serializer import (
+    UICommunityJSONSerializer,
+)
+from invenio_communities.errors import CommunityDeletedError
+from invenio_communities.proxies import current_communities
 from invenio_i18n import gettext as _
 from invenio_previewer import current_previewer
 from invenio_previewer.extensions import default as default_previewer
@@ -64,6 +69,7 @@ from werkzeug.exceptions import Forbidden
 
 from oarepo_ui.resources.decorators import (
     pass_draft,
+    pass_draft_community,
     pass_draft_files,
     pass_query_args,
     pass_record_files,
@@ -577,6 +583,19 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
 
         extra_context: dict[str, Any] = {}
 
+        community_ui = None
+        community = record.get("expanded", {}).get("parent", {}).get("review", {}).get("receiver") or record.get(
+            "expanded", {}
+        ).get("parent", {}).get("communities", {}).get("default")
+
+        if community:
+            # TODO: handle deleted community
+            try:
+                community = current_communities.service.read(id_=community["id"], identity=g.identity)
+                community_ui = UICommunityJSONSerializer().dump_obj(community.to_dict())
+            except CommunityDeletedError:
+                pass
+
         self.run_components(
             "form_config",
             api_record=draft,
@@ -599,8 +618,8 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             "record": record,
             # TODO: implement communities
             "theme": None,
-            "community": None,
-            "community_ui": {},
+            "community": community,
+            "community_ui": community_ui,
             "community_use_jinja_header": False,
             "files": files_dict,
             "searchbar_config": {
@@ -775,6 +794,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
     @login_required
     @no_cache_response
     @pass_query_args("create")
+    @pass_draft_community
     def deposit_create(
         self,
         community: str | None = None,

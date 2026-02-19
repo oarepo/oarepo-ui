@@ -20,6 +20,7 @@ from .base import (
 )
 from .content_negotiation import record_content_negotiation
 from .pass_draft import pass_draft, pass_draft_files
+from .pass_draft_community import pass_draft_community
 from .pass_record import (
     pass_record_files,
     pass_record_latest,
@@ -32,6 +33,7 @@ __all__ = (
     "allow_method",
     "no_cache_response",
     "pass_draft",
+    "pass_draft_community",
     "pass_draft_files",
     "pass_query_args",
     "pass_record_files",
