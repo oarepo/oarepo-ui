@@ -56,9 +56,8 @@ class SearchPathItem(NamedTuple):
 class OarepoCatalog(Catalog):
     """Extended Jinjax catalog for OARepo UI templating."""
 
-    __slots__ = (*Catalog.__slots__, "_component_paths", "_generated_components")
+    __slots__ = (*Catalog.__slots__, "_component_paths")
     _component_paths: dict[str, tuple[Path, Path]]
-    _generated_components: dict[str, str]
     # _prefix is declared in parent Catalog class but needs type annotation here
     # due to __slots__ usage. The type: ignore is needed because mypy sees this
     # as a redefinition of the parent class attribute.
@@ -130,7 +129,6 @@ class OarepoCatalog(Catalog):
 
         self.tmpl_globals: dict[str, Any] = {}
         self._cache: dict[str, dict] = {}
-        self._generated_components: dict[str, str] = {}
 
     def update_template_context(self, context: dict) -> None:
         """Update the template context with common Flask variables.
@@ -379,23 +377,11 @@ class OarepoCatalog(Catalog):
     def _get_from_cache(self, *, prefix: str, name: str, file_ext: str) -> Component | None:
         """Get a component from cache, preserving global context.
 
-        Also checks for runtime generated components stored in _generated_components.
-
         :param prefix: Prefix for the component.
         :param name: Component name.
         :param file_ext: File extension for the template.
         :return: Component instance with global context, or None if not found.
         """
-        # First check for runtime generated components before attempting file lookup
-        # This must happen before super()._get_from_cache() which would raise
-        # ComponentNotFound when _get_component_path fails
-        full_name = f"{prefix}.{name}" if prefix else name
-        if full_name in self._generated_components:
-            source = self._generated_components[full_name]
-            loaded_component = self._get_from_source(name=name, prefix=prefix, source=source)
-            return cast("Component", KeepGlobalContextComponent(self, loaded_component))
-
-        # Fall back to normal file-based component loading
         cached_component = super()._get_from_cache(prefix=prefix, name=name, file_ext=file_ext)
         if cached_component is not None:
             return cast(
