@@ -193,7 +193,6 @@ class RecordsUIResourceConfig(UIResourceConfig):
         "deposit_create": "oarepo_ui.pages.DepositCreate",
         "tombstone": "oarepo_ui.pages.Tombstone",
         "not_found": "oarepo_ui.pages.NotFound",
-        "preview": None,
     }
     """Templates used for rendering the UI. It is a name of a jinjax macro that renders the UI"""
 
