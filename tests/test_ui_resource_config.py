@@ -206,6 +206,5 @@ def test_default_templates_config():
         "deposit_create": "oarepo_ui.pages.DepositCreate",
         "tombstone": "oarepo_ui.pages.Tombstone",
         "not_found": "oarepo_ui.pages.NotFound",
-        "preview": None,
     }
     assert cfg.templates == expected_templates

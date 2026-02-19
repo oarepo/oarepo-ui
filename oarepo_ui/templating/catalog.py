@@ -58,10 +58,6 @@ class OarepoCatalog(Catalog):
 
     __slots__ = (*Catalog.__slots__, "_component_paths")
     _component_paths: dict[str, tuple[Path, Path]]
-    # _prefix is declared in parent Catalog class but needs type annotation here
-    # due to __slots__ usage. The type: ignore is needed because mypy sees this
-    # as a redefinition of the parent class attribute.
-    _prefix: str  # type: ignore[no-redef]
 
     @override
     def __init__(
@@ -383,13 +379,15 @@ class OarepoCatalog(Catalog):
         :return: Component instance with global context, or None if not found.
         """
         cached_component = super()._get_from_cache(prefix=prefix, name=name, file_ext=file_ext)
-        if cached_component is not None:
-            return cast(
-                "Component",
-                KeepGlobalContextComponent(self, cached_component),
-            )
-
-        return None
+        if cached_component is None:
+            return None
+        return cast(
+            "Component",  # keep global is a proxy so can cast it to Component
+            KeepGlobalContextComponent(
+                self,
+                cached_component,
+            ),
+        )
 
     @override
     def _get_from_file(self, *, prefix: str, name: str, file_ext: str) -> Component | None:
