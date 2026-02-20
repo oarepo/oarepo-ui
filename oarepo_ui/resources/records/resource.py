@@ -616,7 +616,6 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         render_kwargs = {
             "forms_config": form_config,
             "record": record,
-            # TODO: implement communities
             "theme": None,
             "community": community,
             "community_ui": community_ui,
