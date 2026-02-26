@@ -5,9 +5,13 @@ import { FormTabErrors } from "../FormTabErrors";
 import { useFormNavigation } from "../../hooks";
 
 export const FormSteps = ({ sections, activeStep, onTabChange }) => {
-  const { hasBeenSavedInSession, isActive, handleClick, handleKeyDown } =
-    useFormNavigation({ activeStep, onTabChange });
   const scrollContainerRef = useRef(null);
+  const { hasBeenSavedInSession, isActive, handleClick, handleKeyDown } =
+    useFormNavigation({
+      activeStep,
+      onTabChange,
+      sectionsCount: sections.length,
+    });
 
   useEffect(() => {
     const container = scrollContainerRef.current;
@@ -42,7 +46,7 @@ export const FormSteps = ({ sections, activeStep, onTabChange }) => {
             link
             role="tab"
             aria-selected={isActive(index)}
-            tabIndex={0}
+            tabIndex={isActive(index) ? 0 : -1}
           >
             <Step.Content>
               <Step.Title>

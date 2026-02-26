@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { Segment, Button, Icon, Message } from "semantic-ui-react";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
@@ -32,21 +32,38 @@ export const TabContent = ({ activeStep, sections, next, back }) => {
   const record = useSelector((state) => state.deposit.record);
   const formConfig = useFormConfig();
   const section = sections[activeStep];
+  const contentRef = useRef(null);
   const previousStepLabel =
     activeStep > 0 ? sections[activeStep - 1].label : null;
   const nextStepLabel =
     activeStep < sections.length - 1 ? sections[activeStep + 1].label : null;
+
+  // Move focus to first focusable element in content when tab changes
+  useEffect(() => {
+    const focusableSelector =
+      'input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), [tabindex]:not([tabindex="-1"]), a[href]';
+    const firstFocusable = contentRef.current?.querySelector(focusableSelector);
+    if (firstFocusable) {
+      firstFocusable.focus();
+    } else {
+      // Fallback to container if no focusable elements
+      contentRef.current?.focus();
+    }
+  }, [activeStep]);
 
   return (
     <Segment className="tab-content borderless shadowless">
       <ErrorBoundary
         FallbackComponent={TabErrorFallback}
         resetKeys={[section?.key]}
-        onReset={() => {
-          // Optional: any cleanup when error is reset
-        }}
       >
-        <div className="tab-content-body">
+        <div
+          className="tab-content-body"
+          ref={contentRef}
+          tabIndex={-1}
+          role="tabpanel"
+          aria-labelledby={section?.key}
+        >
           {section?.render({ record, formConfig, activeStep, next, back })}
         </div>
         <Overridable
