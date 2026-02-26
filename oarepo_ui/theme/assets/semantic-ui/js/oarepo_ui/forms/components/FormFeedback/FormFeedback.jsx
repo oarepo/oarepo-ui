@@ -45,67 +45,67 @@ const ACTIONS = {
   [DRAFT_SAVE_FAILED]: {
     feedback: "negative",
     message: i18next.t(
-      "The draft was not saved. Please try again. If the problem persists, contact user support."
+      "The draft was not saved. Please try again. If the problem persists, contact user support.",
     ),
   },
   [DRAFT_PUBLISH_FAILED]: {
     feedback: "negative",
     message: i18next.t(
-      "The draft was not published. Please try again. If the problem persists, contact user support."
+      "The draft was not published. Please try again. If the problem persists, contact user support.",
     ),
   },
   [DRAFT_PUBLISH_FAILED_WITH_VALIDATION_ERRORS]: {
     feedback: "negative",
     message: i18next.t(
-      "The draft was not published. Record saved with validation feedback in"
+      "The draft was not published. Record saved with validation feedback in",
     ),
   },
   [DRAFT_SUBMIT_REVIEW_FAILED]: {
     feedback: "negative",
     message: i18next.t(
-      "The draft was not submitted for review. Please try again. If the problem persists, contact user support."
+      "The draft was not submitted for review. Please try again. If the problem persists, contact user support.",
     ),
   },
   [DRAFT_SUBMIT_REVIEW_FAILED_WITH_VALIDATION_ERRORS]: {
     feedback: "negative",
     message: i18next.t(
-      "The draft was not submitted for review. Record saved with validation feedback in"
+      "The draft was not submitted for review. Record saved with validation feedback in",
     ),
   },
   [DRAFT_DELETE_FAILED]: {
     feedback: "negative",
     message: i18next.t(
-      "Draft deletion failed. Please try again. If the problem persists, contact user support."
+      "Draft deletion failed. Please try again. If the problem persists, contact user support.",
     ),
   },
   [DRAFT_PREVIEW_FAILED]: {
     feedback: "negative",
     message: i18next.t(
-      "Draft preview failed. Please try again. If the problem persists, contact user support."
+      "Draft preview failed. Please try again. If the problem persists, contact user support.",
     ),
   },
   [RESERVE_PID_FAILED]: {
     feedback: "negative",
     message: i18next.t(
-      "Identifier reservation failed. Please try again. If the problem persists, contact user support."
+      "Identifier reservation failed. Please try again. If the problem persists, contact user support.",
     ),
   },
   [DISCARD_PID_FAILED]: {
     feedback: "negative",
     message: i18next.t(
-      "Identifier could not be discarded. Please try again. If the problem persists, contact user support."
+      "Identifier could not be discarded. Please try again. If the problem persists, contact user support.",
     ),
   },
   [FILE_UPLOAD_SAVE_DRAFT_FAILED]: {
     feedback: "negative",
     message: i18next.t(
-      "Draft save failed before file upload. Please try again. If the problem persists, contact user support."
+      "Draft save failed before file upload. Please try again. If the problem persists, contact user support.",
     ),
   },
   [FILE_IMPORT_FAILED]: {
     feedback: "negative",
     message: i18next.t(
-      "Files import from the previous version failed. Please try again. If the problem persists, contact user support."
+      "Files import from the previous version failed. Please try again. If the problem persists, contact user support.",
     ),
   },
 };
@@ -121,8 +121,8 @@ const findSectionIndexForFieldPath = (sections, fieldPath) => {
   if (!sections || !fieldPath) return -1;
   return sections.findIndex((section) =>
     section.includesPaths?.some(
-      (path) => fieldPath === path || fieldPath.startsWith(`${path}.`)
-    )
+      (path) => fieldPath === path || fieldPath.startsWith(`${path}.`),
+    ),
   );
 };
 
@@ -149,7 +149,7 @@ export const CustomMessage = ({ children = null, ...uiProps }) => {
   const dispatch = useDispatch();
   const handleClearErrors = useCallback(
     () => dispatch(clearErrors()),
-    [dispatch]
+    [dispatch],
   );
 
   return (
@@ -193,9 +193,7 @@ ErrorMessageItem.propTypes = {
 
 export const FormFeedback = ({ actions = {}, sections = [] }) => {
   const errors = useSelector((state) => state.deposit.errors);
-  const formFeedbackMessage = useSelector(
-    (state) => state.deposit.formFeedbackMessage
-  );
+
   const actionState = useSelector((state) => state.deposit.actionState);
 
   const { activeStep, setActiveStep } = useFormTabs() || {};
@@ -205,8 +203,7 @@ export const FormFeedback = ({ actions = {}, sections = [] }) => {
   const feedbackType = _get(allActions, [actionState, "feedback"]);
   const color = FEEDBACK_COLORS[feedbackType];
 
-  const message =
-    formFeedbackMessage || _get(allActions, [actionState, "message"]);
+  const message = _get(allActions, [actionState, "message"]);
   const backendErrorMessage = errors.message || errors._schema;
 
   useEffect(() => {
@@ -229,14 +226,14 @@ export const FormFeedback = ({ actions = {}, sections = [] }) => {
           setActiveStep(sectionIndex);
           timeoutRef.current = setTimeout(
             () => scrollToElement(fieldPath),
-            100
+            100,
           );
           return;
         }
       }
       scrollToElement(fieldPath);
     },
-    [activeStep, setActiveStep, sections]
+    [activeStep, setActiveStep, sections],
   );
   if (!message) return null;
   return (
@@ -263,7 +260,7 @@ FormFeedback.propTypes = {
     PropTypes.shape({
       key: PropTypes.string.isRequired,
       includesPaths: PropTypes.arrayOf(PropTypes.string),
-    })
+    }),
   ),
 };
 

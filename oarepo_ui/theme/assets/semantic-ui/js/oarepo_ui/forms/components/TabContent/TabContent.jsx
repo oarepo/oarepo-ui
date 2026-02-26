@@ -6,6 +6,7 @@ import { useFormConfig } from "../../hooks";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import Overridable from "react-overridable";
 import { ErrorBoundary } from "react-error-boundary";
+import { useFormikContext } from "formik";
 
 const TabErrorFallback = ({ error, resetErrorBoundary }) => (
   <Message negative icon>
@@ -37,11 +38,14 @@ export const TabContent = ({ activeStep, sections, next, back }) => {
     activeStep > 0 ? sections[activeStep - 1].label : null;
   const nextStepLabel =
     activeStep < sections.length - 1 ? sections[activeStep + 1].label : null;
+  const { dirty } = useFormikContext();
 
   // Move focus to first focusable element in content when tab changes
+  // When first input in a tab, is a dropdown, the behavior is not ideal i.e. it focuses and the dropdown extends
+  // even when it has value. TODO: To discuss if this is really needed generally speaking.
   useEffect(() => {
     const focusableSelector =
-      'input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), [tabindex]:not([tabindex="-1"]), a[href]';
+      'input:not([disabled]), textarea:not([disabled]), button:not([disabled]), [tabindex]:not([tabindex="-1"]), a[href]';
     const firstFocusable = contentRef.current?.querySelector(focusableSelector);
     if (firstFocusable) {
       firstFocusable.focus();
@@ -53,6 +57,14 @@ export const TabContent = ({ activeStep, sections, next, back }) => {
 
   return (
     <Segment className="tab-content borderless shadowless">
+      {dirty && (
+        <Message info>
+          <Message.Content>
+            <Icon name="info circle" />
+            {i18next.t("Your draft contains unsaved changes.")}
+          </Message.Content>
+        </Message>
+      )}
       <ErrorBoundary
         FallbackComponent={TabErrorFallback}
         resetKeys={[section?.key]}

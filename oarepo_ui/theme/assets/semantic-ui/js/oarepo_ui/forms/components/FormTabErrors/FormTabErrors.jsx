@@ -49,19 +49,18 @@ function categorizeErrors(errors) {
 }
 
 export const FormTabErrors = ({ includesPaths }) => {
-  const actionState = useSelector((state) => state.deposit.actionState);
   const { errors, initialErrors, isSubmitting } = useFormikContext();
 
   const subfieldErrors = getSubfieldErrors(
     errors,
     initialErrors,
-    includesPaths
+    includesPaths,
   );
   const categorizedErrors = categorizeErrors(subfieldErrors);
   const noMessages = Object.values(categorizedErrors).every((value) =>
-    isEmpty(value)
+    isEmpty(value),
   );
-  if (isSubmitting || actionState === DRAFT_SAVE_STARTED) {
+  if (isSubmitting) {
     return <Icon loading name="circle notch" />;
   }
 
@@ -81,7 +80,7 @@ export const FormTabErrors = ({ includesPaths }) => {
             >
               {messages.length}
             </Label>
-          )
+          ),
       )}
     </>
   );
