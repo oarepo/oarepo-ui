@@ -1,3 +1,16 @@
 @fieldLastChildBottomMargin: 1rem;
 @arrayAddButtonBackgroundColor: @primaryColor;
-@arrayAddButtonTextColor: white;
+@arrayAddButtonTextColor: @white;
+
+// Tab form
+@formTabsBackgroundColor: @white;
+@formTabsAndContentPadding: 2.5rem;
+@formTabsItemMarginBottom: 0.5rem;
+@formTabsItemBorderRadius: 0.5rem;
+@formTabsNavigationGap: 10px;
+@formTabsNavigationPaddingTop: 20px;
+@stepsContainerPaddingLeft: 0;
+@stepsContainerPaddingRight: 0;
+@activeStepBackgroundColor: @primaryColor;
+@activeStepTextColor: @white;
+@stepTextColor: @black;

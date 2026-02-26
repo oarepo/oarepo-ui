@@ -4,9 +4,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Label, Icon } from "semantic-ui-react";
 import { useFormikContext } from "formik";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { DRAFT_SAVE_STARTED } from "@js/invenio_rdm_records/src/deposit/state/types";
-import { SAVE_CANCELLED } from "../../state/deposit/types";
 
 function findErrorObjects(obj) {
   const results = [];
@@ -49,23 +48,20 @@ function categorizeErrors(errors) {
   return categories;
 }
 
-const FormTabErrorsComponent = ({ includesPaths, actionState }) => {
+export const FormTabErrors = ({ includesPaths }) => {
+  const actionState = useSelector((state) => state.deposit.actionState);
   const { errors, initialErrors, isSubmitting } = useFormikContext();
 
   const subfieldErrors = getSubfieldErrors(
     errors,
     initialErrors,
-    includesPaths,
+    includesPaths
   );
   const categorizedErrors = categorizeErrors(subfieldErrors);
   const noMessages = Object.values(categorizedErrors).every((value) =>
-    isEmpty(value),
+    isEmpty(value)
   );
-  if (
-    isSubmitting ||
-    actionState === DRAFT_SAVE_STARTED ||
-    actionState === SAVE_CANCELLED
-  ) {
+  if (isSubmitting || actionState === DRAFT_SAVE_STARTED) {
     return <Icon loading name="circle notch" />;
   }
 
@@ -85,24 +81,14 @@ const FormTabErrorsComponent = ({ includesPaths, actionState }) => {
             >
               {messages.length}
             </Label>
-          ),
+          )
       )}
     </>
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    actionState: state.deposit.actionState,
-  };
-};
-
-export const FormTabErrors = connect(
-  mapStateToProps,
-  null,
-)(FormTabErrorsComponent);
-
-FormTabErrorsComponent.propTypes = {
+FormTabErrors.propTypes = {
   includesPaths: PropTypes.array.isRequired,
-  actionState: PropTypes.string,
 };
+
+export default FormTabErrors;

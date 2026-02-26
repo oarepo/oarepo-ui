@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback, useMemo } from "react";
 import PropTypes from "prop-types";
 import { Grid } from "semantic-ui-react";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { save } from "../../state/deposit/actions";
 import { useDepositFormAction, useFormConfig } from "../../hooks";
 import { FormTabsProvider } from "../../contexts";
@@ -17,7 +17,14 @@ import { PublishButton } from "@js/invenio_rdm_records/src/deposit/controls/Publ
 import { FormFeedback } from "../FormFeedback";
 import { useFormikContext } from "formik";
 
-const TabFormComponent = ({ sections = [], saveAction, record }) => {
+export const TabForm = ({ sections = [] }) => {
+  const dispatch = useDispatch();
+  const record = useSelector((state) => state.deposit.record);
+  const saveAction = useCallback(
+    (values, params) => dispatch(save(values, params)),
+    [dispatch],
+  );
+
   const sectionKeys = useMemo(() => sections.map((s) => s.key), [sections]);
   const { overridableIdPrefix } = useFormConfig();
   const { dirty } = useFormikContext();
@@ -92,7 +99,7 @@ const TabFormComponent = ({ sections = [], saveAction, record }) => {
 
   return (
     <FormTabsProvider value={formTabContextValue}>
-      <Grid stackable>
+      <Grid stackable className="tab-form container">
         <Grid.Row>
           <Overridable
             id={buildUID(overridableIdPrefix, "TabForm.FormFeedback")}
@@ -106,7 +113,7 @@ const TabFormComponent = ({ sections = [], saveAction, record }) => {
 
         {/* Mobile/Tablet: horizontal steps on top */}
         <Grid.Row className="mobile tablet only" centered>
-          <Grid.Column className="pl-0 pr-0" width={16}>
+          <Grid.Column className="steps-container" width={16}>
             <Overridable
               id={buildUID(overridableIdPrefix, "TabForm.steps")}
               activeStep={activeStep}
@@ -130,11 +137,7 @@ const TabFormComponent = ({ sections = [], saveAction, record }) => {
             sections={sections}
             onTabChange={handleSetStep}
           >
-            <Grid.Column
-              className="computer only pl-0 pr-0"
-              width={5}
-              style={{ minHeight: "80vh" }}
-            >
+            <Grid.Column className="computer only form-tabs-column" width={5}>
               <FormTabs
                 activeStep={activeStep}
                 sections={sections}
@@ -155,8 +158,7 @@ const TabFormComponent = ({ sections = [], saveAction, record }) => {
               computer={11}
               tablet={16}
               mobile={16}
-              style={{ minHeight: "80vh", overflowY: "auto" }}
-              className="pl-0 pr-0"
+              className="tab-content-column pl-0 pr-0"
             >
               <TabContent
                 activeStep={activeStep}
@@ -169,7 +171,7 @@ const TabFormComponent = ({ sections = [], saveAction, record }) => {
         </Grid.Row>
         <Overridable id={buildUID(overridableIdPrefix, "TabForm.actions")}>
           <Grid.Row>
-            <div className="flex justify-end" style={{ width: "100%" }}>
+            <div className="flex justify-end form-actions-row">
               <div>
                 <PreviewButton className="mr-10" />
               </div>
@@ -190,17 +192,8 @@ const TabFormComponent = ({ sections = [], saveAction, record }) => {
   );
 };
 
-const mapDispatchToProps = {
-  saveAction: (values, params) => save(values, params),
-};
-
-export const TabForm = connect(null, mapDispatchToProps)(TabFormComponent);
-
-TabFormComponent.propTypes = {
-  record: PropTypes.object.isRequired,
+TabForm.propTypes = {
   sections: PropTypes.arrayOf(PropTypes.object),
-  //redux
-  saveAction: PropTypes.func.isRequired,
 };
 
 export default TabForm;

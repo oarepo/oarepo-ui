@@ -1,24 +1,30 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Button } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { ConfirmationModal } from "../ConfirmationModal";
 import { DRAFT_DELETE_STARTED } from "@js/invenio_rdm_records/src/deposit/state/types";
 import { delete_ } from "../../state/deposit/actions";
 import { useDepositFormAction, useConfirmationModal } from "../../hooks";
 
-const DeleteButtonComponent = React.memo(
+export const DeleteButton = React.memo(
   ({
-    record,
-    deleteAction,
-    actionState,
     modalMessage = i18next.t(
-      "If you delete the draft, the work you have done on it will be lost.",
+      "If you delete the draft, the work you have done on it will be lost."
     ),
     modalHeader = i18next.t("Are you sure you wish delete this draft?"),
     redirectUrl = undefined,
   }) => {
+    const dispatch = useDispatch();
+    const record = useSelector((state) => state.deposit.record);
+    const actionState = useSelector((state) => state.deposit.actionState);
+
+    const deleteAction = useCallback(
+      (draft, params) => dispatch(delete_(draft, params)),
+      [dispatch]
+    );
+
     const {
       isOpen: isModalOpen,
       close: closeModal,
@@ -75,37 +81,17 @@ const DeleteButtonComponent = React.memo(
         />
       )
     );
-  },
+  }
 );
 
-DeleteButtonComponent.displayName = "DeleteButtonComponent";
+DeleteButton.displayName = "DeleteButton";
 
-const mapDispatchToProps = (dispatch) => ({
-  deleteAction: (draft, params) => dispatch(delete_(draft, params)),
-});
-
-const mapStateToProps = (state) => ({
-  actionState: state.deposit.actionState,
-  record: state.deposit.record,
-});
-
-DeleteButtonComponent.propTypes = {
-  record: PropTypes.object.isRequired,
+DeleteButton.propTypes = {
   /* eslint-disable react/require-default-props */
   modalMessage: PropTypes.string,
   modalHeader: PropTypes.string,
   redirectUrl: PropTypes.string,
   /* eslint-enable react/require-default-props */
-  deleteAction: PropTypes.func.isRequired,
-  actionState: PropTypes.string,
 };
 
-export const DeleteButton = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(DeleteButtonComponent);
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(DeleteButtonComponent);
+export default DeleteButton;

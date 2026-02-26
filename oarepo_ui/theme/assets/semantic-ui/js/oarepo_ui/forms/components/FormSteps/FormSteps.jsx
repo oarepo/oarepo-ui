@@ -2,14 +2,11 @@ import React, { useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Step } from "semantic-ui-react";
 import { FormTabErrors } from "../FormTabErrors";
-import { connect } from "react-redux";
+import { useFormNavigation } from "../../hooks";
 
-const FormStepsComponent = ({
-  sections,
-  activeStep,
-  onTabChange,
-  hasBeenSavedInSession,
-}) => {
+export const FormSteps = ({ sections, activeStep, onTabChange }) => {
+  const { hasBeenSavedInSession, isActive, handleClick, handleKeyDown } =
+    useFormNavigation({ activeStep, onTabChange });
   const scrollContainerRef = useRef(null);
 
   useEffect(() => {
@@ -32,70 +29,46 @@ const FormStepsComponent = ({
     }
   }, [activeStep]);
 
-  const handleKeyDown = (event, index) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      if (index !== activeStep) {
-        onTabChange(index);
-      }
-    }
-  };
-
   return (
-    <div ref={scrollContainerRef} style={{ overflowX: "auto" }}>
+    <div className="form-steps-container" ref={scrollContainerRef}>
       <Step.Group fluid size="mini" unstackable role="tablist">
-        {sections.map((section, index) => {
-          const isActive = activeStep === index;
-          return (
-            <Step
-              key={section.key}
-              active={isActive}
-              completed={index < activeStep}
-              onClick={() => {
-                if (!isActive) onTabChange(index);
-              }}
-              onKeyDown={(event) => handleKeyDown(event, index)}
-              link
-              role="tab"
-              aria-selected={isActive}
-              tabIndex={0}
-            >
-              <Step.Content>
-                <Step.Title>
-                  {hasBeenSavedInSession && (
-                    <FormTabErrors includesPaths={section.includedPaths} />
-                  )}
-                  {section.label}
-                </Step.Title>
-              </Step.Content>
-            </Step>
-          );
-        })}
+        {sections.map((section, index) => (
+          <Step
+            key={section.key}
+            active={isActive(index)}
+            completed={index < activeStep}
+            onClick={() => handleClick(index)}
+            onKeyDown={(event) => handleKeyDown(event, index)}
+            link
+            role="tab"
+            aria-selected={isActive(index)}
+            tabIndex={0}
+          >
+            <Step.Content>
+              <Step.Title>
+                {hasBeenSavedInSession && (
+                  <FormTabErrors includesPaths={section.includesPaths} />
+                )}
+                {section.label}
+              </Step.Title>
+            </Step.Content>
+          </Step>
+        ))}
       </Step.Group>
     </div>
   );
 };
 
-FormStepsComponent.propTypes = {
+FormSteps.propTypes = {
   sections: PropTypes.arrayOf(
     PropTypes.shape({
       key: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
-      includedPaths: PropTypes.array,
+      includesPaths: PropTypes.array,
     }),
   ).isRequired,
   activeStep: PropTypes.number.isRequired,
   onTabChange: PropTypes.func.isRequired,
-  hasBeenSavedInSession: PropTypes.bool,
 };
 
-FormStepsComponent.defaultProps = {
-  hasBeenSavedInSession: false,
-};
-
-const mapStateToProps = (state) => ({
-  hasBeenSavedInSession: state.deposit.hasBeenSavedInSession,
-});
-
-export const FormSteps = connect(mapStateToProps, null)(FormStepsComponent);
 export default FormSteps;

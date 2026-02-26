@@ -18,3 +18,85 @@
     color: @arrayAddButtonTextColor;
   }
 }
+
+// Tab form layout and styling
+.tab-form {
+  // Desktop vertical tabs (left sidebar)
+  .form-tabs-column {
+    padding-right: @formTabsAndContentPadding !important;
+  }
+
+  .ui.menu.form.form-tabs {
+    border: none;
+
+    .item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: @formTabsItemMarginBottom;
+      border-radius: @formTabsItemBorderRadius;
+      background-color: @formTabsBackgroundColor;
+      color: @stepTextColor;
+
+      &.active {
+        background-color: @activeStepBackgroundColor;
+        border-radius: @formTabsItemBorderRadius !important;
+        color: @activeStepTextColor;
+        margin-bottom: @formTabsItemMarginBottom;
+      }
+    }
+  }
+
+  // Mobile/Tablet horizontal steps
+  .steps-container {
+    padding-left: @stepsContainerPaddingLeft !important;
+    padding-right: @stepsContainerPaddingRight !important;
+  }
+
+  .form-steps-container {
+    overflow-x: auto;
+
+    .ui.steps .step.link {
+      background-color: @formTabsBackgroundColor;
+      color: @stepTextColor !important;
+
+      &.active {
+        cursor: auto;
+        background-color: @activeStepBackgroundColor;
+        color: @activeStepTextColor;
+
+        &::after {
+          background-color: @activeStepBackgroundColor;
+        }
+
+        .content .title {
+          color: @activeStepTextColor !important;
+        }
+      }
+    }
+  }
+
+  // Main content area
+  .ui.segment.tab-content {
+    min-height: 90vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+
+    .tab-content-body {
+      flex: 1;
+    }
+
+    .tab-content-navigation {
+      display: flex;
+      justify-content: center;
+      gap: @formTabsNavigationGap;
+      padding-top: @formTabsNavigationPaddingTop;
+    }
+  }
+
+  // Bottom action buttons
+  .form-actions-row {
+    width: 100%;
+  }
+}

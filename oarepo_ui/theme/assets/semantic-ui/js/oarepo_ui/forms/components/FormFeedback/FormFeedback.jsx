@@ -6,7 +6,7 @@ import _isRegExp from "lodash/isRegExp";
 import _forOwn from "lodash/forOwn";
 import _startCase from "lodash/startCase";
 import React, { useCallback, useRef, useEffect } from "react";
-import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Message } from "semantic-ui-react";
 import { useFormTabs, useFieldData } from "../../hooks";
 import {
@@ -45,67 +45,67 @@ const ACTIONS = {
   [DRAFT_SAVE_FAILED]: {
     feedback: "negative",
     message: i18next.t(
-      "The draft was not saved. Please try again. If the problem persists, contact user support.",
+      "The draft was not saved. Please try again. If the problem persists, contact user support."
     ),
   },
   [DRAFT_PUBLISH_FAILED]: {
     feedback: "negative",
     message: i18next.t(
-      "The draft was not published. Please try again. If the problem persists, contact user support.",
+      "The draft was not published. Please try again. If the problem persists, contact user support."
     ),
   },
   [DRAFT_PUBLISH_FAILED_WITH_VALIDATION_ERRORS]: {
     feedback: "negative",
     message: i18next.t(
-      "The draft was not published. Record saved with validation feedback in",
+      "The draft was not published. Record saved with validation feedback in"
     ),
   },
   [DRAFT_SUBMIT_REVIEW_FAILED]: {
     feedback: "negative",
     message: i18next.t(
-      "The draft was not submitted for review. Please try again. If the problem persists, contact user support.",
+      "The draft was not submitted for review. Please try again. If the problem persists, contact user support."
     ),
   },
   [DRAFT_SUBMIT_REVIEW_FAILED_WITH_VALIDATION_ERRORS]: {
     feedback: "negative",
     message: i18next.t(
-      "The draft was not submitted for review. Record saved with validation feedback in",
+      "The draft was not submitted for review. Record saved with validation feedback in"
     ),
   },
   [DRAFT_DELETE_FAILED]: {
     feedback: "negative",
     message: i18next.t(
-      "Draft deletion failed. Please try again. If the problem persists, contact user support.",
+      "Draft deletion failed. Please try again. If the problem persists, contact user support."
     ),
   },
   [DRAFT_PREVIEW_FAILED]: {
     feedback: "negative",
     message: i18next.t(
-      "Draft preview failed. Please try again. If the problem persists, contact user support.",
+      "Draft preview failed. Please try again. If the problem persists, contact user support."
     ),
   },
   [RESERVE_PID_FAILED]: {
     feedback: "negative",
     message: i18next.t(
-      "Identifier reservation failed. Please try again. If the problem persists, contact user support.",
+      "Identifier reservation failed. Please try again. If the problem persists, contact user support."
     ),
   },
   [DISCARD_PID_FAILED]: {
     feedback: "negative",
     message: i18next.t(
-      "Identifier could not be discarded. Please try again. If the problem persists, contact user support.",
+      "Identifier could not be discarded. Please try again. If the problem persists, contact user support."
     ),
   },
   [FILE_UPLOAD_SAVE_DRAFT_FAILED]: {
     feedback: "negative",
     message: i18next.t(
-      "Draft save failed before file upload. Please try again. If the problem persists, contact user support.",
+      "Draft save failed before file upload. Please try again. If the problem persists, contact user support."
     ),
   },
   [FILE_IMPORT_FAILED]: {
     feedback: "negative",
     message: i18next.t(
-      "Files import from the previous version failed. Please try again. If the problem persists, contact user support.",
+      "Files import from the previous version failed. Please try again. If the problem persists, contact user support."
     ),
   },
 };
@@ -120,9 +120,9 @@ const FEEDBACK_COLORS = {
 const findSectionIndexForFieldPath = (sections, fieldPath) => {
   if (!sections || !fieldPath) return -1;
   return sections.findIndex((section) =>
-    section.includedPaths?.some(
-      (path) => fieldPath === path || fieldPath.startsWith(`${path}.`),
-    ),
+    section.includesPaths?.some(
+      (path) => fieldPath === path || fieldPath.startsWith(`${path}.`)
+    )
   );
 };
 
@@ -145,15 +145,16 @@ function flattenToPathValueArray(obj, prefix = "", res = []) {
 const titleCase = (fieldPath) =>
   _startCase(fieldPath.split(".")[fieldPath.split(".").length - 1]);
 
-const CustomMessageComponent = ({
-  clearErrors,
-  children = null,
-  ...uiProps
-}) => {
+export const CustomMessage = ({ children = null, ...uiProps }) => {
+  const dispatch = useDispatch();
+  const handleClearErrors = useCallback(
+    () => dispatch(clearErrors()),
+    [dispatch]
+  );
+
   return (
     <Message
-      style={{ width: "100%", color: "black" }}
-      onDismiss={clearErrors}
+      onDismiss={handleClearErrors}
       className="mb-5 form-feedback"
       {...uiProps}
     >
@@ -162,16 +163,7 @@ const CustomMessageComponent = ({
   );
 };
 
-const mapDispatchToPropsErrors = (dispatch) => ({
-  clearErrors: () => dispatch(clearErrors()),
-});
-export const CustomMessage = connect(
-  null,
-  mapDispatchToPropsErrors,
-)(CustomMessageComponent);
-
-CustomMessageComponent.propTypes = {
-  clearErrors: PropTypes.func.isRequired,
+CustomMessage.propTypes = {
   // eslint-disable-next-line react/require-default-props
   children: PropTypes.node,
 };
@@ -198,13 +190,14 @@ const ErrorMessageItem = ({ error }) => {
 ErrorMessageItem.propTypes = {
   error: PropTypes.object.isRequired,
 };
-const FormFeedbackComponent = ({
-  errors = {},
-  formFeedbackMessage,
-  actionState,
-  actions = {},
-  sections = [],
-}) => {
+
+export const FormFeedback = ({ actions = {}, sections = [] }) => {
+  const errors = useSelector((state) => state.deposit.errors);
+  const formFeedbackMessage = useSelector(
+    (state) => state.deposit.formFeedbackMessage
+  );
+  const actionState = useSelector((state) => state.deposit.actionState);
+
   const { activeStep, setActiveStep } = useFormTabs() || {};
   const timeoutRef = useRef(null);
   const allActions = { ...ACTIONS, ...actions };
@@ -236,14 +229,14 @@ const FormFeedbackComponent = ({
           setActiveStep(sectionIndex);
           timeoutRef.current = setTimeout(
             () => scrollToElement(fieldPath),
-            100,
+            100
           );
           return;
         }
       }
       scrollToElement(fieldPath);
     },
-    [activeStep, setActiveStep, sections],
+    [activeStep, setActiveStep, sections]
   );
   if (!message) return null;
   return (
@@ -264,26 +257,14 @@ const FormFeedbackComponent = ({
   );
 };
 
-FormFeedbackComponent.propTypes = {
-  errors: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  formFeedbackMessage: PropTypes.string,
-  actionState: PropTypes.string,
+FormFeedback.propTypes = {
   actions: PropTypes.object,
   sections: PropTypes.arrayOf(
     PropTypes.shape({
       key: PropTypes.string.isRequired,
-      includedPaths: PropTypes.arrayOf(PropTypes.string),
-    }),
+      includesPaths: PropTypes.arrayOf(PropTypes.string),
+    })
   ),
 };
 
-const mapStateToProps = (state) => ({
-  errors: state.deposit.errors,
-  formFeedbackMessage: state.deposit.formFeedbackMessage,
-  actionState: state.deposit.actionState,
-});
-
-export const FormFeedback = connect(
-  mapStateToProps,
-  null,
-)(FormFeedbackComponent);
+export default FormFeedback;

@@ -18,7 +18,7 @@
     position: relative;
     bottom: 2px;
     text-transform: uppercase;
-  } // ✅ Missing closing brace added here
+  }
 
   &.tab-error {
     &.error {

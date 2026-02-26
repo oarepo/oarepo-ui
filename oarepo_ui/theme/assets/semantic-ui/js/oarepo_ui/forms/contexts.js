@@ -62,3 +62,19 @@ FormTabsProvider.propTypes = {
   children: PropTypes.node,
   value: PropTypes.object.isRequired,
 };
+
+export const InitialRecordContext = createContext();
+
+export const InitialRecordProvider = ({ children, value }) => {
+  return (
+    <InitialRecordContext.Provider value={value}>
+      {children}
+    </InitialRecordContext.Provider>
+  );
+};
+
+InitialRecordProvider.propTypes = {
+  // eslint-disable-next-line react/require-default-props
+  children: PropTypes.node,
+  value: PropTypes.object.isRequired,
+};

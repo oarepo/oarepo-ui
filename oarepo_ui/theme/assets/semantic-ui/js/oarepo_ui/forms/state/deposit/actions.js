@@ -10,36 +10,21 @@ import {
   DRAFT_SAVE_STARTED,
   DRAFT_SAVE_SUCCEEDED,
 } from "@js/invenio_rdm_records/src/deposit/state/types";
-import {
-  CLEAR_VALIDATION_ERRORS,
-  SET_VALIDATION_ERRORS,
-  FORM_SESSION_SAVE_TRACKED,
-  SAVE_CANCELLED,
-} from "./types";
+import { CLEAR_VALIDATION_ERRORS, SET_VALIDATION_ERRORS, SAVE_CANCELLED } from "./types";
 import { i18next } from "@translations/oarepo_ui/i18next";
 
 async function changeURLAfterCreation(draftURL) {
   window.history.replaceState(undefined, "", draftURL);
 }
 
-let currentSaveController = null;
-
 export const saveDraftWithUrlUpdate = async (
   draft,
   draftsService,
   dispatchFn,
 ) => {
-  if (currentSaveController) {
-    currentSaveController.abort();
-  }
-
-  currentSaveController = new AbortController();
-
   const hasAlreadyId = !!draft.id;
 
-  const response = await draftsService.save(draft, {
-    signal: currentSaveController.signal,
-  });
+  const response = await draftsService.save(draft);
 
   const draftHasValidationErrors = !_isEmpty(response.errors);
 
@@ -55,7 +40,6 @@ export const saveDraftWithUrlUpdate = async (
     const draftURL = response?.data?.links?.edit_html;
     if (draftURL) changeURLAfterCreation(draftURL);
   }
-  currentSaveController = null;
 
   return response;
 };
@@ -86,7 +70,6 @@ export async function _saveDraft(
   draft,
   draftsService,
   {
-    depositState,
     dispatchFn,
     failType,
     partialValidationActionType,
@@ -97,29 +80,19 @@ export async function _saveDraft(
   } = {},
 ) {
   let response;
-  // To track if the form has been saved in this session (i.e. to not display that tabs are OK due to lack of errors before we even tried to save)
-  if (!depositState.hasBeenSavedInSession) {
-    dispatchFn({
-      type: FORM_SESSION_SAVE_TRACKED,
-      payload: { hasBeenSavedInSession: true },
-    });
-  }
 
   try {
     response = await saveDraftWithUrlUpdate(draft, draftsService, dispatchFn);
   } catch (error) {
     console.error("Error saving draft", error, draft);
-    if (error.name === "CanceledError" || error.code === "ERR_CANCELED") {
-      dispatchFn({ type: SAVE_CANCELLED });
-    } else {
-      dispatchFn({
-        type: failType,
-        payload: {
-          errors: error.errors,
-          formFeedbackMessage: i18next.t(error?.errors?.message),
-        },
-      });
-    }
+
+    dispatchFn({
+      type: failType,
+      payload: {
+        errors: error.errors,
+        formFeedbackMessage: i18next.t(error?.errors?.message),
+      },
+    });
 
     throw error;
   }
@@ -171,7 +144,6 @@ export const save = (
     });
 
     const response = await _saveDraft(draft, config.service.drafts, {
-      depositState: getState().deposit,
       dispatchFn: dispatch,
       failType: DRAFT_SAVE_FAILED,
       partialValidationActionType: DRAFT_HAS_VALIDATION_ERRORS,
@@ -200,7 +172,6 @@ export const preview = (
     });
 
     const response = await _saveDraft(draft, config.service.drafts, {
-      depositState: getState().deposit,
       dispatchFn: dispatch,
       failType: DRAFT_PREVIEW_FAILED,
       partialValidationActionType: DRAFT_HAS_VALIDATION_ERRORS,

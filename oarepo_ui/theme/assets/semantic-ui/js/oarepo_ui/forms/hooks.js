@@ -8,10 +8,12 @@ import {
   useMemo,
   useRef,
 } from "react";
+import { useSelector } from "react-redux";
 import {
   FormConfigContext,
   FieldDataContext,
   FormTabsContext,
+  InitialRecordContext,
 } from "./contexts";
 import _get from "lodash/get";
 import _set from "lodash/set";
@@ -302,4 +304,51 @@ export const useFormTabs = () => {
     console.warn("useFormTabs must be used inside FormTabsContext.Provider");
   }
   return context;
+};
+
+export const useInitialRecord = () => {
+  const context = useContext(InitialRecordContext);
+  if (!context) {
+    throw new Error(
+      "useInitialRecord must be used inside InitialRecordContext.Provider",
+    );
+  }
+  return context;
+};
+
+export const useFormNavigation = ({ activeStep, onTabChange }) => {
+  const { initialRecord } = useInitialRecord();
+  const currentRecord = useSelector((state) => state.deposit.record);
+
+  const hasBeenSavedInSession =
+    currentRecord?.revision_id &&
+    currentRecord?.revision_id !== initialRecord?.revision_id;
+
+  const isActive = useCallback((index) => activeStep === index, [activeStep]);
+
+  const handleClick = useCallback(
+    (index) => {
+      if (index !== activeStep) {
+        onTabChange(index);
+      }
+    },
+    [activeStep, onTabChange],
+  );
+
+  const handleKeyDown = useCallback(
+    (event, index) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        handleClick(index);
+      }
+    },
+    [handleClick],
+  );
+
+  return {
+    hasBeenSavedInSession,
+    isActive,
+    handleClick,
+    handleKeyDown,
+  };
 };

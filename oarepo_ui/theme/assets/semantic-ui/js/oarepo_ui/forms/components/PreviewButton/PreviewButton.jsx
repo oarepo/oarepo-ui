@@ -1,50 +1,41 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Button } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { preview } from "../../state/deposit/actions";
 import { useDepositFormAction } from "../../hooks";
 import { DRAFT_PREVIEW_STARTED } from "@js/invenio_rdm_records/src/deposit/state/types";
 import PropTypes from "prop-types";
 
-const PreviewButtonComponent = React.memo(
-  ({ previewAction, actionState, ...uiProps }) => {
-    const { handleAction: handlePreview, isSubmitting } = useDepositFormAction({
-      action: previewAction,
-    });
-    return (
-      <Button
-        name="preview"
-        disabled={isSubmitting}
-        loading={isSubmitting && actionState === DRAFT_PREVIEW_STARTED}
-        onClick={() => handlePreview()}
-        icon="eye"
-        labelPosition="left"
-        content={i18next.t("Preview")}
-        type="button"
-        {...uiProps}
-      />
-    );
-  }
-);
+export const PreviewButton = React.memo(({ ...uiProps }) => {
+  const dispatch = useDispatch();
+  const actionState = useSelector((state) => state.deposit.actionState);
 
-PreviewButtonComponent.displayName = "PreviewButtonComponent";
-PreviewButtonComponent.propTypes = {
-  previewAction: PropTypes.func.isRequired,
-  actionState: PropTypes.string,
-};
+  const previewAction = useCallback(
+    (values, params) => dispatch(preview(values, params)),
+    [dispatch]
+  );
 
-const mapDispatchToProps = (dispatch) => ({
-  previewAction: (values, params) => dispatch(preview(values, params)),
+  const { handleAction: handlePreview, isSubmitting } = useDepositFormAction({
+    action: previewAction,
+  });
+
+  return (
+    <Button
+      name="preview"
+      disabled={isSubmitting}
+      loading={isSubmitting && actionState === DRAFT_PREVIEW_STARTED}
+      onClick={() => handlePreview()}
+      icon="eye"
+      labelPosition="left"
+      content={i18next.t("Preview")}
+      type="button"
+      {...uiProps}
+    />
+  );
 });
 
-const mapStateToProps = (state) => ({
-  actionState: state.deposit.actionState,
-});
-
-export const PreviewButton = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PreviewButtonComponent);
+PreviewButton.displayName = "PreviewButton";
+PreviewButton.propTypes = {};
 
 export default PreviewButton;
