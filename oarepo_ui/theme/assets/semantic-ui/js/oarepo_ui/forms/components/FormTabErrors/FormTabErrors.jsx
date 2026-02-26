@@ -4,8 +4,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Label, Icon } from "semantic-ui-react";
 import { useFormikContext } from "formik";
-import { useSelector } from "react-redux";
-import { DRAFT_SAVE_STARTED } from "@js/invenio_rdm_records/src/deposit/state/types";
 
 function findErrorObjects(obj) {
   const results = [];
