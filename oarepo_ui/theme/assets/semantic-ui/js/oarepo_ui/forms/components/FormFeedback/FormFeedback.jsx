@@ -32,15 +32,15 @@ import { scrollToElement } from "../../../util";
 const ACTIONS = {
   [DRAFT_SAVE_SUCCEEDED]: {
     feedback: "positive",
-    message: i18next.t("Record successfully saved."),
+    message: i18next.t("Draft successfully saved."),
   },
   [DRAFT_HAS_VALIDATION_ERRORS]: {
     feedback: "warning",
-    message: i18next.t("Record saved with validation feedback in"),
+    message: i18next.t("Draft saved with validation feedback in:"),
   },
   [DRAFT_LOADED_WITH_VALIDATION_ERRORS]: {
     feedback: "warning",
-    message: i18next.t("Draft has validation feedback in"),
+    message: i18next.t("Draft has validation feedback in:"),
   },
   [DRAFT_SAVE_FAILED]: {
     feedback: "negative",
@@ -57,7 +57,7 @@ const ACTIONS = {
   [DRAFT_PUBLISH_FAILED_WITH_VALIDATION_ERRORS]: {
     feedback: "negative",
     message: i18next.t(
-      "The draft was not published. Record saved with validation feedback in",
+      "The draft was not published. Draft saved with validation feedback in:",
     ),
   },
   [DRAFT_SUBMIT_REVIEW_FAILED]: {
@@ -69,7 +69,7 @@ const ACTIONS = {
   [DRAFT_SUBMIT_REVIEW_FAILED_WITH_VALIDATION_ERRORS]: {
     feedback: "negative",
     message: i18next.t(
-      "The draft was not submitted for review. Record saved with validation feedback in",
+      "The draft was not submitted for review. Draft saved with validation feedback in",
     ),
   },
   [DRAFT_DELETE_FAILED]: {
@@ -239,17 +239,18 @@ export const FormFeedback = ({ actions = {}, sections = [] }) => {
   return (
     <CustomMessage color={color}>
       <Message.Header>{backendErrorMessage || message}</Message.Header>
-      <Message.List>
-        {flattenedErrors?.map((error, index) => (
-          <Message.Item
-            onClick={() => handleErrorClick(error.fieldPath)}
-            // eslint-disable-next-line react/no-array-index-key
-            key={`${error.fieldPath}-${index}`}
-          >
-            <ErrorMessageItem error={error} />
-          </Message.Item>
-        ))}
-      </Message.List>
+      {flattenedErrors?.length > 0 && (
+        <Message.List>
+          {flattenedErrors?.map((error, index) => (
+            <Message.Item
+              onClick={() => handleErrorClick(error.fieldPath)}
+              key={`${error.fieldPath}-${index}`} // eslint-disable-line react/no-array-index-key
+            >
+              <ErrorMessageItem error={error} />
+            </Message.Item>
+          ))}
+        </Message.List>
+      )}
     </CustomMessage>
   );
 };

@@ -8,12 +8,14 @@ import { FormTabsProvider } from "../../contexts";
 import { FormTabs } from "../FormTabs";
 import { FormSteps } from "../FormSteps";
 import { TabContent } from "../TabContent";
-import { SaveButton } from "../SaveButton";
-import { PreviewButton } from "../PreviewButton";
-import { DeleteButton } from "../DeleteButton";
 import Overridable from "react-overridable";
 import { buildUID } from "react-searchkit";
-import { PublishButton } from "@js/invenio_rdm_records/src/deposit/controls/PublishButton";
+import {
+  PublishButton,
+  SaveButton,
+  PreviewButton,
+  DeleteButton,
+} from "@js/invenio_rdm_records";
 import { FormFeedback } from "../FormFeedback";
 import { useFormikContext } from "formik";
 
@@ -26,7 +28,7 @@ export const TabForm = ({ sections = [] }) => {
   );
 
   const sectionKeys = useMemo(() => sections.map((s) => s.key), [sections]);
-  const { overridableIdPrefix } = useFormConfig();
+  const { overridableIdPrefix, permissions } = useFormConfig();
   const { dirty } = useFormikContext();
   const params = new URLSearchParams(window.location.search);
   const initialTabKey = params.get("tab");
@@ -96,7 +98,6 @@ export const TabForm = ({ sections = [] }) => {
     }),
     [activeStep, handleSetStep, next, back],
   );
-
   return (
     <FormTabsProvider value={formTabContextValue}>
       <Grid stackable className="tab-form container">
@@ -172,18 +173,38 @@ export const TabForm = ({ sections = [] }) => {
         <Overridable id={buildUID(overridableIdPrefix, "TabForm.actions")}>
           <Grid.Row>
             <div className="flex justify-end form-actions-row">
-              <div>
-                <PreviewButton className="mr-10" />
-              </div>
-              <div>
-                <DeleteButton className="mr-10" />
-              </div>
-              <div>
-                <SaveButton className="ml-10" />
-              </div>
-              <div>
-                <PublishButton record={record} className="ml-10" />
-              </div>
+              <Overridable
+                id={buildUID(overridableIdPrefix, "TabForm.PreviewButton")}
+              >
+                <div>
+                  <PreviewButton />
+                </div>
+              </Overridable>
+              <Overridable
+                id={buildUID(overridableIdPrefix, "TabForm.DeleteButton")}
+                permissions={permissions}
+              >
+                <div>
+                  {permissions?.can_delete_draft && record?.id && (
+                    <DeleteButton />
+                  )}
+                </div>
+              </Overridable>
+              <Overridable
+                id={buildUID(overridableIdPrefix, "TabForm.SaveButton")}
+              >
+                <div>
+                  <SaveButton />
+                </div>
+              </Overridable>
+              <Overridable
+                id={buildUID(overridableIdPrefix, "TabForm.PublishButton")}
+                record={record}
+              >
+                <div>
+                  <PublishButton record={record} />
+                </div>
+              </Overridable>
             </div>
           </Grid.Row>
         </Overridable>

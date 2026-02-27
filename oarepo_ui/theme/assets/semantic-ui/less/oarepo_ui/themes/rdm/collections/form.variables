@@ -14,3 +14,4 @@
 @activeStepBackgroundColor: @primaryColor;
 @activeStepTextColor: @white;
 @stepTextColor: @black;
+@tabContentNavigationMarginTop: 1rem;

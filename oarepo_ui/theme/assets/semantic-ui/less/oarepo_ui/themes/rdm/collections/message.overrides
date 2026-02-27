@@ -1,8 +1,16 @@
 .ui.message {
   &.form-feedback {
-    width: 100%;
     color: black;
-
+    .header {
+      color: black;
+    }
+    width: 100%;
+    .list {
+      li:hover {
+        cursor: pointer;
+        text-decoration: underline;
+      }
+    }
     &.orange {
       .content:hover {
         cursor: pointer;

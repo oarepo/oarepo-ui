@@ -7,6 +7,7 @@ import { i18next } from "@translations/oarepo_ui/i18next";
 import Overridable from "react-overridable";
 import { ErrorBoundary } from "react-error-boundary";
 import { useFormikContext } from "formik";
+import { useInitialRecord } from "../../hooks";
 
 const TabErrorFallback = ({ error, resetErrorBoundary }) => (
   <Message negative icon>
@@ -39,6 +40,7 @@ export const TabContent = ({ activeStep, sections, next, back }) => {
   const nextStepLabel =
     activeStep < sections.length - 1 ? sections[activeStep + 1].label : null;
   const { dirty } = useFormikContext();
+  const { initialRecord } = useInitialRecord();
 
   // Move focus to first focusable element in content when tab changes
   // When first input in a tab, is a dropdown, the behavior is not ideal i.e. it focuses and the dropdown extends
@@ -76,7 +78,14 @@ export const TabContent = ({ activeStep, sections, next, back }) => {
           role="tabpanel"
           aria-labelledby={section?.key}
         >
-          {section?.render({ record, formConfig, activeStep, next, back })}
+          {section?.render({
+            record,
+            formConfig,
+            activeStep,
+            next,
+            back,
+            initialRecord,
+          })}
         </div>
         <Overridable
           id={`OarepoUI.TabContent.${section?.key}`}

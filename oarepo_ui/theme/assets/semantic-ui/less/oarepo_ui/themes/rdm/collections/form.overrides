@@ -24,6 +24,7 @@
   // Desktop vertical tabs (left sidebar)
   .form-tabs-column {
     padding-right: @formTabsAndContentPadding !important;
+    padding-left: 0 !important;
   }
 
   .ui.menu.form.form-tabs {
@@ -92,6 +93,115 @@
       justify-content: center;
       gap: @formTabsNavigationGap;
       padding-top: @formTabsNavigationPaddingTop;
+      margin-top: @tabContentNavigationMarginTop;
+    }
+    label.helptext {
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    // these are invenio styles, that are in their case tied to the accordion, but in our case
+    // we don't have accordion fields, so had to paste it here
+    .invenio-group-field.fields {
+      margin: 1rem 0 2rem 0;
+
+      .ui.icon.button.close-btn {
+        margin-top: 1.65rem;
+      }
+    }
+
+    .additional-descriptions .ui.grid .row,
+    .invenio-group-field.fields {
+      background-color: lighten(@borderColor, 60%);
+      padding: 1rem;
+      border-radius: 0.5rem;
+
+      .invenio-group-field.fields {
+        margin-bottom: 0;
+      }
+
+      @media all and (max-width: @largestMobileScreen) {
+        .column {
+          position: static;
+          padding-right: 0.3rem;
+          padding-left: 0.3rem;
+        }
+
+        position: relative;
+        padding-top: 3.5rem;
+
+        .ui.icon.button.close-btn {
+          position: absolute;
+          top: 1rem;
+          right: 1.3rem;
+          margin-top: 0;
+        }
+      }
+    }
+
+    .title-field.field {
+      margin-bottom: 1rem;
+    }
+
+    .additional-descriptions.field {
+      .ui.icon.button.close-btn {
+        margin-top: 0;
+      }
+
+      .ui.grid.description {
+        margin: 1rem 0 0 0;
+
+        .row {
+          padding-bottom: 2rem;
+        }
+      }
+    }
+
+    .field,
+    .invenio-group-field.fields {
+      margin-bottom: 0.5rem;
+
+      .field {
+        margin-bottom: 0.5rem;
+
+        &:last-child,
+        &.subjects-field {
+          margin-bottom: 0;
+        }
+
+        .ui.icon.button {
+          margin-right: 0;
+        }
+      }
+
+      & ~ label.helptext {
+        margin-top: 0;
+        margin-bottom: 2rem;
+      }
+
+      .invenio-group-field.fields {
+        margin-bottom: 0;
+      }
+    }
+
+    .main-group-field.fields {
+      margin-bottom: 0;
+
+      &,
+      .invenio-group-field,
+      .invenio-group-field .invenio-group-field {
+        padding: 0;
+        background-color: transparent;
+      }
+
+      .subjects-field {
+        margin-bottom: 0;
+
+        .invenio-group-field.fields {
+          @media all and (min-width: @tabletBreakpoint) {
+            margin-top: 0;
+          }
+        }
+      }
     }
   }
 

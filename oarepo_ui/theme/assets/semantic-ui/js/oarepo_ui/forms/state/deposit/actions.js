@@ -10,7 +10,7 @@ import {
   DRAFT_SAVE_STARTED,
   DRAFT_SAVE_SUCCEEDED,
 } from "@js/invenio_rdm_records/src/deposit/state/types";
-import { CLEAR_VALIDATION_ERRORS, SET_VALIDATION_ERRORS, SAVE_CANCELLED } from "./types";
+import { CLEAR_VALIDATION_ERRORS, SET_VALIDATION_ERRORS } from "./types";
 import { i18next } from "@translations/oarepo_ui/i18next";
 
 async function changeURLAfterCreation(draftURL) {
