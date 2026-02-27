@@ -13,7 +13,14 @@ export const FormTabs = ({ sections, activeStep, onTabChange }) => {
     });
 
   return (
-    <Menu className="form form-tabs" fluid vertical tabular role="tablist" data-testid="form-tabs">
+    <Menu
+      className="form form-tabs"
+      fluid
+      vertical
+      tabular
+      role="tablist"
+      data-testid="form-tabs"
+    >
       {sections.map((section, index) => (
         <Menu.Item
           id={section.key}
@@ -29,7 +36,7 @@ export const FormTabs = ({ sections, activeStep, onTabChange }) => {
         >
           <div className="flex">
             {hasBeenSavedInSession && (
-              <FormTabErrors includesPaths={section.includesPaths} />
+              <FormTabErrors includesPaths={section.includesPaths || []} />
             )}
             {section.label}
           </div>
