@@ -536,34 +536,34 @@ msgstr "Zadejte a stiskněte Enter pro vyhledávání"
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:7
 msgid "ORCID profile"
-msgstr ""
+msgstr "ORCID profil"
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:12
 msgid "Scopus ID profile"
-msgstr ""
+msgstr "Scopus ID profil"
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:17
 msgid "ROR profile"
-msgstr ""
+msgstr "ROR profil"
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:22
 msgid "WOS Researcher ID"
-msgstr ""
+msgstr "WOS Researcher ID"
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:27
 msgid "DOI profile"
-msgstr ""
+msgstr "DOI profil"
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:32
 msgid "GND profile"
-msgstr ""
+msgstr "GND profil"
 
 msgid "change"
-msgstr ""
+msgstr "změnit"
 
 #: /home/dusanst/oarepo-ui/oarepo-ui/oarepo_ui/templates/components/IdentifierBadge.jinja:29
 msgid "ISNI profile"
-msgstr ""
+msgstr "ISNI profil"
 
 msgid "Your draft has validation errors. Please correct them and try again:"
 msgstr "Váš koncept obsahuje chyby ověření. Opravte je a zkuste to znovu:"
@@ -592,12 +592,17 @@ msgid ""
 "<3></3>. This DOI represents all versions, and will always resolve to the "
 "latest one. <5>Read more</5>.</0>"
 msgstr ""
+"<0><0>Citovat všechny verze?</0> Všechny verze můžete citovat pomocí DOI "
+"<3></3>. Toto DOI reprezentuje všechny verze a vždy bude odkazovat na "
+"nejnovější. <5>Přečtěte si více</5>.</0>"
 
 msgid ""
 "<0><0>Cite all versions?</0> You can cite all versions by using the DOI . "
 "The DOI is registered when the first version is published. <4>Read "
 "more</4>.</0>"
 msgstr ""
+"<0><0>Citovat všechny verze?</0> Všechny verze můžete citovat pomocí DOI. "
+"DOI se registruje při zveřejnění první verze. <4>Přečtěte si více</4>.</0>"
 
 msgid "Failed to fetch draft's files. Please try refreshing the page."
 msgstr "Soubory konceptu se nepodařilo načíst. Zkuste prosím obnovit stránku."
@@ -1238,3 +1243,242 @@ msgstr ""
 msgid "No record found for the tombstone page, no id"
 msgstr ""
 "Pro stránku se záznamem o odstranění nebyl nalezen žádný záznam, chybí ID"
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:790
+msgid "User does not have permission to create a record."
+msgstr "Uživatel nemá oprávnění k vytvoření záznamu."
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/not_found.html:12
+msgid ""
+"\n"
+"      The record you are trying to access does not exist in the repository."
+msgstr ""
+"\n"
+"      Záznam, který se snažíte zobrazit, v repozitáři neexistuje."
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/not_found.html:20
+msgid "PID"
+msgstr "PID"
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/deposit/form.html:2
+msgid "New version"
+msgstr "Nová verze"
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/deposit/form.html:4
+msgid "New upload"
+msgstr "Nové nahrání"
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/deposit/form.html:6
+msgid "Edit upload"
+msgstr "Upravit nahrání"
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/macros/records_list.html:10
+msgid "Recent uploads"
+msgstr "Nedávná nahrání"
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:1
+msgid "Information banner"
+msgstr "Informační banner"
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:31
+msgid "Part of"
+msgstr "Součást"
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:42
+msgid "Community visibility"
+msgstr "Viditelnost komunity"
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:43
+msgid "The community is restricted to users with access."
+msgstr "Komunita je omezena na uživatele s přístupem."
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:45
+msgid "Restricted"
+msgstr "Omezený přístup"
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:91
+#, python-format
+msgid ""
+"\n"
+"                    There is a %(link_start)snewer version%(link_end)s of the record\n"
+"                    available.\n"
+"                  "
+msgstr ""
+"\n"
+"                    Je k dispozici %(link_start)snovější verze%(link_end)s záznamu.\n"
+"                  "
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:9
+msgid "Record access information"
+msgstr "Informace o přístupu k záznamu"
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:16
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:148
+msgid "Reason"
+msgstr "Důvod"
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:27
+msgid "Back-navigation"
+msgstr "Zpětná navigace"
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:29
+msgid "Back to edit"
+msgstr "Zpět na úpravy"
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:40
+msgid "Publication date and version number"
+msgstr "Datum publikace a číslo verze"
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:44
+msgid "Publication date"
+msgstr "Datum publikace"
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:45
+msgid "Published"
+msgstr "Publikováno"
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:48
+#, python-brace-format
+msgid "Version {version_number}"
+msgstr "Verze {version_number}"
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:55
+msgid "Resource type"
+msgstr "Typ zdroje"
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:65
+msgid "Access status"
+msgstr "Stav přístupu"
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:87
+msgid "Record title and creators"
+msgstr "Název záznamu a autoři"
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:93
+msgid "Creators and contributors"
+msgstr "Autoři a přispěvatelé"
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:154
+msgid "Request access"
+msgstr "Požádat o přístup"
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:156
+msgid ""
+"If you would like to request access to these files, please fill out the form"
+" below."
+msgstr ""
+"Pokud chcete požádat o přístup k těmto souborům, vyplňte prosím formulář "
+"níže."
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:164
+msgid ""
+"You need to satisfy these conditions in order for this request to be "
+"accepted:"
+msgstr "Pro přijetí této žádosti musíte splnit následující podmínky:"
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:189
+msgid "System files"
+msgstr "Systémové soubory"
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:202
+msgid "Additional record details"
+msgstr "Další podrobnosti záznamu"
+
+msgid "Draft successfully saved."
+msgstr "Koncept byl úspěšně uložen."
+
+msgid "Draft saved with validation feedback in:"
+msgstr "Koncept uložen s chybami validace v:"
+
+msgid "Draft has validation feedback in:"
+msgstr "Koncept má chyby validace v:"
+
+msgid ""
+"The draft was not saved. Please try again. If the problem persists, contact "
+"user support."
+msgstr ""
+"Koncept nebyl uložen. Zkuste to prosím znovu. Pokud problém přetrvává, "
+"kontaktujte uživatelskou podporu."
+
+msgid ""
+"The draft was not published. Please try again. If the problem persists, "
+"contact user support."
+msgstr ""
+"Koncept nebyl publikován. Zkuste to prosím znovu. Pokud problém přetrvává, "
+"kontaktujte uživatelskou podporu."
+
+msgid "The draft was not published. Draft saved with validation feedback in:"
+msgstr "Koncept nebyl publikován. Koncept uložen s chybami validace v:"
+
+msgid ""
+"The draft was not submitted for review. Please try again. If the problem "
+"persists, contact user support."
+msgstr ""
+"Koncept nebyl odeslán ke kontrole. Zkuste to prosím znovu. Pokud problém "
+"přetrvává, kontaktujte uživatelskou podporu."
+
+msgid ""
+"The draft was not submitted for review. Draft saved with validation feedback"
+" in"
+msgstr ""
+"Koncept nebyl odeslán ke kontrole. Koncept uložen s chybami validace v"
+
+msgid ""
+"Draft deletion failed. Please try again. If the problem persists, contact "
+"user support."
+msgstr ""
+"Smazání konceptu se nezdařilo. Zkuste to prosím znovu. Pokud problém "
+"přetrvává, kontaktujte uživatelskou podporu."
+
+msgid ""
+"Draft preview failed. Please try again. If the problem persists, contact "
+"user support."
+msgstr ""
+"Náhled konceptu se nezdařil. Zkuste to prosím znovu. Pokud problém "
+"přetrvává, kontaktujte uživatelskou podporu."
+
+msgid ""
+"Identifier reservation failed. Please try again. If the problem persists, "
+"contact user support."
+msgstr ""
+"Rezervace identifikátoru se nezdařila. Zkuste to prosím znovu. Pokud problém"
+" přetrvává, kontaktujte uživatelskou podporu."
+
+msgid ""
+"Identifier could not be discarded. Please try again. If the problem "
+"persists, contact user support."
+msgstr ""
+"Identifikátor nelze zrušit. Zkuste to prosím znovu. Pokud problém přetrvává,"
+" kontaktujte uživatelskou podporu."
+
+msgid ""
+"Draft save failed before file upload. Please try again. If the problem "
+"persists, contact user support."
+msgstr ""
+"Uložení konceptu před nahráním souboru se nezdařilo. Zkuste to prosím znovu."
+" Pokud problém přetrvává, kontaktujte uživatelskou podporu."
+
+msgid ""
+"Files import from the previous version failed. Please try again. If the "
+"problem persists, contact user support."
+msgstr ""
+"Import souborů z předchozí verze se nezdařil. Zkuste to prosím znovu. Pokud "
+"problém přetrvává, kontaktujte uživatelskou podporu."
+
+msgid "Something went wrong in this section"
+msgstr "V této sekci se něco pokazilo"
+
+msgid "Try again"
+msgstr "Zkusit znovu"
+
+msgid "Your draft contains unsaved changes."
+msgstr "Váš koncept obsahuje neuložené změny."
+
+msgid "Back"
+msgstr "Zpět"
+
+msgid "Next"
+msgstr "Další"
+
+msgid "More"
+msgstr "Více"

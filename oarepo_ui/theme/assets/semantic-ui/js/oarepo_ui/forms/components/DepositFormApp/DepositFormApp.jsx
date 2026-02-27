@@ -1,5 +1,9 @@
 import React, { Component } from "react";
-import { FormConfigProvider, FieldDataProvider } from "../../contexts";
+import {
+  FormConfigProvider,
+  FieldDataProvider,
+  InitialRecordProvider,
+} from "../../contexts";
 import { Container } from "semantic-ui-react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -22,6 +26,7 @@ import { RDMUploadProgressNotifier } from "@js/invenio_rdm_records/src/deposit//
 import { configureStore } from "../../store";
 import PropTypes from "prop-types";
 import { depositReducer as oarepoDepositReducer } from "../../state/deposit/reducers";
+import { severityChecksConfig } from "@js/invenio_app_rdm/deposit/config";
 import { DepositBootstrap } from "@js/invenio_rdm_records/src/deposit/api/DepositBootstrap";
 
 const queryClient = new QueryClient();
@@ -30,15 +35,14 @@ export class DepositFormApp extends Component {
   constructor(props) {
     super(props);
     this.overridableIdPrefix = props.config.overridableIdPrefix;
-
+    this.sections = props.sections || [];
     const recordSerializer = props.recordSerializer
       ? props.recordSerializer
       : new RDMDepositRecordSerializer(
           props.config.default_locale,
           props.config.custom_fields.vocabularies,
         );
-    // TODO: switch to vnd accept header, in order to receive UI serialization in API responses in the form
-    // not possible to do currently, as our files service needs to be modified https://linear.app/ducesnet/issue/BE-1011/files-service
+
     const apiHeaders = props.apiHeaders
       ? props.apiHeaders
       : {
@@ -49,6 +53,8 @@ export class DepositFormApp extends Component {
         };
 
     const additionalApiConfig = { headers: apiHeaders };
+
+    const severityChecks = props.severityChecks ?? severityChecksConfig;
 
     const apiClient =
       props.apiClient ||
@@ -76,6 +82,8 @@ export class DepositFormApp extends Component {
         props.config.fileUploadConcurrency,
       );
 
+    props.config.severityChecks = severityChecks;
+
     const service =
       props.depositService || new DepositService(draftsService, filesService);
     const appConfig = props.appConfig || {
@@ -91,6 +99,7 @@ export class DepositFormApp extends Component {
     };
 
     this.config = props.config;
+    this.initialRecordContextValue = { initialRecord: props.record };
 
     if (props?.record?.errors && props?.record?.errors.length > 0) {
       appConfig.errors = recordSerializer.deserializeErrors(
@@ -128,6 +137,8 @@ export class DepositFormApp extends Component {
       groupsEnabled,
       allowEmptyFiles,
       useUppy,
+      sections,
+      useWizardForm,
     } = this.props;
 
     const Wrapper = ContainerComponent || React.Fragment;
@@ -154,17 +165,26 @@ export class DepositFormApp extends Component {
                     useUppy,
                   }}
                 >
-                  <FieldDataProvider>
-                    <Overridable
-                      id={buildUID(this.overridableIdPrefix, "FormApp.layout")}
-                    >
-                      <Container className="rel-mt-1">
-                        <DepositBootstrap>
-                          <BaseFormLayout record={record} />
-                        </DepositBootstrap>
-                      </Container>
-                    </Overridable>
-                  </FieldDataProvider>
+                  <InitialRecordProvider value={this.initialRecordContextValue}>
+                    <FieldDataProvider>
+                      <Overridable
+                        id={buildUID(
+                          this.overridableIdPrefix,
+                          "FormApp.layout",
+                        )}
+                      >
+                        <Container className="rel-mt-1">
+                          <DepositBootstrap>
+                            <BaseFormLayout
+                              sections={sections}
+                              record={record}
+                              useWizardForm={useWizardForm}
+                            />
+                          </DepositBootstrap>
+                        </Container>
+                      </Overridable>
+                    </FieldDataProvider>
+                  </InitialRecordProvider>
                 </FormConfigProvider>
               </OverridableContext.Provider>
             </Router>
@@ -189,6 +209,8 @@ DepositFormApp.propTypes = {
   allowEmptyFiles: PropTypes.bool,
   useUppy: PropTypes.bool,
   /* eslint-disable react/require-default-props */
+  severityChecks: PropTypes.object,
+  sections: PropTypes.arrayOf(PropTypes.object),
   apiHeaders: PropTypes.object,
   errors: PropTypes.arrayOf(PropTypes.object),
   apiClient: PropTypes.object,
@@ -203,4 +225,9 @@ DepositFormApp.propTypes = {
   filesReducer: PropTypes.func,
   ContainerComponent: PropTypes.elementType,
   componentOverrides: PropTypes.object,
+  useWizardForm: PropTypes.bool,
+};
+
+DepositFormApp.defaultProps = {
+  useWizardForm: false,
 };

@@ -1,430 +1,485 @@
 # Translations template for PROJECT.
-# Copyright (C) 2025 ORGANIZATION
+# Copyright (C) 2026 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-08-22 08:04+0200\n"
+"POT-Creation-Date: 2026-02-27 11:00+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.16.0\n"
+"Generated-By: Babel 2.18.0\n"
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/config.py:89
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/config.py:91
 msgid "English"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/config.py:90
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/config.py:92
 msgid "Czech"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:21
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:21
 msgid "api.draft"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:22
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:22
 msgid "api.latest"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:23
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:23
 msgid "api.files"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:24
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:24
 msgid "api.latest_html"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:25
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:25
 msgid "api.publish"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:26
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:26
 msgid "api.record"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:27
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:27
 msgid "api.self_html"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:28
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:28
 msgid "api.versions"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:29
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:29
 msgid ""
 "The browser (or proxy) sent a request that this server could not understand."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:30
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:31
 msgid ""
 "The server could not verify that you are authorized to access the URL "
 "requested. You either supplied the wrong credentials (e.g. a bad password), "
 "or your browser doesn't understand how to supply the credentials required."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:36
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:37
 msgid ""
 "You don't have the permission to access the requested resource. It is either"
 " read-protected or not readable by the server."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:40
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:58
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:41
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:59
 msgid ""
 "The requested URL was not found on the server. If you entered the URL "
 "manually please check your spelling and try again."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:44
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:44
 msgid "The method is not allowed for the requested URL."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:45
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:46
 msgid ""
 "The resource identified by the request is only capable of generating "
 "response entities which have content characteristics not acceptable "
 "according to the accept headers sent in the request."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:50
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:51
 msgid ""
 "The server closed the network connection because the browser didn't finish "
 "the request within the specified time."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:54
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:55
 msgid ""
 "A conflict happened while processing the request. The resource might have "
 "been modified while the request was being processed."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:62
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:63
 msgid ""
 "The requested URL is no longer available on this server and there is no "
 "forwarding address. If you followed a link from a foreign page, please "
 "contact the author of this page."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:67
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:67
 msgid ""
 "The precondition on the request for the URL failed positive evaluation."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:68
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:68
 msgid "The data value transmitted exceeds the capacity limit."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:69
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:69
 msgid ""
 "The length of the requested URL exceeds the capacity limit for this server. "
 "The request cannot be processed."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:70
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:70
 msgid "The server does not support the media type transmitted in the request."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:71
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:71
 msgid "The server cannot provide the requested range."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:72
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:72
 msgid "The server could not meet the requirements of the Expect header"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:73
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:73
 msgid "This server is a teapot, not a coffee machine"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:74
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:74
 msgid ""
 "The request was well-formed but was unable to be followed due to semantic "
 "errors."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:75
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:75
 msgid "The resource that is being accessed is locked."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:76
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:77
 msgid ""
 "The method could not be performed on the resource because the requested "
 "action depended on another action and that action failed."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:80
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:80
 msgid ""
 "This request is required to be conditional; try using 'If-Match' or 'If-"
 "Unmodified-Since'."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:81
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:81
 msgid "This user has exceeded an allotted request count. Try again later."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:82
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:82
 msgid "One or more header fields exceeds the maximum size."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:83
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:83
 msgid "Unavailable for legal reasons."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:84
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:85
 msgid ""
 "The server encountered an internal error and was unable to complete your "
 "request. Either the server is overloaded or there is an error in the "
 "application."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:89
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:89
 msgid "The server does not support the action requested by the browser."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:90
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:90
 msgid "The proxy server received an invalid response from an upstream server."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:91
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:92
 msgid ""
 "The server is temporarily unable to service your request due to maintenance "
 "downtime or capacity problems. Please try again later."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:95
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:95
 msgid "The connection to an upstream server timed out."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:96
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:96
 msgid ""
 "The server does not support the HTTP protocol version used in the request."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:288
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:410
 msgid "File preview requested but file service is not available on the model"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:711
-msgid "No record found for the tombstone page"
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:790
+msgid "User does not have permission to create a record."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:714
-msgid "No record found for the tombstone page, incorrect parameter"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:719
-msgid "No record found for the tombstone page, no id"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:816
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:991
 msgid "Removal reason"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:817
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:992
 msgid "Note"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:818
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:993
 msgid "Citation text"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/ClipboardCopyButton.jinja:6
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/ClipboardCopyButton.jinja:6
 msgid "Copy to clipboard"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/DefinitionLink.jinja:2
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/DefinitionLink.jinja:2
 msgid "Open definition"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:3
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:18
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:16
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:31
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:3
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:4
+msgid "Identifiers and links"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:54
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:55
+msgid "metadata/originalRecord.label"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/RecordExport.jinja:13
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/RecordExport.jinja:14
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/side_bar/export.html:14
+msgid "Export"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/RecordVersions.jinja:13
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/RecordVersions.jinja:14
+msgid "Versions"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/ICustomFields.jinja:10
+msgid "Not set"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:7
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:110
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:115
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:132
+msgid "Files"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:11
+msgid "File"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:12
+msgid "Size"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:13
+msgid "Actions"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:24
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:25
+msgid "File is being processed."
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:32
+msgid "File was not uploaded correctly. Please delete it and try again."
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:33
+msgid "File was not uploaded correctly."
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:48
+msgid "Preview file"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:56
+msgid "Download file"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:62
+msgid "File upload is not completed."
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:20
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:35
 msgid "New item"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:5
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:18
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:22
 msgid "Edit item "
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/EditForm.jinja:16
-msgid "Edit item"
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/not_found.html:7
+msgid "Not found"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:7
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/not_found.html:12
+msgid ""
+"\n"
+"      The record you are trying to access does not exist in the repository."
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/not_found.html:20
+msgid "PID"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_search.html:2
+msgid "Search results"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/tombstone.html:7
+msgid "Gone"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/tombstone.html:12
+msgid ""
+"\n"
+"      The record you are trying to access was removed. The\n"
+"      metadata of the record is kept for archival purposes."
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/deposit/form.html:2
+msgid "New version"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/deposit/form.html:4
+msgid "New upload"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/deposit/form.html:6
+msgid "Edit upload"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/macros/records_list.html:10
+msgid "Recent uploads"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:1
+msgid "Information banner"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:31
+msgid "Part of"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:42
+msgid "Community visibility"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:43
+msgid "The community is restricted to users with access."
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:45
+msgid "Restricted"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:64
 msgid "Preview"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:11
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:68
 msgid "You are previewing a published record."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:13
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:70
 msgid "You are previewing changes that have not yet been published."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:15
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:72
 msgid "You are previewing a new record that has not yet been published."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/PreviewSubheader.jinja:17
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:74
 msgid ""
 "You are previewing a new record version that has not yet been published."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/RecordVersions.jinja:13
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/RecordVersions.jinja:14
-msgid "Versions"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:6
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/Searchbar.jinja:7
-msgid "Search"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/SidebarApiLinks.jinja:5
-msgid "API"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/SidebarApiLinks.jinja:5
-msgid "Links"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/ICustomFields.jinja:11
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/translations/jinjax_messages.jinja:1
-#: oarepo_ui/translations/jinjax_messages.jinja:1
-msgid "Not set"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:7
-msgid "Files"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:11
-msgid "File"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:12
-msgid "Size"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:13
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:54
-msgid "Actions"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:24
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:25
-msgid "File is being processed."
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:32
-msgid "File was not uploaded correctly. Please delete it and try again."
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:33
-msgid "File was not uploaded correctly."
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:48
-msgid "Preview file"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:56
-msgid "Download file"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:62
-msgid "File upload is not completed."
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/NotFound.jinja:11
-msgid "Not found"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/NotFound.jinja:16
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:91
+#, python-format
 msgid ""
 "\n"
-"      The record you are trying to access does not exist in this repository."
+"                    There is a %(link_start)snewer version%(link_end)s of the record\n"
+"                    available.\n"
+"                  "
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/PermissionDenied.jinja:11
-msgid "Permission denied"
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:9
+msgid "Record access information"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/detail.html:32
-msgid "Record details"
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:16
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:148
+msgid "Reason"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/footer.html:15
-msgid "Contact"
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:27
+msgid "Back-navigation"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/footer.html:33
-#, python-format
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:29
+msgid "Back to edit"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:40
+msgid "Publication date and version number"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:44
+msgid "Publication date"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:45
+msgid "Published"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:48
+#, python-brace-format
+msgid "Version {version_number}"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:55
+msgid "Resource type"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:65
+msgid "Access status"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:87
+msgid "Record title and creators"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:93
+msgid "Creators and contributors"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:154
+msgid "Request access"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:156
 msgid ""
-"Powered by\n"
-"            <a href=\"%(link)s\">Invenio</a>"
+"If you would like to request access to these files, please fill out the form"
+" below."
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/footer.html:37
-#, python-format
-msgid "Version: %(version)s"
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:164
+msgid ""
+"You need to satisfy these conditions in order for this request to be "
+"accepted:"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:42
-msgid "Menu"
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:189
+msgid "System files"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:61
-msgid "Close menu"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:111
-msgid "Requests"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header.html:113
-msgid "Inbox"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_frontpage.html:26
-msgid "Type and press enter to search"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:15
-msgid "Log in"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:19
-msgid "Sign up"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:37
-msgid "Quick create"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:73
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:114
-msgid "My account"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:108
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:137
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/header_login.html:144
-msgid "Log out"
-msgstr ""
-
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/search.html:2
-msgid "Search results"
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:202
+msgid "Additional record details"
 msgstr ""
 
 msgid "Click to copy"
@@ -432,42 +487,6 @@ msgstr ""
 
 msgid "Export selection"
 msgstr ""
-
-msgid "Export"
-msgstr ""
-
-msgid "Cite all versions?"
-msgstr ""
-
-msgid "You can cite all versions by using the DOI"
-msgstr ""
-
-msgid ""
-"This DOI represents all versions, and will always resolve to the latest one."
-msgstr ""
-
-msgid "Read more."
-msgstr ""
-
-msgid "The DOI is registered when the first version is published."
-msgstr ""
-
-msgid "Version {{- version}}"
-msgstr ""
-
-msgid "Only published versions are displayed."
-msgstr ""
-
-msgid "An error occurred while fetching the record."
-msgstr ""
-
-msgid "An error occurred while fetching the versions."
-msgstr ""
-
-msgid "View all {{count}} versions"
-msgid_plural "View all {{count}} versions"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "Remove"
 msgstr ""
@@ -577,15 +596,6 @@ msgstr ""
 msgid "Couldn't find your person? You can <2>create a new entry</2>."
 msgstr ""
 
-msgid "If you delete the draft, the work you have done on it will be lost."
-msgstr ""
-
-msgid "Are you sure you wish delete this draft?"
-msgstr ""
-
-msgid "Delete draft"
-msgstr ""
-
 msgid "Previous Month"
 msgstr ""
 
@@ -676,7 +686,66 @@ msgstr ""
 msgid "Edit file"
 msgstr ""
 
-msgid "Draft could not be saved. Please try again later."
+msgid "Draft successfully saved."
+msgstr ""
+
+msgid "Draft saved with validation feedback in:"
+msgstr ""
+
+msgid "Draft has validation feedback in:"
+msgstr ""
+
+msgid ""
+"The draft was not saved. Please try again. If the problem persists, contact "
+"user support."
+msgstr ""
+
+msgid ""
+"The draft was not published. Please try again. If the problem persists, "
+"contact user support."
+msgstr ""
+
+msgid "The draft was not published. Draft saved with validation feedback in:"
+msgstr ""
+
+msgid ""
+"The draft was not submitted for review. Please try again. If the problem "
+"persists, contact user support."
+msgstr ""
+
+msgid ""
+"The draft was not submitted for review. Draft saved with validation feedback"
+" in"
+msgstr ""
+
+msgid ""
+"Draft deletion failed. Please try again. If the problem persists, contact "
+"user support."
+msgstr ""
+
+msgid ""
+"Draft preview failed. Please try again. If the problem persists, contact "
+"user support."
+msgstr ""
+
+msgid ""
+"Identifier reservation failed. Please try again. If the problem persists, "
+"contact user support."
+msgstr ""
+
+msgid ""
+"Identifier could not be discarded. Please try again. If the problem "
+"persists, contact user support."
+msgstr ""
+
+msgid ""
+"Draft save failed before file upload. Please try again. If the problem "
+"persists, contact user support."
+msgstr ""
+
+msgid ""
+"Files import from the previous version failed. Please try again. If the "
+"problem persists, contact user support."
 msgstr ""
 
 msgid "Search for a funder by name"
@@ -748,15 +817,22 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
-msgid "Draft saved successfully."
+msgid "Something went wrong in this section"
 msgstr ""
 
-msgid ""
-"Draft saved with validation errors. Please correct the following issues and "
-"try again:"
+msgid "Try again"
 msgstr ""
 
-msgid "Your draft was saved. Redirecting to the preview page..."
+msgid "Your draft contains unsaved changes."
+msgstr ""
+
+msgid "Back"
+msgstr ""
+
+msgid "Next"
+msgstr ""
+
+msgid "Search"
 msgstr ""
 
 msgid "Clear"
@@ -780,6 +856,9 @@ msgid "Filter data by date"
 msgstr ""
 
 msgid "Reset"
+msgstr ""
+
+msgid "More"
 msgstr ""
 
 msgid "Something went wrong"
@@ -810,13 +889,4 @@ msgid "Filter results"
 msgstr ""
 
 msgid "Sort"
-msgstr ""
-
-msgid "is a required field"
-msgstr ""
-
-msgid "Items must be unique"
-msgstr ""
-
-msgid "Please provide an URL in valid format"
 msgstr ""

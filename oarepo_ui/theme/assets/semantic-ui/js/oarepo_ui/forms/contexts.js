@@ -30,7 +30,7 @@ export const FieldDataProvider = ({
   } = useFormConfig();
   const fieldDataValue = useMemo(
     () => ({ getFieldData: getFieldData(uiModel, fieldPathPrefix) }),
-    [uiModel, fieldPathPrefix]
+    [uiModel, fieldPathPrefix],
   );
 
   return (
@@ -45,4 +45,36 @@ FieldDataProvider.propTypes = {
   children: PropTypes.node,
   // eslint-disable-next-line react/require-default-props
   fieldPathPrefix: PropTypes.string,
+};
+
+export const FormTabsContext = createContext();
+
+export const FormTabsProvider = ({ value, children }) => {
+  return (
+    <FormTabsContext.Provider value={value}>
+      {children}
+    </FormTabsContext.Provider>
+  );
+};
+
+FormTabsProvider.propTypes = {
+  // eslint-disable-next-line react/require-default-props
+  children: PropTypes.node,
+  value: PropTypes.object.isRequired,
+};
+
+export const InitialRecordContext = createContext();
+
+export const InitialRecordProvider = ({ children, value }) => {
+  return (
+    <InitialRecordContext.Provider value={value}>
+      {children}
+    </InitialRecordContext.Provider>
+  );
+};
+
+InitialRecordProvider.propTypes = {
+  // eslint-disable-next-line react/require-default-props
+  children: PropTypes.node,
+  value: PropTypes.object.isRequired,
 };

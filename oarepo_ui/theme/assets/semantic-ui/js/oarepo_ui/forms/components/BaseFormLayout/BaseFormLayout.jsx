@@ -1,21 +1,22 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import { FormFeedback } from "../FormFeedback";
-import { FormikStateLogger } from "../FormikStateLogger";
-import { SaveButton } from "../SaveButton";
-import { DeleteButton } from "../DeleteButton";
-import { PreviewButton } from "../PreviewButton";
-import { DepositStatusBox } from "@js/invenio_rdm_records/src/deposit/components/DepositStatus";
-import { PublishButton } from "@js/invenio_rdm_records/src/deposit/controls/PublishButton";
-import { ShareDraftButton } from "@js/invenio_app_rdm/deposit/ShareDraftButton";
-import { Grid, Ref, Sticky, Card, Header } from "semantic-ui-react";
-import { connect } from "react-redux";
+import { Grid, Ref, Sticky, Header, Card } from "semantic-ui-react";
+import { useSelector } from "react-redux";
 import { getLocalizedValue } from "../../../util";
 import { buildUID } from "react-searchkit";
 import Overridable from "react-overridable";
-import { CustomFields } from "react-invenio-forms";
 import { getIn, useFormikContext } from "formik";
 import { useSanitizeInput, useFormConfig } from "../../hooks";
+import { TabForm } from "../TabForm";
+import { FormFeedback } from "../FormFeedback";
+import { DepositStatusBox } from "@js/invenio_rdm_records/src/deposit/components/DepositStatus";
+import { FormikStateLogger } from "../FormikStateLogger";
+import {
+  PublishButton,
+  SaveButton,
+  PreviewButton,
+  DeleteButton,
+} from "@js/invenio_rdm_records";
 
 export const FormTitle = () => {
   const { values } = useFormikContext();
@@ -40,36 +41,47 @@ export const FormTitle = () => {
   );
 };
 
-const BaseFormLayoutComponent = ({ formikProps = {}, record, errors = {} }) => {
-  const {
-    overridableIdPrefix,
-    custom_fields: customFields,
-    permissions,
-    groupsEnabled,
-  } = useFormConfig();
+export const BaseFormLayout = ({ sections, useWizardForm = false }) => {
+  const record = useSelector((state) => state.deposit.record);
+  const { overridableIdPrefix } = useFormConfig();
+  const { dirty } = useFormikContext();
   const sidebarRef = React.useRef(null);
   const formFeedbackRef = React.useRef(null);
-  // on chrome there is an annoying issue where after deletion you are redirected, and then
-  // if you click back on browser <-, it serves you the deleted page, which does not exist from the cache.
-  // on firefox it does not happen.
+
   useEffect(() => {
-    const handleUnload = () => {};
+    const handleBeforeUnload = (e) => {
+      if (dirty) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
 
-    const handleBeforeUnload = () => {};
-
-    window.addEventListener("unload", handleUnload);
     window.addEventListener("beforeunload", handleBeforeUnload);
-
     return () => {
-      window.removeEventListener("unload", handleUnload);
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, []);
+  }, [dirty]);
 
-  return (
+  return useWizardForm ? (
+    <Grid>
+      <Grid.Column id="main-content" mobile={16} tablet={16} computer={16}>
+        {/* TODO: do we really need to display the title? I think this is a redundant information */}
+        <FormTitle />
+        <Overridable
+          id={buildUID(overridableIdPrefix, "WizardForm.container")}
+          record={record}
+        >
+          <TabForm sections={sections} />
+        </Overridable>
+        <FormikStateLogger />
+      </Grid.Column>
+    </Grid>
+  ) : (
     <Grid>
       <Ref innerRef={formFeedbackRef}>
         <Grid.Column id="main-content" mobile={16} tablet={16} computer={11}>
+          {/* TODO: do we really need to display the title? I think this is a redundant information */}
+
           <FormTitle />
           <Sticky context={formFeedbackRef} offset={20}>
             <Overridable id={buildUID(overridableIdPrefix, "Errors.container")}>
@@ -88,17 +100,6 @@ const BaseFormLayoutComponent = ({ formikProps = {}, record, errors = {} }) => {
               </pre>
               <FormikStateLogger render />
             </>
-          </Overridable>
-          <Overridable
-            id={buildUID(overridableIdPrefix, "CustomFields.container")}
-          >
-            <CustomFields
-              config={customFields?.ui}
-              templateLoaders={[
-                (widget) => import(`@templates/custom_fields/${widget}.js`),
-                (widget) => import(`react-invenio-forms`),
-              ]}
-            />
           </Overridable>
         </Grid.Column>
       </Ref>
@@ -133,16 +134,6 @@ const BaseFormLayoutComponent = ({ formikProps = {}, record, errors = {} }) => {
                   <Grid.Column width={16} className="pt-10">
                     <PublishButton fluid record={record} />
                   </Grid.Column>
-
-                  <Grid.Column width={16} className="pt-0">
-                    {(record.is_draft === null || permissions.can_manage) && (
-                      <ShareDraftButton
-                        record={record}
-                        permissions={permissions}
-                        groupsEnabled={groupsEnabled}
-                      />
-                    )}
-                  </Grid.Column>
                   <Grid.Column width={16}>
                     <DeleteButton fluid />
                   </Grid.Column>
@@ -156,23 +147,10 @@ const BaseFormLayoutComponent = ({ formikProps = {}, record, errors = {} }) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    errors: state.deposit.errors,
-  };
-};
-
-export const BaseFormLayout = connect(
-  mapStateToProps,
-  null,
-)(BaseFormLayoutComponent);
-
-BaseFormLayoutComponent.propTypes = {
-  record: PropTypes.object.isRequired,
+BaseFormLayout.propTypes = {
   // eslint-disable-next-line react/require-default-props
-  errors: PropTypes.object,
-  // eslint-disable-next-line react/require-default-props
-  formikProps: PropTypes.object,
+  useWizardForm: PropTypes.bool,
+  sections: PropTypes.arrayOf(PropTypes.object),
 };
 
 export default BaseFormLayout;

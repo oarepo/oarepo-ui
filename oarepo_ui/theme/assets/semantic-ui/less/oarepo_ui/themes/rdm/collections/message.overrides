@@ -1,12 +1,24 @@
 .ui.message {
-  &.form-feedback.orange {
-    .content:hover {
-      cursor: pointer;
-      text-decoration: underline;
-    }
+  &.form-feedback {
     color: black;
     .header {
       color: black;
+    }
+    width: 100%;
+    .list {
+      li:hover {
+        cursor: pointer;
+        text-decoration: underline;
+      }
+    }
+    &.orange {
+      .content:hover {
+        cursor: pointer;
+        text-decoration: underline;
+      }
+      .header {
+        color: black;
+      }
     }
   }
 }
