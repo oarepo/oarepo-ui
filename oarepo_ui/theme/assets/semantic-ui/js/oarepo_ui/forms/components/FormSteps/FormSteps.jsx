@@ -34,8 +34,8 @@ export const FormSteps = ({ sections, activeStep, onTabChange }) => {
   }, [activeStep]);
 
   return (
-    <div className="form-steps-container" ref={scrollContainerRef}>
-      <Step.Group fluid size="mini" unstackable role="tablist">
+    <div className="form-steps-container" ref={scrollContainerRef} data-testid="form-steps-container">
+      <Step.Group fluid size="mini" unstackable role="tablist" data-testid="form-steps">
         {sections.map((section, index) => (
           <Step
             id={section.key}
@@ -48,6 +48,7 @@ export const FormSteps = ({ sections, activeStep, onTabChange }) => {
             role="tab"
             aria-selected={isActive(index)}
             tabIndex={isActive(index) ? 0 : -1}
+            data-testid={`form-step-${section.key}`}
           >
             <Step.Content>
               <Step.Title>

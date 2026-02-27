@@ -102,7 +102,7 @@ export const TabForm = ({ sections = [] }) => {
   );
   if (sections.length === 0) {
     return (
-      <Message>
+      <Message data-testid="tab-form-no-sections">
         <Message.Header>No sections defined</Message.Header>
         <p>Please provide at least one section to render the TabForm.</p>
       </Message>
@@ -110,7 +110,7 @@ export const TabForm = ({ sections = [] }) => {
   }
   return (
     <FormTabsProvider value={formTabContextValue}>
-      <Grid stackable className="tab-form container">
+      <Grid stackable className="tab-form container" data-testid="tab-form">
         <Grid.Row>
           <Overridable
             id={buildUID(overridableIdPrefix, "TabForm.FormFeedback")}
@@ -123,7 +123,7 @@ export const TabForm = ({ sections = [] }) => {
         </Grid.Row>
 
         {/* Mobile/Tablet: horizontal steps on top */}
-        <Grid.Row className="mobile tablet only" centered>
+        <Grid.Row className="mobile tablet only" centered data-testid="tab-form-steps-row">
           <Grid.Column className="steps-container" width={16}>
             <Overridable
               id={buildUID(overridableIdPrefix, "TabForm.steps")}
@@ -148,7 +148,7 @@ export const TabForm = ({ sections = [] }) => {
             sections={sections}
             onTabChange={handleSetStep}
           >
-            <Grid.Column className="computer only form-tabs-column" width={5}>
+            <Grid.Column className="computer only form-tabs-column" width={5} data-testid="tab-form-tabs-column">
               <FormTabs
                 activeStep={activeStep}
                 sections={sections}
@@ -170,6 +170,7 @@ export const TabForm = ({ sections = [] }) => {
               tablet={16}
               mobile={16}
               className="tab-content-column pl-0 pr-0"
+              data-testid="tab-form-content-column"
             >
               <TabContent
                 activeStep={activeStep}
@@ -181,7 +182,7 @@ export const TabForm = ({ sections = [] }) => {
           </Overridable>
         </Grid.Row>
         <Overridable id={buildUID(overridableIdPrefix, "TabForm.actions")}>
-          <Grid.Row>
+          <Grid.Row data-testid="tab-form-actions-row">
             <div className="flex justify-end form-actions-row">
               <Overridable
                 id={buildUID(overridableIdPrefix, "TabForm.PreviewButton")}

@@ -13,7 +13,7 @@ export const FormTabs = ({ sections, activeStep, onTabChange }) => {
     });
 
   return (
-    <Menu className="form form-tabs" fluid vertical tabular role="tablist">
+    <Menu className="form form-tabs" fluid vertical tabular role="tablist" data-testid="form-tabs">
       {sections.map((section, index) => (
         <Menu.Item
           id={section.key}
@@ -25,6 +25,7 @@ export const FormTabs = ({ sections, activeStep, onTabChange }) => {
           role="tab"
           aria-selected={isActive(index)}
           tabIndex={isActive(index) ? 0 : -1}
+          data-testid={`form-tab-${section.key}`}
         >
           <div className="flex">
             {hasBeenSavedInSession && (

@@ -9,14 +9,20 @@ import { useFormikContext } from "formik";
 import { useInitialRecord, useFormConfig } from "../../hooks";
 
 const TabErrorFallback = ({ error, resetErrorBoundary }) => (
-  <Message negative icon>
+  <Message negative icon data-testid="tab-error-fallback">
     <Icon name="exclamation triangle" />
     <Message.Content>
       <Message.Header>
         {i18next.t("Something went wrong in this section")}
       </Message.Header>
       <p>{error?.message}</p>
-      <Button basic color="red" size="small" onClick={resetErrorBoundary}>
+      <Button
+        basic
+        color="red"
+        size="small"
+        onClick={resetErrorBoundary}
+        data-testid="tab-error-retry-button"
+      >
         <Icon name="refresh" />
         {i18next.t("Try again")}
       </Button>
@@ -57,9 +63,9 @@ export const TabContent = ({ activeStep, sections, next, back }) => {
   }, [activeStep]);
 
   return (
-    <Segment className="tab-content borderless shadowless">
+    <Segment className="tab-content borderless shadowless" data-testid="tab-content">
       {dirty && (
-        <Message info>
+        <Message info data-testid="unsaved-changes-message">
           <Message.Content>
             <Icon name="info circle" />
             {i18next.t("Your draft contains unsaved changes.")}
@@ -76,6 +82,7 @@ export const TabContent = ({ activeStep, sections, next, back }) => {
           tabIndex={-1}
           role="tabpanel"
           aria-labelledby={section?.key}
+          data-testid={`tab-content-body-${section?.key}`}
         >
           {section?.render({
             record,
@@ -94,7 +101,7 @@ export const TabContent = ({ activeStep, sections, next, back }) => {
           back={back}
         />
       </ErrorBoundary>
-      <div className="tab-content-navigation">
+      <div className="tab-content-navigation" data-testid="tab-content-navigation">
         {activeStep > 0 && (
           <Button
             className="tab-content-navigation-button back-button"
@@ -102,6 +109,7 @@ export const TabContent = ({ activeStep, sections, next, back }) => {
             labelPosition="left"
             type="button"
             onClick={back}
+            data-testid="tab-navigation-back"
           >
             <Icon name="arrow left" />
             {previousStepLabel || i18next.t("Back")}
@@ -114,6 +122,7 @@ export const TabContent = ({ activeStep, sections, next, back }) => {
             labelPosition="right"
             type="button"
             onClick={next}
+            data-testid="tab-navigation-next"
           >
             {nextStepLabel || i18next.t("Next")}
             <Icon name="arrow right" />
