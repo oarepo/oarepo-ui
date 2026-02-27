@@ -2,12 +2,11 @@ import React, { useRef, useEffect } from "react";
 import { Segment, Button, Icon, Message } from "semantic-ui-react";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
-import { useFormConfig } from "../../hooks";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import Overridable from "react-overridable";
 import { ErrorBoundary } from "react-error-boundary";
 import { useFormikContext } from "formik";
-import { useInitialRecord } from "../../hooks";
+import { useInitialRecord, useFormConfig } from "../../hooks";
 
 const TabErrorFallback = ({ error, resetErrorBoundary }) => (
   <Message negative icon>

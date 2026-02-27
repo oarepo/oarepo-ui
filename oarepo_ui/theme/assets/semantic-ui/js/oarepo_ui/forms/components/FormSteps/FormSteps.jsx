@@ -38,6 +38,7 @@ export const FormSteps = ({ sections, activeStep, onTabChange }) => {
       <Step.Group fluid size="mini" unstackable role="tablist">
         {sections.map((section, index) => (
           <Step
+            id={section.key}
             key={section.key}
             active={isActive(index)}
             completed={index < activeStep}
@@ -51,7 +52,7 @@ export const FormSteps = ({ sections, activeStep, onTabChange }) => {
             <Step.Content>
               <Step.Title>
                 {hasBeenSavedInSession && (
-                  <FormTabErrors includesPaths={section.includesPaths} />
+                  <FormTabErrors includesPaths={section.includesPaths || []} />
                 )}
                 {section.label}
               </Step.Title>

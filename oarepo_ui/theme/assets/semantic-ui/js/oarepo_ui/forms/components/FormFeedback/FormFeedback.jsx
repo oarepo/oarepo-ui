@@ -1,14 +1,15 @@
-import { i18next } from "@translations/invenio_rdm_records/i18next";
+import { i18next } from "@translations/oarepo_ui/i18next";
 import _get from "lodash/get";
-import _isObject from "lodash/isObject";
-import _isDate from "lodash/isDate";
-import _isRegExp from "lodash/isRegExp";
-import _forOwn from "lodash/forOwn";
 import _startCase from "lodash/startCase";
 import React, { useCallback, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Message } from "semantic-ui-react";
 import { useFormTabs, useFieldData } from "../../hooks";
+import {
+  findSectionIndexForFieldPath,
+  isErrorObject,
+  flattenToPathValueArray,
+} from "../../util";
 import {
   DISCARD_PID_FAILED,
   DRAFT_DELETE_FAILED,
@@ -117,30 +118,6 @@ const FEEDBACK_COLORS = {
   info: "blue",
 };
 
-const findSectionIndexForFieldPath = (sections, fieldPath) => {
-  if (!sections || !fieldPath) return -1;
-  return sections.findIndex((section) =>
-    section.includesPaths?.some(
-      (path) => fieldPath === path || fieldPath.startsWith(`${path}.`),
-    ),
-  );
-};
-
-// component to be used downstream of Formik that plugs into Formik's state and displays any errors
-// that apiClient sent to formik in auxilary keys. The keys are later removed when submitting the form
-
-function flattenToPathValueArray(obj, prefix = "", res = []) {
-  if (_isObject(obj) && !_isDate(obj) && !_isRegExp(obj) && obj !== null) {
-    _forOwn(obj, (value, key) => {
-      const newKey = prefix ? `${prefix}.${key}` : key;
-      flattenToPathValueArray(value, newKey, res);
-    });
-  } else {
-    res.push({ fieldPath: prefix, value: obj });
-  }
-  return res;
-}
-
 // function to turn last part of fieldPath from form camelCase to Camel Case
 const titleCase = (fieldPath) =>
   _startCase(fieldPath.split(".")[fieldPath.split(".").length - 1]);
@@ -184,7 +161,12 @@ const ErrorMessageItem = ({ error }) => {
       ? i18next.t("Files")
       : titleCase(error.fieldPath));
 
-  return `${errorMessage}: ${error.value}`;
+  // Handle both old format (string) and new format (object with message)
+  const errorValue = isErrorObject(error.value)
+    ? error.value.message
+    : error.value;
+
+  return `${errorMessage}: ${errorValue}`;
 };
 
 ErrorMessageItem.propTypes = {

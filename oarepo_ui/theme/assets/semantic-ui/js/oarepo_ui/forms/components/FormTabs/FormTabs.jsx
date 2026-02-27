@@ -1,11 +1,10 @@
-import React, { useRef } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { Menu, Icon } from "semantic-ui-react";
 import { FormTabErrors } from "../FormTabErrors";
 import { useFormNavigation } from "../../hooks";
 
 export const FormTabs = ({ sections, activeStep, onTabChange }) => {
-  const menuRef = useRef(null);
   const { hasBeenSavedInSession, isActive, handleClick, handleKeyDown } =
     useFormNavigation({
       activeStep,
@@ -14,16 +13,10 @@ export const FormTabs = ({ sections, activeStep, onTabChange }) => {
     });
 
   return (
-    <Menu
-      className="form form-tabs"
-      fluid
-      vertical
-      tabular
-      role="tablist"
-      ref={menuRef}
-    >
+    <Menu className="form form-tabs" fluid vertical tabular role="tablist">
       {sections.map((section, index) => (
         <Menu.Item
+          id={section.key}
           as="a"
           key={section.key}
           onClick={() => handleClick(index)}

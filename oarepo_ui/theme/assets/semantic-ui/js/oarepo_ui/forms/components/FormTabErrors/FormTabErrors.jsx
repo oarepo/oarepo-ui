@@ -18,7 +18,7 @@ function findErrorObjects(obj) {
   return results;
 }
 
-function getSubfieldErrors(errors, initialErrors, includesPaths) {
+function getSubfieldErrors(errors, initialErrors, includesPaths = []) {
   const subfieldErrors = [];
   for (const fieldPath of includesPaths) {
     const err = _get(errors, fieldPath) || _get(initialErrors, fieldPath);

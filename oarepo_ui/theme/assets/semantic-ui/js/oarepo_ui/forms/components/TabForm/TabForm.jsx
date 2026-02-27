@@ -1,8 +1,8 @@
 import React, { useEffect, useCallback, useMemo } from "react";
 import PropTypes from "prop-types";
-import { Grid } from "semantic-ui-react";
+import { Grid, Message } from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
-import { save } from "../../state/deposit/actions";
+import { save } from "@js/invenio_rdm_records/src/deposit/state/actions/deposit";
 import { useDepositFormAction, useFormConfig } from "../../hooks";
 import { FormTabsProvider } from "../../contexts";
 import { FormTabs } from "../FormTabs";
@@ -55,6 +55,7 @@ export const TabForm = ({ sections = [] }) => {
   );
 
   useEffect(() => {
+    if (sections.length === 0) return;
     const url = new URL(window.location);
     const params = new URLSearchParams(url.search);
     const tab = params.get("tab");
@@ -64,9 +65,10 @@ export const TabForm = ({ sections = [] }) => {
       url.search = params.toString();
       window.history.replaceState({}, "", url);
     }
-  }, [activeStep, sectionKeys]);
+  }, [activeStep, sectionKeys, sections.length]);
 
   useEffect(() => {
+    if (sections.length === 0) return;
     const onPopState = () => {
       const params = new URLSearchParams(window.location.search);
       const tab = params.get("tab");
@@ -75,7 +77,7 @@ export const TabForm = ({ sections = [] }) => {
     };
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
-  }, [sectionKeys]);
+  }, [sectionKeys, sections.length]);
 
   const next = useCallback(async () => {
     if (activeStep < sections.length - 1) {
@@ -98,6 +100,14 @@ export const TabForm = ({ sections = [] }) => {
     }),
     [activeStep, handleSetStep, next, back],
   );
+  if (sections.length === 0) {
+    return (
+      <Message>
+        <Message.Header>No sections defined</Message.Header>
+        <p>Please provide at least one section to render the TabForm.</p>
+      </Message>
+    );
+  }
   return (
     <FormTabsProvider value={formTabContextValue}>
       <Grid stackable className="tab-form container">

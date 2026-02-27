@@ -10,7 +10,7 @@ import { Trans } from "react-i18next";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteFile } from "@js/invenio_rdm_records/src/deposit/state/actions/files";
-import { save } from "../../state/deposit/actions";
+import { save } from "@js/invenio_rdm_records/src/deposit/state/actions/deposit";
 import { httpApplicationJson } from "../../../util";
 import { useDepositFormAction, useFormConfig } from "../../hooks";
 // TODO: shall we liquidate this and support only Uppy uploader?
