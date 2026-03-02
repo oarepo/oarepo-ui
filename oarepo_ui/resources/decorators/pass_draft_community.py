@@ -11,6 +11,7 @@
 
 from __future__ import annotations
 
+import contextlib
 from collections.abc import Callable
 from functools import wraps
 from typing import TYPE_CHECKING, Any, cast
@@ -36,13 +37,12 @@ def pass_draft_community[T: Callable](f: T) -> T:
         community = None
 
         if comid:
-            try:
+            with contextlib.suppress(Exception):
                 community = current_communities.service.read(id_=comid, identity=g.identity)
-            except Exception:  # noqa: BLE001
-                # Gracefully degrade to no community if it cannot be read
-                if community is not None:
-                    kwargs["community"] = community
-                    kwargs["community_ui"] = UICommunityJSONSerializer().dump_obj(community.to_dict())
+
+        if community is not None:
+            kwargs["community"] = community
+            kwargs["community_ui"] = UICommunityJSONSerializer().dump_obj(community.to_dict())
 
         return f(self, **kwargs)
 
