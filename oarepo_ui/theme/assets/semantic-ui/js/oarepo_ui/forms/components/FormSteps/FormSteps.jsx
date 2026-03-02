@@ -10,7 +10,6 @@ export const FormSteps = ({ sections, activeStep, onTabChange }) => {
     useFormNavigation({
       activeStep,
       onTabChange,
-      sectionsCount: sections.length,
     });
 
   useEffect(() => {
@@ -34,11 +33,21 @@ export const FormSteps = ({ sections, activeStep, onTabChange }) => {
   }, [activeStep]);
 
   return (
-    <div className="form-steps-container" ref={scrollContainerRef} data-testid="form-steps-container">
-      <Step.Group fluid size="mini" unstackable role="tablist" data-testid="form-steps">
+    <div
+      className="form-steps-container"
+      ref={scrollContainerRef}
+      data-testid="form-steps-container"
+    >
+      <Step.Group
+        fluid
+        size="mini"
+        unstackable
+        role="tablist"
+        data-testid="form-steps"
+      >
         {sections.map((section, index) => (
           <Step
-            id={section.key}
+            id={`form-step-${section.key}`}
             key={section.key}
             active={isActive(index)}
             completed={index < activeStep}

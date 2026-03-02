@@ -43,6 +43,9 @@ export const TabForm = ({ sections = [] }) => {
 
   const handleSetStep = useCallback(
     (index) => {
+      if (!(index >= 0 && index < sectionKeys.length)) {
+        return;
+      }
       setActiveStepState(index);
       const url = new URL(window.location);
       url.searchParams.set("tab", sectionKeys[index]);
@@ -79,13 +82,13 @@ export const TabForm = ({ sections = [] }) => {
     return () => window.removeEventListener("popstate", onPopState);
   }, [sectionKeys, sections.length]);
 
-  const next = useCallback(async () => {
+  const next = useCallback(() => {
     if (activeStep < sections.length - 1) {
       handleSetStep(activeStep + 1);
     }
   }, [activeStep, sections.length, handleSetStep]);
 
-  const back = useCallback(async () => {
+  const back = useCallback(() => {
     if (activeStep > 0) {
       handleSetStep(activeStep - 1);
     }
@@ -123,7 +126,11 @@ export const TabForm = ({ sections = [] }) => {
         </Grid.Row>
 
         {/* Mobile/Tablet: horizontal steps on top */}
-        <Grid.Row className="mobile tablet only" centered data-testid="tab-form-steps-row">
+        <Grid.Row
+          className="mobile tablet only"
+          centered
+          data-testid="tab-form-steps-row"
+        >
           <Grid.Column className="steps-container" width={16}>
             <Overridable
               id={buildUID(overridableIdPrefix, "TabForm.steps")}
@@ -148,7 +155,11 @@ export const TabForm = ({ sections = [] }) => {
             sections={sections}
             onTabChange={handleSetStep}
           >
-            <Grid.Column className="computer only form-tabs-column" width={5} data-testid="tab-form-tabs-column">
+            <Grid.Column
+              className="computer only form-tabs-column"
+              width={5}
+              data-testid="tab-form-tabs-column"
+            >
               <FormTabs
                 activeStep={activeStep}
                 sections={sections}

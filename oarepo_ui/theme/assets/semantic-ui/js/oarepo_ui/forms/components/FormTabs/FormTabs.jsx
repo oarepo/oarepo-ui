@@ -9,7 +9,6 @@ export const FormTabs = ({ sections, activeStep, onTabChange }) => {
     useFormNavigation({
       activeStep,
       onTabChange,
-      sectionsCount: sections.length,
     });
 
   return (
@@ -23,7 +22,7 @@ export const FormTabs = ({ sections, activeStep, onTabChange }) => {
     >
       {sections.map((section, index) => (
         <Menu.Item
-          id={section.key}
+          id={`form-tab-${section.key}`}
           as="a"
           key={section.key}
           onClick={() => handleClick(index)}
