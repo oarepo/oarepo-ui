@@ -33,16 +33,16 @@ def pass_draft_community[T: Callable](f: T) -> T:
     @wraps(f)
     def view(self: RecordsUIResource, **kwargs: Any) -> Any:
         comid = request.args.get("community")
+        community = None
+
         if comid:
-            community = None
             try:
                 community = current_communities.service.read(id_=comid, identity=g.identity)
             except Exception:  # noqa: BLE001
                 # Gracefully degrade to no community if it cannot be read
-                community = None
-            if community is not None:
-                kwargs["community"] = community
-                kwargs["community_ui"] = UICommunityJSONSerializer().dump_obj(community.to_dict())
+                if community is not None:
+                    kwargs["community"] = community
+                    kwargs["community_ui"] = UICommunityJSONSerializer().dump_obj(community.to_dict())
 
         return f(self, **kwargs)
 
