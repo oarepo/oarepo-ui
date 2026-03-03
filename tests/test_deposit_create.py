@@ -56,3 +56,47 @@ def test_deposit_create(app, logged_client, users, extra_entry_points):
 
         for key, value in expected_permissions.items():
             assert response["permissions"].get(key) == value
+
+
+def test_deposit_create_without_community(app, logged_client, users, extra_entry_points):
+    """Test that community and community_ui are None when no community query param is present."""
+    with logged_client(users[0]).get("/simple-model/uploads/new") as resp:
+        assert resp.status_code == 200
+        response = json.loads(resp.text)
+
+        assert response["community"] is None
+        assert response["community_ui"] is None
+        assert response["preselectedCommunity"] is None
+
+
+def test_deposit_create_with_community(app, logged_client, users, extra_entry_points, community):
+    """Test that preselectedCommunity is set when community query param is present."""
+    community_slug = community.data["slug"]
+
+    with logged_client(users[0]).get(f"/simple-model/uploads/new?community={community_slug}") as resp:
+        assert resp.status_code == 200
+        response = json.loads(resp.text)
+
+        # Check that community data is present
+        assert response["community"] is not None
+        assert response["community_ui"] is not None
+        assert response["preselectedCommunity"] is not None
+
+        # Check that preselectedCommunity matches community_ui
+        assert response["preselectedCommunity"] == response["community_ui"]
+
+        # Check community metadata
+        assert response["community_ui"]["slug"] == community_slug
+        assert response["community_ui"]["metadata"]["title"] == "Test Community"
+
+
+def test_deposit_create_with_nonexistent_community(app, logged_client, users, extra_entry_points):
+    """Test that community is None when community slug does not exist."""
+    with logged_client(users[0]).get("/simple-model/uploads/new?community=nonexistent-community") as resp:
+        assert resp.status_code == 200
+        response = json.loads(resp.text)
+
+        # Community should be None since it doesn't exist
+        assert response["community"] is None
+        assert response["community_ui"] is None
+        assert response["preselectedCommunity"] is None
