@@ -18,7 +18,7 @@ from __future__ import annotations
 import datetime
 from typing import TYPE_CHECKING
 
-from flask import Blueprint, current_app, render_template
+from flask import Blueprint, abort, current_app, redirect, render_template, request, url_for
 from flask_menu import current_menu
 from invenio_app_rdm.views import create_url_rule
 from invenio_base.utils import obj_or_import_string
@@ -48,6 +48,8 @@ def create_blueprint(app: Flask) -> Blueprint:
         blueprint.add_url_rule(**create_url_rule(routes.get("robots"), default_view_func=robots))
         blueprint.add_url_rule(**create_url_rule(routes.get("help_search"), default_view_func=help_search))
         blueprint.add_url_rule(**create_url_rule(routes.get("help_statistics"), default_view_func=help_statistics))
+
+    blueprint.add_url_rule("/uploads/new", view_func=uploads_new, methods=["GET"])
 
     blueprint.app_context_processor(lambda: ({"current_app": app}))
     blueprint.app_context_processor(lambda: ({"now": datetime.datetime.now(tz=datetime.UTC)}))
@@ -122,6 +124,33 @@ def help_statistics() -> ResponseReturnValue:
             f"invenio_app_rdm/help/statistics.{locale}.html",
             "invenio_app_rdm/help/statistics.en.html",
         ]
+    )
+
+
+def uploads_new() -> ResponseReturnValue:
+    """Handle /uploads/new route for creating new records.
+
+    If only one model is available, redirects directly to that model's deposit create page.
+    If multiple models are available, renders a selection page with model cards.
+    Preserves community parameter from query string when redirecting.
+    """
+    models = list(current_runtime.rdm_models)
+    community_slug = request.args.get("community")
+
+    if len(models) == 1:
+        model = models[0]
+        if not model.ui_blueprint_name:
+            abort(404)
+        if community_slug:
+            url = url_for(f"{model.ui_blueprint_name}.deposit_create", community=community_slug)
+        else:
+            url = url_for(f"{model.ui_blueprint_name}.deposit_create")
+        return redirect(url)
+
+    return render_template(
+        current_app.config.get("OAREPO_UI_NEW_PAGE_TEMPLATE", "oarepo_ui/new_page.html"),
+        models=models,
+        community_slug=community_slug,
     )
 
 
