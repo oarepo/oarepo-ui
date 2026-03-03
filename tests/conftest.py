@@ -18,7 +18,10 @@ from flask_webpackext.manifest import (
     JinjaManifestEntry,
     JinjaManifestLoader,
 )
+from invenio_access.permissions import system_identity
 from invenio_app.factory import create_app as _create_app
+from invenio_communities.communities.records.api import Community
+from invenio_communities.proxies import current_communities
 from invenio_i18n import lazy_gettext as _
 from invenio_records_resources.services.custom_fields import TextCF
 from marshmallow_utils.fields import SanitizedHTML
@@ -34,6 +37,30 @@ pytest_plugins = [
     "pytest_oarepo.fixtures",
     "pytest_oarepo.users",
 ]
+
+
+@pytest.fixture
+def minimal_community():
+    """Minimal community metadata."""
+    return {
+        "access": {
+            "visibility": "public",
+            "members_visibility": "public",
+            "record_submission_policy": "open",
+        },
+        "slug": "test-community",
+        "metadata": {
+            "title": "Test Community",
+        },
+    }
+
+
+@pytest.fixture
+def community(app, minimal_community, users, location):
+    """Create a test community."""
+    c = current_communities.service.create(system_identity, minimal_community)
+    Community.index.refresh()
+    return c
 
 
 @pytest.fixture(scope="module")
