@@ -31,6 +31,9 @@ tests = [
     "oarepo-rdm>=1.0.0dev11",
     "pytest-oarepo>=2.0.0,<3.0.0",
     "oarepo-communities>=6.0.0dev0,<7.0.0",
+    # if we wish to use community related fixtures from oarepo-pytest. Otherwise, need to create our own fixtures for communities here 
+    # in conftest
+    "oarepo-workflows>=2.0.0dev0,<3.0.0",
 ]
 workflows = [
     "oarepo-workflows",
