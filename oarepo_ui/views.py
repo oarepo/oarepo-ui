@@ -20,6 +20,7 @@ from typing import TYPE_CHECKING
 
 from flask import Blueprint, abort, current_app, redirect, render_template, request, url_for
 from flask_menu import current_menu
+from flask_security import login_required
 from invenio_app_rdm.views import create_url_rule
 from invenio_base.utils import obj_or_import_string
 from invenio_i18n import get_locale
@@ -127,6 +128,7 @@ def help_statistics() -> ResponseReturnValue:
     )
 
 
+@login_required
 def uploads_new() -> ResponseReturnValue:
     """Handle /uploads/new route for creating new records.
 

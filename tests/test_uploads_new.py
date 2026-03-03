@@ -11,6 +11,14 @@
 from __future__ import annotations
 
 
+def test_uploads_new_requires_login(app, client, extra_entry_points):
+    """Test that /uploads/new requires authentication."""
+    with client.get("/uploads/new") as resp:
+        # Should redirect to login page
+        assert resp.status_code == 302
+        assert "login" in resp.location.lower()
+
+
 def test_uploads_new_single_model_redirect(app, logged_client, users, extra_entry_points):
     """Test that /uploads/new redirects to model-specific page when single model exists."""
     client = logged_client(users[0])
