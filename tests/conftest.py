@@ -22,8 +22,12 @@ from invenio_app.factory import create_app as _create_app
 from invenio_i18n import lazy_gettext as _
 from invenio_records_resources.services.custom_fields import TextCF
 from marshmallow_utils.fields import SanitizedHTML
+from oarepo_communities.config import DEFAULT_COMMUNITIES_CUSTOM_FIELDS
 from oarepo_model.customizations import AddMetadataExport
 from oarepo_runtime import current_runtime
+from oarepo_workflows import Workflow
+from oarepo_workflows.requests.policy import WorkflowRequestPolicy
+from oarepo_workflows.services.permissions import DefaultWorkflowPermissions
 
 from oarepo_ui.templating.data import FieldData
 from tests.simple_model import SimpleModelUIResource, SimpleModelUIResourceConfig
@@ -35,6 +39,12 @@ pytest_plugins = [
     "pytest_oarepo.users",
     "pytest_oarepo.communities.fixtures",
 ]
+
+
+@pytest.fixture(scope="module", autouse=True)
+def ensure_location(location):
+    """Auto-use location fixture to ensure file storage is set up."""
+    return location
 
 
 @pytest.fixture(scope="module")
@@ -124,6 +134,19 @@ def app_config(app_config):
         },
     ]
     app_config["DRAFTS_CF_CUSTOM_FIELDS_UI"] = app_config["RECORDS_CF_CUSTOM_FIELDS_UI"]
+
+    # Communities custom fields (required for pytest_oarepo.communities fixtures)
+    app_config["COMMUNITIES_CUSTOM_FIELDS"] = DEFAULT_COMMUNITIES_CUSTOM_FIELDS
+
+    # Workflows (required for pytest_oarepo.communities fixtures)
+    app_config["WORKFLOWS"] = [
+        Workflow(
+            code="default",
+            label=_("Default workflow"),
+            permission_policy_cls=DefaultWorkflowPermissions,
+            request_policy_cls=WorkflowRequestPolicy,
+        )
+    ]
 
     # RDM options
     app_config.update(
