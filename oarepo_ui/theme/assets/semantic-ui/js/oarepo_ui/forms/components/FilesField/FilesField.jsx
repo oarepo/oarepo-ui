@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useFormikContext } from "formik";
 import PropTypes from "prop-types";
 import _isEmpty from "lodash/isEmpty";
@@ -8,13 +8,13 @@ import { FilesFieldTable } from "./FilesFieldTable";
 import { UploadFileButton } from "./FilesFieldButtons";
 import { Trans } from "react-i18next";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { deleteFile } from "@js/invenio_rdm_records/src/deposit/state/actions/files";
-import { save } from "../../state/deposit/actions";
+import { save } from "@js/invenio_rdm_records/src/deposit/state/actions/deposit";
 import { httpApplicationJson } from "../../../util";
 import { useDepositFormAction, useFormConfig } from "../../hooks";
-
-export const FilesFieldComponent = ({
+// TODO: shall we liquidate this and support only Uppy uploader?
+export const FilesField = ({
   fileUploaderMessage = i18next.t(
     "After publishing the draft, it is not possible to add, modify or delete files. It will be necessary to create a new version of the record."
   ),
@@ -22,10 +22,20 @@ export const FilesFieldComponent = ({
   allowedFileTypes = ["*/*"],
   fileMetadataFields = [],
   required = false,
-  deleteFileAction,
-  saveAction,
-  files,
 }) => {
+  const dispatch = useDispatch();
+  const files = useSelector((state) => state.files.entries);
+
+  const deleteFileAction = useCallback(
+    (fileObject) => dispatch(deleteFile(fileObject)),
+    [dispatch]
+  );
+
+  const saveAction = useCallback(
+    (values, params) => dispatch(save(values, params)),
+    [dispatch]
+  );
+
   const [filesState, setFilesState] = useState(
     !_isEmpty(files) ? Object.values(files) : []
   );
@@ -162,7 +172,7 @@ export const FilesFieldComponent = ({
               lockFileUploader={filesLocked}
               fileMetadataFields={fileMetadataFields}
             />
-            {/* filesLocked includes permission check as well. This is 
+            {/* filesLocked includes permission check as well. This is
             so it does not display message when someone just does not have permissions to view */}
             {filesLocked && recordObject.is_published && (
               <Message className="flex justify-space-between align-items-center">
@@ -216,10 +226,7 @@ export const FilesFieldComponent = ({
   return null;
 };
 
-FilesFieldComponent.propTypes = {
-  deleteFileAction: PropTypes.func.isRequired,
-  saveAction: PropTypes.func.isRequired,
-  files: PropTypes.array.isRequired,
+FilesField.propTypes = {
   /* eslint-disable react/require-default-props */
   record: PropTypes.object,
   allowedFileTypes: PropTypes.array,
@@ -235,17 +242,4 @@ FilesFieldComponent.propTypes = {
   /* eslint-enable react/require-default-props */
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  deleteFileAction: (fileObject) => dispatch(deleteFile(fileObject)),
-  saveAction: (values, params) => dispatch(save(values, params)),
-});
-
-const mapStateToProps = (state) => ({
-  actionState: state.deposit.actionState,
-  files: state.files.entries,
-});
-
-export const FilesField = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FilesFieldComponent);
+export default FilesField;

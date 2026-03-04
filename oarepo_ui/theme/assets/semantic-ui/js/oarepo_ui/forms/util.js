@@ -1,12 +1,15 @@
 import React, { useMemo, memo } from "react";
-import { getInputFromDOM } from "../util";
+import { getInputFromDOM, getLocalizedValue } from "../util";
 import { CompactFieldLabel } from "./components/CompactFieldLabel";
 import _get from "lodash/get";
 import { FieldLabel } from "react-invenio-forms";
 import _deburr from "lodash/deburr";
 import _escapeRegExp from "lodash/escapeRegExp";
 import _filter from "lodash/filter";
-import { getLocalizedValue } from "../util";
+import _isObject from "lodash/isObject";
+import _isDate from "lodash/isDate";
+import _isRegExp from "lodash/isRegExp";
+import _forOwn from "lodash/forOwn";
 
 export function parseFormAppConfig(rootElementId = "deposit-form") {
   const rootEl = document.getElementById(rootElementId);
@@ -51,7 +54,6 @@ export const getFieldData = (uiMetadata, fieldPathPrefix = "") => {
       fieldPathPrefix && !ignorePrefix
         ? `${fieldPathPrefix}.${fieldPath}`
         : fieldPath;
-
     // Handling labels, always taking result of i18next.t; if we get metadata/smth, we use it to debug
     // Help and hint: if result is same as the key, don't render; if it is different, render
     const path = toModelPath(fieldPathWithPrefix);
@@ -185,3 +187,193 @@ export const search = (filteredOptions, searchQuery, searchKey = "name") => {
   );
   return filteredOptions;
 };
+
+/**
+ * Finds the index of the form section that contains a given field path.
+ *
+ * @param {Array<{key: string, includesPaths?: string[]}>} sections - Array of section objects with includesPaths
+ * @param {string} fieldPath - The field path to search for (e.g., "metadata.title" or "metadata.creators.0.name")
+ * @returns {number} The index of the matching section, or -1 if not found
+ *
+ * @example
+ * const sections = [
+ *   { key: "basic", includesPaths: ["metadata.title", "metadata.description"] },
+ *   { key: "creators", includesPaths: ["metadata.creators"] }
+ * ];
+ * findSectionIndexForFieldPath(sections, "metadata.creators.0.name"); // returns 1
+ */
+export const findSectionIndexForFieldPath = (sections, fieldPath) => {
+  if (!sections || !fieldPath) return -1;
+  return sections.findIndex((section) =>
+    section.includesPaths?.some(
+      (path) => fieldPath === path || fieldPath.startsWith(`${path}.`)
+    )
+  );
+};
+
+/**
+ * Checks if an object is an error leaf node in the new error format.
+ * New format errors have `message`, `severity`, and `description` properties.
+ *
+ * @param {*} obj - The value to check
+ * @returns {boolean} True if the object is a new format error object
+ *
+ * @example
+ * // New format error object
+ * isErrorObject({ message: "Required", severity: "error", description: "Field must not be empty" }); // true
+ *
+ * // Old format (plain string)
+ * isErrorObject("Required"); // false
+ */
+export const isErrorObject = (obj) =>
+  _isObject(obj) &&
+  "message" in obj &&
+  "severity" in obj &&
+  "description" in obj;
+
+/**
+ * Flattens a nested error object into an array of { fieldPath, value } pairs.
+ * Handles both old format (string values) and new format (objects with message/severity/description).
+ *
+ * @param {Object} obj - The nested error object to flatten
+ * @param {string} [prefix=""] - Internal parameter for building field paths during recursion
+ * @param {Array} [res=[]] - Internal parameter for accumulating results during recursion
+ * @returns {Array<{fieldPath: string, value: string|Object}>} Array of flattened errors
+ *
+ * @example
+ * // Old format (string errors)
+ * flattenToPathValueArray({ metadata: { title: "Required" } });
+ * // Returns: [{ fieldPath: "metadata.title", value: "Required" }]
+ *
+ * @example
+ * // New format (object errors)
+ * flattenToPathValueArray({
+ *   metadata: {
+ *     title: { message: "Required", severity: "error", description: "Must provide title" }
+ *   }
+ * });
+ * // Returns: [{ fieldPath: "metadata.title", value: { message: "Required", severity: "error", description: "Must provide title" } }]
+ */
+export function flattenToPathValueArray(obj, prefix = "", res = []) {
+  if (
+    _isObject(obj) &&
+    !_isDate(obj) &&
+    !_isRegExp(obj) &&
+    obj !== null &&
+    !isErrorObject(obj)
+  ) {
+    _forOwn(obj, (value, key) => {
+      const newKey = prefix ? `${prefix}.${key}` : key;
+      flattenToPathValueArray(value, newKey, res);
+    });
+  } else {
+    res.push({ fieldPath: prefix, value: obj });
+  }
+  return res;
+}
+
+/**
+ * Recursively traverses an object to find all errors (both old and new format).
+ * Old format: plain strings
+ * New format: objects with message, severity, description
+ *
+ * @param {Object} obj - The object to traverse
+ * @returns {Array} Array of errors found (strings or error objects)
+ *
+ * @example
+ * // New format
+ * findErrorObjects({ field: { message: "Required", severity: "error", description: "..." } });
+ * // Returns: [{ message: "Required", severity: "error", description: "..." }]
+ *
+ * @example
+ * // Old format
+ * findErrorObjects({ field: "Required" });
+ * // Returns: ["Required"]
+ */
+export function findErrorObjects(obj) {
+  const results = [];
+  function traverse(current) {
+    if (current === null || current === undefined) return;
+
+    // New format error object
+    if (isErrorObject(current)) {
+      results.push(current);
+      return;
+    }
+
+    // Old format string error
+    if (typeof current === "string") {
+      results.push(current);
+      return;
+    }
+
+    // Array or object - traverse children
+    if (typeof current === "object") {
+      if (Array.isArray(current)) {
+        for (const item of current) {
+          traverse(item);
+        }
+      } else {
+        for (const key of Object.keys(current)) {
+          traverse(current[key]);
+        }
+      }
+    }
+  }
+  traverse(obj);
+  return results;
+}
+
+/**
+ * Gets all errors for specified field paths from errors and initialErrors objects.
+ *
+ * @param {Object} errors - Formik errors object
+ * @param {Object} initialErrors - Formik initialErrors object
+ * @param {string[]} includesPaths - Array of field paths to check for errors
+ * @returns {Array} Array of error objects or error strings
+ *
+ * @example
+ * getSubfieldErrors({ metadata: { title: { message: "Required", severity: "error", description: "..." } } }, {}, ["metadata.title"]);
+ */
+export function getSubfieldErrors(errors, initialErrors, includesPaths = []) {
+  const subfieldErrors = [];
+  for (const fieldPath of includesPaths) {
+    const err = _get(errors, fieldPath) || _get(initialErrors, fieldPath);
+    if (err) {
+      if (isErrorObject(err)) {
+        // New format error object directly at this path
+        subfieldErrors.push(err);
+      } else if (typeof err === "string") {
+        // Old format string error directly at this path
+        subfieldErrors.push(err);
+      } else if (typeof err === "object") {
+        // Nested structure - find all errors within (both old and new format)
+        const errs = findErrorObjects(err);
+        subfieldErrors.push(...errs);
+      }
+    }
+  }
+  return subfieldErrors;
+}
+
+/**
+ * Categorizes errors by severity into info, warning, and error buckets.
+ *
+ * @param {Array} errors - Array of error objects or strings
+ * @returns {{info: Array, warning: Array, error: Array}} Categorized errors
+ *
+ * @example
+ * categorizeErrors([{ message: "Required", severity: "error" }, "Old format error"]);
+ * // Returns: { info: [], warning: [], error: [{ message: "Required", severity: "error" }, "Old format error"] }
+ */
+export function categorizeErrors(errors) {
+  const categories = { info: [], warning: [], error: [] };
+  for (const err of errors) {
+    if (!Object.hasOwn(err, "severity")) {
+      categories.error.push(err);
+    } else {
+      categories[`${err.severity}`].push(err);
+    }
+  }
+  return categories;
+}

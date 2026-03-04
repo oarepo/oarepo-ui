@@ -1242,3 +1242,216 @@ msgstr ""
 #: /home/dusanst/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:719
 msgid "No record found for the tombstone page, no id"
 msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:790
+msgid "User does not have permission to create a record."
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/not_found.html:12
+msgid ""
+"\n"
+"      The record you are trying to access does not exist in the repository."
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/not_found.html:20
+msgid "PID"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/deposit/form.html:2
+msgid "New version"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/deposit/form.html:4
+msgid "New upload"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/deposit/form.html:6
+msgid "Edit upload"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/macros/records_list.html:10
+msgid "Recent uploads"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:1
+msgid "Information banner"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:31
+msgid "Part of"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:42
+msgid "Community visibility"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:43
+msgid "The community is restricted to users with access."
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:45
+msgid "Restricted"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:91
+#, python-format
+msgid ""
+"\n"
+"                    There is a %(link_start)snewer version%(link_end)s of the record\n"
+"                    available.\n"
+"                  "
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:9
+msgid "Record access information"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:16
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:148
+msgid "Reason"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:27
+msgid "Back-navigation"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:29
+msgid "Back to edit"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:40
+msgid "Publication date and version number"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:44
+msgid "Publication date"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:45
+msgid "Published"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:48
+#, python-brace-format
+msgid "Version {version_number}"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:55
+msgid "Resource type"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:65
+msgid "Access status"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:87
+msgid "Record title and creators"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:93
+msgid "Creators and contributors"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:154
+msgid "Request access"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:156
+msgid ""
+"If you would like to request access to these files, please fill out the form"
+" below."
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:164
+msgid ""
+"You need to satisfy these conditions in order for this request to be "
+"accepted:"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:189
+msgid "System files"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:202
+msgid "Additional record details"
+msgstr ""
+
+msgid "Draft successfully saved."
+msgstr ""
+
+msgid "Draft saved with validation feedback in:"
+msgstr ""
+
+msgid "Draft has validation feedback in:"
+msgstr ""
+
+msgid ""
+"The draft was not saved. Please try again. If the problem persists, contact "
+"user support."
+msgstr ""
+
+msgid ""
+"The draft was not published. Please try again. If the problem persists, "
+"contact user support."
+msgstr ""
+
+msgid "The draft was not published. Draft saved with validation feedback in:"
+msgstr ""
+
+msgid ""
+"The draft was not submitted for review. Please try again. If the problem "
+"persists, contact user support."
+msgstr ""
+
+msgid ""
+"The draft was not submitted for review. Draft saved with validation feedback"
+" in"
+msgstr ""
+
+msgid ""
+"Draft deletion failed. Please try again. If the problem persists, contact "
+"user support."
+msgstr ""
+
+msgid ""
+"Draft preview failed. Please try again. If the problem persists, contact "
+"user support."
+msgstr ""
+
+msgid ""
+"Identifier reservation failed. Please try again. If the problem persists, "
+"contact user support."
+msgstr ""
+
+msgid ""
+"Identifier could not be discarded. Please try again. If the problem "
+"persists, contact user support."
+msgstr ""
+
+msgid ""
+"Draft save failed before file upload. Please try again. If the problem "
+"persists, contact user support."
+msgstr ""
+
+msgid ""
+"Files import from the previous version failed. Please try again. If the "
+"problem persists, contact user support."
+msgstr ""
+
+msgid "Something went wrong in this section"
+msgstr ""
+
+msgid "Try again"
+msgstr ""
+
+msgid "Your draft contains unsaved changes."
+msgstr ""
+
+msgid "Back"
+msgstr ""
+
+msgid "Next"
+msgstr ""
+
+msgid "More"
+msgstr ""

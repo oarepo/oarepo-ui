@@ -5,9 +5,11 @@
     padding: 0.5rem 1rem;
     cursor: pointer;
   }
+
   &.active-filters-count-label {
     left: 110%;
   }
+
   &.lang-tag {
     font-weight: normal;
     font-size: xx-small;
@@ -16,6 +18,21 @@
     position: relative;
     bottom: 2px;
     text-transform: uppercase;
+  }
+
+  &.tab-error {
+    &.error {
+      background-color: @errorTextColor;
+      color: white;
+    }
+    &.info {
+      background-color: @infoBackgroundColor;
+      color: @infoTextColor;
+    }
+    &.warning {
+      background-color: @warningBackgroundColor;
+      color: @warningTextColor;
+    }
   }
 }
 

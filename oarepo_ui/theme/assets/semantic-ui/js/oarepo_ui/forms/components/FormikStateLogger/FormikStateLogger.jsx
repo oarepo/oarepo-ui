@@ -18,7 +18,6 @@ export const FormikStateLogger = ({ render = false }) => {
       </Message>
     );
   }
-
   console.debug("[form state]: ", state, "\n[form values]:", state.values);
   return null;
 };

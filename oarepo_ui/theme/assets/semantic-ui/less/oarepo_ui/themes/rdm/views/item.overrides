@@ -16,7 +16,19 @@
     }
   }
 }
-
+// for license field, otherwise, if your line-height is different than 1,
+// radio button is not aligned with item title
+.ui.items {
+  .item {
+    &.license-item {
+      .content.license-item-content {
+        .ui.header {
+          line-height: 1 !important;
+        }
+      }
+    }
+  }
+}
 .item div.description:not(.license-item-description) {
   display: initial !important;
 }
