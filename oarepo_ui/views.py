@@ -25,6 +25,8 @@ from invenio_app_rdm.views import create_url_rule
 from invenio_base.utils import obj_or_import_string
 from invenio_i18n import get_locale
 from invenio_sitemap import iterate_urls_of_sitemap_indices
+from oarepo_runtime.api import Model
+from oarepo_runtime.proxies import current_runtime
 
 from oarepo_ui.overrides import (
     UIComponent,
@@ -139,20 +141,30 @@ def uploads_new() -> ResponseReturnValue:
     models = list(current_runtime.rdm_models)
     community_slug = request.args.get("community")
 
+    def get_deposit_url(model: Model) -> str:
+        if community_slug:
+            return url_for(f"{model.ui_blueprint_name}.deposit_create", community=community_slug)
+        return url_for(f"{model.ui_blueprint_name}.deposit_create")
+
     if len(models) == 1:
         model = models[0]
         if not model.ui_blueprint_name:
             abort(404)
-        if community_slug:
-            url = url_for(f"{model.ui_blueprint_name}.deposit_create", community=community_slug)
-        else:
-            url = url_for(f"{model.ui_blueprint_name}.deposit_create")
-        return redirect(url)
+        return redirect(get_deposit_url(model))
+
+    serialized_models = [
+        {
+            "name": model.name,
+            "description": model.description,
+            "url": get_deposit_url(model),
+        }
+        for model in models
+        if model.ui_blueprint_name
+    ]
 
     return render_template(
-        current_app.config.get("OAREPO_UI_NEW_PAGE_TEMPLATE", "oarepo_ui/new_page.html"),
-        models=models,
-        community_slug=community_slug,
+        current_app.config.get("OAREPO_UI_NEW_UPLOAD_PAGE_TEMPLATE", "oarepo_ui/new_upload_page.html"),
+        models=serialized_models,
     )
 
 
