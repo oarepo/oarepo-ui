@@ -24,7 +24,7 @@ export const TabForm = ({ sections = [] }) => {
   const record = useSelector((state) => state.deposit.record);
   const saveAction = useCallback(
     (values, params) => dispatch(save(values, params)),
-    [dispatch],
+    [dispatch]
   );
 
   const sectionKeys = useMemo(() => sections.map((s) => s.key), [sections]);
@@ -34,7 +34,7 @@ export const TabForm = ({ sections = [] }) => {
   const initialTabKey = params.get("tab");
   const initialStep = sectionKeys.indexOf(initialTabKey);
   const [activeStep, setActiveStepState] = React.useState(
-    Math.max(initialStep, 0),
+    Math.max(initialStep, 0)
   );
 
   const { handleAction: handleSave } = useDepositFormAction({
@@ -54,7 +54,7 @@ export const TabForm = ({ sections = [] }) => {
         handleSave();
       }
     },
-    [sectionKeys, handleSave, dirty],
+    [sectionKeys, handleSave, dirty]
   );
 
   useEffect(() => {
@@ -101,7 +101,7 @@ export const TabForm = ({ sections = [] }) => {
       next,
       back,
     }),
-    [activeStep, handleSetStep, next, back],
+    [activeStep, handleSetStep, next, back]
   );
   if (sections.length === 0) {
     return (

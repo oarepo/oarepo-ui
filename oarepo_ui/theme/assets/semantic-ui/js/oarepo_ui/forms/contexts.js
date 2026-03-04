@@ -30,7 +30,7 @@ export const FieldDataProvider = ({
   } = useFormConfig();
   const fieldDataValue = useMemo(
     () => ({ getFieldData: getFieldData(uiModel, fieldPathPrefix) }),
-    [uiModel, fieldPathPrefix],
+    [uiModel, fieldPathPrefix]
   );
 
   return (

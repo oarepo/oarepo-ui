@@ -80,7 +80,7 @@ FormSteps.propTypes = {
       key: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
       includesPaths: PropTypes.array,
-    }),
+    })
   ).isRequired,
   activeStep: PropTypes.number.isRequired,
   onTabChange: PropTypes.func.isRequired,

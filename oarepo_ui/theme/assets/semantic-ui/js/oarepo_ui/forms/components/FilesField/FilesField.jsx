@@ -16,7 +16,7 @@ import { useDepositFormAction, useFormConfig } from "../../hooks";
 // TODO: shall we liquidate this and support only Uppy uploader?
 export const FilesField = ({
   fileUploaderMessage = i18next.t(
-    "After publishing the draft, it is not possible to add, modify or delete files. It will be necessary to create a new version of the record.",
+    "After publishing the draft, it is not possible to add, modify or delete files. It will be necessary to create a new version of the record."
   ),
   record,
   allowedFileTypes = ["*/*"],
@@ -28,16 +28,16 @@ export const FilesField = ({
 
   const deleteFileAction = useCallback(
     (fileObject) => dispatch(deleteFile(fileObject)),
-    [dispatch],
+    [dispatch]
   );
 
   const saveAction = useCallback(
     (values, params) => dispatch(save(values, params)),
-    [dispatch],
+    [dispatch]
   );
 
   const [filesState, setFilesState] = useState(
-    !_isEmpty(files) ? Object.values(files) : [],
+    !_isEmpty(files) ? Object.values(files) : []
   );
   const { filesLocked } = useFormConfig();
   const { values } = useFormikContext();
@@ -67,7 +67,7 @@ export const FilesField = ({
     mutationFn: () =>
       httpApplicationJson.post(
         recordObject?.links?.self + "/actions/files-import",
-        {},
+        {}
       ),
     onSuccess: (data) => {
       setFilesState(data.data.entries);
@@ -85,7 +85,7 @@ export const FilesField = ({
         setFilesState(data?.data?.entries);
         resetImportParentFiles();
       },
-    },
+    }
   );
 
   const handleFilesUpload = () => {
@@ -96,7 +96,7 @@ export const FilesField = ({
     try {
       await deleteFileAction(fileObject);
       setFilesState((prevFilesState) =>
-        prevFilesState.filter((file) => file.key !== fileObject.key),
+        prevFilesState.filter((file) => file.key !== fileObject.key)
       );
     } catch (error) {
       console.error("Error deleting file:", error);
@@ -134,7 +134,7 @@ export const FilesField = ({
         {isError ? (
           <Message negative>
             {i18next.t(
-              "Failed to fetch draft's files. Please try refreshing the page.",
+              "Failed to fetch draft's files. Please try refreshing the page."
             )}
           </Message>
         ) : (
@@ -159,7 +159,7 @@ export const FilesField = ({
               <Message negative>
                 <Message.Content>
                   {i18next.t(
-                    "Failed to import files from previous version. Please try again.",
+                    "Failed to import files from previous version. Please try again."
                   )}
                 </Message.Content>
               </Message>
@@ -186,7 +186,7 @@ export const FilesField = ({
                       rel="noopener noreferrer"
                       href={recordObject.links.self_html.replace(
                         "/preview",
-                        "",
+                        ""
                       )}
                     >
                       detail
@@ -237,7 +237,7 @@ FilesField.propTypes = {
       id: PropTypes.string.isRequired,
       defaultValue: PropTypes.string,
       isUserInput: PropTypes.bool.isRequired,
-    }),
+    })
   ),
   /* eslint-enable react/require-default-props */
 };

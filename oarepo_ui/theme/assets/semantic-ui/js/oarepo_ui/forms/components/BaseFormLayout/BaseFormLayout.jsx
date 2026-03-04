@@ -1,12 +1,11 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import { Grid, Ref, Sticky, Header, Card } from "semantic-ui-react";
+import { Grid, Ref, Sticky, Card } from "semantic-ui-react";
 import { useSelector } from "react-redux";
-import { getLocalizedValue } from "../../../util";
 import { buildUID } from "react-searchkit";
 import Overridable from "react-overridable";
-import { getIn, useFormikContext } from "formik";
-import { useSanitizeInput, useFormConfig } from "../../hooks";
+import { useFormikContext } from "formik";
+import { useFormConfig } from "../../hooks";
 import { TabForm } from "../TabForm";
 import { FormFeedback } from "../FormFeedback";
 import { DepositStatusBox } from "@js/invenio_rdm_records/src/deposit/components/DepositStatus";
@@ -18,55 +17,10 @@ import {
   DeleteButton,
 } from "@js/invenio_rdm_records";
 
-export const FormTitle = () => {
-  const { values } = useFormikContext();
-  const { sanitizeInput } = useSanitizeInput();
-
-  const recordTitle =
-    getIn(values, "metadata.title", "") ||
-    getLocalizedValue(getIn(values, "title", "")) ||
-    "";
-
-  const sanitizedTitle = sanitizeInput(recordTitle);
-
+export const WizardFormLayout = ({ sections, record, overridableIdPrefix }) => {
   return (
-    sanitizedTitle && (
-      <Header as="h1">
-        {/* cannot set dangerously html to SUI header directly, I think it is some internal
-        implementation quirk (it says you cannot have both children and dangerouslySethtml even though
-        there is no children given to the component) */}
-        <span dangerouslySetInnerHTML={{ __html: sanitizedTitle }} />
-      </Header>
-    )
-  );
-};
-
-export const BaseFormLayout = ({ sections, useWizardForm = false }) => {
-  const record = useSelector((state) => state.deposit.record);
-  const { overridableIdPrefix } = useFormConfig();
-  const { dirty } = useFormikContext();
-  const sidebarRef = React.useRef(null);
-  const formFeedbackRef = React.useRef(null);
-
-  useEffect(() => {
-    const handleBeforeUnload = (e) => {
-      if (dirty) {
-        e.preventDefault();
-        e.returnValue = "";
-      }
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [dirty]);
-
-  return useWizardForm ? (
     <Grid>
       <Grid.Column id="main-content" mobile={16} tablet={16} computer={16}>
-        {/* TODO: do we really need to display the title? I think this is a redundant information */}
-        <FormTitle />
         <Overridable
           id={buildUID(overridableIdPrefix, "WizardForm.container")}
           record={record}
@@ -76,13 +30,23 @@ export const BaseFormLayout = ({ sections, useWizardForm = false }) => {
         <FormikStateLogger />
       </Grid.Column>
     </Grid>
-  ) : (
+  );
+};
+
+WizardFormLayout.propTypes = {
+  sections: PropTypes.arrayOf(PropTypes.object),
+  record: PropTypes.object,
+  overridableIdPrefix: PropTypes.string,
+};
+
+export const MonolithFormLayout = ({ record, overridableIdPrefix }) => {
+  const sidebarRef = React.useRef(null);
+  const formFeedbackRef = React.useRef(null);
+
+  return (
     <Grid>
       <Ref innerRef={formFeedbackRef}>
         <Grid.Column id="main-content" mobile={16} tablet={16} computer={11}>
-          {/* TODO: do we really need to display the title? I think this is a redundant information */}
-
-          <FormTitle />
           <Sticky context={formFeedbackRef} offset={20}>
             <Overridable id={buildUID(overridableIdPrefix, "Errors.container")}>
               <FormFeedback />
@@ -144,6 +108,44 @@ export const BaseFormLayout = ({ sections, useWizardForm = false }) => {
         </Grid.Column>
       </Ref>
     </Grid>
+  );
+};
+
+MonolithFormLayout.propTypes = {
+  record: PropTypes.object,
+  overridableIdPrefix: PropTypes.string,
+};
+
+export const BaseFormLayout = ({ sections, useWizardForm = false }) => {
+  const record = useSelector((state) => state.deposit.record);
+  const { overridableIdPrefix } = useFormConfig();
+  const { dirty } = useFormikContext();
+
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (dirty) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [dirty]);
+
+  return useWizardForm ? (
+    <WizardFormLayout
+      sections={sections}
+      record={record}
+      overridableIdPrefix={overridableIdPrefix}
+    />
+  ) : (
+    <MonolithFormLayout
+      record={record}
+      overridableIdPrefix={overridableIdPrefix}
+    />
   );
 };
 

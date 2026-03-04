@@ -271,3 +271,109 @@ export function flattenToPathValueArray(obj, prefix = "", res = []) {
   }
   return res;
 }
+
+/**
+ * Recursively traverses an object to find all errors (both old and new format).
+ * Old format: plain strings
+ * New format: objects with message, severity, description
+ *
+ * @param {Object} obj - The object to traverse
+ * @returns {Array} Array of errors found (strings or error objects)
+ *
+ * @example
+ * // New format
+ * findErrorObjects({ field: { message: "Required", severity: "error", description: "..." } });
+ * // Returns: [{ message: "Required", severity: "error", description: "..." }]
+ *
+ * @example
+ * // Old format
+ * findErrorObjects({ field: "Required" });
+ * // Returns: ["Required"]
+ */
+export function findErrorObjects(obj) {
+  const results = [];
+  function traverse(current) {
+    if (current === null || current === undefined) return;
+
+    // New format error object
+    if (isErrorObject(current)) {
+      results.push(current);
+      return;
+    }
+
+    // Old format string error
+    if (typeof current === "string") {
+      results.push(current);
+      return;
+    }
+
+    // Array or object - traverse children
+    if (typeof current === "object") {
+      if (Array.isArray(current)) {
+        for (const item of current) {
+          traverse(item);
+        }
+      } else {
+        for (const key of Object.keys(current)) {
+          traverse(current[key]);
+        }
+      }
+    }
+  }
+  traverse(obj);
+  return results;
+}
+
+/**
+ * Gets all errors for specified field paths from errors and initialErrors objects.
+ *
+ * @param {Object} errors - Formik errors object
+ * @param {Object} initialErrors - Formik initialErrors object
+ * @param {string[]} includesPaths - Array of field paths to check for errors
+ * @returns {Array} Array of error objects or error strings
+ *
+ * @example
+ * getSubfieldErrors({ metadata: { title: { message: "Required", severity: "error", description: "..." } } }, {}, ["metadata.title"]);
+ */
+export function getSubfieldErrors(errors, initialErrors, includesPaths = []) {
+  const subfieldErrors = [];
+  for (const fieldPath of includesPaths) {
+    const err = _get(errors, fieldPath) || _get(initialErrors, fieldPath);
+    if (err) {
+      if (isErrorObject(err)) {
+        // New format error object directly at this path
+        subfieldErrors.push(err);
+      } else if (typeof err === "string") {
+        // Old format string error directly at this path
+        subfieldErrors.push(err);
+      } else if (typeof err === "object") {
+        // Nested structure - find all errors within (both old and new format)
+        const errs = findErrorObjects(err);
+        subfieldErrors.push(...errs);
+      }
+    }
+  }
+  return subfieldErrors;
+}
+
+/**
+ * Categorizes errors by severity into info, warning, and error buckets.
+ *
+ * @param {Array} errors - Array of error objects or strings
+ * @returns {{info: Array, warning: Array, error: Array}} Categorized errors
+ *
+ * @example
+ * categorizeErrors([{ message: "Required", severity: "error" }, "Old format error"]);
+ * // Returns: { info: [], warning: [], error: [{ message: "Required", severity: "error" }, "Old format error"] }
+ */
+export function categorizeErrors(errors) {
+  const categories = { info: [], warning: [], error: [] };
+  for (const err of errors) {
+    if (!Object.hasOwn(err, "severity")) {
+      categories.error.push(err);
+    } else {
+      categories[`${err.severity}`].push(err);
+    }
+  }
+  return categories;
+}

@@ -63,7 +63,10 @@ export const TabContent = ({ activeStep, sections, next, back }) => {
   }, [activeStep]);
 
   return (
-    <Segment className="tab-content borderless shadowless" data-testid="tab-content">
+    <Segment
+      className="tab-content borderless shadowless"
+      data-testid="tab-content"
+    >
       {dirty && (
         <Message info data-testid="unsaved-changes-message">
           <Message.Content>
@@ -101,7 +104,10 @@ export const TabContent = ({ activeStep, sections, next, back }) => {
           back={back}
         />
       </ErrorBoundary>
-      <div className="tab-content-navigation" data-testid="tab-content-navigation">
+      <div
+        className="tab-content-navigation"
+        data-testid="tab-content-navigation"
+      >
         {activeStep > 0 && (
           <Button
             className="tab-content-navigation-button back-button"
@@ -142,7 +148,7 @@ TabContent.propTypes = {
       includesPaths: PropTypes.array,
       /** render({ record, formConfig, activeStep }) => ReactNode */
       render: PropTypes.func.isRequired,
-    }),
+    })
   ).isRequired,
   next: PropTypes.func.isRequired,
   back: PropTypes.func.isRequired,
