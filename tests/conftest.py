@@ -218,7 +218,7 @@ def record_model():
     return model_instance
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def second_record_model():
     """Second model for testing multiple models scenario."""
     from oarepo_model.api import model

@@ -16,7 +16,7 @@ and notification settings handling.
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from flask import Blueprint, abort, current_app, redirect, render_template, request, url_for
 from flask_menu import current_menu
@@ -25,7 +25,6 @@ from invenio_app_rdm.views import create_url_rule
 from invenio_base.utils import obj_or_import_string
 from invenio_i18n import get_locale
 from invenio_sitemap import iterate_urls_of_sitemap_indices
-from oarepo_runtime.api import Model
 from oarepo_runtime.proxies import current_runtime
 
 from oarepo_ui.overrides import (
@@ -39,6 +38,7 @@ if TYPE_CHECKING:
     from flask import Flask
     from flask.blueprints import BlueprintSetupState
     from flask.typing import ResponseReturnValue
+    from oarepo_runtime.api import Model
 
 
 def create_blueprint(app: Flask) -> Blueprint:
@@ -143,8 +143,8 @@ def uploads_new() -> ResponseReturnValue:
 
     def get_deposit_url(model: Model) -> str:
         if community_slug:
-            return url_for(f"{model.ui_blueprint_name}.deposit_create", community=community_slug)
-        return url_for(f"{model.ui_blueprint_name}.deposit_create")
+            return cast("str", url_for(f"{model.ui_blueprint_name}.deposit_create", community=community_slug))
+        return cast("str", url_for(f"{model.ui_blueprint_name}.deposit_create"))
 
     if len(models) == 1:
         model = models[0]
@@ -159,7 +159,6 @@ def uploads_new() -> ResponseReturnValue:
             "url": get_deposit_url(model),
         }
         for model in models
-        if model.ui_blueprint_name
     ]
 
     return render_template(
