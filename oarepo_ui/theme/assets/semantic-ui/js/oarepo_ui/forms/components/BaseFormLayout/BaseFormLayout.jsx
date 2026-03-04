@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import { Grid, Ref, Sticky, Card } from "semantic-ui-react";
+import { Grid, Ref, Sticky, Card, Header } from "semantic-ui-react";
 import { useSelector } from "react-redux";
 import { buildUID } from "react-searchkit";
 import Overridable from "react-overridable";
-import { useFormikContext } from "formik";
-import { useFormConfig } from "../../hooks";
+import { useFormConfig, useSanitizeInput } from "../../hooks";
 import { TabForm } from "../TabForm";
 import { FormFeedback } from "../FormFeedback";
 import { DepositStatusBox } from "@js/invenio_rdm_records/src/deposit/components/DepositStatus";
@@ -16,6 +15,31 @@ import {
   PreviewButton,
   DeleteButton,
 } from "@js/invenio_rdm_records";
+import { getIn, useFormikContext } from "formik";
+import { getLocalizedValue } from "../../../util";
+
+export const FormTitle = () => {
+  const { values } = useFormikContext();
+  const { sanitizeInput } = useSanitizeInput();
+
+  const recordTitle =
+    getIn(values, "metadata.title", "") ||
+    getLocalizedValue(getIn(values, "title", "")) ||
+    "";
+
+  const sanitizedTitle = sanitizeInput(recordTitle);
+
+  return (
+    sanitizedTitle && (
+      <Header as="h1">
+        {/* cannot set dangerously html to SUI header directly, I think it is some internal
+        implementation quirk (it says you cannot have both children and dangerouslySethtml even though
+        there is no children given to the component) */}
+        <span dangerouslySetInnerHTML={{ __html: sanitizedTitle }} />
+      </Header>
+    )
+  );
+};
 
 export const WizardFormLayout = ({ sections, record, overridableIdPrefix }) => {
   return (
