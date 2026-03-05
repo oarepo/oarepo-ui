@@ -218,6 +218,33 @@ def record_model():
     return model_instance
 
 
+@pytest.fixture(scope="module")
+def second_record_model():
+    """Second model for testing multiple models scenario."""
+    from oarepo_model.api import model
+    from oarepo_rdm.model.presets import rdm_minimal_preset
+
+    model_instance = model(
+        "second-model",
+        version="1.0.0",
+        types=[
+            {
+                "Metadata": {
+                    "properties": {
+                        "title": {"type": "keyword"},
+                    },
+                },
+            }
+        ],
+        metadata_type="Metadata",
+        presets=[rdm_minimal_preset],
+        configuration={"ui_blueprint_name": "second_model_ui"},
+    )
+
+    model_instance.register()
+    return model_instance
+
+
 def item_getter(fd: FieldData, path: tuple[str, ...]) -> FieldData | None:
     if path == ("metadata", "creators"):
         api_data = fd._api_data  # noqa: SLF001 ok to use private here

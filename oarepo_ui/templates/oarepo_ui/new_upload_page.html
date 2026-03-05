@@ -1,0 +1,33 @@
+{%- extends config.BASE_TEMPLATE %}
+{%- set title = _("New upload") %}
+
+{%- block page_body %}
+<div class="ui center aligned main container rel-mt-3">
+  {%- if models %}
+  {%- block new_uploadpage_models %}
+  <h1 class="ui header">{{ _("Select record type") }}</h1>
+  <p class="ui text">{{ _("Choose the type of record you want to create.") }}</p>
+
+  <div class="ui centered stackable cards rel-mt-2">
+    {%- for model in models %}
+    <a class="ui card" href="{{ model.url }}">
+      <div class="content">
+        <div class="header">{{ model.name }}</div>
+        {%- if model.description %}
+        <div class="description">{{ model.description }}</div>
+        {%- endif %}
+      </div>
+    </a>
+    {%- endfor %}
+  </div>
+  {%- endblock new_uploadpage_models %}
+  {%- else %}
+  {%- block new_uploadpage_no_models %}
+  <div class="ui warning message">
+    <div class="header">{{ _("No record types available") }}</div>
+    <p>{{ _("You don't have any models created. Please refer to <a href=\"%(url)s\">the documentation</a> for instructions.") % {"url": "https://nrp-cz.github.io/docs/installation/create_instance#add-a-metadata-schema"} | safe }}</p>
+  </div>
+  {%- endblock new_uploadpage_no_models %}
+  {%- endif %}
+</div>
+{%- endblock page_body %}

@@ -16,14 +16,16 @@ and notification settings handling.
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
-from flask import Blueprint, current_app, render_template
+from flask import Blueprint, abort, current_app, redirect, render_template, request, url_for
 from flask_menu import current_menu
+from flask_security import login_required
 from invenio_app_rdm.views import create_url_rule
 from invenio_base.utils import obj_or_import_string
 from invenio_i18n import get_locale
 from invenio_sitemap import iterate_urls_of_sitemap_indices
+from oarepo_runtime.proxies import current_runtime
 
 from oarepo_ui.overrides import (
     UIComponent,
@@ -36,6 +38,7 @@ if TYPE_CHECKING:
     from flask import Flask
     from flask.blueprints import BlueprintSetupState
     from flask.typing import ResponseReturnValue
+    from oarepo_runtime.api import Model
 
 
 def create_blueprint(app: Flask) -> Blueprint:
@@ -48,6 +51,8 @@ def create_blueprint(app: Flask) -> Blueprint:
         blueprint.add_url_rule(**create_url_rule(routes.get("robots"), default_view_func=robots))
         blueprint.add_url_rule(**create_url_rule(routes.get("help_search"), default_view_func=help_search))
         blueprint.add_url_rule(**create_url_rule(routes.get("help_statistics"), default_view_func=help_statistics))
+
+    blueprint.add_url_rule("/uploads/new", view_func=uploads_new, methods=["GET"])
 
     blueprint.app_context_processor(lambda: ({"current_app": app}))
     blueprint.app_context_processor(lambda: ({"now": datetime.datetime.now(tz=datetime.UTC)}))
@@ -122,6 +127,43 @@ def help_statistics() -> ResponseReturnValue:
             f"invenio_app_rdm/help/statistics.{locale}.html",
             "invenio_app_rdm/help/statistics.en.html",
         ]
+    )
+
+
+@login_required
+def uploads_new() -> ResponseReturnValue:
+    """Handle /uploads/new route for creating new records.
+
+    If only one model is available, redirects directly to that model's deposit create page.
+    If multiple models are available, renders a selection page with model cards.
+    Preserves community parameter from query string when redirecting.
+    """
+    models = list(current_runtime.rdm_models)
+    community_slug = request.args.get("community")
+
+    def get_deposit_url(model: Model) -> str:
+        if community_slug:
+            return cast("str", url_for(f"{model.ui_blueprint_name}.deposit_create", community=community_slug))
+        return cast("str", url_for(f"{model.ui_blueprint_name}.deposit_create"))
+
+    if len(models) == 1:
+        model = models[0]
+        if not model.ui_blueprint_name:
+            abort(404)
+        return redirect(get_deposit_url(model))
+
+    serialized_models = [
+        {
+            "name": model.name,
+            "description": model.description,
+            "url": get_deposit_url(model),
+        }
+        for model in models
+    ]
+
+    return render_template(
+        current_app.config.get("OAREPO_UI_NEW_UPLOAD_PAGE_TEMPLATE", "oarepo_ui/new_upload_page.html"),
+        models=serialized_models,
     )
 
 
