@@ -167,7 +167,7 @@ def ui_overrides(app: Flask) -> None:
         "RecordsList",
         "@js/oarepo_ui/search/RecordsList",
         UIComponentImportMode.NAMED,
-        props={"searchEndpoint": app.config.get("THEME_FRONTPAGE_RECORDS_LIST_SEARCH_MORE_ENDPOINT")},
+        props={"searchEndpoint": app.config.get("THEME_SEARCH_ENDPOINT")},
     )
     home_page_records_list_override = UIComponentOverride(
         "oarepo_ui.index",
