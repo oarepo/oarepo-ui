@@ -1,0 +1,8 @@
+{%- set model_sidebar = config.get("OAREPO_UI_SIDEBAR_TEMPLATES", {}).get(model_name) -%}
+{%- if model_sidebar -%}
+  {%- for template_name in model_sidebar -%}
+    {% include template_name %}
+  {%- endfor -%}
+{%- else -%}
+  {% include "invenio_app_rdm/records/details/side_bar.html" %}
+{%- endif -%}

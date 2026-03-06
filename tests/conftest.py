@@ -245,8 +245,21 @@ def record_model():
 @pytest.fixture(scope="module")
 def second_record_model():
     """Second model for testing multiple models scenario."""
+    import json
+    from pathlib import Path
+    from typing import Any
+
+    from flask_resources.serializers import BaseSerializer
     from oarepo_model.api import model
     from oarepo_rdm.model.presets import rdm_minimal_preset
+
+    class DataciteSerializer(BaseSerializer):
+        """Minimal datacite serializer stub used in tests."""
+
+        def serialize_object(self, _obj) -> dict[str, Any]:
+            """Serialize a single object."""
+            with (Path(__file__).parent / "data/datacite_export.json").open() as f:
+                return json.load(f)["data"]["attributes"]
 
     model_instance = model(
         "second-model",
@@ -262,6 +275,18 @@ def second_record_model():
         ],
         metadata_type="Metadata",
         presets=[rdm_minimal_preset],
+        customizations=[
+            AddMetadataExport(
+                code="datacite",
+                name=_("Datacite"),
+                mimetype="application/vnd.datacite.datacite+json",
+                serializer=DataciteSerializer(),
+                display=True,
+                oai_metadata_prefix=None,
+                oai_schema=None,
+                oai_namespace=None,
+            )
+        ],
         configuration={"ui_blueprint_name": "second_model_ui"},
     )
 

@@ -47,10 +47,10 @@ class SecondModelUIResourceConfig(RecordsUIResourceConfig):
     application_id: ClassVar[str] = "second_model"
 
     templates: ClassVar[dict[str, str]] = {
-        "record_detail": "simple_model.RecordDetail",
-        "search": "simple_model.Search",
-        "deposit_edit": "simple_model.TestDepositEdit",
-        "deposit_create": "simple_model.TestDepositCreate",
+        "record_detail": "oarepo_ui.pages.RecordDetail",
+        "search": "oarepo_ui.pages.RecordSearch",
+        "deposit_edit": "oarepo_ui.pages.DepositEdit",
+        "deposit_create": "oarepo_ui.pages.DepositCreate",
     }
 
 
