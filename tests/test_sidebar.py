@@ -15,17 +15,6 @@ import pytest
 
 
 @pytest.fixture(scope="module")
-def extra_entry_points(record_model, second_record_model):
-    """Extra entry points to load both models."""
-    return {
-        "invenio_i18n.translations": ["1000-test = tests"],
-        "invenio_base.blueprints": [
-            "ui_second_model = tests.second_model:create_blueprint",
-        ],
-    }
-
-
-@pytest.fixture(scope="module")
 def record_service(app, second_record_model):
     """Override record_service to use second_model."""
     from oarepo_runtime import current_runtime
@@ -88,12 +77,16 @@ def test_sidebar_default_fallback(app, location, logged_client, users, record_fa
 
 
 def test_sidebar_model_specific_config(
-    app, location, logged_client, users, record_factory, extra_entry_points, custom_sidebar_widget_template
+    app, location, logged_client, users, record_factory, extra_entry_points, custom_sidebar_widget_template, monkeypatch
 ):
     """Test that model-specific config (OAREPO_UI_SIDEBAR_TEMPLATES) is used."""
-    app.config["OAREPO_UI_SIDEBAR_TEMPLATES"] = {
-        "second_model": [custom_sidebar_widget_template],
-    }
+    monkeypatch.setitem(
+        app.config,
+        "OAREPO_UI_SIDEBAR_TEMPLATES",
+        {
+            "second_model": [custom_sidebar_widget_template],
+        },
+    )
 
     creator = users[0]
     published_record = record_factory(creator.identity)
