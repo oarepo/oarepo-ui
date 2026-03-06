@@ -10,9 +10,11 @@ from __future__ import annotations
 
 import json
 from datetime import timedelta
-from typing import override
+from pathlib import Path
+from typing import Any, override
 
 import pytest
+from flask_resources.serializers import BaseSerializer
 from flask_webpackext.manifest import (
     JinjaManifest,
     JinjaManifestEntry,
@@ -31,6 +33,15 @@ from oarepo_workflows.services.permissions import DefaultWorkflowPermissions
 
 from oarepo_ui.templating.data import FieldData
 from tests.simple_model import SimpleModelUIResource, SimpleModelUIResourceConfig
+
+
+class DataciteSerializer(BaseSerializer):
+    """Minimal datacite serializer stub used in tests."""
+
+    def serialize_object(self, _obj: Any) -> dict[str, Any]:
+        """Serialize a single object."""
+        with (Path(__file__).parent / "data/datacite_export.json").open() as f:
+            return json.load(f)["data"]["attributes"]
 
 pytest_plugins = [
     "pytest_oarepo.files",
@@ -194,20 +205,8 @@ def simple_model_ui_resource(app, simple_model_ui_resource_config, record_servic
 
 @pytest.fixture(scope="session")
 def record_model():
-    from pathlib import Path
-    from typing import Any
-
-    from flask_resources.serializers import BaseSerializer
     from oarepo_model.api import model
     from oarepo_rdm.model.presets import rdm_minimal_preset
-
-    class DataciteSerializer(BaseSerializer):
-        """Minimal datacite serializer stub used in tests."""
-
-        def serialize_object(self, _obj) -> dict[str, Any]:
-            """Serialize a single object."""
-            with (Path(__file__).parent / "data/datacite_export.json").open() as f:
-                return json.load(f)["data"]["attributes"]
 
     model_instance = model(
         "simple-model",
@@ -245,21 +244,8 @@ def record_model():
 @pytest.fixture(scope="module")
 def second_record_model():
     """Second model for testing multiple models scenario."""
-    import json
-    from pathlib import Path
-    from typing import Any
-
-    from flask_resources.serializers import BaseSerializer
     from oarepo_model.api import model
     from oarepo_rdm.model.presets import rdm_minimal_preset
-
-    class DataciteSerializer(BaseSerializer):
-        """Minimal datacite serializer stub used in tests."""
-
-        def serialize_object(self, _obj) -> dict[str, Any]:
-            """Serialize a single object."""
-            with (Path(__file__).parent / "data/datacite_export.json").open() as f:
-                return json.load(f)["data"]["attributes"]
 
     model_instance = model(
         "second-model",
