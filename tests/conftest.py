@@ -43,6 +43,7 @@ class DataciteSerializer(BaseSerializer):
         with (Path(__file__).parent / "data/datacite_export.json").open() as f:
             return json.load(f)["data"]["attributes"]
 
+
 pytest_plugins = [
     "pytest_oarepo.files",
     "pytest_oarepo.records",
@@ -59,11 +60,14 @@ def ensure_location(location):
 
 
 @pytest.fixture(scope="module")
-def extra_entry_points(record_model):
+def extra_entry_points(record_model, second_record_model):
     """Extra entry points to load the mock_module features."""
     return {
         "invenio_i18n.translations": ["1000-test = tests"],
-        "invenio_base.blueprints": ["ui_simple_model = tests.simple_model:create_blueprint"],
+        "invenio_base.blueprints": [
+            "ui_simple_model = tests.simple_model:create_blueprint",
+            "ui_second_model = tests.second_model:create_blueprint",
+        ],
         "invenio_base.finalize_app": ["ui_simple_model = tests.simple_model:finalize_app"],
     }
 
@@ -241,7 +245,7 @@ def record_model():
     return model_instance
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def second_record_model():
     """Second model for testing multiple models scenario."""
     from oarepo_model.api import model
