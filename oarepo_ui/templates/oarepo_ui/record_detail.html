@@ -27,6 +27,5 @@
 {%- endblock javascript %}
   
 {%- block record_sidebar %}
-  {{ super() }}
-  {% include model_name ~ "/record_detail/record_sidebar.html" ignore missing %}
+  {%- include [model_name ~ "/record_detail/record_sidebar.html", "oarepo_ui/record_detail/side_bar/record_sidebar.html"] -%}
 {%- endblock record_sidebar %}
