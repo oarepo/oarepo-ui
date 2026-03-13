@@ -144,6 +144,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
         {
             "preview": ma.fields.Bool(attribute="is_preview", missing=False),
             "include_deleted": ma.fields.Bool(),
+            "embed": ma.fields.Bool(),
         }
     )
 
@@ -170,11 +171,6 @@ class RecordsUIResourceConfig(UIResourceConfig):
         }
     )
     """Request arguments for creating a record."""
-
-    request_embed_args: type[Schema] = MultiDictSchema.from_dict({"embed": ma.fields.Bool()})
-    """Request arguments for embedding record page inside a dialogue or another page.
-    This is represented in the URL as ?embed=true.
-    """
 
     request_form_config_view_args: type[Schema] = MultiDictSchema
     """Request arguments for form configuration view, currently empty."""
