@@ -278,13 +278,14 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             else:
                 raise ValueError(f"Record {record['id']} has no parent field.")
 
-    def _detail(
+    def _detail(  # NOQA PLR0913 too many arguments
         self,
         record: RecordItem,
         files: FileList,
         media_files: FileList,
         is_preview: bool = False,
         include_deleted: bool = False,
+        embed: bool = False,
         **kwargs: Any,
     ) -> ResponseReturnValue:
         """Return detail page for a record (core logic without decorators)."""
@@ -314,7 +315,6 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
 
         ui_links = self.expand_detail_links(identity=g.identity, record=record)
         extra_context: dict[str, Any] = {}
-
         render_kwargs = {
             "record": record,
             "record_ui": record_ui,
@@ -325,6 +325,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             # TODO: implement custom fields
             "is_preview": is_preview,
             "include_deleted": include_deleted,
+            "embedded": embed,
             "is_draft": is_draft,
             "community": resolved_community,
             "community_ui": resolved_community_ui,

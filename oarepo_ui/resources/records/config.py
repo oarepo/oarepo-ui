@@ -144,6 +144,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
         {
             "preview": ma.fields.Bool(attribute="is_preview", missing=False),
             "include_deleted": ma.fields.Bool(),
+            "embed": ma.fields.Bool(),
         }
     )
 
