@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 export const FormikStateLogger = ({ render = false }) => {
   const state = useFormikContext();
   if (process.env.NODE_ENV !== "development") {
-    return;
+    return null;
   }
 
   if (render) {
