@@ -6,7 +6,7 @@
   permissions,
   is_preview,
   include_deleted,
-  is_draft,
+  is_draft, 
   model,
   model_name,
   ui_links,
@@ -17,5 +17,6 @@
   community_ui = None,
   user_avatar = None,
   record_owner_id = None,
+  user_communities_memberships = {},
 #}
 {% extends model_name ~ "/record_detail.html" %}
