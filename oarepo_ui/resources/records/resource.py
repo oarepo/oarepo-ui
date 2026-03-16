@@ -35,7 +35,10 @@ from flask_security import login_required
 from idutils.normalizers import to_url
 from invenio_app_rdm.records_ui.utils import set_default_value
 from invenio_app_rdm.records_ui.views.decorators import no_cache_response
-from invenio_app_rdm.records_ui.views.deposits import get_actual_files_quota
+from invenio_app_rdm.records_ui.views.deposits import (
+    get_actual_files_quota,
+    get_user_communities_memberships,
+)
 from invenio_app_rdm.records_ui.views.records import (
     PreviewFile,
     not_found_error,
@@ -317,7 +320,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             "record_ui": record_ui,
             "files": files_dict,
             "media_files": media_files_dict,
-            # TODO: implement user_communities_memberships
+            "user_communities_memberships": get_user_communities_memberships(),
             "permissions": (record.has_permissions_to(self.config.record_detail_permissions) if record else {}),
             # TODO: implement custom fields
             "is_preview": is_preview,
