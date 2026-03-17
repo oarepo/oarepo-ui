@@ -8,14 +8,15 @@ import { ArrayFieldItem } from "../ArrayFieldItem";
 import { useFieldData } from "../../hooks";
 import { TextField } from "../TextField";
 import { FieldLabel } from "react-invenio-forms";
+import { mergeFieldData } from "../../util";
 
 export const StringArrayField = ({
   fieldPath,
-  label = null,
-  required = false,
+  label,
+  required,
   defaultNewValue = "",
   addButtonLabel = i18next.t("Add"),
-  helpText = "",
+  helpText,
   labelIcon = "",
   showEmptyValue = false,
   icon = null,
@@ -25,12 +26,10 @@ export const StringArrayField = ({
   const { values, setFieldValue, errors } = useFormikContext();
   const { getFieldData } = useFieldData();
 
-  const fieldData = {
-    ...getFieldData({ fieldPath, icon, fieldRepresentation }),
-    ...(label && { label }),
-    ...(required && { required }),
-    ...(helpText && { helpText }),
-  };
+  const fieldData = mergeFieldData(
+    getFieldData({ fieldPath, icon, fieldRepresentation }),
+    { label, required, helpText }
+  );
   const fieldError = getIn(errors, fieldPath, null);
   const hasBeenShown = React.useRef(false);
 

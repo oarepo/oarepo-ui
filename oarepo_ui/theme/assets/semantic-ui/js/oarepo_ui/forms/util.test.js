@@ -5,6 +5,7 @@ import {
   findErrorObjects,
   getSubfieldErrors,
   categorizeErrors,
+  mergeFieldData,
 } from "./util";
 
 describe("findSectionIndexForFieldPath", () => {
@@ -627,5 +628,93 @@ describe("categorizeErrors", () => {
     const result = categorizeErrors(errors);
     expect(result.error).toHaveLength(2);
     expect(result.warning).toHaveLength(1);
+  });
+});
+
+describe("mergeFieldData", () => {
+  const modelData = {
+    label: "Model Label",
+    required: true,
+    helpText: "Model Help",
+    placeholder: "Model Placeholder",
+  };
+
+  it("returns model data when no overrides provided", () => {
+    const result = mergeFieldData(modelData, {});
+    expect(result).toEqual(modelData);
+  });
+
+  it("overrides model values with provided overrides", () => {
+    const result = mergeFieldData(modelData, {
+      label: "Custom Label",
+      helpText: "Custom Help",
+    });
+    expect(result).toEqual({
+      label: "Custom Label",
+      required: true,
+      helpText: "Custom Help",
+      placeholder: "Model Placeholder",
+    });
+  });
+
+  it("overrides model required=true with explicit false", () => {
+    const result = mergeFieldData(modelData, { required: false });
+    expect(result.required).toBe(false);
+  });
+
+  it("overrides model required=false with explicit true", () => {
+    const modelWithFalseRequired = { ...modelData, required: false };
+    const result = mergeFieldData(modelWithFalseRequired, { required: true });
+    expect(result.required).toBe(true);
+  });
+
+  it("does not override when value is undefined", () => {
+    const result = mergeFieldData(modelData, {
+      label: undefined,
+      required: undefined,
+      helpText: undefined,
+    });
+    expect(result).toEqual(modelData);
+  });
+
+  it("allows overriding with empty string", () => {
+    const result = mergeFieldData(modelData, { label: "" });
+    expect(result.label).toBe("");
+  });
+
+  it("allows overriding with null", () => {
+    const result = mergeFieldData(modelData, { label: null });
+    expect(result.label).toBe(null);
+  });
+
+  it("allows overriding with zero", () => {
+    const modelWithNumber = { ...modelData, count: 5 };
+    const result = mergeFieldData(modelWithNumber, { count: 0 });
+    expect(result.count).toBe(0);
+  });
+
+  it("adds new properties not in model", () => {
+    const result = mergeFieldData(modelData, { newProp: "new value" });
+    expect(result.newProp).toBe("new value");
+    expect(result.label).toBe("Model Label");
+  });
+
+  it("handles empty model data", () => {
+    const result = mergeFieldData({}, { label: "Custom", required: true });
+    expect(result).toEqual({ label: "Custom", required: true });
+  });
+
+  it("does not mutate original model data", () => {
+    const originalModel = { label: "Original", required: true };
+    const result = mergeFieldData(originalModel, { label: "Modified" });
+    expect(originalModel.label).toBe("Original");
+    expect(result.label).toBe("Modified");
+  });
+
+  it("handles complex nested values in overrides", () => {
+    const result = mergeFieldData(modelData, {
+      label: { text: "Complex Label", icon: "star" },
+    });
+    expect(result.label).toEqual({ text: "Complex Label", icon: "star" });
   });
 });

@@ -18,6 +18,7 @@ import { CreatibutorsFieldItem } from "./CreatibutorsFieldItem";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { useFieldData, useFormConfig } from "../../hooks";
 import { creatibutorNameDisplay } from "./util";
+import { mergeFieldData } from "../../util";
 
 function sortOptions(options) {
   return options.sort((o1, o2) =>
@@ -213,10 +214,10 @@ export const CreatibutorsField = ({
   ...props
 }) => {
   const { getFieldData } = useFieldData();
-  const fieldData = {
-    ...getFieldData({ fieldPath, icon, fieldRepresentation: "text" }),
-    ...(label && { label }),
-  };
+  const fieldData = mergeFieldData(
+    getFieldData({ fieldPath, icon, fieldRepresentation: "text" }),
+    { label }
+  );
 
   const formConfig = useFormConfig();
   const roleOptions =
