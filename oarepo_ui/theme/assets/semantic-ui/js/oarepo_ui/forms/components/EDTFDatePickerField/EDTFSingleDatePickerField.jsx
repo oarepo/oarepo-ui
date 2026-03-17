@@ -39,9 +39,8 @@ export const EDTFSingleDatePicker = ({
   };
   const fieldData = mergeFieldData(
     getFieldData({ fieldPath, icon, fieldRepresentation: "text" }),
-    { label, required, helpText, placeholder },
+    { label, required, helpText, placeholder }
   );
-  console.log(fieldData, "dawdwadwadwad");
   return (
     <Form.Field
       className="ui datepicker field"
