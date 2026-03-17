@@ -6,6 +6,7 @@ import { ArrayFieldItem } from "../ArrayFieldItem";
 import { useFieldData, useValidateOnBlur } from "../../hooks";
 import { useFormikContext } from "formik";
 import * as Yup from "yup";
+import { mergeFieldData } from "../../util";
 
 export const objectIdentifiersSchema = [
   { value: "DOI", text: i18next.t("DOI"), key: "DOI" },
@@ -67,11 +68,24 @@ export const IdentifiersField = ({
   className = "",
   defaultNewValue = { scheme: "", identifier: "" },
   validateOnBlur = false,
+  label,
+  required,
+  helpText,
   ...uiProps
 }) => {
   const { setFieldTouched } = useFormikContext();
   const { getFieldData } = useFieldData();
   const handleValidateAndBlur = useValidateOnBlur();
+
+  const fieldDataProps = mergeFieldData(
+    getFieldData({
+      fieldPath,
+      icon: labelIcon,
+      fieldRepresentation: "text",
+    }),
+    { label, required, helpText }
+  );
+
   const schemeFieldProps = getFieldData({
     fieldPath: `${fieldPath}.0.scheme`,
     fieldRepresentation: "compact",
@@ -88,11 +102,7 @@ export const IdentifiersField = ({
       fieldPath={fieldPath}
       className={className}
       defaultNewValue={defaultNewValue}
-      {...getFieldData({
-        fieldPath,
-        icon: labelIcon,
-        fieldRepresentation: "text",
-      })}
+      {...fieldDataProps}
       addButtonClassName="array-field-add-button"
     >
       {({ arrayHelpers, indexPath }) => {
@@ -143,5 +153,8 @@ IdentifiersField.propTypes = {
   className: PropTypes.string,
   defaultNewValue: PropTypes.object,
   validateOnBlur: PropTypes.bool,
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  required: PropTypes.bool,
+  helpText: PropTypes.string,
   /* eslint-enable react/require-default-props */
 };

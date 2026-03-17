@@ -10,6 +10,7 @@ import {
 } from "./util";
 import { FundingRemoteSelectField } from "./FundingRemoteSelectField";
 import { SmallPagination } from "../../../search/SmallPagination";
+import { mergeFieldData } from "../../util";
 
 const storeComponents = overrideStore.getAll();
 
@@ -23,15 +24,19 @@ export const FundingField = ({
   },
   icon = "money bill alternate outline",
   fieldPath,
+  label,
+  required,
+  helpText,
   ...props
 }) => {
   const mergedOverrides = useMemo(() => {
     return { ...overrides, ...storeComponents };
   }, [overrides]);
   const { getFieldData } = useFieldData();
-  const fieldData = {
-    ...getFieldData({ fieldPath, icon, fieldRepresentation: "text" }),
-  };
+  const fieldData = mergeFieldData(
+    getFieldData({ fieldPath, icon, fieldRepresentation: "text" }),
+    { label, required, helpText }
+  );
 
   return (
     <OverridableContext.Provider value={mergedOverrides}>
@@ -69,9 +74,12 @@ export const FundingField = ({
 };
 
 FundingField.propTypes = {
-  // eslint-disable-next-line react/require-default-props
-  overrides: PropTypes.object,
-  // eslint-disable-next-line react/require-default-props
-  icon: PropTypes.string,
   fieldPath: PropTypes.string.isRequired,
+  /* eslint-disable react/require-default-props */
+  overrides: PropTypes.object,
+  icon: PropTypes.string,
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  required: PropTypes.bool,
+  helpText: PropTypes.string,
+  /* eslint-enable react/require-default-props */
 };

@@ -11,12 +11,13 @@ import {
 import { useFieldData } from "../../hooks";
 import { EDTFDatePickerWrapper } from "./EDTFDatePickerWrapper";
 import { FieldLabel } from "react-invenio-forms";
+import { mergeFieldData } from "../../util";
 
 export const EDTFSingleDatePicker = ({
   fieldPath,
   label,
   helpText,
-  required = false,
+  required,
   placeholder,
   datePickerProps = {},
   customInputProps = {},
@@ -36,13 +37,10 @@ export const EDTFSingleDatePicker = ({
   const handleClear = () => {
     handleChange(null);
   };
-  const fieldData = {
-    ...getFieldData({ fieldPath, icon, fieldRepresentation: "text" }),
-    ...(label && { label }),
-    ...(required && { required }),
-    ...(helpText && { helpText }),
-    ...(placeholder && { placeholder }),
-  };
+  const fieldData = mergeFieldData(
+    getFieldData({ fieldPath, icon, fieldRepresentation: "text" }),
+    { label, required, helpText, placeholder }
+  );
   return (
     <Form.Field
       className="ui datepicker field"
