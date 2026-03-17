@@ -8,6 +8,7 @@ import { ArrayFieldItem } from "../ArrayFieldItem";
 import { useDefaultLocale, useFormFieldValue, useFieldData } from "../../hooks";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { useFormikContext, getIn } from "formik";
+import { mergeFieldData } from "../../util";
 
 export const MultilingualTextInput = ({
   fieldPath,
@@ -23,6 +24,9 @@ export const MultilingualTextInput = ({
   prefillLanguageWithDefaultLocale = false,
   removeButtonLabelClassName = "",
   displayFirstInputRemoveButton = true,
+  label,
+  required,
+  helpText,
   ...uiProps
 }) => {
   const { defaultLocale } = useDefaultLocale();
@@ -37,6 +41,11 @@ export const MultilingualTextInput = ({
   const value = getIn(values, fieldPath);
   const usedLanguages = usedSubValues(value);
   const fieldWrapperDOMNode = useRef(null);
+
+  const fieldDataProps = mergeFieldData(
+    getFieldData({ fieldPath, icon: labelIcon }),
+    { label, required, helpText }
+  );
 
   useEffect(() => {
     if (fieldWrapperDOMNode.current) {
@@ -61,7 +70,7 @@ export const MultilingualTextInput = ({
         fieldPath={fieldPath}
         showEmptyValue={showEmptyValue}
         addButtonClassName="array-field-add-button"
-        {...getFieldData({ fieldPath, icon: labelIcon })}
+        {...fieldDataProps}
         id={`${fieldPath}-array-field`}
       >
         {({ indexPath, arrayHelpers }) => {
@@ -113,5 +122,8 @@ MultilingualTextInput.propTypes = {
   prefillLanguageWithDefaultLocale: PropTypes.bool,
   removeButtonLabelClassName: PropTypes.string,
   displayFirstInputRemoveButton: PropTypes.bool,
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  required: PropTypes.bool,
+  helpText: PropTypes.string,
   /* eslint-enable react/require-default-props */
 };
