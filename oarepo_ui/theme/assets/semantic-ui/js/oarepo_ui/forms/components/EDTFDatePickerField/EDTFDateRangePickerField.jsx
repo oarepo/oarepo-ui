@@ -13,13 +13,14 @@ import {
 import { EDTFDatePickerWrapper } from "./EDTFDatePickerWrapper";
 import { useFieldData } from "../../hooks";
 import { FieldLabel } from "react-invenio-forms";
+import { mergeFieldData } from "../../util";
 
 export const EDTFDaterangePicker = ({
   fieldPath,
   label,
   icon = "calendar",
   helpText,
-  required = false,
+  required,
   dateRangeInputPlaceholder = i18next.t("Choose date range (From - To)."),
   singleDateInputPlaceholder = i18next.t("Choose one date."),
   datePickerPropsOverrides,
@@ -98,12 +99,10 @@ export const EDTFDaterangePicker = ({
         selectsRange: true,
       };
 
-  const fieldData = {
-    ...getFieldData({ fieldPath, icon, fieldRepresentation: "text" }),
-    ...(label && { label }),
-    ...(required && { required }),
-    ...(helpText && { helpText }),
-  };
+  const fieldData = mergeFieldData(
+    getFieldData({ fieldPath, icon, fieldRepresentation: "text" }),
+    { label, required, helpText }
+  );
   return (
     <Form.Field
       className="ui datepicker field mb-0"

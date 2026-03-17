@@ -11,6 +11,31 @@ import _isDate from "lodash/isDate";
 import _isRegExp from "lodash/isRegExp";
 import _forOwn from "lodash/forOwn";
 
+/**
+ * Merges model field data with component prop overrides.
+ * Only overrides values that are explicitly provided (not undefined).
+ * This allows components to override model defaults including with falsy values like `false`.
+ *
+ * @param {Object} modelData - The field data from getFieldData (model defaults)
+ * @param {Object} overrides - Component props that should override model defaults
+ * @returns {Object} Merged field data with overrides taking precedence
+ *
+ * @example
+ * const fieldData = mergeFieldData(
+ *   getFieldData({ fieldPath, icon, fieldRepresentation: "text" }),
+ *   { required, label, helpText, placeholder }
+ * );
+ */
+export const mergeFieldData = (modelData, overrides) => {
+  const result = { ...modelData };
+  for (const [key, value] of Object.entries(overrides)) {
+    if (value !== undefined) {
+      result[key] = value;
+    }
+  }
+  return result;
+};
+
 export function parseFormAppConfig(rootElementId = "deposit-form") {
   const rootEl = document.getElementById(rootElementId);
 
