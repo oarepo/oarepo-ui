@@ -14,6 +14,7 @@ import {
   FieldDataContext,
   FormTabsContext,
   InitialRecordContext,
+  ValidationScopeContext,
 } from "./contexts";
 import _get from "lodash/get";
 import _set from "lodash/set";
@@ -351,4 +352,14 @@ export const useFormNavigation = ({ activeStep, onTabChange }) => {
     handleClick,
     handleKeyDown,
   };
+};
+
+export const useValidationScope = () => {
+  const context = useContext(ValidationScopeContext);
+  if (!context) {
+    console.warn(
+      "useValidationScope must be used inside ValidationScopeContext.Provider"
+    );
+  }
+  return context;
 };

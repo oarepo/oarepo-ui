@@ -78,3 +78,21 @@ InitialRecordProvider.propTypes = {
   children: PropTypes.node,
   value: PropTypes.object.isRequired,
 };
+
+export const ValidationScopeContext = createContext({
+  setValidationScope: () => {},
+});
+
+export const ValidationScopeProvider = ({ children, value }) => {
+  return (
+    <ValidationScopeContext.Provider value={value}>
+      {children}
+    </ValidationScopeContext.Provider>
+  );
+};
+
+ValidationScopeProvider.propTypes = {
+  // eslint-disable-next-line react/require-default-props
+  children: PropTypes.node,
+  value: PropTypes.object.isRequired,
+};

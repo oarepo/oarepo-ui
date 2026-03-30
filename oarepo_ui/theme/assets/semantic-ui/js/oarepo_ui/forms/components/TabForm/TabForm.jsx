@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Grid, Message } from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
 import { save } from "@js/invenio_rdm_records/src/deposit/state/actions/deposit";
-import { useDepositFormAction, useFormConfig } from "../../hooks";
+import { useDepositFormAction, useFormConfig, useValidationScope } from "../../hooks";
 import { FormTabsProvider } from "../../contexts";
 import { FormTabs } from "../FormTabs";
 import { FormSteps } from "../FormSteps";
@@ -29,6 +29,7 @@ export const TabForm = ({ sections = [] }) => {
 
   const sectionKeys = useMemo(() => sections.map((s) => s.key), [sections]);
   const { overridableIdPrefix, permissions } = useFormConfig();
+  const { setValidationScope } = useValidationScope() || {};
   const { dirty } = useFormikContext();
   const params = new URLSearchParams(window.location.search);
   const initialTabKey = params.get("tab");
@@ -72,6 +73,13 @@ export const TabForm = ({ sections = [] }) => {
       window.history.replaceState({}, "", url);
     }
   }, [activeStep, sectionKeys, sections.length]);
+
+  // Update validation scope when active step changes
+  useEffect(() => {
+    if (setValidationScope && sections[activeStep]?.includesPaths) {
+      setValidationScope(sections[activeStep].includesPaths);
+    }
+  }, [activeStep, sections, setValidationScope]);
 
   useEffect(() => {
     if (sections.length === 0) return;

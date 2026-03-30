@@ -3,6 +3,7 @@ import {
   FormConfigProvider,
   FieldDataProvider,
   InitialRecordProvider,
+  ValidationScopeProvider,
 } from "../../contexts";
 import { Container } from "semantic-ui-react";
 import { BrowserRouter as Router } from "react-router-dom";
@@ -25,7 +26,9 @@ import { DepositService } from "@js/invenio_rdm_records/src/deposit/api/DepositS
 import { RDMUploadProgressNotifier } from "@js/invenio_rdm_records/src/deposit//components/UploadProgressNotifier";
 import { configureStore } from "../../store";
 import PropTypes from "prop-types";
+import _set from "lodash/set";
 import { depositReducer as oarepoDepositReducer } from "../../state/deposit/reducers";
+import { rdmDepositValidationSchema } from "../../validationSchemas";
 import { severityChecksConfig } from "@js/invenio_app_rdm/deposit/config";
 // import { DepositBootstrap } from "@js/invenio_rdm_records/src/deposit/api/DepositBootstrap";
 import { DepositBootstrap } from "../DepositBootstrap";
@@ -37,6 +40,11 @@ export class DepositFormApp extends Component {
     super(props);
     this.overridableIdPrefix = props.config.overridableIdPrefix;
     this.sections = props.sections || [];
+
+    // Validation scope - stores current paths to validate (ref equivalent)
+    this.validationScopePaths = [];
+    this.setValidationScope = this.setValidationScope.bind(this);
+    this.validate = this.validate.bind(this);
     const recordSerializer = props.recordSerializer
       ? props.recordSerializer
       : new RDMDepositRecordSerializer(
@@ -122,6 +130,84 @@ export class DepositFormApp extends Component {
       ...props.componentOverrides,
       ...overrideStore.getAll(),
     };
+
+    this.validationScopeContextValue = {
+      setValidationScope: this.setValidationScope,
+    };
+  }
+
+  setValidationScope(paths) {
+    this.validationScopePaths = paths;
+  }
+
+  pickSchemaByPaths(schema, paths) {
+    if (!paths || paths.length === 0 || !schema) return schema;
+    if (!schema.pick) return schema;
+
+    // Group paths by top-level key
+    // e.g., ["metadata.title", "metadata.creators", "access"] =>
+    // { metadata: ["title", "creators"], access: null }
+    const grouped = {};
+    for (const path of paths) {
+      const [topLevel, ...rest] = path.split(".");
+      if (!grouped[topLevel]) {
+        grouped[topLevel] = [];
+      }
+      if (rest.length > 0 && grouped[topLevel] !== null) {
+        grouped[topLevel].push(rest.join("."));
+      } else {
+        // No nested path means keep entire sub-schema
+        grouped[topLevel] = null;
+      }
+    }
+
+    // Pick top-level keys
+    const topLevelKeys = Object.keys(grouped);
+    let result = schema.pick(topLevelKeys);
+
+    // Recursively pick nested fields
+    for (const key of topLevelKeys) {
+      const nestedPaths = grouped[key];
+      if (
+        nestedPaths !== null &&
+        nestedPaths.length > 0 &&
+        schema.fields?.[key]?.pick
+      ) {
+        const pickedNested = this.pickSchemaByPaths(
+          schema.fields[key],
+          nestedPaths,
+        );
+        result = result.shape({ [key]: pickedNested });
+      }
+    }
+
+    return result;
+  }
+
+  validate(values) {
+    const { validationSchema } = this.props;
+    if (!validationSchema) return {};
+
+    const paths = this.validationScopePaths;
+    const schemaToValidate =
+      paths && paths.length > 0
+        ? this.pickSchemaByPaths(validationSchema, paths)
+        : validationSchema;
+
+    try {
+      schemaToValidate.validateSync(values, { abortEarly: false });
+      return {};
+    } catch (err) {
+      if (err.inner) {
+        return err.inner.reduce((acc, error) => {
+          if (error.path) {
+            _set(acc, error.path, error.message);
+          }
+          return acc;
+        }, {});
+      }
+      return {};
+    }
   }
 
   render() {
@@ -140,7 +226,10 @@ export class DepositFormApp extends Component {
       useUppy,
       sections,
       useWizardForm,
+      validationSchema,
     } = this.props;
+
+    const formikConfig = validationSchema ? { validate: this.validate } : {};
 
     const Wrapper = ContainerComponent || React.Fragment;
     return (
@@ -167,24 +256,28 @@ export class DepositFormApp extends Component {
                   }}
                 >
                   <InitialRecordProvider value={this.initialRecordContextValue}>
-                    <FieldDataProvider>
-                      <Overridable
-                        id={buildUID(
-                          this.overridableIdPrefix,
-                          "FormApp.layout",
-                        )}
-                      >
-                        <Container className="rel-mt-1">
-                          <DepositBootstrap>
-                            <BaseFormLayout
-                              sections={sections}
-                              record={record}
-                              useWizardForm={useWizardForm}
-                            />
-                          </DepositBootstrap>
-                        </Container>
-                      </Overridable>
-                    </FieldDataProvider>
+                    <ValidationScopeProvider
+                      value={this.validationScopeContextValue}
+                    >
+                      <FieldDataProvider>
+                        <Overridable
+                          id={buildUID(
+                            this.overridableIdPrefix,
+                            "FormApp.layout",
+                          )}
+                        >
+                          <Container className="rel-mt-1">
+                            <DepositBootstrap formikConfig={formikConfig}>
+                              <BaseFormLayout
+                                sections={sections}
+                                record={record}
+                                useWizardForm={useWizardForm}
+                              />
+                            </DepositBootstrap>
+                          </Container>
+                        </Overridable>
+                      </FieldDataProvider>
+                    </ValidationScopeProvider>
                   </InitialRecordProvider>
                 </FormConfigProvider>
               </OverridableContext.Provider>
@@ -227,8 +320,10 @@ DepositFormApp.propTypes = {
   ContainerComponent: PropTypes.elementType,
   componentOverrides: PropTypes.object,
   useWizardForm: PropTypes.bool,
+  validationSchema: PropTypes.object,
 };
 
 DepositFormApp.defaultProps = {
   useWizardForm: false,
+  validationSchema: rdmDepositValidationSchema,
 };
