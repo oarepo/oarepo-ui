@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useMemo } from "react";
+import React, { useEffect, useCallback, useMemo, useRef } from "react";
 import PropTypes from "prop-types";
 import { Grid, Message } from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -36,6 +36,16 @@ export const TabForm = ({ sections = [] }) => {
   const [activeStep, setActiveStepState] = React.useState(
     Math.max(initialStep, 0)
   );
+  const [isTransitioning, setIsTransitioning] = React.useState(false);
+  const transitionTimerRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (transitionTimerRef.current) {
+        clearTimeout(transitionTimerRef.current);
+      }
+    };
+  }, []);
 
   const { handleAction: handleSave } = useDepositFormAction({
     action: saveAction,
@@ -46,13 +56,21 @@ export const TabForm = ({ sections = [] }) => {
       if (!(index >= 0 && index < sectionKeys.length)) {
         return;
       }
-      setActiveStepState(index);
-      const url = new URL(window.location);
-      url.searchParams.set("tab", sectionKeys[index]);
-      window.history.replaceState({}, "", url);
       if (dirty) {
         handleSave();
       }
+      const url = new URL(window.location);
+      url.searchParams.set("tab", sectionKeys[index]);
+      window.history.replaceState({}, "", url);
+      setIsTransitioning(true);
+      if (transitionTimerRef.current) {
+        clearTimeout(transitionTimerRef.current);
+      }
+      transitionTimerRef.current = setTimeout(() => {
+        transitionTimerRef.current = null;
+        setActiveStepState(index);
+        setIsTransitioning(false);
+      }, 0);
     },
     [sectionKeys, handleSave, dirty]
   );
@@ -183,12 +201,14 @@ export const TabForm = ({ sections = [] }) => {
               className="tab-content-column pl-0 pr-0"
               data-testid="tab-form-content-column"
             >
-              <TabContent
-                activeStep={activeStep}
-                sections={sections}
-                next={next}
-                back={back}
-              />
+              {!isTransitioning && (
+                <TabContent
+                  activeStep={activeStep}
+                  sections={sections}
+                  next={next}
+                  back={back}
+                />
+              )}
             </Grid.Column>
           </Overridable>
         </Grid.Row>
