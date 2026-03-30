@@ -27,7 +27,8 @@ import { configureStore } from "../../store";
 import PropTypes from "prop-types";
 import { depositReducer as oarepoDepositReducer } from "../../state/deposit/reducers";
 import { severityChecksConfig } from "@js/invenio_app_rdm/deposit/config";
-import { DepositBootstrap } from "@js/invenio_rdm_records/src/deposit/api/DepositBootstrap";
+// import { DepositBootstrap } from "@js/invenio_rdm_records/src/deposit/api/DepositBootstrap";
+import { DepositBootstrap } from "../DepositBootstrap";
 
 const queryClient = new QueryClient();
 
@@ -40,7 +41,7 @@ export class DepositFormApp extends Component {
       ? props.recordSerializer
       : new RDMDepositRecordSerializer(
           props.config.default_locale,
-          props.config.custom_fields.vocabularies
+          props.config.custom_fields.vocabularies,
         );
 
     const apiHeaders = props.apiHeaders
@@ -61,7 +62,7 @@ export class DepositFormApp extends Component {
       new RDMDepositApiClient(
         additionalApiConfig,
         props.config.createUrl,
-        recordSerializer
+        recordSerializer,
       );
 
     const fileApiClient =
@@ -69,7 +70,7 @@ export class DepositFormApp extends Component {
       new RDMDepositFileApiClient(
         additionalApiConfig,
         props.config.default_transfer_type,
-        props.config.enabled_transfer_types
+        props.config.enabled_transfer_types,
       );
 
     const draftsService =
@@ -79,7 +80,7 @@ export class DepositFormApp extends Component {
       props.filesService ||
       new RDMDepositFilesService(
         fileApiClient,
-        props.config.fileUploadConcurrency
+        props.config.fileUploadConcurrency,
       );
 
     props.config.severityChecks = severityChecks;
@@ -103,7 +104,7 @@ export class DepositFormApp extends Component {
 
     if (props?.record?.errors && props?.record?.errors.length > 0) {
       appConfig.errors = recordSerializer.deserializeErrors(
-        props.record.errors
+        props.record.errors,
       );
     }
 
@@ -170,7 +171,7 @@ export class DepositFormApp extends Component {
                       <Overridable
                         id={buildUID(
                           this.overridableIdPrefix,
-                          "FormApp.layout"
+                          "FormApp.layout",
                         )}
                       >
                         <Container className="rel-mt-1">

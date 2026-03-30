@@ -24,7 +24,7 @@ export const TabForm = ({ sections = [] }) => {
   const record = useSelector((state) => state.deposit.record);
   const saveAction = useCallback(
     (values, params) => dispatch(save(values, params)),
-    [dispatch]
+    [dispatch],
   );
 
   const sectionKeys = useMemo(() => sections.map((s) => s.key), [sections]);
@@ -34,7 +34,7 @@ export const TabForm = ({ sections = [] }) => {
   const initialTabKey = params.get("tab");
   const initialStep = sectionKeys.indexOf(initialTabKey);
   const [activeStep, setActiveStepState] = React.useState(
-    Math.max(initialStep, 0)
+    Math.max(initialStep, 0),
   );
 
   const { handleAction: handleSave } = useDepositFormAction({
@@ -46,15 +46,18 @@ export const TabForm = ({ sections = [] }) => {
       if (!(index >= 0 && index < sectionKeys.length)) {
         return;
       }
+      const currentSection = sections[activeStep];
       setActiveStepState(index);
       const url = new URL(window.location);
       url.searchParams.set("tab", sectionKeys[index]);
       window.history.replaceState({}, "", url);
-      if (dirty) {
+      // certain inputs in the form, like the file uploader or community selector, don't actually update the formik state on change, so we trigger a save when changing tabs if there are unsaved changes or if the current section requires it
+      // mainly meant for files section and potentially communities. All the other inputs write to formik.
+      if (dirty || currentSection?.alwaysSaveOnTabChange) {
         handleSave();
       }
     },
-    [sectionKeys, handleSave, dirty]
+    [sectionKeys, handleSave, dirty, sections, activeStep],
   );
 
   useEffect(() => {
@@ -101,7 +104,7 @@ export const TabForm = ({ sections = [] }) => {
       next,
       back,
     }),
-    [activeStep, handleSetStep, next, back]
+    [activeStep, handleSetStep, next, back],
   );
   if (sections.length === 0) {
     return (
