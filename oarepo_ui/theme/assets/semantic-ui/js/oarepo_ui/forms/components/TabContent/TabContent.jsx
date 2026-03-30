@@ -7,6 +7,7 @@ import Overridable from "react-overridable";
 import { ErrorBoundary } from "react-error-boundary";
 import { useFormikContext } from "formik";
 import { useInitialRecord, useFormConfig } from "../../hooks";
+import { buildUID } from "react-searchkit";
 
 const TabErrorFallback = ({ error, resetErrorBoundary }) => (
   <Message negative icon data-testid="tab-error-fallback">
@@ -97,7 +98,10 @@ export const TabContent = ({ activeStep, sections, next, back }) => {
           })}
         </div>
         <Overridable
-          id={`OarepoUI.TabContent.${section?.key}`}
+          id={buildUID(
+            formConfig?.overridableIdPrefix,
+            `TabForm.TabContent.${section?.key}`
+          )}
           activeStep={activeStep}
           section={section}
           next={next}
