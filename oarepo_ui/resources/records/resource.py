@@ -958,7 +958,10 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         :return: Rendered not found page.
         """
         pid_value = getattr(error, "pid_value", None) or getattr(error, "pid", None)
-        not_found_render_kwargs = {"pid": pid_value, "model_name": self.config.model_name}
+        not_found_render_kwargs = {
+            "pid": pid_value,
+            "model_name": self.config.model_name,
+        }
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro("not_found", default_macro="NotFound"),
             **not_found_render_kwargs,  # type: ignore[arg-type]

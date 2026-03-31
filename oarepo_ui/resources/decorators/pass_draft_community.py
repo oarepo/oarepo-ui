@@ -17,7 +17,9 @@ from functools import wraps
 from typing import TYPE_CHECKING, Any, cast
 
 from flask import g, request
-from invenio_communities.communities.resources.serializer import UICommunityJSONSerializer
+from invenio_communities.communities.resources.serializer import (
+    UICommunityJSONSerializer,
+)
 from invenio_communities.proxies import current_communities
 
 if TYPE_CHECKING:
