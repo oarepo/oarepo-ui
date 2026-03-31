@@ -18,7 +18,15 @@ from __future__ import annotations
 import datetime
 from typing import TYPE_CHECKING, cast
 
-from flask import Blueprint, abort, current_app, redirect, render_template, request, url_for
+from flask import (
+    Blueprint,
+    abort,
+    current_app,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from flask_menu import current_menu
 from flask_security import login_required
 from invenio_app_rdm.views import create_url_rule
@@ -143,7 +151,13 @@ def uploads_new() -> ResponseReturnValue:
 
     def get_deposit_url(model: Model) -> str:
         if community_slug:
-            return cast("str", url_for(f"{model.ui_blueprint_name}.deposit_create", community=community_slug))
+            return cast(
+                "str",
+                url_for(
+                    f"{model.ui_blueprint_name}.deposit_create",
+                    community=community_slug,
+                ),
+            )
         return cast("str", url_for(f"{model.ui_blueprint_name}.deposit_create"))
 
     if len(models) == 1:

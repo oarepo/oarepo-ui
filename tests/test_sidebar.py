@@ -53,7 +53,13 @@ def custom_sidebar_widget_template(app):
 
 
 def test_sidebar_model_specific_template(
-    app, location, logged_client, users, record_factory, extra_entry_points, model_sidebar_template
+    app,
+    location,
+    logged_client,
+    users,
+    record_factory,
+    extra_entry_points,
+    model_sidebar_template,
 ):
     """Test that model-specific sidebar template takes precedence."""
     creator = users[0]
@@ -77,7 +83,14 @@ def test_sidebar_default_fallback(app, location, logged_client, users, record_fa
 
 
 def test_sidebar_model_specific_config(
-    app, location, logged_client, users, record_factory, extra_entry_points, custom_sidebar_widget_template, monkeypatch
+    app,
+    location,
+    logged_client,
+    users,
+    record_factory,
+    extra_entry_points,
+    custom_sidebar_widget_template,
+    monkeypatch,
 ):
     """Test that model-specific config (OAREPO_UI_SIDEBAR_TEMPLATES) is used."""
     monkeypatch.setitem(
