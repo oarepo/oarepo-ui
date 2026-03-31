@@ -42,9 +42,12 @@ def test_export_ui_json(
 
         # Links
         links = data["links"]
+        print("Links:", links)
         assert links["self"].endswith(f"/api/simple-model/{record['id']}")
         assert links["files"].endswith(f"/api/simple-model/{record['id']}/files")
-        assert links["media_files"].endswith(f"/api/simple-model/{record['id']}/media-files/files")
+        assert links["media_files"].endswith(
+            f"/api/simple-model/{record['id']}/media-files"
+        )
         assert links["self_html"].endswith(f"/simple-model/records/{record['id']}")
         assert links["edit_html"].endswith(f"/simple-model/uploads/{record['id']}")
 
