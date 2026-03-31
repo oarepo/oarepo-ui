@@ -24,3 +24,4 @@ export * from "./FormTabErrors";
 export * from "./FormTabs";
 export * from "./TabForm";
 export * from "./TabContent";
+export * from "./FormProgress";

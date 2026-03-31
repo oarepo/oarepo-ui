@@ -227,9 +227,8 @@ export class DepositFormApp extends Component {
       sections,
       useWizardForm,
       validationSchema,
+      formikConfig = validationSchema ? { validate: this.validate } : {},
     } = this.props;
-
-    const formikConfig = validationSchema ? { validate: this.validate } : {};
 
     const Wrapper = ContainerComponent || React.Fragment;
     return (
@@ -321,6 +320,7 @@ DepositFormApp.propTypes = {
   componentOverrides: PropTypes.object,
   useWizardForm: PropTypes.bool,
   validationSchema: PropTypes.object,
+  formikConfig: PropTypes.object,
 };
 
 DepositFormApp.defaultProps = {

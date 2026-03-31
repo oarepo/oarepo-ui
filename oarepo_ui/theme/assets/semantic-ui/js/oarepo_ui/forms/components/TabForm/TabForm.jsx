@@ -1,13 +1,18 @@
 import React, { useEffect, useCallback, useMemo } from "react";
 import PropTypes from "prop-types";
-import { Grid, Message } from "semantic-ui-react";
+import { Grid, Message, Header } from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
 import { save } from "@js/invenio_rdm_records/src/deposit/state/actions/deposit";
-import { useDepositFormAction, useFormConfig, useValidationScope } from "../../hooks";
+import {
+  useDepositFormAction,
+  useFormConfig,
+  useValidationScope,
+} from "../../hooks";
 import { FormTabsProvider } from "../../contexts";
 import { FormTabs } from "../FormTabs";
 import { FormSteps } from "../FormSteps";
 import { TabContent } from "../TabContent";
+import { FormProgress } from "../FormProgress";
 import Overridable from "react-overridable";
 import { buildUID } from "react-searchkit";
 import {
@@ -18,6 +23,9 @@ import {
 } from "@js/invenio_rdm_records";
 import { FormFeedback } from "../FormFeedback";
 import { useFormikContext } from "formik";
+import { i18next } from "@translations/oarepo_ui/i18next";
+import _get from "lodash/get";
+import { toModelPath } from "../../util";
 
 export const TabForm = ({ sections = [] }) => {
   const dispatch = useDispatch();
@@ -28,9 +36,17 @@ export const TabForm = ({ sections = [] }) => {
   );
 
   const sectionKeys = useMemo(() => sections.map((s) => s.key), [sections]);
-  const { overridableIdPrefix, permissions } = useFormConfig();
+  const { overridableIdPrefix, permissions, config } = useFormConfig();
+  const uiModel = config?.ui_model;
+
+  const requiredFields = useMemo(() => {
+    if (!uiModel) return [];
+    return sections
+      .flatMap((s) => s.includesPaths || [])
+      .filter((path) => _get(uiModel, toModelPath(path))?.required === true);
+  }, [sections, uiModel]);
   const { setValidationScope } = useValidationScope() || {};
-  const { dirty } = useFormikContext();
+  const { dirty, validateForm } = useFormikContext();
   const params = new URLSearchParams(window.location.search);
   const initialTabKey = params.get("tab");
   const initialStep = sectionKeys.indexOf(initialTabKey);
@@ -43,11 +59,17 @@ export const TabForm = ({ sections = [] }) => {
   });
 
   const handleSetStep = useCallback(
-    (index) => {
+    async (index) => {
       if (!(index >= 0 && index < sectionKeys.length)) {
         return;
       }
       const currentSection = sections[activeStep];
+
+      const errors = await validateForm();
+      if (Object.keys(errors).length > 0) {
+        return;
+      }
+
       setActiveStepState(index);
       const url = new URL(window.location);
       url.searchParams.set("tab", sectionKeys[index]);
@@ -58,7 +80,7 @@ export const TabForm = ({ sections = [] }) => {
         handleSave();
       }
     },
-    [sectionKeys, handleSave, dirty, sections, activeStep],
+    [sectionKeys, handleSave, dirty, sections, activeStep, validateForm],
   );
 
   useEffect(() => {
@@ -171,6 +193,18 @@ export const TabForm = ({ sections = [] }) => {
               width={5}
               data-testid="tab-form-tabs-column"
             >
+              <Overridable
+                id={buildUID(overridableIdPrefix, "TabForm.FormTabsTitle")}
+                activeStep={activeStep}
+                sections={sections}
+                onTabChange={handleSetStep}
+              >
+                <Header as="h2">{i18next.t("Dataset upload")}</Header>
+              </Overridable>
+
+              {requiredFields.length > 0 && (
+                <FormProgress requiredFields={requiredFields} />
+              )}
               <FormTabs
                 activeStep={activeStep}
                 sections={sections}
