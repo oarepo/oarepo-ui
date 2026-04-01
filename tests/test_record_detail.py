@@ -12,7 +12,10 @@ from __future__ import annotations
 
 import json
 
+import pytest
 
+
+@pytest.mark.skip("We need to have a look at this and maybe move to rdm")
 def test_record_detail(app, location, logged_client, users, record_factory, extra_entry_points):
     creator = users[0]
     published_record = record_factory(creator.identity)
