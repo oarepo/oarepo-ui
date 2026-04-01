@@ -29,7 +29,7 @@ tests = [
     "pytest>=7.1.2",
     "oarepo-model>=0.1.0.dev16",
     "oarepo-rdm>=1.0.0dev11",
-    "pytest-oarepo>=2.0.0,<3.0.0",
+    "pytest-oarepo>=3.0.0,<4.0.0",
     "oarepo-workflows>=2.0.0dev0,<3.0.0",
 ]
 workflows = [
