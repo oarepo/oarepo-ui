@@ -11,9 +11,10 @@ from __future__ import annotations
 import json
 from datetime import timedelta
 from pathlib import Path
-from typing import Any, override
+from typing import TYPE_CHECKING, Any, override
 
 import pytest
+from flask import Flask
 from flask_resources.serializers import BaseSerializer
 from flask_webpackext.manifest import (
     JinjaManifest,
@@ -29,6 +30,14 @@ from oarepo_runtime import current_runtime
 
 from oarepo_ui.templating.data import FieldData
 from tests.simple_model import SimpleModelUIResource, SimpleModelUIResourceConfig
+
+if TYPE_CHECKING:
+    from flask import Flask
+    from invenio_communities.communities.records.api import Community
+    from pytest_invenio.user import UserFixtureBase
+    from pytest_oarepo.communities.fixtures import (
+        CommunityGetOrCreateFn,
+    )
 
 
 class DataciteSerializer(BaseSerializer):
@@ -594,3 +603,13 @@ def field_data_test_obj():
     )
 
     return api_value_serialization, ui_value_serialization, record
+
+
+@pytest.fixture
+def community(
+    app: Flask,
+    community_owner: UserFixtureBase,
+    community_get_or_create: CommunityGetOrCreateFn,
+) -> Community:
+    """Return basic community."""
+    return community_get_or_create(community_owner)
