@@ -69,7 +69,7 @@ def test_deposit_create_without_community(app, logged_client, users, extra_entry
         assert response["preselectedCommunity"] is None
 
 
-def test_deposit_create_with_community(app, logged_client, users, extra_entry_points, init_communities_cf, community):
+def test_deposit_create_with_community(app, logged_client, users, extra_entry_points, community):
     """Test that preselectedCommunity is set when community query param is present."""
     community_slug = community.slug
     with logged_client(users[0]).get(f"/simple-model/uploads/new?community={community_slug}") as resp:
