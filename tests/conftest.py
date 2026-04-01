@@ -63,6 +63,10 @@ def extra_entry_points(record_model, second_record_model):
         "invenio_base.blueprints": [
             "ui_simple_model = tests.simple_model:create_blueprint",
             "ui_second_model = tests.second_model:create_blueprint",
+            # invenio-drafts-resources depends on views in invenio-rdm-records.
+            # as we need to override the view in oarepo-rdm and we do not want to
+            # have dependency to oarepo-rdm in oarepo-ui, we fake those endpoints.
+            "invenio_app_rdm_records = tests.rdm_views:create_records_blueprint",
         ],
         "invenio_base.finalize_app": ["ui_simple_model = tests.simple_model:finalize_app"],
     }
@@ -193,7 +197,8 @@ def simple_model_ui_resource(app, simple_model_ui_resource_config, record_servic
 @pytest.fixture(scope="session")
 def record_model():
     from oarepo_model.api import model
-    from oarepo_rdm.model.presets import rdm_minimal_preset
+    from oarepo_model.presets.drafts import drafts_preset
+    from oarepo_model.presets.records_resources import records_resources_preset
 
     model_instance = model(
         "simple-model",
@@ -208,7 +213,7 @@ def record_model():
             }
         ],
         metadata_type="Metadata",
-        presets=[rdm_minimal_preset],
+        presets=[records_resources_preset, drafts_preset],
         customizations=[
             AddMetadataExport(
                 code="datacite",
@@ -232,7 +237,8 @@ def record_model():
 def second_record_model():
     """Second model for testing multiple models scenario."""
     from oarepo_model.api import model
-    from oarepo_rdm.model.presets import rdm_minimal_preset
+    from oarepo_model.presets.drafts import drafts_preset
+    from oarepo_model.presets.records_resources import records_resources_preset
 
     model_instance = model(
         "second-model",
@@ -247,7 +253,7 @@ def second_record_model():
             }
         ],
         metadata_type="Metadata",
-        presets=[rdm_minimal_preset],
+        presets=[records_resources_preset, drafts_preset],
         customizations=[
             AddMetadataExport(
                 code="datacite",
@@ -292,7 +298,7 @@ def item_getter(fd: FieldData, path: tuple[str, ...]) -> FieldData | None:
     return None
 
 
-def rdm_value():
+def field_data_value():
     return json.loads(
         """
 	{
@@ -548,7 +554,7 @@ def rdm_value():
 
 @pytest.fixture
 def field_data_test_obj():
-    api_value_serialization = rdm_value()
+    api_value_serialization = field_data_value()
     ui_value_serialization = api_value_serialization.pop("ui")
 
     ui_definitions = {

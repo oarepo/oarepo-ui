@@ -68,7 +68,6 @@ def test_deposit_edit(
 
         record = response["record"]
         assert record["id"] == draft["id"]
-        assert record["status"] == "draft"
         assert "ui" in record
         assert "links" in record
 
