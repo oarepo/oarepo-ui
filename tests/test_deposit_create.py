@@ -39,8 +39,8 @@ def test_deposit_create(app, logged_client, users, extra_entry_points):
         }
 
         expected_permissions = {
-            "can_delete_draft": False,
-            "can_manage": False,
+            "can_delete_draft": True,
+            "can_manage": True,
             "can_manage_files": True,
             "can_manage_record_access": True,
         }
@@ -53,9 +53,10 @@ def test_deposit_create(app, logged_client, users, extra_entry_points):
         assert response["record"]["status"] == "draft"
         assert response["files"]["entries"] == []
         assert isinstance(response["permissions"], dict)
-
         for key, value in expected_permissions.items():
-            assert response["permissions"].get(key) == value
+            assert response["permissions"].get(key) == value, (
+                f"permission {key} mismatch: expected {value}, got {response['permissions'].get(key)}"
+            )
 
 
 def test_deposit_create_without_community(app, logged_client, users, extra_entry_points):

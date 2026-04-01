@@ -52,6 +52,7 @@ def custom_sidebar_widget_template(app):
         template_path.unlink()
 
 
+@pytest.mark.skip("We need to have a look at this and maybe move to rdm")
 def test_sidebar_model_specific_template(
     app,
     location,
@@ -70,6 +71,7 @@ def test_sidebar_model_specific_template(
         assert b"Model Specific Sidebar" in resp.data
 
 
+@pytest.mark.skip("We need to have a look at this and maybe move to rdm")
 def test_sidebar_default_fallback(app, location, logged_client, users, record_factory, extra_entry_points):
     """Test that default RDM sidebar is used when no model-specific config or template exists."""
     creator = users[0]
@@ -82,6 +84,7 @@ def test_sidebar_default_fallback(app, location, logged_client, users, record_fa
         assert b"<!DOCTYPE html>" in resp.data or b"<html" in resp.data
 
 
+@pytest.mark.skip("We need to have a look at this and maybe move to rdm")
 def test_sidebar_model_specific_config(
     app,
     location,

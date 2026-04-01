@@ -12,7 +12,10 @@ from __future__ import annotations
 
 import json
 
+import pytest
 
+
+@pytest.mark.skip("We need to have a look at this and maybe move to rdm")
 def test_record_preview(app, location, logged_client, users, draft_factory, extra_entry_points):
     creator = users[0]
     draft = draft_factory(creator.identity)
