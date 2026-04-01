@@ -26,9 +26,6 @@ from invenio_records_resources.services.custom_fields import TextCF
 from marshmallow_utils.fields import SanitizedHTML
 from oarepo_model.customizations import AddMetadataExport
 from oarepo_runtime import current_runtime
-from oarepo_workflows import Workflow
-from oarepo_workflows.requests.policy import WorkflowRequestPolicy
-from oarepo_workflows.services.permissions import DefaultWorkflowPermissions
 
 from oarepo_ui.templating.data import FieldData
 from tests.simple_model import SimpleModelUIResource, SimpleModelUIResourceConfig
@@ -148,16 +145,6 @@ def app_config(app_config):
         },
     ]
     app_config["DRAFTS_CF_CUSTOM_FIELDS_UI"] = app_config["RECORDS_CF_CUSTOM_FIELDS_UI"]
-
-    # Workflows (required for pytest_oarepo.communities fixtures)
-    app_config["WORKFLOWS"] = [
-        Workflow(
-            code="default",
-            label=_("Default workflow"),
-            permission_policy_cls=DefaultWorkflowPermissions,
-            request_policy_cls=WorkflowRequestPolicy,
-        )
-    ]
 
     # RDM options
     app_config.update(
