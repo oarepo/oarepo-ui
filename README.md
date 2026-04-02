@@ -22,7 +22,7 @@ pip install oarepo-ui
 
 ### Requirements
 
-- Python 3.13+
+- Python 3.14+
 - Invenio 14.x
 - oarepo-runtime >= 2.0.0
 - jinjax >= 0.60
