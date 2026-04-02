@@ -14,9 +14,14 @@ which adds user interface components and functionality to OARepo repositories.
 
 from __future__ import annotations
 
+from importlib.metadata import PackageNotFoundError, version
+
 from .ext import OARepoUIExtension
 
-__version__ = "7.0.0dev9"
+try:
+    __version__ = version("oarepo-ui")
+except PackageNotFoundError:
+    __version__ = "0.0.0dev0+unknown"
 
 __all__ = [
     "OARepoUIExtension",

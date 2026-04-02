@@ -1,18 +1,22 @@
 [project]
 name = "oarepo-ui"
-dynamic = ["version"]
+version = "8.0.0"
 description = "UI module for invenio 3.5+"
 readme = "README.md"
 license = "MIT"
 dependencies = [
     "oarepo[rdm,tests]>=14,<15",
-    "oarepo-runtime>=2.0.0dev0,<3.0.0",
     "jinja2-simple-tags",
     "frozendict",
     "jinjax>=0.60,<1.0.0",
     "deepmerge>=2.0",
     "python-dotenv>=1.1.1",
-    "oarepo-theme>=1.0.0dev1,<2.0.0",
+    "oarepo-runtime>=3.0.0,<4.0.0",
+    "oarepo-theme>=2.0.0,<3.0.0",
+
+    # invenio dependencies
+    "invenio-app-rdm>=14.0.0b0,<15.0.0",
+    "invenio-search>=3.0.0,<4.0.0",
 ]
 requires-python = ">=3.14,<3.15"
 
@@ -27,7 +31,7 @@ dev = [
 ]
 tests = [
     "pytest>=7.1.2",
-    "oarepo-model>=0.1.0.dev16",
+    "oarepo-model>=1.0.0,<2.0.0",
     "pytest-oarepo>=3.0.0,<4.0.0",
 ]
 workflows = [
@@ -59,9 +63,6 @@ oarepo_ui = "oarepo_ui.views:finalize_app"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
-
-[tool.hatch.version]
-path = "oarepo_ui/__init__.py"
 
 [tool.hatch.build.targets.sdist]
 include = [
