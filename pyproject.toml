@@ -33,6 +33,12 @@ tests = [
     "pytest>=7.1.2",
     "oarepo-model>=1.0.0,<2.0.0",
     "pytest-oarepo>=3.0.0,<4.0.0",
+
+    # invenio dependencies
+    "invenio-app>=3.0.0,<4.0.0",
+    "invenio-communities>=25.0.0,<26.0.0",
+    "invenio-search>=3.0.0,<4.0.0",
+    "pytest-invenio>=4.0.0,<5.0.0",
 ]
 workflows = [
     "oarepo-workflows",
