@@ -580,7 +580,12 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         record = self.config.ui_serializer.dump_obj(copy.copy(draft.to_dict()))
         # TODO: implement edit action on published record (similar to RDM)
 
-        form_config = self._get_form_config(g.identity, updateUrl=draft.links.get("self", None))
+        is_doi_required = current_app.config.get("RDM_PERSISTENT_IDENTIFIERS", {}).get("doi", {}).get("required")
+        form_config = self._get_form_config(
+            g.identity,
+            updateUrl=draft.links.get("self", None),
+            is_doi_required=is_doi_required,
+        )
         form_config["ui_model"] = self.ui_model
 
         ui_links = self.expand_detail_links(identity=g.identity, record=draft)

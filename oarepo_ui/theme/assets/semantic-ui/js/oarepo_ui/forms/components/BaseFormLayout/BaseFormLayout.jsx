@@ -143,11 +143,14 @@ MonolithFormLayout.propTypes = {
 export const BaseFormLayout = ({ sections, useWizardForm = false }) => {
   const record = useSelector((state) => state.deposit.record);
   const { overridableIdPrefix } = useFormConfig();
-  const { dirty } = useFormikContext();
+  const { dirty, isSubmitting } = useFormikContext();
 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
-      if (dirty) {
+      // some actions, that make more than one api calls, create a race condition where dirty is still not reset
+      // to false, and so when you are redirected i.e. after a publish action, instead of just redirecting you
+      // it prompts are you sure to leave
+      if (dirty && !isSubmitting) {
         e.preventDefault();
         e.returnValue = "";
       }
@@ -157,7 +160,7 @@ export const BaseFormLayout = ({ sections, useWizardForm = false }) => {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [dirty]);
+  }, [dirty, isSubmitting]);
 
   return useWizardForm ? (
     <WizardFormLayout
