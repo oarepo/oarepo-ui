@@ -1,5 +1,11 @@
 import React, { useRef, useEffect } from "react";
 import { Segment, Button, Icon, Message } from "semantic-ui-react";
+import {
+  PublishButton,
+  SaveButton,
+  PreviewButton,
+  DeleteButton,
+} from "@js/invenio_rdm_records";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 import { i18next } from "@translations/oarepo_ui/i18next";
@@ -39,14 +45,21 @@ TabErrorFallback.propTypes = {
 export const TabContent = ({ activeStep, sections, next, back }) => {
   const record = useSelector((state) => state.deposit.record);
   const formConfig = useFormConfig();
+  const { overridableIdPrefix, permissions } = formConfig;
   const section = sections[activeStep];
   const contentRef = useRef(null);
-  const previousStepLabel =
-    activeStep > 0 ? sections[activeStep - 1].label : null;
-  const nextStepLabel =
-    activeStep < sections.length - 1 ? sections[activeStep + 1].label : null;
+
   const { dirty } = useFormikContext();
   const { initialRecord } = useInitialRecord();
+
+  useEffect(() => {
+    const segment = contentRef.current?.closest(".tab-content");
+    const footer = document.querySelector("footer");
+    if (!segment || !footer) return;
+    const segmentTop = segment.getBoundingClientRect().top + window.scrollY;
+    const footerTop = footer.getBoundingClientRect().top + window.scrollY;
+    segment.style.minHeight = `${footerTop - segmentTop}px`;
+  }, []);
 
   // Move focus to first focusable element in content when tab changes
   // When first input in a tab, is a dropdown, the behavior is not ideal i.e. it focuses and the dropdown extends
@@ -64,82 +77,92 @@ export const TabContent = ({ activeStep, sections, next, back }) => {
   }, [activeStep]);
 
   return (
-    <Segment
-      className="tab-content borderless shadowless"
-      data-testid="tab-content"
-    >
-      {dirty && (
-        <Message info data-testid="unsaved-changes-message">
-          <Message.Content>
-            <Icon name="info circle" />
-            {i18next.t("Your draft contains unsaved changes.")}
-          </Message.Content>
-        </Message>
-      )}
-      <ErrorBoundary
-        FallbackComponent={TabErrorFallback}
-        resetKeys={[section?.key]}
+    <React.Fragment>
+      <Segment
+        className="tab-content borderless shadowless mb-0"
+        data-testid="tab-content"
       >
-        <div
-          className="tab-content-body"
-          ref={contentRef}
-          tabIndex={-1}
-          role="tabpanel"
-          aria-labelledby={section?.key}
-          data-testid={`tab-content-body-${section?.key}`}
+        {dirty && (
+          <Message info data-testid="unsaved-changes-message">
+            <Message.Content>
+              <Icon name="info circle" />
+              {i18next.t("Your draft contains unsaved changes.")}
+            </Message.Content>
+          </Message>
+        )}
+        <ErrorBoundary
+          FallbackComponent={TabErrorFallback}
+          resetKeys={[section?.key]}
         >
-          {section?.render({
-            record,
-            formConfig,
-            activeStep,
-            next,
-            back,
-            initialRecord,
-          })}
+          <div
+            className="tab-content-body"
+            ref={contentRef}
+            tabIndex={-1}
+            role="tabpanel"
+            aria-labelledby={section?.key}
+            data-testid={`tab-content-body-${section?.key}`}
+          >
+            {section?.render({
+              record,
+              formConfig,
+              activeStep,
+              next,
+              back,
+              initialRecord,
+            })}
+          </div>
+          <Overridable
+            id={buildUID(
+              formConfig?.overridableIdPrefix,
+              `TabForm.TabContent.${section?.key}`,
+            )}
+            activeStep={activeStep}
+            section={section}
+            next={next}
+            back={back}
+          />
+        </ErrorBoundary>
+      </Segment>
+      <Overridable id={buildUID(overridableIdPrefix, "TabForm.actions")}>
+        <div className="flex form-actions-row">
+          <div className="form-actions-filler" />
+          <div className="flex form-actions-buttons">
+            <Overridable
+              id={buildUID(overridableIdPrefix, "TabForm.PreviewButton")}
+            >
+              <div>
+                <PreviewButton content="" labelPosition={null} />
+              </div>
+            </Overridable>
+            <Overridable
+              id={buildUID(overridableIdPrefix, "TabForm.DeleteButton")}
+              permissions={permissions}
+            >
+              <div>
+                {permissions?.can_delete_draft && record?.id && (
+                  <DeleteButton />
+                )}
+              </div>
+            </Overridable>
+            <Overridable
+              id={buildUID(overridableIdPrefix, "TabForm.SaveButton")}
+            >
+              <div>
+                <SaveButton />
+              </div>
+            </Overridable>
+            <Overridable
+              id={buildUID(overridableIdPrefix, "TabForm.PublishButton")}
+              record={record}
+            >
+              <div>
+                <PublishButton record={record} />
+              </div>
+            </Overridable>
+          </div>
         </div>
-        <Overridable
-          id={buildUID(
-            formConfig?.overridableIdPrefix,
-            `TabForm.TabContent.${section?.key}`
-          )}
-          activeStep={activeStep}
-          section={section}
-          next={next}
-          back={back}
-        />
-      </ErrorBoundary>
-      <div
-        className="tab-content-navigation"
-        data-testid="tab-content-navigation"
-      >
-        {activeStep > 0 && (
-          <Button
-            className="tab-content-navigation-button back-button"
-            icon
-            labelPosition="left"
-            type="button"
-            onClick={back}
-            data-testid="tab-navigation-back"
-          >
-            <Icon name="arrow left" />
-            {previousStepLabel || i18next.t("Back")}
-          </Button>
-        )}
-        {activeStep < sections.length - 1 && (
-          <Button
-            className="tab-content-navigation-button next-button"
-            icon
-            labelPosition="right"
-            type="button"
-            onClick={next}
-            data-testid="tab-navigation-next"
-          >
-            {nextStepLabel || i18next.t("Next")}
-            <Icon name="arrow right" />
-          </Button>
-        )}
-      </div>
-    </Segment>
+      </Overridable>
+    </React.Fragment>
   );
 };
 
@@ -152,7 +175,7 @@ TabContent.propTypes = {
       includesPaths: PropTypes.array,
       /** render({ record, formConfig, activeStep }) => ReactNode */
       render: PropTypes.func.isRequired,
-    })
+    }),
   ).isRequired,
   next: PropTypes.func.isRequired,
   back: PropTypes.func.isRequired,

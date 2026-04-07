@@ -15,12 +15,6 @@ import { TabContent } from "../TabContent";
 import { FormProgress } from "../FormProgress";
 import Overridable from "react-overridable";
 import { buildUID } from "react-searchkit";
-import {
-  PublishButton,
-  SaveButton,
-  PreviewButton,
-  DeleteButton,
-} from "@js/invenio_rdm_records";
 import { FormFeedback } from "../FormFeedback";
 import { useFormikContext } from "formik";
 import { i18next } from "@translations/oarepo_ui/i18next";
@@ -237,44 +231,6 @@ export const TabForm = ({ sections = [] }) => {
             </Grid.Column>
           </Overridable>
         </Grid.Row>
-        <Overridable id={buildUID(overridableIdPrefix, "TabForm.actions")}>
-          <Grid.Row data-testid="tab-form-actions-row">
-            <div className="flex justify-end form-actions-row">
-              <Overridable
-                id={buildUID(overridableIdPrefix, "TabForm.PreviewButton")}
-              >
-                <div>
-                  <PreviewButton />
-                </div>
-              </Overridable>
-              <Overridable
-                id={buildUID(overridableIdPrefix, "TabForm.DeleteButton")}
-                permissions={permissions}
-              >
-                <div>
-                  {permissions?.can_delete_draft && record?.id && (
-                    <DeleteButton />
-                  )}
-                </div>
-              </Overridable>
-              <Overridable
-                id={buildUID(overridableIdPrefix, "TabForm.SaveButton")}
-              >
-                <div>
-                  <SaveButton />
-                </div>
-              </Overridable>
-              <Overridable
-                id={buildUID(overridableIdPrefix, "TabForm.PublishButton")}
-                record={record}
-              >
-                <div>
-                  <PublishButton record={record} />
-                </div>
-              </Overridable>
-            </div>
-          </Grid.Row>
-        </Overridable>
       </Grid>
     </FormTabsProvider>
   );

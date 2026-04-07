@@ -325,5 +325,5 @@ DepositFormApp.propTypes = {
 
 DepositFormApp.defaultProps = {
   useWizardForm: false,
-  validationSchema: rdmDepositValidationSchema,
+  // validationSchema: rdmDepositValidationSchema,
 };

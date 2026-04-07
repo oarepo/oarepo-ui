@@ -79,7 +79,7 @@
 
   // Main content area
   .ui.segment.tab-content {
-    min-height: 90vh;
+    // min-height: 90vh;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -208,5 +208,17 @@
   // Bottom action buttons
   .form-actions-row {
     width: 100%;
+
+    .form-actions-filler {
+      position: relative;
+      flex-grow: 999;
+      background: @formTabsBackgroundColor;
+    }
+
+    .form-actions-buttons {
+      gap: 0.5rem;
+      align-items: center;
+      padding: 1rem 0;
+    }
   }
 }
