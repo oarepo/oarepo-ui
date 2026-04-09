@@ -48,7 +48,7 @@ export class DepositFormApp extends Component {
       : {
           "vnd+json": {
             "Content-Type": "application/json",
-            Accept: "application/json",
+            Accept: "application/vnd.inveniordm.v1+json",
           },
         };
 
