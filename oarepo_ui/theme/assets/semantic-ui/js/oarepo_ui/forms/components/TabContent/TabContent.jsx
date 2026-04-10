@@ -60,6 +60,30 @@ export const TabContent = ({ activeStep, sections, next, back }) => {
     }
   }, [activeStep]);
 
+  if (!section) {
+    return (
+      <Message negative data-testid="tab-content-no-section">
+        <Message.Header>
+          {i18next.t("This section is not defined.")}
+        </Message.Header>
+      </Message>
+    );
+  }
+
+  if (!section.component) {
+    return (
+      <Message negative data-testid="tab-content-no-component">
+        <Message.Header>
+          {i18next.t(
+            "Section definition is missing the component key and it must be defined."
+          )}
+        </Message.Header>
+      </Message>
+    );
+  }
+
+  const SectionComponent = section.component;
+
   return (
     <Segment
       className="tab-content borderless shadowless"
@@ -75,29 +99,29 @@ export const TabContent = ({ activeStep, sections, next, back }) => {
       )}
       <ErrorBoundary
         FallbackComponent={TabErrorFallback}
-        resetKeys={[section?.key]}
+        resetKeys={[section.key]}
       >
         <div
           className="tab-content-body"
           ref={contentRef}
           tabIndex={-1}
           role="tabpanel"
-          aria-labelledby={section?.key}
-          data-testid={`tab-content-body-${section?.key}`}
+          aria-labelledby={section.key}
+          data-testid={`tab-content-body-${section.key}`}
         >
-          {section?.render({
-            record,
-            formConfig,
-            activeStep,
-            next,
-            back,
-            initialRecord,
-          })}
+          <SectionComponent
+            record={record}
+            formConfig={formConfig}
+            activeStep={activeStep}
+            next={next}
+            back={back}
+            initialRecord={initialRecord}
+          />
         </div>
         <Overridable
           id={buildUID(
             formConfig?.overridableIdPrefix,
-            `TabForm.TabContent.${section?.key}`
+            `TabForm.TabContent.${section.key}`
           )}
           activeStep={activeStep}
           section={section}
@@ -116,10 +140,10 @@ TabContent.propTypes = {
       key: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
       includesPaths: PropTypes.array,
-      /** render({ record, formConfig, activeStep }) => ReactNode */
-      render: PropTypes.func.isRequired,
+      /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
+      component: PropTypes.func.isRequired,
     })
-  ).isRequired,
+  ),
   next: PropTypes.func.isRequired,
   back: PropTypes.func.isRequired,
 };

@@ -1455,3 +1455,29 @@ msgstr ""
 
 msgid "More"
 msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/new_upload_page.html:8
+msgid "Select record type"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/new_upload_page.html:9
+msgid "Choose the type of record you want to create."
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/new_upload_page.html:27
+msgid "No record types available"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/new_upload_page.html:28
+#, python-format
+msgid ""
+"You don't have any models created. Please refer to <a href=\"%(url)s\">the "
+"documentation</a> for instructions."
+msgstr ""
+
+msgid "This section is not defined."
+msgstr ""
+
+msgid ""
+"Section definition is missing the component key and it must be defined."
+msgstr ""

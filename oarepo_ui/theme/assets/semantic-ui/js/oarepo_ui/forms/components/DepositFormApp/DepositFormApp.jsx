@@ -210,7 +210,15 @@ DepositFormApp.propTypes = {
   useUppy: PropTypes.bool,
   /* eslint-disable react/require-default-props */
   severityChecks: PropTypes.object,
-  sections: PropTypes.arrayOf(PropTypes.object),
+  sections: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      includesPaths: PropTypes.array,
+      /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
+      component: PropTypes.func.isRequired,
+    })
+  ),
   apiHeaders: PropTypes.object,
   errors: PropTypes.arrayOf(PropTypes.object),
   apiClient: PropTypes.object,

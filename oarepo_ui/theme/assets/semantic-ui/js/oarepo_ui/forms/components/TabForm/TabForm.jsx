@@ -256,7 +256,15 @@ export const TabForm = ({ sections = [] }) => {
 };
 
 TabForm.propTypes = {
-  sections: PropTypes.arrayOf(PropTypes.object),
+  sections: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      includesPaths: PropTypes.array,
+      /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
+      component: PropTypes.func.isRequired,
+    })
+  ),
 };
 
 export default TabForm;
