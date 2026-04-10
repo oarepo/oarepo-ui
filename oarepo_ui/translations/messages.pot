@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-02-27 11:00+0100\n"
+"POT-Creation-Date: 2026-04-13 08:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -207,23 +207,23 @@ msgid ""
 "The server does not support the HTTP protocol version used in the request."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:410
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:419
 msgid "File preview requested but file service is not available on the model"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:790
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:812
 msgid "User does not have permission to create a record."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:991
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:1016
 msgid "Removal reason"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:992
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:1017
 msgid "Note"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:993
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:1018
 msgid "Citation text"
 msgstr ""
 
@@ -313,6 +313,30 @@ msgstr ""
 msgid "Edit item "
 msgstr ""
 
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/deposit/form.html:4
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/new_upload_page.html:2
+msgid "New upload"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/new_upload_page.html:8
+msgid "Select record type"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/new_upload_page.html:9
+msgid "Choose the type of record you want to create."
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/new_upload_page.html:27
+msgid "No record types available"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/new_upload_page.html:28
+#, python-format
+msgid ""
+"You don't have any models created. Please refer to <a href=\"%(url)s\">the "
+"documentation</a> for instructions."
+msgstr ""
+
 #: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/not_found.html:7
 msgid "Not found"
 msgstr ""
@@ -344,10 +368,6 @@ msgstr ""
 
 #: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/deposit/form.html:2
 msgid "New version"
-msgstr ""
-
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/deposit/form.html:4
-msgid "New upload"
 msgstr ""
 
 #: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/deposit/form.html:6
@@ -821,6 +841,13 @@ msgid "Something went wrong in this section"
 msgstr ""
 
 msgid "Try again"
+msgstr ""
+
+msgid "This section is not defined."
+msgstr ""
+
+msgid ""
+"Section definition is missing the component key and it must be defined."
 msgstr ""
 
 msgid "Your draft contains unsaved changes."

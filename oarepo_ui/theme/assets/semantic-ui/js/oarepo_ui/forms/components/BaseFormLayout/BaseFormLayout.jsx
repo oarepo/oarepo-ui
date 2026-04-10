@@ -58,7 +58,15 @@ export const WizardFormLayout = ({ sections, record, overridableIdPrefix }) => {
 };
 
 WizardFormLayout.propTypes = {
-  sections: PropTypes.arrayOf(PropTypes.object),
+  sections: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      includesPaths: PropTypes.array,
+      /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
+      component: PropTypes.func.isRequired,
+    })
+  ),
   record: PropTypes.object,
   overridableIdPrefix: PropTypes.string,
 };
@@ -176,7 +184,15 @@ export const BaseFormLayout = ({ sections, useWizardForm = false }) => {
 BaseFormLayout.propTypes = {
   // eslint-disable-next-line react/require-default-props
   useWizardForm: PropTypes.bool,
-  sections: PropTypes.arrayOf(PropTypes.object),
+  sections: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      includesPaths: PropTypes.array,
+      /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
+      component: PropTypes.func.isRequired,
+    })
+  ),
 };
 
 export default BaseFormLayout;
