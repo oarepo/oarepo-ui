@@ -85,6 +85,7 @@ class UIResourceComponent[T: UIResourceConfig = UIResourceConfig]:
         :param identity: the current user identity
         :param ui_links: UI links for the record, a dictionary of link name -> link url
         :param extra_context: will be passed to the template as the "extra_context" variable
+        :param kwargs: additional keyword arguments, including render_kwargs with record_ui, is_preview, is_draft
         """
 
     def before_ui_search(

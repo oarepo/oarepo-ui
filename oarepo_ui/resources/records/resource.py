@@ -33,7 +33,6 @@ from flask_resources import (
 )
 from flask_security import login_required
 from idutils.normalizers import to_url
-from invenio_app_rdm.records_ui.utils import set_default_value
 from invenio_app_rdm.records_ui.views.decorators import no_cache_response
 from invenio_app_rdm.records_ui.views.deposits import (
     get_actual_files_quota,
@@ -175,26 +174,8 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
     def empty_record(self, **kwargs: Any) -> dict[str, Any]:
         """Create an empty record with default values."""
         record = cast("dict[str, Any]", dump_empty(self.api_config.schema))
-        record["files"] = {"enabled": current_app.config.get("RDM_DEFAULT_FILES_ENABLED")}
         record.setdefault("expanded", {})
-        # Set by RDMRecordServiceConfig class
-        pids_providers = getattr(self.api_config, "pids_providers", None)
-
-        if pids_providers and "doi" in pids_providers:
-            if (
-                current_app.config["RDM_PERSISTENT_IDENTIFIERS"].get("doi", {}).get("ui", {}).get("default_selected")
-                == "yes"  # yes, no or not_needed
-            ):
-                record["pids"] = {"doi": {"provider": "external", "identifier": ""}}
-            else:
-                record["pids"] = {}
-        else:
-            record["pids"] = {}
         record["status"] = "draft"
-        defaults = current_app.config.get("APP_RDM_DEPOSIT_FORM_DEFAULTS") or {}
-        for key, value in defaults.items():
-            set_default_value(record, value, key)
-
         self.run_components("empty_record", empty_data=record, **kwargs)
         return record
 
@@ -241,44 +222,13 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         return None
 
     def _validate_draft_preview(self, record: RecordItem) -> None:
-        """Validate draft structure and inject parent DOI if needed for preview."""
+        """Validate draft structure."""
         try:
             current_rdm_records.records_service.validate_draft(g.identity, record.id, ignore_field_permissions=True)
         except ValidationError:
             abort(404)
 
-    def _inject_parent_doi_if_needed(self, record: RecordItem, record_ui: dict) -> None:
-        """Inject a parent DOI into the draft UI if Datacite is enabled and required."""
-        if not current_app.config.get("DATACITE_ENABLED"):
-            return
-
-        service = current_rdm_records.records_service
-        datacite_providers = [
-            v["datacite"] for p, v in service.config.parent_pids_providers.items() if p == "doi" and "datacite" in v
-        ]
-        if not datacite_providers:
-            return
-
-        datacite_provider = datacite_providers[0]
-        should_mint_parent_doi = True
-
-        is_doi_required = current_app.config.get("RDM_PARENT_PERSISTENT_IDENTIFIERS", {}).get("doi", {}).get("required")
-        if not is_doi_required:
-            pids = getattr(record_from_result(record), "pids", {})
-            record_doi = pids.get("doi", {})
-            is_doi_reserved = record_doi.get("provider", "") == "datacite" and record_doi.get("identifier")
-            if not is_doi_reserved:
-                should_mint_parent_doi = False
-
-        if should_mint_parent_doi:
-            parent = getattr(record_from_result(record), "parent", None)
-            if parent:
-                parent_doi = datacite_provider.client.generate_doi(parent)
-                record_ui.setdefault("ui", {})["new_draft_parent_doi"] = parent_doi
-            else:
-                raise ValueError(f"Record {record['id']} has no parent field.")
-
-    def _detail(  # noqa PLR0913 too many arguments
+    def _detail(  # noqa: PLR0913 too many arguments
         self,
         record: RecordItem,
         files: FileList,
@@ -302,7 +252,6 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             # to prevent this from happening, we validate the draft's structure
             # see: https://github.com/inveniosoftware/invenio-app-rdm/issues/1051
             self._validate_draft_preview(record)
-            self._inject_parent_doi_if_needed(record, record_ui)
 
         # emit a record view stats event
         emitter = current_stats.get_event_emitter("record-view")
@@ -351,7 +300,6 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             "before_ui_detail",
             api_record=record,
             record=record,
-            record_ui=record_ui,
             files=files_dict,
             media_files=media_files_dict,
             identity=g.identity,
@@ -725,7 +673,6 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
 
         community_use_jinja_header = bool(community_theme)
         dashboard_routes = current_app.config["APP_RDM_USER_DASHBOARD_ROUTES"]
-        is_doi_required = current_app.config.get("RDM_PERSISTENT_IDENTIFIERS", {}).get("doi", {}).get("required")
 
         if not self.config.model:
             raise RuntimeError(f"Model {self.config.model_name} not registered, cannot resolve create URL")
@@ -738,7 +685,6 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             createUrl=create_url,
             quota=get_actual_files_quota(None),
             hide_community_selection=community_use_jinja_header,
-            is_doi_required=is_doi_required,
         )
         form_config["ui_model"] = self.ui_model
         ui_links: dict[str, str] = {}
