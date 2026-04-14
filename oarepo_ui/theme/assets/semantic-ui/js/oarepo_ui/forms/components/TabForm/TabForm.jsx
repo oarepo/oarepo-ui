@@ -56,7 +56,10 @@ export const TabForm = ({ sections = [] }) => {
       if (!(index >= 0 && index < sectionKeys.length)) {
         return;
       }
-      if (dirty) {
+      const currentSection = sections[activeStep];
+      // certain inputs in the form, like the file uploader or community selector, don't actually update the formik state on change, so we trigger a save when changing tabs if there are unsaved changes or if the current section requires it
+      // mainly meant for files section and potentially communities. All the other inputs write to formik.
+      if (dirty || currentSection?.saveOnTabChange) {
         handleSave();
       }
       const url = new URL(window.location);
@@ -72,7 +75,7 @@ export const TabForm = ({ sections = [] }) => {
         setIsTransitioning(false);
       }, 0);
     },
-    [sectionKeys, handleSave, dirty]
+    [sectionKeys, handleSave, dirty, sections, activeStep]
   );
 
   useEffect(() => {
@@ -261,6 +264,7 @@ TabForm.propTypes = {
       key: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
       includesPaths: PropTypes.array,
+      saveOnTabChange: PropTypes.bool,
       /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
       component: PropTypes.func.isRequired,
     })

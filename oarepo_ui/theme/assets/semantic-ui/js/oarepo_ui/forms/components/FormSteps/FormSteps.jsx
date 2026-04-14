@@ -80,6 +80,7 @@ FormSteps.propTypes = {
       key: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
       includesPaths: PropTypes.array,
+      saveOnTabChange: PropTypes.bool,
       /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
       component: PropTypes.func.isRequired,
     })

@@ -242,7 +242,11 @@ FormFeedback.propTypes = {
   sections: PropTypes.arrayOf(
     PropTypes.shape({
       key: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
       includesPaths: PropTypes.arrayOf(PropTypes.string),
+      saveOnTabChange: PropTypes.bool,
+      /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
+      component: PropTypes.func.isRequired,
     })
   ),
 };
