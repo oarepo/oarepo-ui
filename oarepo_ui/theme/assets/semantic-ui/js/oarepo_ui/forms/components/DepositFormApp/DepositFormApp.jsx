@@ -139,6 +139,7 @@ export class DepositFormApp extends Component {
       useUppy,
       sections,
       useWizardForm,
+      formTitle,
     } = this.props;
 
     const Wrapper = ContainerComponent || React.Fragment;
@@ -163,6 +164,7 @@ export class DepositFormApp extends Component {
                     groupsEnabled,
                     allowEmptyFiles,
                     useUppy,
+                    formTitle,
                   }}
                 >
                   <InitialRecordProvider value={this.initialRecordContextValue}>
@@ -226,6 +228,7 @@ DepositFormApp.propTypes = {
   ContainerComponent: PropTypes.elementType,
   componentOverrides: PropTypes.object,
   useWizardForm: PropTypes.bool,
+  formTitle: PropTypes.string,
 };
 
 DepositFormApp.defaultProps = {
