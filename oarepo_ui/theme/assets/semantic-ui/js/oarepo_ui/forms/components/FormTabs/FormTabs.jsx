@@ -63,7 +63,7 @@ FormTabs.propTypes = {
       saveOnTabChange: PropTypes.bool,
       /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
       component: PropTypes.func.isRequired,
-    }),
+    })
   ),
   activeStep: PropTypes.number.isRequired,
   onTabChange: PropTypes.func.isRequired,

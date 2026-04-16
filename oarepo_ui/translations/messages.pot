@@ -834,6 +834,9 @@ msgstr ""
 msgid "Add another language"
 msgstr ""
 
+msgid "{{percentage}}% of this section is filled"
+msgstr ""
+
 msgid "Add"
 msgstr ""
 

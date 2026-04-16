@@ -1480,4 +1480,5 @@ msgstr ""
 
 msgid ""
 "Section definition is missing the component key and it must be defined."
+msgid "{{percentage}}% of this section is filled"
 msgstr ""

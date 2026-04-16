@@ -408,7 +408,7 @@ export function categorizeErrors(errors) {
  * Checks if a plain object has any meaningful filled values,
  * ignoring internal keys like __key.
  */
-const isObjectFilled = (obj) => {
+export const isObjectFilled = (obj) => {
   return Object.entries(obj).some(
     ([key, val]) => !key.startsWith("__") && isFilled(val)
   );
@@ -446,6 +446,18 @@ export const isFilled = (value) => {
  * @param {string[]} params.includesPaths - Array of field paths to check
  * @returns {number} Fraction filled (0 to 1)
  */
+/**
+ * Checks if the files section has any file entries in the Redux state.
+ *
+ * @param {Object} params
+ * @param {Object} params.reduxState - Redux store state containing files.entries
+ * @returns {number} 1 if there is at least one file entry, 0 otherwise
+ */
+export const sectionHasFiles = ({ reduxState }) => {
+  const entries = _get(reduxState, "files.entries", {});
+  return Object.keys(entries).length > 0 ? 1 : 0;
+};
+
 export const computeSectionFilled = ({
   formikValues,
   reduxState,
@@ -456,8 +468,7 @@ export const computeSectionFilled = ({
   let filledCount = 0;
   for (const path of includesPaths) {
     const formikValue = _get(formikValues, path);
-    const reduxValue = _get(reduxState, `deposit.record.${path}`);
-    if (isFilled(formikValue) || isFilled(reduxValue)) {
+    if (isFilled(formikValue)) {
       filledCount++;
     }
   }

@@ -8,15 +8,20 @@ import { computeSectionFilled } from "../../util";
 
 const DEFAULT_FILLED_THRESHOLD = 0.8;
 
-export const SectionFilledBar = ({ includesPaths, sectionFilled, filledThreshold = DEFAULT_FILLED_THRESHOLD }) => {
+export const SectionFilledBar = ({
+  includesPaths,
+  sectionFilled,
+  filledThreshold = DEFAULT_FILLED_THRESHOLD,
+}) => {
   const { values } = useFormikContext();
   const reduxState = useSelector((state) => state);
 
   const filledRatio =
     typeof sectionFilled === "function"
-      ? sectionFilled({ formikValues: values, reduxState })
+      ? sectionFilled({ formikValues: values, reduxState, includesPaths })
       : computeSectionFilled({
           formikValues: values,
+          reduxState,
           includesPaths,
         });
 
