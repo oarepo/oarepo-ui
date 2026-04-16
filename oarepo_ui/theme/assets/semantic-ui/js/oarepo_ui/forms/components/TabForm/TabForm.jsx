@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useMemo, useRef } from "react";
 import PropTypes from "prop-types";
-import { Grid, Message } from "semantic-ui-react";
+import { Grid, Header, Message } from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
 import { save } from "@js/invenio_rdm_records/src/deposit/state/actions/deposit";
 import { useDepositFormAction, useFormConfig } from "../../hooks";
@@ -28,7 +28,7 @@ export const TabForm = ({ sections = [] }) => {
   );
 
   const sectionKeys = useMemo(() => sections.map((s) => s.key), [sections]);
-  const { overridableIdPrefix, permissions } = useFormConfig();
+  const { overridableIdPrefix, permissions, formTitle } = useFormConfig();
   const { dirty } = useFormikContext();
   const params = new URLSearchParams(window.location.search);
   const initialTabKey = params.get("tab");
@@ -147,6 +147,7 @@ export const TabForm = ({ sections = [] }) => {
         </Grid.Row>
 
         {/* Mobile/Tablet: horizontal steps on top */}
+
         <Grid.Row
           className="mobile tablet only"
           centered
@@ -181,6 +182,16 @@ export const TabForm = ({ sections = [] }) => {
               width={5}
               data-testid="tab-form-tabs-column"
             >
+              {formTitle && (
+                <Overridable
+                  id={buildUID(overridableIdPrefix, "TabForm.formTitle")}
+                  formTitle={formTitle}
+                >
+                  <Header as="h1" className="form-title">
+                    {formTitle}
+                  </Header>
+                </Overridable>
+              )}
               <FormTabs
                 activeStep={activeStep}
                 sections={sections}
