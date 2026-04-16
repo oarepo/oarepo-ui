@@ -21,6 +21,7 @@ export * from "./CreatibutorsField";
 export * from "./NestedErrors";
 export * from "./DepositFormApp";
 export * from "./FormTabErrors";
+export * from "./SectionFilledBar";
 export * from "./FormTabs";
 export * from "./TabForm";
 export * from "./TabContent";

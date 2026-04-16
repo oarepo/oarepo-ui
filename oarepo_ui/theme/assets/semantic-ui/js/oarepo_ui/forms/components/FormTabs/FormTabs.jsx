@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Menu, Icon } from "semantic-ui-react";
 import { FormTabErrors } from "../FormTabErrors";
+import { SectionFilledBar } from "../SectionFilledBar";
 import { useFormNavigation } from "../../hooks";
 
 export const FormTabs = ({ sections, activeStep, onTabChange }) => {
@@ -42,6 +43,11 @@ export const FormTabs = ({ sections, activeStep, onTabChange }) => {
           <div>
             <Icon name="chevron right" />
           </div>
+          <SectionFilledBar
+            includesPaths={section.includesPaths || []}
+            sectionFilled={section.sectionFilled}
+            filledThreshold={section.filledThreshold}
+          />
         </Menu.Item>
       ))}
     </Menu>
@@ -57,7 +63,7 @@ FormTabs.propTypes = {
       saveOnTabChange: PropTypes.bool,
       /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
       component: PropTypes.func.isRequired,
-    })
+    }),
   ),
   activeStep: PropTypes.number.isRequired,
   onTabChange: PropTypes.func.isRequired,

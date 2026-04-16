@@ -10,6 +10,7 @@ import _isObject from "lodash/isObject";
 import _isDate from "lodash/isDate";
 import _isRegExp from "lodash/isRegExp";
 import _forOwn from "lodash/forOwn";
+import _isEmpty from "lodash/isEmpty";
 
 /**
  * Merges model field data with component prop overrides.
@@ -402,3 +403,63 @@ export function categorizeErrors(errors) {
   }
   return categories;
 }
+
+/**
+ * Checks if a plain object has any meaningful filled values,
+ * ignoring internal keys like __key.
+ */
+const isObjectFilled = (obj) => {
+  return Object.entries(obj).some(
+    ([key, val]) => !key.startsWith("__") && isFilled(val)
+  );
+};
+
+/**
+ * Checks if a single value is considered "filled".
+ * Handles booleans and numbers as always filled (if defined).
+ * For arrays, filters out items that are empty objects (e.g. skeleton entries
+ * with only internal keys like __key).
+ * For plain objects, checks if any non-internal key has a filled value.
+ *
+ * @param {*} value - The value to check
+ * @returns {boolean} True if the value is considered filled
+ */
+export const isFilled = (value) => {
+  if (value === undefined || value === null) return false;
+  if (typeof value === "boolean" || typeof value === "number") return true;
+  if (Array.isArray(value)) {
+    return value.some((item) => isFilled(item));
+  }
+  if (_isObject(value)) {
+    return isObjectFilled(value);
+  }
+  return !_isEmpty(value);
+};
+
+/**
+ * Computes how filled a section is based on its includesPaths.
+ * Returns a number between 0 and 1 representing the fraction of filled fields.
+ *
+ * @param {Object} params
+ * @param {Object} params.formikValues - Formik values object
+ * @param {Object} params.reduxState - Redux store state
+ * @param {string[]} params.includesPaths - Array of field paths to check
+ * @returns {number} Fraction filled (0 to 1)
+ */
+export const computeSectionFilled = ({
+  formikValues,
+  reduxState,
+  includesPaths,
+}) => {
+  if (!includesPaths || includesPaths.length === 0) return 1;
+
+  let filledCount = 0;
+  for (const path of includesPaths) {
+    const formikValue = _get(formikValues, path);
+    const reduxValue = _get(reduxState, `deposit.record.${path}`);
+    if (isFilled(formikValue) || isFilled(reduxValue)) {
+      filledCount++;
+    }
+  }
+  return filledCount / includesPaths.length;
+};

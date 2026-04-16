@@ -40,6 +40,7 @@
     border: none;
 
     .item {
+      position: relative;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -67,6 +68,7 @@
     overflow-x: auto;
 
     .ui.steps .step.link {
+      position: relative;
       background-color: @formTabsBackgroundColor;
       color: @stepTextColor !important;
 
@@ -210,5 +212,28 @@
   .form-actions-row {
     justify-content: flex-end !important;
     gap: 1.5rem;
+  }
+}
+
+// Section filled progress bar
+.section-filled-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: @borderColor;
+
+  .section-filled-bar-fill {
+    height: 100%;
+    transition: width 0.3s ease;
+
+    &.green {
+      background-color: @positiveColor;
+    }
+
+    &.orange {
+      background-color: @warningColor;
+    }
   }
 }

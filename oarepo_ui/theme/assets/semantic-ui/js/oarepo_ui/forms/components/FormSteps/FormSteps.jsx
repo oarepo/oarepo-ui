@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Step } from "semantic-ui-react";
 import { FormTabErrors } from "../FormTabErrors";
+import { SectionFilledBar } from "../SectionFilledBar";
 import { useFormNavigation } from "../../hooks";
 
 export const FormSteps = ({ sections, activeStep, onTabChange }) => {
@@ -67,6 +68,11 @@ export const FormSteps = ({ sections, activeStep, onTabChange }) => {
                 {section.label}
               </Step.Title>
             </Step.Content>
+            <SectionFilledBar
+              includesPaths={section.includesPaths || []}
+              sectionFilled={section.sectionFilled}
+              filledThreshold={section.filledThreshold}
+            />
           </Step>
         ))}
       </Step.Group>
@@ -83,7 +89,7 @@ FormSteps.propTypes = {
       saveOnTabChange: PropTypes.bool,
       /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
       component: PropTypes.func.isRequired,
-    })
+    }),
   ),
   activeStep: PropTypes.number.isRequired,
   onTabChange: PropTypes.func.isRequired,
