@@ -39,9 +39,11 @@ def pass_record_files[T: Callable](f: T) -> T:
         service = self.api_service
         try:
             if is_preview:
-                files = service.draft_files.list_files(**read_kwargs) if service.draft_files else None
+                draft_files = getattr(service, "draft_files", None)
+                files = draft_files.list_files(**read_kwargs) if draft_files else None
             else:
-                files = service.files.list_files(**read_kwargs) if service.files else None
+                record_files = getattr(service, "files", None)
+                files = record_files.list_files(**read_kwargs) if record_files else None
 
             kwargs["files"] = files
 
