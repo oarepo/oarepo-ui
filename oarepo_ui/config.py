@@ -38,6 +38,7 @@ OAREPO_UI_JINJAX_FILTERS = {
     "as_dict": "oarepo_ui.templating.filters:as_dict",
     "ui_value": "oarepo_ui.templating.filters:ui_value",
     "localized": "oarepo_ui.templating.filters:localized",
+    "append_query_params": "oarepo_ui.utils:append_query_params",
 }
 
 OAREPO_UI_JINJAX_GLOBALS = {
@@ -46,6 +47,7 @@ OAREPO_UI_JINJAX_GLOBALS = {
     "value": "oarepo_ui.templating.filters:value",
     "as_dict": "oarepo_ui.templating.filters:as_dict",
     "localized": "oarepo_ui.templating.filters:localized",
+    "append_query_params": "oarepo_ui.utils:append_query_params",
 }
 
 
