@@ -210,6 +210,21 @@ def ui_overrides(app: Flask) -> None:
     if home_page_records_list_override not in current_ui_overrides:
         current_ui_overrides.add(home_page_records_list_override)
 
+    # Replace the default RDMRecordMultipleSearchBarElement which crashes
+    # when the #header-search-bar element is not present in the DOM.
+    search_bar = UIComponent(
+        "ClearableSearchbarElement",
+        "@js/oarepo_ui/search/ClearableSearchbarElement",
+        UIComponentImportMode.NAMED,
+    )
+    search_bar_override = UIComponentOverride(
+        "invenio_search_ui.search",
+        "InvenioAppRdm.Search.SearchBar.element",
+        search_bar,
+    )
+    if search_bar_override not in current_ui_overrides:
+        current_ui_overrides.add(search_bar_override)
+
 
 def _register_main_search_result_item(
     ui_overrides: set[UIComponentOverride], schema: str, component: UIComponent
