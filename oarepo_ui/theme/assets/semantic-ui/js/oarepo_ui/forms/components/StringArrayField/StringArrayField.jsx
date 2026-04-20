@@ -28,7 +28,7 @@ export const StringArrayField = ({
 
   const fieldData = mergeFieldData(
     getFieldData({ fieldPath, icon, fieldRepresentation }),
-    { label, required, helpText },
+    { label, required, helpText }
   );
   const fieldError = getIn(errors, fieldPath, null);
   const hasBeenShown = React.useRef(false);
