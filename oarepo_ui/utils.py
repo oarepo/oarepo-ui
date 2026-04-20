@@ -16,6 +16,7 @@ for deposit page access control.
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, overload
+from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 
 from flask import g, session
 from flask_login import current_user
@@ -86,6 +87,20 @@ def dump_empty(  # noqa: PLR0911 too many return branches
     if isinstance(schema_or_field, fields.Dict):
         return {}
     return None
+
+
+def append_query_params(url: str, params: dict) -> str:
+    """Append params to a URL, merging with any existing query string.
+
+    Preserves duplicate keys (e.g. repeated facet filters) in the original
+    query string.  Only keys present in *params* are overridden.
+    """
+    if not params:
+        return url
+    parsed = urlparse(url)
+    existing = [(k, v) for k, v in parse_qsl(parsed.query, keep_blank_values=True) if k not in params]
+    existing.extend(params.items())
+    return urlunparse((parsed.scheme, parsed.netloc, parsed.path, parsed.params, urlencode(existing), parsed.fragment))
 
 
 view_deposit_page_permission_key: str = "view_deposit_page_permission"
