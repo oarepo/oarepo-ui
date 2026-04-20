@@ -41,10 +41,7 @@ export const TabContent = ({ activeStep, sections, next, back }) => {
   const formConfig = useFormConfig();
   const section = sections[activeStep];
   const contentRef = useRef(null);
-  const previousStepLabel =
-    activeStep > 0 ? sections[activeStep - 1].label : null;
-  const nextStepLabel =
-    activeStep < sections.length - 1 ? sections[activeStep + 1].label : null;
+
   const { dirty } = useFormikContext();
   const { initialRecord } = useInitialRecord();
 
@@ -108,37 +105,6 @@ export const TabContent = ({ activeStep, sections, next, back }) => {
           back={back}
         />
       </ErrorBoundary>
-      <div
-        className="tab-content-navigation"
-        data-testid="tab-content-navigation"
-      >
-        {activeStep > 0 && (
-          <Button
-            className="tab-content-navigation-button back-button"
-            icon
-            labelPosition="left"
-            type="button"
-            onClick={back}
-            data-testid="tab-navigation-back"
-          >
-            <Icon name="arrow left" />
-            {previousStepLabel || i18next.t("Back")}
-          </Button>
-        )}
-        {activeStep < sections.length - 1 && (
-          <Button
-            className="tab-content-navigation-button next-button"
-            icon
-            labelPosition="right"
-            type="button"
-            onClick={next}
-            data-testid="tab-navigation-next"
-          >
-            {nextStepLabel || i18next.t("Next")}
-            <Icon name="arrow right" />
-          </Button>
-        )}
-      </div>
     </Segment>
   );
 };
