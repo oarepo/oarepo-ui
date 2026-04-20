@@ -39,10 +39,11 @@ class TemplatePageUIResource(UIResource):
         pages_config = self.config.pages
         routes = []
         for page_url_path, page_template_name in pages_config.items():
-            url_prefix: str = self.config.url_prefix
-            route_url_with_prefix = url_prefix.rstrip("/") + "/" + page_url_path.lstrip("/")
+            route_url_with_prefix = page_url_path.lstrip("/")
 
-            handler: Any = cast("Any | None", getattr(self, f"render_{page_template_name}", None))
+            handler: Any = cast(
+                "Any | None", getattr(self, f"render_{page_template_name}", None)
+            )
             if handler is None:
                 handler = partial(self.render, page=page_template_name)
             if not hasattr(handler, "__name__"):
