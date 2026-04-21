@@ -39,8 +39,6 @@ class TemplatePageUIResource(UIResource):
         pages_config = self.config.pages
         routes = []
         for page_url_path, page_template_name in pages_config.items():
-            route_url_with_prefix = page_url_path.lstrip("/")
-
             handler: Any = cast("Any | None", getattr(self, f"render_{page_template_name}", None))
             if handler is None:
                 handler = partial(self.render, page=page_template_name)
@@ -50,7 +48,7 @@ class TemplatePageUIResource(UIResource):
                 handler.__self__ = self  # type: ignore[union-attr]
 
             routes.append(
-                route("GET", route_url_with_prefix, handler),
+                route("GET", page_url_path, handler),
             )
         return routes
 
