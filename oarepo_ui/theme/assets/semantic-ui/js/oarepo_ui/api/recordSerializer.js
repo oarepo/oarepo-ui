@@ -1,3 +1,4 @@
+import _cloneDeep from "lodash/cloneDeep";
 import _isArray from "lodash/isArray";
 import _isBoolean from "lodash/isBoolean";
 import _isEmpty from "lodash/isEmpty";
@@ -6,6 +7,7 @@ import _isNumber from "lodash/isNumber";
 import _isObject from "lodash/isObject";
 import _mapValues from "lodash/mapValues";
 import _pickBy from "lodash/pickBy";
+import _pick from "lodash/pick";
 import _forEach from "lodash/forEach";
 import _omitBy from "lodash/omitBy";
 import _set from "lodash/set";
@@ -169,5 +171,43 @@ export class OARepoDepositSerializer extends DepositRecordSerializer {
     }
 
     return deserializedErrors;
+  }
+}
+
+export class EmptyDepositRecordSerializer extends DepositRecordSerializer {
+  deserialize(record) {
+    const originalRecord = _pick(_cloneDeep(record), [
+      "expanded",
+      "metadata",
+      "id",
+      "links",
+      "files",
+      "media_files",
+      "is_published",
+      "parent",
+      "status",
+      "ui",
+      "custom_fields",
+      "created",
+      "updated",
+      "revision_id",
+    ]);
+
+    return originalRecord;
+  }
+  deserializeErrors(errors) {
+    return errors;
+  }
+  serialize(record) {
+    let originalRecord = _pick(_cloneDeep(record), [
+      "metadata",
+      "id",
+      "links",
+      "files",
+      "media_files",
+      "parent",
+      "custom_fields",
+    ]);
+    return originalRecord;
   }
 }
