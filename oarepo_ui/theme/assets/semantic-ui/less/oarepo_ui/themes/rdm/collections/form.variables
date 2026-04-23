@@ -16,3 +16,9 @@
 @stepTextColor: @black;
 @tabContentNavigationMarginTop: 1rem;
 @fieldMarginBottom: 1rem;
+
+// Section completion bar
+@sectionCompletionBarHeight: 3px;
+@sectionCompletionBarBackgroundColor: @borderColor;
+@sectionCompletionBarFilledColor: @positiveColor;
+@sectionCompletionBarWarningColor: @warningColor;

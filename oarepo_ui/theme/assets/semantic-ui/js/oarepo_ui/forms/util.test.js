@@ -8,8 +8,8 @@ import {
   mergeFieldData,
   isFilled,
   isObjectFilled,
-  computeSectionFilled,
-  sectionHasFiles,
+  computeSectionCompletion,
+  computeFilesSectionCompletion,
 } from "./util";
 
 describe("findSectionIndexForFieldPath", () => {
@@ -883,18 +883,20 @@ describe("isFilled", () => {
   });
 });
 
-describe("sectionHasFiles", () => {
+describe("computeFilesSectionCompletion", () => {
   it("returns 0 when reduxState has no files key", () => {
-    expect(sectionHasFiles({ reduxState: {} })).toBe(0);
+    expect(computeFilesSectionCompletion({ reduxState: {} })).toBe(0);
   });
 
   it("returns 0 when entries is empty", () => {
-    expect(sectionHasFiles({ reduxState: { files: { entries: {} } } })).toBe(0);
+    expect(
+      computeFilesSectionCompletion({ reduxState: { files: { entries: {} } } })
+    ).toBe(0);
   });
 
   it("returns 1 when entries has at least one file", () => {
     expect(
-      sectionHasFiles({
+      computeFilesSectionCompletion({
         reduxState: {
           files: { entries: { "file1.pdf": { status: "finished" } } },
         },
@@ -904,7 +906,7 @@ describe("sectionHasFiles", () => {
 
   it("returns 1 when entries has multiple files", () => {
     expect(
-      sectionHasFiles({
+      computeFilesSectionCompletion({
         reduxState: {
           files: {
             entries: {
@@ -918,10 +920,10 @@ describe("sectionHasFiles", () => {
   });
 });
 
-describe("computeSectionFilled", () => {
+describe("computeSectionCompletion", () => {
   it("returns 1 for null includesPaths", () => {
     expect(
-      computeSectionFilled({
+      computeSectionCompletion({
         formikValues: {},
         includesPaths: null,
       })
@@ -930,7 +932,7 @@ describe("computeSectionFilled", () => {
 
   it("returns 1 for empty includesPaths", () => {
     expect(
-      computeSectionFilled({
+      computeSectionCompletion({
         formikValues: {},
         includesPaths: [],
       })
@@ -939,7 +941,7 @@ describe("computeSectionFilled", () => {
 
   it("returns 0 when no fields are filled", () => {
     expect(
-      computeSectionFilled({
+      computeSectionCompletion({
         formikValues: { metadata: { title: "", description: "" } },
         includesPaths: ["metadata.title", "metadata.description"],
       })
@@ -948,7 +950,7 @@ describe("computeSectionFilled", () => {
 
   it("returns 1 when all fields are filled", () => {
     expect(
-      computeSectionFilled({
+      computeSectionCompletion({
         formikValues: {
           metadata: { title: "Hello", description: "World" },
         },
@@ -959,7 +961,7 @@ describe("computeSectionFilled", () => {
 
   it("returns correct ratio for partially filled fields", () => {
     expect(
-      computeSectionFilled({
+      computeSectionCompletion({
         formikValues: {
           metadata: { title: "Hello", description: "" },
         },
@@ -970,7 +972,7 @@ describe("computeSectionFilled", () => {
 
   it("does not count array fields with only skeleton objects as filled", () => {
     expect(
-      computeSectionFilled({
+      computeSectionCompletion({
         formikValues: {
           metadata: {
             creators: [{ name: "", __key: -1 }],
@@ -983,7 +985,7 @@ describe("computeSectionFilled", () => {
 
   it("counts array fields with meaningful data as filled", () => {
     expect(
-      computeSectionFilled({
+      computeSectionCompletion({
         formikValues: {
           metadata: {
             creators: [{ name: "John", __key: -1 }],
@@ -996,7 +998,7 @@ describe("computeSectionFilled", () => {
 
   it("returns 0 when field is missing from formik", () => {
     expect(
-      computeSectionFilled({
+      computeSectionCompletion({
         formikValues: {},
         includesPaths: ["metadata.title"],
       })

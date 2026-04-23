@@ -38,7 +38,6 @@ export const TabForm = ({ sections = [] }) => {
   );
   const [contentVisible, setContentVisible] = React.useState(true);
   const [isSwapping, setIsSwapping] = React.useState(false);
-  const pendingStepRef = useRef(null);
   const swapTimerRef = useRef(null);
 
   useEffect(() => {
@@ -67,18 +66,17 @@ export const TabForm = ({ sections = [] }) => {
       const url = new URL(window.location);
       url.searchParams.set("tab", sectionKeys[index]);
       window.history.replaceState({}, "", url);
-      pendingStepRef.current = index;
+      setActiveStepState(index);
       setContentVisible(false);
     },
     [sectionKeys, handleSave, dirty, sections, activeStep]
   );
 
   const handleTransitionHide = useCallback(() => {
-    // Content has faded out — unmount/remount for react-dnd HTML5 backend cleanup
+    // Content has faded out — unmount/remount for react-dnd HTML5 backend cleanup - make the swapping more smooth
     setIsSwapping(true);
     swapTimerRef.current = setTimeout(() => {
       swapTimerRef.current = null;
-      setActiveStepState(pendingStepRef.current);
       setIsSwapping(false);
       setContentVisible(true);
     }, 0);
@@ -224,7 +222,7 @@ export const TabForm = ({ sections = [] }) => {
               <Transition
                 visible={contentVisible}
                 animation="fade"
-                duration={150}
+                duration={200}
                 onHide={handleTransitionHide}
               >
                 <div>
@@ -282,7 +280,7 @@ TabForm.propTypes = {
       label: PropTypes.string.isRequired,
       includesPaths: PropTypes.array,
       saveOnTabChange: PropTypes.bool,
-      sectionFilled: PropTypes.func,
+      sectionCompletion: PropTypes.func,
       filledThreshold: PropTypes.number,
       /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
       component: PropTypes.func.isRequired,

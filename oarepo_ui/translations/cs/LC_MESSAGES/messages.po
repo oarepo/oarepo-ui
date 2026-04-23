@@ -1523,4 +1523,4 @@ msgid "{{percentage}}% of this section is filled"
 msgstr "{{percentage}}% této sekce je vyplněno"
 
 msgid "Section completion"
-msgstr ""
+msgstr "Dokončení sekce"

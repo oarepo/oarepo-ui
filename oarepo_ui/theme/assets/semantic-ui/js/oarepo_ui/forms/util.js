@@ -443,7 +443,7 @@ export const isFilled = (value) => {
  * @param {Object} params.reduxState - Redux store state containing files.entries
  * @returns {number} 1 if there is at least one file entry, 0 otherwise
  */
-export const computeFilesSectionFilled = ({ reduxState }) => {
+export const computeFilesSectionCompletion = ({ reduxState }) => {
   const entries = _get(reduxState, "files.entries", {});
   return Object.keys(entries).length > 0 ? 1 : 0;
 };
@@ -458,7 +458,7 @@ export const computeFilesSectionFilled = ({ reduxState }) => {
  * @param {string[]} params.includesPaths - Array of field paths to check
  * @returns {number} Fraction filled (0 to 1)
  */
-export const computeSectionFilled = ({
+export const computeSectionCompletion = ({
   formikValues,
   reduxState,
   includesPaths,

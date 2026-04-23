@@ -1,1 +1,0 @@
-export { SectionFilledBar } from "./SectionFilledBar";
