@@ -923,7 +923,6 @@ describe("computeSectionFilled", () => {
     expect(
       computeSectionFilled({
         formikValues: {},
-        reduxState: {},
         includesPaths: null,
       })
     ).toBe(1);
@@ -933,7 +932,6 @@ describe("computeSectionFilled", () => {
     expect(
       computeSectionFilled({
         formikValues: {},
-        reduxState: {},
         includesPaths: [],
       })
     ).toBe(1);
@@ -943,7 +941,6 @@ describe("computeSectionFilled", () => {
     expect(
       computeSectionFilled({
         formikValues: { metadata: { title: "", description: "" } },
-        reduxState: {},
         includesPaths: ["metadata.title", "metadata.description"],
       })
     ).toBe(0);
@@ -955,7 +952,6 @@ describe("computeSectionFilled", () => {
         formikValues: {
           metadata: { title: "Hello", description: "World" },
         },
-        reduxState: {},
         includesPaths: ["metadata.title", "metadata.description"],
       })
     ).toBe(1);
@@ -967,7 +963,6 @@ describe("computeSectionFilled", () => {
         formikValues: {
           metadata: { title: "Hello", description: "" },
         },
-        reduxState: {},
         includesPaths: ["metadata.title", "metadata.description"],
       })
     ).toBe(0.5);
@@ -981,7 +976,6 @@ describe("computeSectionFilled", () => {
             creators: [{ name: "", __key: -1 }],
           },
         },
-        reduxState: {},
         includesPaths: ["metadata.creators"],
       })
     ).toBe(0);
@@ -995,29 +989,15 @@ describe("computeSectionFilled", () => {
             creators: [{ name: "John", __key: -1 }],
           },
         },
-        reduxState: {},
         includesPaths: ["metadata.creators"],
       })
     ).toBe(1);
   });
 
-  it("falls back to redux state when formik value is undefined", () => {
+  it("returns 0 when field is missing from formik", () => {
     expect(
       computeSectionFilled({
         formikValues: {},
-        reduxState: {
-          deposit: { record: { metadata: { title: "From Redux" } } },
-        },
-        includesPaths: ["metadata.title"],
-      })
-    ).toBe(1);
-  });
-
-  it("returns 0 when field is missing from both formik and redux", () => {
-    expect(
-      computeSectionFilled({
-        formikValues: {},
-        reduxState: {},
         includesPaths: ["metadata.title"],
       })
     ).toBe(0);

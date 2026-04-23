@@ -1494,15 +1494,14 @@ msgstr "Zvolte typ záznamu, který chcete vytvořit."
 #: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/new_upload_page.html:27
 msgid "No record types available"
 msgstr "Žádné typy záznamů nejsou k dispozici"
-msgstr ""
 
 #: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/new_upload_page.html:9
 msgid "Choose the type of record you want to create."
-msgstr ""
+msgstr "Zvolte typ záznamu, který chcete vytvořit."
 
 #: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/new_upload_page.html:27
 msgid "No record types available"
-msgstr ""
+msgstr "Žádné typy záznamů nejsou k dispozici"
 
 #: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/new_upload_page.html:28
 #, python-format
@@ -1522,3 +1521,6 @@ msgstr "V definici sekce chybí klíč component, který musí být definován."
 
 msgid "{{percentage}}% of this section is filled"
 msgstr "{{percentage}}% této sekce je vyplněno"
+
+msgid "Section completion"
+msgstr ""

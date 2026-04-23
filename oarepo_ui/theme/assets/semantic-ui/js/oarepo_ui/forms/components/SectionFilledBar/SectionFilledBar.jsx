@@ -27,20 +27,29 @@ export const SectionFilledBar = ({
 
   const percentage = Math.round(filledRatio * 100);
   const color = filledRatio < filledThreshold ? "orange" : "green";
+  const filledText = i18next.t("{{percentage}}% of this section is filled", {
+    percentage,
+  });
 
   return (
     <Popup
       trigger={
-        <div className="section-filled-bar">
+        <div
+          className="section-filled-bar"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={percentage}
+          aria-label={i18next.t("Section completion")}
+          aria-valuetext={filledText}
+        >
           <div
             className={`section-filled-bar-fill ${color}`}
             style={{ width: `${percentage}%` }}
           />
         </div>
       }
-      content={i18next.t("{{percentage}}% of this section is filled", {
-        percentage,
-      })}
+      content={filledText}
       size="mini"
       position="bottom center"
     />

@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useMemo, useRef } from "react";
 import PropTypes from "prop-types";
-import { Grid, Header, Message } from "semantic-ui-react";
+import { Grid, Header, Message, Transition } from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
 import { save } from "@js/invenio_rdm_records/src/deposit/state/actions/deposit";
 import { useDepositFormAction, useFormConfig } from "../../hooks";
@@ -36,13 +36,15 @@ export const TabForm = ({ sections = [] }) => {
   const [activeStep, setActiveStepState] = React.useState(
     Math.max(initialStep, 0)
   );
-  const [isTransitioning, setIsTransitioning] = React.useState(false);
-  const transitionTimerRef = useRef(null);
+  const [contentVisible, setContentVisible] = React.useState(true);
+  const [isSwapping, setIsSwapping] = React.useState(false);
+  const pendingStepRef = useRef(null);
+  const swapTimerRef = useRef(null);
 
   useEffect(() => {
     return () => {
-      if (transitionTimerRef.current) {
-        clearTimeout(transitionTimerRef.current);
+      if (swapTimerRef.current) {
+        clearTimeout(swapTimerRef.current);
       }
     };
   }, []);
@@ -65,18 +67,22 @@ export const TabForm = ({ sections = [] }) => {
       const url = new URL(window.location);
       url.searchParams.set("tab", sectionKeys[index]);
       window.history.replaceState({}, "", url);
-      setIsTransitioning(true);
-      if (transitionTimerRef.current) {
-        clearTimeout(transitionTimerRef.current);
-      }
-      transitionTimerRef.current = setTimeout(() => {
-        transitionTimerRef.current = null;
-        setActiveStepState(index);
-        setIsTransitioning(false);
-      }, 0);
+      pendingStepRef.current = index;
+      setContentVisible(false);
     },
     [sectionKeys, handleSave, dirty, sections, activeStep]
   );
+
+  const handleTransitionHide = useCallback(() => {
+    // Content has faded out — unmount/remount for react-dnd HTML5 backend cleanup
+    setIsSwapping(true);
+    swapTimerRef.current = setTimeout(() => {
+      swapTimerRef.current = null;
+      setActiveStepState(pendingStepRef.current);
+      setIsSwapping(false);
+      setContentVisible(true);
+    }, 0);
+  }, []);
 
   useEffect(() => {
     if (sections.length === 0) return;
@@ -215,14 +221,23 @@ export const TabForm = ({ sections = [] }) => {
               className="tab-content-column pl-0 pr-0"
               data-testid="tab-form-content-column"
             >
-              {!isTransitioning && (
-                <TabContent
-                  activeStep={activeStep}
-                  sections={sections}
-                  next={next}
-                  back={back}
-                />
-              )}
+              <Transition
+                visible={contentVisible}
+                animation="fade"
+                duration={150}
+                onHide={handleTransitionHide}
+              >
+                <div>
+                  {!isSwapping && (
+                    <TabContent
+                      activeStep={activeStep}
+                      sections={sections}
+                      next={next}
+                      back={back}
+                    />
+                  )}
+                </div>
+              </Transition>
             </Grid.Column>
           </Overridable>
         </Grid.Row>
@@ -267,6 +282,8 @@ TabForm.propTypes = {
       label: PropTypes.string.isRequired,
       includesPaths: PropTypes.array,
       saveOnTabChange: PropTypes.bool,
+      sectionFilled: PropTypes.func,
+      filledThreshold: PropTypes.number,
       /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
       component: PropTypes.func.isRequired,
     })

@@ -437,6 +437,18 @@ export const isFilled = (value) => {
 };
 
 /**
+ * Checks if the files section has any file entries in the Redux state.
+ *
+ * @param {Object} params
+ * @param {Object} params.reduxState - Redux store state containing files.entries
+ * @returns {number} 1 if there is at least one file entry, 0 otherwise
+ */
+export const computeFilesSectionFilled = ({ reduxState }) => {
+  const entries = _get(reduxState, "files.entries", {});
+  return Object.keys(entries).length > 0 ? 1 : 0;
+};
+
+/**
  * Computes how filled a section is based on its includesPaths.
  * Returns a number between 0 and 1 representing the fraction of filled fields.
  *
@@ -446,18 +458,6 @@ export const isFilled = (value) => {
  * @param {string[]} params.includesPaths - Array of field paths to check
  * @returns {number} Fraction filled (0 to 1)
  */
-/**
- * Checks if the files section has any file entries in the Redux state.
- *
- * @param {Object} params
- * @param {Object} params.reduxState - Redux store state containing files.entries
- * @returns {number} 1 if there is at least one file entry, 0 otherwise
- */
-export const sectionHasFiles = ({ reduxState }) => {
-  const entries = _get(reduxState, "files.entries", {});
-  return Object.keys(entries).length > 0 ? 1 : 0;
-};
-
 export const computeSectionFilled = ({
   formikValues,
   reduxState,

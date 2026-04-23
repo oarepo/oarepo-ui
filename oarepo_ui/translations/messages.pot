@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-04-13 08:48+0200\n"
+"POT-Creation-Date: 2026-04-23 13:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/config.py:91
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/config.py:93
 msgid "English"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/config.py:92
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/config.py:94
 msgid "Czech"
 msgstr ""
 
@@ -207,23 +207,23 @@ msgid ""
 "The server does not support the HTTP protocol version used in the request."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:419
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:420
 msgid "File preview requested but file service is not available on the model"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:812
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:813
 msgid "User does not have permission to create a record."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:1016
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:1017
 msgid "Removal reason"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:1017
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:1018
 msgid "Note"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:1018
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:1019
 msgid "Citation text"
 msgstr ""
 
@@ -837,6 +837,9 @@ msgstr ""
 msgid "{{percentage}}% of this section is filled"
 msgstr ""
 
+msgid "Section completion"
+msgstr ""
+
 msgid "Add"
 msgstr ""
 
@@ -854,12 +857,6 @@ msgid ""
 msgstr ""
 
 msgid "Your draft contains unsaved changes."
-msgstr ""
-
-msgid "Back"
-msgstr ""
-
-msgid "Next"
 msgstr ""
 
 msgid "Search"
