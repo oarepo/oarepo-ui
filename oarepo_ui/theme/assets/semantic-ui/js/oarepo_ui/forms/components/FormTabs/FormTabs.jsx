@@ -33,11 +33,11 @@ export const FormTabs = ({ sections, activeStep, onTabChange }) => {
           tabIndex={isActive(index) ? 0 : -1}
           data-testid={`form-tab-${section.key}`}
         >
-          <div className="flex">
+          <div className="flex align-items-center ">
             {hasBeenSavedInSession && (
               <FormTabErrors includesPaths={section.includesPaths || []} />
             )}
-            {section.label}
+            <span className="rel-ml-1">{section.label}</span>
           </div>
           <div>
             <Icon name="chevron right" />
