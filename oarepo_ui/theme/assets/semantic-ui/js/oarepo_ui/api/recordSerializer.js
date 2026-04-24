@@ -199,7 +199,7 @@ export class EmptyDepositRecordSerializer extends DepositRecordSerializer {
     return errors;
   }
   serialize(record) {
-    let originalRecord = _pick(_cloneDeep(record), [
+    const originalRecord = _pick(_cloneDeep(record), [
       "metadata",
       "id",
       "links",
