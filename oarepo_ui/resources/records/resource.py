@@ -241,7 +241,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         """Return detail page for a record (core logic without decorators)."""
         files_dict, media_files_dict = self._prepare_files(files, media_files)
         record_ui = self._prepare_record_ui(record)
-        is_draft = record_ui.get("is_draft")
+        is_draft = record_ui.get("is_draft", False)
         avatar = self._get_user_avatar()
 
         # TODO: implement custom fields feature
