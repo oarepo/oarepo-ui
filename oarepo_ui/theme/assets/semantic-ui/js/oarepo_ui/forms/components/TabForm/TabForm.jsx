@@ -16,7 +16,6 @@ import {
   PreviewButton,
   DeleteButton,
 } from "@js/invenio_rdm_records";
-import { FormFeedback } from "../FormFeedback";
 import { useFormikContext } from "formik";
 
 export const TabForm = ({ sections = [] }) => {
@@ -137,17 +136,6 @@ export const TabForm = ({ sections = [] }) => {
   return (
     <FormTabsProvider value={formTabContextValue}>
       <Grid stackable className="tab-form container" data-testid="tab-form">
-        <Grid.Row>
-          <Overridable
-            id={buildUID(overridableIdPrefix, "TabForm.FormFeedback")}
-            activeStep={activeStep}
-            sections={sections}
-            onTabChange={handleSetStep}
-          >
-            <FormFeedback sections={sections} />
-          </Overridable>
-        </Grid.Row>
-
         {/* Mobile/Tablet: horizontal steps on top */}
 
         <Grid.Row

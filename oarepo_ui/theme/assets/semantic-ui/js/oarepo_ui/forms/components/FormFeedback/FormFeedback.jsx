@@ -1,9 +1,9 @@
 import { i18next } from "@translations/oarepo_ui/i18next";
 import _get from "lodash/get";
 import _startCase from "lodash/startCase";
-import React, { useCallback, useRef, useEffect } from "react";
+import React, { useCallback, useRef, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Message } from "semantic-ui-react";
+import { Message, Button, Icon } from "semantic-ui-react";
 import { useFormTabs, useFieldData } from "../../hooks";
 import {
   findSectionIndexForFieldPath,
@@ -247,6 +247,126 @@ FormFeedback.propTypes = {
       saveOnTabChange: PropTypes.bool,
       sectionCompletion: PropTypes.func,
       sectionCompletionThreshold: PropTypes.number,
+      /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
+      component: PropTypes.func.isRequired,
+    })
+  ),
+};
+
+export const FormFeedbackPanel = ({ actions = {}, sections = [] }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const errors = useSelector((state) => state.deposit.errors);
+  const actionState = useSelector((state) => state.deposit.actionState);
+
+  const { activeStep, setActiveStep } = useFormTabs() || {};
+  const timeoutRef = useRef(null);
+  const allActions = { ...ACTIONS, ...actions };
+  const flattenedErrors = flattenToPathValueArray(errors);
+
+  const message = _get(allActions, [actionState, "message"]);
+  const backendErrorMessage = errors.message || errors._schema;
+  const hasErrors = flattenedErrors?.length > 0;
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handleErrorClick = useCallback(
+    (fieldPath) => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      if (setActiveStep && activeStep !== undefined && sections.length > 0) {
+        const sectionIndex = findSectionIndexForFieldPath(sections, fieldPath);
+        if (sectionIndex >= 0 && sectionIndex !== activeStep) {
+          setActiveStep(sectionIndex);
+          timeoutRef.current = setTimeout(
+            () => scrollToElement(fieldPath),
+            100
+          );
+          return;
+        }
+      }
+      scrollToElement(fieldPath);
+    },
+    [activeStep, setActiveStep, sections]
+  );
+
+  if (!message) return null;
+
+  return (
+    <>
+      <div className="form-feedback-inline" data-testid="form-feedback-inline">
+        <span>{backendErrorMessage || message}</span>
+        {hasErrors && (
+          <Button
+            size="mini"
+            basic
+            onClick={() => setIsOpen((prev) => !prev)}
+            data-testid="form-feedback-summary-button"
+            className="form-feedback-summary-button"
+          >
+            <Icon name="list" />
+            {i18next.t("Summary")} ({flattenedErrors.length})
+          </Button>
+        )}
+      </div>
+
+      <div
+        className={`form-feedback-panel ${isOpen ? "open" : ""}`}
+        data-testid="form-feedback-panel"
+      >
+        <div className="form-feedback-panel-header">
+          <strong>{backendErrorMessage || message}</strong>
+          <Button
+            icon="close"
+            size="mini"
+            basic
+            onClick={() => setIsOpen(false)}
+            data-testid="form-feedback-panel-close"
+          />
+        </div>
+        {hasErrors && (
+          <div className="form-feedback-panel-content">
+            <Message.List>
+              {flattenedErrors.map((error, index) => (
+                <Message.Item
+                  onClick={() => handleErrorClick(error.fieldPath)}
+                  key={`${error.fieldPath}-${index}`} // eslint-disable-line react/no-array-index-key
+                  className="form-feedback-panel-item"
+                >
+                  <ErrorMessageItem error={error} />
+                </Message.Item>
+              ))}
+            </Message.List>
+          </div>
+        )}
+      </div>
+
+      {isOpen && (
+        <div // eslint-disable-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+          className="form-feedback-panel-overlay"
+          onClick={() => setIsOpen(false)}
+          data-testid="form-feedback-panel-overlay"
+        />
+      )}
+    </>
+  );
+};
+
+FormFeedbackPanel.propTypes = {
+  actions: PropTypes.object,
+  sections: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      includesPaths: PropTypes.arrayOf(PropTypes.string),
+      saveOnTabChange: PropTypes.bool,
       /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
       component: PropTypes.func.isRequired,
     })
