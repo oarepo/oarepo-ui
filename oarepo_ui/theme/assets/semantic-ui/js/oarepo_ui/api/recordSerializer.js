@@ -11,24 +11,10 @@ import _pick from "lodash/pick";
 import _forEach from "lodash/forEach";
 import _omitBy from "lodash/omitBy";
 import _set from "lodash/set";
-
-export class DepositRecordSerializer {
-  constructor(defaultLocale) {
-    if (this.constructor === DepositRecordSerializer) {
-      throw new Error("Abstract");
-    }
-  }
-
-  deserialize(record) {
-    throw new Error("Not implemented.");
-  }
-  deserializeErrors(errors) {
-    throw new Error("Not implemented.");
-  }
-  serialize(record) {
-    throw new Error("Not implemented.");
-  }
-}
+import {
+  RDMDepositRecordSerializer,
+  DepositRecordSerializer,
+} from "@js/invenio_rdm_records/src/deposit/api/DepositRecordSerializer";
 
 export class OARepoDepositSerializer extends DepositRecordSerializer {
   constructor(internalFieldsArray = [], keysToRemove = []) {
@@ -55,7 +41,7 @@ export class OARepoDepositSerializer extends DepositRecordSerializer {
       return filterValues;
     } else if (_isObject(obj)) {
       let mappedValues = _mapValues(obj, (value) =>
-        this.removeEmptyValues(value)
+        this.removeEmptyValues(value),
       );
       let pickedValues = _pickBy(mappedValues, (value, key) => {
         if (key === "metadata" && _isEmpty(value)) {
@@ -113,7 +99,7 @@ export class OARepoDepositSerializer extends DepositRecordSerializer {
         value === null ||
         (Array.isArray(value) && value.every((item) => item === null)) ||
         key.startsWith("_") ||
-        internalFieldsArray.includes(key)
+        internalFieldsArray.includes(key),
     );
 
   /**
@@ -136,12 +122,12 @@ export class OARepoDepositSerializer extends DepositRecordSerializer {
   serialize = (record) => {
     let serializedRecord = this.removeNullAndInternalFields(
       record,
-      this.internalFieldsArray
+      this.internalFieldsArray,
     );
 
     serializedRecord = this.removeKeysFromNestedObjects(
       serializedRecord,
-      this.keysToRemove
+      this.keysToRemove,
     );
 
     serializedRecord = this.removeEmptyValues(serializedRecord);
@@ -174,7 +160,10 @@ export class OARepoDepositSerializer extends DepositRecordSerializer {
   }
 }
 
-export class EmptyDepositRecordSerializer extends DepositRecordSerializer {
+export class EmptyDepositRecordSerializer extends RDMDepositRecordSerializer {
+  get depositRecordSchema() {
+    return {};
+  }
   deserialize(record) {
     const originalRecord = _pick(_cloneDeep(record), [
       "expanded",
@@ -195,9 +184,7 @@ export class EmptyDepositRecordSerializer extends DepositRecordSerializer {
 
     return originalRecord;
   }
-  deserializeErrors(errors) {
-    return errors;
-  }
+
   serialize(record) {
     const originalRecord = _pick(_cloneDeep(record), [
       "metadata",
