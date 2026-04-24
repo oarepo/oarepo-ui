@@ -1,7 +1,7 @@
 import React from "react";
-import { i18next } from "@translations/i18next";
+import { i18next } from "@translations/oarepo_ui/i18next";
 
-export const DummySection = {
+export const ExampleSection = {
   key: "general-information",
   label: i18next.t("General information"),
   component: () => {
