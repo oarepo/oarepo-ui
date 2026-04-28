@@ -1,3 +1,7 @@
 #skip-to-main {
   display: none;
 }
+
+.invenio-page-body {
+  padding-top: 1rem;
+}
