@@ -65,10 +65,10 @@ WizardFormLayout.propTypes = {
       includesPaths: PropTypes.array,
       saveOnTabChange: PropTypes.bool,
       sectionCompletion: PropTypes.func,
-      filledThreshold: PropTypes.number,
+      sectionCompletionThreshold: PropTypes.number,
       /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
       component: PropTypes.func.isRequired,
-    })
+    }),
   ),
   record: PropTypes.object,
   overridableIdPrefix: PropTypes.string,
@@ -194,10 +194,10 @@ BaseFormLayout.propTypes = {
       includesPaths: PropTypes.array,
       saveOnTabChange: PropTypes.bool,
       sectionCompletion: PropTypes.func,
-      filledThreshold: PropTypes.number,
+      sectionCompletionThreshold: PropTypes.number,
       /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
       component: PropTypes.func.isRequired,
-    })
+    }),
   ),
 };
 

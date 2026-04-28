@@ -46,7 +46,7 @@ export const FormTabs = ({ sections, activeStep, onTabChange }) => {
           <SectionCompletionBar
             includesPaths={section.includesPaths || []}
             sectionCompletion={section.sectionCompletion}
-            filledThreshold={section.filledThreshold}
+            sectionCompletionThreshold={section.sectionCompletionThreshold}
           />
         </Menu.Item>
       ))}
@@ -62,10 +62,10 @@ FormTabs.propTypes = {
       includesPaths: PropTypes.array,
       saveOnTabChange: PropTypes.bool,
       sectionCompletion: PropTypes.func,
-      filledThreshold: PropTypes.number,
+      sectionCompletionThreshold: PropTypes.number,
       /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
       component: PropTypes.func.isRequired,
-    })
+    }),
   ),
   activeStep: PropTypes.number.isRequired,
   onTabChange: PropTypes.func.isRequired,

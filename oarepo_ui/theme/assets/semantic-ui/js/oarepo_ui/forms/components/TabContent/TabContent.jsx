@@ -75,7 +75,7 @@ export const TabContent = ({ activeStep, sections, next, back }) => {
       <Message negative data-testid="tab-content-no-component">
         <Message.Header>
           {i18next.t(
-            "Section definition is missing the component key and it must be defined."
+            "Section definition is missing the component key and it must be defined.",
           )}
         </Message.Header>
       </Message>
@@ -121,7 +121,7 @@ export const TabContent = ({ activeStep, sections, next, back }) => {
         <Overridable
           id={buildUID(
             formConfig?.overridableIdPrefix,
-            `TabForm.TabContent.${section.key}`
+            `TabForm.TabContent.${section.key}`,
           )}
           activeStep={activeStep}
           section={section}
@@ -142,10 +142,10 @@ TabContent.propTypes = {
       includesPaths: PropTypes.array,
       saveOnTabChange: PropTypes.bool,
       sectionCompletion: PropTypes.func,
-      filledThreshold: PropTypes.number,
+      sectionCompletionThreshold: PropTypes.number,
       /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
       component: PropTypes.func.isRequired,
-    })
+    }),
   ),
   next: PropTypes.func.isRequired,
   back: PropTypes.func.isRequired,

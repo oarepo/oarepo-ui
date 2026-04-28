@@ -24,7 +24,7 @@ export const TabForm = ({ sections = [] }) => {
   const record = useSelector((state) => state.deposit.record);
   const saveAction = useCallback(
     (values, params) => dispatch(save(values, params)),
-    [dispatch]
+    [dispatch],
   );
 
   const sectionKeys = useMemo(() => sections.map((s) => s.key), [sections]);
@@ -34,7 +34,7 @@ export const TabForm = ({ sections = [] }) => {
   const initialTabKey = params.get("tab");
   const initialStep = sectionKeys.indexOf(initialTabKey);
   const [activeStep, setActiveStepState] = React.useState(
-    Math.max(initialStep, 0)
+    Math.max(initialStep, 0),
   );
   const [contentVisible, setContentVisible] = React.useState(true);
   const [isSwapping, setIsSwapping] = React.useState(false);
@@ -69,7 +69,7 @@ export const TabForm = ({ sections = [] }) => {
       setActiveStepState(index);
       setContentVisible(false);
     },
-    [sectionKeys, handleSave, dirty, sections, activeStep]
+    [sectionKeys, handleSave, dirty, sections, activeStep],
   );
 
   const handleTransitionHide = useCallback(() => {
@@ -126,7 +126,7 @@ export const TabForm = ({ sections = [] }) => {
       next,
       back,
     }),
-    [activeStep, handleSetStep, next, back]
+    [activeStep, handleSetStep, next, back],
   );
   if (sections.length === 0) {
     return (
@@ -281,10 +281,10 @@ TabForm.propTypes = {
       includesPaths: PropTypes.array,
       saveOnTabChange: PropTypes.bool,
       sectionCompletion: PropTypes.func,
-      filledThreshold: PropTypes.number,
+      sectionCompletionThreshold: PropTypes.number,
       /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
       component: PropTypes.func.isRequired,
-    })
+    }),
   ),
 };
 
