@@ -3,3 +3,17 @@
     background-color: @resultsOptionsRowBackgroundColor;
   }
 }
+
+// this is fairly hacky, but they have messed up layout in search
+// that breaks entirely if you change font-size
+// alternative in my opinion is to override entire layout of the search app (the one on /search)
+.ui.grid > .row.result-options > .mobile.only.tablet.only.column {
+  padding: 0;
+  margin-top: 0.5rem;
+}
+
+@media all and (max-width: @largestTabletScreen) {
+  .ui.grid > .row.result-options {
+    padding-left: 1.5rem;
+  }
+}
