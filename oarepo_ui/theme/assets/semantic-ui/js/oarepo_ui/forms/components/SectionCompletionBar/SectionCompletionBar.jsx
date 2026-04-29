@@ -21,7 +21,6 @@ export const SectionCompletionBar = ({
       ? sectionCompletion({ formikValues: values, reduxState, includesPaths })
       : computeSectionCompletion({
           formikValues: values,
-          reduxState,
           includesPaths,
         });
 

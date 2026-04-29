@@ -454,15 +454,10 @@ export const computeFilesSectionCompletion = ({ reduxState }) => {
  *
  * @param {Object} params
  * @param {Object} params.formikValues - Formik values object
- * @param {Object} params.reduxState - Redux store state
  * @param {string[]} params.includesPaths - Array of field paths to check
  * @returns {number} Fraction filled (0 to 1)
  */
-export const computeSectionCompletion = ({
-  formikValues,
-  reduxState,
-  includesPaths,
-}) => {
+export const computeSectionCompletion = ({ formikValues, includesPaths }) => {
   if (!includesPaths || includesPaths.length === 0) return 1;
 
   let filledCount = 0;

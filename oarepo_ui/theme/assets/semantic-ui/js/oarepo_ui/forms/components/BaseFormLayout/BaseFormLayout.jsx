@@ -68,7 +68,7 @@ WizardFormLayout.propTypes = {
       sectionCompletionThreshold: PropTypes.number,
       /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
       component: PropTypes.func.isRequired,
-    }),
+    })
   ),
   record: PropTypes.object,
   overridableIdPrefix: PropTypes.string,
@@ -197,7 +197,7 @@ BaseFormLayout.propTypes = {
       sectionCompletionThreshold: PropTypes.number,
       /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
       component: PropTypes.func.isRequired,
-    }),
+    })
   ),
 };
 

@@ -40,7 +40,7 @@ export class DepositFormApp extends Component {
       ? props.recordSerializer
       : new RDMDepositRecordSerializer(
           props.config.default_locale,
-          props.config.custom_fields.vocabularies,
+          props.config.custom_fields.vocabularies
         );
 
     const apiHeaders = props.apiHeaders
@@ -61,7 +61,7 @@ export class DepositFormApp extends Component {
       new RDMDepositApiClient(
         additionalApiConfig,
         props.config.createUrl,
-        recordSerializer,
+        recordSerializer
       );
 
     const fileApiClient =
@@ -69,7 +69,7 @@ export class DepositFormApp extends Component {
       new RDMDepositFileApiClient(
         additionalApiConfig,
         props.config.default_transfer_type,
-        props.config.enabled_transfer_types,
+        props.config.enabled_transfer_types
       );
 
     const draftsService =
@@ -79,7 +79,7 @@ export class DepositFormApp extends Component {
       props.filesService ||
       new RDMDepositFilesService(
         fileApiClient,
-        props.config.fileUploadConcurrency,
+        props.config.fileUploadConcurrency
       );
 
     props.config.severityChecks = severityChecks;
@@ -103,7 +103,7 @@ export class DepositFormApp extends Component {
 
     if (props?.record?.errors && props?.record?.errors.length > 0) {
       appConfig.errors = recordSerializer.deserializeErrors(
-        props.record.errors,
+        props.record.errors
       );
     }
 
@@ -172,7 +172,7 @@ export class DepositFormApp extends Component {
                       <Overridable
                         id={buildUID(
                           this.overridableIdPrefix,
-                          "FormApp.layout",
+                          "FormApp.layout"
                         )}
                       >
                         <Container className="rel-mt-1">
@@ -222,7 +222,7 @@ DepositFormApp.propTypes = {
       sectionCompletionThreshold: PropTypes.number,
       /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
       component: PropTypes.func.isRequired,
-    }),
+    })
   ),
   apiHeaders: PropTypes.object,
   errors: PropTypes.arrayOf(PropTypes.object),

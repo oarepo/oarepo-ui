@@ -65,7 +65,7 @@ FormTabs.propTypes = {
       sectionCompletionThreshold: PropTypes.number,
       /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
       component: PropTypes.func.isRequired,
-    }),
+    })
   ),
   activeStep: PropTypes.number.isRequired,
   onTabChange: PropTypes.func.isRequired,
