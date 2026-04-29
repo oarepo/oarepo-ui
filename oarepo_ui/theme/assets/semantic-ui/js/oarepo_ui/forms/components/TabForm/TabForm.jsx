@@ -57,6 +57,10 @@ export const TabForm = ({ sections = [] }) => {
       if (!(index >= 0 && index < sectionKeys.length)) {
         return;
       }
+      if (swapTimerRef.current) {
+        clearTimeout(swapTimerRef.current);
+        swapTimerRef.current = null;
+      }
       const currentSection = sections[activeStep];
       // certain inputs in the form, like the file uploader or community selector, don't actually update the formik state on change, so we trigger a save when changing tabs if there are unsaved changes or if the current section requires it
       // mainly meant for files section and potentially communities. All the other inputs write to formik.
