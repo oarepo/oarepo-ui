@@ -8,6 +8,26 @@
       border-top: none;
     }
   }
+  &.facet {
+    .facet-wrapper {
+      display: flex;
+      align-items: baseline;
+      gap: 0.35em;
+
+      .ui.checkbox {
+        min-width: 0;
+
+        label {
+          white-space: normal;
+          overflow-wrap: break-word;
+        }
+      }
+
+      .facet-count {
+        flex-shrink: 0;
+      }
+    }
+  }
 }
 
 .ui.card.access-right {
