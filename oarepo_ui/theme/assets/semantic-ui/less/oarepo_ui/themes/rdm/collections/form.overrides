@@ -21,6 +21,15 @@
 
 // Tab form layout and styling
 .tab-form {
+  .tab-content {
+    .field {
+      margin-bottom: @fieldMarginBottom !important;
+
+      .field {
+        margin-bottom: 0 !important;
+      }
+    }
+  }
   // Desktop vertical tabs (left sidebar)
   .form-tabs-column {
     padding-right: @formTabsAndContentPadding !important;
@@ -168,7 +177,6 @@
 
       & ~ label.helptext {
         margin-top: 0;
-        margin-bottom: 2rem;
       }
 
       .invenio-group-field.fields {

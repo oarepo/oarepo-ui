@@ -63,7 +63,7 @@ export const EDTFSingleDatePicker = ({
         customInputProps={customInputProps}
       />
       {fieldData.helpText && (
-        <label className="helptext rel-mt-1">{fieldData.helpText}</label>
+        <label className="helptext">{fieldData.helpText}</label>
       )}
     </Form.Field>
   );
