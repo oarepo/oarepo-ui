@@ -228,22 +228,22 @@ export const TabForm = ({ sections = [] }) => {
         </Grid.Row>
         <Overridable id={buildUID(overridableIdPrefix, "TabForm.actions")}>
           <Grid.Row data-testid="tab-form-actions-row">
-            <div className="flex justify-end form-actions-row">
+            <div className="form-actions-row">
+              <Overridable
+                id={buildUID(overridableIdPrefix, "TabForm.DeleteButton")}
+                permissions={permissions}
+              >
+                {permissions?.can_delete_draft && record?.id && (
+                  <div>
+                    <DeleteButton />
+                  </div>
+                )}
+              </Overridable>
               <Overridable
                 id={buildUID(overridableIdPrefix, "TabForm.PreviewButton")}
               >
                 <div>
                   <PreviewButton />
-                </div>
-              </Overridable>
-              <Overridable
-                id={buildUID(overridableIdPrefix, "TabForm.DeleteButton")}
-                permissions={permissions}
-              >
-                <div>
-                  {permissions?.can_delete_draft && record?.id && (
-                    <DeleteButton />
-                  )}
                 </div>
               </Overridable>
               <Overridable
