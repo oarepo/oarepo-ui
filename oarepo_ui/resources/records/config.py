@@ -426,13 +426,16 @@ class RecordsUIResourceConfig(UIResourceConfig):
             selected_facets = []
         facets_config = {}
         for facet_key, facet in available_facets.items():
+            ui = {
+                "field": facet._params.get(  # noqa: SLF001  access private attribute
+                    "field", facet_key
+                ),
+            }
+            if hasattr(facet, "_ui_config"):
+                ui.update(facet._ui_config)  # noqa: SLF001
             facets_config[facet_key] = {
                 "facet": facet,
-                "ui": {
-                    "field": facet._params.get(  # noqa: SLF001  access private attribute
-                        "field", facet_key
-                    ),
-                },
+                "ui": ui,
             }
 
         return FacetsConfig(facets_config, selected_facets)

@@ -7,7 +7,6 @@ import { GridResponsiveSidebarColumn } from "react-invenio-forms";
 import { Container, Grid, Button, Label, Icon } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import {
-  SearchAppFacets,
   SearchAppResultsPane,
   SearchBar,
   SearchConfigurationContext,
@@ -16,6 +15,7 @@ import { ResultOptions } from "@js/invenio_search_ui/components/Results";
 import { ClearFiltersButton } from "./ClearFiltersButton";
 import { ShouldActiveFiltersRender } from "./ShouldActiveFiltersRender";
 import { useActiveSearchFilters } from "./hooks";
+import { ContribSearchAppFacets } from "@js/invenio_search_ui/components";
 
 const ResultOptionsWithState = withState(ResultOptions);
 
@@ -124,7 +124,8 @@ export const SearchAppResultsGrid = ({
             <ShouldActiveFiltersRender>
               <ClearFiltersButton className="clear-filters-button mobile tablet only" />
             </ShouldActiveFiltersRender>
-            <SearchAppFacets
+            <ContribSearchAppFacets
+              toggle
               aggs={config.aggs}
               appName={appName}
               buildUID={buildUID}

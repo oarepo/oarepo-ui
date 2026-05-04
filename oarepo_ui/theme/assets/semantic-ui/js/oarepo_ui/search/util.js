@@ -10,7 +10,6 @@ import { BucketAggregationValuesElement } from "./BucketAggregationValuesElement
 import { CountElement } from "./ResultCount";
 import { EmptyResultsElement } from "./EmptyResultsElement";
 import { ErrorElement } from "./ErrorElement";
-import { SearchAppFacets } from "./SearchAppFacets";
 import { SearchAppLayout } from "./SearchAppLayout";
 import { SearchAppResultOptions } from "./SearchAppResultOptions";
 import { SearchAppSearchbarContainer } from "./SearchAppSearchbarContainer";
@@ -19,6 +18,7 @@ import { SearchAppResults } from "./SearchAppResults";
 import { FoldableBucketAggregationElement } from "./FoldableBucketAggregationElement";
 import { ClearableSearchbarElement } from "./ClearableSearchbarElement";
 import { RDMToggleComponent } from "@js/invenio_app_rdm/search/components";
+import { ContribSearchAppFacets } from "@js/invenio_search_ui/components";
 
 export function parseSearchAppConfigs(
   configDataAttr = "invenio-search-config"
@@ -46,6 +46,12 @@ export function createSearchAppsInit({
       SearchAppSearchbarContainer,
       { appName: overridableIdPrefix }
     );
+    const ContribSearchAppFacetsWithConfig = parametrize(
+      ContribSearchAppFacets,
+      {
+        toggle: true,
+      }
+    );
 
     const defaultComponents = {
       [`${overridableIdPrefix}.ActiveFilters.element`]: ActiveFiltersElement,
@@ -56,7 +62,8 @@ export function createSearchAppsInit({
       [`${overridableIdPrefix}.Count.element`]: CountElement,
       [`${overridableIdPrefix}.EmptyResults.element`]: EmptyResultsElement,
       [`${overridableIdPrefix}.Error.element`]: ErrorElement,
-      [`${overridableIdPrefix}.SearchApp.facets`]: SearchAppFacets,
+      [`${overridableIdPrefix}.SearchApp.facets`]:
+        ContribSearchAppFacetsWithConfig,
       [`${overridableIdPrefix}.SearchApp.layout`]: SearchAppLayout,
       [`${overridableIdPrefix}.SearchApp.resultOptions`]:
         SearchAppResultOptions,
