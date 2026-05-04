@@ -8,7 +8,7 @@ import { SearchBar, ActiveFilters } from "react-searchkit";
 import { GridResponsiveSidebarColumn } from "react-invenio-forms";
 import { Grid, Button, Container, Icon } from "semantic-ui-react";
 import PropTypes from "prop-types";
-import { SearchAppFacets } from "./SearchAppFacets";
+import { ContribSearchAppFacets } from "@js/invenio_search_ui/components";
 import { ClearFiltersButton } from "./ClearFiltersButton";
 import { ShouldActiveFiltersRender } from "./ShouldActiveFiltersRender";
 import { ActiveFiltersCountFloatingLabel } from "./SearchAppLayout";
@@ -43,7 +43,11 @@ export const SearchAppLayoutWithSearchbarHOC = ({
               aggs={config.aggs}
               appName={appName}
             >
-              <SearchAppFacets aggs={config.aggs} appName={appName} />
+              <ContribSearchAppFacets
+                toggle
+                aggs={config.aggs}
+                appName={appName}
+              />
             </Overridable>
           </GridResponsiveSidebarColumn>
           <Grid.Column computer={12} mobile={16} tablet={16}>

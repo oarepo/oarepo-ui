@@ -3,7 +3,7 @@ export { BucketAggregationElement } from "./BucketAggregationElement";
 export { BucketAggregationValuesElement } from "./BucketAggregationValuesElement";
 export { ResultCountWithState, ResultCount, CountElement } from "./ResultCount";
 export { ErrorElement } from "./ErrorElement";
-export { SearchAppFacets } from "./SearchAppFacets";
+export { SearchAppFacetFallback } from "./SearchAppFacetFallback";
 export {
   SearchAppLayout,
   ActiveFiltersCountFloatingLabel,

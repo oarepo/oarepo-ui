@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { ContribBucketAggregationValuesElement } from "@js/invenio_search_ui/components";
 
 export const BucketAggregationValuesElement = ({ bucket, ...rest }) => {
+  console.log(bucket, "bucket in values element");
   return (
     <ContribBucketAggregationValuesElement
       bucket={{ ...bucket, key: bucket.key.toString() }}

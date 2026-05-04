@@ -111,9 +111,3 @@ class UIComponentOverride:
 
 
 DisabledComponent = UIComponent("Disabled", "@js/oarepo_ui/components/Disabled")
-
-FacetsWithVersionsToggle = UIComponent(
-    "SearchAppFacets",
-    "@js/oarepo_ui/search/SearchAppFacets",
-    props={"allVersionsToggle": True},
-)
