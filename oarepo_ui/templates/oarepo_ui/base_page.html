@@ -1,5 +1,18 @@
 {% extends "invenio_app_rdm/page.html" %}
 
+{%- block head_links %}
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='oarepo-favicon.svg') }}"/>
+  {%- if keywords %}
+    <link rel="canonical" href="{{ canonical_url }}"/>
+  {% endif %}
+{%- endblock head_links %}
+
+{%- block head_apple_icons %}
+  {%- for size in [120, 152, 167, 180] %}
+    <link rel="apple-touch-icon" sizes="{{ size }}x{{ size }}" href="{{ url_for('static', filename='oarepo-apple-touch-icon-%d.png' | format(size)) }}"/>
+  {%- endfor %}
+{%- endblock head_apple_icons %}
+
 {%- block head %}
 {{ super() }}
 {% if config.MATOMO_ANALYTICS_TEMPLATE %}
