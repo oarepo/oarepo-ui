@@ -221,6 +221,9 @@
     right: 0;
     height: @sectionCompletionBarHeight;
     background-color: @sectionCompletionBarBackgroundColor;
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+    overflow: hidden;
 
     .section-completion-bar-fill {
       height: 100%;

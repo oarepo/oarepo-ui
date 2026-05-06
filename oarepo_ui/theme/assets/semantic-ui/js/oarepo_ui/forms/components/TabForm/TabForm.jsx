@@ -224,19 +224,19 @@ export const TabForm = ({ sections = [] }) => {
               data-testid="tab-form-content-column"
             >
               <Transition
-                visible={contentVisible}
+                visible={contentVisible && !isSwapping}
                 animation="fade"
                 duration={200}
                 onHide={handleTransitionHide}
               >
-                {!isSwapping && (
+                <div>
                   <TabContent
                     activeStep={activeStep}
                     sections={sections}
                     next={next}
                     back={back}
                   />
-                )}
+                </div>
               </Transition>
             </Grid.Column>
           </Overridable>

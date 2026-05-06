@@ -14,16 +14,11 @@ export const FormTabErrors = ({ includesPaths }) => {
     includesPaths
   );
   const categorizedErrors = categorizeErrors(subfieldErrors);
-  const noMessages = Object.values(categorizedErrors).every((value) =>
-    isEmpty(value)
-  );
+
   if (isSubmitting) {
     return <Icon loading name="circle notch" />;
   }
 
-  if (noMessages) {
-    return <Icon name="check" color="green" />;
-  }
   return (
     <>
       {Object.entries(categorizedErrors).map(
