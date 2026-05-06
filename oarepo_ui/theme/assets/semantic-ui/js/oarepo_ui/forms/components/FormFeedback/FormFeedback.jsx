@@ -255,12 +255,17 @@ FormFeedback.propTypes = {
 
 export const FormFeedbackPanel = ({ actions = {}, sections = [] }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useDispatch();
   const errors = useSelector((state) => state.deposit.errors);
   const actionState = useSelector((state) => state.deposit.actionState);
 
   const { activeStep, setActiveStep } = useFormTabs() || {};
   const timeoutRef = useRef(null);
   const allActions = { ...ACTIONS, ...actions };
+  const handleDismiss = useCallback(
+    () => dispatch(clearErrors()),
+    [dispatch]
+  );
   const flattenedErrors = flattenToPathValueArray(errors);
 
   const message = _get(allActions, [actionState, "message"]);
@@ -302,6 +307,7 @@ export const FormFeedbackPanel = ({ actions = {}, sections = [] }) => {
   return (
     <>
       <div className="form-feedback-inline" data-testid="form-feedback-inline">
+        <Icon name="warning sign" />
         <span>{backendErrorMessage || message}</span>
         {hasErrors && (
           <Button
@@ -315,6 +321,14 @@ export const FormFeedbackPanel = ({ actions = {}, sections = [] }) => {
             {i18next.t("Summary")} ({flattenedErrors.length})
           </Button>
         )}
+        <Button
+          icon="close"
+          size="mini"
+          basic
+          onClick={handleDismiss}
+          data-testid="form-feedback-dismiss"
+          className="form-feedback-dismiss"
+        />
       </div>
 
       <div
