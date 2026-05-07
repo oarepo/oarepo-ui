@@ -208,9 +208,7 @@
 
   // Bottom action buttons
   .form-actions-row {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
+    justify-content: flex-end !important;
     gap: 1.5rem;
   }
 }

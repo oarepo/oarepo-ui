@@ -227,41 +227,32 @@ export const TabForm = ({ sections = [] }) => {
           </Overridable>
         </Grid.Row>
         <Overridable id={buildUID(overridableIdPrefix, "TabForm.actions")}>
-          <Grid.Row data-testid="tab-form-actions-row">
-            <div className="form-actions-row">
-              <Overridable
-                id={buildUID(overridableIdPrefix, "TabForm.DeleteButton")}
-                permissions={permissions}
-              >
-                {permissions?.can_delete_draft && record?.id && (
-                  <div>
-                    <DeleteButton />
-                  </div>
-                )}
-              </Overridable>
-              <Overridable
-                id={buildUID(overridableIdPrefix, "TabForm.PreviewButton")}
-              >
-                <div>
-                  <PreviewButton />
-                </div>
-              </Overridable>
-              <Overridable
-                id={buildUID(overridableIdPrefix, "TabForm.SaveButton")}
-              >
-                <div>
-                  <SaveButton />
-                </div>
-              </Overridable>
-              <Overridable
-                id={buildUID(overridableIdPrefix, "TabForm.PublishButton")}
-                record={record}
-              >
-                <div>
-                  <PublishButton record={record} />
-                </div>
-              </Overridable>
-            </div>
+          <Grid.Row
+            data-testid="tab-form-actions-row"
+            className="form-actions-row"
+          >
+            <Overridable
+              id={buildUID(overridableIdPrefix, "TabForm.DeleteButton")}
+              permissions={permissions}
+            >
+              {permissions?.can_delete_draft && record?.id && <DeleteButton />}
+            </Overridable>
+            <Overridable
+              id={buildUID(overridableIdPrefix, "TabForm.PreviewButton")}
+            >
+              <PreviewButton />
+            </Overridable>
+            <Overridable
+              id={buildUID(overridableIdPrefix, "TabForm.SaveButton")}
+            >
+              <SaveButton />
+            </Overridable>
+            <Overridable
+              id={buildUID(overridableIdPrefix, "TabForm.PublishButton")}
+              record={record}
+            >
+              <PublishButton record={record} />
+            </Overridable>
           </Grid.Row>
         </Overridable>
       </Grid>
