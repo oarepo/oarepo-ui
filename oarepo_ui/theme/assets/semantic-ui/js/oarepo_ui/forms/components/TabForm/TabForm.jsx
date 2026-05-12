@@ -37,6 +37,7 @@ export const TabForm = ({ sections = [] }) => {
     Math.max(initialStep, 0)
   );
   const [contentVisible, setContentVisible] = React.useState(true);
+  const [pendingStep, setPendingStep] = React.useState(null);
 
   const { handleAction: handleSave } = useDepositFormAction({
     action: saveAction,
@@ -45,6 +46,9 @@ export const TabForm = ({ sections = [] }) => {
   const handleSetStep = useCallback(
     (index) => {
       if (!(index >= 0 && index < sectionKeys.length)) {
+        return;
+      }
+      if (index === activeStep && pendingStep === null) {
         return;
       }
       const currentSection = sections[activeStep];
@@ -56,11 +60,21 @@ export const TabForm = ({ sections = [] }) => {
       const url = new URL(window.location);
       url.searchParams.set("tab", sectionKeys[index]);
       window.history.replaceState({}, "", url);
-      setActiveStepState(index);
+      // Stage the target step; commit it in onHide so the *old* tab fades out
+      // before the new one mounts and fades in.
+      setPendingStep(index);
       setContentVisible(false);
     },
-    [sectionKeys, handleSave, dirty, sections, activeStep]
+    [sectionKeys, handleSave, dirty, sections, activeStep, pendingStep]
   );
+
+  const commitPendingStep = useCallback(() => {
+    if (pendingStep !== null) {
+      setActiveStepState(pendingStep);
+      setPendingStep(null);
+    }
+    setContentVisible(true);
+  }, [pendingStep]);
 
   useEffect(() => {
     if (sections.length === 0) return;
@@ -202,8 +216,8 @@ export const TabForm = ({ sections = [] }) => {
               <Transition
                 visible={contentVisible}
                 animation="fade"
-                duration={200}
-                onHide={() => setContentVisible(true)}
+                duration={100}
+                onHide={commitPendingStep}
                 unmountOnHide
               >
                 <div>
