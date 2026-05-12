@@ -529,7 +529,17 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         record = self.config.ui_serializer.dump_obj(copy.copy(draft.to_dict()))
         # TODO: implement edit action on published record (similar to RDM)
 
-        form_config = self._get_form_config(g.identity, updateUrl=draft.links.get("self", None))
+        dashboard_routes = current_app.config.get("APP_RDM_USER_DASHBOARD_ROUTES", {})
+        if "uploads" not in dashboard_routes:
+            log.warning(
+                "APP_RDM_USER_DASHBOARD_ROUTES dictionary not set up in configuration "
+                "or 'uploads' key not in the dictionary"
+            )
+        form_config = self._get_form_config(
+            g.identity,
+            dashboard_routes=dashboard_routes,
+            updateUrl=draft.links.get("self", None),
+        )
         form_config["ui_model"] = self.ui_model
 
         ui_links = self.expand_detail_links(identity=g.identity, record=draft)
@@ -672,7 +682,12 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             community_theme = community_ui.get("theme", {})
 
         community_use_jinja_header = bool(community_theme)
-        dashboard_routes = current_app.config["APP_RDM_USER_DASHBOARD_ROUTES"]
+        dashboard_routes = current_app.config.get("APP_RDM_USER_DASHBOARD_ROUTES", {})
+        if "uploads" not in dashboard_routes:
+            log.warning(
+                "APP_RDM_USER_DASHBOARD_ROUTES dictionary not set up in configuration "
+                "or 'uploads' key not in the dictionary"
+            )
 
         if not self.config.model:
             raise RuntimeError(f"Model {self.config.model_name} not registered, cannot resolve create URL")
