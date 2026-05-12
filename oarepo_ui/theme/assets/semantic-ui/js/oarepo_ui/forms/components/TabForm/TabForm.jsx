@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useMemo, useRef } from "react";
+import React, { useEffect, useCallback, useMemo } from "react";
 import PropTypes from "prop-types";
 import { Grid, Header, Message, Transition } from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -37,16 +37,6 @@ export const TabForm = ({ sections = [] }) => {
     Math.max(initialStep, 0)
   );
   const [contentVisible, setContentVisible] = React.useState(true);
-  const [isSwapping, setIsSwapping] = React.useState(false);
-  const swapTimerRef = useRef(null);
-
-  useEffect(() => {
-    return () => {
-      if (swapTimerRef.current) {
-        clearTimeout(swapTimerRef.current);
-      }
-    };
-  }, []);
 
   const { handleAction: handleSave } = useDepositFormAction({
     action: saveAction,
@@ -56,10 +46,6 @@ export const TabForm = ({ sections = [] }) => {
     (index) => {
       if (!(index >= 0 && index < sectionKeys.length)) {
         return;
-      }
-      if (swapTimerRef.current) {
-        clearTimeout(swapTimerRef.current);
-        swapTimerRef.current = null;
       }
       const currentSection = sections[activeStep];
       // certain inputs in the form, like the file uploader or community selector, don't actually update the formik state on change, so we trigger a save when changing tabs if there are unsaved changes or if the current section requires it
@@ -75,16 +61,6 @@ export const TabForm = ({ sections = [] }) => {
     },
     [sectionKeys, handleSave, dirty, sections, activeStep]
   );
-
-  const handleTransitionHide = useCallback(() => {
-    // Content has faded out — unmount/remount for react-dnd HTML5 backend cleanup - make the swapping more smooth
-    setIsSwapping(true);
-    swapTimerRef.current = setTimeout(() => {
-      swapTimerRef.current = null;
-      setIsSwapping(false);
-      setContentVisible(true);
-    }, 0);
-  }, []);
 
   useEffect(() => {
     if (sections.length === 0) return;
@@ -224,10 +200,11 @@ export const TabForm = ({ sections = [] }) => {
               data-testid="tab-form-content-column"
             >
               <Transition
-                visible={contentVisible && !isSwapping}
+                visible={contentVisible}
                 animation="fade"
                 duration={200}
-                onHide={handleTransitionHide}
+                onHide={() => setContentVisible(true)}
+                unmountOnHide
               >
                 <div>
                   <TabContent
