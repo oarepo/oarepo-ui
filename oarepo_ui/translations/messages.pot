@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-04-23 14:07+0200\n"
+"POT-Creation-Date: 2026-05-12 21:21+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -207,23 +207,23 @@ msgid ""
 "The server does not support the HTTP protocol version used in the request."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:420
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:368
 msgid "File preview requested but file service is not available on the model"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:813
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:759
 msgid "User does not have permission to create a record."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:1017
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:963
 msgid "Removal reason"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:1018
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:964
 msgid "Note"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:1019
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:965
 msgid "Citation text"
 msgstr ""
 
@@ -857,6 +857,15 @@ msgid ""
 msgstr ""
 
 msgid "Your draft contains unsaved changes."
+msgstr ""
+
+msgid "General information"
+msgstr ""
+
+msgid "Please define your sections."
+msgstr ""
+
+msgid "See the documentation"
 msgstr ""
 
 msgid "Search"

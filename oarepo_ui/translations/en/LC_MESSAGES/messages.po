@@ -1487,3 +1487,12 @@ msgstr ""
 
 msgid "Section completion"
 msgstr ""
+
+msgid "General information"
+msgstr ""
+
+msgid "Please define your sections."
+msgstr ""
+
+msgid "See the documentation"
+msgstr ""
