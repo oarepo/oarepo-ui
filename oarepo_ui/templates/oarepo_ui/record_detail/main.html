@@ -35,6 +35,33 @@
 
   {% endblock record_header_button %}
 
+  {%- block record_mobile_management -%}
+    {% if show_record_management_menu %}
+      <section id="mobile-record-management"
+               class="ui grid tablet only mobile only">
+        <div class="sixteen wide column right aligned">
+          <button id="manage-record-btn"
+                  class="ui small basic icon button m-0"
+                  aria-haspopup="dialog"
+                  aria-expanded="false"
+                  aria-controls="recordManagementMobile"
+          >
+            <i class="cog icon"></i> <span id="manage-record-btn-label">{{ _('Manage record') }}</span>
+          </button>
+        </div>
+        <div id="recordManagementMobile"
+             role="dialog"
+             aria-labelledby="manage-record-btn-label"
+             class="ui flowing popup transition hidden"
+             {% if config.RDM_DETAIL_SIDE_BAR_MANAGE_ATTRIBUTES_EXTENSION_TEMPLATE %}
+              {% include config.RDM_DETAIL_SIDE_BAR_MANAGE_ATTRIBUTES_EXTENSION_TEMPLATE %}
+             {% endif %}
+        >
+        </div>
+      </section>
+    {% endif %}
+  {%- endblock record_mobile_management -%}
+
   {%- block record_header_info -%}
   <section id="record-info"
            aria-label="{{ _('Publication date and version number') }}">
