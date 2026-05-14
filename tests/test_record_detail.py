@@ -87,3 +87,45 @@ def test_record_detail(app, location, logged_client, users, record_factory, extr
             in resp.headers["Link"]
         )
         assert f'anchor="https://127.0.0.1:5000/simple-model/records/{record_ui["id"]}", ' in resp.headers["Link"]
+
+
+def test_record_detail_runs_with_scoped_export_cache(app, monkeypatch):
+    import oarepo_ui.resources.decorators.content_negotiation as content_negotiation
+    from oarepo_runtime.api import ExportEngine
+    from oarepo_ui.resources.records.resource import RecordsUIResource
+
+    observed_caches = []
+
+    class FakeRecord:
+        id = "test-record"
+
+        def to_dict(self):
+            return {
+                "$schema": "local://simple-model-record-v1.0.0.json",
+                "id": self.id,
+            }
+
+    class FakeModel:
+        def api_url(self, _action, pid_value):
+            return f"/api/simple-model/{pid_value}"
+
+    class FakeModelsBySchema:
+        def __getitem__(self, _schema):
+            observed_caches.append(ExportEngine.export_cache_context.get())
+            return FakeModel()
+
+    class FakeRuntime:
+        models_by_schema = FakeModelsBySchema()
+
+    monkeypatch.setattr(content_negotiation, "current_runtime", FakeRuntime())
+
+    cached_record_detail = RecordsUIResource.record_detail.__wrapped__.__wrapped__.__wrapped__
+
+    with app.test_request_context(headers={"Accept": "application/json"}):
+        response = cached_record_detail(object(), record=FakeRecord())
+
+    assert observed_caches
+    assert all(cache is not None for cache in observed_caches)
+    assert response.status_code == 302
+    assert response.location == "/api/simple-model/test-record"
+    assert ExportEngine.export_cache_context.get() is None
