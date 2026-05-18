@@ -11,4 +11,7 @@
       margin: 0 !important;
     }
   }
+  &.form-feedback-dismiss {
+    margin-left: 0.5rem;
+  }
 }

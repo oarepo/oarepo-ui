@@ -118,6 +118,13 @@ const FEEDBACK_COLORS = {
   info: "blue",
 };
 
+const FEEDBACK_ICONS = {
+  positive: "check circle",
+  warning: "warning sign",
+  negative: "times circle",
+  info: "info circle",
+};
+
 // function to turn last part of fieldPath from form camelCase to Camel Case
 const titleCase = (fieldPath) =>
   _startCase(fieldPath.split(".")[fieldPath.split(".").length - 1]);
@@ -270,6 +277,7 @@ export const FormFeedbackPanel = ({ actions = {}, sections = [] }) => {
   const flattenedErrors = flattenToPathValueArray(errors);
 
   const message = _get(allActions, [actionState, "message"]);
+  const feedbackType = _get(allActions, [actionState, "feedback"]);
   const backendErrorMessage = errors.message || errors._schema;
   const hasErrors = flattenedErrors?.length > 0;
 
@@ -286,6 +294,7 @@ export const FormFeedbackPanel = ({ actions = {}, sections = [] }) => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
+      setIsOpen(false);
 
       if (setActiveStep && activeStep !== undefined && sections.length > 0) {
         const sectionIndex = findSectionIndexForFieldPath(sections, fieldPath);
@@ -307,9 +316,14 @@ export const FormFeedbackPanel = ({ actions = {}, sections = [] }) => {
 
   return (
     <>
-      <div className="form-feedback-inline" data-testid="form-feedback-inline">
-        <Icon name="warning sign" />
-        <span>{backendErrorMessage || message}</span>
+      <Message
+        {...{ [feedbackType || "warning"]: true }}
+        onDismiss={handleDismiss}
+        className="form-feedback-inline"
+        data-testid="form-feedback-inline"
+      >
+        <Icon name={FEEDBACK_ICONS[feedbackType] || "warning sign"} />
+        {backendErrorMessage || message}
         {hasErrors && (
           <Button
             type="button"
@@ -323,16 +337,7 @@ export const FormFeedbackPanel = ({ actions = {}, sections = [] }) => {
             {i18next.t("Summary")} ({flattenedErrors.length})
           </Button>
         )}
-        <Button
-          type="button"
-          icon="close"
-          size="mini"
-          basic
-          onClick={handleDismiss}
-          data-testid="form-feedback-dismiss"
-          className="form-feedback-dismiss"
-        />
-      </div>
+      </Message>
 
       <div
         className={`form-feedback-panel ${isOpen ? "open" : ""}`}
@@ -354,11 +359,18 @@ export const FormFeedbackPanel = ({ actions = {}, sections = [] }) => {
             <Message.List>
               {flattenedErrors.map((error, index) => (
                 <Message.Item
-                  onClick={() => handleErrorClick(error.fieldPath)}
                   key={`${error.fieldPath}-${index}`} // eslint-disable-line react/no-array-index-key
                   className="form-feedback-panel-item"
                 >
-                  <ErrorMessageItem error={error} />
+                  <a
+                    href={`#${error.fieldPath}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleErrorClick(error.fieldPath);
+                    }}
+                  >
+                    <ErrorMessageItem error={error} />
+                  </a>
                 </Message.Item>
               ))}
             </Message.List>
@@ -390,5 +402,3 @@ FormFeedbackPanel.propTypes = {
     })
   ),
 };
-
-export default FormFeedback;

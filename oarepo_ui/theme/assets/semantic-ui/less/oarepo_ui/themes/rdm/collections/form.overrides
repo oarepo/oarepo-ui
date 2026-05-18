@@ -21,6 +21,12 @@
 
 // Tab form layout and styling
 .tab-form {
+  // SUI has some weird issue, that it sets display: none on messages with some status like success
+  .success.message,
+  .warning.message,
+  .error.message {
+    display: block !important;
+  }
   .tab-content {
     .field {
       margin-bottom: @fieldMarginBottom !important;
