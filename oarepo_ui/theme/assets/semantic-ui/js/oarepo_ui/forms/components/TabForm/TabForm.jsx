@@ -37,6 +37,10 @@ export const TabForm = ({ sections = [] }) => {
     Math.max(initialStep, 0)
   );
   const [contentVisible, setContentVisible] = React.useState(true);
+  // pending step is the step you are switching to. The issue is that when you switch from tabs that both contain
+  // a component that is wrapped in dnd provider, the cleanup functionality does not work well, and then
+  // you get HTML5 backend error (that you cannot have tow html5 backends). The solution is to fully unmount the content
+  // the transition is just to make this less janky
   const [pendingStep, setPendingStep] = React.useState(null);
 
   const { handleAction: handleSave } = useDepositFormAction({
