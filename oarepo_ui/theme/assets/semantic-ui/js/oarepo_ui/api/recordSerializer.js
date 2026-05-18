@@ -41,7 +41,7 @@ export class OARepoDepositSerializer extends DepositRecordSerializer {
       return filterValues;
     } else if (_isObject(obj)) {
       let mappedValues = _mapValues(obj, (value) =>
-        this.removeEmptyValues(value),
+        this.removeEmptyValues(value)
       );
       let pickedValues = _pickBy(mappedValues, (value, key) => {
         if (key === "metadata" && _isEmpty(value)) {
@@ -99,7 +99,7 @@ export class OARepoDepositSerializer extends DepositRecordSerializer {
         value === null ||
         (Array.isArray(value) && value.every((item) => item === null)) ||
         key.startsWith("_") ||
-        internalFieldsArray.includes(key),
+        internalFieldsArray.includes(key)
     );
 
   /**
@@ -122,12 +122,12 @@ export class OARepoDepositSerializer extends DepositRecordSerializer {
   serialize = (record) => {
     let serializedRecord = this.removeNullAndInternalFields(
       record,
-      this.internalFieldsArray,
+      this.internalFieldsArray
     );
 
     serializedRecord = this.removeKeysFromNestedObjects(
       serializedRecord,
-      this.keysToRemove,
+      this.keysToRemove
     );
 
     serializedRecord = this.removeEmptyValues(serializedRecord);
