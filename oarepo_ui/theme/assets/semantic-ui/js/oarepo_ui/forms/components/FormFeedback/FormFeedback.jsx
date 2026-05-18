@@ -4,7 +4,7 @@ import _startCase from "lodash/startCase";
 import React, { useCallback, useRef, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Message, Button, Icon } from "semantic-ui-react";
-import { useFormTabs, useFieldData } from "../../hooks";
+import { useFormTabs, useFieldData, useFormFeedback } from "../../hooks";
 import {
   findSectionIndexForFieldPath,
   isErrorObject,
@@ -262,32 +262,29 @@ FormFeedback.propTypes = {
 
 export const FormFeedbackPanel = ({ actions = {}, sections = [] }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [dismissed, setDismissed] = useState(false);
   const errors = useSelector((state) => state.deposit.errors);
   const actionState = useSelector((state) => state.deposit.actionState);
 
-  useEffect(() => {
-    setDismissed(false);
-  }, [actionState]);
+  const { dismissed, setDismissed } = useFormFeedback() || {};
 
   const { activeStep, setActiveStep } = useFormTabs() || {};
   const timeoutRef = useRef(null);
+  const dialogRef = useRef(null);
   const allActions = { ...ACTIONS, ...actions };
-  const handleDismiss = useCallback(() => setDismissed(true), []);
+  const handleDismiss = useCallback(() => setDismissed(true), [setDismissed]);
   const flattenedErrors = flattenToPathValueArray(errors);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    if (isOpen && !dialog.open) dialog.showModal();
+    else if (!isOpen && dialog.open) dialog.close();
+  }, [isOpen]);
 
   const message = _get(allActions, [actionState, "message"]);
   const feedbackType = _get(allActions, [actionState, "feedback"]);
   const backendErrorMessage = errors.message || errors._schema;
   const hasErrors = flattenedErrors?.length > 0;
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
 
   const handleErrorClick = useCallback(
     (fieldPath) => {
@@ -330,6 +327,8 @@ export const FormFeedbackPanel = ({ actions = {}, sections = [] }) => {
             size="mini"
             basic
             onClick={() => setIsOpen((prev) => !prev)}
+            aria-expanded={isOpen}
+            aria-controls="form-feedback-panel"
             data-testid="form-feedback-summary-button"
             className="form-feedback-summary-button"
           >
@@ -339,18 +338,29 @@ export const FormFeedbackPanel = ({ actions = {}, sections = [] }) => {
         )}
       </Message>
 
-      <div
-        className={`form-feedback-panel ${isOpen ? "open" : ""}`}
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
+      <dialog
+        ref={dialogRef}
+        id="form-feedback-panel"
+        className="form-feedback-panel"
+        aria-labelledby="form-feedback-panel-title"
+        onClose={() => setIsOpen(false)}
+        onClick={(e) => {
+          if (e.target === dialogRef.current) setIsOpen(false);
+        }}
         data-testid="form-feedback-panel"
       >
         <div className="form-feedback-panel-header">
-          <strong>{backendErrorMessage || message}</strong>
+          <strong id="form-feedback-panel-title">
+            {backendErrorMessage || message}
+          </strong>
           <Button
             type="button"
             icon="close"
             size="mini"
             basic
             onClick={() => setIsOpen(false)}
+            aria-label={i18next.t("Close error summary")}
             data-testid="form-feedback-panel-close"
           />
         </div>
@@ -376,15 +386,7 @@ export const FormFeedbackPanel = ({ actions = {}, sections = [] }) => {
             </Message.List>
           </div>
         )}
-      </div>
-
-      {isOpen && (
-        <div // eslint-disable-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
-          className="form-feedback-panel-overlay"
-          onClick={() => setIsOpen(false)}
-          data-testid="form-feedback-panel-overlay"
-        />
-      )}
+      </dialog>
     </>
   );
 };
@@ -402,3 +404,5 @@ FormFeedbackPanel.propTypes = {
     })
   ),
 };
+
+export default FormFeedback;

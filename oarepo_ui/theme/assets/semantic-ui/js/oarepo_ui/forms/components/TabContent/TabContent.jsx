@@ -90,7 +90,15 @@ export const TabContent = ({ activeStep, sections, next, back }) => {
       className="tab-content borderless shadowless"
       data-testid="tab-content"
     >
-      <FormFeedbackPanel sections={sections} />
+      <Overridable
+        id={buildUID(
+          formConfig?.overridableIdPrefix,
+          "TabForm.TabContent.FormFeedbackPanel"
+        )}
+        sections={sections}
+      >
+        <FormFeedbackPanel sections={sections} />
+      </Overridable>
       {dirty && (
         <Message info data-testid="unsaved-changes-message">
           <Message.Content>
