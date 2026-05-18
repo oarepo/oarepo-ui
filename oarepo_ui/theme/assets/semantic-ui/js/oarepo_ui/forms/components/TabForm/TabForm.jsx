@@ -199,6 +199,16 @@ export const TabForm = ({ sections = [] }) => {
                 sections={sections}
                 onTabChange={handleSetStep}
               />
+              <Overridable
+                id={buildUID(
+                  overridableIdPrefix,
+                  "TabForm.FormMetadataSummary"
+                )}
+                record={record}
+                activeStep={activeStep}
+                sections={sections}
+                onTabChange={handleSetStep}
+              />
             </Grid.Column>
           </Overridable>
 
@@ -261,7 +271,10 @@ export const TabForm = ({ sections = [] }) => {
               id={buildUID(overridableIdPrefix, "TabForm.PublishButton")}
               record={record}
             >
-              <PublishButton record={record} />
+              {/* Wrap in a div because the upstream @js/invenio_rdm_records PublishButton has `fluid` hard-coded in some variants. */}
+              <div className="publish-button-container">
+                <PublishButton record={record} />
+              </div>
             </Overridable>
           </Grid.Row>
         </Overridable>

@@ -212,6 +212,14 @@
   .form-actions-row {
     justify-content: flex-end !important;
     gap: 1.5rem;
+    .publish-button-container {
+      // Work around upstream button rendering that does not propagate the expected
+      // Semantic UI button props/styles across to the actual rendered button:
+      // https://github.com/inveniosoftware/invenio-rdm-records/blob/cc794acae393f252bec15045f407e01ae3b5c1bb/invenio_rdm_records/assets/semantic-ui/js/invenio_rdm_records/src/deposit/controls/PublishButton/SubmitReviewOrPublishButton.js#L73-L76
+      .ui.button {
+        margin-bottom: 0 !important;
+      }
+    }
   }
   // Section completion progress bar
   .section-completion-bar {
