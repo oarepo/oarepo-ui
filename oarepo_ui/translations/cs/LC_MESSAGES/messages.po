@@ -1495,14 +1495,6 @@ msgstr "Zvolte typ záznamu, který chcete vytvořit."
 msgid "No record types available"
 msgstr "Žádné typy záznamů nejsou k dispozici"
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/new_upload_page.html:9
-msgid "Choose the type of record you want to create."
-msgstr "Zvolte typ záznamu, který chcete vytvořit."
-
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/new_upload_page.html:27
-msgid "No record types available"
-msgstr "Žádné typy záznamů nejsou k dispozici"
-
 #: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/new_upload_page.html:28
 #, python-format
 msgid ""
@@ -1519,17 +1511,30 @@ msgid ""
 "Section definition is missing the component key and it must be defined."
 msgstr "V definici sekce chybí klíč component, který musí být definován."
 
-msgid "{{percentage}}% of this section is filled"
-msgstr "{{percentage}}% této sekce je vyplněno"
-
-msgid "Section completion"
-msgstr "Vyplnění sekce"
-
 msgid "General information"
 msgstr "Obecné informace"
 
 msgid "Please define your sections."
-msgstr "Prosím, definujte své sekce."
+msgstr "Definujte prosím své sekce."
 
 msgid "See the documentation"
 msgstr "Viz dokumentace"
+
+msgid "Delete All"
+msgstr "Smazat vše"
+
+msgid "Results: "
+msgstr "Výsledky: "
+
+msgid "Scroll to top"
+msgstr "Přejít nahoru"
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:49
+msgid "Manage record"
+msgstr "Spravovat záznam"
+
+msgid "{{percentage}}% of this section is filled"
+msgstr "Vyplněnost této sekce je {{percentage}} %"
+
+msgid "Section completion"
+msgstr "Vyplněnost sekce"

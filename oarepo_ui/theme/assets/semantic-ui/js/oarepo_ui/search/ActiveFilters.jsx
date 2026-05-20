@@ -6,7 +6,7 @@ import { Label, Icon } from "semantic-ui-react";
 import { withState } from "react-searchkit";
 import { ClearFiltersButton } from "@js/oarepo_ui";
 import { useActiveSearchFilters } from "@js/oarepo_ui/search/hooks";
-import { i18next } from "@translations/i18next";
+import { i18next } from "@translations/oarepo_ui/i18next";
 
 const getLabel = (filter, aggregations, additionalFilterLabels) => {
   const aggName = filter[0];

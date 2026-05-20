@@ -1482,12 +1482,6 @@ msgid ""
 "Section definition is missing the component key and it must be defined."
 msgstr ""
 
-msgid "{{percentage}}% of this section is filled"
-msgstr ""
-
-msgid "Section completion"
-msgstr ""
-
 msgid "General information"
 msgstr ""
 
@@ -1495,4 +1489,23 @@ msgid "Please define your sections."
 msgstr ""
 
 msgid "See the documentation"
+msgstr ""
+
+msgid "Delete All"
+msgstr ""
+
+msgid "Results: "
+msgstr ""
+
+msgid "Scroll to top"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:49
+msgid "Manage record"
+msgstr ""
+
+msgid "{{percentage}}% of this section is filled"
+msgstr ""
+
+msgid "Section completion"
 msgstr ""

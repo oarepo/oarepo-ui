@@ -20,6 +20,11 @@
   }
 }
 
+.search-bar-tip {
+  font-style: italic;
+  text-align: right;
+}
+
 .ui.datepicker {
   .clear-icon {
     cursor: pointer !important;

@@ -9,7 +9,6 @@ export const ResultsPerPage = ({
   ariaLabel,
   selectOnNavigation,
 }) => {
-  console.log("dwadawda");
   const _options = options.map((element, index) => {
     return { key: index, text: element.text, value: element.value };
   });
