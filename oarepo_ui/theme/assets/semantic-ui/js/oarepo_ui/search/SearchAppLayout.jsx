@@ -88,6 +88,7 @@ export const SearchAppResultsGrid = ({
   buildUID,
   resultsPaneLayout,
   hasButtonSidebar = false,
+  searchBarTip,
 }) => {
   const [sidebarVisible, setSidebarVisible] = useState(false);
 
@@ -156,6 +157,9 @@ export const SearchAppResultsGrid = ({
               >
                 <SearchBar buildUID={buildUID} appName={appName} />
               </Overridable>
+              {searchBarTip && (
+                <div className="search-bar-tip">{searchBarTip}</div>
+              )}
             </Grid.Column>
           </Grid.Row>
           <ShouldActiveFiltersRender>
@@ -166,9 +170,7 @@ export const SearchAppResultsGrid = ({
             </Grid.Row>
           </ShouldActiveFiltersRender>
           <Grid.Row verticalAlign="middle" className="result-options pb-0">
-            {/* <Grid.Column width={16}> */}
             <ResultOptionsWithState />
-            {/* </Grid.Column> */}
           </Grid.Row>
           <Grid.Row verticalAlign="middle">
             <Grid.Column
@@ -214,9 +216,15 @@ SearchAppResultsGrid.propTypes = {
   resultsPaneLayout: PropTypes.object.isRequired,
   // eslint-disable-next-line react/require-default-props
   hasButtonSidebar: PropTypes.bool,
+  // eslint-disable-next-line react/require-default-props
+  searchBarTip: PropTypes.node,
 };
 
-export const SearchAppLayout = ({ config, hasButtonSidebar = false }) => {
+export const SearchAppLayout = ({
+  config,
+  hasButtonSidebar = false,
+  searchBarTip,
+}) => {
   const { appName, buildUID } = useContext(SearchConfigurationContext);
   const facetsAvailable = !_isEmpty(config.aggs);
 
@@ -279,6 +287,7 @@ export const SearchAppLayout = ({ config, hasButtonSidebar = false }) => {
         buildUID={buildUID}
         resultsPaneLayout={resultsPaneLayout}
         hasButtonSidebar={hasButtonSidebar}
+        searchBarTip={searchBarTip}
       />
       <ScrollToTopButton />
     </Container>
@@ -301,4 +310,6 @@ SearchAppLayout.propTypes = {
   }).isRequired,
   // eslint-disable-next-line react/require-default-props
   hasButtonSidebar: PropTypes.bool,
+  // eslint-disable-next-line react/require-default-props
+  searchBarTip: PropTypes.node,
 };

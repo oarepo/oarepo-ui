@@ -8,7 +8,7 @@ import { ResultsPerPageLabel } from "./ResultsPerPageLabel";
 
 const SortLabel = (cmp) => (
   <>
-    <span className="rel-mr-1">{i18next.t("Sort:")}</span> {cmp}
+    <span className="rel-mr-1">{i18next.t("Sort")}:</span> {cmp}
   </>
 );
 
