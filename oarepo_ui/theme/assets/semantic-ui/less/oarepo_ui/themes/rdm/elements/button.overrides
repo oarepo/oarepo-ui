@@ -11,4 +11,19 @@
       margin: 0 !important;
     }
   }
+
+  &#scroll-to-top-button {
+    position: fixed;
+    bottom: 12rem;
+    right: 2rem;
+    z-index: 1000;
+    background-color: @primaryColor !important;
+    color: @white !important;
+    border: none !important;
+    padding: 0.75rem;
+
+    .icon {
+      color: @white !important;
+    }
+  }
 }

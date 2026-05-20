@@ -3,7 +3,7 @@ import { BucketAggregation, Toggle } from "react-searchkit";
 import PropTypes from "prop-types";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { ErrorBoundary } from "react-error-boundary";
-import { Message, MessageHeader, Icon } from "semantic-ui-react";
+import { Header, Message, MessageHeader, Icon } from "semantic-ui-react";
 
 const SearchAppFacetsFallback = ({ error, agg }) => (
   <Message error attached="bottom">
@@ -39,30 +39,42 @@ SearchAppFacetsFallback.propTypes = {
 export const SearchAppFacets = ({
   aggs,
   appName,
-  allVersionsToggle = false,
+  allVersionsToggle = true,
+  title = "",
 }) => {
   return (
-    <div className="facets-container">
-      <div className="facet-list">
-        {allVersionsToggle && (
-          <Toggle
-            title={i18next.t("Versions")}
-            label={i18next.t("View all versions")}
-            filterValue={["allversions", "true"]}
-          />
-        )}
-        {aggs.map((agg) => (
-          <ErrorBoundary
-            FallbackComponent={(props) => (
-              <SearchAppFacetsFallback {...props} agg={agg} />
-            )}
-            key={agg.aggName}
-          >
-            <BucketAggregation key={agg.aggName} title={agg.titles} agg={agg} />
-          </ErrorBoundary>
-        ))}
+    <>
+      {title && (
+        <Header as="h3" className="facets-header">
+          {title}
+        </Header>
+      )}
+      <div className="facets-container">
+        <div className="facet-list">
+          {allVersionsToggle && (
+            <Toggle
+              title={i18next.t("Versions")}
+              label={i18next.t("View all versions")}
+              filterValue={["allversions", "true"]}
+            />
+          )}
+          {aggs.map((agg) => (
+            <ErrorBoundary
+              FallbackComponent={(props) => (
+                <SearchAppFacetsFallback {...props} agg={agg} />
+              )}
+              key={agg.aggName}
+            >
+              <BucketAggregation
+                key={agg.aggName}
+                title={agg.titles}
+                agg={agg}
+              />
+            </ErrorBoundary>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
@@ -71,4 +83,6 @@ SearchAppFacets.propTypes = {
   appName: PropTypes.string.isRequired,
   // eslint-disable-next-line react/require-default-props
   allVersionsToggle: PropTypes.bool,
+  // eslint-disable-next-line react/require-default-props
+  title: PropTypes.string,
 };
