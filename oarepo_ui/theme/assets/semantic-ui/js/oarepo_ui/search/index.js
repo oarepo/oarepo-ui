@@ -1,4 +1,4 @@
-export { ActiveFiltersElement } from "./ActiveFiltersElement";
+export { ActiveFilters } from "./ActiveFilters";
 export { BucketAggregationElement } from "./BucketAggregationElement";
 export { BucketAggregationValuesElement } from "./BucketAggregationValuesElement";
 export { ResultCountWithState, ResultCount, CountElement } from "./ResultCount";
@@ -8,9 +8,8 @@ export {
   SearchAppLayout,
   ActiveFiltersCountFloatingLabel,
 } from "./SearchAppLayout";
-export { SearchAppResultOptions } from "./SearchAppResultOptions";
+export { ResultOptions } from "./ResultOptions";
 export { SearchAppSearchbarContainer } from "./SearchAppSearchbarContainer";
-export { SearchAppSort } from "./SearchAppSort";
 export { SearchAppResults } from "./SearchAppResults";
 export { EmptyResultsElement } from "./EmptyResultsElement";
 export { ResultsPerPageLabel } from "./ResultsPerPageLabel";
@@ -20,8 +19,8 @@ export { MultilineSearchbarElement } from "./MultilineSearchbarElement";
 export { ClearableSearchbarElement } from "./ClearableSearchbarElement";
 export { ShouldActiveFiltersRender } from "./ShouldActiveFiltersRender";
 export { FoldableBucketAggregationElement } from "./FoldableBucketAggregationElement";
-export { SearchAppLayoutWithSearchbarHOC } from "./SearchAppLayoutWithSearchbar";
-export { SearchAppResultViewWithSearchbar } from "./SearchAppResultViewWithSearchbar";
+export { ResultsPerPage } from "./ResultsPerPage";
+export { Sort } from "./Sort";
 export * from "./ShouldRender";
 export * from "./util";
 export * from "./histogram";

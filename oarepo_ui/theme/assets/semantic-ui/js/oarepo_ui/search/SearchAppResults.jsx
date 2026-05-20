@@ -3,12 +3,10 @@ import { Grid } from "semantic-ui-react";
 import {
   ResultsList,
   Pagination,
-  ResultsPerPage,
   ResultsMultiLayout,
   ResultsGrid,
   withState,
 } from "react-searchkit";
-import { ResultsPerPageLabel } from "./ResultsPerPageLabel";
 import PropTypes from "prop-types";
 
 export const SearchAppResultsComponent = ({
@@ -18,7 +16,6 @@ export const SearchAppResultsComponent = ({
     data: { total },
   },
 }) => {
-  const { resultsPerPage } = paginationOptions;
   const multipleLayouts = layoutOptions.listView && layoutOptions.gridView;
   const listOrGridView = layoutOptions.listView ? (
     <ResultsList />
@@ -57,26 +54,6 @@ export const SearchAppResultsComponent = ({
                 showFirst: false,
                 showLast: false,
               }}
-            />
-          </Grid.Column>
-          <Grid.Column
-            className="computer tablet only "
-            textAlign="right"
-            width={4}
-          >
-            <ResultsPerPage
-              values={resultsPerPage}
-              label={ResultsPerPageLabel}
-            />
-          </Grid.Column>
-          <Grid.Column
-            className="mobile only mt-10"
-            textAlign="center"
-            width={16}
-          >
-            <ResultsPerPage
-              values={resultsPerPage}
-              label={ResultsPerPageLabel}
             />
           </Grid.Column>
         </Grid.Row>

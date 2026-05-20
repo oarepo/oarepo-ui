@@ -5,16 +5,17 @@ import ReactDOM from "react-dom";
 import { parametrize, overrideStore } from "react-overridable";
 import { SearchApp } from "@js/invenio_search_ui/components";
 import { ListItemContainer } from "./ResultsList";
-import { ActiveFiltersElement } from "./ActiveFiltersElement";
+import { ActiveFilters } from "./ActiveFilters";
 import { BucketAggregationValuesElement } from "./BucketAggregationValuesElement";
 import { CountElement } from "./ResultCount";
 import { EmptyResultsElement } from "./EmptyResultsElement";
 import { ErrorElement } from "./ErrorElement";
 import { SearchAppFacets } from "./SearchAppFacets";
 import { SearchAppLayout } from "./SearchAppLayout";
-import { SearchAppResultOptions } from "./SearchAppResultOptions";
+import { ResultOptions } from "./ResultOptions";
 import { SearchAppSearchbarContainer } from "./SearchAppSearchbarContainer";
-import { SearchAppSort } from "./SearchAppSort";
+import { Sort } from "./Sort";
+import { ResultsPerPage } from "./ResultsPerPage";
 import { SearchAppResults } from "./SearchAppResults";
 import { FoldableBucketAggregationElement } from "./FoldableBucketAggregationElement";
 import { ClearableSearchbarElement } from "./ClearableSearchbarElement";
@@ -48,7 +49,7 @@ export function createSearchAppsInit({
     );
 
     const defaultComponents = {
-      [`${overridableIdPrefix}.ActiveFilters.element`]: ActiveFiltersElement,
+      [`${overridableIdPrefix}.ActiveFilters.element`]: ActiveFilters,
       [`${overridableIdPrefix}.BucketAggregation.element`]:
         FoldableBucketAggregationElement,
       [`${overridableIdPrefix}.BucketAggregationValues.element`]:
@@ -58,13 +59,13 @@ export function createSearchAppsInit({
       [`${overridableIdPrefix}.Error.element`]: ErrorElement,
       [`${overridableIdPrefix}.SearchApp.facets`]: SearchAppFacets,
       [`${overridableIdPrefix}.SearchApp.layout`]: SearchAppLayout,
-      [`${overridableIdPrefix}.SearchApp.resultOptions`]:
-        SearchAppResultOptions,
+      [`${overridableIdPrefix}.SearchApp.resultOptions`]: ResultOptions,
+      [`${overridableIdPrefix}.ResultsPerPage.element`]: ResultsPerPage,
       [`${overridableIdPrefix}.SearchApp.searchbarContainer`]:
         SearchAppSearchbarContainerWithConfig,
       [`${overridableIdPrefix}.SearchFilters.Toggle.element`]:
         RDMToggleComponent,
-      [`${overridableIdPrefix}.SearchApp.sort`]: SearchAppSort,
+      [`${overridableIdPrefix}.sort.element`]: Sort,
       [`${overridableIdPrefix}.SearchApp.results`]: SearchAppResults,
       [`${overridableIdPrefix}.SearchBar.element`]: ClearableSearchbarElement,
       [`${overridableIdPrefix}.ResultsList.container`]: ListItemContainer,
