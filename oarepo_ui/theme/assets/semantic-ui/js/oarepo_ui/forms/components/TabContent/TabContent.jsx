@@ -141,6 +141,8 @@ TabContent.propTypes = {
       label: PropTypes.string.isRequired,
       includesPaths: PropTypes.array,
       saveOnTabChange: PropTypes.bool,
+      sectionCompletion: PropTypes.func,
+      sectionCompletionThreshold: PropTypes.number,
       /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
       component: PropTypes.func.isRequired,
     })

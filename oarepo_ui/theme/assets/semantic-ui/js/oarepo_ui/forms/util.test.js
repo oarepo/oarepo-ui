@@ -6,6 +6,10 @@ import {
   getSubfieldErrors,
   categorizeErrors,
   mergeFieldData,
+  isFilled,
+  isObjectFilled,
+  computeSectionCompletion,
+  computeFilesSectionCompletion,
 } from "./util";
 
 describe("findSectionIndexForFieldPath", () => {
@@ -716,5 +720,288 @@ describe("mergeFieldData", () => {
       label: { text: "Complex Label", icon: "star" },
     });
     expect(result.label).toEqual({ text: "Complex Label", icon: "star" });
+  });
+});
+
+describe("isObjectFilled", () => {
+  it("returns false for empty object", () => {
+    expect(isObjectFilled({})).toBe(false);
+  });
+
+  it("returns false for object with only __key", () => {
+    expect(isObjectFilled({ __key: -5 })).toBe(false);
+  });
+
+  it("returns false for object with multiple internal keys", () => {
+    expect(isObjectFilled({ __key: -5, __id: "abc", __temp: true })).toBe(
+      false
+    );
+  });
+
+  it("returns false when all non-internal values are empty", () => {
+    expect(isObjectFilled({ lang: "", type: "", __key: -5 })).toBe(false);
+  });
+
+  it("returns false when non-internal values are null", () => {
+    expect(isObjectFilled({ lang: null, __key: -5 })).toBe(false);
+  });
+
+  it("returns true when at least one non-internal value is filled", () => {
+    expect(isObjectFilled({ lang: "en", type: "", __key: -5 })).toBe(true);
+  });
+
+  it("returns true for object with boolean value", () => {
+    expect(isObjectFilled({ enabled: false, __key: -1 })).toBe(true);
+  });
+
+  it("returns true for object with numeric value", () => {
+    expect(isObjectFilled({ count: 0, __key: -1 })).toBe(true);
+  });
+
+  it("returns true for object with nested filled value", () => {
+    expect(isObjectFilled({ nested: { name: "John" } })).toBe(true);
+  });
+
+  it("returns false for object with nested empty values", () => {
+    expect(isObjectFilled({ nested: { name: "", title: "" } })).toBe(false);
+  });
+});
+
+describe("isFilled", () => {
+  describe("primitives", () => {
+    it("returns false for undefined", () => {
+      expect(isFilled(undefined)).toBe(false);
+    });
+
+    it("returns false for null", () => {
+      expect(isFilled(null)).toBe(false);
+    });
+
+    it("returns true for booleans", () => {
+      expect(isFilled(true)).toBe(true);
+      expect(isFilled(false)).toBe(true);
+    });
+
+    it("returns true for numbers including zero", () => {
+      expect(isFilled(0)).toBe(true);
+      expect(isFilled(42)).toBe(true);
+    });
+
+    it("returns true for non-empty strings", () => {
+      expect(isFilled("hello")).toBe(true);
+    });
+
+    it("returns false for empty strings", () => {
+      expect(isFilled("")).toBe(false);
+    });
+  });
+
+  describe("arrays", () => {
+    it("returns false for empty array", () => {
+      expect(isFilled([])).toBe(false);
+    });
+
+    it("returns true for array with a filled string", () => {
+      expect(isFilled(["hello"])).toBe(true);
+    });
+
+    it("returns false for array with only empty strings", () => {
+      expect(isFilled(["", ""])).toBe(false);
+    });
+
+    it("returns false for array with skeleton object (only __key)", () => {
+      expect(isFilled([{ __key: -5 }])).toBe(false);
+    });
+
+    it("returns false for array with skeleton object with empty values", () => {
+      expect(
+        isFilled([{ lang: "", description: "", type: "", __key: -5 }])
+      ).toBe(false);
+    });
+
+    it("returns true for array with a meaningfully filled object", () => {
+      expect(
+        isFilled([{ lang: "en", description: "", type: "", __key: -5 }])
+      ).toBe(true);
+    });
+
+    it("returns true if at least one item in the array is filled", () => {
+      expect(
+        isFilled([
+          { lang: "", __key: -1 },
+          { lang: "en", __key: -2 },
+        ])
+      ).toBe(true);
+    });
+
+    it("returns false when all items in array are empty objects", () => {
+      expect(
+        isFilled([
+          { lang: "", __key: -1 },
+          { lang: "", __key: -2 },
+        ])
+      ).toBe(false);
+    });
+  });
+
+  describe("objects", () => {
+    it("returns false for empty object", () => {
+      expect(isFilled({})).toBe(false);
+    });
+
+    it("returns false for object with only __key", () => {
+      expect(isFilled({ __key: -5 })).toBe(false);
+    });
+
+    it("returns false for object with only internal keys", () => {
+      expect(isFilled({ __key: -5, __id: "abc" })).toBe(false);
+    });
+
+    it("returns false for object with all empty non-internal values", () => {
+      expect(isFilled({ name: "", title: "", __key: -5 })).toBe(false);
+    });
+
+    it("returns true for object with a filled non-internal value", () => {
+      expect(isFilled({ name: "John", title: "", __key: -5 })).toBe(true);
+    });
+
+    it("returns true for object with nested filled value", () => {
+      expect(isFilled({ nested: { name: "John" } })).toBe(true);
+    });
+
+    it("returns false for object with nested empty values", () => {
+      expect(isFilled({ nested: { name: "" } })).toBe(false);
+    });
+
+    it("returns true for object with boolean value", () => {
+      expect(isFilled({ enabled: false })).toBe(true);
+    });
+
+    it("returns true for object with numeric value", () => {
+      expect(isFilled({ count: 0 })).toBe(true);
+    });
+  });
+});
+
+describe("computeFilesSectionCompletion", () => {
+  it("returns 0 when reduxState has no files key", () => {
+    expect(computeFilesSectionCompletion({ reduxState: {} })).toBe(0);
+  });
+
+  it("returns 0 when entries is empty", () => {
+    expect(
+      computeFilesSectionCompletion({ reduxState: { files: { entries: {} } } })
+    ).toBe(0);
+  });
+
+  it("returns 1 when entries has at least one file", () => {
+    expect(
+      computeFilesSectionCompletion({
+        reduxState: {
+          files: { entries: { "file1.pdf": { status: "finished" } } },
+        },
+      })
+    ).toBe(1);
+  });
+
+  it("returns 1 when entries has multiple files", () => {
+    expect(
+      computeFilesSectionCompletion({
+        reduxState: {
+          files: {
+            entries: {
+              "file1.pdf": { status: "finished" },
+              "file2.pdf": { status: "finished" },
+            },
+          },
+        },
+      })
+    ).toBe(1);
+  });
+});
+
+describe("computeSectionCompletion", () => {
+  it("returns 1 for null includesPaths", () => {
+    expect(
+      computeSectionCompletion({
+        formikValues: {},
+        includesPaths: null,
+      })
+    ).toBe(1);
+  });
+
+  it("returns 1 for empty includesPaths", () => {
+    expect(
+      computeSectionCompletion({
+        formikValues: {},
+        includesPaths: [],
+      })
+    ).toBe(1);
+  });
+
+  it("returns 0 when no fields are filled", () => {
+    expect(
+      computeSectionCompletion({
+        formikValues: { metadata: { title: "", description: "" } },
+        includesPaths: ["metadata.title", "metadata.description"],
+      })
+    ).toBe(0);
+  });
+
+  it("returns 1 when all fields are filled", () => {
+    expect(
+      computeSectionCompletion({
+        formikValues: {
+          metadata: { title: "Hello", description: "World" },
+        },
+        includesPaths: ["metadata.title", "metadata.description"],
+      })
+    ).toBe(1);
+  });
+
+  it("returns correct ratio for partially filled fields", () => {
+    expect(
+      computeSectionCompletion({
+        formikValues: {
+          metadata: { title: "Hello", description: "" },
+        },
+        includesPaths: ["metadata.title", "metadata.description"],
+      })
+    ).toBe(0.5);
+  });
+
+  it("does not count array fields with only skeleton objects as filled", () => {
+    expect(
+      computeSectionCompletion({
+        formikValues: {
+          metadata: {
+            creators: [{ name: "", __key: -1 }],
+          },
+        },
+        includesPaths: ["metadata.creators"],
+      })
+    ).toBe(0);
+  });
+
+  it("counts array fields with meaningful data as filled", () => {
+    expect(
+      computeSectionCompletion({
+        formikValues: {
+          metadata: {
+            creators: [{ name: "John", __key: -1 }],
+          },
+        },
+        includesPaths: ["metadata.creators"],
+      })
+    ).toBe(1);
+  });
+
+  it("returns 0 when field is missing from formik", () => {
+    expect(
+      computeSectionCompletion({
+        formikValues: {},
+        includesPaths: ["metadata.title"],
+      })
+    ).toBe(0);
   });
 });

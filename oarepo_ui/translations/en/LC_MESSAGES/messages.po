@@ -1481,3 +1481,18 @@ msgstr ""
 msgid ""
 "Section definition is missing the component key and it must be defined."
 msgstr ""
+
+msgid "{{percentage}}% of this section is filled"
+msgstr ""
+
+msgid "Section completion"
+msgstr ""
+
+msgid "General information"
+msgstr ""
+
+msgid "Please define your sections."
+msgstr ""
+
+msgid "See the documentation"
+msgstr ""

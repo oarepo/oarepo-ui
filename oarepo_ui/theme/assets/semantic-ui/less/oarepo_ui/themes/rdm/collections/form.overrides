@@ -40,6 +40,7 @@
     border: none;
 
     .item {
+      position: relative;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -67,6 +68,7 @@
     overflow-x: auto;
 
     .ui.steps .step.link {
+      position: relative;
       background-color: @formTabsBackgroundColor;
       color: @stepTextColor !important;
 
@@ -210,5 +212,30 @@
   .form-actions-row {
     justify-content: flex-end !important;
     gap: 1.5rem;
+  }
+  // Section completion progress bar
+  .section-completion-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: @sectionCompletionBarHeight;
+    background-color: @sectionCompletionBarBackgroundColor;
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+    overflow: hidden;
+
+    .section-completion-bar-fill {
+      height: 100%;
+      transition: width 0.3s ease;
+
+      &.green {
+        background-color: @sectionCompletionBarFilledColor;
+      }
+
+      &.orange {
+        background-color: @sectionCompletionBarWarningColor;
+      }
+    }
   }
 }

@@ -10,6 +10,7 @@ import _isObject from "lodash/isObject";
 import _isDate from "lodash/isDate";
 import _isRegExp from "lodash/isRegExp";
 import _forOwn from "lodash/forOwn";
+import _isEmpty from "lodash/isEmpty";
 
 /**
  * Merges model field data with component prop overrides.
@@ -402,3 +403,69 @@ export function categorizeErrors(errors) {
   }
   return categories;
 }
+
+/**
+ * Checks if a plain object has any meaningful filled values,
+ * ignoring internal keys like __key.
+ */
+export const isObjectFilled = (obj) => {
+  return Object.entries(obj).some(
+    ([key, val]) => !key.startsWith("__") && isFilled(val)
+  );
+};
+
+/**
+ * Checks if a single value is considered "filled".
+ * Handles booleans and numbers as always filled (if defined).
+ * For arrays, filters out items that are empty objects (e.g. skeleton entries
+ * with only internal keys like __key).
+ * For plain objects, checks if any non-internal key has a filled value.
+ *
+ * @param {*} value - The value to check
+ * @returns {boolean} True if the value is considered filled
+ */
+export const isFilled = (value) => {
+  if (value === undefined || value === null) return false;
+  if (typeof value === "boolean" || typeof value === "number") return true;
+  if (Array.isArray(value)) {
+    return value.some((item) => isFilled(item));
+  }
+  if (_isObject(value)) {
+    return isObjectFilled(value);
+  }
+  return !_isEmpty(value);
+};
+
+/**
+ * Checks if the files section has any file entries in the Redux state.
+ *
+ * @param {Object} params
+ * @param {Object} params.reduxState - Redux store state containing files.entries
+ * @returns {number} 1 if there is at least one file entry, 0 otherwise
+ */
+export const computeFilesSectionCompletion = ({ reduxState }) => {
+  const entries = _get(reduxState, "files.entries", {});
+  return Object.keys(entries).length > 0 ? 1 : 0;
+};
+
+/**
+ * Computes how filled a section is based on its includesPaths.
+ * Returns a number between 0 and 1 representing the fraction of filled fields.
+ *
+ * @param {Object} params
+ * @param {Object} params.formikValues - Formik values object
+ * @param {string[]} params.includesPaths - Array of field paths to check
+ * @returns {number} Fraction filled (0 to 1)
+ */
+export const computeSectionCompletion = ({ formikValues, includesPaths }) => {
+  if (!includesPaths || includesPaths.length === 0) return 1;
+
+  let filledCount = 0;
+  for (const path of includesPaths) {
+    const formikValue = _get(formikValues, path);
+    if (isFilled(formikValue)) {
+      filledCount++;
+    }
+  }
+  return filledCount / includesPaths.length;
+};

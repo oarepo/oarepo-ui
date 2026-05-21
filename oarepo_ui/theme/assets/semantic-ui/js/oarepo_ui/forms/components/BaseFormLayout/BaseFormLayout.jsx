@@ -64,6 +64,8 @@ WizardFormLayout.propTypes = {
       label: PropTypes.string.isRequired,
       includesPaths: PropTypes.array,
       saveOnTabChange: PropTypes.bool,
+      sectionCompletion: PropTypes.func,
+      sectionCompletionThreshold: PropTypes.number,
       /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
       component: PropTypes.func.isRequired,
     })
@@ -152,11 +154,11 @@ MonolithFormLayout.propTypes = {
 export const BaseFormLayout = ({ sections, useWizardForm = false }) => {
   const record = useSelector((state) => state.deposit.record);
   const { overridableIdPrefix } = useFormConfig();
-  const { dirty } = useFormikContext();
+  const { dirty, isSubmitting } = useFormikContext();
 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
-      if (dirty) {
+      if (dirty && !isSubmitting) {
         e.preventDefault();
         e.returnValue = "";
       }
@@ -166,7 +168,7 @@ export const BaseFormLayout = ({ sections, useWizardForm = false }) => {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [dirty]);
+  }, [dirty, isSubmitting]);
 
   return useWizardForm ? (
     <WizardFormLayout
@@ -191,6 +193,8 @@ BaseFormLayout.propTypes = {
       label: PropTypes.string.isRequired,
       includesPaths: PropTypes.array,
       saveOnTabChange: PropTypes.bool,
+      sectionCompletion: PropTypes.func,
+      sectionCompletionThreshold: PropTypes.number,
       /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
       component: PropTypes.func.isRequired,
     })

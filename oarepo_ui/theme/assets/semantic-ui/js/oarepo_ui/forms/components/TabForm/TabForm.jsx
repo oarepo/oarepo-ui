@@ -1,6 +1,6 @@
-import React, { useEffect, useCallback, useMemo, useRef } from "react";
+import React, { useEffect, useCallback, useMemo } from "react";
 import PropTypes from "prop-types";
-import { Grid, Header, Message } from "semantic-ui-react";
+import { Grid, Header, Message, Transition } from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
 import { save } from "@js/invenio_rdm_records/src/deposit/state/actions/deposit";
 import { useDepositFormAction, useFormConfig } from "../../hooks";
@@ -36,16 +36,12 @@ export const TabForm = ({ sections = [] }) => {
   const [activeStep, setActiveStepState] = React.useState(
     Math.max(initialStep, 0)
   );
-  const [isTransitioning, setIsTransitioning] = React.useState(false);
-  const transitionTimerRef = useRef(null);
-
-  useEffect(() => {
-    return () => {
-      if (transitionTimerRef.current) {
-        clearTimeout(transitionTimerRef.current);
-      }
-    };
-  }, []);
+  const [contentVisible, setContentVisible] = React.useState(true);
+  // pending step is the step you are switching to. The issue is that when you switch from tabs that both contain
+  // a component that is wrapped in dnd provider, the cleanup functionality does not work well, and then
+  // you get HTML5 backend error (that you cannot have tow html5 backends). The solution is to fully unmount the content
+  // the transition is just to make this less janky
+  const [pendingStep, setPendingStep] = React.useState(null);
 
   const { handleAction: handleSave } = useDepositFormAction({
     action: saveAction,
@@ -54,6 +50,9 @@ export const TabForm = ({ sections = [] }) => {
   const handleSetStep = useCallback(
     (index) => {
       if (!(index >= 0 && index < sectionKeys.length)) {
+        return;
+      }
+      if (index === activeStep && pendingStep === null) {
         return;
       }
       const currentSection = sections[activeStep];
@@ -65,18 +64,21 @@ export const TabForm = ({ sections = [] }) => {
       const url = new URL(window.location);
       url.searchParams.set("tab", sectionKeys[index]);
       window.history.replaceState({}, "", url);
-      setIsTransitioning(true);
-      if (transitionTimerRef.current) {
-        clearTimeout(transitionTimerRef.current);
-      }
-      transitionTimerRef.current = setTimeout(() => {
-        transitionTimerRef.current = null;
-        setActiveStepState(index);
-        setIsTransitioning(false);
-      }, 0);
+      // Stage the target step; commit it in onHide so the *old* tab fades out
+      // before the new one mounts and fades in.
+      setPendingStep(index);
+      setContentVisible(false);
     },
-    [sectionKeys, handleSave, dirty, sections, activeStep]
+    [sectionKeys, handleSave, dirty, sections, activeStep, pendingStep]
   );
+
+  const commitPendingStep = useCallback(() => {
+    if (pendingStep !== null) {
+      setActiveStepState(pendingStep);
+      setPendingStep(null);
+    }
+    setContentVisible(true);
+  }, [pendingStep]);
 
   useEffect(() => {
     if (sections.length === 0) return;
@@ -215,14 +217,22 @@ export const TabForm = ({ sections = [] }) => {
               className="tab-content-column pl-0 pr-0"
               data-testid="tab-form-content-column"
             >
-              {!isTransitioning && (
-                <TabContent
-                  activeStep={activeStep}
-                  sections={sections}
-                  next={next}
-                  back={back}
-                />
-              )}
+              <Transition
+                visible={contentVisible}
+                animation="fade"
+                duration={100}
+                onHide={commitPendingStep}
+                unmountOnHide
+              >
+                <div>
+                  <TabContent
+                    activeStep={activeStep}
+                    sections={sections}
+                    next={next}
+                    back={back}
+                  />
+                </div>
+              </Transition>
             </Grid.Column>
           </Overridable>
         </Grid.Row>
@@ -267,6 +277,8 @@ TabForm.propTypes = {
       label: PropTypes.string.isRequired,
       includesPaths: PropTypes.array,
       saveOnTabChange: PropTypes.bool,
+      sectionCompletion: PropTypes.func,
+      sectionCompletionThreshold: PropTypes.number,
       /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
       component: PropTypes.func.isRequired,
     })
