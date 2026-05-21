@@ -315,6 +315,28 @@ describe("flattenToPathValueArray", () => {
       const result = flattenToPathValueArray(errors);
       expect(result).toEqual([{ fieldPath: "files.enabled", value: false }]);
     });
+
+    it("skips sparse-array holes produced by deserializing indexed error paths", () => {
+      // Simulates the shape produced by `_.set({}, "metadata.creators.0.person_or_org.identifiers.1.scheme", "Invalid scheme.")`.
+      // Index 0 of `identifiers` is a sparse hole; lodash's `_forOwn` would read it
+      // as `undefined`, but we should not emit a phantom entry for it.
+      const identifiers = [];
+      identifiers[1] = { scheme: "Invalid scheme." };
+      const errors = {
+        metadata: {
+          creators: [{ person_or_org: { identifiers } }],
+        },
+      };
+
+      const result = flattenToPathValueArray(errors);
+
+      expect(result).toEqual([
+        {
+          fieldPath: "metadata.creators.0.person_or_org.identifiers.1.scheme",
+          value: "Invalid scheme.",
+        },
+      ]);
+    });
   });
 });
 
