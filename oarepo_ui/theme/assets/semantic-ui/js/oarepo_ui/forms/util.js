@@ -292,7 +292,10 @@ export function flattenToPathValueArray(obj, prefix = "", res = []) {
       const newKey = prefix ? `${prefix}.${key}` : key;
       flattenToPathValueArray(value, newKey, res);
     });
-  } else {
+  } else if (obj !== undefined) {
+    // Skip undefined leaves: lodash's `_forOwn` iterates arrays from 0 to length-1,
+    // so a sparse hole (e.g. from `_set(obj, "a.1.b", "x")` leaving index 0 unset)
+    // reads as `undefined` and would otherwise emit a phantom entry.
     res.push({ fieldPath: prefix, value: obj });
   }
   return res;

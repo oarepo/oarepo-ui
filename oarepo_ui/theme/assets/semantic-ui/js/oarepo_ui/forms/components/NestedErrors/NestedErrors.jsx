@@ -4,6 +4,7 @@ import { Label } from "semantic-ui-react";
 import { useFieldData } from "../../hooks";
 import PropTypes from "prop-types";
 import { collectNestedErrors } from "../../../util";
+import _isEqual from "lodash/isEqual";
 
 // getfielddata must only be called on top level of component because it uses useMemo
 const ErrorMessageItem = ({ error }) => {
@@ -18,9 +19,15 @@ const ErrorMessageItem = ({ error }) => {
 };
 
 export const NestedErrors = ({ fieldPath }) => {
-  const { errors } = useFormikContext();
+  const { errors, initialErrors, values, initialValues } = useFormikContext();
 
-  const fieldErrors = getIn(errors, fieldPath);
+  const liveError = getIn(errors, fieldPath);
+  const untouched = _isEqual(
+    getIn(values, fieldPath),
+    getIn(initialValues, fieldPath)
+  );
+  const fieldErrors =
+    liveError ?? (untouched ? getIn(initialErrors, fieldPath) : undefined);
 
   const nestedErrors = fieldErrors
     ? collectNestedErrors(fieldErrors, fieldPath)
