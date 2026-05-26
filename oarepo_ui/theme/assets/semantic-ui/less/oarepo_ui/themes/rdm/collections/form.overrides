@@ -29,6 +29,18 @@
         margin-bottom: 0 !important;
       }
     }
+
+    // When a helptext label sits immediately after a field (helptext rendered
+    // outside the .field, as in Invenio-inherited fields), drop the field's
+    // bottom margin so the helptext doesn't get pushed far below the input.
+    .field:has(+ label.helptext) {
+      margin-bottom: 0 !important;
+    }
+
+    // Cancel the field label's own bottom margin too when helptext follows it.
+    label:not(.helptext):has(+ label.helptext) {
+      margin-bottom: 0 !important;
+    }
   }
   // Desktop vertical tabs (left sidebar)
   .form-tabs-column {
@@ -101,7 +113,15 @@
 
     label.helptext {
       margin-top: 0.5rem;
-      margin-bottom: 1rem;
+      margin-bottom: @fieldMarginBottom;
+    }
+
+    // When helptext sits directly under the field's own label (no input between),
+    // collapse the gap so they read as a unit. Lives inside .ui.segment.tab-content
+    // to match the specificity of the rule above.
+    label:not(.helptext) + label.helptext {
+      margin-top: 0;
+      margin-bottom: 0 !important;
     }
     // these are invenio styles, that are in their case tied to the accordion, but in our case
     // we don't have accordion fields, so had to paste it here
