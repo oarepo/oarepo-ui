@@ -65,7 +65,7 @@ export function createSearchAppsInit({
         SearchAppSearchbarContainerWithConfig,
       [`${overridableIdPrefix}.SearchFilters.Toggle.element`]:
         RDMToggleComponent,
-      [`${overridableIdPrefix}.sort.element`]: Sort,
+      [`${overridableIdPrefix}.Sort.element`]: Sort,
       [`${overridableIdPrefix}.SearchApp.results`]: SearchAppResults,
       [`${overridableIdPrefix}.SearchBar.element`]: ClearableSearchbarElement,
       [`${overridableIdPrefix}.ResultsList.container`]: ListItemContainer,

@@ -9,8 +9,8 @@ export const ResultsPerPage = ({
   ariaLabel,
   selectOnNavigation,
 }) => {
-  const _options = options.map((element, index) => {
-    return { key: index, text: element.text, value: element.value };
+  const _options = options.map((element) => {
+    return { key: element.value, text: element.text, value: element.value };
   });
   return (
     <Dropdown
