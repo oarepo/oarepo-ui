@@ -4,8 +4,8 @@ import _groupBy from "lodash/groupBy";
 import _map from "lodash/map";
 import { Label, Icon } from "semantic-ui-react";
 import { withState } from "react-searchkit";
-import { ClearFiltersButton } from "@js/oarepo_ui";
-import { useActiveSearchFilters } from "@js/oarepo_ui/search/hooks";
+import { ClearFiltersButton } from "./ClearFiltersButton";
+import { useActiveSearchFilters } from "./hooks";
 import { i18next } from "@translations/oarepo_ui/i18next";
 
 const getLabel = (filter, aggregations, additionalFilterLabels) => {

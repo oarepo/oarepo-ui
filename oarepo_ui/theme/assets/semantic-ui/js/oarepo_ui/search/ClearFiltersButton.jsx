@@ -22,7 +22,7 @@ const ClearFiltersButtonComponent = ({
   return (
     <Button
       className={clearFiltersButtonClassName}
-      aria-label={i18next.t("Clear all filters")}
+      aria-label={i18next.t("Delete All")}
       name="clear"
       onClick={() =>
         updateQueryState({

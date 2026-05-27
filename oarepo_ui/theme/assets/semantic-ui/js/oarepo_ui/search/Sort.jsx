@@ -10,9 +10,9 @@ export const Sort = ({
   ariaLabel,
   selectOnNavigation,
 }) => {
-  const _options = options.map((element, index) => {
+  const _options = options.map((element) => {
     return {
-      key: index,
+      key: element.value,
       text: element.text,
       value: element.value,
     };

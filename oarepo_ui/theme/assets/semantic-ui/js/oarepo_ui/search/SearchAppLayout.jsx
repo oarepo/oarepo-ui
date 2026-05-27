@@ -150,7 +150,6 @@ export const SearchAppResultsGrid = ({
               computer={16}
               largeScreen={16}
               widescreen={16}
-              floated="right"
             >
               <Overridable
                 id={buildUID("SearchApp.searchbarContainer", "", appName)}
@@ -223,7 +222,7 @@ SearchAppResultsGrid.propTypes = {
 export const SearchAppLayout = ({
   config,
   hasButtonSidebar = false,
-  searchBarTip,
+  searchBarTip = "",
 }) => {
   const { appName, buildUID } = useContext(SearchConfigurationContext);
   const facetsAvailable = !_isEmpty(config.aggs);
