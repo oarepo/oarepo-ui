@@ -45,7 +45,9 @@ if TYPE_CHECKING:
 def create_blueprint(app: Flask) -> Blueprint:
     """Create the OARepo UI blueprint to register templates, menu and filters."""
     routes = app.config.get("APP_RDM_ROUTES")
-    blueprint = Blueprint("oarepo_ui", __name__, template_folder="templates", static_folder="static")
+    # TODO: renamed blueprint to "invenio_app_rdm" I think it is the most reasonable way given the
+    # that we need to acount that in invenio they use this blueprint by name to navigate to home page etc.
+    blueprint = Blueprint("invenio_app_rdm", __name__, template_folder="templates", static_folder="static")
 
     if routes:
         blueprint.add_url_rule(**create_url_rule(routes.get("index"), default_view_func=index))
@@ -151,7 +153,7 @@ def ui_overrides(app: Flask) -> None:
         props={"searchEndpoint": app.config.get("THEME_SEARCH_ENDPOINT")},
     )
     home_page_records_list_override = UIComponentOverride(
-        "oarepo_ui.index",
+        "invenio_app_rdm.index",
         "InvenioAppRDM.RecordsList.layout",
         home_page_record_list,
     )
@@ -192,7 +194,7 @@ def _register_home_page_search_result_item(
 ) -> None:
     """Register a result list for home page records list."""
     home_page_result_list_item = UIComponentOverride(
-        "oarepo_ui.index",
+        "invenio_app_rdm.index",
         f"InvenioAppRDM.RecordsList.ResultsList.item.{schema}",
         component,
     )
