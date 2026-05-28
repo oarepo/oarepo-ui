@@ -1,10 +1,10 @@
 import { i18next } from "@translations/oarepo_ui/i18next";
 import _get from "lodash/get";
 import _startCase from "lodash/startCase";
-import React, { useCallback, useRef, useEffect } from "react";
+import React, { useCallback, useRef, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Message } from "semantic-ui-react";
-import { useFormTabs, useFieldData } from "../../hooks";
+import { Message, Button, Icon } from "semantic-ui-react";
+import { useFormTabs, useFieldData, useFormFeedback } from "../../hooks";
 import {
   findSectionIndexForFieldPath,
   isErrorObject,
@@ -116,6 +116,13 @@ const FEEDBACK_COLORS = {
   warning: "yellow",
   negative: "red",
   info: "blue",
+};
+
+const FEEDBACK_ICONS = {
+  positive: "check circle",
+  warning: "warning sign",
+  negative: "times circle",
+  info: "info circle",
 };
 
 // function to turn last part of fieldPath from form camelCase to Camel Case
@@ -247,6 +254,151 @@ FormFeedback.propTypes = {
       saveOnTabChange: PropTypes.bool,
       sectionCompletion: PropTypes.func,
       sectionCompletionThreshold: PropTypes.number,
+      /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
+      component: PropTypes.func.isRequired,
+    })
+  ),
+};
+
+export const FormFeedbackPanel = ({ actions = {}, sections = [] }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const errors = useSelector((state) => state.deposit.errors);
+  const actionState = useSelector((state) => state.deposit.actionState);
+
+  const { dismissed, setDismissed } = useFormFeedback() || {};
+
+  const { activeStep, setActiveStep } = useFormTabs() || {};
+  const timeoutRef = useRef(null);
+  const dialogRef = useRef(null);
+  const allActions = { ...ACTIONS, ...actions };
+  const handleDismiss = useCallback(() => setDismissed(true), [setDismissed]);
+  const flattenedErrors = flattenToPathValueArray(errors);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    if (isOpen && !dialog.open) dialog.showModal();
+    else if (!isOpen && dialog.open) dialog.close();
+  }, [isOpen]);
+
+  const message = _get(allActions, [actionState, "message"]);
+  const feedbackType = _get(allActions, [actionState, "feedback"]);
+  const backendErrorMessage = errors.message || errors._schema;
+  const hasErrors = flattenedErrors?.length > 0;
+
+  const handleErrorClick = useCallback(
+    (fieldPath) => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      setIsOpen(false);
+
+      if (setActiveStep && activeStep !== undefined && sections.length > 0) {
+        const sectionIndex = findSectionIndexForFieldPath(sections, fieldPath);
+        if (sectionIndex >= 0 && sectionIndex !== activeStep) {
+          setActiveStep(sectionIndex);
+          timeoutRef.current = setTimeout(
+            () => scrollToElement(fieldPath),
+            100
+          );
+          return;
+        }
+      }
+      scrollToElement(fieldPath);
+    },
+    [activeStep, setActiveStep, sections]
+  );
+
+  if (!message || dismissed) return null;
+
+  return (
+    <>
+      <Message
+        {...{ [feedbackType || "warning"]: true }}
+        onDismiss={handleDismiss}
+        className="form-feedback-inline"
+        data-testid="form-feedback-inline"
+      >
+        <Icon name={FEEDBACK_ICONS[feedbackType] || "warning sign"} />
+        {backendErrorMessage || message}
+        {hasErrors && (
+          <Button
+            type="button"
+            size="mini"
+            basic
+            onClick={() => setIsOpen((prev) => !prev)}
+            aria-expanded={isOpen}
+            aria-controls="form-feedback-panel"
+            data-testid="form-feedback-summary-button"
+            className="form-feedback-summary-button"
+          >
+            <Icon name="list" />
+            {i18next.t("Summary")} ({flattenedErrors.length})
+          </Button>
+        )}
+      </Message>
+
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
+      <dialog
+        ref={dialogRef}
+        id="form-feedback-panel"
+        className="form-feedback-panel"
+        aria-labelledby="form-feedback-panel-title"
+        onClose={() => setIsOpen(false)}
+        onClick={(e) => {
+          if (e.target === dialogRef.current) setIsOpen(false);
+        }}
+        data-testid="form-feedback-panel"
+      >
+        <div className="form-feedback-panel-header">
+          <strong id="form-feedback-panel-title">
+            {backendErrorMessage || message}
+          </strong>
+          <Button
+            type="button"
+            icon="close"
+            size="mini"
+            basic
+            onClick={() => setIsOpen(false)}
+            aria-label={i18next.t("Close error summary")}
+            data-testid="form-feedback-panel-close"
+          />
+        </div>
+        {hasErrors && (
+          <div className="form-feedback-panel-content">
+            <Message.List>
+              {flattenedErrors.map((error, index) => (
+                <Message.Item
+                  key={`${error.fieldPath}-${index}`} // eslint-disable-line react/no-array-index-key
+                  className="form-feedback-panel-item"
+                >
+                  <a
+                    href={`#${error.fieldPath}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleErrorClick(error.fieldPath);
+                    }}
+                  >
+                    <ErrorMessageItem error={error} />
+                  </a>
+                </Message.Item>
+              ))}
+            </Message.List>
+          </div>
+        )}
+      </dialog>
+    </>
+  );
+};
+
+FormFeedbackPanel.propTypes = {
+  actions: PropTypes.object,
+  sections: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      includesPaths: PropTypes.arrayOf(PropTypes.string),
+      saveOnTabChange: PropTypes.bool,
       /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
       component: PropTypes.func.isRequired,
     })

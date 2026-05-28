@@ -13,6 +13,7 @@ import {
   FormConfigContext,
   FieldDataContext,
   FormTabsContext,
+  FormFeedbackContext,
   InitialRecordContext,
 } from "./contexts";
 import _get from "lodash/get";
@@ -302,6 +303,16 @@ export const useFormTabs = () => {
   const context = useContext(FormTabsContext);
   if (!context) {
     console.warn("useFormTabs must be used inside FormTabsContext.Provider");
+  }
+  return context;
+};
+
+export const useFormFeedback = () => {
+  const context = useContext(FormFeedbackContext);
+  if (!context) {
+    console.warn(
+      "useFormFeedback must be used inside FormFeedbackContext.Provider"
+    );
   }
   return context;
 };

@@ -21,6 +21,12 @@
 
 // Tab form layout and styling
 .tab-form {
+  // SUI has some weird issue, that it sets display: none on messages with some status like success
+  .success.message,
+  .warning.message,
+  .error.message {
+    display: block !important;
+  }
   .tab-content {
     .field {
       margin-bottom: @fieldMarginBottom !important;
@@ -266,4 +272,61 @@
       }
     }
   }
+}
+
+// Feedback inline message + slide-in panel
+.form-feedback-inline {
+  margin-bottom: 1rem;
+
+  .form-feedback-summary-button {
+    margin-left: 0.5rem;
+  }
+}
+
+.form-feedback-panel[open] {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: auto;
+  bottom: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  width: 400px;
+  max-width: 90vw;
+  height: 100vh;
+  max-height: 100vh;
+  background: #fff;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  animation: form-feedback-panel-slide-in 0.3s ease;
+}
+
+.form-feedback-panel::backdrop {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+@keyframes form-feedback-panel-slide-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.form-feedback-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1rem;
+  border-bottom: 1px solid @borderColor;
+  gap: 0.5rem;
+}
+
+.form-feedback-panel-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
 }

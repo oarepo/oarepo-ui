@@ -8,6 +8,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { useFormikContext } from "formik";
 import { useInitialRecord, useFormConfig } from "../../hooks";
 import { buildUID } from "react-searchkit";
+import { FormFeedbackPanel } from "../FormFeedback";
 
 const TabErrorFallback = ({ error, resetErrorBoundary }) => (
   <Message negative icon data-testid="tab-error-fallback">
@@ -89,6 +90,15 @@ export const TabContent = ({ activeStep, sections, next, back }) => {
       className="tab-content borderless shadowless"
       data-testid="tab-content"
     >
+      <Overridable
+        id={buildUID(
+          formConfig?.overridableIdPrefix,
+          "TabForm.TabContent.FormFeedbackPanel"
+        )}
+        sections={sections}
+      >
+        <FormFeedbackPanel sections={sections} />
+      </Overridable>
       {dirty && (
         <Message info data-testid="unsaved-changes-message">
           <Message.Content>
