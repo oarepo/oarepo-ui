@@ -18,7 +18,7 @@ const getLabel = (filter, aggregations, additionalFilterLabels) => {
     aggName;
 
   const _getValueLabel = (aggs) =>
-    aggs[aggName]?.buckets?.find((b) => b.key === value)?.label;
+    aggs?.[aggName]?.buckets?.find((b) => b.key === value)?.label;
 
   const valueLabel =
     _getValueLabel(aggregations) ||
