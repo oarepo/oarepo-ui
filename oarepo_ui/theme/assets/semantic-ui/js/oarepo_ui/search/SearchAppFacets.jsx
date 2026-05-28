@@ -67,7 +67,7 @@ export const SearchAppFacets = ({
             >
               <BucketAggregation
                 key={agg.aggName}
-                title={agg.titles}
+                title={agg.title}
                 agg={agg}
               />
             </ErrorBoundary>
