@@ -1,6 +1,6 @@
 [project]
 name = "oarepo-ui"
-version = "10.2.0"
+version = "11.0.0"
 description = "UI module for invenio 3.5+"
 readme = "README.md"
 license = "MIT"
@@ -11,8 +11,8 @@ dependencies = [
     "jinjax>=0.60,<1.0.0",
     "deepmerge>=2.0",
     "python-dotenv>=1.1.1",
-    "oarepo-runtime>=4.5.0,<5.0.0",
-    "oarepo-theme>=3.0.0,<4.0.0",
+    "oarepo-runtime>=5.0.0,<6.0.0",
+    "oarepo-theme>=4.0.0,<5.0.0",
 
     # invenio dependencies
     "invenio-app-rdm>=14.0.0b0,<15.0.0",
@@ -31,12 +31,12 @@ dev = [
 ]
 tests = [
     "pytest>=7.1.2",
-    "oarepo-model>=2.0.0,<3.0.0",
-    "pytest-oarepo>=3.0.0,<4.0.0",
+    "oarepo-model>=3.0.0,<4.0.0",
+    "pytest-oarepo>=5.0.0,<6.0.0",
 
     # invenio dependencies
     "invenio-app>=3.0.0,<4.0.0",
-    "invenio-communities>=26.0.0,<27.0.0",
+    "invenio-communities>=27.0.0,<28.0.0",
     "invenio-search>=3.0.0,<4.0.0",
     "pytest-invenio>=4.0.0,<5.0.0",
 ]
