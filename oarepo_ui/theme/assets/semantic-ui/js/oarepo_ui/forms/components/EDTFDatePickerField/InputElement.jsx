@@ -16,6 +16,7 @@ export const InputElement = forwardRef(
       handleClear,
       onKeyDown,
       autoComplete,
+      helpText = "",
     },
     ref
   ) => {
@@ -30,6 +31,7 @@ export const InputElement = forwardRef(
         className={className}
         id={fieldPath}
         autoComplete={autoComplete}
+        helpText={helpText}
         icon={
           value ? (
             <Icon
@@ -58,5 +60,6 @@ InputElement.propTypes = {
   placeholder: PropTypes.string,
   onKeyDown: PropTypes.func,
   autoComplete: PropTypes.string,
+  helpText: PropTypes.string,
 };
 /* eslint-enable react/require-default-props */
