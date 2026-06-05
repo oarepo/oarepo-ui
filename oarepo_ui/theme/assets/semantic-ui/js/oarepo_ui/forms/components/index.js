@@ -25,3 +25,4 @@ export * from "./SectionCompletionBar";
 export * from "./FormTabs";
 export * from "./TabForm";
 export * from "./TabContent";
+export * from "./PublishButton";
