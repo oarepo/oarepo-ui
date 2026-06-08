@@ -9,8 +9,7 @@ import { PublishButton as InvenioPublishButton } from "@js/invenio_rdm_records";
 import { DRAFT_PUBLISH_REQUEST_STARTED } from "../../state/deposit/types";
 import { createPublishRequest } from "../../state/deposit/actions";
 import { useDepositFormAction } from "../../hooks";
-
-const PUBLISH_DRAFT_REQUEST_TYPE = "publish_draft";
+import { PUBLISH_DRAFT_REQUEST_TYPE } from "../../constants";
 
 const isDisabledByFiles = (values, filesState) => {
   const filesEnabled = _get(values, "files.enabled", false);
@@ -19,7 +18,8 @@ const isDisabledByFiles = (values, filesState) => {
   return !filesArray.every((file) => file.status === "finished");
 };
 
-export const PublishButton = (props) => {
+// TODO: this needs to be in oarepo-requests in reality
+export const PublishButton = ({ record: _recordProp, ...props }) => {
   const dispatch = useDispatch();
   const { values, isSubmitting } = useFormikContext();
   const record = useSelector((state) => state.deposit.record);
@@ -30,7 +30,8 @@ export const PublishButton = (props) => {
   const actionState = useSelector((state) => state.deposit.actionState);
 
   const hasPublishDraftRequestType = !!record?.expanded?.request_types?.find(
-    (rt) => rt.type_id === PUBLISH_DRAFT_REQUEST_TYPE
+    (rt) =>
+      rt.type_id === PUBLISH_DRAFT_REQUEST_TYPE && rt.links?.actions?.create
   );
   const shouldUseRequestFlow = !selectedCommunity && hasPublishDraftRequestType;
 
