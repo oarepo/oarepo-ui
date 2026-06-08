@@ -28,7 +28,10 @@ import {
 } from "@js/invenio_rdm_records/src/deposit/state/types";
 import PropTypes from "prop-types";
 import { clearErrors } from "../../../forms/state/deposit/actions";
-import { DRAFT_PUBLISH_REQUEST_FAILED } from "../../../forms/state/deposit/types";
+import {
+  DRAFT_PUBLISH_REQUEST_FAILED,
+  DRAFT_PUBLISH_REQUEST_FAILED_WITH_VALIDATION_ERRORS,
+} from "../../../forms/state/deposit/types";
 import { scrollToElement } from "../../../util";
 
 const ACTIONS = {
@@ -60,6 +63,12 @@ const ACTIONS = {
     feedback: "negative",
     message: i18next.t(
       "Publish request could not be submitted. Please try again. If the problem persists, contact user support."
+    ),
+  },
+  [DRAFT_PUBLISH_REQUEST_FAILED_WITH_VALIDATION_ERRORS]: {
+    feedback: "warning",
+    message: i18next.t(
+      "Request to publish draft could not be executed due to validation errors:"
     ),
   },
   [DRAFT_PUBLISH_FAILED_WITH_VALIDATION_ERRORS]: {
