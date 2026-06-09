@@ -137,3 +137,13 @@
     }
   }
 }
+.ui.modal {
+  .item.deposit-drag-listitem {
+    .content {
+      width: auto !important;
+    }
+    .right.floated.content {
+      padding: 0;
+    }
+  }
+}

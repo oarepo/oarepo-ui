@@ -60,11 +60,8 @@ export const EDTFSingleDatePicker = ({
           onChange: handleChange,
           ...datePickerProps,
         }}
-        customInputProps={customInputProps}
+        customInputProps={{ helpText: fieldData.helpText, ...customInputProps }}
       />
-      {fieldData.helpText && (
-        <label className="helptext">{fieldData.helpText}</label>
-      )}
     </Form.Field>
   );
 };

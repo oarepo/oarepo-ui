@@ -12,6 +12,40 @@
   }
 }
 
+// Field/helptext spacing — shared by tab-form content and modal-rendered forms.
+// Lives here (not in modules/modal.overrides) so @fieldMarginBottom from
+// form.variables is in scope.
+.ui.modal .ui.form,
+.tab-form .tab-content {
+  .field {
+    margin-bottom: @fieldMarginBottom !important;
+
+    .field {
+      margin-bottom: 0 !important;
+    }
+  }
+
+  // When helptext sits immediately after a field/label (rendered outside the
+  // .field, as in Invenio-inherited fields), drop the preceding element's
+  // bottom margin so the helptext stays close to the input/label.
+  .field:has(+ label.helptext),
+  label:not(.helptext):has(+ label.helptext) {
+    margin-bottom: 0 !important;
+  }
+
+  label.helptext {
+    margin-top: 0.5rem;
+    margin-bottom: @fieldMarginBottom;
+  }
+
+  // When helptext sits directly under the field's own label (no input
+  // between), collapse the gap so they read as a unit.
+  label:not(.helptext) + label.helptext {
+    margin-top: 0;
+    margin-bottom: 0 !important;
+  }
+}
+
 .oarepo-funding-field-container {
   .ui.icon.left.labeled.button {
     background-color: @arrayAddButtonBackgroundColor;
@@ -19,35 +53,54 @@
   }
 }
 
-// Tab form layout and styling
-.tab-form {
-  // SUI has some weird issue, that it sets display: none on messages with some status like success
+// SUI hides status messages by default outside an active-validation form;
+// force them visible in tab-forms and modal-rendered forms.
+.tab-form,
+.ui.modal .ui.form {
   .success.message,
   .warning.message,
   .error.message {
     display: block !important;
   }
-  .tab-content {
-    .field {
-      margin-bottom: @fieldMarginBottom !important;
+}
 
-      .field {
-        margin-bottom: 0 !important;
+// Grouped sub-fields (e.g. additional descriptions, invenio group fields) get
+// a tinted background to visually delimit them — shared by tab-form content
+// and modal-rendered forms.
+.tab-form .ui.segment.tab-content,
+.ui.modal .ui.form {
+  .additional-descriptions .ui.grid .row,
+  .invenio-group-field.fields {
+    background-color: lighten(@borderColor, 60%);
+    padding: 1rem;
+    border-radius: 0.5rem;
+
+    .invenio-group-field.fields {
+      margin-bottom: 0;
+    }
+
+    @media all and (max-width: @largestMobileScreen) {
+      .column {
+        position: static;
+        padding-right: 0.3rem;
+        padding-left: 0.3rem;
+      }
+
+      position: relative;
+      padding-top: 3.5rem;
+
+      .ui.icon.button.close-btn {
+        position: absolute;
+        top: 1rem;
+        right: 1.3rem;
+        margin-top: 0;
       }
     }
-
-    // When a helptext label sits immediately after a field (helptext rendered
-    // outside the .field, as in Invenio-inherited fields), drop the field's
-    // bottom margin so the helptext doesn't get pushed far below the input.
-    .field:has(+ label.helptext) {
-      margin-bottom: 0 !important;
-    }
-
-    // Cancel the field label's own bottom margin too when helptext follows it.
-    label:not(.helptext):has(+ label.helptext) {
-      margin-bottom: 0 !important;
-    }
   }
+}
+
+// Tab form layout and styling
+.tab-form {
   // Desktop vertical tabs (left sidebar)
   .form-tabs-column {
     padding-right: @formTabsAndContentPadding !important;
@@ -117,18 +170,6 @@
       flex: 1;
     }
 
-    label.helptext {
-      margin-top: 0.5rem;
-      margin-bottom: @fieldMarginBottom;
-    }
-
-    // When helptext sits directly under the field's own label (no input between),
-    // collapse the gap so they read as a unit. Lives inside .ui.segment.tab-content
-    // to match the specificity of the rule above.
-    label:not(.helptext) + label.helptext {
-      margin-top: 0;
-      margin-bottom: 0 !important;
-    }
     // these are invenio styles, that are in their case tied to the accordion, but in our case
     // we don't have accordion fields, so had to paste it here
     .invenio-group-field.fields {
@@ -136,35 +177,6 @@
 
       .ui.icon.button.close-btn {
         margin-top: 1.65rem;
-      }
-    }
-
-    .additional-descriptions .ui.grid .row,
-    .invenio-group-field.fields {
-      background-color: lighten(@borderColor, 60%);
-      padding: 1rem;
-      border-radius: 0.5rem;
-
-      .invenio-group-field.fields {
-        margin-bottom: 0;
-      }
-
-      @media all and (max-width: @largestMobileScreen) {
-        .column {
-          position: static;
-          padding-right: 0.3rem;
-          padding-left: 0.3rem;
-        }
-
-        position: relative;
-        padding-top: 3.5rem;
-
-        .ui.icon.button.close-btn {
-          position: absolute;
-          top: 1rem;
-          right: 1.3rem;
-          margin-top: 0;
-        }
       }
     }
 

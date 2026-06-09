@@ -99,14 +99,6 @@ export const TabContent = ({ activeStep, sections, next, back }) => {
       >
         <FormFeedbackPanel sections={sections} />
       </Overridable>
-      {dirty && (
-        <Message info data-testid="unsaved-changes-message">
-          <Message.Content>
-            <Icon name="info circle" />
-            {i18next.t("Your draft contains unsaved changes.")}
-          </Message.Content>
-        </Message>
-      )}
       <ErrorBoundary
         FallbackComponent={TabErrorFallback}
         resetKeys={[section.key]}
@@ -128,6 +120,14 @@ export const TabContent = ({ activeStep, sections, next, back }) => {
             initialRecord={initialRecord}
           />
         </div>
+        {dirty && (
+          <Message info data-testid="unsaved-changes-message">
+            <Message.Content>
+              <Icon name="info circle" />
+              {i18next.t("Your draft contains unsaved changes.")}
+            </Message.Content>
+          </Message>
+        )}
         <Overridable
           id={buildUID(
             formConfig?.overridableIdPrefix,

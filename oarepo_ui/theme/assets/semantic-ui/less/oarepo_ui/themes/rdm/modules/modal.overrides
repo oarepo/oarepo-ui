@@ -23,7 +23,6 @@
   color: @innerCloseColor;
 }
 
-
 .record-share-modal {
   min-height: 35em;
 
@@ -36,3 +35,14 @@
     margin: 1em auto;
   }
 }
+
+.ui.modal {
+  .ui.form {
+    .ui.icon.button.close-btn {
+      margin-top: 1.5rem;
+    }
+  }
+}
+
+// Field/helptext spacing inside modal forms is defined in
+// collections/form.overrides, where @fieldMarginBottom is in scope.
