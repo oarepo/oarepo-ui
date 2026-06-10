@@ -349,9 +349,15 @@ class FieldData:
 
         :param fd: Current FieldData node.
         :return: List of FieldData objects.
+                - If the input FieldData has no API data (missing/absent field), an empty list is returned.
                 - If the input FieldData object is a dictionary, an empty list is returned.
                 - If the input is a scalar, a single-item list containing that object is returned.
         """
+        # An absent field has no items; the scalar fallback below would otherwise
+        # return a one-item list wrapping the empty sentinel.
+        if fd._api_data is EMPTY_FIELD_DATA_SENTINEL:
+            return []
+
         ui_defs = fd._ui_definitions.get("child", {}) if fd._ui_definitions else {}
         if isinstance(fd._api_data, dict):
             log.error("FieldData.array() called in dictionary! Returning empty array, please call FieldData.dict()")
@@ -388,9 +394,15 @@ class FieldData:
         :param fd: Current FieldData node.
         :return: Dictionary where keys are the original keys of the node and values
                 are FieldData objects.
-                Returns an empty dictionary if called on a non-dictionary object.
+                - If the input FieldData has no API data (missing/absent field), an empty dict is returned.
+                - Returns an empty dictionary if called on a non-dictionary object.
         """
         api = fd._api_data
+        # An absent field has no entries; skip the non-dict error path below
+        # which would otherwise log a misleading "call array()/value()" message.
+        if api is EMPTY_FIELD_DATA_SENTINEL:
+            return {}
+
         if not isinstance(api, dict):
             log.error(
                 "FieldData.dict() called on non-dictionary data. "
