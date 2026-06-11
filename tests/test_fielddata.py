@@ -253,6 +253,40 @@ def test_filter_as_array(field_data_test_obj):
     assert FieldData.value(ret[0]) == api_value_serialization["metadata"]["publication_date"]
 
 
+def test_as_array_on_missing_field(field_data_test_obj):
+    """Absent fields must yield an empty array, not a one-item list of EMPTY_FIELD_DATA.
+
+    Without this guard, the scalar fallback in FieldData.array() returns ``[fd]``
+    even when ``fd`` is EMPTY_FIELD_DATA, causing templates iterating over a
+    missing list field to render one phantom empty item.
+    """
+    _, _, record = field_data_test_obj
+
+    missing = record["metadata"]["definitely_not_a_real_field"]
+    assert missing is EMPTY_FIELD_DATA or missing._api_data is EMPTY_FIELD_DATA_SENTINEL  # noqa: SLF001
+
+    assert FieldData.array(missing) == []
+    assert as_array(missing) == []
+    assert FieldData.array(EMPTY_FIELD_DATA) == []
+
+
+def test_as_dict_on_missing_field(field_data_test_obj):
+    """Absent fields must yield an empty dict without logging a misleading error.
+
+    Without the sentinel guard, FieldData.dict() falls through to the non-dict
+    error branch and logs "call array()/value()" — even though the field simply
+    was not present in the API data.
+    """
+    _, _, record = field_data_test_obj
+
+    missing = record["metadata"]["definitely_not_a_real_field"]
+    assert missing is EMPTY_FIELD_DATA or missing._api_data is EMPTY_FIELD_DATA_SENTINEL  # noqa: SLF001
+
+    assert FieldData.dict(missing) == {}
+    assert as_dict(missing) == {}
+    assert FieldData.dict(EMPTY_FIELD_DATA) == {}
+
+
 def test_filter_as_dict(field_data_test_obj):
     api_value_serialization, _, record = field_data_test_obj
 
