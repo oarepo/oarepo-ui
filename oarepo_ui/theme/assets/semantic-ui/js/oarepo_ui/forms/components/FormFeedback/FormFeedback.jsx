@@ -28,6 +28,10 @@ import {
 } from "@js/invenio_rdm_records/src/deposit/state/types";
 import PropTypes from "prop-types";
 import { clearErrors } from "../../../forms/state/deposit/actions";
+import {
+  DRAFT_PUBLISH_REQUEST_FAILED,
+  DRAFT_PUBLISH_REQUEST_FAILED_WITH_VALIDATION_ERRORS,
+} from "../../../forms/state/deposit/types";
 import { scrollToElement } from "../../../util";
 
 const ACTIONS = {
@@ -53,6 +57,18 @@ const ACTIONS = {
     feedback: "negative",
     message: i18next.t(
       "The draft was not published. Please try again. If the problem persists, contact user support."
+    ),
+  },
+  [DRAFT_PUBLISH_REQUEST_FAILED]: {
+    feedback: "negative",
+    message: i18next.t(
+      "Publish request could not be submitted. Please try again. If the problem persists, contact user support."
+    ),
+  },
+  [DRAFT_PUBLISH_REQUEST_FAILED_WITH_VALIDATION_ERRORS]: {
+    feedback: "warning",
+    message: i18next.t(
+      "Request to publish draft could not be executed due to validation errors:"
     ),
   },
   [DRAFT_PUBLISH_FAILED_WITH_VALIDATION_ERRORS]: {
@@ -184,6 +200,9 @@ export const FormFeedback = ({ actions = {}, sections = [] }) => {
   const errors = useSelector((state) => state.deposit.errors);
 
   const actionState = useSelector((state) => state.deposit.actionState);
+  const formFeedbackMessage = useSelector(
+    (state) => state.deposit.formFeedbackMessage
+  );
 
   const { activeStep, setActiveStep } = useFormTabs() || {};
   const timeoutRef = useRef(null);
@@ -194,6 +213,7 @@ export const FormFeedback = ({ actions = {}, sections = [] }) => {
 
   const message = _get(allActions, [actionState, "message"]);
   const backendErrorMessage = errors.message || errors._schema;
+  const headerMessage = formFeedbackMessage || backendErrorMessage || message;
 
   useEffect(() => {
     return () => {
@@ -224,10 +244,10 @@ export const FormFeedback = ({ actions = {}, sections = [] }) => {
     },
     [activeStep, setActiveStep, sections]
   );
-  if (!message) return null;
+  if (!headerMessage) return null;
   return (
     <CustomMessage color={color}>
-      <Message.Header>{backendErrorMessage || message}</Message.Header>
+      <Message.Header>{headerMessage}</Message.Header>
       {flattenedErrors?.length > 0 && (
         <Message.List>
           {flattenedErrors?.map((error, index) => (
@@ -264,6 +284,9 @@ export const FormFeedbackPanel = ({ actions = {}, sections = [] }) => {
   const [isOpen, setIsOpen] = useState(false);
   const errors = useSelector((state) => state.deposit.errors);
   const actionState = useSelector((state) => state.deposit.actionState);
+  const formFeedbackMessage = useSelector(
+    (state) => state.deposit.formFeedbackMessage
+  );
 
   const { dismissed, setDismissed } = useFormFeedback() || {};
 
@@ -284,6 +307,7 @@ export const FormFeedbackPanel = ({ actions = {}, sections = [] }) => {
   const message = _get(allActions, [actionState, "message"]);
   const feedbackType = _get(allActions, [actionState, "feedback"]);
   const backendErrorMessage = errors.message || errors._schema;
+  const headerMessage = formFeedbackMessage || backendErrorMessage || message;
   const hasErrors = flattenedErrors?.length > 0;
 
   const handleErrorClick = useCallback(
@@ -309,7 +333,7 @@ export const FormFeedbackPanel = ({ actions = {}, sections = [] }) => {
     [activeStep, setActiveStep, sections]
   );
 
-  if (!message || dismissed) return null;
+  if (!headerMessage || dismissed) return null;
 
   return (
     <>
@@ -320,7 +344,7 @@ export const FormFeedbackPanel = ({ actions = {}, sections = [] }) => {
         data-testid="form-feedback-inline"
       >
         <Icon name={FEEDBACK_ICONS[feedbackType] || "warning sign"} />
-        {backendErrorMessage || message}
+        {headerMessage}
         {hasErrors && (
           <Button
             type="button"
@@ -351,9 +375,7 @@ export const FormFeedbackPanel = ({ actions = {}, sections = [] }) => {
         data-testid="form-feedback-panel"
       >
         <div className="form-feedback-panel-header">
-          <strong id="form-feedback-panel-title">
-            {backendErrorMessage || message}
-          </strong>
+          <strong id="form-feedback-panel-title">{headerMessage}</strong>
           <Button
             type="button"
             icon="close"
