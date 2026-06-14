@@ -78,10 +78,14 @@ export const createPublishRequest = (draft) => {
     // PublishButton only mounts this flow when expanded.request_types contains
     // a publish_draft entry with a create link, so we can read it directly here.
     const record = getState().deposit.record;
-    const createLink = record.expanded.request_types.find(
-      (rt) => rt.type_id === PUBLISH_DRAFT_REQUEST_TYPE
+    const createLink = record?.expanded?.request_types.find(
+      (rt) => rt.type_id === PUBLISH_DRAFT_REQUEST_TYPE,
     )?.links?.actions?.create;
 
+    if (!createLink) {
+      dispatch({ type: DRAFT_PUBLISH_REQUEST_FAILED, payload: { errors: {} } });
+      return;
+    }
     dispatch({ type: DRAFT_PUBLISH_REQUEST_STARTED });
 
     try {
@@ -97,6 +101,8 @@ export const createPublishRequest = (draft) => {
       const redirectURL = createResp.data?.links?.self_html;
       if (redirectURL) {
         window.location.replace(redirectURL);
+      } else {
+        throw new Error("Missing links.self_html in publish request response.");
       }
     } catch (error) {
       console.error("Error submitting publish request", error);
@@ -104,7 +110,7 @@ export const createPublishRequest = (draft) => {
         type: DRAFT_PUBLISH_REQUEST_FAILED,
         payload: {
           errors: recordSerializer.deserializeErrors(
-            error?.response?.data?.errors || []
+            error?.response?.data?.errors || [],
           ),
         },
       });
