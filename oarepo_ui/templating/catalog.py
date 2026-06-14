@@ -92,6 +92,12 @@ class OarepoCatalog(Catalog):
         self.file_ext = file_ext
         self.use_cache = use_cache
         self.auto_reload = auto_reload
+        # Initialize attributes introduced in jinjax >=0.64 (fingerprinting and
+        # delayed asset injection). Required because this __init__ does not call
+        # super().__init__ but parent's irender reads _emit_assets_later on every render.
+        self.fingerprint = False
+        self._assets_placeholder = f"@@jinjax_assets_{self._key}@@"
+        self._emit_assets_later = False
 
         root_url = root_url.strip().rstrip(SLASH)
         self.root_url = f"{root_url}{SLASH}"
