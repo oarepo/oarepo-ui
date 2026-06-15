@@ -1490,3 +1490,21 @@ msgstr ""
 
 msgid "Section completion"
 msgstr ""
+
+msgid ""
+"Publish request could not be submitted. Please try again. If the problem "
+"persists, contact user support."
+msgstr ""
+
+msgid "Summary"
+msgstr ""
+
+msgid "Close error summary"
+msgstr ""
+
+msgid "Submit publish request"
+msgstr ""
+
+msgid ""
+"Request to publish draft could not be executed due to validation errors:"
+msgstr ""

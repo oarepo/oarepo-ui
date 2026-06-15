@@ -1517,3 +1517,24 @@ msgstr "Vyplněnost této sekce je {{percentage}} %"
 
 msgid "Section completion"
 msgstr "Vyplněnost sekce"
+
+msgid ""
+"Publish request could not be submitted. Please try again. If the problem "
+"persists, contact user support."
+msgstr ""
+"Žádost o publikování nebyla odeslána. Zkuste to prosím znovu. Pokud problém "
+"přetrvává, kontaktujte uživatelskou podporu."
+
+msgid "Summary"
+msgstr "Souhrn"
+
+msgid "Close error summary"
+msgstr "Zavřít souhrn chyb"
+
+msgid "Submit publish request"
+msgstr "Odeslat žádost o publikování"
+
+msgid ""
+"Request to publish draft could not be executed due to validation errors:"
+msgstr ""
+"Žádost o publikování konceptu nelze provést kvůli chybám validace:"

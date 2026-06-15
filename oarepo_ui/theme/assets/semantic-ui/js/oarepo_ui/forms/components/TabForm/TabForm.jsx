@@ -11,11 +11,11 @@ import { TabContent } from "../TabContent";
 import Overridable from "react-overridable";
 import { buildUID } from "react-searchkit";
 import {
-  PublishButton,
   SaveButton,
   PreviewButton,
   DeleteButton,
 } from "@js/invenio_rdm_records";
+import { PublishButton } from "../PublishButton";
 import { useFormikContext } from "formik";
 
 export const TabForm = ({ sections = [] }) => {
