@@ -21,8 +21,8 @@
 {%- block record_header -%}
 
   {%- block record_header_button -%}
-
-    {% if is_preview and not is_preview_submission_request and can_curate_record and is_draft %}
+    {# when we make publish request, record gets locked, so back to edit basically takes you nowehre can_update_draft fixes this #}
+    {% if is_preview and not is_preview_submission_request and can_curate_record and is_draft and permissions.can_update_draft%}
       <nav class="back-navigation rel-pb-2 pl-0"
            aria-label="{{ _('Back-navigation') }}">
         {%- set back_page = record.links.self_html -%}
