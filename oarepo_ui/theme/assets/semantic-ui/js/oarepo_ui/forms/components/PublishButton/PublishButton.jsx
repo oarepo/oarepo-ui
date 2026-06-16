@@ -28,6 +28,16 @@ export const PublishButton = ({ record: _recordProp, ...props }) => {
   );
   const filesState = useSelector((state) => state.files);
   const actionState = useSelector((state) => state.deposit.actionState);
+  const canPublish = useSelector(
+    (state) => state.deposit.permissions?.can_publish
+  );
+  // True when upstream would render "Submit for review" — that variant goes
+  // through review, so it must remain available even when can_publish is false.
+  const isReviewSubmissionVariant = useSelector(
+    (state) =>
+      !!state.deposit.editorState?.ui?.showSubmitForReviewButton &&
+      !state.deposit.editorState?.ui?.showDirectPublishButton
+  );
 
   const hasPublishDraftRequestType = !!record?.expanded?.request_types?.find(
     (rt) =>
@@ -40,6 +50,11 @@ export const PublishButton = ({ record: _recordProp, ...props }) => {
     [dispatch]
   );
   const { handleAction } = useDepositFormAction({ action: publishAction });
+  // TODO: hacky way to remove publish button from the flow under certain conditions
+  // IMHO we will need to combine our own publishbutton component (we can use invenio pieces)
+  if (!canPublish && !shouldUseRequestFlow && !isReviewSubmissionVariant) {
+    return null;
+  }
 
   if (!shouldUseRequestFlow) {
     return <InvenioPublishButton record={record} {...props} />;

@@ -67,6 +67,7 @@ OAREPO_UI_RECORD_ACTIONS = {
     "view",
     "manage_files",
     "manage_record_access",
+    "publish",
 }
 
 OAREPO_UI_DRAFT_ACTIONS = {
@@ -79,6 +80,7 @@ OAREPO_UI_DRAFT_ACTIONS = {
     "manage": "manage",  # add manage to draft actions - it is the same for drafts as well as published
     "manage_files": "manage_files",
     "manage_record_access": "manage_record_access",
+    "publish": "publish",
 }
 
 OAREPO_UI_OVERRIDES: set[UIComponentOverride] = set()
