@@ -100,3 +100,51 @@ def test_deposit_create_with_nonexistent_community(app, logged_client, users, ex
         assert response["community"] is None
         assert response["community_ui"] is None
         assert response["preselectedCommunity"] is None
+
+
+def test_deposit_create_auto_preselect_single_membership(
+    app, logged_client, extra_entry_points, community, community_owner
+):
+    """Test that the user's sole community is auto-preselected when no URL arg is given."""
+    with logged_client(community_owner).get("/simple-model/uploads/new") as resp:
+        assert resp.status_code == 200
+        response = json.loads(resp.text)
+
+        assert response["community"] is not None
+        assert response["community_ui"] is not None
+        assert response["community_ui"]["slug"] == community.slug
+        assert response["preselectedCommunity"] == response["community_ui"]
+
+
+def test_deposit_create_url_wins_over_single_membership(
+    app, logged_client, users, extra_entry_points, community_owner, community_get_or_create, invite
+):
+    """Test that the URL community arg takes precedence over the user's sole membership."""
+    member_community = community_get_or_create(community_owner, slug="aaa")
+    url_community = community_get_or_create(community_owner, slug="bbb")
+    invite(users[0], str(member_community.id), "reader")
+
+    with logged_client(users[0]).get(f"/simple-model/uploads/new?community={url_community.slug}") as resp:
+        assert resp.status_code == 200
+        response = json.loads(resp.text)
+
+        assert response["community_ui"] is not None
+        assert response["community_ui"]["slug"] == url_community.slug
+        assert response["preselectedCommunity"]["slug"] == url_community.slug
+
+
+def test_deposit_create_no_autoselect_with_multiple_memberships(
+    app, logged_client, extra_entry_points, community_owner, community_get_or_create
+):
+    """Test that no community is preselected when the user belongs to more than one and no URL arg is given."""
+    # community_owner owns both communities, so they have two memberships
+    community_get_or_create(community_owner, slug="aaa")
+    community_get_or_create(community_owner, slug="bbb")
+
+    with logged_client(community_owner).get("/simple-model/uploads/new") as resp:
+        assert resp.status_code == 200
+        response = json.loads(resp.text)
+
+        assert response["community"] is None
+        assert response["community_ui"] is None
+        assert response["preselectedCommunity"] is None
