@@ -39,7 +39,6 @@ def test_deposit_create(app, logged_client, users, extra_entry_points):
         }
 
         expected_permissions = {
-            "can_delete_draft": True,
             "can_manage": True,
             "can_manage_files": True,
             "can_manage_record_access": True,

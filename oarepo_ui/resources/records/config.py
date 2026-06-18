@@ -238,7 +238,6 @@ class RecordsUIResourceConfig(UIResourceConfig):
     deposit_create_permissions: ClassVar[list[str]] = [
         "manage",
         "manage_files",
-        "delete_draft",
         "manage_record_access",
     ]
     """List of permission actions to check for deposit create page."""
