@@ -17,6 +17,9 @@ from functools import wraps
 from typing import TYPE_CHECKING, Any, cast
 
 from flask import g, request
+from invenio_app_rdm.records_ui.views.deposits import (
+    get_user_communities_memberships,
+)
 from invenio_communities.communities.resources.serializer import (
     UICommunityJSONSerializer,
 )
@@ -37,6 +40,11 @@ def pass_draft_community[T: Callable](f: T) -> T:
     def view(self: RecordsUIResource, **kwargs: Any) -> Any:
         comid = request.args.get("community")
         community = None
+
+        if not comid:
+            memberships = get_user_communities_memberships()
+            if len(memberships) == 1:
+                comid = next(iter(memberships))
 
         if comid:
             with contextlib.suppress(Exception):
