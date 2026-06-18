@@ -1,6 +1,6 @@
 [project]
 name = "oarepo-ui"
-version = "13.2.0"
+version = "13.2.1"
 description = "UI module for invenio 3.5+"
 readme = "README.md"
 license = "MIT"
