@@ -15,7 +15,7 @@
     <div id="export-record" class="ui segment bottom attached exports rdm-sidebar">
       {# dynamically create the list of export formats #}
       {% set formats = [] %}
-      {%- for exporter in model.exports -%}
+      {%- for exporter in model.exports if exporter.display -%}
         {%- set export_url = model.ui_url(view_name="record_export", pid_value=record_ui["id"], export_format=exporter.code, preview=1 if is_preview else 0)  -%}
         {% set formats = formats.append({ 'name': exporter.name, 'export_url': export_url }) %}
       {%- endfor -%}
