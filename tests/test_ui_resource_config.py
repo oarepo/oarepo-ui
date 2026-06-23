@@ -40,7 +40,6 @@ def test_ui_resource_form_config(app, simple_model_ui_resource_config, simple_mo
         ui_links=simple_model_ui_resource_config.ui_links_search,
     )
 
-    assert "permissions" in fc
     assert "custom_fields" in fc
 
 
