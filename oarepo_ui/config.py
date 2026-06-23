@@ -69,19 +69,14 @@ OAREPO_UI_RECORD_ACTIONS = {
     "manage_files",
     "manage_record_access",
     "publish",
-}
-
-OAREPO_UI_DRAFT_ACTIONS = {
-    "read_draft": "read",
-    "update_draft": "update",
-    "delete_draft": "delete",
-    "draft_read_files": "read_files",
-    "draft_update_files": "update_files",
-    "draft_read_deleted_files": "read_deleted_files",
-    "manage": "manage",  # add manage to draft actions - it is the same for drafts as well as published
-    "manage_files": "manage_files",
-    "manage_record_access": "manage_record_access",
-    "publish": "publish",
+    "read_draft",
+    "update_draft",
+    "delete_draft",
+    "draft_read_files",
+    "draft_update_files",
+    "draft_read_deleted_files",
+    "media_read_files",
+    "moderate",
 }
 
 OAREPO_UI_OVERRIDES: set[UIComponentOverride] = set()
