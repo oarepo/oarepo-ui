@@ -57,7 +57,7 @@ export const PublishButton = ({ record: _recordProp, ...props }) => {
   }
 
   if (!shouldUseRequestFlow) {
-    return <InvenioPublishButton record={record} {...props} />;
+    return <InvenioPublishButton record={_recordProp} {...props} />;
   }
 
   return (
