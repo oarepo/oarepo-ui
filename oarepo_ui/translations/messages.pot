@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-06-08 12:11+0200\n"
+"POT-Creation-Date: 2026-06-23 09:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/config.py:93
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/config.py:95
 msgid "English"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/config.py:94
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/config.py:96
 msgid "Czech"
 msgstr ""
 
@@ -714,6 +714,10 @@ msgid ""
 "persists, contact user support."
 msgstr ""
 
+msgid ""
+"Request to publish draft could not be executed due to validation errors:"
+msgstr ""
+
 msgid "The draft was not published. Draft saved with validation feedback in:"
 msgstr ""
 
@@ -735,6 +739,9 @@ msgstr ""
 msgid ""
 "Draft preview failed. Please try again. If the problem persists, contact "
 "user support."
+msgstr ""
+
+msgid "Unable to display preview. Please correct validation issues in:"
 msgstr ""
 
 msgid ""
@@ -864,10 +871,6 @@ msgid "Please define your sections."
 msgstr ""
 
 msgid "See the documentation"
-msgstr ""
-
-msgid ""
-"Request to publish draft could not be executed due to validation errors:"
 msgstr ""
 
 msgid "Delete All"

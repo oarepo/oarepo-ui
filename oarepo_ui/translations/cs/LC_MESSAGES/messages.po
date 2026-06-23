@@ -1536,5 +1536,7 @@ msgstr "Odeslat žádost o publikování"
 
 msgid ""
 "Request to publish draft could not be executed due to validation errors:"
-msgstr ""
-"Žádost o publikování konceptu nelze provést kvůli chybám validace:"
+msgstr "Žádost o publikování konceptu nelze provést kvůli chybám validace:"
+
+msgid "Unable to display preview. Please correct validation issues in:"
+msgstr "Náhled nelze zobrazit. Opravte prosím chyby validace v:"
