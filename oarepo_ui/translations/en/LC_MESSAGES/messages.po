@@ -1508,3 +1508,6 @@ msgstr ""
 msgid ""
 "Request to publish draft could not be executed due to validation errors:"
 msgstr ""
+
+msgid "Unable to display preview. Please correct validation issues in:"
+msgstr ""

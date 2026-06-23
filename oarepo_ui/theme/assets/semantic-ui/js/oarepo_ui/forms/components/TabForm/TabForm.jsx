@@ -35,11 +35,11 @@ export const TabForm = ({ sections = [] }) => {
       dismissed: feedbackDismissed,
       setDismissed: setFeedbackDismissed,
     }),
-    [feedbackDismissed],
+    [feedbackDismissed]
   );
   const saveAction = useCallback(
     (values, params) => dispatch(save(values, params)),
-    [dispatch],
+    [dispatch]
   );
 
   const sectionKeys = useMemo(() => sections.map((s) => s.key), [sections]);
@@ -50,7 +50,7 @@ export const TabForm = ({ sections = [] }) => {
   const initialTabKey = params.get("tab");
   const initialStep = sectionKeys.indexOf(initialTabKey);
   const [activeStep, setActiveStepState] = React.useState(
-    Math.max(initialStep, 0),
+    Math.max(initialStep, 0)
   );
   const [contentVisible, setContentVisible] = React.useState(true);
   // pending step is the step you are switching to. The issue is that when you switch from tabs that both contain
@@ -85,7 +85,7 @@ export const TabForm = ({ sections = [] }) => {
       setPendingStep(index);
       setContentVisible(false);
     },
-    [sectionKeys, handleSave, dirty, sections, activeStep, pendingStep],
+    [sectionKeys, handleSave, dirty, sections, activeStep, pendingStep]
   );
 
   const commitPendingStep = useCallback(() => {
@@ -140,7 +140,7 @@ export const TabForm = ({ sections = [] }) => {
       next,
       back,
     }),
-    [activeStep, handleSetStep, next, back],
+    [activeStep, handleSetStep, next, back]
   );
   if (sections.length === 0) {
     return (
@@ -208,7 +208,7 @@ export const TabForm = ({ sections = [] }) => {
                 <Overridable
                   id={buildUID(
                     overridableIdPrefix,
-                    "TabForm.FormMetadataSummary",
+                    "TabForm.FormMetadataSummary"
                   )}
                   record={record}
                   activeStep={activeStep}
@@ -303,7 +303,7 @@ TabForm.propTypes = {
       sectionCompletionThreshold: PropTypes.number,
       /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
       component: PropTypes.func.isRequired,
-    }),
+    })
   ),
 };
 
