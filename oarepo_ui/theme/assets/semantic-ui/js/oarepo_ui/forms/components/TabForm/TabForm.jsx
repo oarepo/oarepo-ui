@@ -45,7 +45,8 @@ export const TabForm = ({ sections = [] }) => {
   const sectionKeys = useMemo(() => sections.map((s) => s.key), [sections]);
   const { overridableIdPrefix, permissions, formTitle } = useFormConfig();
   const { initialRecord } = useInitialRecord();
-  const { dirty } = useFormikContext();
+  const formik = useFormikContext();
+  const { dirty } = formik;
   const params = new URLSearchParams(window.location.search);
   const initialTabKey = params.get("tab");
   const initialStep = sectionKeys.indexOf(initialTabKey);
@@ -63,12 +64,21 @@ export const TabForm = ({ sections = [] }) => {
     action: saveAction,
   });
 
+  // Recompute on every redux action AND on every render (so formik changes flow through).
+  // Result is a boolean, so referential identity is stable and re-renders are minimal.
+  const tabsLocked = useSelector(
+    (state) => !!sections[activeStep]?.lockTabChange?.(formik, state)
+  );
+
   const handleSetStep = useCallback(
     (index) => {
       if (!(index >= 0 && index < sectionKeys.length)) {
         return;
       }
       if (index === activeStep && pendingStep === null) {
+        return;
+      }
+      if (tabsLocked) {
         return;
       }
       const currentSection = sections[activeStep];
@@ -85,7 +95,15 @@ export const TabForm = ({ sections = [] }) => {
       setPendingStep(index);
       setContentVisible(false);
     },
-    [sectionKeys, handleSave, dirty, sections, activeStep, pendingStep]
+    [
+      sectionKeys,
+      handleSave,
+      dirty,
+      sections,
+      activeStep,
+      pendingStep,
+      tabsLocked,
+    ]
   );
 
   const commitPendingStep = useCallback(() => {
@@ -167,11 +185,13 @@ export const TabForm = ({ sections = [] }) => {
                 activeStep={activeStep}
                 sections={sections}
                 onTabChange={handleSetStep}
+                tabsLocked={tabsLocked}
               >
                 <FormSteps
                   activeStep={activeStep}
                   sections={sections}
                   onTabChange={handleSetStep}
+                  tabsLocked={tabsLocked}
                 />
               </Overridable>
             </Grid.Column>
@@ -184,6 +204,7 @@ export const TabForm = ({ sections = [] }) => {
               activeStep={activeStep}
               sections={sections}
               onTabChange={handleSetStep}
+              tabsLocked={tabsLocked}
             >
               <Grid.Column
                 className="computer only form-tabs-column"
@@ -204,6 +225,7 @@ export const TabForm = ({ sections = [] }) => {
                   activeStep={activeStep}
                   sections={sections}
                   onTabChange={handleSetStep}
+                  tabsLocked={tabsLocked}
                 />
                 <Overridable
                   id={buildUID(
@@ -301,6 +323,8 @@ TabForm.propTypes = {
       saveOnTabChange: PropTypes.bool,
       sectionCompletion: PropTypes.func,
       sectionCompletionThreshold: PropTypes.number,
+      /** (formik, reduxState) => boolean — when truthy on the active section, tab navigation is blocked. */
+      lockTabChange: PropTypes.func,
       /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
       component: PropTypes.func.isRequired,
     })

@@ -5,7 +5,12 @@ import { FormTabErrors } from "../FormTabErrors";
 import { SectionCompletionBar } from "../SectionCompletionBar";
 import { useFormNavigation } from "../../hooks";
 
-export const FormTabs = ({ sections, activeStep, onTabChange }) => {
+export const FormTabs = ({
+  sections,
+  activeStep,
+  onTabChange,
+  tabsLocked = false,
+}) => {
   const { hasBeenSavedInSession, isActive, handleClick, handleKeyDown } =
     useFormNavigation({
       activeStep,
@@ -29,6 +34,7 @@ export const FormTabs = ({ sections, activeStep, onTabChange }) => {
           onClick={() => handleClick(index)}
           onKeyDown={(event) => handleKeyDown(event, index)}
           active={isActive(index)}
+          disabled={tabsLocked && !isActive(index)}
           role="tab"
           aria-selected={isActive(index)}
           tabIndex={isActive(index) ? 0 : -1}
@@ -63,12 +69,15 @@ FormTabs.propTypes = {
       saveOnTabChange: PropTypes.bool,
       sectionCompletion: PropTypes.func,
       sectionCompletionThreshold: PropTypes.number,
+      /** (formik, reduxState) => boolean — when truthy on the active section, tab navigation is blocked. */
+      lockTabChange: PropTypes.func,
       /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
       component: PropTypes.func.isRequired,
     })
   ),
   activeStep: PropTypes.number.isRequired,
   onTabChange: PropTypes.func.isRequired,
+  tabsLocked: PropTypes.bool,
 };
 
 export default FormTabs;
