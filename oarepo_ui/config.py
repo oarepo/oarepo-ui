@@ -48,6 +48,7 @@ OAREPO_UI_JINJAX_GLOBALS = {
     "as_dict": "oarepo_ui.templating.filters:as_dict",
     "localized": "oarepo_ui.templating.filters:localized",
     "append_query_params": "oarepo_ui.utils:append_query_params",
+    "can_view_deposit_page": "oarepo_ui.utils:can_view_deposit_page",
 }
 
 
