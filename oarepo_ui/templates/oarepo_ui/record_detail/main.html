@@ -3,20 +3,7 @@
    It contains only the article content - sidebar is handled separately by record_sidebar block.
 #}
 
-{% if record_ui["access"]["record"] == 'restricted' %}
-  <section id="record-access-status"
-           class="ui {{ record_ui["ui"]["access_status"]["message_class"] }} message rel-mt-1"
-           aria-label="{{ _('Record access information') }}"
-  >
-    <i class="{{ record_ui["ui"]["access_status"]["icon"] }} icon" aria-hidden="true"></i>
-    <strong>{{ record_ui["ui"]["access_status"]["title_l10n"] }}</strong>
-    {{ record_ui["ui"]["access_status"]["description_l10n"] | safe }}
 
-    {% if record_ui["access"]["embargo"]["reason"] %}
-      <p>{{ _("Reason") }}: {{ record_ui["access"]["embargo"]["reason"] }}</p>
-    {% endif %}
-  </section>
-{% endif %}
 
 {%- block record_header -%}
 
