@@ -938,7 +938,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         """Handle permission denied error on record views."""
         if not current_user.is_authenticated:
             # trigger the flask-login unauthorized handler
-            return Response(current_app.login_manager.unauthorized())  # type: ignore[attr-defined]
+            return current_app.login_manager.unauthorized()  # type: ignore[attr-defined,no-any-return]
 
         record = getattr(error, "record", None)
         if record:
