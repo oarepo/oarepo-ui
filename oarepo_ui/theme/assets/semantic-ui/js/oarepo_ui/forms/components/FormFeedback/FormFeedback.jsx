@@ -281,6 +281,8 @@ FormFeedback.propTypes = {
       saveOnTabChange: PropTypes.bool,
       sectionCompletion: PropTypes.func,
       sectionCompletionThreshold: PropTypes.number,
+      /** (formik, reduxState) => boolean — when truthy on the active section, tab navigation is blocked. */
+      lockTabChange: PropTypes.func,
       /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
       component: PropTypes.func.isRequired,
     })
