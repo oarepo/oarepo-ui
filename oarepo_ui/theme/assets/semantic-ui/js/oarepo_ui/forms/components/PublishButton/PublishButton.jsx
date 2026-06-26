@@ -9,7 +9,17 @@ import { PublishButton as InvenioPublishButton } from "@js/invenio_rdm_records";
 import { DRAFT_PUBLISH_REQUEST_STARTED } from "../../state/deposit/types";
 import { createPublishRequest } from "../../state/deposit/actions";
 import { useDepositFormAction } from "../../hooks";
-import { PUBLISH_DRAFT_REQUEST_TYPE } from "../../constants";
+import {
+  PUBLISH_DRAFT_REQUEST_TYPE,
+  PUBLISH_CHANGED_METADATA_REQUEST_TYPE,
+  PUBLISH_NEW_VERSION_REQUEST_TYPE,
+} from "../../constants";
+
+const PUBLISH_REQUEST_TYPES = [
+  PUBLISH_DRAFT_REQUEST_TYPE,
+  PUBLISH_CHANGED_METADATA_REQUEST_TYPE,
+  PUBLISH_NEW_VERSION_REQUEST_TYPE,
+];
 
 const isDisabledByFiles = (values, filesState) => {
   const filesEnabled = _get(values, "files.enabled", false);
@@ -24,30 +34,31 @@ export const PublishButton = ({ record: _recordProp, ...props }) => {
   const { values, isSubmitting } = useFormikContext();
   const record = useSelector((state) => state.deposit.record);
   const selectedCommunity = useSelector(
-    (state) => state.deposit.editorState?.selectedCommunity
+    (state) => state.deposit.editorState?.selectedCommunity,
   );
   const filesState = useSelector((state) => state.files);
   const actionState = useSelector((state) => state.deposit.actionState);
   const canPublish = useSelector(
-    (state) => state.deposit.permissions?.can_publish
+    (state) => state.deposit.permissions?.can_publish,
   );
   // True when upstream would render "Submit for review" — that variant goes
   // through review, so it must remain available even when can_publish is false.
   const isReviewSubmissionVariant = useSelector(
     (state) =>
       !!state.deposit.editorState?.ui?.showSubmitForReviewButton &&
-      !state.deposit.editorState?.ui?.showDirectPublishButton
+      !state.deposit.editorState?.ui?.showDirectPublishButton,
   );
 
-  const hasPublishDraftRequestType = !!record?.expanded?.request_types?.find(
+  const activeRequestType = record?.expanded?.request_types?.find(
     (rt) =>
-      rt.type_id === PUBLISH_DRAFT_REQUEST_TYPE && rt.links?.actions?.create
+      PUBLISH_REQUEST_TYPES.includes(rt.type_id) && rt.links?.actions?.create,
   );
-  const shouldUseRequestFlow = !selectedCommunity && hasPublishDraftRequestType;
+  const shouldUseRequestFlow = !selectedCommunity && !!activeRequestType;
 
   const publishAction = React.useCallback(
-    (formValues) => dispatch(createPublishRequest(formValues)),
-    [dispatch]
+    (formValues) =>
+      dispatch(createPublishRequest(formValues, activeRequestType?.type_id)),
+    [dispatch, activeRequestType],
   );
   const { handleAction } = useDepositFormAction({ action: publishAction });
   // TODO: hacky way to remove publish button from the flow under certain conditions

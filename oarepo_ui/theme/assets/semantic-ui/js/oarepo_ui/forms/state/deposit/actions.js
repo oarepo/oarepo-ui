@@ -11,7 +11,11 @@ import {
   DRAFT_PUBLISH_REQUEST_STARTED,
   SET_VALIDATION_ERRORS,
 } from "./types";
-import { PUBLISH_DRAFT_REQUEST_TYPE } from "../../constants";
+import {
+  PUBLISH_DRAFT_REQUEST_TYPE,
+  PUBLISH_CHANGED_METADATA_REQUEST_TYPE,
+  PUBLISH_NEW_VERSION_REQUEST_TYPE,
+} from "../../constants";
 
 export const clearErrors = () => {
   return (dispatch) => {
@@ -37,7 +41,10 @@ export const setErrors = (errors, formFeedbackMessage) => {
 // TODO: this needs to be in oarepo-requests in reality
 // Save the draft, then create a publish_draft request and immediately submit it.
 // On success redirects to the request's detail page.
-export const createPublishRequest = (draft) => {
+export const createPublishRequest = (
+  draft,
+  requestType = PUBLISH_DRAFT_REQUEST_TYPE,
+) => {
   return async (dispatch, getState, { apiClient, recordSerializer }) => {
     // Reuse Invenio's configured axios (CSRF, vnd.inveniordm.v1+json, withCredentials)
     // instead of standing up a parallel client.
@@ -79,7 +86,7 @@ export const createPublishRequest = (draft) => {
     // a publish_draft entry with a create link, so we can read it directly here.
     const record = getState().deposit.record;
     const createLink = record?.expanded?.request_types?.find(
-      (rt) => rt.type_id === PUBLISH_DRAFT_REQUEST_TYPE
+      (rt) => rt.type_id === requestType,
     )?.links?.actions?.create;
 
     if (!createLink) {
@@ -110,7 +117,7 @@ export const createPublishRequest = (draft) => {
         type: DRAFT_PUBLISH_REQUEST_FAILED,
         payload: {
           errors: recordSerializer.deserializeErrors(
-            error?.response?.data?.errors || []
+            error?.response?.data?.errors || [],
           ),
         },
       });
