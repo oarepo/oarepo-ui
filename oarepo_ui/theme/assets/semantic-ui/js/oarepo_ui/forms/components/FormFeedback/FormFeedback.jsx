@@ -278,7 +278,7 @@ FormFeedback.propTypes = {
       key: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
       includesPaths: PropTypes.arrayOf(PropTypes.string),
-      saveOnTabChange: PropTypes.bool,
+      saveOnTabChange: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
       sectionCompletion: PropTypes.func,
       sectionCompletionThreshold: PropTypes.number,
       /** (formik, reduxState) => boolean — when truthy on the active section, tab navigation is blocked. */
@@ -429,7 +429,7 @@ FormFeedbackPanel.propTypes = {
       key: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
       includesPaths: PropTypes.arrayOf(PropTypes.string),
-      saveOnTabChange: PropTypes.bool,
+      saveOnTabChange: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
       /** component({ record, formConfig, activeStep, next, back, initialRecord }) => ReactNode */
       component: PropTypes.func.isRequired,
     })

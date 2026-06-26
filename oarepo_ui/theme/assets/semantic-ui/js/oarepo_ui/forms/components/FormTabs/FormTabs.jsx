@@ -66,7 +66,7 @@ FormTabs.propTypes = {
       key: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
       includesPaths: PropTypes.array,
-      saveOnTabChange: PropTypes.bool,
+      saveOnTabChange: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
       sectionCompletion: PropTypes.func,
       sectionCompletionThreshold: PropTypes.number,
       /** (formik, reduxState) => boolean — when truthy on the active section, tab navigation is blocked. */

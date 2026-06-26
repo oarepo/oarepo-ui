@@ -46,7 +46,8 @@ export const TabForm = ({ sections = [] }) => {
   const { overridableIdPrefix, permissions, formTitle } = useFormConfig();
   const { initialRecord } = useInitialRecord();
   const formik = useFormikContext();
-  const { dirty } = formik;
+  const { dirty, values } = formik;
+  const reduxState = useSelector((state) => state);
   const params = new URLSearchParams(window.location.search);
   const initialTabKey = params.get("tab");
   const initialStep = sectionKeys.indexOf(initialTabKey);
@@ -84,7 +85,16 @@ export const TabForm = ({ sections = [] }) => {
       const currentSection = sections[activeStep];
       // certain inputs in the form, like the file uploader or community selector, don't actually update the formik state on change, so we trigger a save when changing tabs if there are unsaved changes or if the current section requires it
       // mainly meant for files section and potentially communities. All the other inputs write to formik.
-      if (dirty || currentSection?.saveOnTabChange) {
+      const shouldSaveOnTabChange =
+        typeof currentSection?.saveOnTabChange === "function"
+          ? currentSection.saveOnTabChange({
+              formikValues: values,
+              reduxState,
+              dirty,
+              activeStep,
+            })
+          : currentSection?.saveOnTabChange;
+      if (dirty || shouldSaveOnTabChange) {
         handleSave();
       }
       const url = new URL(window.location);
@@ -103,6 +113,8 @@ export const TabForm = ({ sections = [] }) => {
       activeStep,
       pendingStep,
       tabsLocked,
+      values,
+      reduxState,
     ]
   );
 
@@ -320,7 +332,7 @@ TabForm.propTypes = {
       key: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
       includesPaths: PropTypes.array,
-      saveOnTabChange: PropTypes.bool,
+      saveOnTabChange: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
       sectionCompletion: PropTypes.func,
       sectionCompletionThreshold: PropTypes.number,
       /** (formik, reduxState) => boolean — when truthy on the active section, tab navigation is blocked. */
