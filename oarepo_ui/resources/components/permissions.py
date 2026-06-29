@@ -8,8 +8,10 @@
 #
 """Component that exposes record-related permissions to templates and forms.
 
-Populates extra_context and form configuration with boolean flags indicating
-which record actions are allowed for the current identity and record state.
+Populates extra_context, render_kwargs and search options with boolean flags
+indicating which record actions are allowed for the current identity and record
+state. A single global action set is used for both drafts and published records
+so the resulting ``can_*`` dict has the same shape everywhere.
 """
 
 from __future__ import annotations
@@ -46,15 +48,12 @@ class PermissionsComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig]
         api_record: RecordItem,
         identity: Identity,
         extra_context: dict[str, Any],
+        render_kwargs: dict[str, Any],
         **kwargs: Any,
     ) -> None:
-        """Attach permissions before rendering the detail page.
-
-        :param api_record: RecordItem wrapper around the record being displayed.
-        :param extra_context: Context dict to be passed to the template.
-        :param identity: Current user identity.
-        """
+        """Attach permissions before rendering the detail page."""
         self.fill_permissions(self._get_underlying_record(api_record), extra_context, identity)
+        render_kwargs["permissions"] = extra_context["permissions"]
 
     @override
     def before_ui_edit(
@@ -63,15 +62,12 @@ class PermissionsComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig]
         api_record: RecordItem,
         identity: Identity,
         extra_context: dict[str, Any],
+        render_kwargs: dict[str, Any],
         **kwargs: Any,
     ) -> None:
-        """Attach permissions before rendering the edit page.
-
-        :param api_record: RecordItem wrapper around the record being edited.
-        :param extra_context: Context dict to be passed to the template.
-        :param identity: Current user identity.
-        """
+        """Attach permissions before rendering the edit page."""
         self.fill_permissions(self._get_underlying_record(api_record), extra_context, identity)
+        render_kwargs["permissions"] = extra_context["permissions"]
 
     @override
     def before_ui_create(
@@ -79,14 +75,12 @@ class PermissionsComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig]
         *,
         identity: Identity,
         extra_context: dict[str, Any],
+        render_kwargs: dict[str, Any],
         **kwargs: Any,
     ) -> None:
-        """Attach permissions for creating a new record.
-
-        :param extra_context: Context dict to be passed to the template.
-        :param identity: Current user identity.
-        """
+        """Attach permissions for creating a new record."""
         self.fill_permissions(None, extra_context, identity)
+        render_kwargs["permissions"] = extra_context["permissions"]
 
     @override
     def before_ui_search(
@@ -97,12 +91,7 @@ class PermissionsComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig]
         search_options: dict[str, Any],
         **kwargs: Any,
     ) -> None:
-        """Attach permissions for the search page and propagate to search options.
-
-        :param extra_context: Context dict to be passed to the template.
-        :param identity: Current user identity.
-        :param search_options: Dict with search configuration; overrides will be mutated.
-        """
+        """Attach permissions for the search page and propagate to search options."""
         from ..records.resource import RecordsUIResource
 
         if not isinstance(self.resource, RecordsUIResource):
@@ -111,23 +100,6 @@ class PermissionsComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig]
         extra_context["permissions"] = {"can_create": self.resource.has_deposit_permissions(identity)}
         # fixes issue with permissions not propagating down to template
         search_options["overrides"]["permissions"] = extra_context["permissions"]
-
-    @override
-    def form_config(
-        self,
-        *,
-        form_config: dict[str, Any],
-        api_record: RecordItem | None = None,
-        identity: Identity,
-        **kwargs: Any,
-    ) -> None:
-        """Add permissions to the form configuration for create/edit pages.
-
-        :param form_config: Form configuration dictionary to mutate in-place.
-        :param api_record: RecordItem if editing, or None if creating.
-        :param identity: Current user identity.
-        """
-        self.fill_permissions(self._get_underlying_record(api_record), form_config, identity)
 
     def get_record_permissions(
         self,
@@ -144,7 +116,6 @@ class PermissionsComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig]
         :param identity: Current user identity.
         :param record: Underlying record or draft, or empty dict if not present.
         :returns: A dict of permission flags, e.g. {"can_read": True}.
-        :raises: None (permission check errors are handled defensively)
         """
         ret: dict[str, bool] = {}
         for action_name, mapped_to in actions.items():
@@ -162,33 +133,17 @@ class PermissionsComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig]
         identity: Identity,
         **kwargs: Any,
     ) -> None:
-        """Populate extra_context or form_config with permission flags.
-
-        :param record: The record/draft or None when creating a new record.
-        :param extra_context: Dict to be updated with a "permissions" mapping.
-        :param identity: Current user identity.
-        :returns: None
-        :raises: None
-        """
+        """Populate extra_context with permission flags using the single global action set."""
         from ..records.resource import RecordsUIResource
 
         if not isinstance(self.resource, RecordsUIResource):
             return
 
-        # prefill permissions with False (drafts do not have some of those)
-        extra_context["permissions"] = {
-            f"can_{mapped_to}": False for _action, mapped_to in current_oarepo_ui.record_actions.items()
-        }
-        extra_context["permissions"].update(
-            self.get_record_permissions(
-                (
-                    current_oarepo_ui.draft_actions
-                    if record and getattr(record, "is_draft", False)
-                    else current_oarepo_ui.record_actions
-                ),
-                self.resource.api_service,
-                identity,
-                record,
-                **kwargs,
-            )
+        actions = current_oarepo_ui.record_actions
+        extra_context["permissions"] = self.get_record_permissions(
+            actions,
+            self.resource.api_service,
+            identity,
+            record,
+            **kwargs,
         )

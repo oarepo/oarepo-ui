@@ -269,7 +269,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             "files": files_dict,
             "media_files": media_files_dict,
             "user_communities_memberships": get_user_communities_memberships(),
-            "permissions": (record.has_permissions_to(self.config.record_detail_permissions) if record else {}),
+            # "permissions" is populated by PermissionsComponent.before_ui_detail
             # TODO: implement custom fields
             "is_preview": is_preview,
             "include_deleted": include_deleted,
@@ -588,7 +588,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
                 "searchUrl": url_for(f"{self.config.blueprint_name}.search"),
             },
             "files_locked": files_locked,
-            "permissions": draft.has_permissions_to(self.config.deposit_edit_permissions),
+            # "permissions" is populated by PermissionsComponent.before_ui_edit
             # TODO: implement record deletion
             "extra_context": extra_context,
             "ui_links": ui_links,
@@ -665,11 +665,6 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
     def _get_form_config(self, identity: Identity, **kwargs: Any) -> dict[str, Any]:
         return self.config.form_config(identity=identity, **kwargs)
 
-    def get_record_permissions(self, actions: list[str], record: Record | None = None) -> dict[str, bool]:
-        """Generate (default) record action permissions."""
-        service = self.api_service
-        return {f"can_{action}": service.check_permission(g.identity, action, record=record) for action in actions}
-
     def _create(
         self,
         community: str | None = None,
@@ -737,7 +732,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             "ui_links": ui_links,
             "webpack_entry": f"{self.config.model_name}_deposit_form.js",
             "context": current_oarepo_ui.catalog.jinja_env.globals,
-            "permissions": self.get_record_permissions(self.config.deposit_create_permissions),
+            # "permissions" is populated by PermissionsComponent.before_ui_create
             "model_name": self.config.model_name,
         }
 

@@ -113,23 +113,15 @@ class OARepoUIState:
     def record_actions(self) -> dict[str, str]:
         """Get the mapping of api permissions (actions) to UI permission flags.
 
-        This is normally an identity for the published record actions, but can be
-        used to map to custom actions.
+        Single global set covering both published-record and draft actions; each
+        action name maps to itself (e.g. ``delete_draft`` and ``delete`` are
+        distinct actions, kept as distinct ``can_*`` flags).
         """
         ret = self.app.config["OAREPO_UI_RECORD_ACTIONS"]
         if not isinstance(ret, dict):
             # convert to dict with action name as key and action name as value
             ret = {action: action for action in ret}
         return ret
-
-    @cached_property
-    def draft_actions(self) -> dict[str, str]:
-        """Get the mapping of api permissions (actions) to UI permission flags for drafts.
-
-        This maps the actions that are available for drafts, such as delete_draft,
-        to the same ui permission flags as the published record actions (delete in this case).
-        """
-        return cast("dict[str, str]", self.app.config["OAREPO_UI_DRAFT_ACTIONS"])
 
     @cached_property
     def ui_overrides(self) -> set[UIComponentOverride]:

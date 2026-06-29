@@ -48,6 +48,7 @@ export const TabForm = ({ sections = [] }) => {
   const formik = useFormikContext();
   const { dirty, values } = formik;
   const reduxState = useSelector((state) => state);
+
   const params = new URLSearchParams(window.location.search);
   const initialTabKey = params.get("tab");
   const initialStep = sectionKeys.indexOf(initialTabKey);
