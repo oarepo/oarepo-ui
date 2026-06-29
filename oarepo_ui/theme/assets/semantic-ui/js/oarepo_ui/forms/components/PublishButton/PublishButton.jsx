@@ -9,7 +9,17 @@ import { PublishButton as InvenioPublishButton } from "@js/invenio_rdm_records";
 import { DRAFT_PUBLISH_REQUEST_STARTED } from "../../state/deposit/types";
 import { createPublishRequest } from "../../state/deposit/actions";
 import { useDepositFormAction } from "../../hooks";
-import { PUBLISH_DRAFT_REQUEST_TYPE } from "../../constants";
+import {
+  PUBLISH_DRAFT_REQUEST_TYPE,
+  PUBLISH_CHANGED_METADATA_REQUEST_TYPE,
+  PUBLISH_NEW_VERSION_REQUEST_TYPE,
+} from "../../constants";
+
+const PUBLISH_REQUEST_TYPES = [
+  PUBLISH_DRAFT_REQUEST_TYPE,
+  PUBLISH_CHANGED_METADATA_REQUEST_TYPE,
+  PUBLISH_NEW_VERSION_REQUEST_TYPE,
+];
 
 const isDisabledByFiles = (values, filesState) => {
   const filesEnabled = _get(values, "files.enabled", false);
@@ -39,15 +49,16 @@ export const PublishButton = ({ record: _recordProp, ...props }) => {
       !state.deposit.editorState?.ui?.showDirectPublishButton
   );
 
-  const hasPublishDraftRequestType = !!record?.expanded?.request_types?.find(
+  const activeRequestType = record?.expanded?.request_types?.find(
     (rt) =>
-      rt.type_id === PUBLISH_DRAFT_REQUEST_TYPE && rt.links?.actions?.create
+      PUBLISH_REQUEST_TYPES.includes(rt.type_id) && rt.links?.actions?.create
   );
-  const shouldUseRequestFlow = !selectedCommunity && hasPublishDraftRequestType;
+  const shouldUseRequestFlow = !selectedCommunity && !!activeRequestType;
 
   const publishAction = React.useCallback(
-    (formValues) => dispatch(createPublishRequest(formValues)),
-    [dispatch]
+    (formValues) =>
+      dispatch(createPublishRequest(formValues, activeRequestType?.type_id)),
+    [dispatch, activeRequestType]
   );
   const { handleAction } = useDepositFormAction({ action: publishAction });
   // TODO: hacky way to remove publish button from the flow under certain conditions
