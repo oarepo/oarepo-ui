@@ -86,7 +86,7 @@ export const IconOnly = {
   args: {
     link: "https://example.com",
     badgeTitle: "Custom Icon",
-    icon: "/static/images/identifiers/orcid.svg",
+    icon: "/static/images/orcid.svg",
     alt: "ORCID logo",
   },
 };
@@ -95,7 +95,7 @@ export const IconWithoutLink = {
   render: (args) => <IconIdentifier {...args} />,
   args: {
     badgeTitle: "No Link Example",
-    icon: "/static/images/identifiers/orcid.svg",
+    icon: "/static/images/orcid.svg",
     alt: "ORCID logo",
   },
 };

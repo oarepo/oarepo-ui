@@ -91,7 +91,7 @@ IconIdentifier.propTypes = {
  *
  * It combines scheme, identifier value, and optional name into
  * a descriptive tooltip, and automatically resolves the icon
- * from `/static/images/identifiers/{scheme}.svg`.
+ * from `/static/images/{scheme}.svg`.
  */
 export const IdentifierBadge = ({
   /**
@@ -126,7 +126,7 @@ export const IdentifierBadge = ({
     <IconIdentifier
       link={url}
       badgeTitle={badgeTitle}
-      icon={`/static/images/identifiers/${lowerCaseScheme}.svg`}
+      icon={`/static/images/${lowerCaseScheme}.svg`}
       alt={`${scheme.toUpperCase()} logo`}
       className={className}
     />
