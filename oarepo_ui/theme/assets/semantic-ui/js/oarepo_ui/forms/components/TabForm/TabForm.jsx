@@ -8,6 +8,7 @@ import {
   useFormConfig,
   useInitialRecord,
 } from "../../hooks";
+import { ShareDraftButton } from "@js/invenio_app_rdm/deposit/ShareDraftButton";
 import { FormTabsProvider, FormFeedbackProvider } from "../../contexts";
 import { FormTabs } from "../FormTabs";
 import { FormSteps } from "../FormSteps";
@@ -43,7 +44,8 @@ export const TabForm = ({ sections = [] }) => {
   );
 
   const sectionKeys = useMemo(() => sections.map((s) => s.key), [sections]);
-  const { overridableIdPrefix, permissions, formTitle } = useFormConfig();
+  const { overridableIdPrefix, permissions, formTitle, groupsEnabled } =
+    useFormConfig();
   const { initialRecord } = useInitialRecord();
   const formik = useFormikContext();
   const { dirty, values } = formik;
@@ -298,6 +300,23 @@ export const TabForm = ({ sections = [] }) => {
                 {permissions?.can_delete_draft && record?.id && (
                   <DeleteButton />
                 )}
+              </Overridable>
+              <Overridable
+                id={buildUID(overridableIdPrefix, "TabForm.ShareDraftButton")}
+                permissions={permissions}
+                groupsEnabled={groupsEnabled}
+                initialRecord={initialRecord}
+              >
+                <div className="share-draft-button-container">
+                  {(initialRecord.is_draft === null ||
+                    permissions.can_manage) && (
+                    <ShareDraftButton
+                      record={initialRecord}
+                      permissions={permissions}
+                      groupsEnabled={groupsEnabled}
+                    />
+                  )}
+                </div>
               </Overridable>
               <Overridable
                 id={buildUID(overridableIdPrefix, "TabForm.PreviewButton")}
