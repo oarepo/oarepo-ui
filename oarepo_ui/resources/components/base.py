@@ -68,7 +68,7 @@ class UIResourceComponent[T: UIResourceConfig = UIResourceConfig]:
         :param context: the context dictionary that will be merged into the template's context
         """
 
-    def before_ui_detail(
+    def before_ui_detail(  # noqa: PLR0913  too many arguments
         self,
         *,
         api_record: RecordItem,
@@ -76,6 +76,7 @@ class UIResourceComponent[T: UIResourceConfig = UIResourceConfig]:
         identity: Identity,
         ui_links: dict,
         extra_context: dict,
+        render_kwargs: dict,
         **kwargs: Any,
     ) -> None:
         """Process the data before the detail page is rendered.
@@ -85,7 +86,7 @@ class UIResourceComponent[T: UIResourceConfig = UIResourceConfig]:
         :param identity: the current user identity
         :param ui_links: UI links for the record, a dictionary of link name -> link url
         :param extra_context: will be passed to the template as the "extra_context" variable
-        :param kwargs: additional keyword arguments, including render_kwargs with record_ui, is_preview, is_draft
+        :param render_kwargs: dictionary of render kwargs (mutable) passed to the template
         """
 
     def before_ui_search(
@@ -144,6 +145,7 @@ class UIResourceComponent[T: UIResourceConfig = UIResourceConfig]:
         form_config: dict,
         ui_links: dict,
         extra_context: dict,
+        render_kwargs: dict,
         **kwargs: Any,
     ) -> None:
         """Process the data before the edit page is rendered.
@@ -156,13 +158,12 @@ class UIResourceComponent[T: UIResourceConfig = UIResourceConfig]:
                         template to display, for example, the localized record title.
         :param identity: the current user identity
         :param form_config: form configuration dictionary
-        :param args: query parameters
-        :param view_args: view arguments
         :param ui_links: UI links for the edit page, a dictionary of link name -> link url
         :param extra_context: will be passed to the template as the "extra_context" variable
+        :param render_kwargs: dictionary of render kwargs (mutable) passed to the template
         """
 
-    def before_ui_create(
+    def before_ui_create(  # noqa: PLR0913  too many arguments
         self,
         *,
         data: dict,
@@ -170,6 +171,7 @@ class UIResourceComponent[T: UIResourceConfig = UIResourceConfig]:
         form_config: dict,
         ui_links: dict,
         extra_context: dict,
+        render_kwargs: dict,
         **kwargs: Any,
     ) -> None:
         """Process the data before the create page is rendered.
@@ -179,8 +181,7 @@ class UIResourceComponent[T: UIResourceConfig = UIResourceConfig]:
         :param data: A dictionary with empty data (show just the structure of the record, with values replaced by None)
         :param identity: the current user identity
         :param form_config: form configuration dictionary
-        :param args: query parameters
-        :param view_args: view arguments
         :param ui_links: UI links for the create page, a dictionary of link name -> link url
         :param extra_context: will be passed to the template as the "extra_context" variable
+        :param render_kwargs: dictionary of render kwargs (mutable) passed to the template
         """
