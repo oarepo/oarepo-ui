@@ -28,6 +28,7 @@ def test_deposit_edit(
 
     with logged_client(users[0]).get(f"/simple-model/uploads/{draft['id']}") as resp:
         assert resp.status_code == 200
+        assert "Link" in resp.headers
 
         response = json.loads(resp.text)
         mode = response.pop("mode", None)
