@@ -614,16 +614,23 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             **kwargs,
         )
 
-        return current_oarepo_ui.catalog.render(
-            self.get_jinjax_macro("deposit_edit"),
-            **render_kwargs,
+        response = Response(
+            current_oarepo_ui.catalog.render(
+                self.get_jinjax_macro("deposit_edit"),
+                **render_kwargs,
+            ),
+            mimetype="text/html",
+            status=200,
         )
+        set_api_record_to_response(response, draft)
+        return response
 
     @pass_route_args("view")
     @secret_link_or_login_required()
     @pass_draft(expand=True)
     @pass_draft_files
     @no_cache_response
+    @response_header_signposting
     def deposit_edit(
         self,
         draft: RecordItem,
