@@ -1,0 +1,16 @@
+{% extends config.THEME_ERROR_TEMPLATE %}
+{% block page_body %}
+<div class="ui container centered rel-pt-2">
+  <h1 class="ui header inline-block">
+    <i class="icon warning circle" aria-hidden="true"></i>
+    <div class="content pl-0 rel-pr-1">
+      {{ _("DataCite export required") }}
+    </div>
+  </h1>
+
+  <p>
+    {{ _("Your model must have a DataCite export defined.") }}
+    <a href="{{ docs_url }}">{{ _("See the documentation on how to add it.") }}</a>
+  </p>
+</div>
+{% endblock page_body %}

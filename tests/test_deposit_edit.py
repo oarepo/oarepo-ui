@@ -89,3 +89,39 @@ def test_deposit_edit(
 
         for key, value in expected_permissions.items():
             assert response["permissions"].get(key) == value
+
+
+def test_deposit_edit_without_datacite_export(
+    app,
+    location,
+    record_service,
+    logged_client,
+    users,
+    draft_factory,
+    extra_entry_points,
+    monkeypatch,
+):
+    """Signposted views require the model to define a DataCite export.
+
+    A DataCite export is mandatory for signposting. When it is missing,
+    response_header_signposting returns a 404 error page pointing to the docs
+    instead of silently dropping the Link header.
+    """
+    from oarepo_runtime.proxies import current_runtime
+
+    from oarepo_ui.resources.decorators.signposting import DATACITE_MIMETYPE
+
+    draft = draft_factory(users[0].identity)
+
+    # Drop the DataCite export from every registered model for this test.
+    with app.app_context():
+        for model in current_runtime.models_by_schema.values():
+            monkeypatch.setattr(
+                model,
+                "_exports",
+                [export for export in model.exports if export.mimetype != DATACITE_MIMETYPE],
+            )
+
+    with logged_client(users[0]).get(f"/simple-model/uploads/{draft['id']}") as resp:
+        assert resp.status_code == 404
+        assert b"DataCite export" in resp.data
