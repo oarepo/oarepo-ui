@@ -20,12 +20,15 @@ from functools import wraps
 from typing import TYPE_CHECKING, Any
 
 from oarepo_runtime.api import ExportEngine
+from oarepo_runtime.proxies import current_runtime
 from oarepo_runtime.resources.signposting import create_linkset
 
 from ..utils import get_api_record_from_response
 
 if TYPE_CHECKING:
     from flask import Response
+
+DATACITE_MIMETYPE = "application/vnd.datacite.datacite+json"
 
 
 def response_header_signposting[T: Callable](f: T) -> T:
@@ -48,8 +51,13 @@ def response_header_signposting[T: Callable](f: T) -> T:
         if not api_record:
             return response
         record_dict = api_record.to_dict()
+        # Signposting relies on a DataCite export, which not every model provides.
+        # Skip the Link header instead of failing the whole response when it is missing.
+        model = current_runtime.models_by_schema.get(record_dict["$schema"])
+        if model is None or model.get_export_by_mimetype(DATACITE_MIMETYPE) is None:
+            return response
         record_linkset = create_linkset(
-            ExportEngine.export(record_dict=record_dict, export_mimetype="application/vnd.datacite.datacite+json"),
+            ExportEngine.export(record_dict=record_dict, export_mimetype=DATACITE_MIMETYPE),
             record_dict,
             include_reverse_relations=False,
         )
