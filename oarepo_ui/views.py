@@ -66,8 +66,8 @@ def create_blueprint(app: Flask) -> Blueprint:
     # wire it in here to avoid falling back to invenio-pages' broken 404
     # auto-registration (KeyError: 'invenio_pages.view' on the second request).
     # `add_static_page_routes` reads app.config["APP_RDM_PAGES"] with an
-    # unguarded subscript, and blueprint creation can run before our
-    # init_config seeds the default, so ensure it exists here at the point of use.
+    # unguarded subscript, so ensure the key exists here at the point of use
+    # (it may not be set by this extension's init_config).
     app.config.setdefault("APP_RDM_PAGES", {})
     add_static_page_routes(blueprint, app)
 
