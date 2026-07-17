@@ -56,10 +56,9 @@ export const PublishButton = ({ record: _recordProp, ...props }) => {
   // Only the *initial* publish of a brand-new draft into a community should
   // defer to Invenio's community-submission review flow. The metadata-edit and
   // new-version publish requests must always drive our request flow, even
-  // inside a community — a new-version draft is not `is_published` and its
-  // `selectedCommunity` is populated from the record's default community, so
-  // gating on `is_published || !selectedCommunity` wrongly suppressed the
-  // button for it.
+  // inside a community — a new-version draft still has `selectedCommunity`
+  // populated (from the record's default community), so gating only on
+  // `!selectedCommunity` would wrongly suppress the button for it.
   const isInitialPublishRequest =
     activeRequestType?.type_id === PUBLISH_DRAFT_REQUEST_TYPE;
   const shouldUseRequestFlow =
