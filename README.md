@@ -40,10 +40,7 @@ OARepo builds its static UI pages on top of the [JinjaX library](https://jinjax.
 Define templates in your configuration:
 
 ```python
-templates = {
-    "detail": "DetailPage",
-    "search": "SearchPage"
-}
+templates = {"detail": "DetailPage", "search": "SearchPage"}
 ```
 
 Components accept `metadata`, `ui`, and `layout` parameters by default. Define parameters using JinjaX syntax:
@@ -83,10 +80,7 @@ Create reusable component hierarchies:
 Use dot notation to organize components in subdirectories:
 
 ```python
-templates = {
-    "detail": "myrepo.DetailPage",
-    "search": "myrepo.SearchPage"
-}
+templates = {"detail": "myrepo.DetailPage", "search": "myrepo.SearchPage"}
 ```
 
 Components are loaded from `templates/myrepo/DetailPage.jinja`.
@@ -113,16 +107,18 @@ Pluggable resource system for building UI endpoints with component-based archite
 ```python
 from oarepo_ui.resources.base import UIResourceConfig, UIComponentsResource
 
+
 class MyUIResourceConfig(UIResourceConfig):
     blueprint_name = "my_records"
     url_prefix = "/records"
     template_folder = "templates"
-    
+
     components = (
         PermissionsComponent,
         BabelComponent,
         FilesComponent,
     )
+
 
 class MyUIResource(UIComponentsResource):
     def __init__(self, config):
@@ -147,6 +143,7 @@ Reusable components for common UI functionality:
 
 ```python
 from oarepo_ui.resources.components import UIResourceComponent
+
 
 class MyComponent(UIResourceComponent):
     def before_ui_detail(self, *, id, identity, record, extra_context, **kwargs):
@@ -210,10 +207,8 @@ class MyComponent(UIResourceComponent):
 ```python
 from oarepo_ui.resources.decorators import content_negotiation
 
-@content_negotiation(
-    default="text/html",
-    supported=["text/html", "application/json"]
-)
+
+@content_negotiation(default="text/html", supported=["text/html", "application/json"])
 def detail_view(self, id, identity, **kwargs):
     # Automatically handles Accept header routing
     pass
@@ -225,6 +220,7 @@ FAIR Signposting implementation for machine-readable links:
 
 ```python
 from oarepo_ui.resources.decorators import signposting
+
 
 @signposting
 def landing_page(self, id, identity, record, **kwargs):
@@ -246,10 +242,12 @@ def landing_page(self, id, identity, record, **kwargs):
 ```python
 from oarepo_ui.resources.decorators import pass_record, pass_draft
 
+
 @pass_record
 def detail_view(self, id, identity, record, **kwargs):
     # `record` parameter automatically populated
     pass
+
 
 @pass_draft
 def edit_view(self, id, identity, draft, **kwargs):
@@ -289,6 +287,7 @@ from functools import partial
 from flask import Blueprint, render_template, current_app, g
 from oarepo_runtime import current_runtime
 
+
 def create_blueprint(app):
     """Blueprint for search routes."""
     blueprint = Blueprint(
@@ -297,21 +296,23 @@ def create_blueprint(app):
         template_folder="templates",
         static_folder="static",
     )
-    
+
     blueprint.add_url_rule("/", view_func=search)
     blueprint.app_context_processor(search_app_context)
     return blueprint
 
+
 def search():
     """Search template."""
-    return render_template('your-app/search.html')
+    return render_template("your-app/search.html")
+
 
 def search_app_context():
     """Search app context processor."""
     # Get the model's service configuration
     model = current_runtime.models.get("your_model_name")
     api_config = model.service_config
-    
+
     return {
         "search_app_oarepo_config": partial(
             # Use the config's search_app_config method from RecordsUIResourceConfig
@@ -324,15 +325,12 @@ def search_app_context():
                     "gridView": False,
                     "ResultsList": {
                         "item": {
-                            "component": 'segment',
-                            "children": [{
-                                "component": "header",
-                                "dataField": "metadata.title"
-                            }]
+                            "component": "segment",
+                            "children": [{"component": "header", "dataField": "metadata.title"}],
                         }
-                    }
+                    },
                 }
-            }
+            },
         )
     }
 ```
@@ -387,16 +385,9 @@ Dynamic override system for JavaScript React components:
 from oarepo_ui.overrides import UIComponent, UIComponentOverride
 
 # Register custom result list item component
-component = UIComponent(
-    name="MyResultItem",
-    module="my_app.components",
-    import_mode="lazy"
-)
+component = UIComponent(name="MyResultItem", module="my_app.components", import_mode="lazy")
 
-override = UIComponentOverride(
-    endpoint="search",
-    component=component
-)
+override = UIComponentOverride(endpoint="search", component=component)
 
 # Add to configuration
 OAREPO_UI_OVERRIDES = {override}
@@ -408,8 +399,7 @@ OAREPO_UI_OVERRIDES = {override}
 from oarepo_ui.proxies import current_oarepo_ui
 
 current_oarepo_ui.register_result_list_item(
-    schema="https://example.com/schemas/record-1.0.0.json",
-    component=my_component
+    schema="https://example.com/schemas/record-1.0.0.json", component=my_component
 )
 ```
 

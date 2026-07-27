@@ -49,8 +49,8 @@ class FieldDataItemGetter(Protocol):
         """
 
 
-type APIData = str | list | Mapping[str, Any] | None | EmptyFieldDataSentinelType
-type UIData = str | list | Mapping[str, Any] | None | EmptyFieldDataSentinelType
+type APIData = str | list | Mapping[str, Any] | EmptyFieldDataSentinelType | None
+type UIData = str | list | Mapping[str, Any] | EmptyFieldDataSentinelType | None
 
 
 class FieldData:
