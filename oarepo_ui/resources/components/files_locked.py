@@ -14,10 +14,15 @@ file-related widgets during record create/edit flows.
 
 from __future__ import annotations
 
-from typing import Any, override
+from typing import TYPE_CHECKING, Any, override
+
+from oarepo_runtime.typing import record_from_result
 
 from ..records.config import RecordsUIResourceConfig
 from .base import UIResourceComponent
+
+if TYPE_CHECKING:
+    from invenio_records_resources.services.records.results import RecordItem
 
 
 class FilesLockedComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig](UIResourceComponent[T]):
@@ -47,6 +52,7 @@ class FilesLockedComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig]
     def before_ui_edit(
         self,
         *,
+        api_record: RecordItem,
         record: dict,
         form_config: dict,
         extra_context: dict,
@@ -54,16 +60,18 @@ class FilesLockedComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig]
     ) -> None:
         """Compute whether files should be locked before rendering the edit page.
 
-        It sets filesLocked to True when the user cannot update files or when the
-        record is already published. Otherwise, sets it to False.
+        Files are locked when the user cannot update files, or when the draft's
+        file bucket is locked. Using the bucket lock (instead of ``is_published``)
+        lets the file-modification grace-period flow work: once its request
+        unlocks the bucket, the uploader becomes editable again on reload.
 
+        :param api_record: The draft being edited.
         :param record: UI-serialized record with fields like "is_published".
-        :param data: API-serialized record data.
-        :param identity: Current user identity.
         :param form_config: Form configuration dictionary to mutate in-place.
-        :param ui_links: UI links for the page.
         :param extra_context: Extra context expected to contain permissions.
         """
-        form_config["filesLocked"] = not extra_context.get("permissions", {}).get(
-            "can_update_files", False
-        ) or record.get("is_published", False)
+        can_update_files = extra_context.get("permissions", {}).get("can_update_files", False)
+        draft = record_from_result(api_record)
+        bucket = getattr(getattr(draft, "files", None), "bucket", None)
+        bucket_locked = bool(getattr(bucket, "locked", False))
+        form_config["filesLocked"] = not can_update_files or bucket_locked
