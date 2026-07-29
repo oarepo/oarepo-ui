@@ -23,6 +23,7 @@ from flask import (
 )
 from flask_menu import current_menu
 from invenio_app_rdm.theme.views import (
+    add_static_page_routes,
     help_search,
     help_statistics,
     # help_versioning,
@@ -58,6 +59,17 @@ def create_blueprint(app: Flask) -> Blueprint:
         blueprint.add_url_rule(**create_url_rule(routes.get("help_statistics"), default_view_func=help_statistics))
         # TODO: uncomment when we have the proper config in APP_RDM_ROUTES
         # blueprint.add_url_rule(**create_url_rule(routes.get("help_versioning"), default_view_func=help_versioning)) #noqa
+
+    # Register explicit, locale-aware routes for static pages declared in
+    # APP_RDM_PAGES. Upstream invenio-app-rdm does this in its own theme
+    # blueprint, but that blueprint is not registered on this stack, so we
+    # wire it in here to avoid falling back to invenio-pages' broken 404
+    # auto-registration (KeyError: 'invenio_pages.view' on the second request).
+    # `add_static_page_routes` reads app.config["APP_RDM_PAGES"] with an
+    # unguarded subscript, so ensure the key exists here at the point of use
+    # (it may not be set by this extension's init_config).
+    app.config.setdefault("APP_RDM_PAGES", {})
+    add_static_page_routes(blueprint, app)
 
     blueprint.app_context_processor(lambda: ({"current_app": app}))
     blueprint.app_context_processor(lambda: ({"now": datetime.datetime.now(tz=datetime.UTC)}))
