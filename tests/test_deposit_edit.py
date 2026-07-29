@@ -66,6 +66,10 @@ def test_deposit_edit(
         assert forms_config["current_locale"] == "en"
         assert forms_config["allowEmptyFiles"] is True
         assert forms_config["updateUrl"].endswith(f"/api/simple-model/{draft['id']}/draft")
+        # Fresh draft: the bucket is unlocked, so files are not locked. Exposed via
+        # the files_locked render kwarg (deposits-record-locked-files hidden input),
+        # not inside forms_config.
+        assert response["files_locked"] is False
 
         record = response["record"]
         assert record["id"] == draft["id"]

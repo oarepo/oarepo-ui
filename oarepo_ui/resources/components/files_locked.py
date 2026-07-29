@@ -26,52 +26,54 @@ if TYPE_CHECKING:
 
 
 class FilesLockedComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig](UIResourceComponent[T]):
-    """Add files locked to form config, to be able to use the same logic as in RDM."""
+    """Drive the ``files_locked`` template value.
+
+    Corresponds to the ``deposits-record-locked-files`` hidden input, to be able
+    to use the same single-source logic as in RDM.
+
+    The value is exposed only through the hidden input (read by ``parseFormAppConfig``
+    as the top-level ``filesLocked`` prop), matching upstream RDM -- it is deliberately
+    NOT duplicated into ``form_config`` (``deposits-config``), so the frontend has a
+    single, unambiguous source of truth.
+    """
 
     @override
     def before_ui_create(
         self,
         *,
-        form_config: dict,
+        render_kwargs: dict,
         **kwargs: Any,
     ) -> None:
-        """Set filesLocked to False before rendering the create page.
+        """Files are never locked on the create page.
 
-        :param record: UI-serialized record dictionary (unused for create).
-        :param data: Empty API-serialized record data for the create form.
-        :param identity: Current user identity.
-        :param form_config: Form configuration dictionary to mutate in-place.
-        :param ui_links: UI links for the page.
-        :param extra_context: Extra context passed to the template.
-        :returns: None
-        :raises: None
+        :param render_kwargs: template render arguments to mutate in-place; the
+            ``files_locked`` key is rendered into the ``deposits-record-locked-files``
+            hidden input by ``form.html``.
         """
-        form_config["filesLocked"] = False
+        render_kwargs["files_locked"] = False
 
     @override
     def before_ui_edit(
         self,
         *,
         api_record: RecordItem,
-        record: dict,
-        form_config: dict,
-        extra_context: dict,
+        render_kwargs: dict,
         **kwargs: Any,
     ) -> None:
-        """Compute whether files should be locked before rendering the edit page.
+        """Lock files purely by the draft's file-bucket lock.
 
-        Files are locked when the user cannot update files, or when the draft's
-        file bucket is locked. Using the bucket lock (instead of ``is_published``)
-        lets the file-modification grace-period flow work: once its request
+        Using the bucket lock (instead of ``is_published`` or the ``can_update_files``
+        permission) lets the file-modification grace-period flow work: once its request
         unlocks the bucket, the uploader becomes editable again on reload.
 
+        Overrides the ``files_locked`` value the ``pass_draft`` decorator computed from
+        ``lock_edit_published_files`` (which defaults to always-locked).
+
         :param api_record: The draft being edited.
-        :param record: UI-serialized record with fields like "is_published".
-        :param form_config: Form configuration dictionary to mutate in-place.
-        :param extra_context: Extra context expected to contain permissions.
+        :param render_kwargs: template render arguments to mutate in-place; the
+            ``files_locked`` key is rendered into the ``deposits-record-locked-files``
+            hidden input by ``form.html``.
         """
-        can_update_files = extra_context.get("permissions", {}).get("can_update_files", False)
         draft = record_from_result(api_record)
         bucket = getattr(getattr(draft, "files", None), "bucket", None)
-        bucket_locked = bool(getattr(bucket, "locked", False))
-        form_config["filesLocked"] = not can_update_files or bucket_locked
+        render_kwargs["files_locked"] = bool(getattr(bucket, "locked", False))
