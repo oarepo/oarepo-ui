@@ -227,7 +227,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         except ValidationError:
             abort(404)
 
-    def _detail(  # noqa: PLR0913 too many arguments
+    def _detail(  # noqa: PLR0913, PLR0917 too many arguments
         self,
         record: RecordItem,
         files: FileList,
