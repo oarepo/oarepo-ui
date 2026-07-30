@@ -18,7 +18,7 @@ from .base import (
     pass_route_args,
     secret_link_or_login_required,
 )
-from .content_negotiation import record_content_negotiation
+from .content_negotiation import record_content_negotiation, vocabulary_content_negotiation
 from .pass_draft import pass_draft, pass_draft_files
 from .pass_draft_community import pass_draft_community
 from .pass_record import (
@@ -44,4 +44,5 @@ __all__ = (
     "record_content_negotiation",
     "response_header_signposting",
     "secret_link_or_login_required",
+    "vocabulary_content_negotiation",
 )
