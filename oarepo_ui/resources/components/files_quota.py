@@ -18,6 +18,7 @@ from copy import deepcopy
 from typing import TYPE_CHECKING, Any, override
 
 from flask import current_app
+from invenio_app_rdm.records_ui.utils import evaluate_quota_increase
 from invenio_app_rdm.records_ui.views.deposits import get_actual_files_quota
 from invenio_rdm_records.views import file_transfer_type
 from invenio_records_resources.proxies import current_transfer_registry
@@ -61,6 +62,7 @@ class FilesQuotaAndTransferComponent[T: RecordsUIResourceConfig = RecordsUIResou
         record_quota = get_actual_files_quota(None)
         if record_quota:
             quota["maxStorage"] = record_quota["quota_size"]
+            quota["quotaIncrease"] = evaluate_quota_increase(None, identity)
         form_config["quota"] = dict(**quota, maxFileSize=max_file_size)
 
     @override
@@ -87,9 +89,11 @@ class FilesQuotaAndTransferComponent[T: RecordsUIResourceConfig = RecordsUIResou
         """
         quota = deepcopy(current_app.config.get("APP_RDM_DEPOSIT_FORM_QUOTA", {}))
         max_file_size = current_app.config.get("RDM_FILES_DEFAULT_MAX_FILE_SIZE", None)
-        record_quota = get_actual_files_quota(record_from_result(api_record))
+        record = record_from_result(api_record)
+        record_quota = get_actual_files_quota(record)
         if record_quota:
             quota["maxStorage"] = record_quota["quota_size"]
+            quota["quotaIncrease"] = evaluate_quota_increase(record, identity)
         form_config["quota"] = dict(**quota, maxFileSize=max_file_size)
 
     @override
