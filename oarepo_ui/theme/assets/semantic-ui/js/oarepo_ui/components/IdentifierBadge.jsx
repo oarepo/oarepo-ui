@@ -2,6 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Image } from "react-invenio-forms";
 
+const PLACEHOLDER_IMAGE = "/static/images/square-placeholder.png";
+
 /**
  * IconIdentifier renders an identifier icon, optionally wrapped in an anchor link.
  *
@@ -34,7 +36,7 @@ export const IconIdentifier = ({
   /**
    * Fallback image path if the provided icon fails to load.
    */
-  fallbackImage = "/static/images/square-placeholder.png",
+  fallbackImage = PLACEHOLDER_IMAGE,
 }) => {
   return link ? (
     <span className={`creatibutor-identifier ${className}`}>
@@ -118,16 +120,26 @@ export const IdentifierBadge = ({
 }) => {
   const { scheme, identifier: identifierValue, url } = identifier;
 
-  const badgeTitle = `${creatibutorName} ${scheme}: ${identifierValue}`;
-
   const lowerCaseScheme = scheme?.toLowerCase();
+
+  // Without a scheme there is no icon to resolve, thus fall back to a
+  // generic placeholder icon
+  const icon = lowerCaseScheme
+    ? `/static/images/${lowerCaseScheme}.svg`
+    : PLACEHOLDER_IMAGE;
+
+  const badgeTitle = scheme
+    ? `${creatibutorName} ${scheme}: ${identifierValue}`
+    : `${creatibutorName} ${identifierValue}`;
+
+  const alt = scheme ? `${scheme.toUpperCase()} logo` : "Identifier logo";
 
   return (
     <IconIdentifier
       link={url}
       badgeTitle={badgeTitle}
-      icon={`/static/images/${lowerCaseScheme}.svg`}
-      alt={`${scheme.toUpperCase()} logo`}
+      icon={icon}
+      alt={alt}
       className={className}
     />
   );

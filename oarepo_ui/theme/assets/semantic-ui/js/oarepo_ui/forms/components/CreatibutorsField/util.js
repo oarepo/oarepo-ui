@@ -68,9 +68,22 @@ export const serializeCreatibutor = (submittedCreatibutor) => {
     identifiersFieldPath,
     []
   );
-  const identifiers = submittedIdentifiers.map((submittedIdentifier) => {
+  const identifiers = submittedIdentifiers.map((rawIdentifier) => {
+    const submittedIdentifier = rawIdentifier.trim();
+
+    // URLs (e.g. https://orcid.org/...) have no scheme, they are stored as-is
+    if (/^https?:\/\//i.test(submittedIdentifier)) {
+      return { identifier: submittedIdentifier };
+    }
+
     const [scheme, identifier] = splitOnce(submittedIdentifier, ":");
-    return { scheme: scheme, identifier };
+    // No separator (undefined) or empty value ("") means no scheme could be
+    // extracted, thus store the whole input as the identifier
+    if (!identifier) {
+      return { identifier: submittedIdentifier };
+    }
+
+    return { scheme, identifier };
   });
 
   const submittedAffiliations = _get(
