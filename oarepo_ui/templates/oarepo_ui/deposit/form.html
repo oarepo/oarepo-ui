@@ -39,6 +39,11 @@
           value='{{ config.RECORDS_RESOURCES_ALLOW_EMPTY_FILES | tojson }}'>
   <input type="hidden" name="deposits-use-uppy-ui"
           value='{{ config.APP_RDM_DEPOSIT_NG_FILES_UI_ENABLED | tojson }}'>
+  {# File-modification (grace-period) evaluation, kept as its own hidden input to
+     mirror upstream RDM instead of nesting it inside forms_config. Defaults to an
+     empty object so the frontend always receives an object, never null. #}
+  <input type="hidden" name="deposits-file-modification"
+          value='{{ file_modification | default({}, true) | tojson }}'>
 
   {%- if forms_config %}
     <input type="hidden" name="deposits-config"

@@ -137,6 +137,7 @@ export class DepositFormApp extends Component {
       groupsEnabled,
       allowEmptyFiles,
       useUppy,
+      fileModification,
       sections,
       useWizardForm,
       formTitle,
@@ -164,6 +165,7 @@ export class DepositFormApp extends Component {
                     groupsEnabled,
                     allowEmptyFiles,
                     useUppy,
+                    fileModification,
                     formTitle,
                   }}
                 >
@@ -210,6 +212,7 @@ DepositFormApp.propTypes = {
   groupsEnabled: PropTypes.bool.isRequired,
   allowEmptyFiles: PropTypes.bool,
   useUppy: PropTypes.bool,
+  fileModification: PropTypes.object,
   /* eslint-disable react/require-default-props */
   severityChecks: PropTypes.object,
   sections: PropTypes.arrayOf(

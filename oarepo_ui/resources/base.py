@@ -126,7 +126,8 @@ class UIResource[T: UIResourceConfig = UIResourceConfig](UIComponentsResource[T]
         return ret
 
 
-def multiple_methods_route(  # noqa: PLR0913, PLR0917
+# ruff: noqa: PLR0913, PLR0917
+def multiple_methods_route(
     methods: Iterable[str],
     rule: str,
     view_meth: Any,

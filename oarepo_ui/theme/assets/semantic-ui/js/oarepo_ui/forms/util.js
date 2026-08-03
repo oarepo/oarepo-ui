@@ -59,6 +59,7 @@ export function parseFormAppConfig(rootElementId = "deposit-form") {
     groupsEnabled: getInputFromDOM("config-groups-enabled"),
     allowEmptyFiles: getInputFromDOM("records-resources-allow-empty-files"),
     isDoiRequired: getInputFromDOM("deposits-is-doi-required"),
+    fileModification: getInputFromDOM("deposits-file-modification"),
     links: getInputFromDOM("deposits-links"),
   };
 }
