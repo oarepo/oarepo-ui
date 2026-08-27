@@ -1,11 +1,6 @@
-#
-# Copyright (c) 2025 CESNET z.s.p.o.
-#
-# This file is a part of oarepo-ui (see https://github.com/oarepo/oarepo-ui).
-#
-# oarepo-ui is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
-#
+# SPDX-FileCopyrightText: 2025 CESNET z.s.p.o
+# SPDX-License-Identifier: MIT
+
 """Implementation of record ui resources."""
 
 from __future__ import annotations
@@ -33,6 +28,7 @@ from flask_resources import (
 )
 from flask_security import login_required
 from idutils.normalizers import to_url
+from invenio_app_rdm.records_ui.utils import get_external_resources
 from invenio_app_rdm.records_ui.views.decorators import no_cache_response
 from invenio_app_rdm.records_ui.views.deposits import (
     get_actual_files_quota,
@@ -50,7 +46,6 @@ from invenio_communities.proxies import current_communities
 from invenio_i18n import gettext as _
 from invenio_previewer import current_previewer
 from invenio_previewer.extensions import default as default_previewer
-from invenio_rdm_records.proxies import current_rdm_records
 from invenio_rdm_records.records.systemfields.access.access_settings import (
     AccessSettings,
 )
@@ -187,7 +182,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         return self.config.model.ui_model  # type: ignore[no-any-return]
 
     def _record_from_service_result(self, result: RecordItem) -> Record:
-        return cast("Record", record_from_result(result))
+        return record_from_result(result)
 
     def _prepare_files(self, files: FileList, media_files: FileList) -> tuple[dict | None, dict | None]:
         """Convert FileList objects to dictionaries for rendering."""
@@ -201,7 +196,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         if parent is not None:
             access = parent.get("access")
             if not access or access.get("settings") is None:
-                parent["access"]["settings"] = AccessSettings({}).dump()
+                parent.setdefault("access", {})["settings"] = AccessSettings({}).dump()
 
         if not self.config.ui_serializer:
             record_ui = record.to_dict()
@@ -223,7 +218,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
     def _validate_draft_preview(self, record: RecordItem) -> None:
         """Validate draft structure."""
         try:
-            current_rdm_records.records_service.validate_draft(g.identity, record.id, ignore_field_permissions=True)
+            self.api_service.validate_draft(g.identity, record.id, ignore_field_permissions=True)
         except ValidationError:
             abort(404)
 
@@ -243,8 +238,6 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         is_draft = record_ui.get("is_draft", False)
         avatar = self._get_user_avatar()
 
-        # TODO: implement custom fields feature
-
         if is_preview and is_draft:
             # it is possible to save incomplete drafts that break the normal
             # (preview) landing page rendering
@@ -263,20 +256,19 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
 
         ui_links = self.expand_detail_links(identity=g.identity, record=record)
         extra_context: dict[str, Any] = {}
-        render_kwargs = {
+        render_kwargs: dict[str, Any] = {
             "record": record,
             "record_ui": record_ui,
             "files": files_dict,
             "media_files": media_files_dict,
             "user_communities_memberships": get_user_communities_memberships(),
-            # TODO: implement custom fields
             "is_preview": is_preview,
             "include_deleted": include_deleted,
             "embedded": embed,
             "is_draft": is_draft,
             "community": resolved_community,
             "community_ui": resolved_community_ui,
-            # TODO: implement external resources
+            "external_resources": get_external_resources(record),
             "user_avatar": avatar,
             "model": self.config.model,
             "model_name": self.config.model_name,
@@ -409,7 +401,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
                         g.identity,
                         pid_value,
                         expand=True,
-                        include_deleted=include_deleted,  # type: ignore[call-arg]
+                        include_deleted=include_deleted,  # ty: ignore[unknown-argument]
                     ),
                 )
             return cast(
@@ -475,7 +467,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
 
         search_app_config = search_config(app_id=self.config.application_id.capitalize())
 
-        render_kwargs = {
+        render_kwargs: dict[str, Any] = {
             "search_app_config": search_app_config,
             "ui_config": self.config,
             "ui_resource": self,
@@ -526,7 +518,13 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         """Return edit page for a record (core logic without decorators)."""
         files_dict = None if draft_files is None else draft_files.to_dict()
         record = self.config.ui_serializer.dump_obj(copy.copy(draft.to_dict()))
-        # TODO: implement edit action on published record (similar to RDM)
+
+        # when editing a draft of an already-published record, also load the
+        # published version so the form can reflect its state (e.g. a minted DOI)
+        published_record = None
+        if record.get("is_published"):
+            published = self.api_service.read(g.identity, id_=record["id"], expand=True)
+            published_record = self.config.ui_serializer.dump_obj(published.to_dict())
 
         dashboard_routes = current_app.config.get("APP_RDM_USER_DASHBOARD_ROUTES", {})
         if "uploads" not in dashboard_routes:
@@ -540,6 +538,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             updateUrl=draft.links.get("self", None),
         )
         form_config["ui_model"] = self.ui_model
+        form_config["published_record"] = published_record
 
         ui_links = self.expand_detail_links(identity=g.identity, record=draft)
 
@@ -575,7 +574,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             "search_link": self.config.url_prefix,
         }
 
-        render_kwargs = {
+        render_kwargs: dict[str, Any] = {
             "forms_config": form_config,
             "record": record,
             "theme": None,
@@ -716,7 +715,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             **kwargs,
         )
 
-        render_kwargs = {
+        render_kwargs: dict[str, Any] = {
             "theme": community_theme,
             "forms_config": form_config,
             "searchbar_config": {
@@ -760,7 +759,6 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
 
     @login_required
     @no_cache_response
-    @pass_query_args("create")
     @pass_draft_community
     def deposit_create(
         self,
@@ -783,11 +781,8 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         # and if so, use it, otherwise use the generic "can_create" permission
         permission_policy = self.api_service.permission_policy("view_deposit_page")
         if hasattr(permission_policy, "can_view_deposit_page"):
-            return cast(
-                "bool",
-                self.api_service.check_permission(identity, "view_deposit_page", record=None),
-            )
-        return cast("bool", self.api_service.check_permission(identity, "create", record=None))
+            return self.api_service.check_permission(identity, "view_deposit_page", record=None)
+        return self.api_service.check_permission(identity, "create", record=None)
 
     @property
     def api_service(self) -> DraftService:
@@ -812,10 +807,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         :return: Dictionary of expanded links.
         """
         tpl = LinksTemplate(self.config.ui_links_item, {"url_prefix": self.config.url_prefix})
-        return cast(
-            "dict[str, str]",
-            tpl.expand(identity, record_from_result(record)),
-        )
+        return tpl.expand(identity, record_from_result(record))
 
     def expand_search_links(
         self, identity: Identity, pagination: Pagination, **kwargs: dict[str, Any]
@@ -841,7 +833,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
                 },
             },
         )
-        return cast("dict[str, str]", tpl.expand(identity, pagination))
+        return tpl.expand(identity, pagination)
 
     def tombstone(
         self,
@@ -919,13 +911,13 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         :return: Rendered not found page.
         """
         pid_value = getattr(error, "pid_value", None) or getattr(error, "pid", None)
-        not_found_render_kwargs = {
+        not_found_render_kwargs: dict[str, Any] = {
             "pid": pid_value,
             "model_name": self.config.model_name,
         }
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro("not_found", default_macro="NotFound"),
-            **not_found_render_kwargs,  # type: ignore[arg-type]
+            **not_found_render_kwargs,
         )
 
     def record_permission_denied_error(
@@ -937,7 +929,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         """Handle permission denied error on record views."""
         if not current_user.is_authenticated:
             # trigger the flask-login unauthorized handler
-            return current_app.login_manager.unauthorized()  # type: ignore[attr-defined,no-any-return]
+            return current_app.login_manager.unauthorized()  # ty: ignore[unresolved-attribute]
 
         record = getattr(error, "record", None)
         if record:

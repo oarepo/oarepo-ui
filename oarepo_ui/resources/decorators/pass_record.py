@@ -1,11 +1,5 @@
-#
-# Copyright (c) 2025 CESNET z.s.p.o.
-#
-# This file is a part of oarepo-ui (see https://github.com/oarepo/oarepo-ui).
-#
-# oarepo-ui is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
-#
+# SPDX-FileCopyrightText: 2025 CESNET z.s.p.o
+# SPDX-License-Identifier: MIT
 
 """Record views record decorators."""
 
@@ -13,7 +7,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from functools import wraps
-from typing import TYPE_CHECKING, Any, ParamSpec, TypeVar, cast
+from typing import TYPE_CHECKING, Any, ParamSpec, TypedDict, TypeVar, cast
 
 from flask import g, redirect, url_for
 from invenio_rdm_records.services.services import RDMRecordService
@@ -21,10 +15,20 @@ from invenio_records_resources.services.errors import PermissionDeniedError
 from sqlalchemy.exc import NoResultFound
 
 if TYPE_CHECKING:
+    from flask_principal import Identity
+
     from oarepo_ui.resources.records.resource import RecordsUIResource
 
 P = ParamSpec("P")
 R = TypeVar("R")
+
+
+class ReadKwargs(TypedDict):
+    """Keyword arguments shared by the record service ``read*`` methods."""
+
+    id_: str
+    identity: Identity
+    expand: bool
 
 
 def pass_record_files[T: Callable](f: T) -> T:
@@ -96,13 +100,13 @@ def pass_record_or_draft(
 
     def decorator(f: Callable[P, R]) -> Callable[P, R]:
         @wraps(f)
-        def view(*args: P.args, **kwargs: P.kwargs) -> Any:
+        def view(*args: Any, **kwargs: Any) -> Any:
             self = cast("RecordsUIResource", args[0])
 
-            pid_value = kwargs.get("pid_value")
+            pid_value = cast("str", kwargs.get("pid_value"))
             is_preview = kwargs.get("is_preview")
             include_deleted = cast("bool", kwargs.get("include_deleted", False))
-            read_kwargs = {
+            read_kwargs: ReadKwargs = {
                 "id_": pid_value,
                 "identity": g.identity,
                 "expand": expand,

@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 import React, { useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import _isEmpty from "lodash/isEmpty";
@@ -91,7 +94,7 @@ export const SearchAppResultsGrid = ({
   searchBarTip,
 }) => {
   const [sidebarVisible, setSidebarVisible] = useState(false);
-
+  console.log(config.layoutOptions, "dwadwadwad");
   return (
     <Grid
       columns={columnsAmount}

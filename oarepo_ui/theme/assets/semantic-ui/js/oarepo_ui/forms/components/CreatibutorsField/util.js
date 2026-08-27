@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 import _get from "lodash/get";
 import _truncate from "lodash/truncate";
 import { CREATIBUTOR_TYPE } from "./type";

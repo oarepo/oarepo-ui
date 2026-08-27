@@ -1,3 +1,7 @@
+{#
+SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+SPDX-License-Identifier: MIT
+#}
 {# def
   record,
   record_ui,
@@ -19,5 +23,6 @@
   record_owner_id = None,
   user_communities_memberships = {},
   embedded = False,
+  external_resources = [],
 #}
 {% extends model_name ~ "/record_detail.html" %}

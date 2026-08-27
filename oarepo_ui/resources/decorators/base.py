@@ -1,11 +1,5 @@
-#
-# Copyright (c) 2025 CESNET z.s.p.o.
-#
-# This file is a part of oarepo-ui (see https://github.com/oarepo/oarepo-ui).
-#
-# oarepo-ui is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
-#
+# SPDX-FileCopyrightText: 2025 CESNET z.s.p.o
+# SPDX-License-Identifier: MIT
 
 """Base record views decorators."""
 
@@ -53,7 +47,7 @@ def _resolve_parser(
     :return: RequestParser instance.
     :raises: May raise warnings if location is ignored.
     """
-    s = resolve_from_conf(schema_or_parser, config)  # type: ignore[reportArgumentType]
+    s = resolve_from_conf(schema_or_parser, config)  # ty: ignore[invalid-argument-type]
     if isinstance(s, RequestParser):
         parser = s
         if location is not None:
@@ -99,7 +93,7 @@ def _pass_request_args[T: Callable](
 
             return f(self, *args, **{**request_args, **kwargs})  # type: ignore[no-any-return]
 
-        return view  # type: ignore[return-value]
+        return view  # ty: ignore[invalid-return-type]
 
     return decorator  # type: ignore[return-value]
 
@@ -133,7 +127,7 @@ def no_cache_response[T: Callable](f: T) -> T:
 
         return response
 
-    return inner  # type: ignore[return-value]
+    return inner  # ty: ignore[invalid-return-type]
 
 
 def secret_link_or_login_required() -> Callable[[Callable[P, R]], Callable[P, R]]:
