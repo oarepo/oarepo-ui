@@ -875,10 +875,6 @@ msgstr ""
 msgid "Add identifier"
 msgstr ""
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/ClipboardCopyButton.jinja:6
-msgid "Copy to clipboard"
-msgstr ""
-
 msgid "Search or create affiliation"
 msgstr ""
 

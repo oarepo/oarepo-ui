@@ -1,11 +1,6 @@
-#
-# Copyright (c) 2025 CESNET z.s.p.o.
-#
-# This file is a part of oarepo-ui (see https://github.com/oarepo/oarepo-ui).
-#
-# oarepo-ui is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
-#
+# SPDX-FileCopyrightText: 2025 CESNET z.s.p.o
+# SPDX-License-Identifier: MIT
+
 """OARepo UI templating filters module.
 
 This module provides Jinja2 template filter functions for OARepo UI,
@@ -65,7 +60,7 @@ def as_dict(value: FieldData) -> dict:
     """
     if not isinstance(value, FieldData):
         raise TypeError(f"Expected FieldData, got {type(value).__name__}")
-    return FieldData.dict(value)
+    return FieldData.to_dict(value)
 
 
 def empty(value: FieldData) -> bool:

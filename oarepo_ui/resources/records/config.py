@@ -1,11 +1,6 @@
-#
-# Copyright (c) 2025 CESNET z.s.p.o.
-#
-# This file is a part of oarepo-ui (see https://github.com/oarepo/oarepo-ui).
-#
-# oarepo-ui is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
-#
+# SPDX-FileCopyrightText: 2025 CESNET z.s.p.o
+# SPDX-License-Identifier: MIT
+
 """Configuration class for record UI resources."""
 
 from __future__ import annotations
@@ -77,7 +72,6 @@ class SearchRequestArgsSchema(MultiDictSchema):
     page = fields.Integer()
     size = fields.Integer()
 
-    # TODO: do we support the layout parameter?
     layout = fields.String(validate=validate.OneOf(["grid", "list"]))
 
     @post_load(pass_original=True)
@@ -163,24 +157,20 @@ class RecordsUIResourceConfig(UIResourceConfig):
     request_search_args: type[Schema] = SearchRequestArgsSchema
     """Request arguments for searching records, including query, sort, page, and size."""
 
-    request_create_args: type[Schema] = MultiDictSchema.from_dict(
-        {
-            # TODO: should not be here, define it in oarepo-communities inside the
-            # RecordsWithingCommunityUIResourceConfig
-            # "selected_community": ma.fields.Str()
-        }
-    )
-    """Request arguments for creating a record."""
-
     request_form_config_view_args: type[Schema] = MultiDictSchema
     """Request arguments for form configuration view, currently empty."""
 
     model_name: str
     """Name of the API model that this resource is based on."""
 
-    # TODO: can we use model_name for application_id?
-    application_id = "Default"
-    """Namespace of the React app components related to this resource."""
+    @property
+    def application_id(self) -> str:
+        """Namespace of the React app components related to this resource.
+
+        Defaults to the model name; subclasses may override with a plain
+        class attribute when a different namespace is needed.
+        """
+        return self.model_name
 
     templates: Mapping[str, str | None] = {
         "record_detail": "oarepo_ui.pages.RecordDetail",
@@ -279,8 +269,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
             return cast("dict[str, dsl.Facet]", api_config.search.facets)
         grouped_facets_param_instance: GroupedFacetsParam = grouped_facets_param_class(api_config.search)
 
-        # mypy can not get the type, that's why we use ignore
-        return grouped_facets_param_instance.identity_facets(identity)  # type: ignore[no-any-return]
+        return cast("dict[str, dsl.Facet]", grouped_facets_param_instance.identity_facets(identity))
 
     def search_available_sort_options(
         self,
@@ -484,10 +473,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
         :return: Dictionary with UI custom field configuration.
         """
         # get the record class
-        record_class = None
-        if self.model:
-            # TODO: this does not look right, why record and then draft if record is always present?
-            record_class = self.model.record_cls or self.model.draft_cls
+        record_class = self.model.record_cls if self.model else None
 
         ui: list[dict[str, Any]] = []
         ret = {
@@ -538,8 +524,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
         :param kwargs: Additional options.
         :return: List of UI config sections for the custom field.
         """
-        # TODO: should not the key be uppercased here?
-        return current_app.config.get(f"{key}_UI", [])  # type: ignore[no-any-return]
+        return current_app.config.get(f"{key.upper()}_UI", [])  # type: ignore[no-any-return]
 
     def form_config(
         self,

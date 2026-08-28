@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 import React from "react";
 import { TextField as InvenioTextField } from "react-invenio-forms";
 import { useFieldData, useSanitizeInput } from "../../hooks";

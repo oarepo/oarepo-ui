@@ -1,7 +1,5 @@
-# Copyright (c) 2025 CESNET
-#
-# This software is released under the MIT License.
-# https://opensource.org/licenses/MIT
+# SPDX-FileCopyrightText: 2025 CESNET
+# SPDX-License-Identifier: MIT
 
 """OARepo UI package for component overrides."""
 

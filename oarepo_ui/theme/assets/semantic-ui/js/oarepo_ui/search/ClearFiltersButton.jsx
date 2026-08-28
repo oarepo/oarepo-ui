@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 import React from "react";
 import { withState } from "react-searchkit";
 import { Button } from "semantic-ui-react";
@@ -5,10 +8,6 @@ import { i18next } from "@translations/oarepo_ui/i18next";
 import PropTypes from "prop-types";
 import { useActiveSearchFilters } from "./hooks";
 
-// TODO: in next iteration, rethink how handling of initialFilters/ignored filters is to be handled
-// in the best way
-// in some cases, there are some permanent facets i.e. in requests open/closed,
-// so we have button not remove those initial filters
 const ClearFiltersButtonComponent = ({
   updateQueryState,
   currentQueryState,

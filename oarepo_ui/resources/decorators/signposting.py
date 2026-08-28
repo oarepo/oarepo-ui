@@ -1,11 +1,6 @@
-#
-# Copyright (c) 2025 CESNET z.s.p.o.
-#
-# This file is a part of oarepo-ui (see https://github.com/oarepo/oarepo-ui).
-#
-# oarepo-ui is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
-#
+# SPDX-FileCopyrightText: 2025 CESNET z.s.p.o
+# SPDX-License-Identifier: MIT
+
 """OARepo UI signposting module.
 
 This module provides signposting functionality for OARepo UI responses,
@@ -62,4 +57,4 @@ def response_header_signposting[T: Callable](f: T) -> T:
 
         return response
 
-    return inner  # type: ignore[return-value]
+    return inner  # ty: ignore[invalid-return-type]

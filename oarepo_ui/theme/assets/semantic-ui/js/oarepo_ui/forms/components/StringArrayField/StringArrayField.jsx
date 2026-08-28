@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 import React from "react";
 import PropTypes from "prop-types";
 import _isEmpty from "lodash/isEmpty";
@@ -57,7 +60,6 @@ export const StringArrayField = ({
                 : fieldError;
               return (
                 <ArrayFieldItem
-                  // TODO: find a better key if possible
                   // eslint-disable-next-line react/no-array-index-key
                   key={index}
                   indexPath={index}

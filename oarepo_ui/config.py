@@ -1,11 +1,5 @@
-#
-# Copyright (c) 2025 CESNET z.s.p.o.
-#
-# This file is a part of oarepo-ui (see https://github.com/oarepo/oarepo-ui).
-#
-# oarepo-ui is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
-#
+# SPDX-FileCopyrightText: 2025 CESNET z.s.p.o
+# SPDX-License-Identifier: MIT
 
 """OARepo UI configuration module.
 
@@ -30,7 +24,6 @@ if TYPE_CHECKING:
     from .overrides import UIComponent, UIComponentOverride
 
 
-# TODO: check for all removed filters in templates
 OAREPO_UI_JINJAX_FILTERS = {
     "compact_number": "invenio_app_rdm.records_ui.views.filters:compact_number",
     "localize_number": "invenio_app_rdm.records_ui.views.filters:localize_number",

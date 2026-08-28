@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 import * as React from "react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import PropTypes from "prop-types";

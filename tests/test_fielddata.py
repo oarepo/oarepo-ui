@@ -1,11 +1,6 @@
-#
-# Copyright (c) 2025 CESNET z.s.p.o.
-#
-# This file is a part of oarepo-ui (see https://github.com/oarepo/oarepo-ui).
-#
-# oarepo-ui is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
-#
+# SPDX-FileCopyrightText: 2025 CESNET z.s.p.o
+# SPDX-License-Identifier: MIT
+
 from __future__ import annotations
 
 import json
@@ -117,21 +112,21 @@ def test_field_data(field_data_test_obj):
     assert len(creators_affiliations_array) == 0
 
     # dict(value) when called on array or string returns empty dict
-    assert FieldData.dict(title) == {}
-    assert FieldData.dict(creators) == {}
-    assert FieldData.dict(metadata["resource_type"]).keys() == {"id", "title"}
-    assert all(isinstance(x, FieldData) for x in FieldData.dict(metadata["resource_type"]).values()), (
+    assert FieldData.to_dict(title) == {}
+    assert FieldData.to_dict(creators) == {}
+    assert FieldData.to_dict(metadata["resource_type"]).keys() == {"id", "title"}
+    assert all(isinstance(x, FieldData) for x in FieldData.to_dict(metadata["resource_type"]).values()), (
         "Not all items are instances of FieldData"
     )
 
-    id_value = FieldData.dict(metadata["resource_type"])["id"]
+    id_value = FieldData.to_dict(metadata["resource_type"])["id"]
     assert FieldData.value(id_value) == api_value_serialization["metadata"]["resource_type"]["id"]
     assert (
         FieldData.ui_value(id_value) == api_value_serialization["metadata"]["resource_type"]["id"]
     )  # fallback to API value
     assert FieldData.label(id_value) == "metadata/resource_type/id.label"
 
-    resource_type_title = FieldData.dict(metadata["resource_type"])["title"]
+    resource_type_title = FieldData.to_dict(metadata["resource_type"])["title"]
     assert FieldData.value(resource_type_title) == api_value_serialization["metadata"]["resource_type"]["title"]
     assert (
         FieldData.ui_value(resource_type_title, format="l10n") == ui_value_serialization["resource_type"]["title_l10n"]
@@ -273,7 +268,7 @@ def test_as_array_on_missing_field(field_data_test_obj):
 def test_as_dict_on_missing_field(field_data_test_obj):
     """Absent fields must yield an empty dict without logging a misleading error.
 
-    Without the sentinel guard, FieldData.dict() falls through to the non-dict
+    Without the sentinel guard, FieldData.to_dict() falls through to the non-dict
     error branch and logs "call array()/value()" — even though the field simply
     was not present in the API data.
     """
@@ -282,9 +277,9 @@ def test_as_dict_on_missing_field(field_data_test_obj):
     missing = record["metadata"]["definitely_not_a_real_field"]
     assert missing is EMPTY_FIELD_DATA or missing._api_data is EMPTY_FIELD_DATA_SENTINEL  # noqa: SLF001
 
-    assert FieldData.dict(missing) == {}
+    assert FieldData.to_dict(missing) == {}
     assert as_dict(missing) == {}
-    assert FieldData.dict(EMPTY_FIELD_DATA) == {}
+    assert FieldData.to_dict(EMPTY_FIELD_DATA) == {}
 
 
 def test_filter_as_dict(field_data_test_obj):
