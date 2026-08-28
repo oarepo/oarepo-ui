@@ -2,7 +2,7 @@
 
 Contributions are welcome, and they are greatly appreciated! Every little bit
 helps, and credit will always be given. Additional documentation can be found
-in the [OARepo documentation](https://nrp-cz.github.io/).
+in the [OARepo documentation](https://nrp-cz.github.io/docs/).
 
 ## Types of Contributions
 
@@ -29,7 +29,7 @@ is open to whoever wants to implement it.
 ### Write Documentation
 
 OARepo UI could always use more documentation, whether as part of the
-official [NRP docs](https://nrp-cz.github.io/), in README.md, docstrings, or even on
+official [NRP docs](https://nrp-cz.github.io/docs/), in README.md, docstrings, or even on
 the web in blog posts, articles, and such.
 
 ### Submit Feedback
@@ -82,10 +82,16 @@ development.
    ```console
    ./run.sh test
    ./run.sh lint
+   ./run.sh jslint
+   ./run.sh jstest --setup
+   ./run.sh jstest
    ```
 
    The linter checks code style ([ruff](https://docs.astral.sh/ruff/)),
-   type annotations, license headers, and docstring conventions.
+   type annotations, license headers, and docstring conventions. `jslint`
+   runs ESLint and Prettier on the JavaScript sources; `jstest --setup`
+   prepares the Jest configuration, after which `jstest` runs the JavaScript
+   tests.
 
 6. Commit your changes and push your branch to GitHub:
 
