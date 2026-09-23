@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { RemoteSelectField } from "react-invenio-forms";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import {
@@ -8,48 +9,55 @@ import {
 } from "./util";
 import { getIn, useFormikContext } from "formik";
 
-export const FundingRemoteSelectField = () => {
+export const FundingRemoteSelectField = ({
+  fieldPath = "selectedFunding.funder",
+}) => {
   const { values } = useFormikContext();
-  const selectedFunding = getIn(values, "selectedFunding.funder.id", "");
+  const currentFunder = getIn(values, fieldPath);
+
+  const serializeSuggestions = (funders) =>
+    funders.map((funder) =>
+      deserializeFunderToDropdown(deserializeFunder(funder)),
+    );
+
   return (
     <RemoteSelectField
-      fieldPath="selectedFunding.funder.id"
+      fieldPath={fieldPath}
       suggestionAPIUrl="/api/funders"
       suggestionAPIHeaders={{
         Accept: "application/vnd.inveniordm.v1+json",
       }}
       placeholder={i18next.t("Search for a funder by name")}
-      serializeSuggestions={(funders) => {
-        return funders.map((funder) =>
-          deserializeFunderToDropdown(deserializeFunder(funder))
-        );
-      }}
-      searchInput={{
-        autoFocus: !!selectedFunding,
-      }}
+      serializeSuggestions={serializeSuggestions}
+      // passed through serializeSuggestions by RemoteSelectField
+      initialSuggestions={currentFunder ? [currentFunder] : []}
       label={i18next.t("Funder")}
       noQueryMessage={i18next.t("Search for funder...")}
       clearable
-      allowAdditions={false}
+      allowAdditions
       multiple={false}
       selectOnBlur={false}
       selectOnNavigation={false}
       required
-      search={(options) => options}
-      isFocused
+      search={(options) => [...options]}
+      value={currentFunder?.id || currentFunder?.name || ""}
+      isFocused={!currentFunder}
       onValueChange={({ formikProps }, selectedFundersArray) => {
-        if (selectedFundersArray.length === 1) {
-          const selectedFunder = selectedFundersArray[0];
-          if (selectedFunder) {
-            const deserializedFunder =
-              serializeFunderFromDropdown(selectedFunder);
-            formikProps.form.setFieldValue(
-              "selectedFunding.funder",
-              deserializedFunder
-            );
-          }
+        if (!selectedFundersArray?.length) {
+          formikProps.form.setFieldValue(fieldPath, undefined);
+          return;
         }
+        // on addition, the new funder is appended to the previous selection
+        formikProps.form.setFieldValue(
+          fieldPath,
+          serializeFunderFromDropdown(selectedFundersArray.at(-1)),
+        );
       }}
     />
   );
+};
+
+FundingRemoteSelectField.propTypes = {
+  // eslint-disable-next-line react/require-default-props
+  fieldPath: PropTypes.string,
 };
