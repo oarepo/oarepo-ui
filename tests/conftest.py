@@ -24,6 +24,7 @@ from flask_webpackext.manifest import (
 from invenio_app.factory import create_app as _create_app
 from invenio_i18n import lazy_gettext as _
 from invenio_records_resources.services.custom_fields import TextCF
+from invenio_vocabularies.services.custom_fields import VocabularyCF
 from marshmallow_utils.fields import SanitizedHTML
 from oarepo_model.customizations import AddMetadataExport
 from oarepo_runtime import current_runtime
@@ -65,7 +66,7 @@ def ensure_location(location):
 
 
 @pytest.fixture(scope="module")
-def extra_entry_points(record_model, second_record_model):
+def extra_entry_points(record_model, second_record_model, cf_model):
     """Extra entry points to load the mock_module features."""
     return {
         "invenio_i18n.translations": ["1000-test = tests"],
@@ -132,32 +133,52 @@ def app_config(app_config):
 
     # Custom fields
     app_config["RDM_NAMESPACES"] = {"cern": "https://greybook.cern.ch/"}
-    app_config["RECORDS_CF_CUSTOM_FIELDS"] = {
+
+    # Custom fields consumed by the custom-fields-enabled test model. The
+    # oarepo-model custom_fields_preset wires a CustomFieldsRelation to the
+    # <MODEL>_CUSTOM_FIELDS config key, which in turn picks up the matching
+    # <MODEL>_CUSTOM_FIELDS_UI for the deposit form configuration.
+    app_config["CF_MODEL_CUSTOM_FIELDS"] = [
         TextCF(
             name="cern:experiment",
             field_cls=SanitizedHTML,  # type: ignore[assignment]
         ),
-    }
-    app_config["DRAFTS_CF_CUSTOM_FIELDS"] = app_config["RECORDS_CF_CUSTOM_FIELDS"]
-
-    app_config["RECORDS_CF_CUSTOM_FIELDS_UI"] = [
+        VocabularyCF(
+            name="cern:department",
+            vocabulary_id="departments",
+            dump_options=True,
+        ),
+    ]
+    app_config["CF_MODEL_CUSTOM_FIELDS_UI"] = [
         {
             "section": _("CERN Experiment"),
             "fields": [
                 {
                     "field": "cern:experiment",
-                    "ui_widget": "RichInput",
+                    "ui_widget": "Input",
                     "props": {
                         "label": "Experiment description",
                         "placeholder": "This experiment aims to...",
                         "icon": "pencil",
-                        "description": ("You should fill this field with the experiment description.",),
+                        "description": "You should fill this field with the experiment description.",
+                    },
+                },
+                {
+                    "field": "cern:department",
+                    "ui_widget": "AutocompleteDropdown",
+                    "props": {
+                        "label": "Department",
+                        "placeholder": "Search for a department...",
+                        "icon": "building",
+                        "description": "Department where the experiment took place.",
+                        "search": True,
+                        "multiple": False,
+                        "clearable": True,
                     },
                 },
             ],
         },
     ]
-    app_config["DRAFTS_CF_CUSTOM_FIELDS_UI"] = app_config["RECORDS_CF_CUSTOM_FIELDS_UI"]
 
     # RDM options
     app_config.update(
@@ -235,6 +256,35 @@ def record_model():
                 oai_namespace=None,
             )
         ],
+        configuration={"ui_blueprint_name": "simple_model_ui"},
+    )
+
+    model_instance.register()
+    return model_instance
+
+
+@pytest.fixture(scope="session")
+def cf_model():
+    """Model with the custom_fields_preset enabled (backed by CF_MODEL_CUSTOM_FIELDS)."""
+    from oarepo_model.api import model
+    from oarepo_model.presets.custom_fields import custom_fields_preset
+    from oarepo_model.presets.drafts import drafts_preset
+    from oarepo_model.presets.records_resources import records_resources_preset
+
+    model_instance = model(
+        "cf-model",
+        version="1.0.0",
+        types=[
+            {
+                "Metadata": {
+                    "properties": {
+                        "title": {"type": "keyword"},
+                    },
+                },
+            }
+        ],
+        metadata_type="Metadata",
+        presets=[records_resources_preset, drafts_preset, custom_fields_preset],
         configuration={"ui_blueprint_name": "simple_model_ui"},
     )
 
