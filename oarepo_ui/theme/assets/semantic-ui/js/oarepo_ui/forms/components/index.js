@@ -19,6 +19,7 @@ export * from "./IdentifiersField";
 export * from "./FundingField";
 export * from "./CreatibutorsField";
 export * from "./NestedErrors";
+export * from "./CustomFieldsSection";
 export * from "./DepositFormApp";
 export * from "./FormTabErrors";
 export * from "./SectionCompletionBar";
