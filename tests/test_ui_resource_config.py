@@ -11,13 +11,15 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
+from flask import current_app
 from flask_resources import MarshmallowSerializer
 from invenio_access.permissions import system_identity
+from invenio_i18n import lazy_gettext as _
 from invenio_search.engine import dsl
 from oarepo_runtime import Model
 from werkzeug.datastructures import MultiDict
 
-from oarepo_ui.resources.records.config import SearchRequestArgsSchema
+from oarepo_ui.resources.records.config import RecordsUIResourceConfig, SearchRequestArgsSchema
 
 if TYPE_CHECKING:
     from typing import Any, ClassVar
@@ -192,10 +194,108 @@ def test_custom_fields(app, simple_model_ui_resource_config):
     assert isinstance(ret["ui"], list)
 
 
+class CFModelUIResourceConfig(RecordsUIResourceConfig):
+    """UI resource config stub backed by the custom-fields-enabled test model."""
+
+    model_name = "cf_model"
+
+
+class NoCFUIResourceConfig(RecordsUIResourceConfig):
+    """UI resource config stub backed by a model without custom fields."""
+
+    model_name = "simple_model"
+
+
+def test_custom_fields_no_record_model(app, record_model):
+    """A model without the custom_fields preset yields the empty upstream shape."""
+    assert NoCFUIResourceConfig().custom_fields() == {"ui": [], "vocabularies": [], "error_labels": {}}
+
+
+def test_custom_fields_ui_content(app, cf_model):
+    """Sections emit upstream-shaped fields with unprefixed backend names."""
+    ret = CFModelUIResourceConfig().custom_fields(identity=system_identity)
+
+    assert len(ret["ui"]) == 1
+    section = ret["ui"][0]
+    field_names = [f["field"] for f in section["fields"]]
+    assert field_names == ["cern:experiment", "cern:department"]
+
+    # every field gets its id injected into props (matches stock RDM)
+    assert all(f["props"]["id"] == f["field"] for f in section["fields"])
+
+    # error labels map custom_fields.<field> -> label (matches stock RDM)
+    assert ret["error_labels"] == {
+        "custom_fields.cern:experiment": "Experiment description",
+        "custom_fields.cern:department": "Department",
+    }
+
+
+def test_custom_fields_vocabularies(app, cf_model):
+    """Vocabulary custom fields are collected and enriched with options."""
+    ret = CFModelUIResourceConfig().custom_fields(identity=system_identity)
+
+    assert ret["vocabularies"] == ["cern:department"]
+
+    section = ret["ui"][0]
+    vocab_field = next(f for f in section["fields"] if f["field"] == "cern:department")
+    assert vocab_field["is_vocabulary"] is True
+    # no "departments" vocabulary type is loaded in this test app, so the
+    # upstream VocabularyCF.options lookup raises before options can be set
+    assert "options" not in vocab_field["props"]
+
+    # non-vocabulary fields are untouched
+    text_field = next(f for f in section["fields"] if f["field"] == "cern:experiment")
+    assert "is_vocabulary" not in text_field
+    assert "options" not in text_field["props"]
+
+
+def test_custom_fields_hide_from_upload_form(app, cf_model):
+    """Sections flagged hide_from_upload_form are filtered from ui, like in stock RDM.
+
+    Stock RDM filters sections in get_form_config *after* load_custom_fields,
+    so error_labels for hidden fields are still emitted; we match that so
+    error rendering on those fields keeps working if shown elsewhere.
+    """
+    current_app.config["CF_MODEL_CUSTOM_FIELDS_UI"].append(
+        {
+            "section": "Hidden section",
+            "hide_from_upload_form": True,
+            "fields": [
+                {
+                    "field": "cern:experiment",
+                    "ui_widget": "Input",
+                    "props": {"label": "Hidden field"},
+                },
+            ],
+        }
+    )
+    try:
+        ret = CFModelUIResourceConfig().custom_fields(identity=system_identity)
+        assert [s["section"] for s in ret["ui"]] == [str(_("CERN Experiment"))]
+        # upstream collects error labels before filtering; a later section
+        # overwrites the label for the same field exactly like stock RDM does
+        assert ret["error_labels"]["custom_fields.cern:experiment"] == "Hidden field"
+    finally:
+        current_app.config["CF_MODEL_CUSTOM_FIELDS_UI"].pop()
+
+
+def test_custom_fields_does_not_mutate_app_config(app, cf_model):
+    """Repeated calls must not accumulate injected props in the shared config dicts."""
+    cfg = CFModelUIResourceConfig()
+    first = cfg.custom_fields(identity=system_identity)
+    config_fields = current_app.config["CF_MODEL_CUSTOM_FIELDS_UI"][0]["fields"]
+
+    assert all("id" not in f["props"] for f in config_fields)
+    assert all("options" not in f["props"] for f in config_fields)
+    assert all("is_vocabulary" not in f for f in config_fields)
+
+    second = cfg.custom_fields(identity=system_identity)
+    assert first == second
+    assert first["vocabularies"] == second["vocabularies"]
+
+
 def test_default_templates_config():
     """Test that default templates are set correctly in RecordsUIResourceConfig."""
-    from oarepo_ui.resources.records.config import RecordsUIResourceConfig
-
     cfg = RecordsUIResourceConfig()
     # Default templates use page components from oarepo_ui.pages
     expected_templates: dict[str, str | None] = {

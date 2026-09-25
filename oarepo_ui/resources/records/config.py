@@ -10,11 +10,12 @@
 
 from __future__ import annotations
 
+import contextlib
 import inspect
 from typing import TYPE_CHECKING, Any, NotRequired, TypedDict, cast
 
 import marshmallow as ma
-from flask import current_app
+from flask import current_app, g
 from flask_resources.parsers import MultiDictSchema
 from flask_resources.serializers import MarshmallowSerializer
 from invenio_app_rdm.records_ui.views.records import (
@@ -477,11 +478,32 @@ class RecordsUIResourceConfig(UIResourceConfig):
         opts.update(kwargs)
         return cast("dict[str, Any]", SearchAppConfig.generate(opts, **overrides))
 
+    def _discover_custom_fields_relations(self, record_class: type) -> list[CustomFieldsRelation]:
+        """Return the CustomFieldsRelation instances declared on the record class.
+
+        :param record_class: The record or draft class to inspect.
+        :return: List of CustomFieldsRelation instances, possibly empty.
+        """
+        return [
+            relation_rel
+            for _fld_name, fld in sorted(inspect.getmembers(record_class))
+            if isinstance(fld, MultiRelationsField)
+            for relation_rel in fld._original_fields.values()  # noqa: SLF001
+            if isinstance(relation_rel, CustomFieldsRelation)
+        ]
+
     def custom_fields(self, **kwargs: Any) -> dict[str, Any]:
         """Return UI configuration for custom fields defined in the record class.
 
+        Mirrors invenio-app-rdm's ``load_custom_fields()`` contract, generalized
+        to per-model ``*_CUSTOM_FIELDS`` / ``*_CUSTOM_FIELDS_UI`` config pairs
+        discovered from the record class's relations. The returned shape, field
+        lifecycle (``id`` / ``options`` / ``is_vocabulary`` / ``sort_by``) and
+        section filtering semantics match upstream exactly so UI written
+        against upstream keeps working.
+
         :param kwargs: Additional options for custom field config.
-        :return: Dictionary with UI custom field configuration.
+        :return: Dictionary with ``ui``, ``vocabularies`` and ``error_labels``.
         """
         # get the record class
         record_class = None
@@ -489,43 +511,82 @@ class RecordsUIResourceConfig(UIResourceConfig):
             # TODO: this does not look right, why record and then draft if record is always present?
             record_class = self.model.record_cls or self.model.draft_cls
 
-        ui: list[dict[str, Any]] = []
-        ret = {
-            "ui": ui,
+        ret: dict[str, Any] = {
+            "ui": [],
+            "vocabularies": [],
+            "error_labels": {},
         }
         if not record_class:
             return ret
-        # try to get custom fields from the record
-        for _fld_name, fld in sorted(inspect.getmembers(record_class)):
-            # look at relations at first
-            if not isinstance(fld, MultiRelationsField):
+
+        identity = kwargs.pop("identity", None) or getattr(g, "identity", None)
+
+        for relation_rel in self._discover_custom_fields_relations(record_class):
+            config_key = cast("str", relation_rel._fields_var)  # noqa: SLF001
+            conf_ui = self._get_custom_fields_ui_config(config_key, **kwargs)
+            if not conf_ui:
                 continue
 
-            relation_subfields = fld._original_fields.values()  # noqa: SLF001
-            for relation_rel in relation_subfields:
-                if not isinstance(relation_rel, CustomFieldsRelation):
-                    continue
+            # equivalent to upstream's conf_backend = {cf.name: cf for cf in conf.get("RDM_CUSTOM_FIELDS", [])}
+            conf_backend = {cf.name: cf for cf in current_app.config.get(config_key, [])}
 
-                prefix = "custom_fields."
+            for section_cfg in conf_ui:
+                fields = [
+                    self._custom_field(raw_field, conf_backend=conf_backend, identity=identity, ret=ret)
+                    for raw_field in section_cfg["fields"]
+                ]
+                ret["ui"].append({**section_cfg, "fields": fields})
 
-                config_key = cast("str", relation_rel._fields_var)  # noqa: SLF001
-                ui_config = self._get_custom_fields_ui_config(config_key, **kwargs)
-                if not ui_config:
-                    continue
-
-                for section in ui_config:
-                    section_with_fields = {
-                        **section,
-                        "fields": [
-                            {
-                                **field,
-                                "field": prefix + field["field"],
-                            }
-                            for field in section.get("fields", [])
-                        ],
-                    }
-                    ui.append(section_with_fields)
+        # keep only upload form configurable custom fields (upstream does this
+        # in get_form_config; we have no downstream consumer of the unfiltered
+        # list, so fold it here to keep the contract identical)
+        ret["ui"] = [cf for cf in ret["ui"] if not cf.get("hide_from_upload_form", False)]
         return ret
+
+    @staticmethod
+    def _custom_field(
+        raw_field: dict[str, Any],
+        *,
+        conf_backend: dict[str, Any],
+        identity: Any,
+        ret: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Apply upstream's per-field custom-fields lifecycle to one field.
+
+        Mirrors the ``for field in fields:`` loop in invenio-app-rdm's
+        ``load_custom_fields()``, but builds a fresh field copy instead of
+        mutating the config dicts (upstream leaks first-call identity and
+        options into later requests; the emitted shape is identical).
+
+        :param raw_field: Field definition from the ``*_CUSTOM_FIELDS_UI`` config.
+        :param conf_backend: Mapping of custom-field name to its backend definition.
+        :param identity: Current identity for vocabulary lookups.
+        :param ret: The result dict being built — its ``vocabularies`` and
+            ``error_labels`` lists/maps are updated in place.
+        :return: Transformed field with upstream shape.
+        """
+        field_instance = conf_backend.get(raw_field["field"])
+        field = {**raw_field, "props": {**raw_field.get("props", {})}}
+        # Compute the dictionary to map field path to error labels
+        # for each custom field. This is the label shown at the top of the upload
+        # form
+        field_error_label = field.get("props", {}).get("label")
+        # Add the field ID to the props to allow overriding the React widgets of custom fields
+        field["props"]["id"] = field["field"]
+        if field_error_label:
+            ret["error_labels"][f"custom_fields.{field['field']}"] = field_error_label
+        if field_instance is not None and getattr(field_instance, "relation_cls", None):
+            sort_by = field.get("props", {}).get("sort_by")
+            if sort_by:
+                field_instance.sort_by = sort_by
+            # add vocabulary options to field's properties
+            if identity is not None:
+                with contextlib.suppress(NoResultFound):
+                    field["props"]["options"] = field_instance.options(identity)
+            # mark field as vocabulary
+            field["is_vocabulary"] = True
+            ret["vocabularies"].append(field["field"])
+        return field
 
     def _get_custom_fields_ui_config(
         self,
