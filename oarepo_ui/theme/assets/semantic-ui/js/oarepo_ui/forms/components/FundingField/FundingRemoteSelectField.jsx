@@ -50,7 +50,9 @@ export const FundingRemoteSelectField = ({
         // on addition, the new funder is appended to the previous selection
         formikProps.form.setFieldValue(
           fieldPath,
-          serializeFunderFromDropdown(selectedFundersArray.at(-1)),
+          serializeFunderFromDropdown(
+            selectedFundersArray[selectedFundersArray.length - 1],
+          ),
         );
       }}
     />
