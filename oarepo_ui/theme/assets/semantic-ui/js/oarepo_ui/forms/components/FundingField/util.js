@@ -28,15 +28,21 @@ export const deserializeFunderToDropdown = (funderItem) => {
     text: [funderName, funderCountry, funderPID]
       .filter((val) => val)
       .join(", "),
-    value: funderItem.id,
-    key: funderItem.id,
+    // custom (non-vocabulary) funders have no id, so fall back to their name
+    value: funderPID || funderName,
+    key: funderPID || funderName,
+    ...(funderPID && { id: funderPID }),
     ...(funderName && { name: funderName }),
   };
 };
 
 export const serializeFunderFromDropdown = (funderDropObject) => {
+  if (!funderDropObject.id) {
+    // custom funder added by the user
+    return { name: funderDropObject.name };
+  }
   return {
-    id: funderDropObject.key,
+    id: funderDropObject.id,
     ...(funderDropObject.name && { name: funderDropObject.name }),
   };
 };
