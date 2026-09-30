@@ -28,6 +28,7 @@ import PropTypes from "prop-types";
 import { depositReducer as oarepoDepositReducer } from "../../state/deposit/reducers";
 import { severityChecksConfig } from "@js/invenio_app_rdm/deposit/config";
 import { DepositBootstrap } from "@js/invenio_rdm_records/src/deposit/api/DepositBootstrap";
+import { shouldRenderCustomFieldsSection } from "../CustomFieldsSection/shouldRender";
 
 const queryClient = new QueryClient();
 
@@ -36,11 +37,18 @@ export class DepositFormApp extends Component {
     super(props);
     this.overridableIdPrefix = props.config.overridableIdPrefix;
     this.sections = props.sections || [];
+    if (shouldRenderCustomFieldsSection(this.sections, props.config)) {
+      const {
+        CustomFieldsSection,
+        // eslint-disable-next-line global-require
+      } = require("../CustomFieldsSection/CustomFieldsSection");
+      this.sections = [...this.sections, CustomFieldsSection];
+    }
     const recordSerializer = props.recordSerializer
       ? props.recordSerializer
       : new RDMDepositRecordSerializer(
           props.config.default_locale,
-          props.config.custom_fields.vocabularies
+          props.config.custom_fields?.vocabularies
         );
 
     const apiHeaders = props.apiHeaders
@@ -138,7 +146,6 @@ export class DepositFormApp extends Component {
       allowEmptyFiles,
       useUppy,
       fileModification,
-      sections,
       useWizardForm,
       formTitle,
     } = this.props;
@@ -180,7 +187,7 @@ export class DepositFormApp extends Component {
                         <Container className="rel-mt-1">
                           <DepositBootstrap>
                             <BaseFormLayout
-                              sections={sections}
+                              sections={this.sections}
                               record={record}
                               useWizardForm={useWizardForm}
                             />
