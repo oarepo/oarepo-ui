@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 import invenioDepositReducer from "@js/invenio_rdm_records/src/deposit/state/reducers/deposit";
 import { DRAFT_HAS_VALIDATION_ERRORS } from "@js/invenio_rdm_records/src/deposit/state/types";
 import {

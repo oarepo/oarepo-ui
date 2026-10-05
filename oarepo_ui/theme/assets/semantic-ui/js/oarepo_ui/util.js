@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 import _isEmpty from "lodash/isEmpty";
 import _uniqBy from "lodash/uniqBy";
 import * as Yup from "yup";

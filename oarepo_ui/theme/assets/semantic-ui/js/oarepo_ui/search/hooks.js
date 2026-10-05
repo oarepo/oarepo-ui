@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 import { useContext } from "react";
 import { SearchConfigurationContext } from "@js/invenio_search_ui/components";
 
