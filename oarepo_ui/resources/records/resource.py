@@ -817,9 +817,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             tpl.expand(identity, record_from_result(record)),
         )
 
-    def expand_search_links(
-        self, identity: Identity, pagination: Pagination, **kwargs: Any
-    ) -> dict[str, str]:
+    def expand_search_links(self, identity: Identity, pagination: Pagination, **kwargs: Any) -> dict[str, str]:
         """Get links for a search result item using the configured template.
 
         :param identity: User identity object.
