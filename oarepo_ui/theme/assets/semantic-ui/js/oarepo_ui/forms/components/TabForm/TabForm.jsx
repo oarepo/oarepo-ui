@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 import React, { useEffect, useCallback, useMemo } from "react";
 import PropTypes from "prop-types";
 import { Grid, Header, Message, Transition } from "semantic-ui-react";

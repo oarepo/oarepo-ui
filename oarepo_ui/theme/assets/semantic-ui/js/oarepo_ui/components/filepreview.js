@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 import $ from "jquery";
 
 const iframe = document.querySelector("#preview-modal .content");

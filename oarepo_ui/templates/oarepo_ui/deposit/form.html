@@ -1,3 +1,7 @@
+{#
+SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+SPDX-License-Identifier: MIT
+#}
 {%- if not record.is_published and record.versions.index and record.versions.index > 1 %}
   {%- set title = _("New version") %}
 {%- elif not record.is_published %}
