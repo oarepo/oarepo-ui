@@ -818,7 +818,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         )
 
     def expand_search_links(
-        self, identity: Identity, pagination: Pagination, **kwargs: dict[str, Any]
+        self, identity: Identity, pagination: Pagination, **kwargs: Any
     ) -> dict[str, str]:
         """Get links for a search result item using the configured template.
 
