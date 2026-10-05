@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 import React, { useMemo } from "react";
 import { FundingField as InvenioFundingField } from "@js/invenio_vocabularies";
 import { overrideStore, OverridableContext } from "react-overridable";

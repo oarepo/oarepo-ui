@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 import _padStart from "lodash/padStart";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import { parse } from "edtf";

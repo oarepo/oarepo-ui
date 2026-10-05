@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 import React from "react";
 import { expect } from "@storybook/test";
 import { IdentifierBadge, IconIdentifier } from "./IdentifierBadge";
