@@ -31,13 +31,18 @@ export const ClearableSearchbarElement = withState(
       }
     };
 
+    const onClear = () => {
+      onInputChange("");
+      updateQueryState({ ...currentQueryState, queryString: "", page: 1 });
+    };
+
     const icon = queryString
       ? {
           icon: {
             name: "close",
             className: "clear-button",
             link: true,
-            onClick: () => onInputChange(""),
+            onClick: onClear,
             role: "button",
             "aria-label": i18next.t("Clear"),
             ...actionProps,
