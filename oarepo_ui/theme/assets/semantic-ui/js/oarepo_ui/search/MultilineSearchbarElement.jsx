@@ -40,6 +40,9 @@ export const MultilineSearchbarElement = withState(
 
     const handleClear = () => {
       onInputChange("");
+      if (currentQueryState.queryString) {
+        updateQueryState({ ...currentQueryState, queryString: "", page: 1 });
+      }
     };
 
     const handleFocus = (event) => {

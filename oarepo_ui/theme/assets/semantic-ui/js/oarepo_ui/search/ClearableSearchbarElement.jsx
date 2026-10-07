@@ -34,7 +34,7 @@ export const ClearableSearchbarElement = withState(
     const onClear = () => {
       onInputChange("");
       if (currentQueryState.queryString) {
-         updateQueryState({ ...currentQueryState, queryString: "", page: 1 });
+        updateQueryState({ ...currentQueryState, queryString: "", page: 1 });
       }
     };
 
