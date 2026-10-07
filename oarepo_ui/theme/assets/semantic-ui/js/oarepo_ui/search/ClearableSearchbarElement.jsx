@@ -33,7 +33,9 @@ export const ClearableSearchbarElement = withState(
 
     const onClear = () => {
       onInputChange("");
-      updateQueryState({ ...currentQueryState, queryString: "", page: 1 });
+      if (currentQueryState.queryString) {
+         updateQueryState({ ...currentQueryState, queryString: "", page: 1 });
+      }
     };
 
     const icon = queryString
