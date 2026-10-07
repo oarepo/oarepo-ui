@@ -46,6 +46,42 @@ def ui_value(value: FieldData, format: str = "") -> str:  # noqa: A002
     return FieldData.ui_value(value, format=format)
 
 
+def ui_label(value: FieldData, default_fallback: str | None = "Item does not exist") -> str | None:
+    """Extract the localized label of a FieldData object from its UI definitions.
+
+    :param value: FieldData instance.
+    :param default_fallback: Fallback value when the label is not defined.
+    :return: Localized label, or default_fallback.
+    """
+    if not isinstance(value, FieldData):
+        raise TypeError(f"Expected FieldData, got {type(value).__name__}")
+    return FieldData.label(value, default_fallback)
+
+
+def ui_hint(value: FieldData, default_fallback: str | None = "Item does not exist") -> str | None:
+    """Extract the localized hint of a FieldData object from its UI definitions.
+
+    :param value: FieldData instance.
+    :param default_fallback: Fallback value when the hint is not defined.
+    :return: Localized hint, or default_fallback.
+    """
+    if not isinstance(value, FieldData):
+        raise TypeError(f"Expected FieldData, got {type(value).__name__}")
+    return FieldData.hint(value, default_fallback)
+
+
+def ui_help(value: FieldData, default_fallback: str | None = "Item does not exist") -> str | None:
+    """Extract the localized help text of a FieldData object from its UI definitions.
+
+    :param value: FieldData instance.
+    :param default_fallback: Fallback value when the help text is not defined.
+    :return: Localized help text, or default_fallback.
+    """
+    if not isinstance(value, FieldData):
+        raise TypeError(f"Expected FieldData, got {type(value).__name__}")
+    return FieldData.help(value, default_fallback)
+
+
 def as_array(value: FieldData) -> list:
     """Convert FieldData to a list of FieldData objects.
 
