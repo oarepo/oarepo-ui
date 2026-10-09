@@ -1,3 +1,7 @@
+{#
+SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+SPDX-License-Identifier: MIT
+#}
 {% extends "invenio_app_rdm/records/detail.html" %}
 
 {%- block css %}
@@ -10,19 +14,12 @@
   {% include model_name ~ "/record_detail/head_meta.html" ignore missing %}
 {% endblock head_meta %}
 
-{%- block banners -%}
-  {%- include [ model_name ~ "/record_detail/banners.html", "oarepo_ui/record_detail/banners.html"]  -%}
-{%- endblock banners -%}
-
 {%- block record_body -%}
   {%- include model_name ~ "/record_detail/main.html" -%}
 {%- endblock record_body -%}
 
 {%- block javascript %}
   {{ super() }}
-  {% if not embedded %}
-    {{ webpack["record_sharing.js"] }}
-  {% endif %}  
   {% include model_name ~ "/record_detail/javascript.html" ignore missing %}
 {%- endblock javascript %}
   

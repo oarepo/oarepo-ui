@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 import React, { useMemo } from "react";
 import { FundingField as InvenioFundingField } from "@js/invenio_vocabularies";
 import { overrideStore, OverridableContext } from "react-overridable";
@@ -15,8 +18,6 @@ import { mergeFieldData } from "../../util";
 const storeComponents = overrideStore.getAll();
 
 export const FundingField = ({
-  // TODO: we should deal with overrides centrally,
-  // not at component-render-level - this might be quite non-deterministic
   overrides = {
     "InvenioVocabularies.CustomAwardForm.RemoteSelectField.Container":
       FundingRemoteSelectField,

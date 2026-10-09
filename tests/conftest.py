@@ -1,11 +1,6 @@
-#
-# Copyright (c) 2025 CESNET z.s.p.o.
-#
-# This file is a part of oarepo-ui (see https://github.com/oarepo/oarepo-ui).
-#
-# oarepo-ui is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
-#
+# SPDX-FileCopyrightText: 2025 CESNET z.s.p.o
+# SPDX-License-Identifier: MIT
+
 from __future__ import annotations
 
 import json
@@ -208,6 +203,7 @@ def record_model():
     from oarepo_model.api import model
     from oarepo_model.presets.drafts import drafts_preset
     from oarepo_model.presets.records_resources import records_resources_preset
+    from oarepo_model.presets.ui_links import ui_links_preset
 
     model_instance = model(
         "simple-model",
@@ -222,7 +218,7 @@ def record_model():
             }
         ],
         metadata_type="Metadata",
-        presets=[records_resources_preset, drafts_preset],
+        presets=[records_resources_preset, drafts_preset, ui_links_preset],
         customizations=[
             AddMetadataExport(
                 code="datacite",
@@ -248,6 +244,7 @@ def second_record_model():
     from oarepo_model.api import model
     from oarepo_model.presets.drafts import drafts_preset
     from oarepo_model.presets.records_resources import records_resources_preset
+    from oarepo_model.presets.ui_links import ui_links_preset
 
     model_instance = model(
         "second-model",
@@ -262,7 +259,7 @@ def second_record_model():
             }
         ],
         metadata_type="Metadata",
-        presets=[records_resources_preset, drafts_preset],
+        presets=[records_resources_preset, drafts_preset, ui_links_preset],
         customizations=[
             AddMetadataExport(
                 code="datacite",

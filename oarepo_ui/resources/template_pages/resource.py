@@ -1,11 +1,6 @@
-#
-# Copyright (c) 2025 CESNET z.s.p.o.
-#
-# This file is a part of oarepo-ui (see https://github.com/oarepo/oarepo-ui).
-#
-# oarepo-ui is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
-#
+# SPDX-FileCopyrightText: 2025 CESNET z.s.p.o
+# SPDX-License-Identifier: MIT
+
 """Template page UI endpoint."""
 
 from __future__ import annotations
@@ -34,18 +29,18 @@ class TemplatePageUIResource(UIResource):
 
     def create_url_rules(self) -> list[dict[str, Any]]:
         """Create the URL rules for the record resource."""
-        self.config: TemplatePageUIResourceConfig  # pyright: ignore[reportIncompatibleVariableOverride] better type
+        config = cast("TemplatePageUIResourceConfig", self.config)
 
-        pages_config = self.config.pages
+        pages_config = config.pages
         routes = []
         for page_url_path, page_template_name in pages_config.items():
-            handler: Any = cast("Any | None", getattr(self, f"render_{page_template_name}", None))
+            handler: Any = getattr(self, f"render_{page_template_name}", None)
             if handler is None:
-                handler = partial(self.render, page=page_template_name)
+                handler = cast("Any", partial(self.render, page=page_template_name))
             if not hasattr(handler, "__name__"):
-                handler.__name__ = self.render.__name__  # type: ignore[union-attr]
+                handler.__name__ = self.render.__name__
             if not hasattr(handler, "__self__"):
-                handler.__self__ = self  # type: ignore[union-attr]
+                handler.__self__ = self
 
             routes.append(
                 route("GET", page_url_path, handler),

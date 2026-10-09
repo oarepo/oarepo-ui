@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-06-23 09:37+0200\n"
+"POT-Creation-Date: 2026-08-13 10:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/config.py:95
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/config.py:90
 msgid "English"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/config.py:96
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/config.py:91
 msgid "Czech"
 msgstr ""
 
@@ -207,23 +207,23 @@ msgid ""
 "The server does not support the HTTP protocol version used in the request."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:368
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:365
 msgid "File preview requested but file service is not available on the model"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:774
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:777
 msgid "User does not have permission to create a record."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:978
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:981
 msgid "Removal reason"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:979
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:982
 msgid "Note"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:980
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:983
 msgid "Citation text"
 msgstr ""
 
@@ -261,9 +261,9 @@ msgid "Not set"
 msgstr ""
 
 #: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:7
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:137
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:142
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:159
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:124
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:129
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:146
 msgid "Files"
 msgstr ""
 
@@ -302,15 +302,6 @@ msgstr ""
 
 #: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:62
 msgid "File upload is not completed."
-msgstr ""
-
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:20
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:35
-msgid "New item"
-msgstr ""
-
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:22
-msgid "Edit item "
 msgstr ""
 
 #: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/not_found.html:7
@@ -358,131 +349,76 @@ msgstr ""
 msgid "Recent uploads"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:1
-msgid "Information banner"
-msgstr ""
-
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:31
-msgid "Part of"
-msgstr ""
-
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:42
-msgid "Community visibility"
-msgstr ""
-
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:43
-msgid "The community is restricted to users with access."
-msgstr ""
-
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:45
-msgid "Restricted"
-msgstr ""
-
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:64
-msgid "Preview"
-msgstr ""
-
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:68
-msgid "You are previewing a published record."
-msgstr ""
-
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:70
-msgid "You are previewing changes that have not yet been published."
-msgstr ""
-
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:72
-msgid "You are previewing a new record that has not yet been published."
-msgstr ""
-
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:74
-msgid ""
-"You are previewing a new record version that has not yet been published."
-msgstr ""
-
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:91
-#, python-format
-msgid ""
-"\n"
-"                    There is a %(link_start)snewer version%(link_end)s of the record\n"
-"                    available.\n"
-"                  "
-msgstr ""
-
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:9
-msgid "Record access information"
-msgstr ""
-
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:16
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:175
-msgid "Reason"
-msgstr ""
-
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:27
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:14
 msgid "Back-navigation"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:29
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:16
 msgid "Back to edit"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:49
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:36
 msgid "Manage record"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:67
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:54
 msgid "Publication date and version number"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:71
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:58
 msgid "Publication date"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:72
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:59
 msgid "Published"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:75
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:62
 #, python-brace-format
 msgid "Version {version_number}"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:82
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:69
 msgid "Resource type"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:92
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:79
 msgid "Access status"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:114
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:101
 msgid "Record title and creators"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:120
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:107
 msgid "Creators and contributors"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:181
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:162
+msgid "Reason"
+msgstr ""
+
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:168
 msgid "Request access"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:183
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:170
 msgid ""
 "If you would like to request access to these files, please fill out the form"
 " below."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:191
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:178
 msgid ""
 "You need to satisfy these conditions in order for this request to be "
 "accepted:"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:216
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:203
 msgid "System files"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:229
+#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:216
 msgid "Additional record details"
 msgstr ""
 
@@ -631,63 +567,6 @@ msgid "Year and month"
 msgstr ""
 
 msgid "Year, month and date"
-msgstr ""
-
-msgid ""
-"After publishing the draft, it is not possible to add, modify or delete "
-"files. It will be necessary to create a new version of the record."
-msgstr ""
-
-msgid "Fetching files"
-msgstr ""
-
-msgid "Failed to fetch draft's files. Please try refreshing the page."
-msgstr ""
-
-msgid "You can import files from the previous version."
-msgstr ""
-
-msgid "Import files"
-msgstr ""
-
-msgid "Failed to import files from previous version. Please try again."
-msgstr ""
-
-msgid ""
-"<0>If you wish to upload files, you must </0><1>save</1><2> your draft "
-"first.</2>"
-msgstr ""
-
-msgid ""
-"You must create a new version to add, modify or delete files. It can be done"
-" on record's <2>detail</2> page."
-msgstr ""
-
-msgid "Delete file"
-msgstr ""
-
-msgid "File uploaded successfully."
-msgstr ""
-
-msgid "Edit file metadata"
-msgstr ""
-
-msgid "File name"
-msgstr ""
-
-msgid "File size"
-msgstr ""
-
-msgid "Status"
-msgstr ""
-
-msgid "Delete"
-msgstr ""
-
-msgid "Upload files"
-msgstr ""
-
-msgid "Edit file"
 msgstr ""
 
 msgid "Draft successfully saved."
@@ -891,19 +770,13 @@ msgstr ""
 msgid "Start over"
 msgstr ""
 
+msgid "More"
+msgstr ""
+
 msgid "totalResults"
 msgid_plural "totalResults"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "Filter data by date"
-msgstr ""
-
-msgid "Reset"
-msgstr ""
-
-msgid "More"
-msgstr ""
 
 msgid "Sort"
 msgstr ""

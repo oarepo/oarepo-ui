@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 export * from "./LanguageSelectField";
 export * from "./FormikStateLogger";
 export * from "./I18nString";
@@ -11,8 +14,6 @@ export * from "./EDTFDatePickerField";
 export * from "./ConfirmationModal";
 export * from "./BaseFormLayout";
 export * from "./CompactFieldLabel";
-export * from "./AccessRightField";
-export * from "./FilesField";
 export * from "./StringArrayField";
 export * from "./TextField";
 export * from "./IdentifiersField";

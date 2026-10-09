@@ -139,6 +139,7 @@ celerybeat.pid
 .env
 .envrc
 .venv
+.tools/
 env/
 venv/
 ENV/
@@ -382,3 +383,4 @@ vite.config.ts.timestamp-*
 #
 
 .invenio.private
+ty.toml

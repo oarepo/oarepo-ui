@@ -1,11 +1,6 @@
-#
-# Copyright (c) 2025 CESNET z.s.p.o.
-#
-# This file is a part of oarepo-ui (see https://github.com/oarepo/oarepo-ui).
-#
-# oarepo-ui is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
-#
+# SPDX-FileCopyrightText: 2025 CESNET z.s.p.o
+# SPDX-License-Identifier: MIT
+
 """OARepo UI resources module.
 
 This module provides resource classes and configurations for OARepo UI,
@@ -31,7 +26,6 @@ from .components import (
     RecordRestrictionComponent,
     UIResourceComponent,
 )
-from .form_config import FormConfigResource, FormConfigResourceConfig
 from .records import (
     RecordsUIResource,
     RecordsUIResourceConfig,
@@ -45,8 +39,6 @@ __all__ = (
     "EmptyRecordAccessComponent",
     "FilesComponent",
     "FilesLockedComponent",
-    "FormConfigResource",
-    "FormConfigResourceConfig",
     "PermissionsComponent",
     "RecordRestrictionComponent",
     "RecordsUIResource",

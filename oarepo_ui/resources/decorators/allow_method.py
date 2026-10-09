@@ -1,11 +1,5 @@
-#
-# Copyright (c) 2025 CESNET z.s.p.o.
-#
-# This file is a part of oarepo-ui (see https://github.com/oarepo/oarepo-ui).
-#
-# oarepo-ui is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
-#
+# SPDX-FileCopyrightText: 2025 CESNET z.s.p.o
+# SPDX-License-Identifier: MIT
 
 """Decorator for adding HTTP methods."""
 
@@ -29,7 +23,7 @@ def allow_method(
 
     def inner(func: Callable[P, R]) -> Callable[P, R]:
         """Attach the configured HTTP methods to the wrapped view function."""
-        func._http_methods = methods  # type: ignore[attr-defined]  # noqa: SLF001
+        func._http_methods = methods  # ty: ignore[unresolved-attribute]  # noqa: SLF001
         return func
 
     return inner

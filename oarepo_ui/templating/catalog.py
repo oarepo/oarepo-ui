@@ -1,11 +1,6 @@
-#
-# Copyright (c) 2025 CESNET z.s.p.o.
-#
-# This file is a part of oarepo-ui (see https://github.com/oarepo/oarepo-ui).
-#
-# oarepo-ui is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
-#
+# SPDX-FileCopyrightText: 2025 CESNET z.s.p.o
+# SPDX-License-Identifier: MIT
+
 """OARepo UI templating catalog module.
 
 This module provides an extended Jinjax catalog implementation for OARepo UI,
@@ -112,7 +107,7 @@ class OarepoCatalog(Catalog):
             globals.update(jinja_env.globals)
             filters.update(jinja_env.filters)
             tests.update(jinja_env.tests)
-            jinja_env.globals["catalog"] = self
+            jinja_env.globals["catalog"] = self  # ty: ignore[invalid-assignment]
             jinja_env.filters["catalog"] = self
 
         globals["catalog"] = self
@@ -151,7 +146,7 @@ class OarepoCatalog(Catalog):
         # copy to re-apply after all context functions.
 
         for name in names:
-            app: Flask = getattr(self.jinja_env, "app", None)  # type: ignore[assignment]
+            app: Flask | None = getattr(self.jinja_env, "app", None)
             if app is None:
                 raise RuntimeError(
                     "Jinjax catalog is not bound to a Flask app. "
@@ -187,7 +182,6 @@ class OarepoCatalog(Catalog):
         """
         self.collected_css = []
         self.collected_js = []
-        # mypy does not understand that irender returns str
         return self.irender(__name, caller=caller, **kw)  # type: ignore[no-any-return]
 
     def render_first_existing(

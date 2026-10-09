@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 import React, { useRef, useEffect } from "react";
 import { Segment, Button, Icon, Message } from "semantic-ui-react";
 import PropTypes from "prop-types";
@@ -48,7 +51,7 @@ export const TabContent = ({ activeStep, sections, next, back }) => {
 
   // Move focus to first focusable element in content when tab changes
   // When first input in a tab, is a dropdown, the behavior is not ideal i.e. it focuses and the dropdown extends
-  // even when it has value. TODO: To discuss if this is really needed generally speaking.
+  // even when it has value.
   useEffect(() => {
     const focusableSelector =
       'input:not([disabled]), textarea:not([disabled]), button:not([disabled]), [tabindex]:not([tabindex="-1"]), a[href]';

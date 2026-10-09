@@ -1,11 +1,6 @@
-#
-# Copyright (c) 2025 CESNET z.s.p.o.
-#
-# This file is a part of oarepo-ui (see https://github.com/oarepo/oarepo-ui).
-#
-# oarepo-ui is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
-#
+# SPDX-FileCopyrightText: 2025 CESNET z.s.p.o
+# SPDX-License-Identifier: MIT
+
 """OARepo UI templating data module.
 
 This module provides data structures and utilities for handling field data
@@ -122,7 +117,7 @@ class FieldData:
         """
         if not x:
             return ""
-        return cast("str", gettext(x))
+        return gettext(x)
 
     @override
     def __str__(self) -> str:
@@ -307,10 +302,7 @@ class FieldData:
         """
         if fd._ui_definitions is None:
             return default_fallback
-        return cast(
-            "str | None",
-            fd._get_localized_value(fd._ui_definitions.get("label"), default_fallback),
-        )
+        return fd._get_localized_value(fd._ui_definitions.get("label"), default_fallback)
 
     @staticmethod
     def help(fd: FieldData, default_fallback: str | None = "Item does not exist") -> str | None:
@@ -321,10 +313,7 @@ class FieldData:
         """
         if fd._ui_definitions is None:
             return default_fallback
-        return cast(
-            "str | None",
-            fd._get_localized_value(fd._ui_definitions.get("help"), default_fallback),
-        )
+        return fd._get_localized_value(fd._ui_definitions.get("help"), default_fallback)
 
     @staticmethod
     def hint(fd: FieldData, default_fallback: str | None = "Item does not exist") -> str | None:
@@ -335,10 +324,7 @@ class FieldData:
         """
         if fd._ui_definitions is None:
             return default_fallback
-        return cast(
-            "str | None",
-            fd._get_localized_value(fd._ui_definitions.get("hint"), default_fallback),
-        )
+        return fd._get_localized_value(fd._ui_definitions.get("hint"), default_fallback)
 
     @staticmethod
     def array(fd: FieldData) -> list[FieldData]:
@@ -360,7 +346,7 @@ class FieldData:
 
         ui_defs = fd._ui_definitions.get("child", {}) if fd._ui_definitions else {}
         if isinstance(fd._api_data, dict):
-            log.error("FieldData.array() called in dictionary! Returning empty array, please call FieldData.dict()")
+            log.error("FieldData.array() called in dictionary! Returning empty array, please call FieldData.to_dict()")
             return []
 
         if isinstance(fd._api_data, list):
@@ -368,7 +354,7 @@ class FieldData:
             if not isinstance(fd._ui_data, list):
                 log.error(
                     "FieldData.array() called on a list, but UI data is not a list! "
-                    "Returning empty array, please call FieldData.dict()"
+                    "Returning empty array, please call FieldData.to_dict()"
                 )
                 return []
 
@@ -388,7 +374,7 @@ class FieldData:
         return [fd]
 
     @staticmethod
-    def dict(fd: FieldData) -> dict[str, FieldData]:
+    def to_dict(fd: FieldData) -> dict[str, FieldData]:
         """Return dictionary representation of a FieldData object.
 
         :param fd: Current FieldData node.
@@ -405,7 +391,7 @@ class FieldData:
 
         if not isinstance(api, dict):
             log.error(
-                "FieldData.dict() called on non-dictionary data. "
+                "FieldData.to_dict() called on non-dictionary data. "
                 "Returning empty dict, please call FieldData.array() or FieldData.value()."
             )
             return {}

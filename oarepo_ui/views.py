@@ -1,11 +1,6 @@
-#
-# Copyright (c) 2025 CESNET z.s.p.o.
-#
-# This file is a part of oarepo-ui (see https://github.com/oarepo/oarepo-ui).
-#
-# oarepo-ui is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
-#
+# SPDX-FileCopyrightText: 2025 CESNET z.s.p.o
+# SPDX-License-Identifier: MIT
+
 """OARepo UI views module.
 
 This module contains Flask blueprint creation and view functions for OARepo UI,
@@ -26,7 +21,7 @@ from invenio_app_rdm.theme.views import (
     add_static_page_routes,
     help_search,
     help_statistics,
-    # help_versioning,
+    help_versioning,
     index,
     robots,
 )
@@ -48,8 +43,6 @@ if TYPE_CHECKING:
 def create_blueprint(app: Flask) -> Blueprint:
     """Create the OARepo UI blueprint to register templates, menu and filters."""
     routes = app.config.get("APP_RDM_ROUTES")
-    # TODO: renamed blueprint to "invenio_app_rdm" I think it is the most reasonable way given the
-    # that we need to acount that in invenio they use this blueprint by name to navigate to home page etc.
     blueprint = Blueprint("invenio_app_rdm", __name__, template_folder="templates", static_folder="static")
 
     if routes:
@@ -57,8 +50,7 @@ def create_blueprint(app: Flask) -> Blueprint:
         blueprint.add_url_rule(**create_url_rule(routes.get("robots"), default_view_func=robots))
         blueprint.add_url_rule(**create_url_rule(routes.get("help_search"), default_view_func=help_search))
         blueprint.add_url_rule(**create_url_rule(routes.get("help_statistics"), default_view_func=help_statistics))
-        # TODO: uncomment when we have the proper config in APP_RDM_ROUTES
-        # blueprint.add_url_rule(**create_url_rule(routes.get("help_versioning"), default_view_func=help_versioning)) #noqa
+        blueprint.add_url_rule(**create_url_rule(routes.get("help_versioning"), default_view_func=help_versioning))
 
     # Register explicit, locale-aware routes for static pages declared in
     # APP_RDM_PAGES. Upstream invenio-app-rdm does this in its own theme

@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 import React from "react";
 import PropTypes from "prop-types";
 import _get from "lodash/get";
@@ -70,8 +73,7 @@ export const PublishButton = ({ record: _recordProp, ...props }) => {
     [dispatch, activeRequestType]
   );
   const { handleAction } = useDepositFormAction({ action: publishAction });
-  // TODO: hacky way to remove publish button from the flow under certain conditions
-  // IMHO we will need to combine our own publishbutton component (we can use invenio pieces)
+
   if (!canPublish && !shouldUseRequestFlow && !isReviewSubmissionVariant) {
     return null;
   }

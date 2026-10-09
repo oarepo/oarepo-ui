@@ -1,11 +1,6 @@
-#
-# Copyright (c) 2025 CESNET z.s.p.o.
-#
-# This file is a part of oarepo-ui (see https://github.com/oarepo/oarepo-ui).
-#
-# oarepo-ui is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
-#
+# SPDX-FileCopyrightText: 2025 CESNET z.s.p.o
+# SPDX-License-Identifier: MIT
+
 """OARepo UI utils module.
 
 This module provides utility functions for OARepo UI, including schema dumping
@@ -80,7 +75,7 @@ def dump_empty(  # noqa: PLR0911 too many return branches
         field = schema_or_field
         nested_schema = field.nested
         if callable(nested_schema):
-            nested_schema = nested_schema()
+            nested_schema = nested_schema()  # ty: ignore[call-top-callable]
         return dump_empty(nested_schema)  # type: ignore[no-any-return]
     if isinstance(schema_or_field, fields.Str):
         return ""

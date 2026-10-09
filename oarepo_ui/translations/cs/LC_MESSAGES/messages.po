@@ -843,10 +843,6 @@ msgstr "Musí být vyplněn identifikátor i typ identifikátoru."
 msgid "Add identifier"
 msgstr "Přidat identifikátor"
 
-#: /home/dusanst/Projects/oarepo-ui/oarepo_ui/templates/components/ClipboardCopyButton.jinja:6
-msgid "Copy to clipboard"
-msgstr "Kopírovat do schránky"
-
 msgid "Search or create affiliation"
 msgstr "Hledat nebo vytvořit afiliaci"
 

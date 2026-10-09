@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 import PropTypes from "prop-types";
 import React, { useContext } from "react";
 import Overridable from "react-overridable";

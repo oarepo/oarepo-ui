@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 import _cloneDeep from "lodash/cloneDeep";
 import _isArray from "lodash/isArray";
 import _isBoolean from "lodash/isBoolean";
@@ -137,11 +140,6 @@ export class OARepoDepositSerializer extends DepositRecordSerializer {
 
   deserializeErrors(errors) {
     let deserializedErrors = {};
-    // TODO - WARNING: This doesn't convert backend error paths to frontend
-    //                 error paths. Doing so is non-trivial
-    //                 (re-using deserialize has some caveats)
-    //                 Form/Error UX is tackled in next sprint and this is good
-    //                 enough for now.
     for (const e of errors) {
       if ("severity" in e) {
         // New error format with severity and description
