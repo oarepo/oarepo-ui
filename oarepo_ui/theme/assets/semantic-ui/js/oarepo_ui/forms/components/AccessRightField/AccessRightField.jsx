@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 import React from "react";
 import { Field } from "formik";
 import { AccessRightFieldCmp } from "@js/invenio_rdm_records/src/deposit/fields/AccessField/AccessRightField";

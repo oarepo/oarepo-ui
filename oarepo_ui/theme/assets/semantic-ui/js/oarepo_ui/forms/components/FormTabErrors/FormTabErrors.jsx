@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 import isEmpty from "lodash/isEmpty";
 import React from "react";
 import PropTypes from "prop-types";

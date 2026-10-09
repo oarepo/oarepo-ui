@@ -1,3 +1,7 @@
+{#
+SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+SPDX-License-Identifier: MIT
+#}
 {% include "invenio_app_rdm/javascript.html" %}
 {{ webpack_optional('overrides-' ~ request.endpoint ~ '.js') }}
 {{ webpack['oarepo_ui_theme.js'] }}

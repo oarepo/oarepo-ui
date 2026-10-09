@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 export { ActiveFilters } from "./ActiveFilters";
 export { BucketAggregationElement } from "./BucketAggregationElement";
 export { BucketAggregationValuesElement } from "./BucketAggregationValuesElement";

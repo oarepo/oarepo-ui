@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-06-23 09:37+0200\n"
+"POT-Creation-Date: 2026-08-02 12:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,389 +17,389 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/config.py:95
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/config.py:90
 msgid "English"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/config.py:96
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/config.py:91
 msgid "Czech"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:21
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:16
 msgid "api.draft"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:22
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:17
 msgid "api.latest"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:23
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:18
 msgid "api.files"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:24
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:19
 msgid "api.latest_html"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:25
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:20
 msgid "api.publish"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:26
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:21
 msgid "api.record"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:27
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:22
 msgid "api.self_html"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:28
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:23
 msgid "api.versions"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:29
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:24
 msgid ""
 "The browser (or proxy) sent a request that this server could not understand."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:31
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:26
 msgid ""
 "The server could not verify that you are authorized to access the URL "
 "requested. You either supplied the wrong credentials (e.g. a bad password), "
 "or your browser doesn't understand how to supply the credentials required."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:37
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:32
 msgid ""
 "You don't have the permission to access the requested resource. It is either"
 " read-protected or not readable by the server."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:41
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:59
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:36
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:54
 msgid ""
 "The requested URL was not found on the server. If you entered the URL "
 "manually please check your spelling and try again."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:44
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:39
 msgid "The method is not allowed for the requested URL."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:46
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:41
 msgid ""
 "The resource identified by the request is only capable of generating "
 "response entities which have content characteristics not acceptable "
 "according to the accept headers sent in the request."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:51
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:46
 msgid ""
 "The server closed the network connection because the browser didn't finish "
 "the request within the specified time."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:55
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:50
 msgid ""
 "A conflict happened while processing the request. The resource might have "
 "been modified while the request was being processed."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:63
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:58
 msgid ""
 "The requested URL is no longer available on this server and there is no "
 "forwarding address. If you followed a link from a foreign page, please "
 "contact the author of this page."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:67
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:62
 msgid ""
 "The precondition on the request for the URL failed positive evaluation."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:68
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:63
 msgid "The data value transmitted exceeds the capacity limit."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:69
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:64
 msgid ""
 "The length of the requested URL exceeds the capacity limit for this server. "
 "The request cannot be processed."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:70
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:65
 msgid "The server does not support the media type transmitted in the request."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:71
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:66
 msgid "The server cannot provide the requested range."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:72
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:67
 msgid "The server could not meet the requirements of the Expect header"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:73
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:68
 msgid "This server is a teapot, not a coffee machine"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:74
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:69
 msgid ""
 "The request was well-formed but was unable to be followed due to semantic "
 "errors."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:75
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:70
 msgid "The resource that is being accessed is locked."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:77
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:72
 msgid ""
 "The method could not be performed on the resource because the requested "
 "action depended on another action and that action failed."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:80
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:75
 msgid ""
 "This request is required to be conditional; try using 'If-Match' or 'If-"
 "Unmodified-Since'."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:81
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:76
 msgid "This user has exceeded an allotted request count. Try again later."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:82
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:77
 msgid "One or more header fields exceeds the maximum size."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:83
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:78
 msgid "Unavailable for legal reasons."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:85
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:80
 msgid ""
 "The server encountered an internal error and was unable to complete your "
 "request. Either the server is overloaded or there is an error in the "
 "application."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:89
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:84
 msgid "The server does not support the action requested by the browser."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:90
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:85
 msgid "The proxy server received an invalid response from an upstream server."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:92
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:87
 msgid ""
 "The server is temporarily unable to service your request due to maintenance "
 "downtime or capacity problems. Please try again later."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:95
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:90
 msgid "The connection to an upstream server timed out."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/for_translations_only.py:96
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/for_translations_only.py:91
 msgid ""
 "The server does not support the HTTP protocol version used in the request."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:368
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/resources/records/resource.py:363
 msgid "File preview requested but file service is not available on the model"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:774
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/resources/records/resource.py:769
 msgid "User does not have permission to create a record."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:978
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/resources/records/resource.py:973
 msgid "Removal reason"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:979
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/resources/records/resource.py:974
 msgid "Note"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/resources/records/resource.py:980
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/resources/records/resource.py:975
 msgid "Citation text"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/ClipboardCopyButton.jinja:6
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/ClipboardCopyButton.jinja:10
 msgid "Copy to clipboard"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/DefinitionLink.jinja:2
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/DefinitionLink.jinja:6
 msgid "Open definition"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:3
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:4
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:7
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:8
 msgid "Identifiers and links"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:54
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:55
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:58
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/IdentifiersAndLinks.jinja:59
 msgid "metadata/originalRecord.label"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/RecordExport.jinja:13
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/RecordExport.jinja:14
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/side_bar/export.html:14
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/RecordExport.jinja:17
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/RecordExport.jinja:18
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/side_bar/export.html:18
 msgid "Export"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/RecordVersions.jinja:13
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/RecordVersions.jinja:14
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/RecordVersions.jinja:17
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/RecordVersions.jinja:18
 msgid "Versions"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/ICustomFields.jinja:10
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/datafields/ICustomFields.jinja:14
 msgid "Not set"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:7
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:137
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:142
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:159
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:11
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:128
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:133
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:150
 msgid "Files"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:11
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:15
 msgid "File"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:12
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:16
 msgid "Size"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:13
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:17
 msgid "Actions"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:24
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:25
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:28
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:29
 msgid "File is being processed."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:32
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:36
 msgid "File was not uploaded correctly. Please delete it and try again."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:33
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:37
 msgid "File was not uploaded correctly."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:48
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:52
 msgid "Preview file"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:56
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:60
 msgid "Download file"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:62
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:66
 msgid "File upload is not completed."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:20
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:35
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:24
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:39
 msgid "New item"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:22
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:26
 msgid "Edit item "
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/not_found.html:7
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/not_found.html:11
 msgid "Not found"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/not_found.html:12
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/not_found.html:16
 msgid ""
 "\n"
 "      The record you are trying to access does not exist in the repository."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/not_found.html:20
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/not_found.html:24
 msgid "PID"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_search.html:2
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_search.html:6
 msgid "Search results"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/tombstone.html:7
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/tombstone.html:11
 msgid "Gone"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/tombstone.html:12
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/tombstone.html:16
 msgid ""
 "\n"
 "      The record you are trying to access was removed. The\n"
 "      metadata of the record is kept for archival purposes."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/deposit/form.html:2
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/deposit/form.html:6
 msgid "New version"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/deposit/form.html:4
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/deposit/form.html:8
 msgid "New upload"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/deposit/form.html:6
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/deposit/form.html:10
 msgid "Edit upload"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/macros/records_list.html:10
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/macros/records_list.html:14
 msgid "Recent uploads"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:1
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:5
 msgid "Information banner"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:31
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:35
 msgid "Part of"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:42
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:46
 msgid "Community visibility"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:43
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:47
 msgid "The community is restricted to users with access."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:45
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:49
 msgid "Restricted"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:64
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:68
 msgid "Preview"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:68
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:72
 msgid "You are previewing a published record."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:70
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:74
 msgid "You are previewing changes that have not yet been published."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:72
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:76
 msgid "You are previewing a new record that has not yet been published."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:74
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:78
 msgid ""
 "You are previewing a new record version that has not yet been published."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:91
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/banners.html:95
 #, python-format
 msgid ""
 "\n"
@@ -408,81 +408,76 @@ msgid ""
 "                  "
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:9
-msgid "Record access information"
-msgstr ""
-
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:16
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:175
-msgid "Reason"
-msgstr ""
-
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:27
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:18
 msgid "Back-navigation"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:29
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:20
 msgid "Back to edit"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:49
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:40
 msgid "Manage record"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:67
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:58
 msgid "Publication date and version number"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:71
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:62
 msgid "Publication date"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:72
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:63
 msgid "Published"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:75
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:66
 #, python-brace-format
 msgid "Version {version_number}"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:82
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:73
 msgid "Resource type"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:92
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:83
 msgid "Access status"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:114
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:105
 msgid "Record title and creators"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:120
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:111
 msgid "Creators and contributors"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:181
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:166
+msgid "Reason"
+msgstr ""
+
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:172
 msgid "Request access"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:183
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:174
 msgid ""
 "If you would like to request access to these files, please fill out the form"
 " below."
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:191
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:182
 msgid ""
 "You need to satisfy these conditions in order for this request to be "
 "accepted:"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:216
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:207
 msgid "System files"
 msgstr ""
 
-#: /Users/dusanstojanovic/Projects/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:229
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:220
 msgid "Additional record details"
 msgstr ""
 

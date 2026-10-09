@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 import React, { useState } from "react";
 import { GroupField, FieldLabel } from "react-invenio-forms";
 import { Form, Button, Icon } from "semantic-ui-react";

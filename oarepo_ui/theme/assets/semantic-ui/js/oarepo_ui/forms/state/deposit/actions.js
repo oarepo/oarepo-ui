@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 import { save } from "@js/invenio_rdm_records/src/deposit/state/actions/deposit";
 import {
   DRAFT_HAS_VALIDATION_ERRORS,
