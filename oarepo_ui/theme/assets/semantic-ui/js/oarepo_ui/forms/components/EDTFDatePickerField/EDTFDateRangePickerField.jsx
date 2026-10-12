@@ -107,22 +107,6 @@ export const EDTFDaterangePicker = ({
       width={width}
     >
       <FieldLabel htmlFor={fieldPath} icon={icon} label={fieldData.label} />
-      <Form.Field className="mb-0">
-        <Radio
-          label={i18next.t("Date range.")}
-          name={`${fieldPath}-startAndEnd`}
-          checked={!showSingleDatePicker}
-          onChange={() => setShowSingleDatePicker(false)}
-          className="rel-mr-1"
-        />
-        <Radio
-          label={i18next.t("Single date.")}
-          name={`${fieldPath}-oneDate`}
-          checked={showSingleDatePicker}
-          onChange={() => handleSingleDatePickerSelection()}
-          required={false}
-        />
-      </Form.Field>
       <Form.Field>
         <EDTFDatePickerWrapper
           fieldPath={fieldPath}
@@ -140,6 +124,22 @@ export const EDTFDaterangePicker = ({
             helpText: fieldData.helpText,
             ...customInputProps,
           }}
+        />
+      </Form.Field>
+      <Form.Field className="mb-0 mt-5">
+        <Radio
+          label={i18next.t("Date range.")}
+          name={`${fieldPath}-startAndEnd`}
+          checked={!showSingleDatePicker}
+          onChange={() => setShowSingleDatePicker(false)}
+          className="rel-mr-1"
+        />
+        <Radio
+          label={i18next.t("Single date.")}
+          name={`${fieldPath}-oneDate`}
+          checked={showSingleDatePicker}
+          onChange={() => handleSingleDatePickerSelection()}
+          required={false}
         />
       </Form.Field>
     </Form.Field>
