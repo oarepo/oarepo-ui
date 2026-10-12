@@ -35,7 +35,9 @@ export const EDTFDaterangePicker = ({
   const [dateEdtfFormat, setDateEdtfFormat] = useState(initialEdtfDateFormat);
   let dates;
   if (field?.value) {
-    dates = field.value.split("/").map((date) => deserializeDate(date));
+    // a plain date (no "/") is a single date, not a range without an end
+    const [start, end = start] = field.value.split("/");
+    dates = [start, end].map((date) => deserializeDate(date));
   } else {
     dates = [null, null];
   }
@@ -60,10 +62,9 @@ export const EDTFDaterangePicker = ({
     }
   };
 
+  // a single date is stored as a plain date, not as a "date/date" interval
   const handleSingleDateChange = (date) => {
-    dates = [...dates];
-    dates = [date, date];
-    handleChange(dates);
+    setFieldValue(fieldPath, serializeDate(date, dateEdtfFormat));
   };
 
   const handleClear = () => {
@@ -73,17 +74,8 @@ export const EDTFDaterangePicker = ({
   };
 
   const handleSingleDatePickerSelection = () => {
-    if (!dates[0] && dates[1]) {
-      const newDates = [dates[1], dates[1]].map((date) =>
-        serializeDate(date, dateEdtfFormat)
-      );
-      setFieldValue(fieldPath, newDates.join("/"));
-    } else if (!dates[1] && dates[0]) {
-      const newDates = [dates[0], dates[0]].map((date) =>
-        serializeDate(date, dateEdtfFormat)
-      );
-      setFieldValue(fieldPath, newDates.join("/"));
-    }
+    const date = startDate || endDate;
+    if (date) handleSingleDateChange(date);
     setShowSingleDatePicker(true);
   };
 
@@ -98,6 +90,10 @@ export const EDTFDaterangePicker = ({
         startDate: startDate,
         endDate: endDate,
         selectsRange: true,
+        // an unfinished range would be saved as an open interval ("2025/")
+        onCalendarClose: () => {
+          if (startDate && !endDate) handleSingleDatePickerSelection();
+        },
       };
 
   const fieldData = mergeFieldData(
@@ -114,14 +110,14 @@ export const EDTFDaterangePicker = ({
       <Form.Field className="mb-0">
         <Radio
           label={i18next.t("Date range.")}
-          name="startAndEnd"
+          name={`${fieldPath}-startAndEnd`}
           checked={!showSingleDatePicker}
           onChange={() => setShowSingleDatePicker(false)}
           className="rel-mr-1"
         />
         <Radio
           label={i18next.t("Single date.")}
-          name="oneDate"
+          name={`${fieldPath}-oneDate`}
           checked={showSingleDatePicker}
           onChange={() => handleSingleDatePickerSelection()}
           required={false}
