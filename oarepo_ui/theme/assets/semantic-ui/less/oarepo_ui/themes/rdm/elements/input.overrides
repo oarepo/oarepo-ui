@@ -39,6 +39,52 @@
   .clear-icon:hover {
     opacity: 1 !important;
   }
+  // Single/Range toggle on the label's line, the input below
+  &.field:has(> .buttons) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    // the row stretches the field: don't spread that over the label and input lines
+    align-content: flex-start;
+    > label {
+      flex: 1;
+    }
+    > .field {
+      flex-basis: 100%;
+    }
+    > .buttons {
+      // taller than the label: don't let it push the input below its neighbours'
+      margin: -0.5rem 0 0.28rem;
+      > .button:not(.active) {
+        border: @border;
+        &:not(:hover) {
+          background: @background;
+        }
+      }
+      // Semantic paints an active toggle green
+      > .button.active {
+        background-color: @primaryColor !important;
+      }
+    }
+    // phones: the toggle gets a full-width line of its own above the input, clear of the remove button
+    @media all and (max-width: @largestMobileScreen) {
+      > label {
+        flex-basis: 100%;
+      }
+      > .buttons {
+        flex-basis: 100%;
+        margin: 0 0 0.5rem;
+        // text as big as the input's (rem: Semantic zeroes the group's font size), but slimmer than the input
+        > .button {
+          flex: 1;
+          font-size: 1rem;
+          line-height: 1;
+          padding-top: 0.4em;
+          padding-bottom: 0.4em;
+        }
+      }
+    }
+  }
   label.helptext {
     margin-top: 0.5rem;
   }

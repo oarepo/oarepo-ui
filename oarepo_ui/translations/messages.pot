@@ -618,10 +618,19 @@ msgstr ""
 msgid "Choose one date."
 msgstr ""
 
-msgid "Date range."
+msgid "Range"
 msgstr ""
 
-msgid "Single date."
+msgid "Single"
+msgstr ""
+
+msgid "Date range"
+msgstr ""
+
+msgid "Single date"
+msgstr ""
+
+msgid "Single date or date range"
 msgstr ""
 
 msgid "Year"

@@ -353,11 +353,20 @@ msgstr "Vybrat: "
 msgid "Choose a date."
 msgstr "Vyberte datum."
 
-msgid "Date range."
-msgstr "Časové období."
+msgid "Range"
+msgstr "Období"
 
-msgid "Single date."
-msgstr "Jediné datum."
+msgid "Single"
+msgstr "Datum"
+
+msgid "Date range"
+msgstr "Časové období"
+
+msgid "Single date"
+msgstr "Jedno datum"
+
+msgid "Single date or date range"
+msgstr "Jedno datum, nebo časové období"
 
 msgid "Choose the time interval in which the event took place."
 msgstr "Vyberte časový interval, ve kterém se událost odehrála."

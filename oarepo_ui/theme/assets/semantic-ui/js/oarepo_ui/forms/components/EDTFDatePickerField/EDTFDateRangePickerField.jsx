@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useField, useFormikContext } from "formik";
 import PropTypes from "prop-types";
-import { Form, Radio } from "semantic-ui-react";
+import { Button, Form } from "semantic-ui-react";
 import { i18next } from "@translations/oarepo_ui/i18next";
 import {
   allEmptyStrings,
@@ -107,6 +107,32 @@ export const EDTFDaterangePicker = ({
       width={width}
     >
       <FieldLabel htmlFor={fieldPath} icon={icon} label={fieldData.label} />
+      <Button.Group
+        size="mini"
+        role="group"
+        aria-label={i18next.t("Single date or date range")}
+      >
+        <Button
+          type="button"
+          toggle
+          active={showSingleDatePicker}
+          data-tooltip={i18next.t("Single date")}
+          aria-label={i18next.t("Single date")}
+          onClick={handleSingleDatePickerSelection}
+        >
+          {i18next.t("Single")}
+        </Button>
+        <Button
+          type="button"
+          toggle
+          active={!showSingleDatePicker}
+          data-tooltip={i18next.t("Date range")}
+          aria-label={i18next.t("Date range")}
+          onClick={() => setShowSingleDatePicker(false)}
+        >
+          {i18next.t("Range")}
+        </Button>
+      </Button.Group>
       <Form.Field>
         <EDTFDatePickerWrapper
           fieldPath={fieldPath}
@@ -124,22 +150,6 @@ export const EDTFDaterangePicker = ({
             helpText: fieldData.helpText,
             ...customInputProps,
           }}
-        />
-      </Form.Field>
-      <Form.Field className="mb-0 mt-5">
-        <Radio
-          label={i18next.t("Date range.")}
-          name={`${fieldPath}-startAndEnd`}
-          checked={!showSingleDatePicker}
-          onChange={() => setShowSingleDatePicker(false)}
-          className="rel-mr-1"
-        />
-        <Radio
-          label={i18next.t("Single date.")}
-          name={`${fieldPath}-oneDate`}
-          checked={showSingleDatePicker}
-          onChange={() => handleSingleDatePickerSelection()}
-          required={false}
         />
       </Form.Field>
     </Form.Field>
