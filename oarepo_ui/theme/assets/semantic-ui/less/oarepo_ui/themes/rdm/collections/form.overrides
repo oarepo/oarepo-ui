@@ -79,20 +79,6 @@
       margin-bottom: 0;
     }
 
-    // a date range picker makes the row taller (its range/single radios sit below
-    // the input): centre the remove button on the whole row
-    @media all and (min-width: @tabletBreakpoint) {
-      &:has(> .datepicker.field .ui.radio.checkbox) {
-        > .field:has(> .close-btn) {
-          align-self: center;
-        }
-
-        .ui.icon.button.close-btn {
-          margin-top: 0;
-        }
-      }
-    }
-
     @media all and (max-width: @largestMobileScreen) {
       .column {
         position: static;
@@ -107,7 +93,8 @@
         position: absolute;
         top: 1rem;
         right: 1.3rem;
-        margin-top: 0;
+        // in the padding above the fields, not on the label line (tab-form sets a top margin later)
+        margin-top: 0 !important;
       }
     }
   }
