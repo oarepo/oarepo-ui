@@ -1,4 +1,7 @@
 // SPDX-FileCopyrightText: 2020-2023 CERN
+// SPDX-FileCopyrightText: 2020-2022 Northwestern University
+// SPDX-FileCopyrightText: 2021 Graz University of Technology
+// SPDX-FileCopyrightText: 2022 data-futures.org
 // SPDX-License-Identifier: MIT
 
 import { i18next } from "@translations/oarepo_ui/i18next";
