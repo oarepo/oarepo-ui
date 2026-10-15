@@ -17,7 +17,15 @@ from oarepo_ui.templating.data import (
     EMPTY_FIELD_DATA_SENTINEL,
     FieldData,
 )
-from oarepo_ui.templating.filters import as_array, as_dict, ui_value, value
+from oarepo_ui.templating.filters import (
+    as_array,
+    as_dict,
+    ui_help,
+    ui_hint,
+    ui_label,
+    ui_value,
+    value,
+)
 
 
 def test_field_data(field_data_test_obj):
@@ -239,6 +247,41 @@ def test_filter_ui_value(field_data_test_obj):
         ui_value(record["metadata"]["publication_date"], format="l10n_long")
         == ui_value_serialization["publication_date_l10n_long"]
     )
+
+
+@pytest.mark.parametrize(
+    ("ui_filter", "kind"),
+    [(ui_label, "label"), (ui_hint, "hint"), (ui_help, "help")],
+)
+def test_filter_ui_label_hint_help(field_data_test_obj, ui_filter, kind):
+    _, _, record = field_data_test_obj
+
+    with pytest.raises(TypeError, match="Expected FieldData, got str"):
+        ui_filter("certainly not a fielddata obj")
+
+    assert ui_filter(record["metadata"]["title"]) == f"metadata/title.{kind}"
+    assert ui_filter(record["metadata"]["publication_date"]) == f"metadata/publication_date.{kind}"
+
+    missing = record["metadata"]["definitely_not_a_real_field"]
+    assert ui_filter(missing) == "Item does not exist"
+    assert ui_filter(missing, default_fallback="") == ""
+    assert ui_filter(missing, default_fallback=None) is None
+
+
+@pytest.mark.parametrize("kind", ["label", "hint", "help"])
+def test_ui_label_hint_help_in_jinja(app, field_data_test_obj, kind):
+    _, _, record = field_data_test_obj
+    title = record["metadata"]["title"]
+    missing = record["metadata"]["definitely_not_a_real_field"]
+
+    as_filter = app.jinja_env.from_string(f"{{{{ title | ui_{kind} }}}}|{{{{ missing | ui_{kind}('') }}}}")
+    as_global = app.jinja_env.from_string(
+        f"{{{{ ui_{kind}(title) }}}}|{{{{ ui_{kind}(missing, default_fallback='') }}}}"
+    )
+
+    expected = f"metadata/title.{kind}|"
+    assert as_filter.render(title=title, missing=missing) == expected
+    assert as_global.render(title=title, missing=missing) == expected
 
 
 def test_filter_as_array(field_data_test_obj):
