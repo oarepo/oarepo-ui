@@ -1,4 +1,6 @@
 // SPDX-FileCopyrightText: 2020-2023 CERN
+// SPDX-FileCopyrightText: 2020-2022 Northwestern University
+// SPDX-FileCopyrightText: 2021 Graz University of Technology
 // SPDX-License-Identifier: MIT
 
 import React, { Component } from "react";
