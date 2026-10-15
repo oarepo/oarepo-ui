@@ -15,7 +15,7 @@ and notification settings handling.
 
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 from typing import TYPE_CHECKING
 
 from flask import (
@@ -72,7 +72,7 @@ def create_blueprint(app: Flask) -> Blueprint:
     add_static_page_routes(blueprint, app)
 
     blueprint.app_context_processor(lambda: ({"current_app": app}))
-    blueprint.app_context_processor(lambda: ({"now": datetime.datetime.now(tz=datetime.UTC)}))
+    blueprint.app_context_processor(lambda: ({"now": dt.datetime.now(tz=dt.UTC)}))
     blueprint.app_context_processor(
         lambda: (
             {
