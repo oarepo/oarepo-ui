@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 /*
 This is the registration file for custom components. The components should not be included here,
 but only referenced. The sample component below can be used to start up working on your own custom

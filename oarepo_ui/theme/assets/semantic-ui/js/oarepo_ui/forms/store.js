@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 import _cloneDeep from "lodash/cloneDeep";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";

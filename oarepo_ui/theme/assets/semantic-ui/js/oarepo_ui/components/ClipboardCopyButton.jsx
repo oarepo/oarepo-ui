@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 import React, { useEffect, useRef } from "react";
 import { initCopyButtons, deinitializeCopyButtons } from "./clipboard";
 import { i18next } from "@translations/oarepo_ui/i18next";
