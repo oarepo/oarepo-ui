@@ -11,7 +11,7 @@ dependencies = [
     "jinjax>=0.64,<1.0.0",
     "deepmerge>=2.0",
     "python-dotenv>=1.1.1",
-    "oarepo-runtime>=7.0.0,<8.0.0",
+    "oarepo-runtime>=7.13.0,<8.0.0",
     "oarepo-theme>=6.0.0,<7.0.0",
 
     # invenio dependencies
