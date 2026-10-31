@@ -17,9 +17,10 @@
       {% set formats = [] %}
       {%- for exporter in model.exports if exporter.is_displayed(g.identity) -%}
         {%- set export_url = model.ui_url(view_name="record_export", pid_value=record_ui["id"], export_format=exporter.code, preview=1 if is_preview else 0)  -%}
-        {% set formats = formats.append({ 'name': exporter.name, 'export_url': export_url }) %}
+        {# name is a lazy string, resolve it to sort by the name in the current language #}
+        {% set formats = formats.append({ 'name': exporter.name | string, 'export_url': export_url }) %}
       {%- endfor -%}
-      <div id="recordExportDownload" data-formats='{{ formats | tojson }}'></div>
+      <div id="recordExportDownload" data-formats='{{ formats | sort(attribute="name") | tojson }}'></div>
     </div>
   </div>
 {%- endif -%}

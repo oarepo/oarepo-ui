@@ -36,11 +36,11 @@ class _Serializer(BaseSerializer):
         return obj
 
 
-def _exporter(code: str, *, display: bool = True, display_if: Any = None) -> Export:
+def _exporter(code: str, *, display: bool = True, display_if: Any = None, name: str | None = None) -> Export:
     """Build an export format the sidebar can render."""
     return Export(
         code=code,
-        name=code.upper(),
+        name=name or code.upper(),
         mimetype="application/json",
         serializer=_Serializer(),
         display=display,
@@ -73,9 +73,9 @@ def _render(exports: list[Export], identity: Identity | None) -> list[str]:
 @pytest.mark.parametrize(
     ("display", "display_if", "expected_codes"),
     [
-        (True, None, ["json", "conditional"]),
+        (True, None, ["conditional", "json"]),
         (False, None, ["json"]),
-        (True, lambda identity: identity is not None, ["json", "conditional"]),
+        (True, lambda identity: identity is not None, ["conditional", "json"]),
         (True, lambda _identity: False, ["json"]),
         # display=False must win even when the condition holds
         (False, lambda _identity: True, ["json"]),
@@ -101,3 +101,15 @@ def test_export_displayed_unauthorized_identity():
     exports = [_exporter("conditional", display_if=lambda identity: identity is not None)]
 
     assert _render(exports, None) == []
+
+
+def test_exports_sorted_by_name():
+    """The sidebar lists the exports alphabetically by name, ignoring case, not in registration order."""
+    exports = [
+        _exporter("rocrate", name="RO-Crate"),
+        _exporter("bibtex", name="BibTeX"),
+        _exporter("ccmm", name="ccmm export"),
+        _exporter("datacite", name="DataCite XML"),
+    ]
+
+    assert _render(exports, Identity("1")) == ["bibtex", "ccmm", "datacite", "rocrate"]
