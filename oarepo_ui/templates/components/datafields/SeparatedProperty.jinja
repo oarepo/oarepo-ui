@@ -1,6 +1,6 @@
 {#def d, label=None, isLast=False, label_class=None, content_class=None, separator_class="double separator" #}
 
-{% set field_label = label or d.label(d) if d.label(d) != 'Item does not exist' %}
+{% set field_label = label or ui_label(d) %}
 
 {% if content %}
 {% if field_label %}
