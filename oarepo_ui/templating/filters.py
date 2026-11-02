@@ -46,7 +46,7 @@ def ui_value(value: FieldData, format: str = "") -> str:  # noqa: A002
     return FieldData.ui_value(value, format=format)
 
 
-def ui_label(value: FieldData, default_fallback: str | None = "Item does not exist") -> str | None:
+def ui_label(value: FieldData, default_fallback: str | None = "") -> str | None:
     """Extract the localized label of a FieldData object from its UI definitions.
 
     :param value: FieldData instance.
@@ -58,7 +58,7 @@ def ui_label(value: FieldData, default_fallback: str | None = "Item does not exi
     return FieldData.label(value, default_fallback)
 
 
-def ui_hint(value: FieldData, default_fallback: str | None = "Item does not exist") -> str | None:
+def ui_hint(value: FieldData, default_fallback: str | None = "") -> str | None:
     """Extract the localized hint of a FieldData object from its UI definitions.
 
     :param value: FieldData instance.
@@ -70,7 +70,7 @@ def ui_hint(value: FieldData, default_fallback: str | None = "Item does not exis
     return FieldData.hint(value, default_fallback)
 
 
-def ui_help(value: FieldData, default_fallback: str | None = "Item does not exist") -> str | None:
+def ui_help(value: FieldData, default_fallback: str | None = "") -> str | None:
     """Extract the localized help text of a FieldData object from its UI definitions.
 
     :param value: FieldData instance.

@@ -263,9 +263,25 @@ def test_filter_ui_label_hint_help(field_data_test_obj, ui_filter, kind):
     assert ui_filter(record["metadata"]["publication_date"]) == f"metadata/publication_date.{kind}"
 
     missing = record["metadata"]["definitely_not_a_real_field"]
-    assert ui_filter(missing) == "Item does not exist"
-    assert ui_filter(missing, default_fallback="") == ""
-    assert ui_filter(missing, default_fallback=None) is None
+    assert ui_filter(missing) == ""
+    assert ui_filter(missing, default_fallback="n/a") == "n/a"
+
+
+def test_ui_label_localized(app):
+    record = FieldData.create(
+        api_data={"title": "x"},
+        ui_data={},
+        ui_definitions={"children": {"title": {"label": {"cs": "Název", "en": "Title"}}}},
+    )
+
+    app.config["BABEL_DEFAULT_LOCALE"] = "cs"
+    with app.app_context():
+        assert ui_label(record["title"]) == "Název"
+
+    # falls back to English when the current locale is missing
+    app.config["BABEL_DEFAULT_LOCALE"] = "de"
+    with app.app_context():
+        assert ui_label(record["title"]) == "Title"
 
 
 @pytest.mark.parametrize("kind", ["label", "hint", "help"])
@@ -274,10 +290,8 @@ def test_ui_label_hint_help_in_jinja(app, field_data_test_obj, kind):
     title = record["metadata"]["title"]
     missing = record["metadata"]["definitely_not_a_real_field"]
 
-    as_filter = app.jinja_env.from_string(f"{{{{ title | ui_{kind} }}}}|{{{{ missing | ui_{kind}('') }}}}")
-    as_global = app.jinja_env.from_string(
-        f"{{{{ ui_{kind}(title) }}}}|{{{{ ui_{kind}(missing, default_fallback='') }}}}"
-    )
+    as_filter = app.jinja_env.from_string(f"{{{{ title | ui_{kind} }}}}|{{{{ missing | ui_{kind} }}}}")
+    as_global = app.jinja_env.from_string(f"{{{{ ui_{kind}(title) }}}}|{{{{ ui_{kind}(missing) }}}}")
 
     expected = f"metadata/title.{kind}|"
     assert as_filter.render(title=title, missing=missing) == expected
