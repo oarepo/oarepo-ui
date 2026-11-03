@@ -12,8 +12,8 @@ This module provides Jinja2 template filter functions for OARepo UI,
 including functions for extracting values, formatting UI data, and converting
 field data to different formats (arrays, dictionaries) for template rendering.
 
-These are used to render FieldData objects in templates in a way that is guaranteed
-not to raise exceptions even if the data is not in the expected format.
+Missing paths resolve to an empty FieldData, so they render as empty strings instead of
+raising. Every filter still raises TypeError when it gets something that is not FieldData.
 """
 
 from __future__ import annotations
@@ -51,6 +51,7 @@ def ui_label(value: FieldData, default_fallback: str | None = "") -> str | None:
 
     :param value: FieldData instance.
     :param default_fallback: Fallback value when the label is not defined.
+        Defaults to "", unlike FieldData.label() which returns "Item does not exist".
     :return: Localized label, or default_fallback.
     """
     if not isinstance(value, FieldData):
@@ -63,6 +64,7 @@ def ui_hint(value: FieldData, default_fallback: str | None = "") -> str | None:
 
     :param value: FieldData instance.
     :param default_fallback: Fallback value when the hint is not defined.
+        Defaults to "", unlike FieldData.hint() which returns "Item does not exist".
     :return: Localized hint, or default_fallback.
     """
     if not isinstance(value, FieldData):
@@ -75,6 +77,7 @@ def ui_help(value: FieldData, default_fallback: str | None = "") -> str | None:
 
     :param value: FieldData instance.
     :param default_fallback: Fallback value when the help text is not defined.
+        Defaults to "", unlike FieldData.help() which returns "Item does not exist".
     :return: Localized help text, or default_fallback.
     """
     if not isinstance(value, FieldData):
