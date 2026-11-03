@@ -284,6 +284,19 @@ def test_ui_label_localized(app):
         assert ui_label(record["title"]) == "Title"
 
 
+@pytest.mark.parametrize(("ui_filter", "kind"), [(ui_hint, "hint"), (ui_help, "help")])
+def test_ui_hint_help_empty_und(app, ui_filter, kind):
+    # model-generated hint/help is {"und": ""}; it is defined, so default_fallback does not apply
+    record = FieldData.create(
+        api_data={"title": "x"},
+        ui_data={},
+        ui_definitions={"children": {"title": {kind: {"und": ""}}}},
+    )
+    with app.app_context():
+        assert ui_filter(record["title"]) == ""
+        assert ui_filter(record["title"], default_fallback="n/a") == ""
+
+
 @pytest.mark.parametrize("kind", ["label", "hint", "help"])
 def test_ui_label_hint_help_in_jinja(app, field_data_test_obj, kind):
     _, _, record = field_data_test_obj
