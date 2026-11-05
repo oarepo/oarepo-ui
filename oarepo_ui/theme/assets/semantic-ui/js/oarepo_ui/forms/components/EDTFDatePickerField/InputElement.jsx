@@ -32,6 +32,7 @@ export const InputElement = forwardRef(
         id={fieldPath}
         autoComplete={autoComplete}
         helpText={helpText}
+        readOnly
         icon={
           value ? (
             <Icon
