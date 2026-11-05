@@ -1,0 +1,21 @@
+{#
+  SPDX-FileCopyrightText: 2015-2018 CERN.
+  SPDX-FileCopyrightText: 2016 TIND.
+  SPDX-License-Identifier: MIT
+#}
+{# Copy of invenio_i18n's macro; CLDR names some languages in lower case ("čeština"), so upper-case the first letter only. #}
+{% macro language_selector_dropdown() %}
+<form id="language-code-form" class="lang-select"
+      action="{{ url_for('invenio_i18n.set_lang')}}"
+      method="POST">
+  <div>
+    <label>{{ _('Language:') }}</label>
+    <select id="lang-code" name="lang_code" class="ui selection dropdown">
+      {% for l in current_i18n.get_locales() %}
+        {% set name = l.get_display_name() %}
+        <option {% if current_i18n.language == l.language %}selected {% endif %}value="{{ l.language }}">{{ name[:1]|upper ~ name[1:] }}</option>
+      {% endfor %}
+    </select>
+  </div>
+</form>
+{% endmacro %}
