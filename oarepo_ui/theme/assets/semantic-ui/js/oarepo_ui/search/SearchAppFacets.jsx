@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-License-Identifier: MIT
+
 import React from "react";
 import { BucketAggregation, Toggle } from "react-searchkit";
 import PropTypes from "prop-types";
