@@ -13,36 +13,57 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from functools import wraps
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
-from flask import redirect, request
+from flask import g, make_response, redirect, request
+from flask_resources import from_conf, resource_requestctx, with_content_negotiation
+from flask_resources.errors import MIMETypeNotAccepted
 from oarepo_runtime import current_runtime
-from werkzeug.http import parse_accept_header
 
 if TYPE_CHECKING:
     from werkzeug import Response
 
 
-def record_content_negotiation[T: Callable](f: T) -> T:
-    """Handle content negotiation.
+_negotiate_ui = with_content_negotiation(
+    response_handlers=from_conf("response_handlers"),
+    default_accept_mimetype=from_conf("default_accept_mimetype"),
+)
 
-     Handle content negotiation and redirect to appropriate URLs
-    based on the "accept" header in the request and the record attributes. This ensures
-    that requests expecting a landing page are served directly, while others are redirected
-    to specific API endpoints based on the record's schema and state (draft or published).
-    """
+
+def negotiate_ui_view[T: Callable](view: T) -> T:
+    """Use Flask-Resources negotiation unless the view negotiates against its record."""
+    if getattr(view, "_negotiates_record_content", False):
+        return view
+    return cast("T", _negotiate_ui(view))
+
+
+def record_content_negotiation[T: Callable](f: T) -> T:
+    """Serve HTML or redirect to the API for a visible export of this record."""
 
     @wraps(f)
     def inner(*args: Any, **kwargs: Any) -> Response:
         record = kwargs["record"]
-        parsed_accept_header = parse_accept_header(request.headers.get("accept", "text/html"))
-        landing_page_accept_header_types = {"text/html", "application/xhtml+xml"}
-        if parsed_accept_header.best_match(landing_page_accept_header_types):
-            return f(*args, **kwargs)
-        record_dict = record.to_dict()
-        model = current_runtime.models_by_schema[record_dict["$schema"]]
-        if getattr(record, "is_draft", False):
-            return redirect(model.api_url("read_draft", pid_value=record.id))
-        return redirect(model.api_url("read", pid_value=record.id))
+        data = record.to_dict()
+        model = current_runtime.models_by_schema[data["$schema"]]
+        offered = ["text/html", *(export.mimetype for export in model.exports if export.is_displayed(g.identity))]
+        selected = request.accept_mimetypes.best_match(offered) if "Accept" in request.headers else "text/html"
 
-    return inner  # type: ignore[return-value]
+        if selected is None:
+            response = MIMETypeNotAccepted(allowed_mimetypes=offered).get_response()
+        elif selected == "text/html":
+            resource_requestctx.accept_mimetype = selected
+            resource_requestctx.response_handler = resource_requestctx.config.response_handlers.get(selected)
+            response = make_response(f(*args, **kwargs))
+        else:
+            endpoint = "read_draft" if data.get("is_draft", getattr(record, "is_draft", False)) else "read"
+            response = redirect(model.api_url(endpoint, pid_value=record.id))
+
+        response.vary.add("Accept")
+        if any(export.display_if is not None for export in model.exports):
+            # The same Accept header can select different formats for different users.
+            response.cache_control.public = False
+            response.cache_control.private = True
+        return response
+
+    inner._negotiates_record_content = True  # type: ignore[attr-defined]
+    return cast("T", inner)

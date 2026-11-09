@@ -14,7 +14,7 @@ import copy
 import logging
 from functools import partial
 from http import HTTPStatus
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any, ClassVar, cast
 
 from flask import (
     Blueprint,
@@ -82,6 +82,7 @@ from oarepo_ui.resources.decorators import (
     response_header_signposting,
     secret_link_or_login_required,
 )
+from oarepo_ui.resources.decorators.content_negotiation import negotiate_ui_view
 from oarepo_ui.utils import dump_empty
 
 # Resource
@@ -95,7 +96,7 @@ from .config import (
 )
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Callable, Mapping
 
     from flask.typing import ResponseReturnValue
     from invenio_access.permissions import Identity
@@ -113,6 +114,8 @@ log = logging.getLogger(__name__)
 
 class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
     """A resource for accessing UI (such as detail, search, edit) for records."""
+
+    decorators: ClassVar[list[Callable]] = [negotiate_ui_view]
 
     def create_blueprint(self, **options: Any) -> Blueprint:
         """Create the blueprint.
