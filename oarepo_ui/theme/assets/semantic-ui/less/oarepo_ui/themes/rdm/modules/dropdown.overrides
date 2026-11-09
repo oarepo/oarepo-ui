@@ -11,3 +11,11 @@
     min-width: 0 !important;
   }
 }
+
+/* CLDR names some languages in lower case ("čeština") */
+.lang-select .ui.dropdown {
+  > .text::first-letter,
+  .menu > .item::first-letter {
+    text-transform: uppercase;
+  }
+}
