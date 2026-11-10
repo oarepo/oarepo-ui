@@ -62,7 +62,7 @@ from marshmallow import ValidationError
 from oarepo_runtime.api import ExportEngine, ExportRepresentation
 from oarepo_runtime.typing import record_from_result
 from werkzeug import Response
-from werkzeug.exceptions import Forbidden
+from werkzeug.exceptions import Forbidden, HTTPException
 
 from oarepo_ui.resources.decorators import (
     pass_draft,
@@ -498,6 +498,17 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         except ValueError:
             abort(404, f"No exporter for code {export_format}")
             raise
+        except HTTPException as e:
+            # a streamed export (e.g. an archive) checks everything before streaming; show why it failed
+            # instead of the generic 500 page. A `files` attribute lists the files that can not be read.
+            if e.code is None or e.code < 500:  # noqa: PLR2004 server errors only
+                raise
+            return render_template(
+                "oarepo_ui/export_error.html",
+                export_format=export_format,
+                files=getattr(e, "files", None),
+                record_url=record.links.get("self_html"),
+            ), e.code
 
     def _edit(
         self,
