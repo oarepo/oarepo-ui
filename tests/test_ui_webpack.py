@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 CESNET z.s.p.o
+# SPDX-FileCopyrightText: 2025-2026 CESNET z.s.p.o
 # SPDX-License-Identifier: MIT
 
 from __future__ import annotations
@@ -22,9 +22,7 @@ def test_overridable_bundle_project_init(app):
         bundles=[],
     )
     with app.app_context():
-        assert proj._project_template_dir.endswith(  # noqa: SLF001 private access
-            "invenio_assets/assets"
-        )
+        assert proj._project_template_dir.endswith("invenio_assets/assets")
         assert proj.config_path.endswith("test_build/config.json")
         assert Path(proj.overrides_bundle_path) == Path(proj.project_path) / "js" / "_overrides"
         assert Path(proj.package_json_source_path).exists()

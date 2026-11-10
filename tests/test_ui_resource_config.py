@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 CESNET z.s.p.o
+# SPDX-FileCopyrightText: 2023-2026 CESNET z.s.p.o
 # SPDX-License-Identifier: MIT
 
 from __future__ import annotations
@@ -146,10 +146,10 @@ def test_search_app_config(monkeypatch, simple_model_ui_resource_config):
             self._params = {}
             self._label = "Label"
 
-        def __call__(self, *args: Any, **kwargs: Any):  # noqa: ARG002
+        def __call__(self, *args: Any, **kwargs: Any):
             return self
 
-        def agg(self, *args: Any, **kwargs: Any) -> dict:  # noqa: ARG002
+        def agg(self, *args: Any, **kwargs: Any) -> dict:
             return {}
 
     class DummySearch:

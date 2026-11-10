@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 CESNET z.s.p.o
+# SPDX-FileCopyrightText: 2022-2026 CESNET z.s.p.o
 # SPDX-License-Identifier: MIT
 
 """Implementation of record ui resources."""
@@ -182,7 +182,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         return self.config.model.ui_model  # type: ignore[no-any-return]
 
     def _record_from_service_result(self, result: RecordItem) -> Record:
-        return cast("Record", record_from_result(result))
+        return record_from_result(result)
 
     def _prepare_files(self, files: FileList, media_files: FileList) -> tuple[dict | None, dict | None]:
         """Convert FileList objects to dictionaries for rendering."""
@@ -778,11 +778,8 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         # and if so, use it, otherwise use the generic "can_create" permission
         permission_policy = self.api_service.permission_policy("view_deposit_page")
         if hasattr(permission_policy, "can_view_deposit_page"):
-            return cast(
-                "bool",
-                self.api_service.check_permission(identity, "view_deposit_page", record=None),
-            )
-        return cast("bool", self.api_service.check_permission(identity, "create", record=None))
+            return self.api_service.check_permission(identity, "view_deposit_page", record=None)
+        return self.api_service.check_permission(identity, "create", record=None)
 
     @property
     def api_service(self) -> DraftService:
@@ -807,10 +804,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         :return: Dictionary of expanded links.
         """
         tpl = LinksTemplate(self.config.ui_links_item, {"url_prefix": self.config.url_prefix})
-        return cast(
-            "dict[str, str]",
-            tpl.expand(identity, record_from_result(record)),
-        )
+        return tpl.expand(identity, record_from_result(record))
 
     def expand_search_links(self, identity: Identity, pagination: Pagination, **kwargs: Any) -> dict[str, str]:
         """Get links for a search result item using the configured template.
@@ -834,7 +828,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
                 },
             },
         )
-        return cast("dict[str, str]", tpl.expand(identity, pagination))
+        return tpl.expand(identity, pagination)
 
     def tombstone(
         self,

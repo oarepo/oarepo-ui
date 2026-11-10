@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 CESNET
+# SPDX-FileCopyrightText: 2025-2026 CESNET
 # SPDX-License-Identifier: MIT
 
 """OARepo UI package for component overrides."""

@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 CESNET z.s.p.o
+# SPDX-FileCopyrightText: 2024-2026 CESNET z.s.p.o
 # SPDX-License-Identifier: MIT
 
 """Component that fetches file list and previewability for UI templates.

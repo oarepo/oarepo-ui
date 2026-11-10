@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-FileCopyrightText: 2022-2026 CESNET z.s.p.o.
 // SPDX-License-Identifier: MIT
 
 import "./burgermenu";

@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 CESNET z.s.p.o
+# SPDX-FileCopyrightText: 2024-2026 CESNET z.s.p.o
 # SPDX-License-Identifier: MIT
 
 """OARepo UI component injecting allowed HTML tags and attributes into form configuration.
