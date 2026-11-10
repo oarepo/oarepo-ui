@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+// SPDX-FileCopyrightText: 2024-2026 CESNET z.s.p.o.
 // SPDX-License-Identifier: MIT
 
 // object that can be used to override components marked as Overridable

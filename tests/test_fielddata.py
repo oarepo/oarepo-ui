@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 CESNET z.s.p.o
+# SPDX-FileCopyrightText: 2025-2026 CESNET z.s.p.o
 # SPDX-License-Identifier: MIT
 
 from __future__ import annotations
@@ -64,10 +64,8 @@ def test_field_data(field_data_test_obj):
     publication_date = metadata["publication_date"]
     assert isinstance(publication_date, FieldData)
     assert FieldData.value(publication_date) == api_value_serialization["metadata"]["publication_date"]
-    if isinstance(publication_date._ui_data, dict):  # noqa: SLF001 private access  # no format specified
-        assert FieldData.ui_value(publication_date) == next(
-            iter(publication_date._ui_data.values())  # noqa: SLF001 private access  # no format specified
-        )
+    if isinstance(publication_date._ui_data, dict):
+        assert FieldData.ui_value(publication_date) == next(iter(publication_date._ui_data.values()))
     assert (
         FieldData.ui_value(publication_date, format="l10n_medium")
         == ui_value_serialization["publication_date_l10n_medium"]
@@ -140,35 +138,26 @@ def test_field_data(field_data_test_obj):
         FieldData.ui_value(resource_type_title, format="l10n") == ui_value_serialization["resource_type"]["title_l10n"]
     )
     resource_type_title_without_ui_data = resource_type_title
-    resource_type_title_without_ui_data._ui_data = {}  # noqa: SLF001 private access
+    resource_type_title_without_ui_data._ui_data = {}
 
     assert (
         json.loads(FieldData.ui_value(resource_type_title_without_ui_data, format=""))
         == api_value_serialization["metadata"]["resource_type"]["title"]
     )  # no format, fallback to API value
 
-    assert isinstance(record._api_data, dict)  # noqa: SLF001 private access
-    assert isinstance(record._ui_data, dict)  # noqa: SLF001 private access
+    assert isinstance(record._api_data, dict)
+    assert isinstance(record._ui_data, dict)
     assert isinstance(
-        metadata["creators"]["creators"]._api_data,  # noqa: SLF001 private access
+        metadata["creators"]["creators"]._api_data,
         list,
     )
     assert not isinstance(
-        metadata["creators"]["creators"]._api_data[0],  # noqa: SLF001 private access
+        metadata["creators"]["creators"]._api_data[0],
         FieldData,
     )
-    assert (
-        metadata["title"]._api_data  # noqa: SLF001 private access
-        == api_value_serialization["metadata"]["title"]
-    )
-    assert (
-        non_existing._api_data  # noqa: SLF001 private access
-        is EMPTY_FIELD_DATA_SENTINEL
-    )
-    assert (
-        creators_array[0]._ui_data  # noqa: SLF001 private access
-        == ui_value_serialization["creators"]["creators"][0]
-    )
+    assert metadata["title"]._api_data == api_value_serialization["metadata"]["title"]
+    assert non_existing._api_data is EMPTY_FIELD_DATA_SENTINEL
+    assert creators_array[0]._ui_data == ui_value_serialization["creators"]["creators"][0]
 
     # check that FieldData does not modify content of the fields
     # If it was empty string it will return empty string
@@ -328,7 +317,7 @@ def test_as_array_on_missing_field(field_data_test_obj):
     _, _, record = field_data_test_obj
 
     missing = record["metadata"]["definitely_not_a_real_field"]
-    assert missing is EMPTY_FIELD_DATA or missing._api_data is EMPTY_FIELD_DATA_SENTINEL  # noqa: SLF001
+    assert missing is EMPTY_FIELD_DATA or missing._api_data is EMPTY_FIELD_DATA_SENTINEL
 
     assert FieldData.array(missing) == []
     assert as_array(missing) == []
@@ -345,7 +334,7 @@ def test_as_dict_on_missing_field(field_data_test_obj):
     _, _, record = field_data_test_obj
 
     missing = record["metadata"]["definitely_not_a_real_field"]
-    assert missing is EMPTY_FIELD_DATA or missing._api_data is EMPTY_FIELD_DATA_SENTINEL  # noqa: SLF001
+    assert missing is EMPTY_FIELD_DATA or missing._api_data is EMPTY_FIELD_DATA_SENTINEL
 
     assert FieldData.dict(missing) == {}
     assert as_dict(missing) == {}
@@ -400,7 +389,7 @@ def test_get_localized_value(app, values, language, expected):
     """Test locale preference and fallback order in _get_localized_value()."""
     app.config["BABEL_DEFAULT_LOCALE"] = language
     with app.app_context():
-        result = FieldData._get_localized_value(values, default_fallback="Item does not exist")  # noqa: SLF001
+        result = FieldData._get_localized_value(values, default_fallback="Item does not exist")
         assert result == expected
 
 
@@ -409,7 +398,7 @@ def test_get_localized_value_partial_locales(app, monkeypatch):
     app.config["BABEL_DEFAULT_LOCALE"] = "fr"
     with app.app_context():
         values = {"fr": "Nom", "en": "Name"}
-        assert FieldData._get_localized_value(values) == "Nom"  # noqa: SLF001
+        assert FieldData._get_localized_value(values) == "Nom"
 
 
 def test_get_localized_value_prefers_non_und(app, monkeypatch):
@@ -417,7 +406,7 @@ def test_get_localized_value_prefers_non_und(app, monkeypatch):
     app.config["BABEL_DEFAULT_LOCALE"] = "es"
     with app.app_context():
         values = {"und": "Generic", "en": "Name"}
-        assert FieldData._get_localized_value(values) == "Name"  # noqa: SLF001
+        assert FieldData._get_localized_value(values) == "Name"
 
 
 def test_localized_filter_with_fielddata(field_data_test_obj, app):

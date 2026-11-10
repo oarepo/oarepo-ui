@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 CESNET z.s.p.o
+# SPDX-FileCopyrightText: 2025-2026 CESNET z.s.p.o
 # SPDX-License-Identifier: MIT
 
 """Component that exposes whether files are locked in the form configuration.

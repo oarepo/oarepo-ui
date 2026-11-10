@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 CESNET z.s.p.o
+# SPDX-FileCopyrightText: 2020-2026 CESNET z.s.p.o
 # SPDX-License-Identifier: MIT
 
 from __future__ import annotations
@@ -279,10 +279,10 @@ def second_record_model():
 
 def item_getter(fd: FieldData, path: tuple[str, ...]) -> FieldData | None:
     if path == ("metadata", "creators"):
-        api_data = fd._api_data  # noqa: SLF001 ok to use private here
-        ui_data = fd._ui_data  # noqa: SLF001 ok to use private here
-        ui_definitions = fd._ui_definitions  # noqa: SLF001 ok to use private here
-        original_item_getter = fd._item_getter  # noqa: SLF001 ok to use private here
+        api_data = fd._api_data
+        ui_data = fd._ui_data
+        ui_definitions = fd._ui_definitions
+        original_item_getter = fd._item_getter
         if not isinstance(ui_data, dict) or not isinstance(api_data, dict):
             return None
         ui_data_creators = ui_data.get("creators", {})

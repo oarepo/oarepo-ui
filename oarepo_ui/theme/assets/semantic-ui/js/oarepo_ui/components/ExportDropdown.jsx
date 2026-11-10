@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 CERN
+// SPDX-FileCopyrightText: 2023-2026 CERN
 // SPDX-License-Identifier: MIT
 
 import React, { useState } from "react";

@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 CESNET z.s.p.o
+# SPDX-FileCopyrightText: 2024-2026 CESNET z.s.p.o
 # SPDX-License-Identifier: MIT
 
 """OARepo UI templating data module.
@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import json
 import logging
-from typing import TYPE_CHECKING, Any, Protocol, cast, override
+from typing import TYPE_CHECKING, Any, Protocol, override
 
 from invenio_i18n import gettext
 from invenio_i18n.proxies import current_i18n
@@ -117,7 +117,7 @@ class FieldData:
         """
         if not x:
             return ""
-        return cast("str", gettext(x))
+        return gettext(x)
 
     @override
     def __str__(self) -> str:
@@ -283,7 +283,7 @@ class FieldData:
         if format in fd._ui_data:
             return str(fd._ui_data[format])
         if not format and fd._ui_data:
-            return cast("str", next(iter(fd._ui_data.values())))
+            return next(iter(fd._ui_data.values()))
 
         ret = fd._api_data if fd._api_data is not EMPTY_FIELD_DATA_SENTINEL else default
         if isinstance(ret, str):
@@ -302,10 +302,7 @@ class FieldData:
         """
         if fd._ui_definitions is None:
             return default_fallback
-        return cast(
-            "str | None",
-            fd._get_localized_value(fd._ui_definitions.get("label"), default_fallback),
-        )
+        return fd._get_localized_value(fd._ui_definitions.get("label"), default_fallback)
 
     @staticmethod
     def help(fd: FieldData, default_fallback: str | None = "Item does not exist") -> str | None:
@@ -316,10 +313,7 @@ class FieldData:
         """
         if fd._ui_definitions is None:
             return default_fallback
-        return cast(
-            "str | None",
-            fd._get_localized_value(fd._ui_definitions.get("help"), default_fallback),
-        )
+        return fd._get_localized_value(fd._ui_definitions.get("help"), default_fallback)
 
     @staticmethod
     def hint(fd: FieldData, default_fallback: str | None = "Item does not exist") -> str | None:
@@ -330,10 +324,7 @@ class FieldData:
         """
         if fd._ui_definitions is None:
             return default_fallback
-        return cast(
-            "str | None",
-            fd._get_localized_value(fd._ui_definitions.get("hint"), default_fallback),
-        )
+        return fd._get_localized_value(fd._ui_definitions.get("hint"), default_fallback)
 
     @staticmethod
     def array(fd: FieldData) -> list[FieldData]:

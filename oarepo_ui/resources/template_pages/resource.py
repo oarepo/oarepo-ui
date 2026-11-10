@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 CESNET z.s.p.o
+# SPDX-FileCopyrightText: 2025-2026 CESNET z.s.p.o
 # SPDX-License-Identifier: MIT
 
 """Template page UI endpoint."""
@@ -6,7 +6,7 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any
 
 from flask import g
 from flask_resources import (
@@ -34,7 +34,7 @@ class TemplatePageUIResource(UIResource):
         pages_config = self.config.pages
         routes = []
         for page_url_path, page_template_name in pages_config.items():
-            handler: Any = cast("Any | None", getattr(self, f"render_{page_template_name}", None))
+            handler: Any = getattr(self, f"render_{page_template_name}", None)
             if handler is None:
                 handler = partial(self.render, page=page_template_name)
             if not hasattr(handler, "__name__"):

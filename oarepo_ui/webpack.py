@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 CESNET z.s.p.o
+# SPDX-FileCopyrightText: 2025-2026 CESNET z.s.p.o
 # SPDX-License-Identifier: MIT
 
 """OARepo UI webpack integration module.
@@ -203,6 +203,6 @@ project = OverridableBundleProject(
     __name__,
     project_folder="assets",
     config_path="build/config.json",
-    bundles=cast("list[WebpackBundle]", list(bundles_from_entry_point("invenio_assets.webpack"))),
+    bundles=list(bundles_from_entry_point("invenio_assets.webpack")),
     package_json_source_path="rspack-package.json",
 )

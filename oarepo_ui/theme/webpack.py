@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2015-2018 CERN
+# SPDX-FileCopyrightText: 2015-2026 CERN
 # SPDX-License-Identifier: MIT
 
 """JS/CSS bundles for oarepo-ui.
