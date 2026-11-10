@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-08-02 12:12+0200\n"
+"POT-Creation-Date: 2026-11-11 10:54+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/config.py:90
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/config.py:91
 msgid "English"
 msgstr ""
 
-#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/config.py:91
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/config.py:92
 msgid "Czech"
 msgstr ""
 
@@ -211,19 +211,19 @@ msgstr ""
 msgid "File preview requested but file service is not available on the model"
 msgstr ""
 
-#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/resources/records/resource.py:769
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/resources/records/resource.py:767
 msgid "User does not have permission to create a record."
 msgstr ""
 
-#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/resources/records/resource.py:973
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/resources/records/resource.py:964
 msgid "Removal reason"
 msgstr ""
 
-#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/resources/records/resource.py:974
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/resources/records/resource.py:965
 msgid "Note"
 msgstr ""
 
-#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/resources/records/resource.py:975
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/resources/records/resource.py:966
 msgid "Citation text"
 msgstr ""
 
@@ -245,14 +245,9 @@ msgstr ""
 msgid "metadata/originalRecord.label"
 msgstr ""
 
-#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/RecordExport.jinja:17
-#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/RecordExport.jinja:18
-#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/side_bar/export.html:18
 msgid "Export"
 msgstr ""
 
-#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/RecordVersions.jinja:17
-#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/RecordVersions.jinja:18
 msgid "Versions"
 msgstr ""
 
@@ -260,10 +255,6 @@ msgstr ""
 msgid "Not set"
 msgstr ""
 
-#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:11
-#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:128
-#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:133
-#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_detail/main.html:150
 msgid "Files"
 msgstr ""
 
@@ -284,7 +275,6 @@ msgstr ""
 msgid "File is being processed."
 msgstr ""
 
-#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:36
 msgid "File was not uploaded correctly. Please delete it and try again."
 msgstr ""
 
@@ -296,12 +286,37 @@ msgstr ""
 msgid "Preview file"
 msgstr ""
 
-#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:60
 msgid "Download file"
 msgstr ""
 
 #: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/components/datafields/files/FilesViewer.jinja:66
 msgid "File upload is not completed."
+msgstr ""
+
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/export_error.html:7
+msgid "Export failed"
+msgstr ""
+
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/export_error.html:12
+#, python-format
+msgid ""
+"\n"
+"      The export \"%(export_format)s\" of this record could not be created."
+msgstr ""
+
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/export_error.html:18
+msgid "These files of the record could not be read from the storage:"
+msgstr ""
+
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/export_error.html:27
+#, python-format
+msgid ""
+"\n"
+"      If the problem persists, please contact the %(sitename)s support and include the address of this page."
+msgstr ""
+
+#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/export_error.html:33
+msgid "Back to the record"
 msgstr ""
 
 #: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/form.html:24
@@ -327,7 +342,6 @@ msgstr ""
 msgid "PID"
 msgstr ""
 
-#: /Users/m/Workspaces/repositories/feat-convert-old-catchall/oarepo-ui/oarepo_ui/templates/oarepo_ui/record_search.html:6
 msgid "Search results"
 msgstr ""
 
@@ -613,7 +627,10 @@ msgstr ""
 msgid "Choose one date."
 msgstr ""
 
-msgid "Range"
+msgid "Single date or date range"
+msgstr ""
+
+msgid "Single date"
 msgstr ""
 
 msgid "Single"
@@ -622,10 +639,7 @@ msgstr ""
 msgid "Date range"
 msgstr ""
 
-msgid "Single date"
-msgstr ""
-
-msgid "Single date or date range"
+msgid "Range"
 msgstr ""
 
 msgid "Year"
@@ -894,11 +908,6 @@ msgstr ""
 
 msgid "Start over"
 msgstr ""
-
-msgid "totalResults"
-msgid_plural "totalResults"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "Filter data by date"
 msgstr ""

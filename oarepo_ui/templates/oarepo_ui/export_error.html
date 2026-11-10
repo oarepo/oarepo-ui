@@ -1,0 +1,36 @@
+{% extends config.THEME_ERROR_TEMPLATE %}
+{% block page_body %}
+<div class="ui container centered rel-pt-2">
+  <h1 class="ui header inline-block">
+    <i class="icon bolt" aria-hidden="true"></i>
+    <div class="content pl-0 rel-pr-1">
+      {{ _("Export failed") }}
+    </div>
+  </h1>
+
+  <p>
+    {%- trans export_format=export_format %}
+      The export "{{ export_format }}" of this record could not be created.
+    {%- endtrans %}
+  </p>
+
+  {% if files %}
+    <p>{{ _("These files of the record could not be read from the storage:") }}</p>
+    <ul class="ui list">
+      {% for file in files %}
+        <li><code>{{ file }}</code></li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <p>
+    {%- trans sitename=config.THEME_SITENAME %}
+      If the problem persists, please contact the {{ sitename }} support and include the address of this page.
+    {%- endtrans %}
+  </p>
+
+  {% if record_url %}
+    <p><a href="{{ record_url }}">{{ _("Back to the record") }}</a></p>
+  {% endif %}
+</div>
+{% endblock page_body %}
