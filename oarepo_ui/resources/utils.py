@@ -14,7 +14,8 @@ if TYPE_CHECKING:
 
 def set_api_record_to_response(response: Response, api_record: RecordItem) -> Response:
     """Set the API record to the response object."""
-    response._api_record = api_record  # type: ignore[attr-defined] # noqa
+    # flask/werkzeug responses have no typed slot for arbitrary payloads
+    vars(response)["_api_record"] = api_record
     return response
 
 

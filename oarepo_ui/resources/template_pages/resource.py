@@ -17,34 +17,30 @@ from oarepo_ui.proxies import current_oarepo_ui
 
 from ..base import UIResource
 from ..decorators import pass_route_args
+from .config import TemplatePageUIResourceConfig
 
 if TYPE_CHECKING:
     from werkzeug import Response
 
-    from .config import TemplatePageUIResourceConfig
 
-
-class TemplatePageUIResource(UIResource):
+class TemplatePageUIResource(UIResource[TemplatePageUIResourceConfig]):
     """A resource for rendering jinja template pages with a specific configuration."""
 
     def create_url_rules(self) -> list[dict[str, Any]]:
         """Create the URL rules for the record resource."""
-        self.config: TemplatePageUIResourceConfig  # pyright: ignore[reportIncompatibleVariableOverride] better type
-
         pages_config = self.config.pages
         routes = []
         for page_url_path, page_template_name in pages_config.items():
-            handler: Any = getattr(self, f"render_{page_template_name}", None)
+            handler = getattr(self, f"render_{page_template_name}", None)
             if handler is None:
-                handler = partial(self.render, page=page_template_name)
-            if not hasattr(handler, "__name__"):
-                handler.__name__ = self.render.__name__  # type: ignore[union-attr]
-            if not hasattr(handler, "__self__"):
-                handler.__self__ = self  # type: ignore[union-attr]
+                # flask_resources' route() reads ``__name__`` and ``__self__`` off the view,
+                # which a partial does not have, so they are copied from the bound method
+                page_handler: Any = partial(self.render, page=page_template_name)
+                page_handler.__name__ = self.render.__name__
+                page_handler.__self__ = self
+                handler = page_handler
 
-            routes.append(
-                route("GET", page_url_path, handler),
-            )
+            routes.append(route("GET", page_url_path, handler))
         return routes
 
     @pass_route_args()

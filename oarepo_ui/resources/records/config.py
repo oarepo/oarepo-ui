@@ -274,8 +274,8 @@ class RecordsUIResourceConfig(UIResourceConfig):
             return cast("dict[str, dsl.Facet]", api_config.search.facets)
         grouped_facets_param_instance: GroupedFacetsParam = grouped_facets_param_class(api_config.search)
 
-        # mypy can not get the type, that's why we use ignore
-        return grouped_facets_param_instance.identity_facets(identity)  # type: ignore[no-any-return]
+        # the identity facets are always TermsFacet instances, which are Facets as well
+        return cast("dict[str, dsl.Facet]", grouped_facets_param_instance.identity_facets(identity))
 
     def search_available_sort_options(
         self,
@@ -435,7 +435,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
         if not self.model:
             raise RuntimeError(f"Model {self.model_name} not registered, cannot resolve search URL")
         # mypy seems to ignore the type in runtime, thus added ignore
-        return self.model.api_url("search")  # type: ignore[no-any-return]
+        return self.model.api_url("search")
 
     def search_app_config(
         self,
@@ -534,7 +534,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
         :return: List of UI config sections for the custom field.
         """
         # TODO: should not the key be uppercased here?
-        return current_app.config.get(f"{key}_UI", [])  # type: ignore[no-any-return]
+        return current_app.config.get(f"{key}_UI", [])
 
     def form_config(
         self,

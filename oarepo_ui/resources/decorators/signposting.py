@@ -10,20 +10,21 @@ for improved machine-readable metadata discovery.
 
 from __future__ import annotations
 
-from collections.abc import Callable
 from functools import wraps
-from typing import TYPE_CHECKING, Any
+from http import HTTPStatus
+from typing import TYPE_CHECKING
 
 from oarepo_runtime.api import ExportEngine
 from oarepo_runtime.resources.signposting import create_linkset
+from werkzeug import Response
 
 from ..utils import get_api_record_from_response
 
 if TYPE_CHECKING:
-    from flask import Response
+    from collections.abc import Callable
 
 
-def response_header_signposting[T: Callable](f: T) -> T:
+def response_header_signposting[**P, R: Response](f: Callable[P, R]) -> Callable[P, R]:
     """Add signposting link to view's reponse headers.
 
     :param headers: response headers
@@ -33,10 +34,10 @@ def response_header_signposting[T: Callable](f: T) -> T:
     """
 
     @wraps(f)
-    def inner(*args: Any, **kwargs: Any) -> Response:
+    def inner(*args: P.args, **kwargs: P.kwargs) -> R:
         """Inner function to add signposting link to response headers."""
         response = f(*args, **kwargs)
-        if response.status_code != 200:  # noqa: PLR2004 official 200 http code
+        if response.status_code != HTTPStatus.OK:
             return response
 
         api_record = get_api_record_from_response(response)
@@ -57,4 +58,4 @@ def response_header_signposting[T: Callable](f: T) -> T:
 
         return response
 
-    return inner  # type: ignore[return-value]
+    return inner

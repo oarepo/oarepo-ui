@@ -18,6 +18,7 @@ from invenio_i18n import gettext
 from invenio_i18n.proxies import current_i18n
 
 if TYPE_CHECKING:
+    import builtins
     from collections.abc import Mapping
 
 
@@ -141,7 +142,7 @@ class FieldData:
                         item_getter={self._item_getter}
                         """
 
-    def _extract_children_ui_data(self, name: str, ui_data: UIData) -> dict | EmptyFieldDataSentinelType:
+    def _extract_children_ui_data(self, name: str, ui_data: UIData) -> builtins.dict | EmptyFieldDataSentinelType:
         if ui_data is EMPTY_FIELD_DATA_SENTINEL:
             return EMPTY_FIELD_DATA_SENTINEL
 
@@ -211,7 +212,7 @@ class FieldData:
 
     @staticmethod
     def _get_localized_value(
-        value: str | dict[str, str] | None,
+        value: str | builtins.dict[str, str] | None,
         default_fallback: str | None = "Item does not exist",
     ) -> str | None:
         """Return the best localized string possible from a multilingual value dict.
@@ -374,7 +375,7 @@ class FieldData:
         return [fd]
 
     @staticmethod
-    def dict(fd: FieldData) -> dict[str, FieldData]:
+    def dict(fd: FieldData) -> builtins.dict[str, FieldData]:
         """Return dictionary representation of a FieldData object.
 
         :param fd: Current FieldData node.

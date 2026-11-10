@@ -53,7 +53,7 @@ def create_blueprint(app: Flask) -> Blueprint:
         blueprint.add_url_rule(**create_url_rule(routes.get("help_search"), default_view_func=help_search))
         blueprint.add_url_rule(**create_url_rule(routes.get("help_statistics"), default_view_func=help_statistics))
         # TODO: uncomment when we have the proper config in APP_RDM_ROUTES
-        # blueprint.add_url_rule(**create_url_rule(routes.get("help_versioning"), default_view_func=help_versioning)) #noqa
+        # blueprint.add_url_rule(**create_url_rule(routes.get("help_versioning"), default_view_func=help_versioning))  # noqa: ERA001
 
     # Register explicit, locale-aware routes for static pages declared in
     # APP_RDM_PAGES. Upstream invenio-app-rdm does this in its own theme

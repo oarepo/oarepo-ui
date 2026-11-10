@@ -12,27 +12,31 @@ flow (not available to the test service here).
 from __future__ import annotations
 
 from types import SimpleNamespace
+from unittest.mock import Mock
 
 import pytest
+from invenio_records_resources.services.records.results import RecordItem
 
+from oarepo_ui.resources.base import UIComponentsResource
 from oarepo_ui.resources.components import FilesLockedComponent
 
 
-def _api_record(*, bucket_locked: bool) -> SimpleNamespace:
-    """Build a minimal RecordItem-like object with a draft bucket.
+def _api_record(*, bucket_locked: bool) -> RecordItem:
+    """Build a minimal RecordItem stand-in with a draft bucket.
 
     ``record_from_result`` returns ``api_record._record``, and the component
     reads ``draft.files.bucket.locked`` off of that.
     """
     bucket = SimpleNamespace(locked=bucket_locked)
     draft = SimpleNamespace(files=SimpleNamespace(bucket=bucket))
-    return SimpleNamespace(_record=draft)
+    return Mock(spec=RecordItem, _record=draft)
 
 
 @pytest.fixture
 def component() -> FilesLockedComponent:
-    # before_ui_edit never touches self.resource, so a None resource is fine.
-    return FilesLockedComponent(resource=None)  # type: ignore[arg-type]
+    # The component under test does not use its resource; a spec'd mock keeps the
+    # constructor contract and fails loudly if that ever changes.
+    return FilesLockedComponent(resource=Mock(spec=UIComponentsResource))
 
 
 def test_files_unlocked_when_bucket_unlocked(component: FilesLockedComponent) -> None:

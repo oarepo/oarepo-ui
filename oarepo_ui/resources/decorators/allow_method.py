@@ -23,7 +23,8 @@ def allow_method(
 
     def inner(func: Callable[P, R]) -> Callable[P, R]:
         """Attach the configured HTTP methods to the wrapped view function."""
-        func._http_methods = methods  # type: ignore[attr-defined]  # noqa: SLF001
+        # the attribute is read back via ``getattr(view, "_http_methods", ...)``
+        vars(func)["_http_methods"] = methods
         return func
 
     return inner

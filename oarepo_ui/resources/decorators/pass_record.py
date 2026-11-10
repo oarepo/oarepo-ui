@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from functools import wraps
-from typing import TYPE_CHECKING, Any, ParamSpec, TypeVar, cast
+from typing import TYPE_CHECKING, Any, Concatenate, ParamSpec, TypeVar, cast
 
 from flask import g, redirect, url_for
 from invenio_rdm_records.services.services import RDMRecordService
@@ -28,7 +28,7 @@ def pass_record_files[T: Callable](f: T) -> T:
     def view(self: RecordsUIResource, **kwargs: Any) -> Any:
         is_preview = kwargs.get("is_preview")
         pid_value = kwargs.get("pid_value")
-        read_kwargs = {"id_": pid_value, "identity": g.identity}
+        read_kwargs: dict[str, Any] = {"id_": pid_value, "identity": g.identity}
 
         service = self.api_service
         try:
@@ -81,22 +81,25 @@ def pass_record_latest[T: Callable](f: T) -> T:
 
 def pass_record_or_draft(
     expand: bool = True,
-) -> Callable[[Callable[P, R]], Callable[P, R]]:
+) -> Callable[
+    [Callable[Concatenate[RecordsUIResource, P], R]],
+    Callable[Concatenate[RecordsUIResource, P], R],
+]:
     """Retrieve the published record or draft using the record service.
 
     Passes a draft record instance to decorated function when `is_preview` query arg is set,
     otherwise, a published record instance is passed
     """
 
-    def decorator(f: Callable[P, R]) -> Callable[P, R]:
+    def decorator(
+        f: Callable[Concatenate[RecordsUIResource, P], R],
+    ) -> Callable[Concatenate[RecordsUIResource, P], R]:
         @wraps(f)
-        def view(*args: P.args, **kwargs: P.kwargs) -> Any:
-            self = cast("RecordsUIResource", args[0])
-
+        def view(self: RecordsUIResource, *args: P.args, **kwargs: P.kwargs) -> Any:
             pid_value = kwargs.get("pid_value")
             is_preview = kwargs.get("is_preview")
             include_deleted = cast("bool", kwargs.get("include_deleted", False))
-            read_kwargs = {
+            read_kwargs: dict[str, Any] = {
                 "id_": pid_value,
                 "identity": g.identity,
                 "expand": expand,
@@ -138,9 +141,10 @@ def pass_record_or_draft(
                             pid_value=latest_version.id,
                         )
                     )
-            kwargs["record"] = record
-            return f(*args, **kwargs)
+            # ``record`` is injected here; ParamSpec cannot express an added keyword argument,
+            # so the wrapped function is called through an untyped view of itself.
+            return cast("Callable[..., R]", f)(self, *args, **kwargs, record=record)
 
-        return cast("Callable[P, R]", view)
+        return view
 
     return decorator

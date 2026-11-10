@@ -24,7 +24,7 @@ from jinjax.exceptions import ComponentNotFound
 from jinjax.jinjax import JinjaX
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Iterable
+    from collections.abc import Callable, Iterable, MutableMapping
 
     from flask import Flask
     from jinjax import Component
@@ -67,6 +67,7 @@ class OarepoCatalog(Catalog):
         file_ext: str = DEFAULT_EXTENSION,
         use_cache: bool = True,
         auto_reload: bool = True,
+        fingerprint: bool = False,
     ) -> None:
         """Initialize OarepoCatalog for OARepo UI templating.
 
@@ -79,6 +80,7 @@ class OarepoCatalog(Catalog):
         :param file_ext: Default file extension for templates.
         :param use_cache: Whether to use template cache.
         :param auto_reload: Whether to auto-reload templates.
+        :param fingerprint: Whether to fingerprint asset URLs.
         """
         self._key = id(self)
         self.prefixes: dict[str, jinja2.FileSystemLoader] = {}
@@ -90,7 +92,7 @@ class OarepoCatalog(Catalog):
         # Initialize attributes introduced in jinjax >=0.64 (fingerprinting and
         # delayed asset injection). Required because this __init__ does not call
         # super().__init__ but parent's irender reads _emit_assets_later on every render.
-        self.fingerprint = False
+        self.fingerprint = fingerprint
         self._assets_placeholder = f"@@jinjax_assets_{self._key}@@"
         self._emit_assets_later = False
 
@@ -107,7 +109,8 @@ class OarepoCatalog(Catalog):
             globals.update(jinja_env.globals)
             filters.update(jinja_env.filters)
             tests.update(jinja_env.tests)
-            jinja_env.globals["catalog"] = self
+            # jinja2 does not annotate ``globals``; ty infers it from ``DEFAULT_NAMESPACE`` values only
+            cast("MutableMapping[str, Any]", jinja_env.globals)["catalog"] = self
             jinja_env.filters["catalog"] = self
 
         globals["catalog"] = self
@@ -146,7 +149,7 @@ class OarepoCatalog(Catalog):
         # copy to re-apply after all context functions.
 
         for name in names:
-            app: Flask = getattr(self.jinja_env, "app", None)  # type: ignore[assignment]
+            app: Flask | None = getattr(self.jinja_env, "app", None)
             if app is None:
                 raise RuntimeError(
                     "Jinjax catalog is not bound to a Flask app. "
@@ -183,7 +186,7 @@ class OarepoCatalog(Catalog):
         self.collected_css = []
         self.collected_js = []
         # mypy does not understand that irender returns str
-        return self.irender(__name, caller=caller, **kw)  # type: ignore[no-any-return]
+        return self.irender(__name, caller=caller, **kw)
 
     def render_first_existing(
         self,
@@ -205,7 +208,7 @@ class OarepoCatalog(Catalog):
         for name in names:
             try:
                 # mypy does not understand that irender returns str
-                return self.irender(name, caller=caller, **kw)  # type: ignore[no-any-return]
+                return self.irender(name, caller=caller, **kw)
             except ComponentNotFound:
                 pass
 

@@ -18,13 +18,13 @@ from flask_resources import (
 )
 from flask_resources.config import resolve_from_conf
 from flask_security import login_required
+from werkzeug import Response as WerkzeugResponse
 
 if TYPE_CHECKING:
     from flask import Response
-    from werkzeug import Response as WerkzeugResponse
+    from flask_resources.config import SupportsConfigAttribute
 
     from oarepo_ui.resources import UIResource, UIResourceConfig
-    from oarepo_ui.resources.records.resource import RecordsUIResource
 
 P = ParamSpec("P")
 R = TypeVar("R")
@@ -47,7 +47,7 @@ def _resolve_parser(
     :return: RequestParser instance.
     :raises: May raise warnings if location is ignored.
     """
-    s = resolve_from_conf(schema_or_parser, config)  # type: ignore[reportArgumentType]
+    s = resolve_from_conf(schema_or_parser, cast("SupportsConfigAttribute", config))
     if isinstance(s, RequestParser):
         parser = s
         if location is not None:
@@ -91,11 +91,11 @@ def _pass_request_args[T: Callable](
                 parsed_args = {k: v for k, v in parser.parse().items() if k not in exclude}
                 request_args.update(parsed_args)
 
-            return f(self, *args, **{**request_args, **kwargs})  # type: ignore[no-any-return]
+            return f(self, *args, **{**request_args, **kwargs})
 
-        return view  # type: ignore[return-value]
+        return cast("T", view)
 
-    return decorator  # type: ignore[return-value]
+    return decorator
 
 
 pass_query_args = partial(_pass_request_args, location="args")
@@ -105,7 +105,7 @@ pass_route_args = partial(_pass_request_args, location="view_args")
 """Pass route arguments (from path) to the view function."""
 
 
-def no_cache_response[T: Callable](f: T) -> T:
+def no_cache_response[**P, R: WerkzeugResponse](f: Callable[P, R]) -> Callable[P, R]:
     """Disable HTTP caching on the wrapped view.
 
     It ensures that the returned response has the following headers set:
@@ -117,7 +117,7 @@ def no_cache_response[T: Callable](f: T) -> T:
     """
 
     @wraps(f)
-    def inner(*args: Any, **kwargs: Any) -> WerkzeugResponse:
+    def inner(*args: P.args, **kwargs: P.kwargs) -> R:
         """Inner function to add signposting link to response headers."""
         response = f(*args, **kwargs)
 
@@ -127,7 +127,7 @@ def no_cache_response[T: Callable](f: T) -> T:
 
         return response
 
-    return inner  # type: ignore[return-value]
+    return inner
 
 
 def secret_link_or_login_required() -> Callable[[Callable[P, R]], Callable[P, R]]:
@@ -139,14 +139,13 @@ def secret_link_or_login_required() -> Callable[[Callable[P, R]], Callable[P, R]
 
     def decorator(f: Callable[P, R]) -> Callable[P, R]:
         @wraps(f)
-        def view(*args: P.args, **kwargs: P.kwargs) -> Any:
-            self = cast("RecordsUIResource", args[0])
-            secret_link_token_arg = "token"  # noqa S105
+        def view(*args: P.args, **kwargs: P.kwargs) -> R:
+            secret_link_token_arg = "token"  # noqa: S105
             session_token = session.get(secret_link_token_arg, None)
             if session_token is None:
-                return login_required(f)(self, **kwargs)
+                return login_required(f)(*args, **kwargs)
             return f(*args, **kwargs)
 
-        return cast("Callable[P, R]", view)
+        return view
 
     return decorator
