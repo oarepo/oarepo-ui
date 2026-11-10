@@ -25,33 +25,33 @@ if TYPE_CHECKING:
 
 
 @overload
-def dump_empty(  # pyright: ignore[reportOverlappingOverload]
+def dump_empty(
     schema_or_field: Schema,
 ) -> dict: ...
 
 
 @overload
-def dump_empty(schema_or_field: SchemaMeta) -> dict: ...  # type: ignore[overload-cannot-match]
+def dump_empty(schema_or_field: SchemaMeta) -> dict: ...
 
 
 @overload
-def dump_empty(schema_or_field: fields.List) -> list: ...  # type: ignore[overload-cannot-match]
+def dump_empty(schema_or_field: fields.List) -> list: ...
 
 
 @overload
-def dump_empty(schema_or_field: fields.Nested | NestedAttribute) -> dict: ...  # type: ignore[overload-cannot-match]
+def dump_empty(schema_or_field: fields.Nested | NestedAttribute) -> dict: ...
 
 
 @overload
-def dump_empty(schema_or_field: fields.Str) -> str: ...  # type: ignore[overload-cannot-match]
+def dump_empty(schema_or_field: fields.Str) -> str: ...
 
 
 @overload
-def dump_empty(schema_or_field: fields.Dict) -> dict: ...  # type: ignore[overload-cannot-match]
+def dump_empty(schema_or_field: fields.Dict) -> dict: ...
 
 
 @overload
-def dump_empty(schema_or_field: object) -> None: ...  # type: ignore[overload-cannot-match]
+def dump_empty(schema_or_field: object) -> None: ...
 
 
 def dump_empty(  # noqa: PLR0911 too many return branches
@@ -76,7 +76,7 @@ def dump_empty(  # noqa: PLR0911 too many return branches
         nested_schema = field.nested
         if callable(nested_schema):
             nested_schema = nested_schema()
-        return dump_empty(nested_schema)  # type: ignore[no-any-return]
+        return dump_empty(nested_schema)
     if isinstance(schema_or_field, fields.Str):
         return ""
     if isinstance(schema_or_field, fields.Dict):

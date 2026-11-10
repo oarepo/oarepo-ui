@@ -39,7 +39,7 @@ class ComplexCF(BaseListCF):
         self.nested_custom_fields = nested_custom_fields
 
     @property
-    def mapping(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def mapping(
         self,
     ) -> dict[str, Any]:
         """Return mapping for OpenSearch indexing."""

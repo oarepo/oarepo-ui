@@ -5,19 +5,21 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable
 from functools import wraps
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, cast
 
 from flask import redirect, request
 from oarepo_runtime import current_runtime
 from werkzeug.http import parse_accept_header
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from invenio_records_resources.services.records.results import RecordItem
     from werkzeug import Response
 
 
-def record_content_negotiation[T: Callable](f: T) -> T:
+def record_content_negotiation[**P, R](f: Callable[P, R]) -> Callable[P, R | Response]:
     """Handle content negotiation.
 
      Handle content negotiation and redirect to appropriate URLs
@@ -27,8 +29,8 @@ def record_content_negotiation[T: Callable](f: T) -> T:
     """
 
     @wraps(f)
-    def inner(*args: Any, **kwargs: Any) -> Response:
-        record = kwargs["record"]
+    def inner(*args: P.args, **kwargs: P.kwargs) -> R | Response:
+        record = cast("RecordItem", kwargs["record"])
         parsed_accept_header = parse_accept_header(request.headers.get("accept", "text/html"))
         landing_page_accept_header_types = {"text/html", "application/xhtml+xml"}
         if parsed_accept_header.best_match(landing_page_accept_header_types):
@@ -39,4 +41,4 @@ def record_content_negotiation[T: Callable](f: T) -> T:
             return redirect(model.api_url("read_draft", pid_value=record.id))
         return redirect(model.api_url("read", pid_value=record.id))
 
-    return inner  # type: ignore[return-value]
+    return inner

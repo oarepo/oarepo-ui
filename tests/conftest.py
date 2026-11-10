@@ -130,7 +130,7 @@ def app_config(app_config):
     app_config["RECORDS_CF_CUSTOM_FIELDS"] = {
         TextCF(
             name="cern:experiment",
-            field_cls=SanitizedHTML,  # type: ignore[assignment]
+            field_cls=SanitizedHTML,
         ),
     }
     app_config["DRAFTS_CF_CUSTOM_FIELDS"] = app_config["RECORDS_CF_CUSTOM_FIELDS"]

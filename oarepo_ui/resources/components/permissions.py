@@ -116,7 +116,7 @@ class PermissionsComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig]
         for action_name, mapped_to in actions.items():
             try:
                 can_perform = service.check_permission(identity, action_name, record=record or {}, **kwargs)
-            except Exception:  # noqa
+            except Exception:  # noqa: BLE001
                 can_perform = False
             ret[f"can_{mapped_to}"] = can_perform
         return ret

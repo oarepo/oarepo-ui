@@ -50,6 +50,7 @@ from invenio_rdm_records.records.systemfields.access.access_settings import (
     AccessSettings,
 )
 from invenio_rdm_records.services.errors import RecordDeletedException
+from invenio_rdm_records.services.services import RDMRecordService
 from invenio_records_resources.pagination import Pagination
 from invenio_records_resources.services import LinksTemplate
 from invenio_records_resources.services.errors import (
@@ -179,7 +180,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         # mypy seems to ignore the type in runtime, thus added ignore
         if not self.config.model:
             return {}
-        return self.config.model.ui_model  # type: ignore[no-any-return]
+        return self.config.model.ui_model
 
     def _record_from_service_result(self, result: RecordItem) -> Record:
         return record_from_result(result)
@@ -231,7 +232,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         include_deleted: bool = False,
         embed: bool = False,
         **kwargs: Any,
-    ) -> ResponseReturnValue:
+    ) -> Response:
         """Return detail page for a record (core logic without decorators)."""
         files_dict, media_files_dict = self._prepare_files(files, media_files)
         record_ui = self._prepare_record_ui(record)
@@ -258,7 +259,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
 
         ui_links = self.expand_detail_links(identity=g.identity, record=record)
         extra_context: dict[str, Any] = {}
-        render_kwargs = {
+        render_kwargs: dict[str, Any] = {
             "record": record,
             "record_ui": record_ui,
             "files": files_dict,
@@ -330,13 +331,13 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         is_preview: bool = False,
         include_deleted: bool = False,
         **kwargs: Any,
-    ) -> ResponseReturnValue:
+    ) -> Response:
         """Record detail page (aka landing page) adapted from invenio-app-rdm view."""
         return self._detail(record, files, media_files, is_preview, include_deleted, **kwargs)
 
     @pass_route_args("view")
     @pass_record_latest
-    def record_latest(self, record: RecordItem, **kwargs: Any):  # noqa ARG002
+    def record_latest(self, record: RecordItem, **kwargs: Any) -> Response:  # noqa: ARG002
         """Redirect to record's latest version page."""
         return redirect(cast("str", record.links.get("self_html")), code=302)
 
@@ -370,9 +371,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
 
         # Find a suitable previewer
         fileobj = PreviewFile(file_metadata, pid_value, record, url)
-        for plugin in current_previewer.iter_previewers(  # type: ignore[attr-defined]
-            previewers=[file_previewer] if file_previewer else None
-        ):
+        for plugin in current_previewer.iter_previewers(previewers=[file_previewer] if file_previewer else None):
             if plugin.can_preview(fileobj):
                 return cast("Response", plugin.preview(fileobj))
 
@@ -394,27 +393,16 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         :raises Forbidden: If permissions are denied.
         """
         try:
-            read_method = self.api_service.read_draft if allow_draft else self.api_service.read
-
-            if include_deleted:
-                # not all read methods support deleted records
+            service = self.api_service
+            if allow_draft:
+                return cast("RecordItem", service.read_draft(g.identity, pid_value, expand=True))
+            if include_deleted and isinstance(service, RDMRecordService):
+                # only the RDM service's ``read`` supports deleted records
                 return cast(
                     "RecordItem",
-                    read_method(
-                        g.identity,
-                        pid_value,
-                        expand=True,
-                        include_deleted=include_deleted,  # type: ignore[call-arg]
-                    ),
+                    service.read(g.identity, pid_value, expand=True, include_deleted=include_deleted),
                 )
-            return cast(
-                "RecordItem",
-                read_method(
-                    g.identity,
-                    pid_value,
-                    expand=True,
-                ),
-            )
+            return service.read(g.identity, pid_value, expand=True)
         except PermissionDenied as e:
             raise Forbidden(str(e)) from e
 
@@ -470,7 +458,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
 
         search_app_config = search_config(app_id=self.config.application_id.capitalize())
 
-        render_kwargs = {
+        render_kwargs: dict[str, Any] = {
             "search_app_config": search_app_config,
             "ui_config": self.config,
             "ui_resource": self,
@@ -498,11 +486,11 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         self,
         record: RecordItem,
         export_format: str,
-        **kwargs: Any,  # noqa ARG002
+        **kwargs: Any,  # noqa: ARG002
     ) -> tuple[Any, int, dict[str, str]]:
         """Export page view."""
         try:
-            return ExportEngine.export(  # type: ignore[no-any-return]
+            return ExportEngine.export(
                 record_dict=record.to_dict(),
                 representation=ExportRepresentation.RESPONSE,
                 export_code=export_format.lower(),
@@ -517,7 +505,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         draft_files: FileList | None = None,
         files_locked: bool = True,
         **kwargs: Any,
-    ) -> ResponseReturnValue:
+    ) -> Response:
         """Return edit page for a record (core logic without decorators)."""
         files_dict = None if draft_files is None else draft_files.to_dict()
         record = self.config.ui_serializer.dump_obj(copy.copy(draft.to_dict()))
@@ -570,7 +558,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             "search_link": self.config.url_prefix,
         }
 
-        render_kwargs = {
+        render_kwargs: dict[str, Any] = {
             "forms_config": form_config,
             "record": record,
             "theme": None,
@@ -632,7 +620,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         draft_files: FileList | None = None,
         files_locked: bool = True,
         **kwargs: Any,
-    ) -> ResponseReturnValue:
+    ) -> Response:
         """Return edit page for a record."""
         service = self.api_service
         can_edit_draft = service.check_permission(g.identity, "update_draft", record=record_from_result(draft))
@@ -711,7 +699,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             **kwargs,
         )
 
-        render_kwargs = {
+        render_kwargs: dict[str, Any] = {
             "theme": community_theme,
             "forms_config": form_config,
             "searchbar_config": {
@@ -906,13 +894,13 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         :return: Rendered not found page.
         """
         pid_value = getattr(error, "pid_value", None) or getattr(error, "pid", None)
-        not_found_render_kwargs = {
+        not_found_render_kwargs: dict[str, Any] = {
             "pid": pid_value,
             "model_name": self.config.model_name,
         }
         return current_oarepo_ui.catalog.render(
             self.get_jinjax_macro("not_found", default_macro="NotFound"),
-            **not_found_render_kwargs,  # type: ignore[arg-type]
+            **not_found_render_kwargs,
         )
 
     def record_permission_denied_error(
@@ -924,7 +912,8 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         """Handle permission denied error on record views."""
         if not current_user.is_authenticated:
             # trigger the flask-login unauthorized handler
-            return current_app.login_manager.unauthorized()  # type: ignore[attr-defined,no-any-return]
+            # flask-login attaches the login manager to the app dynamically
+            return cast("Any", current_app).login_manager.unauthorized()
 
         record = getattr(error, "record", None)
         if record:
@@ -960,7 +949,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
 
 
 if False:
-    just_for_translations = [  # type: ignore[unreachable]
+    just_for_translations = [
         _("Removal reason"),
         _("Note"),
         _("Citation text"),

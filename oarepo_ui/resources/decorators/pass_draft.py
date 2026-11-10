@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from functools import wraps
-from typing import TYPE_CHECKING, Any, ParamSpec, TypeVar, cast
+from typing import TYPE_CHECKING, Any, Concatenate, ParamSpec, TypeVar, cast
 
 from flask import g, redirect, url_for
 from invenio_pidstore.errors import PIDDoesNotExistError
@@ -21,13 +21,19 @@ P = ParamSpec("P")
 R = TypeVar("R")
 
 
-def pass_draft(expand: bool = True) -> Callable[[Callable[P, R]], Callable[P, R]]:
+def pass_draft(
+    expand: bool = True,
+) -> Callable[
+    [Callable[Concatenate[RecordsUIResource, P], R]],
+    Callable[Concatenate[RecordsUIResource, P], R],
+]:
     """Retrieve the draft record using the record service."""
 
-    def decorator(f: Callable[P, R]) -> Callable[P, R]:
+    def decorator(
+        f: Callable[Concatenate[RecordsUIResource, P], R],
+    ) -> Callable[Concatenate[RecordsUIResource, P], R]:
         @wraps(f)
-        def view(*args: P.args, **kwargs: P.kwargs) -> Any:
-            self = cast("RecordsUIResource", args[0])
+        def view(self: RecordsUIResource, *args: P.args, **kwargs: P.kwargs) -> Any:
             pid_value = kwargs.get("pid_value")
             try:
                 record_service = self.api_service
@@ -36,14 +42,15 @@ def pass_draft(expand: bool = True) -> Callable[[Callable[P, R]], Callable[P, R]
                     identity=g.identity,
                     expand=expand,
                 )
-                kwargs["draft"] = draft
-                kwargs["files_locked"] = record_service.config.lock_edit_published_files(
+                files_locked = record_service.config.lock_edit_published_files(
                     record_service,
                     g.identity,
                     draft=draft,
                     record=record_from_result(draft),
                 )
-                return f(*args, **kwargs)
+                # ``draft`` and ``files_locked`` are injected here; ParamSpec cannot express added
+                # keyword arguments, so the wrapped function is called through an untyped view of itself.
+                return cast("Callable[..., R]", f)(self, *args, **kwargs, draft=draft, files_locked=files_locked)
             except PIDDoesNotExistError:
                 # Redirect to /records/:id because users are interchangeably
                 # using /records/:id and /uploads/:id when sharing links, so in
@@ -56,7 +63,7 @@ def pass_draft(expand: bool = True) -> Callable[[Callable[P, R]], Callable[P, R]
                     )
                 )
 
-        return cast("Callable[P, R]", view)
+        return view
 
     return decorator
 

@@ -1,4 +1,5 @@
 // SPDX-FileCopyrightText: 2023-2026 CERN
+// SPDX-FileCopyrightText: 2023 Northwestern University
 // SPDX-License-Identifier: MIT
 
 import React, { useState } from "react";
