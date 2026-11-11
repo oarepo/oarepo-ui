@@ -57,12 +57,15 @@ def _get_actual_files_quota(record: Record | None, *, rdm: bool) -> dict[str, An
     bucket = getattr(record, "bucket", None) if record is not None else None
     if bucket is not None:
         quota = {"quota_size": bucket.quota_size, "max_file_size": bucket.max_file_size}
-        if not rdm:
-            # plain oarepo-model buckets are created with FILES_REST_DEFAULT_* (None by default)
-            defaults = _non_rdm_default_files_quota()
+        if None in quota.values():
+            # A bucket without limits would reach the uploader as ``maxStorage: null``, which rejects every file
+            # (``size > null``). Plain oarepo-model buckets are created with FILES_REST_DEFAULT_* (None by default)
+            # and oarepo-rdm creates the edit draft of a metadata-only published record with an unlimited bucket,
+            # so report the quota RDM would have given the bucket instead.
+            defaults = get_files_quota(cast("RDMRecord", record)) if rdm else _non_rdm_default_files_quota()
             for key, value in quota.items():
                 if value is None:
-                    quota[key] = defaults[key]
+                    quota[key] = defaults.get(key)
         return quota
     if rdm:
         return get_files_quota(None if record is None else cast("RDMRecord", record))

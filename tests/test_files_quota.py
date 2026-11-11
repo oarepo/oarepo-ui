@@ -98,6 +98,41 @@ def test_quota_non_rdm_bucket_without_quota_size_falls_back(app, users, monkeypa
     assert quota["maxFileSize"] == 45
 
 
+def test_quota_rdm_bucket_without_limits_uses_rdm_quota(app, users, monkeypatch):
+    # oarepo-rdm creates the edit draft of a metadata-only published record with an unlimited bucket;
+    # maxStorage must still be a number, otherwise the uploader rejects every file (size > null)
+    record = _fake_record(bucket=SimpleNamespace(quota_size=None, max_file_size=None))
+    seen = []
+
+    def fake_get_files_quota(rec):
+        seen.append(rec)
+        return {"quota_size": 777, "max_file_size": 77}
+
+    monkeypatch.setattr("oarepo_ui.resources.utils.get_files_quota", fake_get_files_quota)
+    monkeypatch.setattr("oarepo_ui.resources.utils.evaluate_quota_increase", lambda *_a, **_kw: {"enabled": False})
+    with app.test_request_context():
+        g.identity = users[0].identity
+        quota = get_form_files_quota(record, users[0].identity, rdm=True)
+    assert seen == [record]
+    assert quota["maxStorage"] == 777
+    assert quota["maxFileSize"] == 77
+
+
+def test_quota_rdm_bucket_with_limits_keeps_bucket_values(app, users, monkeypatch):
+    record = _fake_record(bucket=SimpleNamespace(quota_size=123, max_file_size=45))
+
+    def fail_get_files_quota(_rec):
+        raise AssertionError("bucket limits are authoritative")
+
+    monkeypatch.setattr("oarepo_ui.resources.utils.get_files_quota", fail_get_files_quota)
+    monkeypatch.setattr("oarepo_ui.resources.utils.evaluate_quota_increase", lambda *_a, **_kw: {"enabled": False})
+    with app.test_request_context():
+        g.identity = users[0].identity
+        quota = get_form_files_quota(record, users[0].identity, rdm=True)
+    assert quota["maxStorage"] == 123
+    assert quota["maxFileSize"] == 45
+
+
 def test_quota_non_rdm_record_without_bucket_does_not_raise(app, users, monkeypatch):
     monkeypatch.setitem(app.config, "FILES_REST_DEFAULT_QUOTA_SIZE", 5000)
     monkeypatch.setitem(app.config, "FILES_REST_DEFAULT_MAX_FILE_SIZE", 500)
