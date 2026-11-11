@@ -12,6 +12,7 @@ import { TabForm } from "../TabForm";
 import { FormFeedback } from "../FormFeedback";
 import { DepositStatusBox } from "@js/invenio_rdm_records/src/deposit/components/DepositStatus";
 import { FormikStateLogger } from "../FormikStateLogger";
+import { RecordDeletionButton } from "../RecordDeletionButton";
 import {
   PublishButton,
   SaveButton,
@@ -141,6 +142,17 @@ export const MonolithFormLayout = ({ record, overridableIdPrefix }) => {
                   <Grid.Column width={16}>
                     <DeleteButton fluid />
                   </Grid.Column>
+                  <Overridable
+                    id={buildUID(
+                      overridableIdPrefix,
+                      "FormActions.RecordDeletion"
+                    )}
+                    record={record}
+                  >
+                    <Grid.Column width={16} className="pt-0">
+                      <RecordDeletionButton />
+                    </Grid.Column>
+                  </Overridable>
                 </Grid>
               </Card.Content>
             </Card>
