@@ -1,5 +1,5 @@
+// SPDX-FileCopyrightText: 2021-2026 Graz University of Technology
 // SPDX-FileCopyrightText: 2023-2026 CESNET z.s.p.o.
-// SPDX-FileCopyrightText: 2021 Graz University of Technology
 // SPDX-License-Identifier: MIT
 
 import i18n from "i18next";
