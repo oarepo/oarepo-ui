@@ -24,8 +24,8 @@ export const EDTFDaterangePicker = ({
   icon = "calendar",
   helpText,
   required,
-  dateRangeInputPlaceholder = i18next.t("Choose date range (From - To)."),
-  singleDateInputPlaceholder = i18next.t("Choose one date."),
+  dateRangeInputPlaceholder = i18next.t("YYYY-MM-DD/YYYY-MM-DD"),
+  singleDateInputPlaceholder = i18next.t("YYYY-MM-DD"),
   datePickerPropsOverrides,
   customInputProps = {},
   width = 16,
@@ -45,8 +45,9 @@ export const EDTFDaterangePicker = ({
     dates = [null, null];
   }
 
+  // like the prototype, an empty field starts as Single: typing a "/" switches to Range
   const [showSingleDatePicker, setShowSingleDatePicker] = useState(
-    dates[0] && dates[1] && dates[0].getTime() === dates[1].getTime()
+    !field?.value?.includes("/")
   );
 
   const dateFormat = getDateFormatStringFromEdtfFormat(dateEdtfFormat);
@@ -70,15 +71,22 @@ export const EDTFDaterangePicker = ({
     setFieldValue(fieldPath, serializeDate(date, dateEdtfFormat));
   };
 
+  // a typed "/" switches to Range
+  const handleInputChange = (value) => {
+    if (value.includes("/")) setShowSingleDatePicker(false);
+    setFieldValue(fieldPath, value);
+  };
+
   const handleClear = () => {
     dates = [...dates];
     dates = [null, null];
     handleChange(dates);
   };
 
+  // keep the first date as typed, at its own precision
   const handleSingleDatePickerSelection = () => {
-    const date = startDate || endDate;
-    if (date) handleSingleDateChange(date);
+    const [start, end] = (field?.value || "").split("/");
+    if (end !== undefined) setFieldValue(fieldPath, start || end);
     setShowSingleDatePicker(true);
   };
 
@@ -148,6 +156,9 @@ export const EDTFDaterangePicker = ({
           dateEdtfFormat={dateEdtfFormat}
           setDateEdtfFormat={setDateEdtfFormat}
           dateFormat={dateFormat}
+          onInputChange={handleInputChange}
+          allowRange
+          isRange={!showSingleDatePicker}
           datePickerProps={{ ...pickerProps, ...datePickerPropsOverrides }}
           customInputProps={{
             helpText: fieldData.helpText,

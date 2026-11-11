@@ -365,6 +365,27 @@ msgstr "Jedno datum"
 msgid "Single date or date range"
 msgstr "Jedno datum, nebo časové období"
 
+msgid "YYYY-MM-DD/YYYY-MM-DD"
+msgstr "RRRR-MM-DD/RRRR-MM-DD"
+
+msgid "Choose from calendar"
+msgstr "Vybrat z kalendáře"
+
+msgid "Fill in both the start and the end of the range, or switch to Single."
+msgstr "Doplňte začátek i konec období, nebo přepněte na Datum."
+
+msgid "Use the format YYYY, YYYY-MM or YYYY-MM-DD for both the start and the end, separated by a slash."
+msgstr "Použijte formát RRRR, RRRR-MM nebo RRRR-MM-DD pro začátek i konec, oddělené lomítkem."
+
+msgid "Use the format YYYY, YYYY-MM or YYYY-MM-DD."
+msgstr "Použijte formát RRRR, RRRR-MM nebo RRRR-MM-DD."
+
+msgid "This date doesn't exist."
+msgstr "Takové datum neexistuje."
+
+msgid "The start of the range can't be after its end."
+msgstr "Začátek období nesmí být po jeho konci."
+
 msgid "Choose the time interval in which the event took place."
 msgstr "Vyberte časový interval, ve kterém se událost odehrála."
 
