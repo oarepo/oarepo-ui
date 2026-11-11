@@ -503,12 +503,16 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             # instead of the generic 500 page. A `files` attribute lists the files that can not be read.
             if e.code is None or e.code < 500:  # noqa: PLR2004 server errors only
                 raise
-            return render_template(
-                "oarepo_ui/export_error.html",
-                export_format=export_format,
-                files=getattr(e, "files", None),
-                record_url=record.links.get("self_html"),
-            ), e.code
+            return (
+                render_template(
+                    "oarepo_ui/export_error.html",
+                    export_format=export_format,
+                    files=getattr(e, "files", None),
+                    record_url=record.links.get("self_html"),
+                ),
+                e.code,
+                {},
+            )
 
     def _edit(
         self,
