@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import copy
 import logging
+from dataclasses import asdict, is_dataclass
 from functools import partial
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Any, cast
@@ -28,11 +29,12 @@ from flask_resources import (
 )
 from flask_security import login_required
 from idutils.normalizers import to_url
-from invenio_app_rdm.records_ui.utils import get_external_resources
+from invenio_app_rdm.records_ui.utils import evaluate_record_deletion, get_external_resources
 from invenio_app_rdm.records_ui.views.decorators import no_cache_response
 from invenio_app_rdm.records_ui.views.deposits import (
-    get_actual_files_quota,
+    VocabulariesOptions,
     get_user_communities_memberships,
+    load_custom_fields,
 )
 from invenio_app_rdm.records_ui.views.records import (
     PreviewFile,
@@ -44,8 +46,11 @@ from invenio_communities.communities.resources.serializer import (
 from invenio_communities.errors import CommunityDeletedError
 from invenio_communities.proxies import current_communities
 from invenio_i18n import gettext as _
+from invenio_pidstore.errors import PersistentIdentifierError
 from invenio_previewer import current_previewer
 from invenio_previewer.extensions import default as default_previewer
+from invenio_rdm_records.proxies import current_rdm_records
+from invenio_rdm_records.records.api import RDMRecord
 from invenio_rdm_records.records.systemfields.access.access_settings import (
     AccessSettings,
 )
@@ -85,7 +90,7 @@ from oarepo_ui.utils import dump_empty
 from ...proxies import current_oarepo_ui
 from ...templating.data import FieldData
 from ..base import UIResource, multiple_methods_route
-from ..utils import set_api_record_to_response
+from ..utils import get_form_files_quota, set_api_record_to_response
 from .config import (
     RecordsUIResourceConfig,
 )
@@ -218,12 +223,183 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             )
         return None
 
+    def _get_record_requests(self, record: RecordItem) -> dict[str, str]:
+        """Return the community requests of a record as ``{community_id: request_id}``.
+
+        Mirrors ``record_requests`` of invenio-app-rdm's ``record_detail``. Community requests exist
+        only for RDM services and records whose parent has communities, so any other model (e.g. a
+        plain drafts service) gets an empty mapping instead of an error.
+        """
+        if not isinstance(self.api_service, RDMRecordService):
+            return {}
+        parent = getattr(record_from_result(record), "parent", None)
+        if parent is None or getattr(parent, "communities", None) is None:
+            return {}
+        return cast(
+            "dict[str, str]",
+            current_rdm_records.record_communities_service.get_record_requests(g.identity, record),
+        )
+
+    def _evaluate_record_deletion(
+        self, record: RecordItem, *, with_options: bool = True
+    ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+        """Evaluate record deletion for the current identity, mirroring invenio-app-rdm.
+
+        Record deletion (immediate deletion and deletion requests) is an RDM-only feature,
+        so for non-RDM services an empty evaluation and no removal reasons are returned.
+        Note that oarepo/NRP repositories normally delete published records through the
+        oarepo-requests ``delete_published_record`` request; the RDM flow stays inactive
+        unless ``RDM_IMMEDIATE_RECORD_DELETION_ENABLED`` / ``RDM_REQUEST_RECORD_DELETION_ENABLED``
+        are switched on (both default to False).
+
+        :param record: The record (or draft) result item to evaluate.
+        :param with_options: Load the deletion removal reasons vocabulary when deletion is allowed.
+            Callers that already have the reasons (e.g. from ``VocabulariesOptions().dump()``) pass False.
+        :return: Tuple of ``(record_deletion, record_deletion_options)``.
+        """
+        if not isinstance(self.api_service, RDMRecordService):
+            return {}, []
+        record_deletion: dict[str, Any] = evaluate_record_deletion(record_from_result(record, RDMRecord), g.identity)
+        policy_results = record_deletion.get("recordDeletion")
+        if isinstance(policy_results, dict):
+            # flatten PolicyEvaluator.Result dataclasses to plain dicts so ``| tojson`` in the
+            # templates never depends on the JSON provider (same as oarepo-rdm FileModificationComponent)
+            record_deletion["recordDeletion"] = {
+                key: asdict(value) if is_dataclass(value) and not isinstance(value, type) else value
+                for key, value in policy_results.items()
+            }
+        # The deletion options are only needed if the user is allowed to delete the given record.
+        record_deletion_options: list[dict[str, Any]] = (
+            VocabulariesOptions().deletion_request_removal_reasons()
+            if with_options and record_deletion.get("allowed")
+            else []
+        )
+        return record_deletion, record_deletion_options
+
     def _validate_draft_preview(self, record: RecordItem) -> None:
         """Validate draft structure."""
         try:
             self.api_service.validate_draft(g.identity, record.id, ignore_field_permissions=True)
         except ValidationError:
             abort(404)
+
+    def _get_custom_fields_ui(self, record: RecordItem, record_ui: dict[str, Any]) -> list[dict[str, Any]]:
+        """Return the custom fields UI sections shown on the record landing page.
+
+        The model-specific configuration (``RecordsUIResourceConfig.landing_page_custom_fields``, i.e.
+        ``<MODEL>_CUSTOM_FIELDS_UI`` for oarepo-model custom fields) is preferred. If it yields nothing,
+        the record has custom field values, the model is served by an RDM service and the model does not
+        declare its own custom fields relation (so its RDM base schema validates against
+        ``RDM_CUSTOM_FIELDS``), fall back to the global ``RDM_CUSTOM_FIELDS_UI`` configuration exactly like
+        invenio-app-rdm ``record_detail`` does. Sections flagged with ``hide_from_landing_page`` are dropped.
+
+        :param record: API record item being rendered.
+        :param record_ui: UI-serialized record.
+        :return: List of custom field UI sections with field paths relative to ``custom_fields``.
+        """
+        record_custom_fields = record_ui.get("custom_fields")
+        ui_data = record_ui.get("ui")
+        if record_custom_fields and not (isinstance(ui_data, dict) and isinstance(ui_data.get("custom_fields"), dict)):
+            # landing page templates render values from record_ui["ui"]["custom_fields"]; if the UI serializer
+            # does not produce it, details.html would fail on an undefined value, so render no sections
+            return []
+        custom_fields_ui = self.config.landing_page_custom_fields(
+            identity=g.identity,
+            api_record=record,
+            record=record_ui,
+        )
+        if custom_fields_ui or not record_custom_fields or not isinstance(self.api_service, RDMRecordService):
+            # no values -> details.html renders no section, so skip loading RDM config (vocabulary lookups)
+            return custom_fields_ui
+        if any(key != "RDM_CUSTOM_FIELDS" for key in self.config.custom_fields_config_keys()):
+            # the model validates custom fields against its own <MODEL>_CUSTOM_FIELDS, RDM config does not apply
+            return custom_fields_ui
+        rdm_sections = cast("list[dict[str, Any]]", load_custom_fields()["ui"])
+        return [cf for cf in rdm_sections if not cf.get("hide_from_landing_page", False)]
+
+    def _read_community(self, community_id: str) -> RecordItem | None:
+        """Read a community by its id, returning None when it cannot be shown.
+
+        The community service is global (not tied to the model's service), so this works for
+        any model. Deleted communities (tombstones), unknown/deleted PIDs and communities the
+        current identity is not allowed to read yield None instead of failing the page.
+
+        :param community_id: Community id (UUID) or slug.
+        :return: Community result item or None.
+        """
+        try:
+            return cast(
+                "RecordItem",
+                current_communities.service.read(id_=community_id, identity=g.identity),
+            )
+        except CommunityDeletedError, PersistentIdentifierError, PermissionDenied:
+            return None
+
+    def _get_record_community(self, record_ui: Mapping[str, Any]) -> tuple[RecordItem | None, str | None]:
+        """Return the record's active community, adapted from invenio-app-rdm ``get_record_community``.
+
+        A record has an active community when its parent has either a review request
+        addressed to a community or a default community, and that community is neither
+        a ghost (deleted PID) nor deleted (tombstone). Records of models without
+        communities (no ``parent.communities``/``parent.review``) never hit the
+        community service.
+
+        :param record_ui: UI-serialized record (expanded).
+        :return: Tuple of the resolved community (or None) and the community id (or None).
+        """
+        parent = record_ui.get("parent") or {}
+        community_review = ((parent.get("review") or {}).get("receiver") or {}).get("community")
+        community_default = (parent.get("communities") or {}).get("default")
+        community_id = cast("str | None", community_default or community_review)
+        if not community_id:
+            return None, None
+
+        expanded_parent = (record_ui.get("expanded") or {}).get("parent") or {}
+        expanded_community = (
+            (expanded_parent.get("review") or {}).get("receiver")
+            or (expanded_parent.get("communities") or {}).get("default")
+            or {}
+        )
+        if expanded_community.get("is_ghost", False):
+            # community pid is not found in search i.e. its pid is deleted
+            return None, community_id
+
+        # resolve the community again to check the deletion status: deleted communities
+        # with tombstones are not identified as ghost records by the expansion
+        return self._read_community(community_id), community_id
+
+    def _get_draft_community(
+        self, record_ui: Mapping[str, Any]
+    ) -> tuple[Any, dict[str, Any] | None, dict[str, Any] | None]:
+        """Resolve the community shown on the deposit edit page, adapted from invenio-app-rdm ``deposit_edit``.
+
+        The community is taken from, in order of priority:
+          1. the draft's parent's review receiver (deprecated ``parent.review``),
+          2. the draft's review receiver,
+          3. the draft's parent's default community (new versions of published records).
+
+        :param record_ui: UI-serialized draft (expanded).
+        :return: Tuple ``(community, community_ui, community_theme)``. When the community cannot
+            be read (deleted, missing or not accessible), ``community`` is left as the expanded
+            community dict (as upstream does) and ``community_ui``/``community_theme`` are None.
+        """
+        expanded = record_ui.get("expanded") or {}
+        expanded_parent = expanded.get("parent") or {}
+        community = (
+            (expanded_parent.get("review") or {}).get("receiver")
+            or (expanded.get("review") or {}).get("receiver")
+            or (expanded_parent.get("communities") or {}).get("default")
+        )
+        if not isinstance(community, dict) or not community.get("id"):
+            return community, None, None
+
+        # upstream v14 keeps a "TODO: handle deleted community" here as well
+        resolved = self._read_community(community["id"])
+        if resolved is None:
+            return community, None, None
+        community_dict = resolved.to_dict()
+        community_ui = cast("dict[str, Any]", UICommunityJSONSerializer().dump_obj(community_dict))
+        return resolved, community_ui, community_dict.get("theme", {})
 
     def _detail(  # noqa: PLR0913, PLR0917 too many arguments
         self,
@@ -233,15 +409,22 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         is_preview: bool = False,
         include_deleted: bool = False,
         embed: bool = False,
+        preview_file: str | None = None,
         **kwargs: Any,
     ) -> Response:
         """Return detail page for a record (core logic without decorators)."""
         files_dict, media_files_dict = self._prepare_files(files, media_files)
         record_ui = self._prepare_record_ui(record)
+
+        if preview_file:
+            # same as invenio-app-rdm record_detail: ?preview_file=<key> overrides the file previewed by default
+            files_ui = record_ui.get("files")
+            if isinstance(files_ui, dict):
+                files_ui["default_preview"] = preview_file
+
         is_draft = record_ui.get("is_draft", False)
         avatar = self._get_user_avatar()
-
-        # TODO: implement custom fields feature
+        custom_fields_ui = self._get_custom_fields_ui(record, record_ui)
 
         if is_preview and is_draft:
             # it is possible to save incomplete drafts that break the normal
@@ -256,10 +439,16 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             emitter(current_app, record=record_from_result(record), via_api=False)
 
         record_owner = record_ui.get("expanded", {}).get("parent", {}).get("access", {}).get("owned_by", {})
-        # TODO: implement communities & community theme
-        resolved_community, resolved_community_ui = None, None
+        resolved_community, _community_id = self._get_record_community(record_ui)
+        resolved_community_ui = (
+            cast("dict[str, Any]", UICommunityJSONSerializer().dump_obj(resolved_community.to_dict()))
+            if resolved_community
+            else None
+        )
+        theme = resolved_community_ui.get("theme", {}) if resolved_community_ui else None
 
         ui_links = self.expand_detail_links(identity=g.identity, record=record)
+        record_deletion, record_deletion_options = self._evaluate_record_deletion(record)
         extra_context: dict[str, Any] = {}
         render_kwargs: dict[str, Any] = {
             "record": record,
@@ -267,19 +456,23 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             "files": files_dict,
             "media_files": media_files_dict,
             "user_communities_memberships": get_user_communities_memberships(),
-            # TODO: implement custom fields
+            "custom_fields_ui": custom_fields_ui,
             "is_preview": is_preview,
             "include_deleted": include_deleted,
             "embedded": embed,
             "is_draft": is_draft,
             "community": resolved_community,
             "community_ui": resolved_community_ui,
+            "theme": theme,
+            "record_requests": self._get_record_requests(record),
             "external_resources": (
                 get_external_resources(record)
                 if current_app.config.get("APP_RDM_RECORD_LANDING_PAGE_EXTERNAL_LINKS")
                 else []
             ),
             "user_avatar": avatar,
+            "record_deletion": record_deletion,
+            "record_deletion_options": record_deletion_options,
             "model": self.config.model,
             "model_name": self.config.model_name,
             # record created with system_identity have not owners e.g demo
@@ -309,7 +502,12 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             **kwargs,
         )
 
-        # TODO: implement render_community_theme_template?
+        # Upstream renders through ``render_community_theme_template(..., theme=theme)``, whose only effect is
+        # to overlay the Jinja loader so that ``themes/<brand>/...`` (then ``themes/default/...``) template
+        # overrides win. Pages here are rendered by the shared, cached JinjaX catalog environment, so those
+        # brand-specific template overrides are intentionally not applied; the community branding itself
+        # (theme CSS link and community header) is driven by the ``community``/``theme`` kwargs in the
+        # upstream ``records/detail.html`` that the model templates extend.
         response = Response(
             current_oarepo_ui.catalog.render(
                 self.get_jinjax_macro("record_detail"),
@@ -532,6 +730,11 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         record = self.config.ui_serializer.dump_obj(copy.copy(draft.to_dict()))
         # TODO: implement edit action on published record (similar to RDM)
 
+        community, community_ui, community_theme = self._get_draft_community(record)
+        # show the community branded header when the community has a theme; the react
+        # community selection component is hidden in that case (upstream parity)
+        community_use_jinja_header = bool(community_theme)
+
         dashboard_routes = current_app.config.get("APP_RDM_USER_DASHBOARD_ROUTES", {})
         if "uploads" not in dashboard_routes:
             log.warning(
@@ -542,25 +745,19 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             g.identity,
             dashboard_routes=dashboard_routes,
             updateUrl=draft.links.get("self", None),
+            hide_community_selection=community_use_jinja_header,
+            # upstream deposit_edit: quota=get_actual_files_quota(draft._record), shaped by get_form_config
+            quota=get_form_files_quota(
+                record_from_result(draft),
+                g.identity,
+                rdm=isinstance(self.api_service, RDMRecordService),
+            ),
         )
         form_config["ui_model"] = self.ui_model
 
         ui_links = self.expand_detail_links(identity=g.identity, record=draft)
 
         extra_context: dict[str, Any] = {}
-
-        community_ui = None
-        community = record.get("expanded", {}).get("parent", {}).get("review", {}).get("receiver") or record.get(
-            "expanded", {}
-        ).get("parent", {}).get("communities", {}).get("default")
-
-        if community:
-            # TODO: handle deleted community
-            try:
-                community = current_communities.service.read(id_=community["id"], identity=g.identity)
-                community_ui = UICommunityJSONSerializer().dump_obj(community.to_dict())
-            except CommunityDeletedError:
-                pass
 
         self.run_components(
             "form_config",
@@ -574,6 +771,22 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             **kwargs,
         )
 
+        # Record deletion is evaluated against the published record (if any), like
+        # invenio-app-rdm deposit_edit. Unpublished drafts and non-RDM services get {}.
+        record_deletion: dict[str, Any] = {}
+        service = self.api_service
+        if record.get("is_published") and isinstance(service, RDMRecordService):
+            published_record = service.read(g.identity, draft.id)
+            # upstream ships the removal reasons in forms_config["vocabularies"]; components such as
+            # oarepo-rdm RDMVocabularyOptionsComponent already put them there via VocabulariesOptions().dump()
+            vocabularies = form_config.setdefault("vocabularies", {})
+            has_reasons = isinstance(vocabularies, dict) and "deletion_request_removal_reasons" in vocabularies
+            record_deletion, record_deletion_options = self._evaluate_record_deletion(
+                published_record, with_options=not has_reasons
+            )
+            if record_deletion_options and isinstance(vocabularies, dict):
+                vocabularies["deletion_request_removal_reasons"] = record_deletion_options
+
         record["extra_links"] = {
             "ui_links": ui_links,
             "search_link": self.config.url_prefix,
@@ -582,16 +795,16 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         render_kwargs: dict[str, Any] = {
             "forms_config": form_config,
             "record": record,
-            "theme": None,
+            "theme": community_theme,
             "community": community,
             "community_ui": community_ui,
-            "community_use_jinja_header": False,
+            "community_use_jinja_header": community_use_jinja_header,
             "files": files_dict,
             "searchbar_config": {
                 "searchUrl": url_for(f"{self.config.blueprint_name}.search"),
             },
             "files_locked": files_locked,
-            # TODO: implement record deletion
+            "record_deletion": record_deletion,
             "extra_context": extra_context,
             "ui_links": ui_links,
             "webpack_entry": f"{self.config.model_name}_deposit_form.js",
@@ -702,7 +915,8 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             g.identity,
             dashboard_routes=dashboard_routes,
             createUrl=create_url,
-            quota=get_actual_files_quota(None),
+            # upstream deposit_create: quota=get_actual_files_quota(None), shaped by get_form_config
+            quota=get_form_files_quota(None, g.identity, rdm=isinstance(self.api_service, RDMRecordService)),
             hide_community_selection=community_use_jinja_header,
         )
         form_config["ui_model"] = self.ui_model
