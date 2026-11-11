@@ -20,7 +20,7 @@ export const FundingRemoteSelectField = ({
 
   const serializeSuggestions = (funders) =>
     funders.map((funder) =>
-      deserializeFunderToDropdown(deserializeFunder(funder)),
+      deserializeFunderToDropdown(deserializeFunder(funder))
     );
 
   return (
@@ -54,8 +54,8 @@ export const FundingRemoteSelectField = ({
         formikProps.form.setFieldValue(
           fieldPath,
           serializeFunderFromDropdown(
-            selectedFundersArray[selectedFundersArray.length - 1],
-          ),
+            selectedFundersArray[selectedFundersArray.length - 1]
+          )
         );
       }}
     />
