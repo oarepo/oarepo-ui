@@ -642,6 +642,27 @@ msgstr ""
 msgid "Range"
 msgstr ""
 
+msgid "YYYY-MM-DD/YYYY-MM-DD"
+msgstr ""
+
+msgid "Choose from calendar"
+msgstr ""
+
+msgid "Fill in both the start and the end of the range, or switch to Single."
+msgstr ""
+
+msgid "Use the format YYYY, YYYY-MM or YYYY-MM-DD for both the start and the end, separated by a slash."
+msgstr ""
+
+msgid "Use the format YYYY, YYYY-MM or YYYY-MM-DD."
+msgstr ""
+
+msgid "This date doesn't exist."
+msgstr ""
+
+msgid "The start of the range can't be after its end."
+msgstr ""
+
 msgid "Year"
 msgstr ""
 
