@@ -26,6 +26,5 @@ export { ResultsPerPage } from "./ResultsPerPage";
 export { Sort } from "./Sort";
 export * from "./ShouldRender";
 export * from "./util";
-export * from "./histogram";
 export * from "./SmallPagination";
 export * from "./ResultsList";
