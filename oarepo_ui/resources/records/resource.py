@@ -28,6 +28,7 @@ from flask_resources import (
 )
 from flask_security import login_required
 from idutils.normalizers import to_url
+from invenio_app_rdm.records_ui.utils import get_external_resources
 from invenio_app_rdm.records_ui.views.decorators import no_cache_response
 from invenio_app_rdm.records_ui.views.deposits import (
     get_actual_files_quota,
@@ -273,7 +274,11 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
             "is_draft": is_draft,
             "community": resolved_community,
             "community_ui": resolved_community_ui,
-            # TODO: implement external resources
+            "external_resources": (
+                get_external_resources(record)
+                if current_app.config.get("APP_RDM_RECORD_LANDING_PAGE_EXTERNAL_LINKS")
+                else []
+            ),
             "user_avatar": avatar,
             "model": self.config.model,
             "model_name": self.config.model_name,
