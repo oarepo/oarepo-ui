@@ -22,10 +22,10 @@ pip install oarepo-ui
 
 ### Requirements
 
-- Python 3.14+
+- Python 3.14
 - Invenio 14.x
-- oarepo-runtime >= 2.0.0
-- jinjax >= 0.60
+- oarepo-runtime >= 7.13.0, < 8.0.0
+- jinjax >= 0.64
 
 ## Key Features
 
@@ -40,27 +40,27 @@ OARepo builds its static UI pages on top of the [JinjaX library](https://jinjax.
 Define templates in your configuration:
 
 ```python
-templates = {"detail": "DetailPage", "search": "SearchPage"}
+templates = {"record_detail": "DetailPage", "search": "SearchPage"}
 ```
 
-Components accept `metadata`, `ui`, and `layout` parameters by default. Define parameters using JinjaX syntax:
+Components declare the parameters they accept using JinjaX syntax (the built-in
+record detail page, for example, receives `record`, `record_ui`, `files`, `d`, …):
 
 ```jinja
-{#def metadata, ui, layout #}
-{% extends "oarepo_ui/detail.html" %}
+{#def record, record_ui, files, d, model_name #}
+{% extends "oarepo_ui/record_detail.html" %}
 
-{%- block head_links %}
+{%- block css %}
 {{ super() }}
-{{ webpack['docs_app_components.js']}}
-{{ webpack['docs_app_components.css']}}
-{%- endblock %}
+{{ webpack['docs_app_components.css'] }}
+{%- endblock css %}
 
-{% block record_main_content %}
-    <Main metadata={{metadata}}></Main>
+{% block record_body %}
+    <Main metadata={{record_ui.metadata}}></Main>
 {% endblock %}
 
 {% block record_sidebar %}
-    <Sidebar metadata={{metadata}}></Sidebar>
+    <Sidebar metadata={{record_ui.metadata}}></Sidebar>
 {% endblock %}
 ```
 
@@ -80,7 +80,7 @@ Create reusable component hierarchies:
 Use dot notation to organize components in subdirectories:
 
 ```python
-templates = {"detail": "myrepo.DetailPage", "search": "myrepo.SearchPage"}
+templates = {"record_detail": "myrepo.DetailPage", "search": "myrepo.SearchPage"}
 ```
 
 Components are loaded from `templates/myrepo/DetailPage.jinja`.
@@ -94,7 +94,6 @@ The library provides pre-built components in the `templates/` folder:
 - `IdentifiersAndLinks.jinja` - Render multiple identifiers
 - `Multilingual.jinja` - Multilingual field display
 - `RecordExport.jinja` - Export functionality
-- `RecordSharing.jinja` - Social sharing buttons
 - `RecordVersions.jinja` - Version navigation
 - `SearchLink.jinja` - Search result links
 
@@ -146,7 +145,7 @@ from oarepo_ui.resources.components import UIResourceComponent
 
 
 class MyComponent(UIResourceComponent):
-    def before_ui_detail(self, *, id, identity, record, extra_context, **kwargs):
+    def before_ui_detail(self, *, api_record, record, identity, extra_context, **kwargs):
         # Add data to template context
         extra_context["custom_data"] = self.compute_data(record)
 ```
@@ -205,12 +204,13 @@ class MyComponent(UIResourceComponent):
 #### Content Negotiation
 
 ```python
-from oarepo_ui.resources.decorators import content_negotiation
+from oarepo_ui.resources.decorators import record_content_negotiation
 
 
-@content_negotiation(default="text/html", supported=["text/html", "application/json"])
-def detail_view(self, id, identity, **kwargs):
-    # Automatically handles Accept header routing
+@record_content_negotiation
+def record_detail(self, record, **kwargs):
+    # Serves the landing page for `text/html` / `application/xhtml+xml` Accept
+    # headers; any other Accept value is redirected to the record's API endpoint.
     pass
 ```
 
@@ -219,11 +219,11 @@ def detail_view(self, id, identity, **kwargs):
 FAIR Signposting implementation for machine-readable links:
 
 ```python
-from oarepo_ui.resources.decorators import signposting
+from oarepo_ui.resources.decorators import response_header_signposting
 
 
-@signposting
-def landing_page(self, id, identity, record, **kwargs):
+@response_header_signposting
+def record_detail(self, record, **kwargs):
     # Adds Link headers and linkset endpoints
     pass
 ```
@@ -240,17 +240,17 @@ def landing_page(self, id, identity, record, **kwargs):
 #### Record/Draft Passthrough
 
 ```python
-from oarepo_ui.resources.decorators import pass_record, pass_draft
+from oarepo_ui.resources.decorators import pass_record_or_draft, pass_draft
 
 
-@pass_record
-def detail_view(self, id, identity, record, **kwargs):
-    # `record` parameter automatically populated
+@pass_record_or_draft(expand=True)
+def record_detail(self, record, **kwargs):
+    # `record` parameter automatically populated (published record or draft)
     pass
 
 
-@pass_draft
-def edit_view(self, id, identity, draft, **kwargs):
+@pass_draft(expand=True)
+def deposit_edit(self, draft, **kwargs):
     # `draft` parameter automatically populated
     pass
 ```
@@ -382,12 +382,20 @@ OAREPO_SORT_OPTIONS = {
 Dynamic override system for JavaScript React components:
 
 ```python
-from oarepo_ui.overrides import UIComponent, UIComponentOverride
+from oarepo_ui.overrides import UIComponent, UIComponentImportMode, UIComponentOverride
 
 # Register custom result list item component
-component = UIComponent(name="MyResultItem", module="my_app.components", import_mode="lazy")
+component = UIComponent(
+    import_name="MyResultItem",
+    import_path="@js/my_app/components/MyResultItem",
+    import_mode=UIComponentImportMode.DEFAULT,
+)
 
-override = UIComponentOverride(endpoint="search", component=component)
+override = UIComponentOverride(
+    endpoint="search",
+    overridable_id="Search.ResultsList.item",
+    component=component,
+)
 
 # Add to configuration
 OAREPO_UI_OVERRIDES = {override}
@@ -410,7 +418,9 @@ current_oarepo_ui.register_result_list_item(
 Configure which actions are available in the UI:
 
 ```python
-# Record actions (published records)
+# UI actions for published records and drafts. Each action name maps to a
+# service permission that is checked to decide whether the corresponding UI
+# control is shown (draft actions are part of the same set).
 OAREPO_UI_RECORD_ACTIONS = {
     "search",
     "create",
@@ -427,19 +437,15 @@ OAREPO_UI_RECORD_ACTIONS = {
     "view",
     "manage_files",
     "manage_record_access",
-}
-
-# Draft action mapping
-OAREPO_UI_DRAFT_ACTIONS = {
-    "read_draft": "read",
-    "update_draft": "update",
-    "delete_draft": "delete",
-    "draft_read_files": "read_files",
-    "draft_update_files": "update_files",
-    "draft_read_deleted_files": "read_deleted_files",
-    "manage": "manage",
-    "manage_files": "manage_files",
-    "manage_record_access": "manage_record_access",
+    "publish",
+    "read_draft",
+    "update_draft",
+    "delete_draft",
+    "draft_read_files",
+    "draft_update_files",
+    "draft_read_deleted_files",
+    "media_read_files",
+    "moderate",
 }
 ```
 
@@ -471,13 +477,24 @@ OAREPO_UI_JINJAX_FILTERS = {
     "truncate_number": "invenio_app_rdm.records_ui.views.filters:truncate_number",
     "as_dict": "oarepo_ui.templating.filters:as_dict",
     "ui_value": "oarepo_ui.templating.filters:ui_value",
+    "ui_label": "oarepo_ui.templating.filters:ui_label",
+    "ui_hint": "oarepo_ui.templating.filters:ui_hint",
+    "ui_help": "oarepo_ui.templating.filters:ui_help",
+    "localized": "oarepo_ui.templating.filters:localized",
+    "append_query_params": "oarepo_ui.utils:append_query_params",
 }
 
 OAREPO_UI_JINJAX_GLOBALS = {
     "ui_value": "oarepo_ui.templating.filters:ui_value",
+    "ui_label": "oarepo_ui.templating.filters:ui_label",
+    "ui_hint": "oarepo_ui.templating.filters:ui_hint",
+    "ui_help": "oarepo_ui.templating.filters:ui_help",
     "as_array": "oarepo_ui.templating.filters:as_array",
     "value": "oarepo_ui.templating.filters:value",
     "as_dict": "oarepo_ui.templating.filters:as_dict",
+    "localized": "oarepo_ui.templating.filters:localized",
+    "append_query_params": "oarepo_ui.utils:append_query_params",
+    "can_view_deposit_page": "oarepo_ui.utils:can_view_deposit_page",
 }
 ```
 
@@ -507,9 +524,6 @@ The package registers several Invenio entry points:
 [project.entry-points."invenio_base.apps"]
 oarepo_ui = "oarepo_ui.ext:OARepoUIExtension"
 
-[project.entry-points."oarepo_ui.extensions"]
-default = "oarepo_ui._components:DefaultUIExtensionConfig"
-
 [project.entry-points."invenio_i18n.translations"]
 oarepo_ui_messages = "oarepo_ui"
 
@@ -525,7 +539,7 @@ oarepo_ui = "oarepo_ui.views:finalize_app"
 
 ## License
 
-Copyright (c) 2022-2025 CESNET z.s.p.o.
+Copyright (c) 2020-2026 CESNET z.s.p.o.
 
 OARepo UI is free software; you can redistribute it and/or modify it under the terms of the MIT License. See [LICENSE](LICENSE) file for more details.
 

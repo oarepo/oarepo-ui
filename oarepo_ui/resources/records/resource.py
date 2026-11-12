@@ -45,7 +45,6 @@ from invenio_communities.proxies import current_communities
 from invenio_i18n import gettext as _
 from invenio_previewer import current_previewer
 from invenio_previewer.extensions import default as default_previewer
-from invenio_rdm_records.proxies import current_rdm_records
 from invenio_rdm_records.records.systemfields.access.access_settings import (
     AccessSettings,
 )
@@ -196,8 +195,10 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
         parent = getattr(record_from_result(record), "parent", None)
         if parent is not None:
             access = parent.get("access")
-            if not access or access.get("settings") is None:
-                parent["access"]["settings"] = AccessSettings({}).dump()
+            if access is None:
+                access = parent["access"] = {}
+            if access.get("settings") is None:
+                access["settings"] = AccessSettings({}).dump()
 
         if not self.config.ui_serializer:
             record_ui = record.to_dict()
@@ -219,7 +220,7 @@ class RecordsUIResource(UIResource[RecordsUIResourceConfig]):
     def _validate_draft_preview(self, record: RecordItem) -> None:
         """Validate draft structure."""
         try:
-            current_rdm_records.records_service.validate_draft(g.identity, record.id, ignore_field_permissions=True)
+            self.api_service.validate_draft(g.identity, record.id, ignore_field_permissions=True)
         except ValidationError:
             abort(404)
 
