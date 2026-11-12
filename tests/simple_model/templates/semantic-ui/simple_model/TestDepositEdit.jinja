@@ -16,10 +16,12 @@ SPDX-License-Identifier: MIT
     extra_context,
     ui_links,
     permissions,
-    webpack_entry
+    webpack_entry,
+    record_deletion
 #}
 {
     "mode": "edit",
+    "record_deletion": {{ record_deletion|tojson|safe }},
     "theme": {{ theme|tojson|safe }},
     "forms_config": {{ forms_config|tojson|safe }},
     "searchbar_config": {{ searchbar_config|tojson|safe }},

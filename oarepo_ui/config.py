@@ -77,6 +77,9 @@ OAREPO_UI_RECORD_ACTIONS = {
     "draft_read_deleted_files",
     "media_read_files",
     "moderate",
+    "request_deletion",
+    "immediately_delete",
+    "remove_community_from_record",
 }
 
 OAREPO_UI_OVERRIDES: set[UIComponentOverride] = set()

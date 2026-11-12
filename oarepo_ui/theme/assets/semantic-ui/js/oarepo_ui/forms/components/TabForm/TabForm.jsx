@@ -24,6 +24,7 @@ import {
   DeleteButton,
 } from "@js/invenio_rdm_records";
 import { PublishButton } from "../PublishButton";
+import { RecordDeletionButton } from "../RecordDeletionButton";
 import { useFormikContext } from "formik";
 
 export const TabForm = ({ sections = [] }) => {
@@ -304,6 +305,15 @@ export const TabForm = ({ sections = [] }) => {
                 {permissions?.can_delete_draft && record?.id && (
                   <DeleteButton />
                 )}
+              </Overridable>
+              <Overridable
+                id={buildUID(
+                  overridableIdPrefix,
+                  "TabForm.RecordDeletionButton"
+                )}
+                permissions={permissions}
+              >
+                <RecordDeletionButton />
               </Overridable>
               <Overridable
                 id={buildUID(overridableIdPrefix, "TabForm.ShareDraftButton")}

@@ -19,9 +19,15 @@ SPDX-License-Identifier: MIT
   d,
   community = None,
   community_ui = None,
+  theme = None,
+  record_requests = {},
   user_avatar = None,
   record_owner_id = None,
   user_communities_memberships = {},
+  custom_fields_ui = [],
   embedded = False,
+  external_resources = [],
+  record_deletion = {},
+  record_deletion_options = [],
 #}
 {% extends model_name ~ "/record_detail.html" %}
