@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
 // SPDX-License-Identifier: MIT
 
+/* eslint-disable react/prop-types -- minimal test double of RecordDeletion */
+
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { RecordDeletionButton } from "./RecordDeletionButton";
