@@ -663,6 +663,9 @@ msgstr ""
 msgid "The start of the range can't be after its end."
 msgstr ""
 
+msgid "This field takes a single date, not a range."
+msgstr ""
+
 msgid "Year"
 msgstr ""
 

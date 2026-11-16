@@ -8,8 +8,7 @@ import {
   maskEdtfInput,
 } from "./utils";
 
-const type = (raw, allowRange = true) =>
-  maskEdtfInput(raw, raw.length, allowRange).value;
+const type = (raw) => maskEdtfInput(raw, raw.length).value;
 
 describe("maskEdtfInput", () => {
   it("adds dashes to digits", () => {
@@ -25,33 +24,39 @@ describe("maskEdtfInput", () => {
     expect(type("20241")).toBe("2024-1");
   });
 
+  it("pads a month or day digit when a dash is typed after it", () => {
+    expect(type("2024-1-")).toBe("2024-01-");
+    expect(type("2024-01-5-")).toBe("2024-01-05");
+  });
+
+  it("doesn't pad while editing inside the value", () => {
+    // typed 1 over the selected year of 2024-03-05
+    expect(maskEdtfInput("1-03-05", 1).value).toBe("1030-5");
+    // backspace at 2024|-03-05
+    expect(maskEdtfInput("202-03-05", 3).value).toBe("2020-30-5");
+  });
+
   it("drops anything else and caps a date at 8 digits", () => {
     expect(type("2024.03 x05")).toBe("2024-03-05");
     expect(type("202403051")).toBe("2024-03-05");
   });
 
-  it("splits a range at the first slash, only when allowed", () => {
+  it("splits a range at the first slash", () => {
     expect(type("2024/202506")).toBe("2024/2025-06");
     expect(type("2024/2025/06")).toBe("2024/2025-06");
-    expect(type("2024/", false)).toBe("2024");
   });
 
   it("keeps the caret after the same digit when the mask reflows", () => {
     // backspace over the dash of 2024-|03
-    expect(maskEdtfInput("202403", 4, true)).toEqual({
+    expect(maskEdtfInput("202403", 4)).toEqual({
       value: "2024-03",
       caret: 4,
-    });
-    // a slash the single picker drops doesn't count
-    expect(maskEdtfInput("20/24", 3, false)).toEqual({
-      value: "2024",
-      caret: 2,
     });
   });
 
   it("overwrites the next digit when typing inside a complete date", () => {
     // typed 4 at 2024-0|3-05
-    expect(maskEdtfInput("2024-043-05", 7, true, true)).toEqual({
+    expect(maskEdtfInput("2024-043-05", 7, true)).toEqual({
       value: "2024-04-05",
       caret: 7,
     });
@@ -67,6 +72,7 @@ describe("deserializeDate", () => {
     expect(deserializeDate("202")).toBeNull();
     expect(deserializeDate("2023-02-29")).toBeNull();
     expect(deserializeDate("2024-13")).toBeNull();
+    expect(deserializeDate("0000-01-01")).toBeNull();
     expect(deserializeDate("")).toBeNull();
   });
 });
@@ -100,5 +106,8 @@ describe("getEdtfDateError", () => {
     expect(getEdtfDateError("2023-02-29", false)).not.toBeNull();
     expect(getEdtfDateError("2025/2024-06", true)).not.toBeNull();
     expect(getEdtfDateError("2024-06/2024-03-15", true)).not.toBeNull();
+    expect(getEdtfDateError("0000", false)).not.toBeNull();
+    // a range in a single-date field
+    expect(getEdtfDateError("2020/2021", false, false)).not.toBeNull();
   });
 });

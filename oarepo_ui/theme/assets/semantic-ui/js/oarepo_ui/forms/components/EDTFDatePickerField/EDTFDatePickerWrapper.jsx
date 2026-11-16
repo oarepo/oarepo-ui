@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2024-2026 CESNET z.s.p.o.
 // SPDX-License-Identifier: MIT
 
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import { useField } from "formik";
 import { DatePickerHeader } from "./DatePickerHeader";
@@ -27,6 +27,9 @@ export const EDTFDatePickerWrapper = ({
 }) => {
   useLoadLocaleObjects();
   const pickerRef = useRef();
+  const inputElRef = useRef();
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const { onCalendarClose, ...otherDatePickerProps } = datePickerProps;
   const [{ value }, , { setValue }] = useField(fieldPath);
   const setOpen = (open) => pickerRef.current?.setOpen(open);
   return (
@@ -42,11 +45,10 @@ export const EDTFDatePickerWrapper = ({
         }
       }}
       // open at the precision of what's typed
-      onCalendarOpen={() =>
-        setDateEdtfFormat((format) => getInitialEdtfDateFormat(value, format))
-      }
-      // back to the text after a pick, like closing with Esc
-      onSelect={() => document.getElementById(fieldPath)?.focus()}
+      onCalendarOpen={() => {
+        setCalendarOpen(true);
+        setDateEdtfFormat((format) => getInitialEdtfDateFormat(value, format));
+      }}
       renderCustomHeader={(props) => (
         <DatePickerHeader
           dateEdtfFormat={dateEdtfFormat}
@@ -68,8 +70,10 @@ export const EDTFDatePickerWrapper = ({
           clearButtonClassName={clearButtonClassName}
           autoComplete="off"
           onInputChange={onInputChange ?? setValue}
-          onCalendarToggle={() => setOpen(!pickerRef.current?.isCalendarOpen())}
+          onCalendarToggle={() => setOpen(!calendarOpen)}
           onCalendarClose={() => setOpen(false)}
+          calendarOpen={calendarOpen}
+          inputElRef={inputElRef}
           allowRange={allowRange}
           isRange={isRange}
           {...customInputProps}
@@ -86,7 +90,14 @@ export const EDTFDatePickerWrapper = ({
           },
         },
       ]}
-      {...datePickerProps}
+      {...otherDatePickerProps}
+      onCalendarClose={() => {
+        setCalendarOpen(false);
+        // the focused day went with the calendar (a pick, Esc): back to the text
+        if (document.activeElement === document.body)
+          inputElRef.current?.focus();
+        onCalendarClose?.();
+      }}
     />
   );
 };

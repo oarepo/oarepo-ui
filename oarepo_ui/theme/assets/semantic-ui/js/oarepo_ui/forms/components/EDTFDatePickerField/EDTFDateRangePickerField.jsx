@@ -101,9 +101,10 @@ export const EDTFDaterangePicker = ({
         startDate: startDate,
         endDate: endDate,
         selectsRange: true,
-        // an unfinished range would be saved as an open interval ("2025/")
+        // a range left after picking only its start would be saved as an open
+        // interval ("2025/"); typed text with an unfinished end is left alone
         onCalendarClose: () => {
-          if (startDate && !endDate) handleSingleDatePickerSelection();
+          if (field?.value?.endsWith("/")) handleSingleDatePickerSelection();
         },
       };
 

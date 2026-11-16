@@ -22,24 +22,25 @@ export const InputElement = ({
   onInputChange,
   onCalendarToggle,
   onCalendarClose,
+  calendarOpen = false,
+  inputElRef,
   allowRange = false,
   isRange = false,
 }) => {
   const [field] = useField(fieldPath);
   const value = field.value || "";
+  const error = getEdtfDateError(value, isRange, allowRange);
   // check on blur, then keep the message live until the value is fine
   const [showError, setShowError] = useState(false);
-  const error = showError ? getEdtfDateError(value, isRange) : null;
   useEffect(() => {
-    if (!getEdtfDateError(value, isRange)) setShowError(false);
-  }, [value, isRange]);
+    if (!error) setShowError(false);
+  }, [error]);
 
   const handleChange = (e) => {
     const input = e.target;
     const { value: masked, caret } = maskEdtfInput(
       input.value,
       input.selectionStart ?? input.value.length,
-      allowRange,
       e.nativeEvent.inputType === "insertText"
     );
     // set the text and caret ourselves: React then finds the input up to date and
@@ -60,20 +61,30 @@ export const InputElement = ({
       onBlur={(e) => {
         field.onBlur(e);
         // not while picking: half a range is expected between the two clicks
-        if (!e.relatedTarget?.closest(".react-datepicker")) setShowError(true);
+        if (e.relatedTarget?.closest(".react-datepicker")) return;
+        const reveal = () => setShowError(!!error);
+        // a message appearing under a pressed button (Save draft) would move it
+        // from under the pointer and the click would miss: wait for the release
+        if (document.querySelector(":active"))
+          document.addEventListener("pointerup", reveal, { once: true });
+        else reveal();
       }}
       onKeyDown={(e) => {
         // react-datepicker would pick the calendar's highlighted day over the typed text
-        if (e.key === "Enter") onCalendarClose();
-        else onKeyDown(e);
+        if (e.key === "Enter") {
+          // nor should Enter submit the form
+          e.preventDefault();
+          onCalendarClose();
+        } else onKeyDown(e);
       }}
+      input={{ ref: inputElRef }}
       label={label}
       placeholder={placeholder}
       className={className}
       id={fieldPath}
       autoComplete={autoComplete}
       helpText={helpText}
-      error={error || undefined}
+      error={(showError && error) || undefined}
       icon={
         <span className="datepicker-input-buttons">
           {value && (
@@ -83,7 +94,11 @@ export const InputElement = ({
               className={clearButtonClassName}
               aria-label={i18next.t("Clear")}
               onMouseDown={keepFocus}
-              onClick={handleClear}
+              onClick={(e) => {
+                handleClear(e);
+                // the button is gone now, don't lose a keyboard user's focus with it
+                inputElRef?.current?.focus();
+              }}
             />
           )}
           <Button
@@ -92,6 +107,7 @@ export const InputElement = ({
             // a click outside the open calendar would close it before this toggles it
             className="react-datepicker-ignore-onclickoutside"
             aria-label={i18next.t("Choose from calendar")}
+            aria-expanded={calendarOpen}
             onMouseDown={keepFocus}
             onClick={onCalendarToggle}
           />
@@ -115,6 +131,8 @@ InputElement.propTypes = {
   onInputChange: PropTypes.func,
   onCalendarToggle: PropTypes.func,
   onCalendarClose: PropTypes.func,
+  calendarOpen: PropTypes.bool,
+  inputElRef: PropTypes.object,
   allowRange: PropTypes.bool,
   isRange: PropTypes.bool,
 };
