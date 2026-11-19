@@ -26,18 +26,35 @@
 }
 
 .ui.datepicker {
-  .clear-icon {
-    cursor: pointer !important;
-    pointer-events: all !important;
-    opacity: 0.8 !important;
-    background-color: transparent !important;
-    font-size: 0.8rem;
+  // the clear and calendar buttons sit in the right end of the input
+  .ui.icon.input {
+    > input {
+      padding-right: 4.5em !important;
+    }
+    > .datepicker-input-buttons {
+      position: absolute;
+      top: 0;
+      right: 0.25em;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      > .button {
+        margin: 0;
+        padding: 0.5em;
+        background: transparent;
+        color: @mutedTextColor;
+        &:hover,
+        &:focus-visible {
+          color: @textColor;
+        }
+        &.clear-icon {
+          font-size: 0.8em;
+        }
+      }
+    }
   }
   .field {
     margin-bottom: 0rem !important;
-  }
-  .clear-icon:hover {
-    opacity: 1 !important;
   }
   // Single/Range toggle on the label's line, the input below
   &.field:has(> .buttons) {
