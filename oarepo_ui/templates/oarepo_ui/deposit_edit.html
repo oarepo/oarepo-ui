@@ -8,6 +8,11 @@ SPDX-License-Identifier: MIT
     {%- include [ model_name ~ "/deposit_edit/form.html", "oarepo_ui/deposit/form.html" ] -%}
 {%- endblock page_body %}
 
+{%- block css %}
+    {{ super() }}
+    {% include model_name ~ "/deposit_create/css.html" ignore missing %}
+{%- endblock %}
+
 {%- block javascript %}
     {% include "oarepo_ui/javascript.html" %}
     {{ webpack[webpack_entry] }}
