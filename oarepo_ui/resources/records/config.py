@@ -479,10 +479,7 @@ class RecordsUIResourceConfig(UIResourceConfig):
         :return: Dictionary with UI custom field configuration.
         """
         # get the record class
-        record_class = None
-        if self.model:
-            # TODO: this does not look right, why record and then draft if record is always present?
-            record_class = self.model.record_cls or self.model.draft_cls
+        record_class = self.model.record_cls if self.model else None
 
         ui: list[dict[str, Any]] = []
         ret = {

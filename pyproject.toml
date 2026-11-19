@@ -48,9 +48,6 @@ oarepo14= [
 [project.entry-points."invenio_base.apps"]
 oarepo_ui = "oarepo_ui.ext:OARepoUIExtension"
 
-[project.entry-points."oarepo_ui.extensions"]
-default = "oarepo_ui._components:DefaultUIExtensionConfig"
-
 [project.entry-points."invenio_i18n.translations"]
 oarepo_ui_messages = "oarepo_ui"
 

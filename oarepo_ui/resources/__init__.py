@@ -26,7 +26,6 @@ from .components import (
     RecordRestrictionComponent,
     UIResourceComponent,
 )
-from .form_config import FormConfigResource, FormConfigResourceConfig
 from .records import (
     RecordsUIResource,
     RecordsUIResourceConfig,
@@ -40,8 +39,6 @@ __all__ = (
     "EmptyRecordAccessComponent",
     "FilesComponent",
     "FilesLockedComponent",
-    "FormConfigResource",
-    "FormConfigResourceConfig",
     "PermissionsComponent",
     "RecordRestrictionComponent",
     "RecordsUIResource",
