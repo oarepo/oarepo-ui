@@ -34,7 +34,12 @@ jest.mock("@js/invenio_app_rdm/components/RecordDeletion", () => ({
 
 const REASONS = [{ text: "Duplicate of another record", value: "duplicate" }];
 
-const setup = ({ record, recordDeletion, vocabularies }) => {
+const setup = ({
+  record,
+  recordDeletion,
+  vocabularies,
+  permissions = { can_delete_draft: true },
+}) => {
   mockRecord = record;
   mockFormConfig = {
     config: {
@@ -42,7 +47,7 @@ const setup = ({ record, recordDeletion, vocabularies }) => {
         deletion_request_removal_reasons: REASONS,
       },
     },
-    permissions: { can_delete_draft: true },
+    permissions,
     recordDeletion,
   };
   const container = document.createElement("div");
@@ -77,6 +82,15 @@ describe("RecordDeletionButton", () => {
     const container = setup({
       record: { id: "abc", is_published: true },
       recordDeletion: { enabled: false, allowed: false, valid_user: false },
+    });
+    expect(deletionButton(container)).toBeNull();
+  });
+
+  it("renders nothing without the delete-draft permission (upstream delete card gate)", () => {
+    const container = setup({
+      record: { id: "abc", is_published: true },
+      recordDeletion: { enabled: true, allowed: true, valid_user: true },
+      permissions: { can_delete_draft: false },
     });
     expect(deletionButton(container)).toBeNull();
   });
