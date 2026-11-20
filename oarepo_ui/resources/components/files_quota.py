@@ -1,23 +1,20 @@
 # SPDX-FileCopyrightText: 2025-2026 CESNET z.s.p.o
 # SPDX-License-Identifier: MIT
 
-"""Component that fetches file list and previewability for UI templates.
+"""Component that adds file transfer settings to the deposit form config.
 
-Populates extra_context with record files and flags indicating whether each file
-is previewable by the current previewer configuration.
+The files quota (``form_config["quota"]``) is computed by the records UI resource itself
+(see :func:`oarepo_ui.resources.utils.get_form_files_quota`), so it is present regardless of
+whether this component is configured.
 """
 
 from __future__ import annotations
 
-from copy import deepcopy
 from typing import TYPE_CHECKING, Any, override
 
 from flask import current_app
-from invenio_app_rdm.records_ui.utils import evaluate_quota_increase
-from invenio_app_rdm.records_ui.views.deposits import get_actual_files_quota
 from invenio_rdm_records.views import file_transfer_type
 from invenio_records_resources.proxies import current_transfer_registry
-from oarepo_runtime.typing import record_from_result
 
 from oarepo_ui.resources.components import UIResourceComponent
 
@@ -29,67 +26,13 @@ if TYPE_CHECKING:
 
 
 class FilesQuotaAndTransferComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig](UIResourceComponent[T]):
-    """Provide file metadata to be rendered on detail and edit pages."""
+    """Provide file transfer settings for the deposit form.
 
-    @override
-    def before_ui_create(
-        self,
-        *,
-        identity: Identity,
-        extra_context: dict,
-        form_config: dict,
-        **kwargs: Any,
-    ) -> None:
-        """Attach files quotas to form config prior to rendering the create page.
-
-        Retrieves the file service for the record service, lists files for the
-        given record and marks each file entry with a "previewable" boolean based
-        on its extension and the configured previewer.
-
-        :param api_record: API record or wrapper containing the record identifier.
-        :param extra_context: Context dictionary to be mutated in-place.
-        :param identity: Current user identity used for permission checks.
-        :param form_config: Form configuration dictionary to mutate in-place.
-        :raises PermissionDeniedError: If the identity is not allowed to list files.
-        """
-        quota = deepcopy(current_app.config.get("APP_RDM_DEPOSIT_FORM_QUOTA", {}))
-        max_file_size = current_app.config.get("RDM_FILES_DEFAULT_MAX_FILE_SIZE", None)
-        record_quota = get_actual_files_quota(None)
-        if record_quota:
-            quota["maxStorage"] = record_quota["quota_size"]
-            quota["quotaIncrease"] = evaluate_quota_increase(None, identity)
-        form_config["quota"] = dict(**quota, maxFileSize=max_file_size)
-
-    @override
-    def before_ui_edit(
-        self,
-        *,
-        api_record: RecordItem,
-        identity: Identity,
-        extra_context: dict,
-        form_config: dict,
-        **kwargs: Any,
-    ) -> None:
-        """Attach files quotas to form config prior to rendering the edit page.
-
-        Retrieves the file service for the record service, lists files for the
-        given record and marks each file entry with a "previewable" boolean based
-        on its extension and the configured previewer.
-
-        :param api_record: API record or wrapper containing the record identifier.
-        :param extra_context: Context dictionary to be mutated in-place.
-        :param identity: Current user identity used for permission checks.
-        :param form_config: Form configuration dictionary to mutate in-place.
-        :raises PermissionDeniedError: If the identity is not allowed to list files.
-        """
-        quota = deepcopy(current_app.config.get("APP_RDM_DEPOSIT_FORM_QUOTA", {}))
-        max_file_size = current_app.config.get("RDM_FILES_DEFAULT_MAX_FILE_SIZE", None)
-        record = record_from_result(api_record)
-        record_quota = get_actual_files_quota(record)
-        if record_quota:
-            quota["maxStorage"] = record_quota["quota_size"]
-            quota["quotaIncrease"] = evaluate_quota_increase(record, identity)
-        form_config["quota"] = dict(**quota, maxFileSize=max_file_size)
+    Files quota is no longer set here: the resource builds ``form_config["quota"]`` in the
+    upstream shape for create and edit, so the former ``before_ui_create``/``before_ui_edit``
+    hooks (which recomputed it) were removed. Subclasses overriding those hooks and calling
+    ``super()`` keep working (the base no-op is inherited).
+    """
 
     @override
     def form_config(

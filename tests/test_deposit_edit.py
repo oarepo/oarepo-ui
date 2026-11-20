@@ -44,6 +44,7 @@ def test_deposit_edit(
             "ui_links",
             "permissions",
             "webpack_entry",
+            "record_deletion",
         }
 
         expected_permissions = {
@@ -61,6 +62,11 @@ def test_deposit_edit(
         assert forms_config["current_locale"] == "en"
         assert forms_config["allowEmptyFiles"] is True
         assert forms_config["updateUrl"].endswith(f"/api/simple-model/{draft['id']}/draft")
+        # simple_model has no communities: no community theme, react community selection stays visible
+        assert forms_config["hide_community_selection"] is False
+        assert response["theme"] is None
+        assert response["community"] is None
+        assert response["community_use_jinja_header"] is False
         # Fresh draft: the bucket is unlocked, so files are not locked. Exposed via
         # the files_locked render kwarg (deposits-record-locked-files hidden input),
         # not inside forms_config.
@@ -88,3 +94,9 @@ def test_deposit_edit(
 
         for key, value in expected_permissions.items():
             assert response["permissions"].get(key) == value
+
+        # simple_model is a plain drafts service and the draft is unpublished -> no deletion info
+        assert response["record_deletion"] == {}
+        assert "deletion_request_removal_reasons" not in forms_config.get("vocabularies", {})
+        assert response["permissions"].get("can_request_deletion") is False
+        assert response["permissions"].get("can_immediately_delete") is False

@@ -21,7 +21,7 @@ from invenio_app_rdm.theme.views import (
     add_static_page_routes,
     help_search,
     help_statistics,
-    # help_versioning,
+    help_versioning,
     index,
     robots,
 )
@@ -52,8 +52,8 @@ def create_blueprint(app: Flask) -> Blueprint:
         blueprint.add_url_rule(**create_url_rule(routes.get("robots"), default_view_func=robots))
         blueprint.add_url_rule(**create_url_rule(routes.get("help_search"), default_view_func=help_search))
         blueprint.add_url_rule(**create_url_rule(routes.get("help_statistics"), default_view_func=help_statistics))
-        # TODO: uncomment when we have the proper config in APP_RDM_ROUTES
-        # blueprint.add_url_rule(**create_url_rule(routes.get("help_versioning"), default_view_func=help_versioning))  # noqa: ERA001
+        if routes.get("help_versioning"):
+            blueprint.add_url_rule(**create_url_rule(routes.get("help_versioning"), default_view_func=help_versioning))
 
     # Register explicit, locale-aware routes for static pages declared in
     # APP_RDM_PAGES. Upstream invenio-app-rdm does this in its own theme

@@ -27,3 +27,4 @@ export * from "./FormTabs";
 export * from "./TabForm";
 export * from "./TabContent";
 export * from "./PublishButton";
+export * from "./RecordDeletionButton";

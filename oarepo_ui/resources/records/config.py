@@ -140,6 +140,8 @@ class RecordsUIResourceConfig(UIResourceConfig):
             "preview": ma.fields.Bool(attribute="is_preview", missing=False),
             "include_deleted": ma.fields.Bool(),
             "embed": ma.fields.Bool(),
+            # mirrors invenio-app-rdm @pass_preview_file (?preview_file=<key> selects the default previewed file)
+            "preview_file": ma.fields.Str(),
         }
     )
 
@@ -478,46 +480,80 @@ class RecordsUIResourceConfig(UIResourceConfig):
         :param kwargs: Additional options for custom field config.
         :return: Dictionary with UI custom field configuration.
         """
-        # get the record class
-        record_class = self.model.record_cls if self.model else None
-
         ui: list[dict[str, Any]] = []
         ret = {
             "ui": ui,
         }
-        if not record_class:
-            return ret
-        # try to get custom fields from the record
-        for _fld_name, fld in sorted(inspect.getmembers(record_class)):
-            # look at relations at first
-            if not isinstance(fld, MultiRelationsField):
+        prefix = "custom_fields."
+        for config_key in self.custom_fields_config_keys():
+            ui_config = self._get_custom_fields_ui_config(config_key, **kwargs)
+            if not ui_config:
                 continue
 
-            relation_subfields = fld._original_fields.values()  # noqa: SLF001
-            for relation_rel in relation_subfields:
-                if not isinstance(relation_rel, CustomFieldsRelation):
-                    continue
-
-                prefix = "custom_fields."
-
-                config_key = cast("str", relation_rel._fields_var)  # noqa: SLF001
-                ui_config = self._get_custom_fields_ui_config(config_key, **kwargs)
-                if not ui_config:
-                    continue
-
-                for section in ui_config:
-                    section_with_fields = {
-                        **section,
-                        "fields": [
-                            {
-                                **field,
-                                "field": prefix + field["field"],
-                            }
-                            for field in section.get("fields", [])
-                        ],
-                    }
-                    ui.append(section_with_fields)
+            for section in ui_config:
+                section_with_fields = {
+                    **section,
+                    "fields": [
+                        {
+                            **field,
+                            "field": prefix + field["field"],
+                        }
+                        for field in section.get("fields", [])
+                    ],
+                }
+                ui.append(section_with_fields)
         return ret
+
+    def landing_page_custom_fields(self, **kwargs: Any) -> list[dict[str, Any]]:
+        """Return custom fields UI sections to be displayed on the record landing page.
+
+        Mirrors invenio-app-rdm ``record_detail``: sections flagged with ``hide_from_landing_page``
+        are dropped. The sections are taken from :meth:`custom_fields` (so subclass overrides apply),
+        but field paths are returned relative to the record's ``custom_fields`` object, i.e. without
+        the ``custom_fields.`` prefix added for the deposit form. This is the shape expected by the
+        ``invenio_app_rdm/records/details/*.html`` templates (``record_ui["custom_fields"].get(field)``).
+
+        :param kwargs: Additional options passed to :meth:`custom_fields`.
+        :return: List of UI config sections for the landing page.
+        """
+        prefix = "custom_fields."
+        sections: list[dict[str, Any]] = []
+        for section in self.custom_fields(**kwargs).get("ui", []):
+            if section.get("hide_from_landing_page", False):
+                continue
+            sections.append(
+                {
+                    **section,
+                    "fields": [
+                        {**field, "field": str(field["field"]).removeprefix(prefix)}
+                        for field in section.get("fields", [])
+                    ],
+                }
+            )
+        return sections
+
+    def custom_fields_config_keys(self) -> list[str]:
+        """Return config keys of the custom fields relations declared on the model's record class.
+
+        For oarepo-model custom fields this is ``<MODEL>_CUSTOM_FIELDS``. The list is empty when the model
+        declares no ``CustomFieldsRelation`` (e.g. plain draft models, or RDM-based models relying on the
+        ``RDM_CUSTOM_FIELDS`` validation of ``RDMRecordSchema``).
+
+        :return: List of ``CustomFieldsRelation`` config variable names.
+        """
+        record_class = self.model.record_cls if self.model else None
+        if not record_class:
+            return []
+        keys: list[str] = []
+        for _fld_name, fld in sorted(inspect.getmembers(record_class)):
+            if not isinstance(fld, MultiRelationsField):
+                continue
+            keys.extend(
+                cast("str", relation_rel._fields_var)  # noqa: SLF001
+                for relation_rel in fld._original_fields.values()  # noqa: SLF001
+                if isinstance(relation_rel, CustomFieldsRelation)
+            )
+        return keys
 
     def _get_custom_fields_ui_config(
         self,

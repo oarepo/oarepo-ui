@@ -13,6 +13,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, override
 
+from invenio_rdm_records.services.services import RDMRecordService
 from oarepo_runtime.typing import record_from_result
 
 from oarepo_ui.resources.components import UIResourceComponent
@@ -29,6 +30,13 @@ if TYPE_CHECKING:
 
 class PermissionsComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig](UIResourceComponent[T]):
     """Compute and attach permission flags for UI templates and forms."""
+
+    remove_default_community_allowed: bool = False
+    """Whether the record's default (primary) community may appear in ``removable_community_ids``.
+
+    oarepo-communities never removes the primary community (it is only migrated), so the default
+    is False. Set to True in a subclass to get upstream InvenioRDM behaviour.
+    """
 
     def _get_underlying_record(self, api_record: RecordItem | None) -> Record | None:
         """Extract the underlying record from the RecordItem wrapper."""
@@ -47,7 +55,14 @@ class PermissionsComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig]
         **kwargs: Any,
     ) -> None:
         """Attach permissions before rendering the detail page."""
-        self.fill_permissions(self._get_underlying_record(api_record), extra_context, identity)
+        from ..records.resource import RecordsUIResource
+
+        record = self._get_underlying_record(api_record)
+        self.fill_permissions(record, extra_context, identity)
+        if isinstance(self.resource, RecordsUIResource):
+            extra_context["permissions"]["removable_community_ids"] = self.get_removable_community_ids(
+                self.resource.api_service, identity, record
+            )
         render_kwargs["permissions"] = extra_context["permissions"]
 
     @override
@@ -120,6 +135,63 @@ class PermissionsComponent[T: RecordsUIResourceConfig = RecordsUIResourceConfig]
                 can_perform = False
             ret[f"can_{mapped_to}"] = can_perform
         return ret
+
+    def get_removable_community_ids(
+        self,
+        service: RecordService,
+        identity: Identity,
+        record: Record | None,
+    ) -> list[str]:
+        """Return ids of the record's communities the identity may remove the record from.
+
+        Mirrors upstream ``record_detail``: each parent community id is checked against the
+        ``remove_community_from_record`` action with ``community_id`` passed to the policy.
+        Unlike upstream, the record's default (primary) community is left out unless
+        ``remove_default_community_allowed`` is set, because oarepo-communities only allows
+        changing the primary community through a migration request.
+        Returns an empty list for non-RDM services, records without a parent or parent
+        communities, or when the permission check fails.
+
+        :param service: The underlying API service used to check permissions.
+        :param identity: Current user identity.
+        :param record: Underlying record or draft, or None.
+        :returns: List of community ids.
+        """
+        if record is None or not isinstance(service, RDMRecordService):
+            return []
+        parent = getattr(record, "parent", None)
+        communities = getattr(parent, "communities", None)
+        community_ids = getattr(communities, "ids", None)
+        if not community_ids:
+            return []
+        default_id = None if self.remove_default_community_allowed else self._get_default_community_id(communities)
+        ret: list[str] = []
+        for community_id in community_ids:
+            if default_id is not None and str(community_id) == default_id:
+                continue
+            try:
+                allowed = service.check_permission(
+                    identity,
+                    "remove_community_from_record",
+                    record=record,
+                    community_id=community_id,
+                )
+            except Exception:  # noqa: BLE001
+                allowed = False
+            if allowed:
+                ret.append(str(community_id))
+        return ret
+
+    def _get_default_community_id(self, communities: Any) -> str | None:
+        """Return the default community id of a parent communities field without a database lookup."""
+        to_dict = getattr(communities, "to_dict", None)
+        if not callable(to_dict):
+            return None
+        try:
+            default_id = to_dict().get("default")
+        except Exception:  # noqa: BLE001
+            return None
+        return str(default_id) if default_id else None
 
     def fill_permissions(
         self,

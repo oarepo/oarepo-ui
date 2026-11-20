@@ -7,17 +7,22 @@ import { Grid, Ref, Sticky, Card, Header } from "semantic-ui-react";
 import { useSelector } from "react-redux";
 import { buildUID } from "react-searchkit";
 import Overridable from "react-overridable";
-import { useFormConfig, useSanitizeInput } from "../../hooks";
+import { useFormConfig, useInitialRecord, useSanitizeInput } from "../../hooks";
 import { TabForm } from "../TabForm";
 import { FormFeedback } from "../FormFeedback";
 import { DepositStatusBox } from "@js/invenio_rdm_records/src/deposit/components/DepositStatus";
 import { FormikStateLogger } from "../FormikStateLogger";
 import {
-  PublishButton,
+  RecordDeletionButton,
+  useShowRecordDeletion,
+} from "../RecordDeletionButton";
+import { ShareDraftButton } from "@js/invenio_app_rdm/deposit/ShareDraftButton";
+import {
   SaveButton,
   PreviewButton,
   DeleteButton,
 } from "@js/invenio_rdm_records";
+import { PublishButton } from "../PublishButton";
 import { getIn, useFormikContext } from "formik";
 import { getLocalizedValue } from "../../../util";
 
@@ -82,6 +87,12 @@ WizardFormLayout.propTypes = {
 export const MonolithFormLayout = ({ record, overridableIdPrefix }) => {
   const sidebarRef = React.useRef(null);
   const formFeedbackRef = React.useRef(null);
+  const { permissions, groupsEnabled } = useFormConfig();
+  const { initialRecord } = useInitialRecord();
+  const showRecordDeletion = useShowRecordDeletion();
+  // same condition as invenio-app-rdm RDMDepositForm and TabForm
+  const showShareDraft =
+    initialRecord?.is_draft === null || !!permissions?.can_manage;
 
   return (
     <Grid>
@@ -108,43 +119,85 @@ export const MonolithFormLayout = ({ record, overridableIdPrefix }) => {
         </Grid.Column>
       </Ref>
       <Ref innerRef={sidebarRef}>
-        <Grid.Column id="control-panel" mobile={16} tablet={16} computer={5}>
-          <Overridable
-            id={buildUID(overridableIdPrefix, "FormActions.container")}
-            record={record}
-          >
-            <Card fluid>
-              <Card.Content>
-                <DepositStatusBox />
-              </Card.Content>
-              <Card.Content>
-                <Grid relaxed>
-                  <Grid.Column
-                    computer={8}
-                    mobile={16}
-                    className="pb-0 left-btn-col"
-                  >
-                    <SaveButton fluid />
-                  </Grid.Column>
+        <Grid.Column
+          id="control-panel"
+          mobile={16}
+          tablet={16}
+          computer={5}
+          className="deposit-sidebar"
+        >
+          <Sticky context={sidebarRef} offset={20}>
+            <Overridable
+              id={buildUID(overridableIdPrefix, "FormActions.container")}
+              record={record}
+            >
+              <Card fluid>
+                <Card.Content>
+                  <DepositStatusBox />
+                </Card.Content>
+                <Card.Content>
+                  <Grid relaxed>
+                    <Grid.Column
+                      computer={8}
+                      mobile={16}
+                      className="pb-0 left-btn-col"
+                    >
+                      <SaveButton fluid />
+                    </Grid.Column>
 
-                  <Grid.Column
-                    computer={8}
-                    mobile={16}
-                    className="pb-0 right-btn-col"
-                  >
-                    <PreviewButton fluid />
-                  </Grid.Column>
+                    <Grid.Column
+                      computer={8}
+                      mobile={16}
+                      className="pb-0 right-btn-col"
+                    >
+                      <PreviewButton fluid />
+                    </Grid.Column>
 
-                  <Grid.Column width={16} className="pt-10">
-                    <PublishButton fluid record={record} />
-                  </Grid.Column>
-                  <Grid.Column width={16}>
-                    <DeleteButton fluid />
-                  </Grid.Column>
-                </Grid>
-              </Card.Content>
-            </Card>
-          </Overridable>
+                    <Grid.Column width={16} className="pt-10">
+                      <PublishButton fluid record={record} />
+                    </Grid.Column>
+                    {showShareDraft && (
+                      <Overridable
+                        id={buildUID(
+                          overridableIdPrefix,
+                          "FormActions.ShareDraftButton"
+                        )}
+                        record={initialRecord}
+                        permissions={permissions}
+                        groupsEnabled={groupsEnabled}
+                      >
+                        <Grid.Column width={16} className="pt-0">
+                          <ShareDraftButton
+                            record={initialRecord}
+                            permissions={permissions}
+                            groupsEnabled={groupsEnabled}
+                          />
+                        </Grid.Column>
+                      </Overridable>
+                    )}
+                    {permissions?.can_delete_draft && (
+                      <Grid.Column width={16}>
+                        <DeleteButton fluid />
+                      </Grid.Column>
+                    )}
+                    {showRecordDeletion && (
+                      <Overridable
+                        id={buildUID(
+                          overridableIdPrefix,
+                          "FormActions.RecordDeletion"
+                        )}
+                        record={record}
+                      >
+                        <Grid.Column width={16} className="pt-0">
+                          <RecordDeletionButton />
+                        </Grid.Column>
+                      </Overridable>
+                    )}
+                  </Grid>
+                </Card.Content>
+              </Card>
+            </Overridable>
+          </Sticky>
         </Grid.Column>
       </Ref>
     </Grid>
