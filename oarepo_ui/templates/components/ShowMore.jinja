@@ -1,0 +1,42 @@
+{#
+SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+SPDX-License-Identifier: MIT
+#}
+{# def values=None, text=None, group, limit=None #}
+{# This JinjaX component enables to limit by count the enumeration of `values`, or length of `text`, to given number `limit`, and to show
+   interactive "Show more"/"Show less" button to unhide/hide the values/text outside of the set limit.
+
+   If both `values` and `text` are provided, only `values` are shown.
+ #}
+
+{%- if values is not none -%}
+  {%- set values = values | list -%}
+  {%- set limit = limit or 6 -%}
+  {%- set is_long = values | length > limit -%}
+  {%- set head = values[:limit] | join(", ") -%}
+  {%- set rest = ", " ~ values[limit:] | join(", ") -%}
+  {%- set ellipsis = ", …" -%}
+{%- else -%}
+  {%- set text = text or "" -%}
+  {%- set limit = limit or 200 -%}
+  {%- set is_long = text | length > limit -%}
+  {%- set cut = text[:limit].rfind(" ") -%}
+  {%- set cut = cut if cut > 0 else limit -%}
+  {%- set head = text[:cut] -%}
+  {%- set rest = text[cut:] -%}
+  {%- set ellipsis = "…" -%}
+{%- endif -%}
+
+{%- if not is_long -%}
+  {{ head if values is not none else text }}
+{%- else -%}
+  <span class="show-more">{{ head }}<span class="show-more-rest" id="{{ group }}-rest" hidden>{{ rest }}</span><span class="show-more-ellipsis" aria-hidden="true">{{ ellipsis }}</span>
+    <button class="ui basic mini compact button show-more-button"
+            aria-controls="{{ group }}-rest"
+            aria-expanded="false"
+            data-open-text="{{ _('Show more') }}"
+            data-close-text="{{ _('Show less') }}">
+            {{ _('Show more') }}
+    </button>
+  </span>
+{%- endif -%}
