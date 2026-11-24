@@ -9,7 +9,7 @@ import inspect
 import logging
 from collections.abc import Mapping
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Self, override
+from typing import TYPE_CHECKING, Any, Self, cast, override
 
 from flask_resources import (
     Resource,
@@ -77,6 +77,12 @@ class UIComponentsResource[T: UIResourceConfig](Resource):
     # Pluggable components
     #
     config: T
+
+    def __init__(self, config: T) -> None:
+        """Initialize the resource with its UI configuration."""
+        # flask-resources types the constructor as taking a ResourceConfig,
+        # which UIResourceConfig deliberately is not
+        super().__init__(cast("Any", config))
 
     @property
     def components(self) -> Iterator[UIResourceComponent[T]]:
