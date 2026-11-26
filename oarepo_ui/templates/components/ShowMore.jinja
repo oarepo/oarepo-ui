@@ -2,7 +2,7 @@
 SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
 SPDX-License-Identifier: MIT
 #}
-{# def values=None, text=None, group, limit=None #}
+{# def values=None, text=None, limit=None #}
 {# This JinjaX component enables to limit by count the enumeration of `values`, or length of `text`, to given number `limit`, and to show
    interactive "Show more"/"Show less" button to unhide/hide the values/text outside of the set limit.
 
@@ -30,9 +30,8 @@ SPDX-License-Identifier: MIT
 {%- if not is_long -%}
   {{ head if values is not none else text }}
 {%- else -%}
-  <span class="show-more">{{ head }}<span class="show-more-rest" id="{{ group }}-rest" hidden>{{ rest }}</span><span class="show-more-ellipsis" aria-hidden="true">{{ ellipsis }}</span>
+  <span class="show-more">{{ head }}<span class="show-more-rest" hidden>{{ rest }}</span><span class="show-more-ellipsis" aria-hidden="true">{{ ellipsis }}</span>
     <button class="ui basic mini compact button show-more-button"
-            aria-controls="{{ group }}-rest"
             aria-expanded="false"
             data-open-text="{{ _('Show more') }}"
             data-close-text="{{ _('Show less') }}">
