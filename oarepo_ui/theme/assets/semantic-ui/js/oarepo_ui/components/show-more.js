@@ -12,5 +12,5 @@ $(document).on("click", ".show-more .show-more-button", function () {
   $root.find(".show-more-ellipsis").prop("hidden", !expanded);
   $button
     .attr("aria-expanded", String(!expanded))
-    .text($button.attr(expanded ? "data-open-text" : "data-close-text"));
+    .text($button.attr(expanded ? "data-open-value" : "data-close-value"));
 });

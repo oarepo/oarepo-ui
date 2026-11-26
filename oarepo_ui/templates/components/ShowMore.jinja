@@ -2,40 +2,33 @@
 SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
 SPDX-License-Identifier: MIT
 #}
-{# def values=None, text=None, limit=None #}
-{# This JinjaX component enables to limit by count the enumeration of `values`, or length of `text`, to given number `limit`, and to show
-   interactive "Show more"/"Show less" button to unhide/hide the values/text outside of the set limit.
+{# def value, limit=200, separator=", " #}
+{#
+  Shows `value` shortened to `limit` characters, followed by an inline "Show more"/"Show less" button
+  that shows/hides the rest.
 
-   If both `values` and `text` are provided, only `values` are shown.
- #}
+  `value` can be a string or a list of items: a list is joined into one string using `separator`.
+#}
 
-{%- if values is not none -%}
-  {%- set values = values | list -%}
-  {%- set limit = limit or 6 -%}
-  {%- set is_long = values | length > limit -%}
-  {%- set head = values[:limit] | join(", ") -%}
-  {%- set rest = ", " ~ values[limit:] | join(", ") -%}
-  {%- set ellipsis = ", …" -%}
-{%- else -%}
-  {%- set text = text or "" -%}
-  {%- set limit = limit or 200 -%}
-  {%- set is_long = text | length > limit -%}
-  {%- set cut = text[:limit].rfind(" ") -%}
-  {%- set cut = cut if cut > 0 else limit -%}
-  {%- set head = text[:cut] -%}
-  {%- set rest = text[cut:] -%}
-  {%- set ellipsis = "…" -%}
+{%- if value is none -%}
+  {%- set value = "" -%}
+{%- elif value is not string and value is iterable -%}
+  {%- set value = separator.join(value | map("string") | list) -%}
 {%- endif -%}
+{%- set limit = limit | int -%}
 
-{%- if not is_long -%}
-  {{ head if values is not none else text }}
+{%- if value | length <= limit -%}
+  {{ value }}
 {%- else -%}
-  <span class="show-more">{{ head }}<span class="show-more-rest" hidden>{{ rest }}</span><span class="show-more-ellipsis" aria-hidden="true">{{ ellipsis }}</span>
-    <button class="ui basic mini compact button show-more-button"
+  {%- set cut = value[:limit].rfind(" ") -%}
+  {%- set head = value[:(cut if cut > 0 else limit)].rstrip(" ,;") -%}
+  {%- set head_length = head | length -%}
+  {%- set rest = value[head_length:] -%}
+  <span class="show-more">{{ head }}<span class="show-more-rest" hidden>{{ rest }}</span><span class="show-more-ellipsis" aria-hidden="true">…</span>
+    <button type="button"
+            class="ui basic mini compact button show-more-button"
             aria-expanded="false"
-            data-open-text="{{ _('Show more') }}"
-            data-close-text="{{ _('Show less') }}">
-            {{ _('Show more') }}
-    </button>
+            data-open-value="{{ _('Show more') }}"
+            data-close-value="{{ _('Show less') }}">{{ _('Show more') }}</button>
   </span>
 {%- endif -%}
