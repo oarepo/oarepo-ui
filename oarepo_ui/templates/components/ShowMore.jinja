@@ -1,0 +1,34 @@
+{#
+SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
+SPDX-License-Identifier: MIT
+#}
+{# def value, limit=200, separator=", " #}
+{#
+  Shows `value` shortened to `limit` characters, followed by an inline "Show more"/"Show less" button
+  that shows/hides the rest.
+
+  `value` can be a string or a list of items: a list is joined into one string using `separator`.
+#}
+
+{%- if value is none -%}
+  {%- set value = "" -%}
+{%- elif value is not string and value is iterable -%}
+  {%- set value = separator.join(value | map("string") | list) -%}
+{%- endif -%}
+{%- set limit = limit | int -%}
+
+{%- if value | length <= limit -%}
+  {{ value }}
+{%- else -%}
+  {%- set cut = value[:limit].rfind(" ") -%}
+  {%- set head = value[:(cut if cut > 0 else limit)].rstrip(" ,;") -%}
+  {%- set head_length = head | length -%}
+  {%- set rest = value[head_length:] -%}
+  <span class="show-more">{{ head }}<span class="show-more-rest" hidden>{{ rest }}</span><span class="show-more-ellipsis" aria-hidden="true">…</span>
+    <button type="button"
+            class="ui basic mini compact button show-more-button"
+            aria-expanded="false"
+            data-open-value="{{ _('Show more') }}"
+            data-close-value="{{ _('Show less') }}">{{ _('Show more') }}</button>
+  </span>
+{%- endif -%}

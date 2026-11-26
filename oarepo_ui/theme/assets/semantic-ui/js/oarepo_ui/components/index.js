@@ -4,6 +4,7 @@
 import "./burgermenu";
 import "./clipboard";
 import "./filepreview";
+import "./show-more";
 
 export * from "./Disabled";
 export * from "./ClipboardCopyButton";
